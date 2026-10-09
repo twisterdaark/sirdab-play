@@ -4352,6 +4352,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.18',d:'9 أكتوبر',add:[],fix:[
+    'السرقة واللعنة بقوا أخف: لو {اتقفشت|اتقفشتي} مش لازم كل مرة {تبقى مطارد|تبقي مطاردة}، والحرامي المحترف بيفلت أكتر. واللعنة بقت بتيجي بس مع الحاجات الوحشة قوي، ومش مع المطاردة في نفس الاختيار.'
+  ]},
   {v:'5.17',d:'9 أكتوبر',add:[
     'ليلة مع صاحب لايف: {افتح|افتحي} ليلة من «ليلة مع صاحب» (في البلد أو قبل المغامرة) {وابعت|وابعتي} الكود لصاحبك. صاحبك يدخل بالكود من موبايله، وبطله يبقى رفيقك. في كل قتال، صاحبك هو اللي بيختار حركة الرفيق من موبايله (يضرب مين أو يعالج مين)، ولو اتأخر بيلعب لوحده. موبايل صاحبك بيشوف الليلة والقتال، وفي الآخر بياخد خبرة وفلوس.'
   ],fix:[]},
@@ -18489,9 +18492,9 @@ function burAdd(k,why){const B=burOf();if(!B)return '';const was=B[k]||0;B[k]=Ma
 {const ao=applyOutcome;applyOutcome=function(o,tier,c){
   const R=ao.apply(this,arguments);
   try{if(o&&typeof o==='object'&&N_on()&&!o.noBur){let x='';
-    if((o.ach==='thief'||(c&&c.stat&&burThief(c)))&&(tier==='fail'||(S.hero.cls!=='حرامي'&&(tier==='part'||Math.random()<.25))))x+=burAdd('hunted',tier==='full'?'حد شافك {وانت بتسرق|وانتي بتسرقي} وبلّغ.':'اللي {سرقته|سرقتيه} عرف وبعت وراك ناسه.');
+    if((o.ach==='thief'||(c&&c.stat&&burThief(c)))&&Math.random()<(tier==='fail'?(S.hero.cls==='حرامي'?.3:.5):S.hero.cls==='حرامي'?0:tier==='part'?.3:.1))x+=burAdd('hunted',tier==='full'?'حد شافك {وانت بتسرق|وانتي بتسرقي} وبلّغ.':'اللي {سرقته|سرقتيه} عرف وبعت وراك ناسه.');
     const r=o.rep&&o.rep[0];
-    if(r<=-15||(r<=-10&&Math.random()<.4))x+=burAdd('cursed','اللي {عملته|عملتيه} ده ليه تمن، والليلة مش ناسياه.');
+    if(!x&&(r<=-15&&Math.random()<.5||r<=-10&&r>-15&&Math.random()<.15))x+=burAdd('cursed','اللي {عملته|عملتيه} ده ليه تمن، والليلة مش ناسياه.');
     if(tier==='fail'&&o.hp<=-3)x+=burAdd('wounded','الجرح ده مش هيقفل لوحده.');
     if(o.heal){const B=burOf();if(B&&B.wounded){B.wounded=0;x+=`<div class="note" style="color:#a6e3a0">الجرح اتربط ووقف النزيف.</div>`}}
     if(x&&typeof RES==='object'&&RES){RES.extra=(RES.extra||'')+T(x);N_save();render();setTimeout(()=>{try{SFX.hurt()}catch(e){}},300)}}}
