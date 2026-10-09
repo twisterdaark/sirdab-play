@@ -4352,6 +4352,17 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.30',d:'9 أكتوبر',add:[],fix:[
+    'البلد بقت فولدرات: المغامرات ظاهرة على طول، والسوق والصنايعية والأنشطة وناس البلد بيتفتحوا بدوسة. والفولدر المقفول بيقولك لو جواه حاجة جاهزة.',
+    'الليلة مع صحابك بقت جوه المغامرات، من زرار فوق.',
+    'صحابك وهما مستنيين بيشوفوا نفس شاشة الأوضة: الكود، وصاحب الأوضة، ومين موجود، و{انتوا|انتوا} كام من 5، وزرار «امشي».',
+    'قبل المغامرة صحابك بيشوفوا زراير الاختيار مضلمة، و«ابدأ المغامرة» بيبدأ لما أغلبيتكم {تدوس|تدوس} عليه، أو لما صاحب الأوضة يدوسه.',
+    'في القتال، لما يبقى مش دور حد، زراير القتال عنده بتبقى مقفولة، ولو داس بيطلعله «مش دورك»، ومكتوب فوق دور مين.',
+    'في الليلة مع صحابك، «الرفيق» مبقاش بيظهر على جنب في الكمبيوتر.',
+    'في القتال كل واحد بيرمي زهر ضربته وقدرته بنفسه من موبايله، زي الأوفلاين. والنور بيبقى على كارت اللي عليه الدور.',
+    'زهر القصة: كل واحد بيرمي، والرمية اللي في النص بينكم هي اللي بتمشي على القصة وعلى الكل. لو ما نفعتوش، كلكم {بتتعاقبوا|بتتعاقبوا}.',
+    'شاشة الزهر عند صاحب الأوضة بتفضل مفتوحة لحد ما الكل يرمي، واللي ما يرميش في 15 ثانية الزهر بيترمي له لوحده.',
+    'التصويت ليه عداد 30 ثانية من أول صوت، وبعدها الاختيار اللي عليه أصوات أكتر هو اللي بيمشي.']},
   {v:'5.29',d:'9 أكتوبر',add:[],fix:[
     'البلد اتنظمت في مجموعات: المغامرات (ومعاها الليلة مع صحابك)، والسوق والصنايعية، والأنشطة، وناس البلد.',
     'سوق اللاعبين بقى جوه السوق، من زرار فوق.',
@@ -19317,7 +19328,7 @@ SCREENS.coop=function(){const h=S.hero,R=CO.room,gp=coGuestSnap();
   if(!FB.user)body=`<div class="card tw-empty">${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات (من لينك اللعب) عشان ${G('تلعب','تلعبي')} مع صحابك.</div>`;
   else if(CO.role==='host'&&CO.code){body=`<div class="card co-code"><small>${G('ابعت','ابعتي')} الكود ده لصحابك (لحد 4)</small><b>${CO.code}</b><small>صاحبك يدخل من «ليلة مع صاحب» ويكتبه.</small></div>
     ${gp?`<div class="card co-who">${[{u:R.g,n:gp.n,g:gp.g,c:gp.c,l:gp.l,r:'الرفيق'}].concat(coXs().map(x=>Object.assign(x,{r:x.g==='f'?'بتساعد في القتال':'بيساعد في القتال'}))).map(p=>`<div class="co-p"><div class="tx"><b>${esc(p.n)}</b><small>${p.g==='f'?(CLS_F[p.c]||p.c):p.c} · مستوى ${p.l|0} · ${p.r}</small></div>
-        <div class="co-pb"><button class="tw-buy" data-own="${p.u}">${CO.conf==='o'+p.u?G('متأكد؟','متأكدة؟'):p.g==='f'?'خليها الأونر':'خليه الأونر'}</button><button class="tw-buy warn" data-kick="${p.u}">${CO.conf==='k'+p.u?G('متأكد؟','متأكدة؟'):'اطرد'}</button></div></div>`).join('')}<small>${1+CO.xs.length} من 4 صحاب</small></div>
+        <div class="co-pb"><button class="tw-buy" data-own="${p.u}">${CO.conf==='o'+p.u?G('متأكد؟','متأكدة؟'):p.g==='f'?'خليها الأونر':'خليه الأونر'}</button><button class="tw-buy warn" data-kick="${p.u}">${CO.conf==='k'+p.u?G('متأكد؟','متأكدة؟'):'اطرد'}</button></div></div>`).join('')}<small>${G('انتوا','انتوا')} ${2+CO.xs.length} من 5</small></div>
       <button class="btn" id="coGo">${G('ابدأ','ابدأي')} الليلة سوا</button>`:'<div class="nnote">مستني صاحبك يدخل..</div>'}
     <button class="btn ghost" id="coX" style="margin-top:8px">${G('الغي','الغي')}</button>`}
   else body=`${coKept()?`<button class="btn" id="coBack">${G('ارجع','ارجعي')} لليلة ${coKept()}</button>`:''}<div class="card"><b>${G('افتح','افتحي')} ليلة ${G('وادعي','وادعي')} صاحب</b><small class="co-s">لحد 4 صحاب. أول واحد بيبقى الرفيق، والباقيين بيساعدوا في القتال. كل واحد بيختار حركته من موبايله، ولو اتأخر بيلعب لوحده.</small>
@@ -20742,7 +20753,7 @@ function coSafe(html){const t=document.createElement('template');t.innerHTML=htm
 CO.vote={};CO.rpGot=null;CO.mh='';CO.dOrig=null;
 async function coVote(i){const R=CO.room,V=coJ(R&&R.vw);if(!R||!V||!V.cs)return;CO.vote[V.cs]=i;SFX.page&&SFX.page();vib&&vib(15);coMarkGuest(V);
   const v=JSON.stringify({id:'v:'+V.cs,a:i,n:Date.now()%100000});try{if(R.g===FB.user.uid)await coRef(CO.code).update({ans:v});else await coPRef(CO.code,FB.user.uid).update({ans:v})}catch(e){CO.err=coNet(e);render()}}
-const coGEls=()=>coEls($('#coM'),coDiceOpen()&&CO.dOrig!=null?$('#dice'):null);
+const coGEls=()=>{const V=coJ(CO.room&&CO.room.vw);if(V&&V.s==='setup'){const g=$('#coM #go');return g?[g]:[]}return coEls($('#coM'),coDiceOpen()&&CO.dOrig!=null?$('#dice'):null)};
 function coMarkGuest(V){const L=coGEls(),VT=(V&&V.vt)||[],mine=V?CO.vote[V.cs]:null;
   L.forEach((b,i)=>{let t=b.querySelector('.co-vt');const names=VT[i]||[];if(names.length){if(!t){t=document.createElement('span');t.className='co-vt';b.appendChild(t)}t.textContent='✋ '+names.join('، ')}else if(t)t.remove();
     b.classList.toggle('co-mine',mine===i)});
@@ -20845,7 +20856,7 @@ coHelpers=async function(){if(!coLive()||!CO.xs.length)return;const h=S.hero;
   for(const a of coAls()){const C=S.combat;if(!C||h.hp<=0)return;if(a.hp<=0)continue;a.hide=0;const X=C.X,g=coGx(a);
     const fs=C.foes.map((f,i)=>({f,i})).filter(y=>y.f.hp>0&&!y.f.fled&&!(typeof X_gone==='function'&&X&&X_gone(y.f)));if(!fs.length)return;
     const opts=coAlOpts(a,fs,C,h);C.log.push({t:`دور ${a.name}: ${g('بيختار','بتختار')} من ${g('موبايله','موبايلها')}..`});combat();coPublish();
-    const r=await coAsk(opts,a.u,45000);if(!S.combat)return;let o=r!=null?opts[+r]:null;const auto=!o;if(!o)o=opts.find(y=>y.k==='hit')||opts[0];
+    CO.turnU=a.u;combat();const r=await coAsk(opts,a.u,60000);CO.turnU='';if(!S.combat)return;let o=coPickAns(opts,r);const auto=!o;if(!o)o=opts.find(y=>y.k==='atk'||y.k==='hit')||opts[0];
     await coAlDo(a,o,auto,h,C);if(C.foes.every(y=>y.hp<=0))return}};
 
 /* ===== the story: every player rolls their own dice ===== */
@@ -20865,7 +20876,7 @@ function coRlDraw(){if(CO.role!=='host')return;const old=$('#coRl');if(old)old.r
 {const rc=rollCheck;rollCheck=function(stat,opt){const p=rc.apply(this,arguments);try{if(coRollOn()){opt=opt||{};
     const R=CO.rl={id:Date.now().toString(36),st:stat,dc:opt.dc|0,adv:opt.adv?1:0,dz:S.dice||'',t0:Date.now(),res:{}};
     p.then(x=>{if(CO.rl!==R)return;if(!x||x.cancel){CO.rl=null;coRlDraw();setTimeout(coPublish,60);return}coRollRes(coMe(),x.tier,x.total)});
-    setTimeout(()=>{if(CO.rl!==R)return;coPlayers().forEach(q=>{if(q.u!==coMe()&&!R.res[q.u]){const s=rnd(6)+rnd(6);coRollRes(q.u,s>=10?'full':s>=7?'part':'fail',null)}})},30000);
+    setTimeout(()=>{if(CO.rl!==R)return;coPlayers().forEach(q=>{if(q.u!==coMe()&&!R.res[q.u]){const s=rnd(6)+rnd(6);coRollRes(q.u,s>=10?"full":s>=7?"part":"fail",null)}})},30000);
     coRlDraw();setTimeout(coPublish,150)}}catch(e){}return p}}
 function coRollRead(){const R=CO.rl;if(!R||R.over||CO.role!=='host')return;const Rm=CO.room;
   const raw=[[Rm&&Rm.g,Rm&&Rm.ans]].concat((CO.xs||[]).map(x=>[x.u,x.ans]));
@@ -20946,7 +20957,7 @@ function coAlOpts(a,fs,C,h){const c=S.comp,o=[],e=a.en|0;coFresh(a);
   o.push({k:'hide',e});
   return o}
 async function coAlDo(a,o,auto,h,C){const g=coGx(a),K=CLASSES[a.cls]||CLASSES['محارب'],lv=coLvOf(a),b=Math.floor(lv/3),el=()=>coElOf(a),pre=auto?g('من نفسه: ','من نفسها: '):'';
-  const r2=()=>rnd(6)+rnd(6)+(lv>=3?1:0)+(lv>=6?1:0),fell=f=>f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:'';
+  const r2=()=>o._t?(o._t==='full'?11:o._t==='part'?8:5):rnd(6)+rnd(6)+(lv>=3?1:0)+(lv>=6?1:0),fell=f=>f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:'';
   const alive=()=>C.foes.filter(f=>f.hp>0&&!f.fled);const heal=(x,v)=>{const m=x===h?MXH(h):x.max;const d=Math.min(v,m-x.hp);x.hp+=d;return d};
   if(o.k==='hide'){a.hide=1;if(a===S.comp)C.cpHide=1;combat();SFX.guard&&SFX.guard();return say(`${a.name} ${g('استخبى','استخبت')}: الضربة الجاية ${g('عليه','عليها')} مش هتيجي.`,'good')}
   if(o.k==='pot'){if(!(h.bag.potion>0))return;h.bag.potion--;const v=heal(a,5+h.lvl);combat();healFx(el(),v);return say(`${a.name} ${g('شرب','شربت')} جرعة شفا: ⁦+${v}⁩ صحة.`,'good')}
@@ -20986,7 +20997,7 @@ async function coRegen(a){const R=a.regen;if(!R||a.hp<=0)return;const v=Math.min
   const X=C.X,fs=C.foes.map((f,i)=>({f,i})).filter(x=>x.f.hp>0&&!x.f.fled&&!(typeof X_gone==='function'&&X&&X_gone(x.f)));
   if(!fs.length)return;const opts=coAlOpts(c,fs,C,h),g=coGx(c);
   C.log.push({t:`دور ${c.name}: ${g('بيختار','بتختار')} من ${g('موبايله','موبايلها')}..`});combat();coPublish();
-  const r=await coAsk(opts,CO.room.g,45000);if(!S.combat)return;let o=r!=null?opts[+r]:null;const auto=!o;if(!o)o=opts.find(y=>y.k==='atk')||opts[0];
+  CO.turnU=CO.room.g;combat();const r=await coAsk(opts,CO.room.g,60000);CO.turnU='';if(!S.combat)return;let o=coPickAns(opts,r);const auto=!o;if(!o)o=opts.find(y=>y.k==='atk')||opts[0];
   C.compHit=1;try{await coAlDo(c,o,auto,h,C)}finally{if(S.combat)S.combat.compHit=0}
   if(S.combat&&S.combat.foes.some(f=>f.hp>0))await coHelpers()}}
 
@@ -21040,6 +21051,9 @@ function coGPanel(a){const h=S.hero,K=CLASSES[h.cls]||CLASSES['محارب'],O=a.
 function coGApply(){const R=CO.room,a=coJ(R&&R.ask),me=coMe(),m=$('#coM');if(!m)return;
   const mine=a&&CO.ans[a.id]==null&&R&&R.st==='on'&&me&&(a.to||R.g)===me&&coFightAsk(a);
   view.querySelectorAll('.co-ask').forEach(x=>{if(coFightAsk(a))x.style.display='none'});
+  const V=coJ(R&&R.vw),fight=!!(V&&V.s==='combat');m.classList.toggle('co-lock',fight&&!mine);
+  if(fight&&!mine){const who=(()=>{const L=(R.ask&&coJ(R.ask))||null;if(L&&CO.ans[L.id]==null&&L.to&&L.to!==me){const x=CO.xs.find(y=>y.u===L.to),p=x?coJ(x.gp)||{}:L.to===R.g?coJ(R.gp)||{}:{};if(p.n)return p.n}return R.hn||''})();
+    m.querySelectorAll('.turn').forEach(t=>{if(/^\s*دورك|مين؟/.test(t.textContent))t.textContent=`دور ${who}`})}
   if(!mine){CO.gp={id:'',m:'',sk:''};return}
   if(CO.gp.id!==a.id)CO.gp={id:a.id,m:'',sk:''};
   m.querySelectorAll('.co-gp').forEach(x=>x.remove());m.querySelectorAll('.turn').forEach(x=>x.style.display='none');
@@ -21050,18 +21064,18 @@ function coGApply(){const R=CO.room,a=coJ(R&&R.ask),me=coMe(),m=$('#coM');if(!m)
   m.querySelectorAll('.foe').forEach(f=>f.classList.remove('pick'));
   if(CO.gp.m==='pick')a.o.forEach(o=>{if(o.i!=null&&(CO.gp.sk?o.k==='sk'&&o.id===CO.gp.sk:o.k==='atk')){const f=m.querySelector(`.foe[data-f="${o.i}"]`);if(f)f.classList.add('pick')}})}
 {const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{coGApply()}catch(e){}return r}}
-function coGPick(fi){const a=coJ(CO.room&&CO.room.ask);if(!a)return;const i=a.o.findIndex(o=>o.i===fi&&(CO.gp.sk?o.k==='sk'&&o.id===CO.gp.sk:o.k==='atk'));if(i>=0)coAnswer(i)}
-document.addEventListener('click',e=>{if(S.screen!=='coopg')return;const t=e.target;if(!t||!t.closest)return;const a=coJ(CO.room&&CO.room.ask);if(!a||CO.gp.id!==a.id)return;
+function coGPick(fi){const a=coJ(CO.room&&CO.room.ask);if(!a)return;const i=a.o.findIndex(o=>o.i===fi&&(CO.gp.sk?o.k==='sk'&&o.id===CO.gp.sk:o.k==='atk'));if(i>=0)coAnswerR(i)}
+document.addEventListener('click',e=>{if(S.screen!=='coopg')return;const t=e.target;if(!t||!t.closest)return;if(t.closest('#coM.co-lock .acts, #coM.co-lock .foe, #coM.co-lock .act')){e.preventDefault();e.stopPropagation();toast('مش دورك');vib&&vib(30);return}const a=coJ(CO.room&&CO.room.ask);if(!a||CO.gp.id!==a.id)return;
   const b=t.closest('[data-cg]'),f=t.closest('#coM .foe.pick');if(!b&&!f)return;e.preventDefault();e.stopPropagation();SFX.page&&SFX.page();
   if(f){coGPick(+f.dataset.f);return}
   const v=b.dataset.cg,P=CO.gp;
   if(v==='back'){P.m=P.m==='pick'&&P.sk?'sk':'';if(P.m!=='sk')P.sk='';return coGApply()}
-  if(v==='atk'){const L=a.o.map((o,i)=>o.k==='atk'?i:-1).filter(i=>i>=0);if(L.length===1)return coAnswer(L[0]);P.m='pick';P.sk='';return coGApply()}
+  if(v==='atk'){const L=a.o.map((o,i)=>o.k==='atk'?i:-1).filter(i=>i>=0);if(L.length===1)return coAnswerR(L[0]);P.m='pick';P.sk='';return coGApply()}
   if(v==='sk'){P.m='sk';return coGApply()}
   if(v.startsWith('s:')){const id=v.slice(2),L=a.o.map((o,i)=>o.k==='sk'&&o.id===id?i:-1).filter(i=>i>=0);if(!L.length)return;
-    if(L.length===1)return coAnswer(L[0]);P.m='pick';P.sk=id;return coGApply()}
-  if(v.startsWith('o:')){const i=+v.slice(2);if(i>=0)coAnswer(i)}},true);
-{const st=document.createElement('style');st.textContent=`.co-gp{margin-top:8px}.co-gp .acts{display:grid}.co-gturn{margin-top:8px}`;document.head.appendChild(st)}
+    if(L.length===1)return coAnswerR(L[0]);P.m='pick';P.sk=id;return coGApply()}
+  if(v.startsWith('o:')){const i=+v.slice(2);if(i>=0)coAnswerR(i)}},true);
+{const st=document.createElement('style');st.textContent=`.co-gp{margin-top:8px}#coM.co-lock .acts .act{opacity:.42;filter:grayscale(.7);position:relative}#coM.co-lock .acts .act:after{content:'🔒';position:absolute;top:8px;left:10px;font-size:14px;filter:none}.co-gp .acts{display:grid}.co-gturn{margin-top:8px}`;document.head.appendChild(st)}
 
 /* a friend who closes the game or leaves the page is gone at once: no one waits for them (they come back on the next heartbeat) */
 {const bye=()=>{try{const R=CO.room,me=coMe();if(CO.role!=='guest'||!R||!me||!CO.code||R.st==='end')return;(R.g===me?coRef(CO.code).update({ghb:0}):coPRef(CO.code,me).update({hb:0})).catch(()=>{})}catch(e){}};
@@ -21070,25 +21084,145 @@ document.addEventListener('click',e=>{if(S.screen!=='coopg')return;const t=e.tar
   const s0=coStop;coStop=function(){if(CO.role==='guest')bye();return s0.apply(this,arguments)}}
 /* the dice wait only for the friends still here */
 setInterval(()=>{try{const R=CO.rl;if(R&&!R.over&&CO.role==='host'&&coPlayers().every(p=>R.res[p.u]))coRollShow()}catch(e){}},1000);
+
+/* ===== the friend's waiting room: the same room the owner sees, without «ابدأ»; «امشي» leaves it ===== */
+{const a0=coAsGuest;coAsGuest=function(code){const r=a0.apply(this,arguments);try{coWatchX(code)}catch(e){}return r}}
+{const w0=coWatchX;coWatchX=function(code){const r=w0.apply(this,arguments);const u0=CO.xun;if(CO.role==='guest'&&u0){/* the guest's screen follows the seats too */
+    CO.xun=coRef(code).collection('p').onSnapshot(()=>{if(S.screen==='coopg'&&CO.room&&CO.room.st==='wait')setTimeout(render,50)},()=>{});const u1=CO.xun;CO.xun=()=>{try{u0()}catch(e){}try{u1()}catch(e){}}}return r}}
+function coLobbyG(R){const me=coMe(),gp=coJ(R.gp)||{},L=[];
+  if(R.g)L.push({u:R.g,n:gp.n||R.gn,g:gp.g,c:gp.c,l:gp.l,out:R.ghb===0});
+  CO.xs.forEach(x=>{const p=coJ(x.gp)||{};L.push({u:x.u,n:p.n||x.n,g:p.g,c:p.c,l:p.l,out:x.hb===0})});
+  const row=p=>`<div class="co-p"><div class="tx"><b>${esc(p.n||'')}${p.u===me?` (${G('انت','انتي')})`:''}</b><small>${p.g==='f'?(CLS_F[p.c]||p.c||''):(p.c||'')} · مستوى ${p.l|0}${p.out?' · برة دلوقتي':''}</small></div></div>`;
+  return `<div class="card co-code"><small>كود الأوضة</small><b>${CO.code}</b><small>${G('ابعته','ابعتيه')} لأي صاحب عايز يدخل معاكم.</small></div>
+    <div class="card co-who"><div class="co-p"><div class="tx"><b>👑 ${esc(R.hn||'')}</b><small>صاحب الأوضة · هو اللي بيبدأ الليلة</small></div></div>${L.map(row).join('')}<small>${G('انتوا','انتوا')} ${1+L.length} من 5</small></div>
+    <div class="nnote">${G('استنى','استني')} لما ${esc(R.hn||'صاحب الأوضة')} يبدأ الليلة..</div>
+    <button class="btn ghost" id="coLeave" style="margin-top:8px">${G('امشي','امشي')}</button>`}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const R=CO.room;if(!(R&&R.st==='wait'))return g0.apply(this,arguments);
+  view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>ليلة مع صاحب</h2><span class="tag">${CO.code}</span></div><div class="col">${coLobbyG(R)}</div>`;
+  const out=async()=>{const c=CO.code,me=coMe(),isG=R.g===me;coStop();coKeep('');if(!isG&&c&&me)try{await coPRef(c,me).delete()}catch(e){}S.screen=typeof twGo==='function'?'town':'title';render()};
+  $('#coLeave').onclick=out;$('#back').onclick=out}}
+
+/* ===== the adventure screen: only «ابدأ المغامرة» is for everyone; it starts when most of you tap it, or when the owner does ===== */
+CO_VSCR.push('setup');
+{const h0=coHostEls;coHostEls=function(){if(S.screen==='setup'){const g=$('#go');return g&&coVis(g)&&!coDiceOpen()?[g]:[]}return h0.apply(this,arguments)}}
+{const t0=coTally;coTally=function(){if(S.screen!=='setup')return t0.apply(this,arguments);if(!coVoting()||!CO.vsig||CO.V.sig!==CO.vsig)return;
+  const P=coPlayers(),ids=P.map(p=>p.u),nv=Object.keys(CO.V.v).filter(u=>ids.includes(u)&&CO.V.v[u]===0).length;if(nv<Math.floor(P.length/2)+1)return;
+  const b=$('#go');if(!b)return;CO.V={sig:'',v:{},t0:0};CO.vsig='';setTimeout(()=>{if(!b.isConnected)return;CO.pass=1;try{b.click()}finally{CO.pass=0}setTimeout(coPublish,200)},450)}}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const V=coJ(CO.room&&CO.room.vw),m=$('#coM');if(m){const su=!!(V&&V.s==='setup');m.classList.toggle('co-setup',su);
+    let h=$('#coGs');if(su&&!h){m.insertAdjacentHTML('beforebegin','<div class="co-gh" id="coGs"></div>');h=$('#coGs')}if(h){if(su)h.textContent=`المغامرة بتبدأ لما أغلبيتكم ${G('تدوس','تدوس')} «ابدأ»، أو لما ${CO.room.hn||'صاحب الأوضة'} يبدأ`;else h.remove()}}}catch(e){}return r}}
+{const st=document.createElement('style');st.textContent=`#coM.co-setup button:not(#go),#coM.co-setup .ch,#coM.co-setup [data-n]{opacity:.38;filter:grayscale(.7);pointer-events:none}`;document.head.appendChild(st)}
+
+/* the computer layout's side sheet: no «الرفيق» row in a live night; a friend sees whose night it is */
+{const d0=dkHeroHTML;dkHeroHTML=function(){let s=d0.apply(this,arguments);try{const R=CO.room;if(CO.code&&R&&R.st!=='end'){s=s.replace(/<div class="dk-row"><span>الرفيق<\/span>[\s\S]*?<\/span><\/div>/,'');
+  if(CO.role==='guest')s=s.replace('<div class="dk-row"><span>الفلوس</span>',`<div class="dk-row"><span>الليلة</span><span>ليلة ${esc(R.hn||'')}</span></div><div class="dk-row"><span>الفلوس</span>`)}}catch(e){}return s}}
+
+/* ===== dice in a live night: 15 seconds each, and the owner's dice stay open until everyone rolled and saw their result ===== */
+const CO_ROLL_S=15;
+/* a roll that waits too long rolls itself; its result closes by itself a moment later */
+function coDiceClock(isMine){const t0=Date.now();let shown=0;const lbl=$('#dWhat'),base=lbl?lbl.textContent:'';
+  const iv=setInterval(()=>{const D=$('#dice');if(!D||D.classList.contains('hidden')){clearInterval(iv);if(lbl)lbl.textContent=base;return}
+    const left=CO_ROLL_S-Math.floor((Date.now()-t0)/1000),res=$('#dRes'),done=res&&!res.classList.contains('hidden'),ok=$('#dOk');
+    if(!done&&lbl)lbl.textContent=`${base} · ⏱ ${Math.max(0,left)}`;
+    if(!done&&left<=0){const dz=$('#dz');if(dz&&dz.onkeydown)dz.onkeydown({key:'Enter',preventDefault(){}})}
+    if(done&&ok&&ok.parentElement&&ok.parentElement.style.visibility!=='hidden'){if(!shown)shown=Date.now();
+      if(isMine&&Date.now()-shown>2200&&Date.now()-t0>CO_ROLL_S*1000)ok.click()}},400)}
+{const m0=coMyRoll;coMyRoll=function(rl){const r=m0.apply(this,arguments);setTimeout(()=>{if(CO.myRoll===rl.id)coDiceClock(1)},60);return r}}
+{const rc=rollCheck;rollCheck=function(){const p=rc.apply(this,arguments);try{const R0=CO.rl;if(R0&&CO.role==='host'&&Date.now()-R0.t0<300){setTimeout(()=>coDiceClock(0),60);p.then(()=>{R0.closed=1;coDw()})}}catch(e){}return p}}
+/* the owner's «تمام» waits for everyone, with who is still rolling under the dice */
+function coDw(){const D=$('#dice'),R=CO.rl;let w=$('#coDw');if(CO.role!=='host'||!D||D.classList.contains('hidden')||!R||R.closed){if(w)w.remove();const ok=$('#dOk');if(ok&&ok.disabled&&!(R&&!R.closed&&!R.over)){ok.disabled=false;ok.style.opacity=''}return}
+  /* the owner's own result counts as soon as it shows */
+  const me=coMe(),res=$('#dRes'),B=$('#dBanner');if(!R.res[me]&&res&&!res.classList.contains('hidden')&&B&&/b-(full|part|fail)/.test(B.className)){const t=B.className.match(/b-(full|part|fail)/)[1];coRollRes(me,t,parseInt(($('#dTotal')||{}).textContent,10)||0)}
+  const ok=$('#dOk');if(!ok)return;if(!w){ok.parentElement.insertAdjacentHTML('beforebegin','<div id="coDw" class="co-dw"></div>');w=$('#coDw')}
+  const P=coPlayers();w.innerHTML=P.map(p=>{const r=R.res[p.u];return `<div class="co-rr ${r?'k-'+r.k:''}"><b>${esc(r?r.n:p.n)}</b><span>${r?`🎲 ${r.v!=null?r.v+' · ':''}${esc(r.txt)}`:'⏳ لسه بيرمي'}</span></div>`}).join('')+(R.over?'':'<div class="co-rw">«تمام» هيتفتح لما الكل يرمي</div>');
+  ok.disabled=!R.over;ok.style.opacity=R.over?'':'.45'}
+{const d0=coRlDraw;coRlDraw=function(){const r=d0.apply(this,arguments);try{coDw()}catch(e){}return r}}
+setInterval(()=>{try{if(CO.role==='host'&&CO.rl)coDw()}catch(e){}},700);
+document.addEventListener('click',e=>{const t=e.target;if(CO.role==='host'&&CO.rl&&!CO.rl.over&&t&&t.closest&&t.closest('#dOk')){e.preventDefault();e.stopImmediatePropagation();toast('استنى لحد ما الكل يرمي')}},true);
+
+/* ===== a vote closes 30 seconds after the first vote; everyone sees the clock ===== */
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{if(o.cs&&CO.V.sig===CO.vsig&&CO.V.t0)o.vd=Math.max(0,30000-(Date.now()-CO.V.t0))}catch(e){}return o}}
+{const t0=coTally;coTally=function(){const r=t0.apply(this,arguments);try{/* the start of an adventure too: 30 s after the first tap it starts */
+  if(S.screen==='setup'&&coVoting()&&CO.vsig&&CO.V.sig===CO.vsig&&CO.V.t0&&Date.now()-CO.V.t0>30000&&Object.keys(CO.V.v).length){const b=$('#go');CO.V={sig:'',v:{},t0:0};CO.vsig='';
+    if(b)setTimeout(()=>{if(!b.isConnected)return;CO.pass=1;try{b.click()}finally{CO.pass=0}setTimeout(coPublish,200)},450)}}catch(e){}return r}}
+CO.vwAt=0;CO.vwS='';
+setInterval(()=>{try{const sec=ms=>Math.max(0,Math.ceil(ms/1000));
+  if(CO.role==='host'&&coVoting()&&CO.V.t0&&CO.V.sig===CO.vsig){const h=$('#coVh');if(h&&!/⏱/.test(h.textContent))h.textContent+=` · ⏱ ${sec(30000-(Date.now()-CO.V.t0))}`;else if(h)h.textContent=h.textContent.replace(/⏱ \d+/,`⏱ ${sec(30000-(Date.now()-CO.V.t0))}`)}
+  if(CO.role==='guest'&&S.screen==='coopg'){const R=CO.room;if(R&&R.vw!==CO.vwS){CO.vwS=R.vw;CO.vwAt=Date.now()}const V=coJ(R&&R.vw);
+    for(const id of ['#coGh','#coGs']){const h=$(id);if(!h||!h.textContent)continue;const base=h.textContent.replace(/ · ⏱ \d+$/,'');h.textContent=V&&V.vd!=null?`${base} · ⏱ ${sec(V.vd-(Date.now()-CO.vwAt))}`:base}}}catch(e){}},500);
+{const st=document.createElement('style');st.textContent=`.co-dw{width:min(360px,90vw);margin:10px auto 0;background:#0006;border:1px solid var(--line);border-radius:12px;padding:6px 10px}`;document.head.appendChild(st)}
+
+/* ===== in a fight every friend rolls their own dice for a hit or a skill, on their own phone, like offline ===== */
+function coPickAns(opts,r){if(r==null)return null;if(typeof r==='object'){const o=opts[r.i|0];return o?Object.assign({},o,{_t:r.t,_n:r.n}):null}return opts[+r]||null}
+async function coAnswerR(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!=null)return;const o=a.o[i];if(!o)return;const h=S.hero,K=CLASSES[h.cls]||CLASSES['محارب'];
+  let st=null,nm='';if(o.k==='atk'){st=K.atk.stat;nm=K.atk.name}else if(o.k==='sk'){const s=skillsOf(h).find(x=>x.id===o.id);if(s&&s.roll){st=s.roll;nm=s.n}}
+  if(!st)return coAnswer(i);
+  CO.ans[a.id]=i;CO.gp={id:'',m:'',sk:''};SFX.page&&SFX.page();render();
+  const V=coJ(R.vw),d0=S.dice;if(V&&V.dz)S.dice=V.dz;coDiceRestore();CO.myRoll='f'+a.id;let x=null;
+  try{setTimeout(()=>coDiceClock(1),60);x=await rollCheck(st,{label:`${nm}: ${G('ارمي','ارمي')} زهرك`})}finally{S.dice=d0;CO.myRoll=''}
+  const v=JSON.stringify({id:a.id,a:{i,t:x&&x.tier||'fail',n:(x&&x.total)|0}});
+  try{if(R.g===coMe())await coRef(CO.code).update({ans:v});else await coPRef(CO.code,coMe()).update({ans:v})}catch(e){}if(S.screen==='coopg')render()}
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);o.dz=S.dice||'';return o}}
+/* the light is on whoever's turn it is */
+{const d0=coAlDraw;coAlDraw=function(){d0.apply(this,arguments);try{if(S.screen!=='combat'||!coLive())return;const C=S.combat,u=CO.turnU,R=CO.room;
+  let el=null;if(u){el=R&&u===R.g?$('#compCard'):(CO.al[u]?$('#al_'+CO.al[u].k):null)}else if(C.phase==='me'&&!C.busy)el=$('#meCard');
+  view.querySelectorAll('.side .mate').forEach(x=>x.classList.toggle('co-turnp',x===el));const me=$('#meCard');if(me)me.classList.toggle('co-dim',!!el&&el!==me)}catch(e){}}}
+{const st=document.createElement('style');st.textContent=`.side .mate.co-turnp{border-color:var(--gold);box-shadow:0 0 16px #e0b25a66}.side .mate.me.co-dim{border-color:var(--line);box-shadow:none}`;document.head.appendChild(st)}
+
+/* ===== one story result for everyone: everyone rolls, the roll in the middle of yours decides the story for all of you ===== */
+const CO_TR={fail:0,part:1,full:2},CO_TRK=['fail','part','full'];
+coRollRes=function(u,t,n){const R=CO.rl;if(!R||R.res[u])return;const me=coMe(),Rm=CO.room;let nm='',g=(m,f)=>m;
+  if(u===me){nm=S.hero.name;g=G}else if(Rm&&u===Rm.g&&S.comp){nm=S.comp.name;g=coGx(S.comp)}else{const x=coXs().find(y=>y.u===u);if(!x)return;const a=coAlOf(x);nm=a.name;g=coGx(a)}
+  R.res[u]={n:nm,k:t,v:n,txt:t==='full'?g('نجح','نجحت'):t==='part'?g('نجح بتمن','نجحت بتمن'):g('ما نفعش','ما نفعتش')};coRollShow()};
+coRollShow=function(){const R=CO.rl;if(!R)return;const P=coPlayers();
+  if(!R.over&&P.every(p=>R.res[p.u])){R.over=1;R.overAt=Date.now();
+    const L=P.map(p=>CO_TR[R.res[p.u].k]).sort((a,b)=>a-b);R.grp=CO_TRK[L[Math.floor((L.length-1)/2)]];
+    /* the friends share it: a miss hurts all of you, a price costs everyone a little */
+    const Rm=CO.room;P.forEach(p=>{if(p.u===coMe())return;const who=Rm&&p.u===Rm.g?S.comp:CO.al[p.u];if(!who)return;const d=R.grp==='fail'?rnd(3)+1:R.grp==='part'?1:0;
+      if(d){who.hp=Math.max(1,Math.min(who.max,who.hp)-d);R.res[p.u].hurt=d}});
+    setTimeout(()=>{if(CO.rl===R){coRlDraw();coPublish()}},9000)}
+  coRlDraw();setTimeout(coPublish,60)};
+const coGrpTxt=t=>t==='full'?'نجحتوا!':t==='part'?'نجحتوا.. بس فيه تمن':'ما نفعتوش';
+function coRlRows(R){const P=coPlayers();return P.map(p=>{const r=R.res[p.u];return `<div class="co-rr ${r?'k-'+r.k:''}"><b>${esc(r?r.n:p.n)}</b><span>${r?`🎲 ${r.v?r.v+' · ':''}${esc(r.txt)}${r.hurt?` · -${r.hurt} صحة`:''}`:'⏳ لسه بيرمي'}</span></div>`}).join('')
+  +(R.over&&R.grp?`<div class="co-grp k-${R.grp}">النتيجة للكل: ${coGrpTxt(R.grp)}<small>الرمية اللي في النص بينكم هي اللي بتمشي على القصة</small></div>`:'<div class="co-rw">استنوا لحد ما الكل يرمي، والرمية اللي في النص بينكم هي اللي هتمشي على الكل</div>')}
+coRlDraw=function(){if(CO.role!=='host')return;const old=$('#coRl');if(old)old.remove();const R=CO.rl;view&&view.classList.toggle('co-wait',!!(R&&!R.over&&S.screen!=='combat'));
+  if(R&&!(S.screen==='combat'||!view||Date.now()-R.t0>90000||R.over&&Date.now()-R.overAt>8500)){const box=`<div class="card co-rl" id="coRl"><div class="tw-lbl">كل واحد رمى زهره</div>${coRlRows(R)}</div>`;
+    const tp=view.querySelector('.top');if(tp)tp.insertAdjacentHTML('afterend',box);else view.insertAdjacentHTML('afterbegin',box)}
+  try{coDw()}catch(e){}};
+{const d0=coDw;coDw=function(){d0.apply(this,arguments);const w=$('#coDw'),R=CO.rl;if(w&&R){w.innerHTML=coRlRows(R).replace('co-rw">استنوا لحد ما الكل يرمي، والرمية اللي في النص بينكم هي اللي هتمشي على الكل','co-rw">«تمام» هيتفتح لما الكل يرمي')}}}
+/* the story takes the shared result */
+{const rc=rollCheck;rollCheck=function(){const p=rc.apply(this,arguments);try{const R0=CO.rl;if(R0&&CO.role==='host'&&Date.now()-R0.t0<300)
+  return p.then(x=>{if(x&&!x.cancel&&R0.grp&&R0.grp!==x.tier){const t=R0.grp;setTimeout(()=>toast(`النتيجة للكل: ${coGrpTxt(t)}`),200);return Object.assign({},x,{tier:t,crit:t==='full'&&x.crit,fumble:t==='fail'&&x.fumble})}return x})}catch(e){}return p}}
+{const st=document.createElement('style');st.textContent=`.co-grp{margin-top:6px;padding:8px;border-radius:10px;background:#0005;text-align:center;font-weight:800;font-size:14px}.co-grp small{display:block;font-weight:600;font-size:11px;color:var(--dim);margin-top:2px}
+.co-grp.k-full{color:#a6e3a0}.co-grp.k-part{color:#f3d48f}.co-grp.k-fail{color:#f0a090}`;document.head.appendChild(st)}
 /* ---------- the town, in groups (v5.29) ----------
    The town's places are grouped under small headings: the adventures (with the live night next to them), the market and the
    craftsmen, the activities (المنجم، الترعة، الغيط، الطباخة) and the people of the town. The players' market is no longer a
    tile of its own: it opens from the market. */
 const TW_GROUPS=[
-  {n:'المغامرات',go:['advs','setup','coop'],big:1},
+  {n:'المغامرات',go:['advs','setup'],big:1},
   {n:'السوق والصنايعية',go:['market','smith','tailor','gear']},
   {n:'الأنشطة',go:['mine','fish','farm','cook'],sm:'بتاخد مجهود وبتجيب خامات وأكل'},
   {n:'ناس البلد',go:['hakawati','wada','cafe']}];
 {const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{twGroup()}catch(e){console.warn(e)}return r}}
 function twGroup(){if(S.screen!=='town')return;const G0=view.querySelector('.tw-grid');if(!G0||G0.dataset.grp)return;
   const T=[...G0.querySelectorAll(':scope > .tw-tile')],used=new Set(),box=document.createElement('div');box.className='tw-groups';
-  T.forEach(b=>{if(b.dataset.go==='pmarket'){b.remove();used.add(b)}});
+  T.forEach(b=>{if(b.dataset.go==='pmarket'||b.dataset.go==='coop'){b.remove();used.add(b)}});
   TW_GROUPS.forEach(g=>{const L=g.go.map(go=>T.find(b=>b.dataset.go===go&&!used.has(b))).filter(Boolean);if(!L.length)return;L.forEach(b=>used.add(b));
     const sec=document.createElement('section');sec.className='tw-sec'+(g.big?' big':'');sec.innerHTML=`<h3><span>${g.n}</span>${g.sm?`<small>${g.sm}</small>`:''}</h3>`;
     const gr=document.createElement('div');gr.className='tw-grid';gr.dataset.grp=1;L.forEach(b=>{b.classList.remove('wide');gr.appendChild(b)});
     if(L.length%2)L[L.length-1].classList.add('wide');sec.appendChild(gr);box.appendChild(sec)});
   const rest=T.filter(b=>!used.has(b));if(rest.length){const last=box.lastElementChild&&box.lastElementChild.querySelector('.tw-grid');rest.forEach(b=>last?last.appendChild(b):box.appendChild(b))}
-  G0.replaceWith(box)}
+  G0.replaceWith(box);twFolds(box)}
+/* every group but the adventures is a folder: closed it shows its places small and what is ready inside; one opens at a time */
+function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{const h3=sec.querySelector('h3'),gr=sec.querySelector('.tw-grid'),T=[...gr.querySelectorAll('.tw-tile')],nm=h3.querySelector('span').textContent;
+  const ready=T.map(b=>{const n=(b.querySelector('.lb b')||{}).textContent||'',bd=b.querySelector('.bdg'),ok=b.querySelector('.lb em .ok,.lb em .new');
+    const t=bd?bd.textContent:ok?(b.querySelector('.lb em').textContent||'').trim():'';return t?`${n}: ${t}`:''}).filter(Boolean);
+  const thumbs=T.map(b=>`<span class="th">${(b.querySelector('.ban')||{}).innerHTML||''}</span>`).join('');
+  const names=T.map(b=>(b.querySelector('.lb b')||{}).textContent||'').join('، ');
+  const hd=document.createElement('button');hd.className='tw-fh';hd.innerHTML=`<span class="ths">${thumbs}</span><span class="tx"><b>${nm}</b><small class="${ready.length?'rd':''}">${ready.length?esc(ready.slice(0,2).join(' · '))+(ready.length>2?` · و${ready.length-2} كمان`:''):esc(names)}</small></span>${ready.length?`<span class="dot">${ready.length}</span>`:''}<span class="chv">‹</span>`;
+  h3.replaceWith(hd);sec.classList.add('fold');sec.classList.toggle('open',S.twFold===nm);
+  hd.onclick=()=>{const op=!sec.classList.contains('open');box.querySelectorAll('.tw-sec.fold').forEach(x=>x.classList.remove('open'));sec.classList.toggle('open',op);S.twFold=op?nm:'';SFX.page&&SFX.page();
+    if(op)setTimeout(()=>{try{hd.scrollIntoView({block:'nearest',behavior:'smooth'});gr.lastElementChild&&gr.lastElementChild.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}},60)}})}
 /* the players' market opens from the market */
 {const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{if(typeof SCREENS.pmarket!=='function')return r;const st=view.querySelector('.tw-stk');if(!st||$('#twPm'))return r;
   st.insertAdjacentHTML('beforebegin',`<button class="card tw-pm" id="twPm"><span class="ic">🤝</span><span class="tx"><b>سوق اللاعبين</b><small>بيع واشتري مع لاعيبة تانيين${FB.user?'':' · محتاج حساب جوجل'}</small></span><span class="ar">‹</span></button>`);
@@ -21101,8 +21235,27 @@ function twGroup(){if(S.screen!=='town')return;const G0=view.querySelector('.tw-
 .tw-sec h3 small{font-family:var(--body);font-size:11px;color:var(--dim);font-weight:600}
 .tw-sec:not(.big) .tw-tile .ban{height:64px}.tw-sec:not(.big) .tw-tile .lb b{font-size:17px}
 .tw-sec .tw-tile.wide .ban{height:74px}
+.tw-sec.fold{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.tw-sec.fold.open{border-color:#e0b25a88}
+.tw-fh{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;background:none;border:0;color:var(--ink);text-align:right;cursor:pointer;min-height:64px}
+.tw-fh .ths{display:flex;flex:none;width:96px;height:44px;position:relative}
+.tw-fh .th{position:absolute;top:0;width:44px;height:44px;border-radius:10px;overflow:hidden;border:2px solid var(--card);background:#0006;box-shadow:0 2px 6px #0008}
+.tw-fh .th:nth-child(1){right:0}.tw-fh .th:nth-child(2){right:18px}.tw-fh .th:nth-child(3){right:36px}.tw-fh .th:nth-child(4){right:54px}
+.tw-fh .th svg{display:block;width:100%;height:100%}
+.tw-fh .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.tw-fh .tx b{font-family:var(--display);font-size:19px;color:var(--gold2);font-weight:400}
+.tw-fh .tx small{font-size:12px;color:var(--dim);font-weight:600;line-height:1.4}.tw-fh .tx small.rd{color:#a6e3a0}
+.tw-fh .dot{flex:none;min-width:22px;height:22px;border-radius:11px;background:#d0483b;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 6px}
+.tw-fh .chv{flex:none;color:var(--gold2);font-size:22px;transition:transform .2s}.tw-sec.open .tw-fh .chv{transform:rotate(-90deg)}
+.tw-sec.fold>.tw-grid{display:none;padding:0 10px 10px}.tw-sec.fold.open>.tw-grid{display:grid;animation:twIn .35s ease both}
 .tw-pm{display:flex;align-items:center;gap:12px;width:100%;text-align:right;cursor:pointer;margin:8px 0;border-color:var(--gold)}
 .tw-pm .ic{font-size:24px}.tw-pm .tx{flex:1;display:flex;flex-direction:column}.tw-pm .tx b{color:var(--gold2);font-size:16px}.tw-pm .tx small{color:var(--dim);font-size:12px}.tw-pm .ar{color:var(--gold2);font-size:20px}`;document.head.appendChild(st)}
+
+/* the live night with friends lives inside the adventures */
+{const a0=SCREENS.advs;SCREENS.advs=function(){const r=a0.apply(this,arguments);try{if(S.screen!=='advs'||$('#coAdv'))return r;const k=typeof coKept==='function'&&coKept();
+  const el=document.createElement('button');el.id='coAdv';el.className='card tw-pm';
+  el.innerHTML=`<span class="ic">🤝</span><span class="tx"><b>${k?`${G('ارجع','ارجعي')} لليلة ${esc(k)}`:'العب مع صحابك لايف'}</b><small>${FB.user?`${G('افتح','افتحي')} ليلة ${G('وادعي','وادعي')} صحابك، أو ${G('ادخل','ادخلي')} ليلتهم بكود · لحد 5`:'محتاج حساب جوجل'}</small></span><span class="ar">‹</span>`;
+  const first=view.querySelector('.advc');if(first)first.insertAdjacentElement('beforebegin',el);else view.appendChild(el);
+  el.onclick=()=>{SFX.bell&&SFX.bell();CO.err='';CO.from='advs';S.screen='coop';render()}}catch(e){}return r}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
