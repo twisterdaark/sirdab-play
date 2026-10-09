@@ -4351,6 +4351,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.11',d:'9 أكتوبر',add:[
+    'ترتيب الأسبوع: كل ليلة {بتخلّصها|بتخلّصيها} ليها نقط (النجوم، الفوز، الأعداء، الكومبو، الصناديق، والكروت)، وأحسن ليلة لكل بطل بتدخل الترتيب. الزرار في الشاشة الأولى، والأسبوع بيبدأ كل سبت. لازم {تكون داخل|تكوني داخلة} بحساب جوجل عشان اسمك يظهر.'
+  ],fix:[]},
   {v:'5.10',d:'9 أكتوبر',add:[
     'لو اللعبة اتفتحت مرتين (تابتين أو موبايلين بنفس الحساب)، القديمة بتقف وتقولك، عشان ما يبقاش في نسختين من {بطلك|بطلتك} بيتلخبطوا. {تقدر|تقدري} {ترجع|ترجعي} تلعب من أي واحدة بدوسة.'
   ],fix:[
@@ -18764,6 +18767,80 @@ async function fbResume(){if(!FB.user||FB.locked)return;let C=null;try{C=await f
 #fbLock{position:fixed;inset:0;z-index:99990;background:#05070cf0;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}
 .fbl-box{max-width:360px;width:100%;background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;text-align:center}
 .fbl-ic{font-size:34px;color:var(--gold2)}.fbl-box b{font-size:18px;color:var(--gold2)}.fbl-box p{margin:0;font-size:14px;line-height:1.8;color:var(--ink)}.fbl-box .btn{margin:0;min-height:48px}`;document.head.appendChild(st)}
+/* ---------- weekly leaderboard (online stage 2) ----------
+   every night that ends (won or lost) gets a score; each hero keeps its best of the week.
+   signed-in players send it to lb/{week}/s/{uid}_{heroId}; anyone can read the top 20.
+   the week starts on Saturday. */
+const LB_TOP=20;
+const lbWeek=()=>'w'+Math.floor((Date.now()/86400000-2)/7);
+const lbLeft=()=>{const d=Date.now()/86400000-2,end=(Math.floor(d/7)+1)*7;return Math.max(1,Math.ceil(end-d))};
+const lbId=h=>{if(!h.lbId)h.lbId=Math.random().toString(36).slice(2,10);return h.lbId};
+const LB_ICO=`<svg viewBox="0 0 24 24" width="20" height="20" style="flex:none;vertical-align:-4px"><path d="M7 3h10v3a5 5 0 0 1-10 0z" fill="#f3c14d" stroke="#8a5a1a" stroke-width="1"/><path d="M7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3" fill="none" stroke="#f3c14d" stroke-width="1.6"/><path d="M10 11h4v4h-4zM8 18h8v3H8z" fill="#c9962e"/></svg>`;
+
+/* the score of one night */
+function lbScore(o){return Math.max(0,Math.round((o.stars||0)*400+(o.won?300:0)+(o.kills||0)*25+(o.combo||0)*12+(o.chests||0)*20+(o.cards||0)*10))}
+function lbNote(h,o){if(!h)return 0;const s=lbScore(o),w=lbWeek();
+  if(!h.lb||h.lb.w!==w)h.lb={w,best:0,sent:0};
+  const better=s>h.lb.best;if(better){h.lb.best=s;h.lb.adv=o.adv||'';h.lb.sent=0;saveHero()}
+  lbSend(h);return {s,better}}
+async function lbSend(h){if(!h||!h.lb||h.lb.sent||!h.lb.best||h.lb.w!==lbWeek())return;
+  if(!FB.user){let flag=0;try{flag=localStorage.getItem(FB_FLAG)==='1'}catch(e){}if(!flag)return;try{await fbLoad()}catch(e){return}if(!FB.user)return}
+  try{await FB.db.collection('lb').doc(h.lb.w).collection('s').doc(FB.user.uid+'_'+lbId(h)).set({
+      n:String(h.name||'').slice(0,20),c:String(h.cls||'').slice(0,12),g:h.g==='f'?'f':'m',l:Math.max(1,Math.min(999,h.lvl|0)),
+      s:Math.min(100000,h.lb.best|0),a:String(h.lb.adv||'').slice(0,24),t:window.firebase.firestore.FieldValue.serverTimestamp()});
+    h.lb.sent=1;saveHero()}catch(e){console.warn('lb send: '+(e&&e.code||e))}}
+/* send what was left when a player signs in later */
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);HEROES.filter(Boolean).forEach(h=>lbSend(h));return R}}
+
+/* nights that end: the win screen and the fall screen */
+{const e0=SCREENS.end;SCREENS.end=function(){const r=e0.apply(this,arguments),h=S.hero,E=S.endRes;
+  if(!S.lost&&E&&E.N&&h){if(E.lbS==null){const run=E.run||{};const x=lbNote(h,{won:1,stars:E.ns,kills:run.kills,combo:run.maxCombo,chests:run.chests,cards:E.N.cards,adv:E.adv});E.lbS=x.s;E.lbB=x.better}
+    lbLine(E.lbS,E.lbB)}
+  return r}}
+{const l0=N_lossScreen;N_lossScreen=function(){const N=S.night,h=S.hero,had=N&&N.lossRes;const r=l0.apply(this,arguments);
+  const R=N&&N.lossRes;if(R&&h){if(R.lbS==null){const run=S.run||{};const x=lbNote(h,{won:0,kills:run.kills,combo:run.maxCombo,chests:run.chests,cards:R.cards,adv:N_advOf(N).id});R.lbS=x.s;R.lbB=x.better}
+    lbLine(R.lbS,R.lbB)}
+  return r}}
+function lbLine(s,better){const at=view.querySelector('.nsum')||view.querySelector('.nrep')||view.querySelector('.report');if(!at||view.querySelector('.lb-line'))return;
+  const h=S.hero,on=!!FB.user;
+  at.insertAdjacentHTML('afterend',`<button class="card lb-line" id="lbGo">${LB_ICO}<span><b>${(s)} نقطة</b> الليلة دي${better?` · <i>${G('أحسن ليلة ليك','أحسن ليلة ليكي')} الأسبوع ده</i>`:` · ${G('أحسن ليك','أحسن ليكي')} ${(h.lb.best)}`}</span><small>${on?'الترتيب ›':G('ادخل بحسابك عشان تظهر في الترتيب ›','ادخلي بحسابك عشان تظهري في الترتيب ›')}</small></button>`);
+  const b=$('#lbGo');if(b)b.onclick=()=>{LB.from=S.screen;S.screen='lb';render()}}
+
+/* the board */
+const LB={from:'title',rows:null,err:'',w:''};
+async function lbFetch(){const w=lbWeek();LB.w=w;LB.err='';LB.rows=null;
+  try{await fbLoad();const q=await FB.db.collection('lb').doc(w).collection('s').orderBy('s','desc').limit(LB_TOP).get();
+    LB.rows=q.docs.map(d=>Object.assign({id:d.id},d.data()))}
+  catch(e){LB.err=e&&e.code==='permission-denied'?'الترتيب لسه بيتجهز.':'مش قادر أوصل للترتيب دلوقتي. اتأكد إن فيه نت.'}
+  if(S.screen==='lb')render()}
+SCREENS.lb=function(){view.scrollTop=0;const h=S.hero,mine=(FB.user?FB.user.uid+'_':'#');
+  if(LB.w!==lbWeek()||(!LB.rows&&!LB.err&&!LB.busy)){LB.busy=1;lbFetch().finally(()=>LB.busy=0)}
+  const me=h&&h.lb&&h.lb.w===lbWeek()?h.lb.best:0,left=lbLeft();
+  const row=(r,i)=>{const own=r.id.indexOf(mine)===0,cls=r.g==='f'?(CLS_F[r.c]||r.c):r.c,med=['#f3c14d','#d8dde4','#d08a4e'][i]||'';
+    return `<div class="lb-r${own?' me':''}"><span class="lb-n"${med?` style="background:${med};color:#1a1208"`:''}>${i+1}</span><span class="lb-w"><b>${esc(r.n||'—')}</b><small>${esc(cls||'')} · مستوى ${r.l|0}</small></span><b class="lb-s">${(r.s|0)}</b></div>`};
+  const body=LB.err?`<div class="nnote">${LB.err}</div>`:!LB.rows?`<div class="nnote">بيحمّل…</div>`:!LB.rows.length?`<div class="nnote">لسه محدش لعب الأسبوع ده. ${G('خلّص','خلّصي')} ليلة ${G('وابقى','وابقي')} أول اسم.</div>`:LB.rows.map(row).join('');
+  view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>ترتيب الأسبوع</h2><span style="width:40px"></span></div>
+  <div class="col">
+    <div class="card lb-top">${LB_ICO}<div><b>${left===1?'آخر يوم في الأسبوع':`الأسبوع بيخلص بعد ${left===2?'يومين':(left)+' أيام'}`}</b><small>كل ليلة ${G('بتخلّصها','بتخلّصيها')} (${G('كسبت','كسبتي')} أو ${G('وقعت','وقعتي')}) ليها نقط. أحسن ليلة لكل بطل هي اللي بتتحسب.</small></div></div>
+    ${h?`<div class="card lb-mine"><span>${G('أحسن ليلة ليك','أحسن ليلة ليكي')} الأسبوع ده</span><b>${me?(me)+' نقطة':'لسه'}</b>${FB.user?'':`<small>${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات عشان اسمك يظهر هنا.</small>`}</div>`:''}
+    <div class="card lb-list">${body}</div>
+    <div class="lb-how">النقط: النجوم، الفوز، الأعداء اللي وقعوا، أعلى كومبو، الصناديق، وعدد الكروت.</div>
+  </div>`;
+  $('#back').onclick=()=>{S.screen=LB.from||'title';render()}};
+/* a button on the title screen */
+{const t0=SCREENS.title;SCREENS.title=function(){t0();const n=$('#bNews');if(!n||$('#bLb'))return;
+  const b=document.createElement('button');b.className='btn ghost small';b.id='bLb';b.innerHTML=`${LB_ICO} ترتيب الأسبوع`;
+  n.parentNode.insertBefore(b,n);b.onclick=()=>{LB.from='title';LB.rows=null;LB.err='';S.screen='lb';render()}}}
+{const st=document.createElement('style');st.textContent=`
+.lb-line{display:flex;align-items:center;gap:8px;width:100%;margin-top:10px;text-align:right;color:var(--ink);font:inherit;cursor:pointer;flex-wrap:wrap;min-height:44px}
+.lb-line span{flex:1;min-width:150px}.lb-line i{font-style:normal;color:#a6e3a0}.lb-line small{color:var(--gold2);font-size:13px}
+.lb-top{display:flex;gap:10px;align-items:flex-start}.lb-top b{display:block;color:var(--gold2)}.lb-top small{color:var(--mute);font-size:13px;line-height:1.6}
+.lb-mine{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px}.lb-mine b{color:var(--gold2)}.lb-mine small{width:100%;color:var(--mute);font-size:13px}
+.lb-list{padding:6px}.lb-r{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.06)}.lb-r:last-child{border:0}
+.lb-r.me{background:rgba(243,193,77,.12);border-radius:10px}.lb-n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-weight:700;flex:none}
+.lb-w{flex:1;min-width:0}.lb-w b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb-w small{color:var(--mute);font-size:12px}.lb-s{color:var(--gold2)}
+.lb-how{color:var(--mute);font-size:12px;margin-top:8px;text-align:center}
+#bLb{display:flex;align-items:center;justify-content:center;gap:6px}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
