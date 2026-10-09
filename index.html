@@ -1528,7 +1528,7 @@ const HELP=[
   {g:'بطلك',h:'المستوى والتخصص',b:()=>`كل مستوى جديد بيزوّد صحتك وصفة من صفات تخصصك:<br><b>محارب:</b> قوة وتحمّل، وصحته بتزيد 3.<br><b>حرامي:</b> خفة وحضور، وفرصة ضربة المعلّم بتزيد 2% كمان.<br><b>ساحر:</b> ذكاء وحكمة، وطاقته بتبقى 5 في المستوى 4.<br><b>معالج:</b> حكمة وتحمّل، وطاقته بتبقى 5 في المستوى 4.<br>النقط اللي ${G('خدتها','خدتيها')} من المستويات بتنوّر دهبي في صفحة ${G('بطلك','بطلتك')}.`},
   {g:'بطلك',h:'الألقاب',p:()=>PF_HPIC.titles(),b:()=>`لما ${G('تعمل','تعملي')} حاجة كتير، الناس ${G('بتديك','بتديكي')} <b>لقب</b>. مثلاً لو ${G('اصطدت','اصطدتي')} 30 سمكة ${G('هتبقى','هتبقي')} «${G('صياد الترعة','صيادة الترعة')}».<br>كل لقب ليه ميزة صغيرة، والمزايا كلها شغالة مع بعض وبتفضل ${G('معاك','معاكي')} على طول. ${G('واختار','واختاري')} لقب واحد يظهر تحت اسمك من صفحة ${G('بطلك','بطلتك')} تحت «ألقابي».`},
   {g:'بطلك',h:'صفات مخفية',p:()=>PF_HPIC.hidden(),b:()=>`${G('بطلك فيه','بطلتك فيها')} حاجات مش باينة: <b>صفات مخفية</b>. مش مكتوبة في أي حتة لحد ما تظهر.<br>بتظهر لوحدها لما ${G('تعمل','تعملي')} حاجات معينة، ومن ساعتها بتفضل ${G('معاك','معاكي')} وتساعدك.<br>والناس في البلد ساعات بيرمولك كلمة كده عنها.. ${G('اسمع','اسمعي')} كلامهم كويس.`},
-  {g:'بطلك',h:'الصناديق والغنايم',p:()=>chestArt(false)+RARE.map(r=>`<span class="chance" style="background:${r.c}22;color:${r.c}">${r.n}</span>`).join(''),b:()=>`الوحوش ساعات بتوقّع صندوق. ${G('دوس','دوسي')} عليه ${G('وافتحه','وافتحيه')}. اللون بيقولك الحاجة نادرة قد إيه: عادي، كويس، نادر، أسطوري.`},
+  {g:'بطلك',h:'الصناديق والغنايم',p:()=>chestArt(false)+RARE.slice(0,4).map(r=>`<span class="chance" style="background:${r.c}22;color:${r.c}">${r.n}</span>`).join(''),b:()=>`الوحوش ساعات بتوقّع صندوق. ${G('دوس','دوسي')} عليه ${G('وافتحه','وافتحيه')}. اللون بيقولك الحاجة نادرة قد إيه: عادي، كويس، نادر، أسطوري.`},
   {g:'بطلك',h:'الإنجازات',b:()=>`لما ${G('تعمل','تعملي')} حاجة مميزة (زي أول ضربة حظ، أو تهدّي النداهة من غير قتال) بيظهرلك «إنجاز جديد» ${G('وبتاخد','وبتاخدي')} فلوس. كلها مكتوبة في صفحة ${G('بطلك','بطلتك')} تحت «إنجازات».`},
   {g:'بطلك',h:'النجوم وهدية النهارده',p:()=>`<svg viewBox="0 0 24 24" width="40"><path d="M12 2l3 6.9 7.5.6-5.7 5 1.8 7.4L12 18l-6.6 3.9 1.8-7.4-5.7-5 7.5-.6z" fill="#f3c14d"/></svg>`.repeat(3)+chestArt(false),b:()=>`في آخر المغامرة ${G('بتاخد','بتاخدي')} لحد <b>3 نجوم</b>: الشباب يرجعوا كلهم، ما ${G('تقعش','تقعيش')} ولا مرة، ${G('وتجيب','وتجيبي')} ضربة حظ أو 3 ضربات ورا بعض. ${G('حاول','حاولي')} ${G('تكسر','تكسري')} رقمك.<br>وكل يوم فيه <b>صندوق هدية</b> ببلاش في الصفحة الأولى.`},
   {g:'بطلك',h:'أكتر من بطل',b:()=>`من «أبطالي» ${G('تقدر تعمل','تقدري تعملي')} لحد 3 أبطال بتخصصات مختلفة، ${G('وتبدّل','وتبدّلي')} بينهم في أي وقت. كل واحد ليه مستواه وفلوسه وشنطته وعدّته.`}
@@ -4352,6 +4352,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.21',d:'9 أكتوبر',add:[
+    '8 طباع جديدة عند أم عطية، منهم «{إيده|إيدها} خفيفة»: في أي اختيار فيه سرقة {معاك|معاكي} ميزة، والفلوس أكتر 30%، والمطاردة أقل بالنص.',
+    'درجة جديدة فوق الدهبي: الطبع الياقوتي (0.4%)، ومضمون في خلال 60 رمية. الطبع الياقوتي فيه 3 طباع مع بعض.',
+    'خانة طبع تانية في المستوى 5 وتالتة في المستوى 10: {تقدر تشغّل|تقدري تشغّلي} فيها أي طبع {شفته|شفتيه} قبل كده، من شاشة أم عطية.'],fix:[]},
   {v:'5.20',d:'9 أكتوبر',add:[
     'الليلة اللايف: صاحب الليلة {يقدر يطرد|تقدر تطرد} أي حد قبل ما تبدأ، أو {يخلي|تخلي} حد تاني صاحب الليلة.',
     'لو حد النت فصل عنده في نص الليلة، رفيقه بيلعب لوحده من غير ما الكل يستنى، ولما يفتح تاني يدوس «ارجع لليلة» ويكمّل. ولو صاحب الليلة نفسه قفل، {بيكمّل|بتكمّل} الليلة من «كمّل الليلة» وصحابه يرجعوا معاه.'
@@ -18499,7 +18503,7 @@ function burAdd(k,why){const B=burOf();if(!B)return '';const was=B[k]||0;B[k]=Ma
 {const ao=applyOutcome;applyOutcome=function(o,tier,c){
   const R=ao.apply(this,arguments);
   try{if(o&&typeof o==='object'&&N_on()&&!o.noBur){let x='';
-    if((o.ach==='thief'||(c&&c.stat&&burThief(c)))&&Math.random()<(tier==='fail'?(S.hero.cls==='حرامي'?.3:.5):S.hero.cls==='حرامي'?0:tier==='part'?.3:.1))x+=burAdd('hunted',tier==='full'?'حد شافك {وانت بتسرق|وانتي بتسرقي} وبلّغ.':'اللي {سرقته|سرقتيه} عرف وبعت وراك ناسه.');
+    if((o.ach==='thief'||(c&&c.stat&&burThief(c)))&&Math.random()<(tier==='fail'?(S.hero.cls==='حرامي'?.3:.5):S.hero.cls==='حرامي'?0:tier==='part'?.3:.1)*(H_natOn('khafif')?.5:1))x+=burAdd('hunted',tier==='full'?'حد شافك {وانت بتسرق|وانتي بتسرقي} وبلّغ.':'اللي {سرقته|سرقتيه} عرف وبعت وراك ناسه.');
     const r=o.rep&&o.rep[0];
     if(!x&&(r<=-15&&Math.random()<.5||r<=-10&&r>-15&&Math.random()<.15))x+=burAdd('cursed','اللي {عملته|عملتيه} ده ليه تمن، والليلة مش ناسياه.');
     if(tier==='fail'&&o.hp<=-3)x+=burAdd('wounded','الجرح ده مش هيقفل لوحده.');
@@ -19612,7 +19616,7 @@ const H_TAB=[
 const H_TABS={};H_TAB.forEach(t=>H_TABS[t.id]=t);
 const H_tabOf=h=>h&&h.tab&&H_TABS[h.tab]||null;
 const H_tabN=(t,h)=>((h||S.hero)||{}).g==='f'?t.f:t.m;
-const H_natOn=id=>{const h=S.hero;return !!(h&&h.tab===id)};
+const H_natOn=id=>H_hasTab(S.hero,id);
 const H_chip=()=>{const t=H_tabOf(S.hero);return t?`<span class="h-tch" style="--rc:${RARE[t.r].c}">${H_tabN(t)}</span>`:''};
 /* the throw: the rarity with its pity counters, then a nature of that rarity (not the one you have, when there is another) */
 function H_rollTier(h,rn){const P=h.pity;P.b=(P.b||0)+1;P.g=(P.g||0)+1;let r;
@@ -19838,7 +19842,8 @@ const H_SPIRIT=/عفريت|عفاريت|الجن[ ،.]|جنّي|جنية|أرو�
 function H_spirit(c){if(c.H_sp==null){let s='';try{s=String(c.title||'')+String(c.teaser||'')+String(c.scene&&c.scene.text||'')}catch(e){}c.H_sp=c.type==='rare'||c.place==='rare'||H_SPIRIT.test(s)?1:0}return !!c.H_sp}
 function H_u(c,o){const N=S.night;if(N){(N.H_used=N.H_used||{})[c.id]=1;N_save()}return o}
 function H_back(id){return ()=>{const N=S.night;if(N){N.res=0;N.sub=null;N_save()}goto(id)}}
-function H_extra(c,a){if(!N_on()||S.night.card!==c.id||S.scene!==c.id)return null;const h=S.hero,t=h&&h.tab;if(!t)return null;
+function H_extra(c,a){for(const t of H_tabList(S.hero)){const r=H_extra1(c,a,t);if(r)return r}return null}
+function H_extra1(c,a,t){if(!N_on()||S.night.card!==c.id||S.scene!==c.id)return null;const h=S.hero;if(!t)return null;
   const U=S.night.H_used||{};if(U[c.id])return null;const ty=c.type,ch=H_chip(),act=(S.night.act||0);
   if(t==='lesan'&&ty==='people')return {t:'أكلّمهم بالراحة',sub:ch,stat:'حضور',adv:1,H:1,res:{
     full:()=>H_u(c,{t:'{اتكلمت|اتكلمتي} بهدوء وابتسامة، والكلام دخل القلب على طول. الدنيا هديت، {ومشيت|ومشيتي} وهما بيدعولك.',rep:[4,'كلامك الحلو'],xp:2,go:'next'}),
@@ -19948,14 +19953,14 @@ function H_luckAsk(){return new Promise(res=>{const app=$('#app');if(!app)return
     setTimeout(()=>{if(it.H_b){it.heal=f0;delete it.H_b}},50);const el=$('#meCard');if(el)setTimeout(()=>floatAt(el,H_tabN(H_TABS.batn)+'!','#f3d48f','',18),600);return ui.apply(this,arguments)}
   return ui.apply(this,arguments)}}
 /* «ضهره قوي»: one more of every thing in the bag */
-{const be=bagExtra;bagExtra=function(h,k){return be.apply(this,arguments)+(h&&h.tab==='dahr'&&k!=='amulet'?1:0)}}
+{const be=bagExtra;bagExtra=function(h,k){return be.apply(this,arguments)+(h&&H_hasTab(h,'dahr')&&k!=='amulet'?1:0)}}
 /* «ابن بلد»: prices 10% lower in the night's shops and in عم رمضان's market */
 {const po=priceOf;priceOf=function(e){const r=po.apply(this,arguments);if(r&&H_natOn('balad')&&r.price>0){r.price=Math.max(1,Math.round(r.price*.9));r.base=Math.max(1,Math.round(r.base*.9));r.extra=r.price-r.base;if(r.was)r.was=Math.round(r.was*.9)}return r}}
-{const mp=twMP;twMP=function(h,e){const r=mp.apply(this,arguments);if(r&&h&&h.tab==='balad'){const p=MAT[e.k].p;r.price=Math.max(p+1,Math.round(r.price*.9));if(r.was)r.was=Math.max(p+1,Math.round(r.was*.9))}return r}}
-{const sh=SCREENS.shop;if(sh)SCREENS.shop=function(){sh.apply(this,arguments);const h=S.hero;if(h&&h.tab==='balad'){const g=view.querySelector('.sgrid');if(g)g.insertAdjacentHTML('beforebegin',`<div class="repnote good">طبعك «${H_tabN(H_TABS.balad,h)}»: كل حاجة أرخص 10%</div>`)}}}
-{const sh0=shopHTML;shopHTML=function(){const s=sh0.apply(this,arguments),h=S.hero;if(!h||h.tab!=='balad')return s;const i=s.indexOf('</div>');
+{const mp=twMP;twMP=function(h,e){const r=mp.apply(this,arguments);if(r&&h&&H_hasTab(h,'balad')){const p=MAT[e.k].p;r.price=Math.max(p+1,Math.round(r.price*.9));if(r.was)r.was=Math.max(p+1,Math.round(r.was*.9))}return r}}
+{const sh=SCREENS.shop;if(sh)SCREENS.shop=function(){sh.apply(this,arguments);const h=S.hero;if(h&&H_hasTab(h,'balad')){const g=view.querySelector('.sgrid');if(g)g.insertAdjacentHTML('beforebegin',`<div class="repnote good">طبعك «${H_tabN(H_TABS.balad,h)}»: كل حاجة أرخص 10%</div>`)}}}
+{const sh0=shopHTML;shopHTML=function(){const s=sh0.apply(this,arguments),h=S.hero;if(!h||!H_hasTab(h,'balad'))return s;const i=s.indexOf('</div>');
   return i<0?s:s.slice(0,i+6)+`<div class="repnote good">طبعك «${H_tabN(H_TABS.balad,h)}»: كل حاجة أرخص 10%</div>`+s.slice(i+6)}}
-{const mk=SCREENS.market;if(mk)SCREENS.market=function(){mk.apply(this,arguments);const h=S.hero;if(h&&h.tab==='balad'){const n=view.querySelector('.tw-npc');if(n)n.insertAdjacentHTML('afterend',`<div class="tw-sm h-mk">طبعك «${H_tabN(H_TABS.balad,h)}»: السوق أرخص 10%</div>`)}}}
+{const mk=SCREENS.market;if(mk)SCREENS.market=function(){mk.apply(this,arguments);const h=S.hero;if(h&&H_hasTab(h,'balad')){const n=view.querySelector('.tw-npc');if(n)n.insertAdjacentHTML('afterend',`<div class="tw-sm h-mk">طبعك «${H_tabN(H_TABS.balad,h)}»: السوق أرخص 10%</div>`)}}}
 
 /* ---------- titles: a free throw with every new title, and a title for 100 حواديت ---------- */
 TITLES.push({id:'hakawi',m:'صاحب الحواديت',f:'صاحبة الحواديت',how:'{تجمع|تجمعي} 100 حدوتة',ok:(c,h)=>(h.hwAll||0)>=100,b:'حدوتتين زيادة في آخر كل ليلة'});
@@ -20089,9 +20094,9 @@ function H_wdAct(h){const P=h.tabPend,old=H_tabOf(h);
   return h.throws>0?`<button class="btn wd-go" id="wdGo"><span>ارميلي الودع يا أم عطية<small>${G('معاك','معاكي')} ${H_thN(h.throws)} ببلاش</small></span></button>`
     :`<button class="btn ghost wd-go off" id="wdGo"><span>مفيش رميات دلوقتي<small>${G('خلّص','خلّصي')} ليلة أو ${G('خد','خدي')} لقب جديد</small></span></button>`}
 function H_wdOdds(h){const P=h.pity,b=Math.max(1,10-(P.b||0)),g=Math.max(1,30-(P.g||0));
-  return `<div class="card wd-odds"><div class="hd">نسب الطبع</div><div class="wd-chs">${[0,1,2,3].map(r=>`<span style="--rc:${RARE[r].c}"><i></i>${H_RN[r]} ${H_ODDS[r]}%</span>`).join('')}</div>
+  return `<div class="card wd-odds"><div class="hd">نسب الطبع</div><div class="wd-chs">${[0,1,2,3,4].map(r=>`<span style="--rc:${RARE[r].c}"><i></i>${H_RN[r]} ${H_ODDS[r]}%</span>`).join('')}</div>
     <div class="tw-sm">الأزرق أو أحسن مضمون ${H_pityTxt(b)}. والدهبي مضمون ${H_pityTxt(g)}.</div></div>`}
-function H_wdList(h){return `<div class="tw-lbl">كل الطبايع <small>${G('شفت','شفتي')} ${H_TAB.filter(t=>h.tabs[t.id]).length} من ${H_TAB.length}</small></div>`+[3,2,1,0].map(r=>`<div class="wd-grp" style="--rc:${RARE[r].c}"><div class="gh">${H_RN[r]} · ${H_ODDS[r]}%</div>${H_TAB.filter(t=>t.r===r).map(t=>`<div class="wd-t${h.tab===t.id?' cur':''}"><b>${H_tabN(t,h)}${h.tab===t.id?` <em>طبعك</em>`:h.tabs[t.id]?' <i>✓</i>':''}</b><small>${T(t.d)}</small></div>`).join('')}</div>`).join('')}
+function H_wdList(h){return `<div class="tw-lbl">كل الطبايع <small>${G('شفت','شفتي')} ${H_TAB.filter(t=>h.tabs[t.id]).length} من ${H_TAB.length}</small></div>`+[4,3,2,1,0].map(r=>`<div class="wd-grp" style="--rc:${RARE[r].c}"><div class="gh">${H_RN[r]} · ${H_ODDS[r]}%</div>${H_TAB.filter(t=>t.r===r).map(t=>`<div class="wd-t${h.tab===t.id?' cur':''}"><b>${H_tabN(t,h)}${h.tab===t.id?` <em>طبعك</em>`:h.tabs[t.id]?' <i>✓</i>':''}</b><small>${T(t.d)}</small></div>`).join('')}</div>`).join('')}
 SCREENS.wada=function(){const h=H_h(S.hero);if(!h){S.screen='title';return render()}if(!h.H_cWd){h.H_cWd=1;saveHero()}
   const P=h.tabPend,cur=H_tabOf(h),shown=P?H_TABS[P.id]:cur,opens=P?P.o:null;
   view.innerHTML=`${twTop('أم عطية الودعية')}<div class="tw wd">
@@ -20124,7 +20129,7 @@ async function H_throw(){const h=H_h(S.hero);if(!h||H_WD.busy||h.tabPend)return;
       await sleep(i===6?200:170)}
     await sleep(500);const fr=$('#wdFront');if(fr)fr.innerHTML=H_tabCard(t,h,'');if(card){card.classList.add('up');SFX.whoosh&&SFX.whoosh()}
     await sleep(560);SFX.reveal(t.r);if(card)pop(card,[RARE[t.r].c,'#ffffff',RARE[t.r].c],20+t.r*20);
-    if(t.r>=2){flash(RARE[t.r].c);shake();band(`طبع ${H_RN[t.r]}`,H_tabN(t,h),T(t.d),{color:t.r===2?'blue':undefined,dur:2600,sound:t.r===3?SFX.fanfare:false})}
+    if(t.r>=2){flash(RARE[t.r].c);shake();band(`طبع ${H_RN[t.r]}`,H_tabN(t,h),T(t.d),{color:t.r===2?'blue':t.r===4?'red':undefined,dur:t.r===4?3200:2600,sound:t.r>=3?SFX.fanfare:false})}
     await sleep(300)}finally{H_WD.busy=0}
   if(S.screen!=='wada')return;
   if(P.first){h.tabPend=null;saveHero()}
@@ -20226,6 +20231,77 @@ Object.assign(SFX,{
 .h-mk{text-align:center;color:#a6e3a0;font-weight:700;margin-top:-4px}
 @media (prefers-reduced-motion:reduce){.wd-s.in,.wd-in{transition:none}.wd-tray.lv3 .wd-glow{animation:none}}
 `;document.head.appendChild(st)}
+/* ---------- more natures (طباع), a rarity above gold, and up to 3 natures at once ----------
+   slots: 1, a 2nd at level 5, a 3rd at level 10. The 1st is the one أم عطية throws (h.tab);
+   the others are picked from any nature already seen (h.tabX). A «ياقوتي» nature carries three others inside it (inc). */
+RARE.push({n:'ياقوتي',c:'#ff4f7b'});
+H_RN.push('ياقوتي');H_ODDS[3]=1.6;H_ODDS.push(.4);
+const H_NEW=[
+  {id:'sahran',r:0,m:'سهران',f:'سهرانة',d:'{بتبدأ|بتبدأي} كل قتال بطاقة زيادة.'},
+  {id:'gada',r:0,m:'جدع',f:'جدعة',d:'رفيقك {بياخد|بياخد} 3 صحة زيادة في أول كل قتال، عشان {انت|انتي} سنده.'},
+  {id:'khafif',r:1,m:'إيده خفيفة',f:'إيدها خفيفة',d:'في أي اختيار فيه سرقة {معاك|معاكي} ميزة، و{بتطلع|بتطلعي} منها بفلوس أكتر 30%، ونادرًا ما حد {بيقفشك|بيقفشك}.'},
+  {id:'shater',r:1,m:'صنايعي شاطر',f:'صنايعية شاطرة',d:'الحاجات اللي {بتعملها|بتعمليها} عند الحداد والخياط والطباخة جودتها أعلى شوية.'},
+  {id:'nemr',r:2,m:'قلبه نمر',f:'قلبها نمر',d:'فرصة ضربة المعلّم أكتر 6% في كل ضربة.'},
+  {id:'nagm',r:3,m:'نجم',f:'نجمة',d:'كل الخبرة اللي {بتاخدها|بتاخديها} أكتر 15%.'},
+  {id:'sultan',r:4,m:'سلطان',f:'سلطانة',inc:['nawm','nashef','ein'],d:'طبع ياقوتي: فيه نومه خفيف وإيده ناشفة وعينه صايبة مع بعض.'},
+  {id:'mabrook',r:4,m:'مبروك',f:'مبروكة',inc:['lucky','baraka','qalb'],d:'طبع ياقوتي: فيه محظوظ وإيده بركة وقلبه جامد مع بعض.'}];
+H_NEW.forEach(t=>{if(!H_TABS[t.id]){H_TAB.push(t);H_TABS[t.id]=t}});
+H_TABS.sultan.d='طبع ياقوتي: فيه {«نومه خفيف» و«إيده ناشفة» و«عينه صايبة»|«نومها خفيف» و«إيدها ناشفة» و«عينها صايبة»} مع بعض.';
+H_TABS.mabrook.d='طبع ياقوتي: فيه {«محظوظ» و«إيده بركة» و«قلبه جامد»|«محظوظة» و«إيدها بركة» و«قلبها جامد»} مع بعض.';
+/* the ruby tier: 0.4% on any throw; a ruby is sure within 60 throws */
+{const rt=H_rollTier;H_rollTier=function(h,rn){const P=h.pity;P.y=(P.y||0)+1;let r=rt.apply(this,arguments);
+  if(P.y>=60||Math.random()*100<H_ODDS[4])r=4;if(r===4){P.y=0;P.g=0;P.b=0}return r}}
+{const wo=H_wdOdds;H_wdOdds=function(h){const y=Math.max(1,60-((h.pity||{}).y||0));
+  return wo.apply(this,arguments).replace('</div></div>',` والياقوتي مضمون ${H_pityTxt(y)}.</div></div>`)}}
+
+/* slots */
+const H_SLOTS=h=>1+((h&&h.lvl||1)>=5?1:0)+((h&&h.lvl||1)>=10?1:0);
+function H_tabList(h){if(!h)return [];const L=[];if(h.tab)L.push(h.tab);(h.tabX||[]).slice(0,H_SLOTS(h)-1).forEach(id=>{if(id&&H_TABS[id]&&!L.includes(id))L.push(id)});return L}
+function H_hasTab(h,id){if(!h)return false;const L=H_tabList(h);return L.includes(id)||L.some(x=>H_TABS[x]&&(H_TABS[x].inc||[]).includes(id))}
+
+/* the new natures' effects */
+{const sc=startCombat;startCombat=function(foes,win,tut){const r=sc.apply(this,arguments),C=S.combat,h=S.hero;
+  if(!tut&&N_on()&&C&&!C.H_s2){C.H_s2=1;const add=[];
+    if(H_natOn('sahran')&&h.energy<MXE(h)){h.energy=Math.min(MXE(h),h.energy+1);add.push(G('سهران: طاقة زيادة.','سهرانة: طاقة زيادة.'))}
+    const c=S.comp;if(H_natOn('gada')&&c&&c.hp>0&&c.hp<c.max){c.hp=Math.min(c.max,c.hp+3);add.push(`${G('جدع','جدعة')}: ${c.name} ${CG('واخد','واخدة')} 3 صحة زيادة.`)}
+    if(add.length){add.forEach(t=>C.log.push({t,k:'good'}));if(S.screen==='combat')combat()}}
+  return r}}
+let H_curCh=null;
+{const ch0=choose;choose=async function(c){H_curCh=c;try{return await ch0.apply(this,arguments)}finally{H_curCh=null}}}
+{const rc=rollCheck;rollCheck=function(stat,opt){opt=opt||{};
+  if(H_curCh&&N_on()&&H_natOn('khafif')&&typeof burThief==='function'&&burThief(H_curCh)&&!opt.adv){opt=Object.assign({},opt,{adv:true})}
+  return rc.call(this,stat,opt)}}
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){
+  if(o&&typeof o==='object'&&o.money>0&&N_on()&&H_natOn('khafif')&&(o.ach==='thief'||(c&&typeof burThief==='function'&&burThief(c)))){o=Object.assign({},o,{money:Math.round(o.money*1.3)});arguments[0]=o}
+  return ao.apply(this,arguments)}}
+{const cq=craftQ;craftQ=function(h,at,score){if(H_hasTab(h,'shater'))arguments[2]=Math.min(1,(+score||0)+.06);return cq.apply(this,arguments)}}
+{const cc=critChance;critChance=function(h){return cc.apply(this,arguments)+(H_hasTab(h,'nemr')?.06:0)}}
+{const gx=gainXP;gainXP=function(n){if(H_natOn('nagm')&&n>0)n=Math.round(n*1.15);return gx.call(this,n)}}
+
+/* أم عطية's screen: the slots */
+function H_slotHTML(h){const n=H_SLOTS(h),L=H_tabList(h),seen=H_TAB.filter(t=>h.tabs&&h.tabs[t.id]);
+  const one=i=>{const id=i===0?h.tab:(h.tabX||[])[i-1],t=id&&H_TABS[id];
+    if(i>=n)return `<div class="hs-s off"><b>خانة ${i+1}</b><small>بتفتح في المستوى ${i===1?5:10}</small></div>`;
+    if(i===0)return `<div class="hs-s" style="--rc:${t?RARE[t.r].c:'#888'}"><b>${t?H_tabN(t,h):'لسه'}</b><small>من رمية الودع</small></div>`;
+    return `<button class="hs-s pick" data-hs="${i}" style="--rc:${t?RARE[t.r].c:'#888'}"><b>${t?H_tabN(t,h):G('اختار طبع','اختاري طبع')}</b><small>${t?G('دوس عشان تغيّره','دوسي عشان تغيّريه'):'من الطباع اللي '+G('شفتها','شفتيها')}</small></button>`};
+  let pick='';if(H_WD2.slot){const i=H_WD2.slot,cur=(h.tabX||[])[i-1];
+    const opts=seen.filter(t=>t.id!==h.tab&&(t.id===cur||!L.includes(t.id)));
+    pick=`<div class="hs-pk">${opts.length?opts.map(t=>`<button class="hs-o${t.id===cur?' on':''}" data-hso="${t.id}" style="--rc:${RARE[t.r].c}"><b>${H_tabN(t,h)}</b><small>${T(t.d)}</small></button>`).join(''):`<div class="tw-sm">لسه ما ${G('شفتش','شفتيش')} طباع تانية. كل رمية ودع بتوريك طبع جديد.</div>`}
+      ${cur?`<button class="btn ghost" data-hso="">${G('فضّي','فضّي')} الخانة</button>`:''}</div>`}
+  return `<div class="card hs-box"><div class="hd">طباعك الشغالة <small>${L.length} من ${n}</small></div><div class="hs-row">${[0,1,2].map(one).join('')}</div>${pick}</div>`}
+const H_WD2={slot:0};
+{const w0=SCREENS.wada;SCREENS.wada=function(){w0.apply(this,arguments);const h=S.hero,od=view.querySelector('.wd-odds');if(!h||!od)return;
+  od.insertAdjacentHTML('beforebegin',H_slotHTML(h));
+  view.querySelectorAll('[data-hs]').forEach(b=>b.onclick=()=>{const i=+b.dataset.hs;H_WD2.slot=H_WD2.slot===i?0:i;SFX.page&&SFX.page();render()});
+  view.querySelectorAll('[data-hso]').forEach(b=>b.onclick=()=>{const i=H_WD2.slot;if(!i)return;h.tabX=(h.tabX||[]).slice(0,2);while(h.tabX.length<i-1)h.tabX.push('');
+    h.tabX[i-1]=b.dataset.hso;H_WD2.slot=0;saveHero();SFX.good&&SFX.good();render()})}}
+{const st=document.createElement('style');st.textContent=`
+.hs-box .hd{font-weight:800;margin-bottom:8px}.hs-box .hd small{color:var(--mute);font-weight:400}
+.hs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.hs-s{min-height:64px;border-radius:12px;border:1.5px solid var(--rc,#555);background:rgba(255,255,255,.04);padding:6px;text-align:center;color:var(--ink);font:inherit;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.hs-s b{color:var(--rc);font-size:14px;line-height:1.3}.hs-s small{color:var(--mute);font-size:11px}.hs-s.off{opacity:.5;border-style:dashed;--rc:#777}.hs-s.pick{cursor:pointer}
+.hs-pk{display:flex;flex-direction:column;gap:6px;margin-top:10px}.hs-o{text-align:right;border-radius:12px;border:1.5px solid var(--rc);background:rgba(255,255,255,.04);padding:8px 10px;color:var(--ink);font:inherit;min-height:44px}
+.hs-o b{color:var(--rc);display:block}.hs-o small{color:var(--mute);font-size:12px}.hs-o.on{background:rgba(255,255,255,.1)}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
