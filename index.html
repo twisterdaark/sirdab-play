@@ -4357,6 +4357,12 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.41',d:'9 أكتوبر',add:[
+    'عم شاكر عنده 5 حاجات جديدة ليها تمن: «دم حامي» (ضربتك أجمد بس صحتك أقل)، «جلد تخين» (الوحوش بتوجع أقل بس ضربتك أضعف)، «عين طمعانة» (فلوس الكروت ضعف بس مفيش راحة)، «سهران» (حواديت أكتر بس الوحوش أتقل)، و«نذر» (لو {كملت|كملتي} الحواديت ×3، ولو {وقعت|وقعتي} {تخسر|تخسري} الحواديت ونص فلوسك).'
+  ],fix:[
+    'الحكايات كلها بقت جوه المغامرات ببلاش لكل الناس، وعم شاكر بقى يبيع الحاجات اللي ليها تمن بس.',
+    'اللي كان {اشترى|اشترت} حكايات قبل كده، عم شاكر {رجّعله|رجّعلها} الحواديت اللي {دفعها|دفعتها}.'
+  ]},
   {v:'5.40',d:'9 أكتوبر',add:[],fix:[
     'دوار العمدة كان بيقف ومش بيفتح لما تطلع مهمة «اعمل حتة عند الحداد أو الخياط»، وده كمان اللي كان بيخلّي الصندوق يفضل ظاهر بعد ما {تفتحه|تفتحيه}. اتصلح، والمهمات البايظة دي اتشالت لوحدها.'
   ]},
@@ -19783,6 +19789,7 @@ HELP.splice(Math.max(1,HELP.findIndex(t=>t.h==='الليلة: محطات وكر�
    h.H_food (food left at home by the «شنطة جاهزة» perk), h.hkSeen / h.H_cHk / h.H_cWd (badges and coach lines).
    On the night: S.night.perks [ids], S.night.H_used{card:1} (a nature choice used), S.night.H_luck (the reroll is used), S.night.H_end (the end-of-night rewards). */
 function H_h(h){h=h||S.hero;if(!h)return h;if(!(h.hw>=0))h.hw=0;if(!(h.hwAll>=0))h.hwAll=0;if(!h.hk)h.hk={};if(!h.perks)h.perks={};if(!h.perkOn)h.perkOn={};
+  if(!h.hkRf&&typeof H_STORY!=='undefined'){h.hkRf=1;let n=0;H_STORY.forEach(s=>{if(h.hk[s.k])n+=s.p});if(n){h.hw+=n;h.hkBack=n}}
   if(!(h.throws>=0))h.throws=0;if(!h.tabs)h.tabs={};if(!h.pity)h.pity={b:0,g:0};return h}
 const H_snd=k=>()=>{if(SFX[k])SFX[k]()};
 const H_food=()=>FOODS.find(k=>(S.hero.bag[k]||0)>0&&ITEMS[k]);
@@ -19842,7 +19849,7 @@ const H_pkIc=(id,w)=>`<svg viewBox="0 0 24 24" width="${w||30}" height="${w||30}
 
 /* ---------- new cards: «الحكايات». Each story is one card in one or more decks (a card id per deck); it is dealt only after عم شاكر unlocks it ---------- */
 const H_STORY=[];
-const H_has=k=>{const h=S.hero;return !!(h&&h.hk&&h.hk[k])};
+const H_has=k=>true;  /* 5.41: every story card is in the decks for everyone; h.hk only remembers what was bought before (refunded in H_h) */
 function H_story(k,p,places,mk){H_STORY.push({k,p,places,mk})}
 const H_beadK=()=>ITEMS.bead&&bagCap(S.hero,'bead')>0?'bead':'wax';
 function H_beadsCh(id,b){const h=S.hero,f=S.flags,o=b?0:1,bk=H_beadK(),pb=H_pr(bk==='bead'?35:20),ps=H_pr(25),nx=id+'_b';return [
@@ -20190,12 +20197,12 @@ function H_endShow(He){if(!He||view.querySelector('.h-endhw'))return;const a=vie
 /* ---------- the town: two tiles, the nature under the hero's name, coach lines the first time ---------- */
 const H_SHAKER={name:'عم شاكر',g:'m',cls:'ساحر',skin:'#9a6440',hairColor:'#d9d4cc',hair:'غطا راس',eyes:'#4a2a14',outfit:'#2e4a7a',age:'عجوز',beard:'دقن طويلة',mark:'من غير'};
 const H_ATTIA={name:'أم عطية',g:'f',cls:'معالج',skin:'#c68d62',hairColor:'#1b1412',hair:'غطا راس',eyes:'#4a2a14',outfit:'#3a3a3a',age:'عجوز',mark:'دقة على الدقن'};
-const H_canBuy=h=>H_STORY.some(s=>!h.hk[s.k]&&h.hw>=s.p)||H_PERKS.some(p=>!h.perks[p.id]&&h.hw>=p.p);
-TW_EXTRA.push(h=>{H_h(h);const all=H_STORY.every(s=>h.hk[s.k])&&H_PERKS.every(p=>h.perks[p.id]);
-  return {id:'hakawati',go:'hakawati',n:'الحكواتي',w:'عم شاكر',s:h.hw?`<span class="ok">${G('معاك','معاكي')} ${H_hwN(h.hw)}</span>`:all?'كل الحكايات اتفتحت':'حواديت بتفتح حكايات',bell:1,b:H_canBuy(h)&&h.hkSeen!==h.hw?'حكاية جديدة':''}});
+const H_canBuy=h=>H_PERKS.some(p=>!h.perks[p.id]&&h.hw>=p.p);
+TW_EXTRA.push(h=>{H_h(h);const all=H_PERKS.every(p=>h.perks[p.id]);
+  return {id:'hakawati',go:'hakawati',n:'الحكواتي',w:'عم شاكر',s:h.hw?`<span class="ok">${G('معاك','معاكي')} ${H_hwN(h.hw)}</span>`:all?'كل حاجة اتشرت':'حاجات ليها تمن',bell:1,b:H_canBuy(h)&&h.hkSeen!==h.hw?'حاجة جديدة':''}});
 TW_EXTRA.push(h=>{H_h(h);const t=H_tabOf(h);
   return {id:'wada',go:'wada',n:'الودعية',w:'أم عطية',s:h.throws?`<span class="new">${h.throws===1?'رمية':H_thN(h.throws)} ببلاش</span>`:t?`طبعك: <span style="color:${RARE[t.r].c}">${H_tabN(t,h)}</span>`:'الودع بيقول طبعك',bell:1,b:h.tabPend?G('طبع مستنيك','طبع مستنياكي'):h.throws?'رمية ببلاش':''}});
-function H_coach(h){if(h.hw>0&&!h.H_cHk)return `<button class="coach h-coach" data-go="hakawati"><span class="who">${portrait(H_SHAKER,'hkc')}</span><span>${G('معاك','معاكي')} <b>${H_hwN(h.hw)}</b> من لياليك. <b>عم شاكر الحكواتي</b> بياخد الحواديت ${G('ويفتحلك','ويفتحلكي')} حكايات جديدة في الليالي الجاية.</span></button>`;
+function H_coach(h){if(h.hw>0&&!h.H_cHk)return `<button class="coach h-coach" data-go="hakawati"><span class="who">${portrait(H_SHAKER,'hkc')}</span><span>${G('معاك','معاكي')} <b>${H_hwN(h.hw)}</b> من لياليك. <b>عم شاكر الحكواتي</b> بياخد الحواديت ${G('ويديك','ويديكي')} حاجات ليها ميزة وليها عيب.</span></button>`;
   if((h.throws>0||h.tabPend)&&!h.H_cWd)return `<button class="coach h-coach" data-go="wada"><span class="who">${portrait(H_ATTIA,'wdc')}</span><span>${G('معاك','معاكي')} <b>رمية ودع ببلاش</b>. <b>أم عطية الودعية</b> هترمي الودع ${G('وتقولك','وتقولك')} طبعك، والطبع بيفتح اختيارات جديدة في الكروت.</span></button>`;return ''}
 {const t0=SCREENS.town;SCREENS.town=function(){const h=S.hero;if(h){H_h(h);if(h.H_food&&!h.night){H_foodBack(h);saveHero()}}t0.apply(this,arguments);if(!h||S.screen!=='town')return;
   const r2=view.querySelector('.tw-me .r2'),t=H_tabOf(h);if(r2&&t)r2.insertAdjacentHTML('afterend',`<div class="h-tchip" style="--rc:${RARE[t.r].c}">طبعك: <b>${H_tabN(t,h)}</b></div>`);
@@ -20219,7 +20226,7 @@ function H_artWd(){const sh=[[56,58,0],[66,65,1],[78,55,1],[88,62,0],[72,60,0],[
 /* ---------- عم شاكر الحكواتي: حواديت open new cards and perks with a cost ---------- */
 const H_HK={tab:'cards',say:''};
 const H_TC={fight:'#ec7a66',trade:'#e0b25a',people:'#95d68f',test:'#86beff',shop:'#f4a55a',rest:'#6ad6c4',prep:'#bea8ff',rare:'#f3c14d'};
-function H_hkLines(h){const L=['كل ليلة {بتعدّيها|بتعدّيها} بتبقى حدوتة. {هاتلي|هاتيلي} حواديتك، وأنا أفتحلك حكايات ما {سمعتهاش|سمعتيهاش} قبل كده.',
+function H_hkLines(h){const L=['كل ليلة {بتعدّيها|بتعدّيها} بتبقى حدوتة. {هاتلي|هاتيلي} حواديتك، وأنا {أديك|أديكي} حاجة ليها تمن.',
   'الحدوتة ما بتضيعش {يا ابني|يا بنتي}. حتى لو {وقعت|وقعتي}، اللي {شفته|شفتيه} بيفضل {معاك|معاكي}.',
   'سمعت عن بياع الخرز؟ بيقولوا بيبيع بأي تمن.. حتى الحواديت.',
   'أنا قاعد على طرف القهوة دي من قبل ما صابر يتولد. صابر نفسه سمع حواديتي وهو عيل.',
@@ -20229,7 +20236,7 @@ function H_hkLines(h){const L=['كل ليلة {بتعدّيها|بتعدّيها
   'الحكاية الحلوة زي الطريق الحلو: ليها أول، ومحدش يعرف آخرها.'];
   if(!h.hw)L.push('لسه ما {جبتليش|جبتيليش} حواديت. {روح|روحي} {عيش|عيشي} ليلة {وتعالى|وتعالي}.');
   if(h.hw>=60)L.push('{ده انت شايل|ده انتي شايلة} حواديت كتير أوي! {اقعد|اقعدي}، القعدة طويلة.');
-  if(H_STORY.every(s=>h.hk[s.k]))L.push('{خلّصت|خلّصتي} حكاياتي كلها. دلوقتي الدور {عليك|عليكي} {تحكي|تحكي}.');
+  if(H_PERKS.every(p=>h.perks[p.id]))L.push('{خدت|خدتي} كل اللي عندي. دلوقتي الدور {عليك|عليكي} {تحكي|تحكي}.');
   return L}
 function H_sayHTML(who,h){const L=who==='hk'?H_hkLines(h):H_wdLines(h),k=who==='hk'?'say':'wsay';let t;do{t=pick(L)}while(L.length>1&&t===H_HK[k]);H_HK[k]=t;
   return `<button class="tw-npc h-say" id="hSay"><span class="av">${portrait(who==='hk'?H_SHAKER:H_ATTIA,who==='hk'?'hkS':'wdS')}</span><span class="bub"><b>${who==='hk'?'عم شاكر الحكواتي':'أم عطية الودعية'}</b>«${T(t)}»</span></button>`}
@@ -20244,14 +20251,13 @@ function H_hkRows(h){const cards=H_STORY.map(s=>{const got=!!h.hk[s.k],sh=h.hw<s
       ${got?`<span class="hk-ok">${G('معاك','معاكي')}</span>`:`<button class="tw-buy hk-buy${sh?' short':''}" data-hk="p:${p.id}">${p.p}<small>حدوتة</small></button>`}</div>`}).join('');
   return H_HK.tab==='perks'?perks:cards}
 SCREENS.hakawati=function(){const h=H_h(S.hero);if(!h){S.screen='title';return render()}if(h.hkSeen!==h.hw||!h.H_cHk){h.hkSeen=h.hw;h.H_cHk=1;saveHero()}
-  const tab=H_HK.tab,nc=H_STORY.filter(s=>!h.hk[s.k]).length,np=H_PERKS.filter(p=>!h.perks[p.id]).length;
+  H_HK.tab='perks';const tab=H_HK.tab,nc=H_STORY.filter(s=>!h.hk[s.k]).length,np=H_PERKS.filter(p=>!h.perks[p.id]).length;
   view.innerHTML=`${twTop('عم شاكر الحكواتي')}<div class="tw hk">
     <div class="hk-art">${H_artHk().replace("<svg ","<svg preserveAspectRatio=\"xMidYMid slice\" ")}<div class="fade"></div></div>
     ${H_sayHTML('hk',h)}
     <div class="card hk-cnt"><span class="ic">${H_BOOK}</span><div class="tx"><div class="r1"><b id="hkN">${h.hw}</b><span>${h.hw===1?'حدوتة':h.hw===2?'حدوتتين':h.hw<=10&&h.hw>=3?'حواديت':'حدوتة'} ${G('معاك','معاكي')}</span></div>
       <small>كل ليلة ${G('بتديك','بتديكي')} حواديت على قد المحطات اللي ${G('وصلتها','وصلتيها')}، حتى لو ${G('وقعت','وقعتي')}. الحواديت ما بتضيعش.</small><small>${G('جمعت','جمعتي')} ${h.hwAll} من الأول</small></div></div>
-    <div class="tw-tabs"><button data-tab="cards" class="${tab==='cards'?'on':''}">حكايات جديدة${nc?` <small>${nc}</small>`:''}</button><button data-tab="perks" class="${tab==='perks'?'on':''}">حاجات ليها تمن${np?` <small>${np}</small>`:''}</button></div>
-    <div class="tw-sm hk-hint">${tab==='cards'?`كل حكاية ${G('بتفتحها','بتفتحيها')} بتبقى كارت جديد في الكومة، ${G('وتقابله','وتقابليه')} في الليالي الجاية.`:`كل حاجة ليها ميزة وليها عيب. ${G('بتشتريها','بتشتريها')} مرة، ${G('وتشغّلها','وتشغّليها')} أو ${G('تطفيها','تطفيها')} قبل كل ليلة.`}</div>
+    <div class="tw-sm hk-hint">${false?`كل حكاية ${G('بتفتحها','بتفتحيها')} بتبقى كارت جديد في الكومة، ${G('وتقابله','وتقابليه')} في الليالي الجاية.`:`كل حاجة ليها ميزة وليها عيب. ${G('بتشتريها','بتشتريها')} مرة، ${G('وتشغّلها','وتشغّليها')} أو ${G('تطفيها','تطفيها')} قبل كل ليلة.`}</div>
     <div class="col hk-list">${H_hkRows(h)}</div></div>`;
   twBack();H_bindQ('الحواديت وعم شاكر');H_bindSay('hk',h);
   view.querySelectorAll('.tw-tabs [data-tab]').forEach(b=>b.onclick=()=>{H_HK.tab=b.dataset.tab;SFX.tick(700);twRender()});
@@ -20343,7 +20349,7 @@ function H_pkRow(p,h){const on=!!h.perkOn[p.id];return `<button class="h-pk${on?
 /* ---------- help, music, sounds ---------- */
 {const at=(()=>{let i=-1;HELP.forEach((t,k)=>{if(t.g==='البلد')i=k});return i<0?HELP.length:i+1})();
   HELP.splice(at,0,
-  {g:'البلد',h:'الحواديت وعم شاكر',p:()=>H_BOOK+`<span style="font-size:15px;color:var(--gold2);font-weight:800">${S.hero?H_hwN(H_h(S.hero).hw):''}</span>`,b:()=>`كل ليلة ${G('بتديك','بتديكي')} <b>حواديت</b>: حدوتة عن كل محطة ${G('وصلتها','وصلتيها')}، و3 عن كل مواجهة كبيرة ${G('كسبتها','كسبتيها')}، و5 لو ${G('كملت','كملتي')} الليلة. حتى لو ${G('وقعت','وقعتي')} الحواديت بتفضل ${G('معاك','معاكي')}، وما بتضيعش أبدًا.<br><b>عم شاكر الحكواتي</b> في البلد بياخد الحواديت ويفتح:<br>• <b>حكايات جديدة:</b> كروت جديدة بتدخل الكومات ${G('وتقابلها','وتقابليها')} في الليالي الجاية.<br>• <b>حاجات ليها تمن:</b> ميزة وعيب مع بعض، زي «${H_PERKS[0].n}» أو «${H_PERKS[3].n}». ${G('بتشتريها','بتشتريها')} مرة، وقبل كل مغامرة ${G('تشغّلها','تشغّليها')} أو ${G('تطفيها','تطفيها')} من شاشة المغامرة.<br>ولما ${G('تجمع','تجمعي')} 100 حدوتة ${G('بتاخد','بتاخدي')} لقب.`},
+  {g:'البلد',h:'الحواديت وعم شاكر',p:()=>H_BOOK+`<span style="font-size:15px;color:var(--gold2);font-weight:800">${S.hero?H_hwN(H_h(S.hero).hw):''}</span>`,b:()=>`كل ليلة ${G('بتديك','بتديكي')} <b>حواديت</b>: حدوتة عن كل محطة ${G('وصلتها','وصلتيها')}، و3 عن كل مواجهة كبيرة ${G('كسبتها','كسبتيها')}، و5 لو ${G('كملت','كملتي')} الليلة. حتى لو ${G('وقعت','وقعتي')} الحواديت بتفضل ${G('معاك','معاكي')}، وما بتضيعش أبدًا.<br><b>عم شاكر الحكواتي</b> في البلد بياخد الحواديت ${G('ويديك','ويديكي')} <b>حاجات ليها تمن</b>: ميزة وعيب مع بعض، زي «${H_PERKS[0].n}» أو «${H_PERKS[3].n}». ${G('بتشتريها','بتشتريها')} مرة، وقبل كل مغامرة ${G('تشغّلها','تشغّليها')} أو ${G('تطفيها','تطفيها')} من شاشة المغامرة.<br>ولما ${G('تجمع','تجمعي')} 100 حدوتة ${G('بتاخد','بتاخدي')} لقب.`},
   {g:'البلد',h:'رمية الودع والطبع',p:()=>`<span style="display:inline-flex;gap:2px;width:120px">${H_SHELL(1)}${H_SHELL(0)}${H_SHELL(1)}</span>`,b:()=>{const h=S.hero&&H_h(S.hero),t=H_tabOf(h);
     return `<b>أم عطية الودعية</b> بترمي 7 ودعات على صينية نحاس وبتقولك <b>طبعك</b>. كل ما الودع المفتوح يكتر، الطبع بيبقى أندر.<br>الرمية ببلاش دايمًا، ومحدش بيشتريها: واحدة بعد كل ليلة ${G('تكملها','تكمليها')} (أو ${G('توصل','توصلي')} فيها للمكان التاني)، وواحدة مع كل لقب جديد.<br>النسب: ${[0,1,2,3].map(r=>`<b style="color:${RARE[r].c}">${H_RN[r]} ${H_ODDS[r]}%</b>`).join(' · ')}. والأزرق مضمون في خلال 10 رميات، والدهبي في خلال 30.<br>${G('ليك','ليكي')} طبع واحد بس، ومع كل رمية ${G('بتختار','بتختاري')} ${G('تاخد','تاخدي')} الجديد ولا ${G('تفضل','تفضلي')} على القديم. الطبع بيفتح اختيارات جديدة في الكروت أو بيساعدك في القتال.${t?`<br><b>طبعك دلوقتي:</b> <b style="color:${RARE[t.r].c}">${H_tabN(t,h)}</b>: ${T(t.d)}`:''}`}})}
 {const t=HELP.find(x=>x.h==='الليلة: محطات وكروت');if(t){const b0=t.b;t.b=function(){const h=S.hero,tb=h&&H_tabOf(h),P=N_on()&&S.night.perks||[];let s=b0.apply(this,arguments);
@@ -22417,6 +22423,51 @@ function jobDress(){if(S.screen!=='story'||!S.jobChs||S.jobScene!==S.scene)retur
 .ch.jobch{border-color:#c9a0ff66}.ch.jobch.ok{border-color:#7fe07a88}
 .jobt{display:flex;width:max-content;margin-top:5px;align-items:center;gap:4px;font-size:12px;font-weight:800;border-radius:8px;padding:1px 8px;margin-bottom:3px;white-space:nowrap}
 .jobt.ok{color:#a6e3a0;background:#3a9e5522;border:1px solid #3a9e5566}.jobt.no{color:#f0a090;background:#e04b3e1c;border:1px solid #e04b3e55}.jobt small{font-size:10px;opacity:.85}`;document.head.appendChild(st)}
+/* ---------- 5.41: more «حاجات ليها تمن» at عم شاكر (each one a gain and a cost), and the refund note for stories bought before they became free ---------- */
+H_PERKS.push(
+  {id:'blood',p:45,n:'دم حامي',up:'ضربتك أجمد 2',dn:'صحتك أقل الربع طول الليلة'},
+  {id:'iron',p:45,n:'جلد تخين',up:'ضربة الوحوش {عليك|عليكي} أخف 1',dn:'ضربتك أضعف 1'},
+  {id:'greed',p:55,n:'عين طمعانة',up:'الفلوس اللي {بتكسبها|بتكسبيها} من الكروت ضعف',dn:'مفيش كروت راحة طول الليلة'},
+  {id:'owl',p:60,n:'سهران',up:'حدوتة زيادة عن كل محطة',dn:'الوحوش صحتها أكتر 15%'},
+  {id:'nadr',p:70,n:'نذر',up:'لو {كملت|كملتي} الليلة، الحواديت ×3',dn:'لو {وقعت|وقعتي}، مفيش حواديت ونص فلوسك بيروح'});
+Object.assign(H_PK_IC,{
+  blood:'<path d="M12 3Q18 11 18 15a6 6 0 0 1-12 0Q6 11 12 3z" fill="#e04a3a" stroke="#7a1a12"/><path d="M9.5 14.5q0 2.5 2.5 3" stroke="#ffb0a0" stroke-width="1.4" fill="none" stroke-linecap="round"/>',
+  iron:'<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z" fill="#9aa4b0" stroke="#4a525c"/><path d="M12 6v12" stroke="#6a727c" stroke-width="1.4"/>',
+  greed:'<path d="M2 12Q12 4 22 12Q12 20 2 12Z" fill="#3a2a10" stroke="#e0b25a" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="#e0b25a"/><text x="12" y="14.6" font-size="6.5" text-anchor="middle" fill="#5a3a06" font-weight="800">$</text>',
+  owl:'<circle cx="12" cy="13" r="7.5" fill="#8a6a4a"/><path d="M5.5 8L7 4.5 9.5 7.5M18.5 8L17 4.5 14.5 7.5" fill="#8a6a4a"/><circle cx="9" cy="12" r="2.6" fill="#ffe7a6"/><circle cx="15" cy="12" r="2.6" fill="#ffe7a6"/><circle cx="9" cy="12" r="1.1" fill="#1a1208"/><circle cx="15" cy="12" r="1.1" fill="#1a1208"/><path d="M11 15l1 1.6 1-1.6z" fill="#e0a040"/>',
+  nadr:'<rect x="6" y="9" width="12" height="11" rx="1.5" fill="#6a4a8a" stroke="#2a1a3a"/><path d="M6 12h12" stroke="#2a1a3a"/><path d="M12 3v6" stroke="#f3c14d" stroke-width="1.6"/><path d="M12 3q2.5 1.5 0 3.5q-2.5-2 0-3.5z" fill="#ffb347"/><circle cx="12" cy="15.5" r="1.8" fill="#f3c14d"/>'});
+
+/* دم حامي: max health −25% */
+{const mx=MXH;MXH=function(h){const v=mx.apply(this,arguments);return h&&h===S.hero&&H_perk('blood')?Math.max(1,Math.round(v*.75)):v}}
+/* دم حامي +2 / جلد تخين −1 on the hero's own hits */
+{const hf=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;o=o||{};
+  if(C&&C.hh&&!C.tutorial&&o.fx!=='poison'&&N_on()){if(H_perk('blood'))d+=2;if(H_perk('iron'))d=Math.max(1,d-1)}
+  return hf.call(this,f,d,o)}}
+/* جلد تخين: each foe hits 1 softer during its own turn */
+{const f0=foeTurn;foeTurn=async function(e){const on=e&&N_on()&&H_perk('iron')&&(e.dmg||0)>1;if(on)e.dmg--;
+  try{return await f0.apply(this,arguments)}finally{if(on)e.dmg++}}}
+/* سهران: monsters +15% health */
+{const sc=startCombat;startCombat=function(foes,win,tut){if(!tut&&N_on()&&H_perk('owl')&&Array.isArray(foes))foes=foes.map(f=>f&&!f.H_ow?Object.assign({},f,{hp:Math.round((f.hp||6)*1.15),H_ow:1}):f);
+  return sc.call(this,foes,win,tut)}}
+/* عين طمعانة: money from cards ×2, and no rest cards */
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){if(o&&o.money>0&&N_on()&&H_perk('greed')&&!S.combat)o=Object.assign({},o,{money:o.money*2});return ao.call(this,o,tier,c)}}
+{const nd=N_deal;N_deal=function(){const N=S.night;if(!N||!N_on()||!H_perk('greed'))return nd.apply(this,arguments);
+  const A=N_act(),k=A.k,d=DECKS[k];if(d)DECKS[k]=d.filter(c=>c.type!=='rest');
+  try{return nd.apply(this,arguments)}finally{if(d)DECKS[k]=d}}}
+/* سهران +1 حدوتة a stop; نذر ×3 on a win, nothing and half the money on a fall */
+{const ec=H_endCalc;H_endCalc=function(h,N,won){const r=ec.apply(this,arguments),P=N.perks||[];let add=0;
+  if(P.includes('owl')){add+=r.st||0;r.owl=r.st||0}
+  if(P.includes('nadr')){if(won){add+=(r.hw+add)*2;r.nadr=3}else{add=-r.hw;const m=Math.floor(h.money/2);h.money-=m;r.nadr=-m}}
+  if(add){h.hw=Math.max(0,h.hw+add);h.hwAll=Math.max(0,h.hwAll+add);r.hw=Math.max(0,r.hw+add);saveHero()}
+  return r}}
+{const es=H_endShow;H_endShow=function(He){es.apply(this,arguments);if(!He)return;const sm=view.querySelector('.h-endhw .tx small');if(!sm||sm.dataset.p50)return;sm.dataset.p50=1;
+  const x=[He.owl?`«سهران» +${He.owl}`:'',He.nadr===3?'«نذر» ×3':'',He.nadr<0?`«نذر»: راحت الحواديت و${-He.nadr} جنيه`:''].filter(Boolean);if(x.length)sm.textContent+=(sm.textContent?' · ':'')+x.join(' · ')}}
+
+/* the stories became free for everyone: whoever bought some gets their حواديت back, told once */
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments),h=S.hero;
+  if(h&&S.screen==='town'&&h.hkBack){const n=h.hkBack;delete h.hkBack;saveHero();
+    setTimeout(()=>band('عم شاكر رجّعلك حواديتك',H_hwN(n),'الحكايات كلها بقت في المغامرات ببلاش',{dur:3200,sound:SFX.coin}),600)}
+  return r}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
