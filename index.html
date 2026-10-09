@@ -2974,14 +2974,16 @@ function twFoodRow(h,k){const it=ITEMS[k],p=twGP(h,it.price),full=bagFull(h,k),h
     ${twQB('f:'+k,twFoodMax(h,k,p),p,0,`data-fb="${k}"`,`${p} جنيه${!full&&h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}
 function twBuyFood(k,btn){const h=S.hero,p=twGP(h,ITEMS[k].price);if(h.money<p)return;if(bagFull(h,k)){toast('الشنطة مليانة أكل');return}const n=qtyN('f:'+k,Math.max(1,twFoodMax(h,k,p)));
   h.money-=p*n;h.bag[k]=(h.bag[k]||0)+n;saveHero();floatAt(btn,twI('+'+n)+' '+ITEMS[k].name,'#a6e3a0','',18);twPay(btn,p*n);twRender()}
+/* dishes that go in the oven play the bread game (knead, then bake) instead of the pot */
+const TW_BAKE=['fateer'];
 async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl(h,'cook')<r.lv||!hasRes(h,r.need))return;
   if(bagFull(h,k)){toast(`الشنطة مليانة أكل (${bagCount(h,k)} من ${bagCap(h,k)})`);return}
   const pr=await qPrep({at:'cook',food:1,title:`${G('اطبخ','اطبخي')} ${ITEMS[k].name}`,costTxt:needTxt(r.need),icon:twFood(k,50),adds:qAdds(h,'food',r.need),made:qMade(h,k),
-    playTxt:G('ابدأ الطبخ','ابدأي الطبخ'),quickTxt:G('اطبخ بسرعة','اطبخي بسرعة')});
+    playTxt:TW_BAKE.includes(k)?G('ابدأ العجن','ابدأي العجن'):G('ابدأ الطبخ','ابدأي الطبخ'),quickTxt:G('اطبخ بسرعة','اطبخي بسرعة')});
   if(!pr||TWN.busy||!hasRes(h,r.need)||bagFull(h,k))return;const add=pr.add&&pr.add.ok?pr.add:null;
   TWN.busy=1;takeRes(h,r.need);if(add)qTakeAdd(h,add);saveHero();
   let Q={q:1,lucky:false,unlucky:false,traits:[]},played=0,burnt=0;
-  if(pr.go==='play'){const g=await qPlay('cook',h,{tier:r.tier,name:ITEMS[k].name,icon:twFood(k,64)});played=!g.none;Q=craftQ(h,'cook',g.score,add);
+  if(pr.go==='play'){const g=await qPlay(TW_BAKE.includes(k)?'bread':'cook',h,{tier:r.tier,name:ITEMS[k].name,icon:twFood(k,64)});played=!g.none;Q=craftQ(h,'cook',g.score,add);
     if(g.burnt){burnt=1;Q={q:0,lucky:false,unlucky:false,traits:[]}}}
   const key=fqKey(k,Q.q,Q.traits[0]||'');fqReg(key);h.bag[key]=(h.bag[key]||0)+1;qMark(h,k);
   /* توفير: sometimes a second dish, sometimes an ingredient comes back */
@@ -4349,6 +4351,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.8',d:'9 أكتوبر',add:[],fix:[
+    'الفطير المشلتت بقى بيتعمل بميني جيم العيش: {تعجن|تعجني} وبعدين {تخبز|تخبزي} في الفرن.'
+  ]},
   {v:'5.7',d:'9 أكتوبر',add:[
     'شاشة البداية بقت بتورّيك وحش مختلف كل مرة تفتح اللعبة، وساعات مجموعة وحوش جنب بعض، ونادراً وحش عملاق مالي السما.'
   ],fix:[]},
@@ -18625,6 +18630,88 @@ function tsLineup(){const r=Math.random(),P=tsPool();
 @keyframes tsBob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
 @keyframes tsBreathe{from{transform:scale(1)}to{transform:scale(1.035) translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.ts-mon{animation:none}}`;document.head.appendChild(st)}
+/* ---------- حسابي: sign in with Google and keep the heroes in the cloud (online stage 1) ----------
+   Offline play is untouched. Signed in, the whole save (the same code the backup uses) goes to Firestore
+   at users/{uid} a little after every save and when the app is hidden. FB_CFG is the public web config
+   of the Firebase project (not a secret: the Firestore rules let each account touch only its own document). */
+const FB_CFG=null;
+const FB_V='10.12.2',FB_FLAG='srdb.fb';
+const FB={app:null,auth:null,db:null,user:null,busy:0,last:0,timer:0,err:''};
+const fbOn=()=>!!FB_CFG;
+function fbScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)})}
+let FB_READY=null;
+function fbLoad(){if(!fbOn())return Promise.reject(new Error('nocfg'));if(FB_READY)return FB_READY;
+  const b=`https://www.gstatic.com/firebasejs/${FB_V}/`;
+  FB_READY=fbScript(b+'firebase-app-compat.js').then(()=>Promise.all([fbScript(b+'firebase-auth-compat.js'),fbScript(b+'firebase-firestore-compat.js')])).then(()=>{
+    const fb=window.firebase;FB.app=fb.apps.length?fb.app():fb.initializeApp(FB_CFG);FB.auth=fb.auth();FB.db=fb.firestore();
+    return new Promise(ok=>{let first=1;FB.auth.onAuthStateChanged(u=>{FB.user=u||null;try{u?localStorage.setItem(FB_FLAG,'1'):localStorage.removeItem(FB_FLAG)}catch(e){}if(first){first=0;ok()}fbPaint()})})})
+  .catch(e=>{FB_READY=null;throw e});return FB_READY}
+const fbDoc=()=>FB.db.collection('users').doc(FB.user.uid);
+const fbSum=()=>HEROES.filter(Boolean).map(h=>({n:String(h.name||'').slice(0,24),l:h.lvl||1}));
+async function fbUp(force){if(!FB.user||FB.busy)return;FB.busy=1;try{const ref=fbDoc(),code=bkCode();
+    let prev='';if(force!=='first'){try{const s=await ref.get();const c=s.exists&&s.data().code;if(c&&c!==code&&c.length<350000)prev=c}catch(e){}}
+    await ref.set({code,t:Date.now(),sum:fbSum(),prev},{merge:false});FB.last=Date.now();FB.err=''}
+  catch(e){FB.err=e&&e.code||'up';console.error('cloud up: '+(e&&e.message))}finally{FB.busy=0;fbPaint()}}
+function fbSoon(){if(!FB.user)return;clearTimeout(FB.timer);FB.timer=setTimeout(()=>fbUp(),20000)}
+async function fbGet(){const s=await fbDoc().get();return s.exists?s.data():null}
+
+/* sign in, then decide which save wins */
+async function fbSignIn(){try{await fbLoad()}catch(e){return fbMsg('مش قادر أوصل لجوجل دلوقتي. الحساب بيشتغل من لينك اللعب وفيه نت.')}
+  const pv=new window.firebase.auth.GoogleAuthProvider();pv.setCustomParameters({prompt:'select_account'});
+  try{await FB.auth.signInWithPopup(pv)}catch(e){const c=e&&e.code||'';
+    if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){try{return await FB.auth.signInWithRedirect(pv)}catch(e2){}}
+    if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return fbMsg('');
+    return fbMsg('الدخول ما كملش. جرّب تاني من لينك اللعب.')}
+  await fbAfterIn()}
+async function fbAfterIn(){if(!FB.user)return;let C=null;try{C=await fbGet()}catch(e){return fbMsg('دخلت، بس السحابة مش بترد دلوقتي.')}
+  const local=HEROES.filter(Boolean).length,P=C&&C.code?bkParse(C.code):null;
+  if(!P){await fbUp('first');return fbMsg('دخلت. أبطالك اتحفظوا في السحابة، وهيتحفظوا لوحدهم من دلوقتي.',1)}
+  if(C.code===bkCode())return fbMsg('دخلت. السحابة واللعبة زي بعض.',1);
+  if(!local){fbMsg('لقيت أبطالك في السحابة.. بنزّلهم.',1);return bkApply(P)}
+  fbChoice(C,P)}
+function fbChoice(C,P){const box=$('#fbBox');if(!box)return;const d=t=>{const x=new Date(t);return `${x.getDate()}/${x.getMonth()+1} ${x.getHours()}:${String(x.getMinutes()).padStart(2,'0')}`};
+  const row=L=>L.map(s=>`${esc(s.n)} (${s.l})`).join('، ');
+  const m=box.querySelector('.fb-m');m.className='fb-m ok';m.innerHTML=`فيه نسختين مختلفين. ${G('اختار','اختاري')} اللي ${G('هتكمّل','هتكمّلي')} بيها:
+    <button class="btn" id="fbUseC"><span>اللي في السحابة<small>${row(C.sum||[])} · ${d(C.t)}</small></span></button>
+    <button class="btn ghost" id="fbUseL"><span>اللي على الموبايل ده<small>${row(fbSum())}</small></span></button>
+    <small>اللي مش ${G('هتختاره','هتختاريه')} بيفضل محفوظ في السحابة كنسخة قديمة.</small>`;
+  m.querySelector('#fbUseC').onclick=async()=>{try{await fbDoc().set({prev:bkCode()},{merge:true})}catch(e){}fbMsg('بنزّل أبطالك من السحابة..',1);bkApply(P)};
+  m.querySelector('#fbUseL').onclick=async()=>{await fbUp();fbMsg('خلاص، اللي على الموبايل ده بقى في السحابة.',1)}}
+
+/* the settings panel */
+function fbMsg(t,ok){const m=$('#fbBox .fb-m');if(!m)return;m.className='fb-m'+(ok?' ok':'');m.innerHTML=t}
+function fbPaint(){const box=$('#fbBox');if(!box)return;const u=FB.user,st=box.querySelector('.fb-s');if(!st)return;
+  const ago=FB.last?Math.max(0,Math.round((Date.now()-FB.last)/60000)):-1;
+  st.innerHTML=u?`<div class="fb-who"><b>${esc(u.displayName||'')}</b><small dir="ltr">${esc(u.email||'')}</small></div>
+      <div class="fb-t">${FB.busy?'بيتحفظ..':FB.err?'<span style="color:#f0a090">آخر حفظ ما نجحش، هيحاول تاني</span>':ago<0?'أبطالك بيتحفظوا لوحدهم بعد كل حاجة':ago===0?'اتحفظ في السحابة دلوقتي':`آخر حفظ من ${ago} دقيقة`}</div>
+      <div class="bk-r"><button class="btn" id="fbUp">احفظ دلوقتي</button><button class="btn ghost" id="fbDown">نزّل من السحابة</button></div>
+      <button class="btn ghost small" id="fbOut">اخرج من الحساب</button>`
+    :`<div class="bk-t">${G('ادخل','ادخلي')} بحساب جوجل وأبطالك هيتحفظوا في السحابة لوحدهم. لو الموبايل ضاع أو ${G('غيّرته','غيّرتيه')}، ${G('تدخل','تدخلي')} تاني وكل حاجة ترجع. اللعب من غير حساب شغال عادي.</div>
+      <button class="btn fb-g" id="fbIn">${FB_GICON}الدخول بحساب جوجل</button>`;
+  const q=s=>st.querySelector(s);
+  if(q('#fbIn'))q('#fbIn').onclick=()=>{fbMsg('بيفتح جوجل..',1);fbSignIn()};
+  if(q('#fbUp'))q('#fbUp').onclick=async()=>{await fbUp();if(!FB.err)fbMsg('اتحفظ.',1)};
+  if(q('#fbDown'))q('#fbDown').onclick=async()=>{let C=null;try{C=await fbGet()}catch(e){}const P=C&&C.code&&bkParse(C.code);if(!P)return fbMsg('مفيش نسخة في السحابة لسه.');fbChoice(C,P)};
+  if(q('#fbOut'))q('#fbOut').onclick=async()=>{try{await fbUp();await FB.auth.signOut()}catch(e){}fbMsg('خرجت. أبطالك لسه على الموبايل.',1)}}
+const FB_GICON=`<svg viewBox="0 0 48 48" width="20" height="20" style="flex:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
+function fbOpen(box){const B=document.createElement('div');B.className='bk';B.id='fbBox';B.innerHTML='<div class="bk-l">حسابي</div><div class="fb-s"></div><div class="fb-m"></div>';
+  box.insertBefore(B,box.querySelector('#stOk'));fbPaint();
+  if(!FB.auth)fbLoad().then(()=>{fbPaint();if(FB.user&&!FB.last)fbUp()}).catch(()=>{})}
+{const os0=openSettings;openSettings=function(){const had=!!$('#setBg');os0.apply(this,arguments);const d=$('#setBg');if(had||!d||!fbOn())return;const box=d.querySelector('.setbox');
+  const b=document.createElement('button');b.className='setrow';b.id='stFb';b.innerHTML=`<span>حسابي ${FB.user?'<small style="color:#a6e3a0">· متصل</small>':'<small>· جوجل</small>'}</span><span class="bk-c">‹</span>`;
+  const bk=box.querySelector('#stBk');box.insertBefore(b,bk||box.querySelector('#stOk'));
+  b.onclick=()=>{SFX.page&&SFX.page();b.remove();fbOpen(box)}}}
+
+/* keep the cloud copy fresh: a little after each save, and right away when the app goes to the background */
+{const sv=saveHero;saveHero=function(){const R=sv.apply(this,arguments);if(FB.user)fbSoon();return R}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&FB.user&&FB.timer){clearTimeout(FB.timer);FB.timer=0;fbUp()}});
+/* someone who signed in before gets reconnected quietly when the game opens */
+try{if(fbOn()&&localStorage.getItem(FB_FLAG)==='1')setTimeout(()=>fbLoad().then(()=>{if(FB.user)FB.auth.getRedirectResult().catch(()=>{})}).catch(()=>{}),1500)}catch(e){}
+{const st=document.createElement('style');st.textContent=`
+.fb-s{display:flex;flex-direction:column;gap:8px}.fb-who{display:flex;flex-direction:column}.fb-who b{font-size:15px;color:var(--ink)}.fb-who small{font-size:12px;color:var(--mute);text-align:right}
+.fb-t{font-size:13px;color:#a6e3a0}.fb-g{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#222;min-height:48px;margin:0}
+.fb-m{font-size:13px;line-height:1.7;color:#f0a090;display:flex;flex-direction:column;gap:8px}.fb-m:empty{display:none}.fb-m.ok{color:#a6e3a0}.fb-m .btn{margin:0;min-height:48px}
+.fb-m .btn span{display:flex;flex-direction:column}.fb-m .btn small{font-size:12px;opacity:.8;font-weight:400}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
