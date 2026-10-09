@@ -25,6 +25,8 @@ body{background:#0a0807;color:var(--ink);font-family:var(--body);margin:0;-webki
 *{box-sizing:border-box}
 button{font:inherit;color:inherit}
 #app{direction:rtl;position:relative;max-width:480px;height:100%;margin:0 auto;overflow:hidden;background:radial-gradient(ellipse at 50% -10%,#3a2a1a 0%,var(--bg) 55%);display:flex;flex-direction:column}
+#app,#app *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#app input,#app textarea{-webkit-user-select:text;user-select:text}
 .screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding:0 16px 18px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 0 8px}
 .top h2{font-family:var(--display);font-size:20px;color:var(--gold2);margin:0;text-wrap:balance}
@@ -1231,7 +1233,7 @@ function fishScene(){const u=a4u();
 function bobberArt(w){w=w||26;return `<svg viewBox="0 0 24 48"${a4wh(w,24,48)}><rect x="11" y="1" width="2" height="13" rx="1" fill="#efe6d6" stroke="#3a1a10" stroke-width=".6"/><rect x="10.4" y="0" width="3.2" height="5.4" rx="1.6" fill="#ff3a2a" stroke="#3a1a10" stroke-width=".6"/><path d="M12 12 Q20.5 15.5 20.5 26 L3.5 26 Q3.5 15.5 12 12Z" fill="#e0402a" stroke="#3a1a10" stroke-width="1"/><path d="M3.5 28 L20.5 28 Q20.5 37 12 42.5 Q3.5 37 3.5 28Z" fill="#f4efe6" stroke="#3a1a10" stroke-width="1"/><rect x="3.4" y="25.6" width="17.2" height="2.8" fill="#1e1612"/><rect x="11.2" y="41.5" width="1.6" height="6" rx=".8" fill="#8a6a3a"/><path d="M7.4 18 Q6.4 21.6 6.8 24.6" stroke="#fff" stroke-width="1.6" fill="none" opacity=".75" stroke-linecap="round"/><path d="M7 30 Q7.4 34 9.6 37" stroke="#fff" stroke-width="1.2" fill="none" opacity=".9" stroke-linecap="round"/></svg>`}
 
 /* ---------- gear on the hero portrait ---------- */
-function a4wpn(id,u,sk){u+='w';
+function a4wpn(id,u,sk,nf){u+='w';
   const fist=`<rect x="-6" y="-5" width="12" height="10.6" rx="4.6" fill="${sk}" stroke="#0006" stroke-width="1"/><path d="M-6 -1.6 H2.4 M-6 1.9 H2.4" stroke="#0003" stroke-width="1"/><path d="M2 -5 Q7 -4.4 6 1.4" stroke="#0004" stroke-width="1" fill="none"/>`;
   let w='';
   if(id==='shuma')w=`${a4lg(u+'w',['#5a3418','#a8703a','#6a3f1c'],1,0)}<path d="M-2.4 9 L-2.8 -22 Q-5.6 -36 -4.2 -44 Q-2.2 -49 0 -49 Q3.6 -49 4.8 -43 Q5.8 -35 3 -22 L2.6 9Z" fill="url(#${u}w)" stroke="#2a1608" stroke-width="1.3" stroke-linejoin="round"/><ellipse cx="-1.4" cy="-38" rx="1.4" ry="1.1" fill="#3a200c"/><ellipse cx="1.8" cy="-30" rx="1.1" ry=".9" fill="#3a200c"/><rect x="-4.2" y="-22" width="8.4" height="3" rx="1" fill="#8a96a0" stroke="#2a3038" stroke-width=".8"/>`;
@@ -1240,7 +1242,7 @@ function a4wpn(id,u,sk){u+='w';
   else if(id==='dagger')w=`${a4lg(u+'b',['#f4f8fb','#b4c0ca','#5e6a74'],1,0)}<rect x="-1.8" y="-7" width="3.6" height="13" fill="#3a2418" stroke="#1a0e08" stroke-width=".8"/><path d="M-3 -9 Q-4 -24 0 -38 Q4 -24 3 -9Z" fill="url(#${u}b)" stroke="#262d34" stroke-width="1" stroke-linejoin="round"/><path d="M-2.6 -22 Q-2.6 -31 0 -38 Q2.6 -31 2.6 -22 Q0 -24.4 -2.6 -22Z" fill="#7ad03a" opacity=".85"/><rect x="-6.4" y="-10.4" width="12.8" height="3" rx="1.4" fill="#6a4a2a" stroke="#2a1a0a" stroke-width=".8"/><circle cx="0" cy="8" r="2.4" fill="#6a4a2a" stroke="#2a1a0a" stroke-width=".8"/><path d="M0.6 -36 Q-1 -32 0.6 -30.4 Q2.2 -32 0.6 -36Z" fill="#9aef5a"><animateTransform attributeName="transform" type="translate" values="0 0;0 10" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.4s" repeatCount="indefinite"/></path>`;
   else if(id==='turqstaff')w=`${a4lg(u+'w',['#5a3418','#a8703a','#6a3f1c'],1,0)}${a4lg(u+'t',['#d8fffa','#40c8c0','#0f6662'],1,1)}<rect x="-2.2" y="-74" width="4.4" height="98" rx="2.2" fill="url(#${u}w)" stroke="#2a1608" stroke-width="1"/>${a4glow(u+'g','#5ff0e6',0,-80,15,.75)}<path d="M-5.4 -74 Q-7.4 -82 -3 -87 M5.4 -74 Q7.4 -82 3 -87" stroke="#dfe6ec" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="-4.4" y="-76" width="8.8" height="3.4" rx="1.4" fill="#cfd8e0" stroke="#4a545e" stroke-width=".7"/><circle cx="0" cy="-81" r="6" fill="url(#${u}t)" stroke="#0b4846" stroke-width="1"/><circle cx="-2" cy="-83" r="1.7" fill="#fff" opacity=".85"/>`;
   else return '';
-  return `${w}${fist}`}
+  return nf?w:`${w}${fist}`}
 function addGearArt(svg,h,id){const e=h&&h.eq;if(!e||typeof svg!=='string')return svg;
   const g=k=>e[k]&&GEAR[e[k]]?e[k]:null,ar=g('armor'),hd=g('head'),wp=g('weapon'),nk=g('neck'),ch=g('charm');
   if(!ar&&!hd&&!wp&&!nk&&!ch)return svg;
@@ -1255,8 +1257,10 @@ function addGearArt(svg,h,id){const e=h&&h.eq;if(!e||typeof svg!=='string')retur
   if(onTop)top+=nec+chm;else body+=nec+chm;
   if(hd==='turban')top+=`${a4lg(u+'c',['#fffbf2','#ece0c8','#b8a888'])}<path d="M85 41 Q94 50 92.4 64 Q88 58 84.4 49Z" fill="#e2d6bc" stroke="#7a6a4a" stroke-width="1"/><path d="M47 18 Q60 -4 73 18Z" fill="#a83a2a" stroke="#4a160e" stroke-width=".9"/><path d="M53.6 9.6 Q57 7 61 6.8" stroke="#fff" stroke-width="1.1" fill="none" opacity=".4" stroke-linecap="round"/><path d="M28.6 47 Q26.6 16 60 12.4 Q93.4 16 91.4 47 Q76 40.4 60 40.8 Q44 40.4 28.6 47Z" fill="url(#${u}c)" stroke="#7a6a4a" stroke-width="1.2"/><g stroke="#c4b496" stroke-width="2" fill="none"><path d="M30 40.4 Q52 25 90 37"/><path d="M31 33 Q56 18.6 88 29"/><path d="M37 24.6 Q58 15 83 21"/></g><path d="M36 33 Q46 24 60 21" stroke="#fff" stroke-width="1.8" fill="none" opacity=".8" stroke-linecap="round"/>`;
   else if(hd==='helmet')top+=`${steel(u+'m')}<path d="M30.5 46 Q28.5 12.5 60 10.6 Q91.5 12.5 89.5 46Z" fill="url(#${u}m)" stroke="#1e252c" stroke-width="1.3"/><path d="M60 11.4 V38" stroke="#fff" stroke-width="2.4" opacity=".4"/><path d="M38 36 Q37 22 49.6 15.4" stroke="#fff" stroke-width="2.4" fill="none" opacity=".55" stroke-linecap="round"/><path d="M28.6 40.6 Q60 33.4 91.4 40.6 L92 48.6 Q60 40.4 28 48.6Z" fill="#5a646e" stroke="#1e252c" stroke-width="1.1" stroke-linejoin="round"/><g fill="#d8e0e6"><circle cx="34" cy="43" r="1"/><circle cx="44" cy="40.6" r="1"/><circle cx="76" cy="40.6" r="1"/><circle cx="86" cy="43" r="1"/></g><path d="M57.8 40 L57.8 57.6 Q60 60 62.2 57.6 L62.2 40Z" fill="url(#${u}m)" stroke="#1e252c" stroke-width="1"/><circle cx="60" cy="10.8" r="2.4" fill="#8a96a0" stroke="#1e252c" stroke-width=".8"/>`;
-  if(wp){const arm=`<path d="M12 126 L21.6 104.6" stroke="#0006" stroke-width="13.4" stroke-linecap="round"/><path d="M12 126 L21.6 104.6" stroke="${of}" stroke-width="11" stroke-linecap="round"/>${ar==='ironarmor'?`<path d="M14.4 120.6 L19.6 109" stroke="#8a96a0" stroke-width="11.6"/><path d="M14.4 120.6 L19.6 109" stroke="#1e252c" stroke-width="11.6" stroke-dasharray=".8 5.2" opacity=".6"/>`:''}`;
-    top+=`${arm}<g transform="translate(23 101) rotate(5)">${a4wpn(wp,u,sk)}</g>`}
+  /* the weapon hangs on the back: the hilt (or the staff's head) shows over the shoulder, the rest hides behind the body */
+  const wt=wp==='turqstaff'?'translate(19 128) rotate(5)':wp==='shuma'?'translate(36 128) rotate(-26) scale(1.15)':'translate(19 80) rotate(142) scale(1.12)';
+  let bk='';if(wp)bk=`<g transform="${wt}">${a4wpn(wp,u,sk,1)}</g>`;
+  if(bk){const i=svg.indexOf('<path d="M14 122 Q18 96 60 90');if(i>0)svg=svg.slice(0,i)+bk+svg.slice(i)}
   if(body){const i=svg.indexOf('<rect x="52" y="78"');if(i>0)svg=svg.slice(0,i)+body+svg.slice(i);else top=body+top}
   return top?svg.replace(/<\/svg>\s*$/,top+'</svg>'):svg}
 {const _p=portrait;portrait=function(h,id){return addGearArt(_p(h,id),h,id)}}
@@ -1367,7 +1371,13 @@ function bindQ(){const q=$('#qb');if(q)q.onclick=()=>{S.helpFrom=S.screen;S.scre
   const s=$('#snd');if(s)s.onclick=openSettings}
 const statDots=(v,gr)=>{gr=gr||0;const N=Math.max(5,v+2);return `<span class="dots">${Array.from({length:N},(_,i)=>i+1).map(n=>`<i class="${n<=v+2?(n>v+2-gr?'on up':'on'):''}"></i>`).join('')}</span>`};
 const plus=v=>v>0?`+${v} على النرد`:v<0?`−${-v} من النرد`:'من غير زيادة';
-function heroLine(h){return `التخصص: ${h.cls} · المستوى ${h.lvl}`}
+function heroLine(h){return `التخصص: ${clsN(h)} · المستوى ${h.lvl}`}
+/* a girl hero's class and age are said in the feminine; the saved values stay the same */
+const CLS_F={'محارب':'محاربة','حرامي':'حرامية','ساحر':'ساحرة','معالج':'معالجة'},AGE_F={'شاب':'شابة','كبير':'كبيرة','عجوز':'عجوزة'};
+const DESC_F={'محارب':'بتضرب جامد وبتستحمل الضرب. بتقف قدام وبتحمي صحابها.','حرامي':'سريعة وخفيفة ولسانها حلو. بتضرب من غير ما حد ياخد باله.','ساحر':'جسمها ضعيف، بس بترمي نار وسحر من بعيد.','معالج':'بتعالج نفسها وصحابها، ونورها بيحرق العفاريت.'};
+function clsF(c,f){return f&&CLS_F[c]||c}
+function clsN(h){return clsF(h.cls,h&&h.g==='f')}
+function ageF(a,f){return f&&AGE_F[a]||a}
 /* the title the hero picked to show under the name (gold, small) */
 function pfTitleTag(h,c){const t=h&&h.title&&hasTitle(h,h.title)&&TITLES.find(x=>x.id===h.title);return t?`<div class="pf-ttl ${c||''}">${titleName(t,h)}</div>`:''}
 function title(){
@@ -1423,7 +1433,7 @@ function intro(){
 function create(){
   const d=S.draft=S.draft||{name:'',g:'m',cls:'محارب',skin:LOOK.skin[1],hairColor:LOOK.hairColor[0],hair:'قصير',eyes:LOOK.eyes[0],outfit:LOOK.outfit[0],age:'شاب',beard:'من غير',mark:'من غير',about:''};
   const sw=(k,arr)=>`<div class="wrap">${arr.map(c=>`<button class="swatch ${d[k]===c?'on':''}" data-k="${k}" data-v="${c}" style="background:${c}" aria-label="لون"></button>`).join('')}</div>`;
-  const op=(k,arr)=>`<div class="wrap">${arr.map(c=>`<button class="opt ${d[k]===c?'on':''}" data-k="${k}" data-v="${c}">${c}</button>`).join('')}</div>`;
+  const op=(k,arr,lab)=>`<div class="wrap">${arr.map(c=>`<button class="opt ${d[k]===c?'on':''}" data-k="${k}" data-v="${c}">${lab?lab(c):c}</button>`).join('')}</div>`;
   const C=CLASSES[d.cls];const ed=S.editing;const fem=d.g==='f';
   const st=ed?S.hero.st:C.st;
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>${ed?(fem?'عدّلي شكل بطلتك':'عدّل شكل بطلك'):(fem?'اعملي بطلتك':'اعمل بطلك')}</h2>${qBtn()}</div>
@@ -1431,19 +1441,19 @@ function create(){
     <div id="pv" style="width:108px;height:108px;border-radius:22px;overflow:hidden;flex:none;border:2px solid var(--gold)">${portrait(d,'c')}</div>
     <div style="flex:1;min-width:0">
       <div id="pvName" style="font-family:var(--display);font-size:20px;color:var(--ink);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.name)||(fem?'بطلتك':'بطلك')}</div>
-      <div style="font-size:15px;color:var(--dim)">التخصص: <b style="color:var(--gold2);font-size:17px">${d.cls}</b></div>
+      <div style="font-size:15px;color:var(--dim)">التخصص: <b style="color:var(--gold2);font-size:17px">${clsF(d.cls,fem)}</b></div>
       <div style="display:grid;grid-template-columns:auto auto auto auto;gap:2px 6px;margin-top:4px;font-size:11px;align-items:center">
       ${STATS.map(s=>`<span>${s}</span>${statDots(st[s])}`).join('')}</div>
     </div></div></div>
   ${ed?'':`<div class="coach"><div class="who">${portrait(COMP.zeinab,'cz')}</div><div><b>ست زينب:</b> ${fem?'اختاري':'اختار'} <b>التخصص</b> الأول: ده ${fem?'اللي بطلتك شاطرة':'اللي بطلك شاطر'} فيه. النقط اللي فوق هي <b>الصفات</b>، كل نقطة زيادة بتتزوّد على النرد. وبعدين الشكل زي ما ${fem?'تحبي':'تحب'}، الشكل مالوش دعوة بالقوة.</div></div>`}
-  ${ed?'':`<div class="label">التخصص</div>${op('cls',Object.keys(CLASSES))}<div class="card" style="margin-top:8px;font-size:14px;line-height:1.8">${C.desc}<br><span style="color:var(--gold2)">شاطر في: ${C.good}</span> · صحة ${C.hp}<br><span style="color:var(--mute);font-size:13px">حركته: ${C.atk.name} (${C.atk.info})، وقدرته الخاصة: ${C.sp.name} (${String(C.sp.info).replace(/\{([^|{}]*)\|([^{}]*)\}/g,(_,m,f)=>fem?f:m)}).</span></div>`}
+  ${ed?'':`<div class="label">التخصص</div>${op('cls',Object.keys(CLASSES),c=>clsF(c,fem))}<div class="card" style="margin-top:8px;font-size:14px;line-height:1.8">${fem&&DESC_F[d.cls]||C.desc}<br><span style="color:var(--gold2)">${fem?'شاطرة':'شاطر'} في: ${C.good}</span> · صحة ${C.hp}<br><span style="color:var(--mute);font-size:13px">${fem?'حركتها':'حركته'}: ${C.atk.name} (${C.atk.info})، وقدرته الخاصة: ${C.sp.name} (${String(C.sp.info).replace(/\{([^|{}]*)\|([^{}]*)\}/g,(_,m,f)=>fem?f:m)}).</span></div>`}
   <div class="label">ولد ولا بنت؟</div><div class="wrap"><button class="opt ${!fem?'on':''}" data-k="g" data-v="m">ولد</button><button class="opt ${fem?'on':''}" data-k="g" data-v="f">بنت</button></div>
   <div class="label">الاسم</div><input type="text" id="nm" maxlength="20" placeholder="${fem?'مثلاً: منى':'مثلاً: كريم'}" value="${esc(d.name)}">
   <div class="label">لون البشرة</div>${sw('skin',LOOK.skin)}
   <div class="label">الشعر</div>${op('hair',fem?LOOK.hairF:LOOK.hairM)}
   <div class="label">لون الشعر</div>${sw('hairColor',LOOK.hairColor)}
   <div class="label">لون العينين</div>${sw('eyes',LOOK.eyes)}
-  <div class="label">السن</div>${op('age',LOOK.age)}
+  <div class="label">السن</div>${op('age',LOOK.age,a=>ageF(a,fem))}
   ${!fem?`<div class="label">الدقن والشنب</div>${op('beard',LOOK.beard)}`:''}
   <div class="label">علامة مميزة</div>${op('mark',fem?LOOK.markF:LOOK.markM)}
   <div class="label">لون اللبس</div>${sw('outfit',LOOK.outfit)}
@@ -1471,7 +1481,7 @@ function profile(){
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>${h.g==='f'?'بطلتي':'بطلي'}</h2>${qBtn()}</div>
   <div class="pf-head"><div class="pic">${portrait(h,'pr')}</div>
     <div style="flex:1;min-width:0"><div class="nm">${esc(h.name)}</div><div id="pfTtl">${pfTitleTag(h,'lg')}</div>
-      <div style="font-size:13px;color:var(--mute)">التخصص: ${h.cls} · ${h.g==='f'?'بنت':'ولد'} · ${h.age}</div>
+      <div style="font-size:13px;color:var(--mute)">التخصص: ${clsN(h)} · ${h.g==='f'?'بنت':'ولد'} · ${ageF(h.age,h.g==='f')}</div>
       <div style="font-size:13px;margin-top:4px">المستوى <b>${h.lvl}</b></div>
       <div class="xpbar" style="margin-top:4px"><i style="width:${h.xp/need*100}%"></i></div>
       <div style="font-size:11.5px;color:var(--dim);margin-top:3px">فاضلك <span class="num">${need-h.xp}</span> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div></div></div>
@@ -1650,6 +1660,19 @@ const SC={
 };
 const resistOn=h=>gearOn(h).some(g=>g.resist);
 function reward(){const h=S.hero;return h.rep<=-60?200:h.rep>=60?350:300}
+/* ---------- v4.1: choose how many to buy or sell. The number stays while the same screen re-renders, and starts at 1 on a new screen ---------- */
+const QTY={scr:'',n:{}};
+{const _r=render;render=function(){if(S.screen!==QTY.scr){if(S.screen!=='help'&&QTY.scr!=='help')QTY.n={};QTY.scr=S.screen}return _r.apply(this,arguments)}}
+const qtyMax=(...a)=>Math.max(0,Math.min(99,...a.map(v=>Math.floor(v))));
+function qtyN(k,mx){const n=Math.max(1,Math.min(QTY.n[k]||1,mx));QTY.n[k]=n;return n}
+/* the button next to the number: a buy button shows the total, a sell button («بيع 3») shows what you get */
+const qtyLbl=(n,p,w,sell)=>sell?`${G('بيع','بيعي')} ${n}<small>${p*n}\u00a0جنيه</small>`:`${w?`<s>${w*n}</s> `:''}${p*n}\u00a0جنيه${n>1?`<small>${n} × ${p}</small>`:''}`;
+const qtyHTML=(k,n,mx,all)=>`<div class="qty" data-qk="${k}" data-qmax="${mx}"><button data-qd="-1" aria-label="أقل" ${n<=1?'disabled':''}>−</button><b>${n}</b><button data-qd="1" aria-label="أكتر" ${n>=mx?'disabled':''}>+</button><button class="mx" data-qd="max" ${n>=mx?'disabled':''}>${all?'الكل':'أقصى'}</button></div>`;
+/* − + and «أقصى» only change the number and the price on the button next to them (and undo an «متأكد؟» there); then onChange */
+function qtyBind(onChange){view.querySelectorAll('.qty').forEach(q=>{const k=q.dataset.qk,mx=+q.dataset.qmax;
+  q.querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=b.dataset.qd,n0=qtyN(k,mx),n=d==='max'?mx:Math.max(1,Math.min(mx,n0+(+d)));if(n===n0)return;QTY.n[k]=n;
+    const v=q.querySelector('b');v.textContent=n;cls(v,'pop');q.querySelectorAll('button').forEach(x=>x.disabled=x.dataset.qd==='-1'?n<=1:n>=mx);
+    const bb=view.querySelector(`[data-qb="${k}"]`);if(bb){bb.classList.remove('warn');bb.innerHTML=qtyLbl(n,+bb.dataset.p,+bb.dataset.w,bb.dataset.ql==='s')}if(onChange)onChange(k,n)})})}
 function genShop(){const h=S.hero;const list=[{k:'potion',stock:rnd(3)}];
   [['bigpotion',.7,2],['revive',.55,1],['salt',.85,3],['wax',.7,2],['amulet',h.gear&&h.gear.amulet?0:.45,1]].forEach(([k,p,mx])=>{if(Math.random()<p)list.push({k,stock:rnd(mx)})});
   if(Math.random()<.5)pick(list).deal=1;
@@ -1673,7 +1696,11 @@ function shopItem(e0,i){const h=S.hero;const e=Object.assign({},e0,priceOf(e0));
   const st=e.refused?'<span class="bad">«مش هبيعهالك.»</span>':e.stock<1?'<span class="bad">خلصت</span>':e.stock===1?'<span class="last">فاضل 1 بس!</span>':`فاضل ${e.stock}`;
   const why=e.refused?'عشان سمعتك وحشة أوي':e.stock<1?'':full?(gr?'':'الشنطة مليانة'):poor?`ناقصك ${e.price-h.money} جنيه`:'';
   const ic=(gr&&typeof gearIcon==='function'&&gearIcon(e.k,46))||itemIcon(e.k,46);
-  return `<div class="sitem${out?' out':''}">${e.was&&!out?'<span class="deal">عرض</span>':''}<div class="ic">${ic}</div><b>${it.name}</b><small class="inf">${T(it.info())}</small><small class="stk">${st}${have?` · ${G('معاك','معاكي')} ${have}`:''}</small>${e.extra&&!e.refused?`<small class="rx" style="color:${e.extra>0?'#f0a090':'#a6e3a0'}">${e.extra>0?`زيادة ${e.extra} جنيه عشان سمعتك`:`خصم ${-e.extra} جنيه عشان سمعتك`}</small>`:''}<button class="buy price" data-buy="${i}" ${dis?'disabled':''}>${e.was&&!out?`<s>${e.was}</s> `:''}${e.price} جنيه</button>${why?`<small class="why">${why}</small>`:''}</div>`}
+  const mx=gr||dis?0:shopMax(h,e,e),q='s:'+i,n=mx?qtyN(q,mx):1,w=e.was&&!out?e.was:0;
+  const btn=`<button class="buy price" data-buy="${i}" data-qb="${q}" data-p="${e.price}" data-w="${w}" ${dis?'disabled':''}>${qtyLbl(n,e.price,w)}</button>`;
+  return `<div class="sitem${out?' out':''}">${e.was&&!out?'<span class="deal">عرض</span>':''}<div class="ic">${ic}</div><b>${it.name}</b><small class="inf">${T(it.info())}</small><small class="stk">${st}${have?` · ${G('معاك','معاكي')} ${have}`:''}</small>${e.extra&&!e.refused?`<small class="rx" style="color:${e.extra>0?'#f0a090':'#a6e3a0'}">${e.extra>0?`زيادة ${e.extra} جنيه عشان سمعتك`:`خصم ${-e.extra} جنيه عشان سمعتك`}</small>`:''}${mx?`<div class="qbar">${qtyHTML(q,n,mx)}${btn}</div>`:btn}${why?`<small class="why">${why}</small>`:''}</div>`}
+/* how many of one thing you can buy at once: the stock, your money and the room in your bag. The amulet is one per hero */
+function shopMax(h,e,pr){if(e.k==='amulet'||pr.refused||!pr.price)return 0;return qtyMax(e.stock,h.money/pr.price,bagCap(h,e.k)-bagCount(h,e.k))}
 SCREENS.shop=function(){const h=S.hero;if(!h||!S.shop){S.screen='story';return render()}
   const m=priceMul(h),tp=titlePrice(h),tn=titlesOn(h).filter(t=>t.price).map(t=>`«${titleName(t,h)}»`).join(' و');
   const greet=h.rep<=-60?'«{عايز|عايزة} إيه؟ وإيدك بعيد عن البضاعة.»':h.rep>=60?'«أهلاً {بالبطل|بالبطلة}! {ليك|ليكي} عندي سعر مخصوص.»':'«{اتفضل|اتفضلي}، كله بضاعة نضيفة.»';
@@ -1683,7 +1710,7 @@ SCREENS.shop=function(){const h=S.hero;if(!h||!S.shop){S.screen='story';return r
   <div class="sgrid">${S.shop.map(shopItem).join('')}</div>
   <div class="sback"><button class="btn ghost" id="shopBack">رجوع للسوق</button></div>`;
   bindQ();
-  view.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(+b.dataset.buy,b));
+  view.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(+b.dataset.buy,b));qtyBind();
   $('#shopBack').onclick=()=>{S.screen='story';view.scrollTop=0;render()}};
 function shopHTML(){
   const h=S.hero;const m=priceMul(h),tp=titlePrice(h),tn=titlesOn(h).filter(t=>t.price).map(t=>`«${titleName(t,h)}»`).join(' و');
@@ -1713,8 +1740,9 @@ function story(){
   bindQ();
   if(RES)$('#cont').onclick=()=>{const r=RES;RES=null;if(r.fight)return startCombat(r.fight,r.go,false);goto(r.go)};
 }
-function buy(i,btn){const h=S.hero,e=S.shop[i];if(!e)return;const pr=priceOf(e),gr=e.k==='amulet';if(e.stock<1||h.money<pr.price||(gr?h.gear.amulet>0:bagFull(h,e.k))||pr.refused)return;h.money-=pr.price;e.stock--;
-  if(gr){h.gear.amulet=1;if(!h.eq.charm)h.eq.charm='amulet'}else h.bag[e.k]=(h.bag[e.k]||0)+1;saveHero();SFX.coin();SFX.reg();floatAt(btn,'+1 '+ITEMS[e.k].name,'#a6e3a0','',18);const y=view.scrollTop;render();view.scrollTop=y;if(h.money>=500)ach('rich')}
+function buy(i,btn){const h=S.hero,e=S.shop[i];if(!e)return;const pr=priceOf(e),gr=e.k==='amulet';if(e.stock<1||h.money<pr.price||(gr?h.gear.amulet>0:bagFull(h,e.k))||pr.refused)return;
+  const n=gr?1:qtyN('s:'+i,Math.max(1,shopMax(h,e,pr)));h.money-=pr.price*n;e.stock-=n;
+  if(gr){h.gear.amulet=1;if(!h.eq.charm)h.eq.charm='amulet'}else h.bag[e.k]=(h.bag[e.k]||0)+n;saveHero();SFX.coin();SFX.reg();floatAt(btn,`+${n} ${ITEMS[e.k].name}`,'#a6e3a0','',18);const y=view.scrollTop;render();view.scrollTop=y;if(h.money>=500)ach('rich')}
 function goto(id){
   if(typeof id==='function')return id();
   S.scene=id;RES=null;
@@ -2146,7 +2174,7 @@ function setup(){
   const worn=gearOn(h).map(g=>g.n).join('، ');
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>مغامرة «النداهة»</h2>${qBtn()}</div>
   <div class="art" style="height:170px">${scenery('canal')}<div class="fade"></div></div>
-  <div class="story" style="font-size:17px">تلات شباب مشيوا ورا صوت ست عند الترعة وما رجعوش. طريق، ووحوش، وناس ${G('تساعدهم','تساعديهم')} أو ${G('تأذيهم','تأذيهم')}، ومواجهة في الآخر. حوالي 15 دقيقة.</div>
+  <div class="story" style="font-size:17px">تلات شباب مشيوا ورا صوت ست عند الترعة وما رجعوش. طريق، ووحوش، وناس ${G('تساعدهم','تساعديهم')} أو ${G('تأذيهم','تأذيهم')}، ومواجهة في الآخر. مغامرة قصيرة.</div>
   <div class="label">${G('هتلعب','هتلعبي')} بأنهي نرد؟</div>
   <div class="col">
     <button class="ch" data-d="2d6" style="${S.dice==='2d6'?'border:2px solid var(--gold)':''}"><span>نردين عاديين<small>أسهل وأهدى. أحسن لأول مرة.</small></span><span style="display:flex;gap:2px;transform:scale(.38);margin:-30px -32px">${dieHTML(3)+dieHTML(4)}</span></button>
@@ -2318,6 +2346,8 @@ function end(){
 .tw-buy.warn{border-color:var(--bad);color:#ffb3a3;background:#3a1c18}
 .tw-buy s{display:block;color:var(--dim);font-size:11px;font-weight:700}
 .tw-buy:active,.tw-act:active{transform:scale(.96)}
+.tw-qb{flex-basis:100%;display:flex;align-items:center;gap:8px;min-width:0}
+.tw-qb .tw-buy{margin-inline-start:auto;min-width:104px}
 .tw-it{background:var(--card);border:1px solid var(--line);border-inline-start:4px solid var(--rc);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}
 .tw-it.got{background:linear-gradient(90deg,var(--card),#ffffff06)}
 .tw-it .hd{display:flex;gap:10px;align-items:flex-start}
@@ -2365,7 +2395,8 @@ function end(){
 .tw-slot .gn{font-size:11px;font-weight:800;line-height:1.3;text-align:center;overflow-wrap:anywhere}
 .tw-slot.em .gn{color:var(--dim);font-weight:700}
 .tw-slot.on{border-color:var(--rc);box-shadow:0 0 12px -4px var(--rc)}
-.tw-slot .dot{position:absolute;top:5px;inset-inline-end:5px;min-width:18px;height:18px;border-radius:9px;background:#d0483b;color:#fff;font-size:11px;font-weight:800;line-height:18px;padding:0 4px;animation:giftPulse 1.6s infinite}
+.tw-slot .best{position:absolute;top:-11px;inset-inline-end:-5px;height:20px;border-radius:10px;background:#24502c;border:1px solid #6fb36a;color:#c9f5c4;font-size:12px;font-weight:800;line-height:18px;padding:0 7px;box-shadow:0 2px 6px #0009;pointer-events:none}
+.tw-doll .sd:first-child .tw-slot .best{inset-inline-end:auto;inset-inline-start:-5px}
 .tw-doll .md{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-width:0}
 .tw-doll .pt{width:100%;max-width:172px;aspect-ratio:1;border-radius:26px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 30px #e0b25a33;background:#000}
 .tw-doll .pt svg{width:100%;height:100%;display:block}
@@ -2447,6 +2478,8 @@ const BAGUPS=[
   {id:'bag3',n:'خُرج كبير',tier:2,add:{pot:3,food:3,salt:2,revive:1},buy:700,craft:{salskin:5,cloth:4,silver:1},cm:150,lv:3}];
 function bagExtra(h,k){const it=ITEMS[k];if(!h||!it)return 0;const key=it.kind==='pot'?'pot':it.kind==='food'?'food':k;let n=0;for(let i=0;i<(h.bagLvl||0)&&i<BAGUPS.length;i++)n+=BAGUPS[i].add[key]||0;return n}
 const TW_BAGK={pot:['potion','جرعات'],food:['foul','أكل'],salt:['salt','ملح'],revive:['revive','قزازة صحيان']};
+/* v4.1: metals at the smith, 3 times what عم رمضان pays for them (your reputation counts too), always in stock */
+const TW_SMAT=['copper','iron','silver'];
 /* cooking at أم سيد */
 const TW_REC={grilled:{need:{bolti:1,bread:1},lv:1,tier:0},qdish:{need:{qarmout:1,bread:1},lv:1,tier:1},seniya:{need:{bouri:2,bread:1},lv:3,tier:2}};
 
@@ -2480,6 +2513,12 @@ const twMon=h=>`<span class="tw-mon" id="money"><i></i><b id="twM">${h.money-TWN
 function twMonUpd(){const m=$('#twM');if(m&&S.hero){m.textContent=S.hero.money-TWN.pend;cls($('#money'),'glow')}}
 function twMoneyFly(from,amount){TWN.pend+=amount;let got=0;coinsTo(from,$('#money'),amount,v=>{TWN.pend-=v-got;got=v;twMonUpd()}).then(()=>{TWN.pend-=amount-got;got=amount;twMonUpd()})}
 function twPay(from,price,big){const m=$('#money');SFX.reg();if(m){floatAt(m,twI('−'+price),'#f0a090','',20);cls(m,'sp')}if(big&&m&&from)coinsTo(m,from,Math.min(price,60));else SFX.coin()}
+/* v4.1: the buy bar under a row: how many (only when you can buy), and the button with the total. off = the button when you can't buy any */
+function twQB(k,mx,p,w,attr,off){const n=mx>=1?qtyN(k,mx):1;
+  return `<div class="tw-qb">${mx>=1?qtyHTML(k,n,mx):''}<button class="tw-buy" ${attr} data-qb="${k}" data-p="${p}" data-w="${w||0}" ${mx>=1?'':'disabled'}>${mx>=1?qtyLbl(n,p,w):off}</button></div>`}
+/* v4.1: the sell bar: how many (only when you have more than one, «الكل» for all of them) and one sell button. cp+n is its «متأكد؟» key */
+function twSB(k,mx,p,attr,cp){const n=qtyN(k,Math.max(1,mx)),cf=TWN.conf===cp+n;
+  return `<div class="tw-qb">${mx>1?qtyHTML(k,n,mx,1):''}<button class="tw-buy sell${cf?' warn':''}" ${attr} data-qb="${k}" data-p="${p}" data-w="0" data-ql="s">${cf?`${G('متأكد؟','متأكدة؟')}<small>${p*n}\u00a0جنيه</small>`:qtyLbl(n,p,0,1)}</button></div>`}
 const TW_LOCK='<svg class="lock" width="13" height="13" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="8" rx="2" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>';
 
 /* ---------- art from the art worker, with simple fallbacks ---------- */
@@ -2602,7 +2641,7 @@ function twSayHTML(h,fresh){const s=!fresh&&TWN.gr.say||(TWN.gr.say=twSay(h));re
 function twGreet(h,id){const hint=Object.keys(HIDDEN).find(k=>!h.hidden[k]&&TW_WHO[HIDDEN[k].hint.split(':')[0].trim()]===id);if(hint&&Math.random()<.2)return HIDDEN[hint].hint.slice(HIDDEN[hint].hint.indexOf(':')+1).trim();
   const bad=h.rep<=-20,vbad=h.rep<=-60,good=h.rep>=20;
   const L={ramadan:vbad?['عم رمضان بصلك بشك وحط إيده على الفلوس: «{عايز|عايزة} إيه؟»']:bad?['«{اتفضل|اتفضلي}.. بس الأسعار {عليك|عليكي} غير.»']:good?['«أهلاً {بالبطل|بالبطلة}! {اتفضل|اتفضلي}، عندي حاجات حلوة النهارده.»']:['«{اتفضل|اتفضلي}، البضاعة طازة.»','«{بص|بصي} براحتك. اللي يعجبك نتكلم فيه.»'],
-    hassan:vbad?['عم حسن ما رفعش عينه من النار: «{قول|قولي} {عايز|عايزة} إيه {وامشي|وامشي}.»']:['«{هات|هاتي} الحاجة وأنا أعلّمك، أو {خد|خدي} اللي {عايزه|عايزاه} جاهز.»','«الحديد بيحب الإيد اللي بتصبر عليه.»'],
+    hassan:vbad?['عم حسن ما رفعش عينه من النار: «{قول|قولي} {عايز|عايزة} إيه {وامشي|وامشي}.»']:['«{هات|هاتي} الحاجة وأنا أعلّمك، أو {خد|خدي} اللي {عايزه|عايزاه} جاهز.»','«الحديد بيحب الإيد اللي بتصبر عليه.»','«ناقصك نحاس ولا حديد؟ عندي جاهز، بس الجبل أرخص.»'],
     fathy:vbad?['عم فتحي بصلك من فوق النضارة: «هنشوف.»']:['«{تعالى|تعالي}، {تحب|تحبي} أفصّلك إيه؟»','«الغُرزة الحلوة بتعيش أكتر من صاحبها.»'],
     umsayed:vbad?['أم سيد قلبت وشها: «الأكل للي يستاهله.»']:['«{تعالى|تعالي} يا {حبيبي|حبيبتي}، الأكل سخن.»','«مفيش حاجة بترجّع الروح زي طبق فول.»']}[id]||['«أهلاً.»'];
   return T(pick(L))}
@@ -2678,7 +2717,7 @@ SCREENS.town=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const eqN=TW_SLOTS.filter(s=>h.eq[s]).length,cs=twCanN(h,'smith'),ct=twCanN(h,'tailor'),ck=Object.keys(TW_REC).filter(k=>twCanCook(h,k)).length;
   const inStock=mk.list.filter(x=>x.stock>0).map(x=>resN(x.k));
   const tiles=[
-    {id:'adv',go:'setup',n:'المغامرات',w:'مغامرة «النداهة»',s:'حوالي 15 دقيقة'},
+    {id:'adv',go:'setup',n:'المغامرات',w:'مغامرة «النداهة»',s:'قصيرة'},
     {id:'market',go:'market',n:'السوق',w:'عم رمضان البياع',s:inStock.length?`${mk.fresh?'<span class="new">جديد: </span>':''}${inStock.slice(0,3).join(' و')}`:'قماش وعيش',bell:1,b:mk.fresh?'بضاعة جديدة':''},
     {id:'smith',go:'smith',n:'الحداد',w:'عم حسن',s:cs?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(cs)}</span>`:`حدادة مستوى ${lifeLvl(h,'smith')}`,bell:1},
     {id:'tailor',go:'tailor',n:'الخياط',w:'عم فتحي',s:ct?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(ct)}</span>`:(h.bagLvl||0)<BAGUPS.length?'شنط أكبر وهدوم':`خياطة مستوى ${lifeLvl(h,'tailor')}`,bell:1},
@@ -2692,7 +2731,7 @@ SCREENS.town=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   <div class="tw${enter?' tw-in':''}">
     <div class="card"><div class="tw-me"><div class="pic">${portrait(h,'tw')}</div><div class="inf">
       <div class="r1"><b>${esc(h.name)}</b>${twMon(h)}</div>
-      <div class="r2">${h.cls} · المستوى ${h.lvl}${tt?` · <span style="color:var(--gold2)">${titleName(tt,h)}</span>`:''}</div>
+      <div class="r2">${clsN(h)} · المستوى ${h.lvl}${tt?` · <span style="color:var(--gold2)">${titleName(tt,h)}</span>`:''}</div>
       <div class="tw-bar xp"><i style="width:${h.xp/need*100}%"></i></div>
       <div class="tw-sm">فاضلك <b>${need-h.xp}</b> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div></div></div>
       ${twEffHTML(h,1)}</div>
@@ -2716,35 +2755,36 @@ SCREENS.market=function(){const h=S.hero;if(!h){S.screen='title';return render()
     ${tab==='buy'?twMktBuy(h,L,pr):twMktSell(h)}</div>`;
   twBack();
   view.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(TWN.tab===b.dataset.tab)return;TWN.tab=b.dataset.tab;TWN.conf=null;twRender()});
-  view.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>twBuyRes(+b.dataset.b,b));
-  view.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>twSellRes(b.dataset.s,+b.dataset.n,b));
+  view.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>twBuyRes(+b.dataset.b,b));qtyBind(()=>{TWN.conf=null});
+  view.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>twSellRes(b.dataset.s,b));
   view.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>twSellGear(b.dataset.g,b));
   view.querySelectorAll('[data-junk]').forEach(b=>b.onclick=()=>twJunk(b.dataset.junk,b))};
+const twMktMax=(h,e,p)=>qtyMax(e.always?99:e.stock,h.money/p);
 function twMktBuy(h,L,pr){return `${twRepNote(h,'عم رمضان',0,pr)}<div class="col">${L.map((e,i)=>{const p=pr[i],m=MAT[e.k],R=RARE[m.tier||0],have=h.res[e.k]||0,out=!e.always&&e.stock<1,uses=twUses(e.k);
-    return `<div class="tw-row" style="--rc:${twRc(m.tier||0)}"><div class="ic">${twMat(e.k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b>${p.was?'<span class="deal">عرض</span>':''}
+    return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(e.k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b>${p.was?'<span class="deal">عرض</span>':''}
       ${uses.length?`<small>بيدخل في: ${uses.slice(0,3).join('، ')}</small>`:''}
       <small>${e.always?'موجود على طول':out?'<span style="color:#f0a090;font-weight:800">خلص</span>':e.stock===1?'<span style="color:#ffb347;font-weight:800">فاضل 1 بس!</span>':`فاضل ${e.stock}`}${have?` · ${G('معاك','معاكي')} ${have}`:''}</small>
       ${p.price!==p.base?`<small class="rx" style="color:${p.price>p.base?'#f0a090':'#a6e3a0'}">${p.price>p.base?`زيادة ${p.price-p.base} جنيه عشان سمعتك`:`خصم ${p.base-p.price} جنيه`}</small>`:''}</div>
-      <button class="tw-buy" data-b="${i}" ${out||h.money<p.price?'disabled':''}>${p.was?`<s>${p.was}</s>`:''}${p.price} جنيه${!out&&h.money<p.price?`<small>ناقصك ${p.price-h.money}</small>`:''}</button></div>`}).join('')}</div>`}
+      ${twQB('m:'+e.k,twMktMax(h,e,p.price),p.price,p.was,`data-b="${i}"`,`${p.was?`<s>${p.was}</s>`:''}${p.price} جنيه${!out&&h.money<p.price?`<small>ناقصك ${p.price-h.money}</small>`:''}`)}</div>`}).join('')}</div>`}
 function twMktSell(h){const res=Object.keys(MAT).filter(k=>(h.res[k]||0)>0),gear=Object.keys(GEAR).filter(id=>twSpare(h,id)>0);
   if(!res.length&&!gear.length)return `<div class="card tw-empty">مفيش حاجة ${G('تبيعها','تبيعيها')} دلوقتي.<br>${G('روح','روحي')} الجبل أو الترعة ${G('وهات','وهاتي')} حاجات، وعم رمضان بيشتري كل حاجة.</div>`;
-  const row=k=>{const m=MAT[k],n=h.res[k],R=RARE[m.tier||0],c1=TWN.conf===k+':1',cA=TWN.conf===k+':'+n;
+  const row=k=>{const m=MAT[k],n=h.res[k],R=RARE[m.tier||0];
     if(!m.p)return `<div class="tw-row" style="--rc:${twRc(m.tier||0)}"><div class="ic">${twMat(k,40)}</div><div class="tx"><b>${m.n}</b> <span class="tw-cnt">×${n}</span><small>عم رمضان ضحك: «ده ما يتباعش!»</small></div><button class="tw-buy warn" data-junk="${k}">ارميه</button></div>`;
-    return `<div class="tw-row" style="--rc:${twRc(m.tier||0)}"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b> <span class="tw-cnt">×${n}</span><small>بـ${m.p} جنيه الواحدة</small>${m.tier>=2?`<small style="color:${R.c}">${R.n}. ${G('فكّر','فكّري')} قبل ما ${G('تبيع','تبيعي')}${TW_FEM[k]?'ها':'ه'}</small>`:''}</div>
-      <div class="acts2"><button class="tw-buy sell${c1?' warn':''}" data-s="${k}" data-n="1">${c1?G('متأكد؟','متأكدة؟'):G('بيع','بيعي')+' 1'}<small>${m.p} جنيه</small></button>${n>1?`<button class="tw-buy sell${cA?' warn':''}" data-s="${k}" data-n="${n}">${cA?G('متأكد؟','متأكدة؟'):'الكل'}<small>${m.p*n} جنيه</small></button>`:''}</div></div>`};
-  const grow=id=>{const g=GEAR[id],R=RARE[g.tier],v=twGearSell(id),cf=TWN.conf==='g:'+id;
-    return `<div class="tw-row" style="--rc:${twRc(g.tier)}"><div class="ic">${twGear(id,42)}</div><div class="tx"><b style="color:${R.c}">${g.n}</b> <span class="tw-cnt">×${twSpare(h,id)}</span><small>${SLOTS[g.slot]} · حتة زيادة مش ${G('لابسها','لابساها')}</small><small>بنص التمن</small></div><button class="tw-buy sell${cf?' warn':''}" data-g="${id}">${cf?G('متأكد؟','متأكدة؟'):G('بيع','بيعي')}<small>${v} جنيه</small></button></div>`};
+    return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b> <span class="tw-cnt">×${n}</span><small>بـ${m.p} جنيه الواحدة</small>${m.tier>=2?`<small style="color:${R.c}">${R.n}. ${G('فكّر','فكّري')} قبل ما ${G('تبيع','تبيعي')}${TW_FEM[k]?'ها':'ه'}</small>`:''}</div>
+      ${twSB('sr:'+k,n,m.p,`data-s="${k}"`,k+':')}</div>`};
+  const grow=id=>{const g=GEAR[id],R=RARE[g.tier],v=twGearSell(id),sp=twSpare(h,id);
+    return `<div class="tw-row" style="--rc:${twRc(g.tier)};flex-wrap:wrap"><div class="ic">${twGear(id,42)}</div><div class="tx"><b style="color:${R.c}">${g.n}</b> <span class="tw-cnt">×${sp}</span><small>${SLOTS[g.slot]} · حتة زيادة مش ${G('لابسها','لابساها')}</small><small>بنص التمن</small></div>${twSB('sg:'+id,sp,v,`data-g="${id}"`,'g:'+id+':')}</div>`};
   const ores=res.filter(k=>!MAT[k].fish),fish=res.filter(k=>MAT[k].fish);
   return `${ores.length?`<div class="tw-lbl">حاجات</div><div class="col">${ores.map(row).join('')}</div>`:''}${fish.length?`<div class="tw-lbl">سمك</div><div class="col">${fish.map(row).join('')}</div>`:''}${gear.length?`<div class="tw-lbl">عدّة زيادة</div><div class="col">${gear.map(grow).join('')}</div>`:''}`}
-function twBuyRes(i,btn){const h=S.hero,e=twMktList(h)[i];if(!e)return;const p=twMP(h,e).price;if((!e.always&&e.stock<1)||h.money<p)return;
-  h.money-=p;if(!e.always)e.stock--;addRes(h,e.k,1);saveHero();floatAt(btn,twI('+1')+' '+resN(e.k),'#a6e3a0','',18);twPay(btn,p);
+function twBuyRes(i,btn){const h=S.hero,e=twMktList(h)[i];if(!e)return;const p=twMP(h,e).price,mx=twMktMax(h,e,p);if(mx<1)return;const n=qtyN('m:'+e.k,mx);
+  h.money-=p*n;if(!e.always)e.stock-=n;addRes(h,e.k,n);saveHero();floatAt(btn,twI('+'+n)+' '+resN(e.k),'#a6e3a0','',18);twPay(btn,p*n);
   const tr=MAT[e.k].tier||0;if(tr)pop(btn,[RARE[tr].c,'#ffffff',RARE[tr].c],10+tr*8);twRender();
   if(!e.always&&e.stock===0)toast(`آخر ${resN(e.k)} عند عم رمضان بقى ${G('معاك','معاكي')}`)}
-function twSellRes(k,n,btn){const h=S.hero,have=h.res[k]||0;n=Math.min(n,have);if(n<1)return;const m=MAT[k],key=k+':'+n;
+function twSellRes(k,btn){const h=S.hero,have=h.res[k]||0;if(have<1)return;const n=qtyN('sr:'+k,have),m=MAT[k],key=k+':'+n;
   if((m.tier||0)>=2&&TWN.conf!==key){TWN.conf=key;SFX.meh();return twRender()}
   TWN.conf=null;const v=m.p*n;h.res[k]-=n;h.money+=v;saveHero();SFX.reg();floatAt(btn,twI('+'+v)+' جنيه','#f3d48f','',20);twMoneyFly(btn,v);twRender();if(h.money>=500)ach('rich')}
-function twSellGear(id,btn){const h=S.hero;if(twSpare(h,id)<1)return;if(TWN.conf!=='g:'+id){TWN.conf='g:'+id;SFX.meh();return twRender()}
-  TWN.conf=null;const v=twGearSell(id);h.gear[id]--;h.money+=v;saveHero();SFX.reg();floatAt(btn,twI('+'+v)+' جنيه','#f3d48f','',20);twMoneyFly(btn,v);twRender();if(h.money>=500)ach('rich')}
+function twSellGear(id,btn){const h=S.hero,sp=twSpare(h,id);if(sp<1)return;const n=qtyN('sg:'+id,sp),key='g:'+id+':'+n;if(TWN.conf!==key){TWN.conf=key;SFX.meh();return twRender()}
+  TWN.conf=null;const v=twGearSell(id)*n;h.gear[id]-=n;h.money+=v;saveHero();SFX.reg();floatAt(btn,twI('+'+v)+' جنيه','#f3d48f','',20);twMoneyFly(btn,v);twRender();if(h.money>=500)ach('rich')}
 function twJunk(k,btn){const h=S.hero;if(!(h.res[k]>0))return;h.res[k]=0;saveHero();SFX.whoosh();floatAt(btn,'طششش!','#9fc6ee','',22);toast(`عم رمضان رمى ${resN(k)} في الترعة تاني: «يمكن حد غيرك يصطاده!»`);twRender()}
 
 /* ---------- الحداد / الخياط ---------- */
@@ -2752,7 +2792,7 @@ function twWork(at){const h=S.hero;if(!h){S.screen='title';return render()}
   const npc=at==='smith'?'hassan':'fathy',who=at==='smith'?'عم حسن':'عم فتحي';
   const ids=Object.keys(GEAR).filter(id=>GEAR[id].at===at).sort((a,b)=>((GEAR[a].lv||1)-(GEAR[b].lv||1))||(TW_SLOTS.indexOf(GEAR[a].slot)-TW_SLOTS.indexOf(GEAR[b].slot))||(GEAR[a].tier-GEAR[b].tier));
   const slots=TW_SLOTS.filter(s=>ids.some(id=>GEAR[id].slot===s)),f=slots.includes(TWN.fil)?TWN.fil:'all',shown=ids.filter(id=>f==='all'||GEAR[id].slot===f);
-  const pr=ids.filter(id=>GEAR[id].buy).map(id=>({price:twGP(h,GEAR[id].buy),base:Math.round(GEAR[id].buy/5)*5}));
+  const pr=ids.filter(id=>GEAR[id].buy).map(id=>({price:twGP(h,GEAR[id].buy),base:Math.round(GEAR[id].buy/5)*5})).concat(at==='smith'?TW_SMAT.map(k=>twSmP(h,k)):[]);
   view.innerHTML=`${twTop(at==='smith'?'الحداد':'الخياط')}<div class="tw">
     ${twNpcHTML(npc,twGreetC(h,npc))}
     ${twLifeHTML(h,at)}
@@ -2760,12 +2800,14 @@ function twWork(at){const h=S.hero;if(!h){S.screen='title';return render()}
     ${twRepNote(h,who,0,pr)}${twMul(h)>1?`<div class="tw-sm" style="margin-top:-12px">ولو ${G('عملت','عملتي')} الحاجة بإيدك، تمن الشغل مش بيتأثر بسمعتك.</div>`:''}
     ${at==='tailor'?twBagHTML(h):''}
     ${at==='tailor'?`<div class="tw-lbl">هدوم</div>`:''}
-    <div class="col">${shown.map(id=>twGearCard(h,id)).join('')}</div></div>`;
+    <div class="col">${shown.map(id=>twGearCard(h,id)).join('')}</div>
+    ${at==='smith'?twSmHTML(h):''}</div>`;
   twBack();
   view.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{TWN.fil=b.dataset.f;twRender()});
   view.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>twBuyGear(b.dataset.buy,b));
   view.querySelectorAll('[data-cr]').forEach(b=>b.onclick=()=>twCraft(b.dataset.cr,b));
-  view.querySelectorAll('[data-bag]').forEach(b=>b.onclick=()=>twBag(b.dataset.bag,b))}
+  view.querySelectorAll('[data-bag]').forEach(b=>b.onclick=()=>twBag(b.dataset.bag,b));
+  view.querySelectorAll('[data-xm]').forEach(b=>b.onclick=()=>twBuyMetal(b.dataset.xm,b));qtyBind()}
 SCREENS.smith=()=>twWork('smith');SCREENS.tailor=()=>twWork('tailor');
 function twLifeHTML(h,k){const L=h.life[k],nd=L.lvl*4,mx=L.lvl>=10,disc=k==='smith'||k==='tailor'?Math.round(Math.min(.5,.1*(L.lvl-1))*100):0;
   const how={smith:`كل حاجة ${G('بتعملها','بتعمليها')} بإيدك بتعلّمك`,tailor:`كل حاجة ${G('بتعملها','بتعمليها')} بإيدك بتعلّمك`,cook:`كل أكلة ${G('بتطبخها','بتطبخيها')} بتعلّمك`}[k]||'';
@@ -2818,6 +2860,20 @@ async function twBag(mode,btn){const h=S.hero,L=h.bagLvl||0,b=BAGUPS[L];if(TWN.b
   await twCeremony({kind:mode==='buy'?'buy':'tailor',tier:b.tier,icon:twGear(b.id,124),title:b.n,sub:'شنطتك كبرت! دلوقتي بتشيل:',chips:caps,snd:SFX.bell,acts:[{v:'ok',t:'تمام'}],msg:`${G('دوس','دوسي')} ${G('وخيّط','وخيّطي')}!`});
   TWN.busy=0;if(mode!=='buy'){lifeXP(h,'tailor',1+b.tier);bump('crafted');saveHero()}twRender()}
 
+/* v4.1: خامات at عم حسن: dearer than the mountain and the market, but always there */
+const twSmP=(h,k)=>({price:twGP(h,MAT[k].p*3),base:Math.round(MAT[k].p*3/5)*5});
+const twSmMax=(h,p)=>qtyMax(99,h.money/p);
+function twSmHTML(h){return `<div class="tw-lbl">خامات <small>أغلى من الجبل والسوق، بس جاهزة على طول</small></div><div class="col">${TW_SMAT.map(k=>twSmRow(h,k)).join('')}</div>`}
+function twSmRow(h,k){const m=MAT[k],R=RARE[m.tier||0],p=twSmP(h,k),have=h.res[k]||0,uses=twUses(k);
+  return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b>
+      ${uses.length?`<small>بيدخل في: ${uses.slice(0,3).join('، ')}</small>`:''}
+      <small>${TW_FEM[k]?'موجودة':'موجود'} على طول${have?` · ${G('معاك','معاكي')} ${have}`:''}</small>
+      ${p.price!==p.base?`<small class="rx" style="color:${p.price>p.base?'#f0a090':'#a6e3a0'}">${p.price>p.base?`زيادة ${p.price-p.base} جنيه عشان سمعتك`:`خصم ${p.base-p.price} جنيه`}</small>`:''}</div>
+    ${twQB('x:'+k,twSmMax(h,p.price),p.price,0,`data-xm="${k}"`,`${p.price} جنيه${h.money<p.price?`<small>ناقصك ${p.price-h.money}</small>`:''}`)}</div>`}
+function twBuyMetal(k,btn){const h=S.hero;if(!h||!TW_SMAT.includes(k))return;const p=twSmP(h,k).price,mx=twSmMax(h,p);if(mx<1)return;const n=qtyN('x:'+k,mx);
+  h.money-=p*n;addRes(h,k,n);saveHero();floatAt(btn,twI('+'+n)+' '+resN(k),'#a6e3a0','',18);twPay(btn,p*n);
+  const tr=MAT[k].tier||0;if(tr)pop(btn,[RARE[tr].c,'#ffffff',RARE[tr].c],10+tr*8);twRender()}
+
 /* ---------- الطباخة: أم سيد ---------- */
 SCREENS.cook=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const fc=bagCount(h,'foul'),cap=bagCap(h,'foul'),pr=['foul','grilled'].map(k=>({price:twGP(h,ITEMS[k].price),base:Math.round(ITEMS[k].price/5)*5}));
@@ -2834,18 +2890,19 @@ SCREENS.cook=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     <div class="card">${twEffHTML(h,1,1)}</div></div>`;
   twBack();twBindEat();twTick();
   view.querySelectorAll('[data-cook]').forEach(b=>b.onclick=()=>twCook(b.dataset.cook,b));
-  view.querySelectorAll('[data-fb]').forEach(b=>b.onclick=()=>twBuyFood(b.dataset.fb,b))};
+  view.querySelectorAll('[data-fb]').forEach(b=>b.onclick=()=>twBuyFood(b.dataset.fb,b));qtyBind()};
 function twRecRow(h,k){const r=TW_REC[k],it=ITEMS[k],R=RARE[r.tier],lock=lifeLvl(h,'cook')<r.lv,miss=twMiss(h,r.need),full=bagFull(h,k);
   const nd=Object.keys(r.need).map(m=>`<span class="tw-nd ${(h.res[m]||0)>=r.need[m]?'ok':'no'}">${twMat(m,18)}${r.need[m]>1?r.need[m]+' ':''}${resN(m)}</span>`).join('');
   const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:full?`<div class="tw-miss" style="color:#f0a090">الشنطة مليانة أكل. ${G('كُل','كُلي')} حاجة الأول أو ${G('كبّر','كبّري')} شنطتك عند عم فتحي</div>`:'';
   return `<div class="tw-row" style="--rc:${twRc(r.tier)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b style="color:${r.tier?R.c:'var(--ink)'}">${it.name}</b><small>${T(it.info())}</small><div class="tw-chs">${nd}</div></div>
     ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">طبخ مستوى ${r.lv}</small></button>`:`<button class="tw-buy" data-cook="${k}" ${miss.length||full?'disabled':''}>${G('اطبخ','اطبخي')}</button>`}
     ${note?`<div style="flex-basis:100%">${note}</div>`:''}</div>`}
+const twFoodMax=(h,k,p)=>qtyMax(h.money/p,bagCap(h,k)-bagCount(h,k));
 function twFoodRow(h,k){const it=ITEMS[k],p=twGP(h,it.price),full=bagFull(h,k),have=h.bag[k]||0;
-  return `<div class="tw-row" style="--rc:${twRc(0)}"><div class="ic">${twFood(k,40)}</div><div class="tx"><b>${it.name}</b><small>${T(it.info())}</small>${have||full?`<small>${have?`${G('معاك','معاكي')} ${have}`:''}${full?`${have?' · ':''}<span style="color:#f0a090">الشنطة مليانة أكل</span>`:''}</small>`:''}</div>
-    <button class="tw-buy" data-fb="${k}" ${full||h.money<p?'disabled':''}>${p} جنيه${!full&&h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}</button></div>`}
-function twBuyFood(k,btn){const h=S.hero,p=twGP(h,ITEMS[k].price);if(h.money<p)return;if(bagFull(h,k)){toast('الشنطة مليانة أكل');return}
-  h.money-=p;h.bag[k]=(h.bag[k]||0)+1;saveHero();floatAt(btn,twI('+1')+' '+ITEMS[k].name,'#a6e3a0','',18);twPay(btn,p);twRender()}
+  return `<div class="tw-row" style="--rc:${twRc(0)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b>${it.name}</b><small>${T(it.info())}</small>${have||full?`<small>${have?`${G('معاك','معاكي')} ${have}`:''}${full?`${have?' · ':''}<span style="color:#f0a090">الشنطة مليانة أكل</span>`:''}</small>`:''}</div>
+    ${twQB('f:'+k,twFoodMax(h,k,p),p,0,`data-fb="${k}"`,`${p} جنيه${!full&&h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}
+function twBuyFood(k,btn){const h=S.hero,p=twGP(h,ITEMS[k].price);if(h.money<p)return;if(bagFull(h,k)){toast('الشنطة مليانة أكل');return}const n=qtyN('f:'+k,Math.max(1,twFoodMax(h,k,p)));
+  h.money-=p*n;h.bag[k]=(h.bag[k]||0)+n;saveHero();floatAt(btn,twI('+'+n)+' '+ITEMS[k].name,'#a6e3a0','',18);twPay(btn,p*n);twRender()}
 async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl(h,'cook')<r.lv||!hasRes(h,r.need))return;
   if(bagFull(h,k)){toast(`الشنطة مليانة أكل (${bagCount(h,k)} من ${bagCap(h,k)})`);return}
   TWN.busy=1;takeRes(h,r.need);h.bag[k]=(h.bag[k]||0)+1;saveHero();
@@ -2857,13 +2914,13 @@ async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl
 
 /* ---------- عدّتي: the hero with the 6 slots around ---------- */
 SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
-  const slotB=s=>{const id=h.eq[s],g=id&&GEAR[id],idle=Object.keys(GEAR).filter(x=>GEAR[x].slot===s&&x!==id&&(h.gear[x]||0)>0).length;
-    return `<button class="tw-slot${g?' on':' em'}" data-slot="${s}" style="${g?`--rc:${RARE[g.tier].c}`:''}">${idle?`<span class="dot">${idle}</span>`:''}<span class="sn">${SLOTS[s]}</span><span class="ic">${g?twGear(id,40):'<svg viewBox="0 0 24 24" width="22"><path d="M12 5v14M5 12h14" stroke="#86745f" stroke-width="2.4" stroke-linecap="round"/></svg>'}</span><span class="gn" style="${g?`color:${RARE[g.tier].c}`:''}">${g?g.n:'فاضي'}</span></button>`};
+  const slotB=s=>{const id=h.eq[s],g=id&&GEAR[id],best=twBetter(h,s);
+    return `<button class="tw-slot${g?' on':' em'}" data-slot="${s}" style="${g?`--rc:${RARE[g.tier].c}`:''}">${best?'<span class="best">أحسن</span>':''}<span class="sn">${SLOTS[s]}</span><span class="ic">${g?twGear(id,40):'<svg viewBox="0 0 24 24" width="22"><path d="M12 5v14M5 12h14" stroke="#86745f" stroke-width="2.4" stroke-linecap="round"/></svg>'}</span><span class="gn" style="${g?`color:${RARE[g.tier].c}`:''}">${g?g.n:'فاضي'}</span></button>`};
   const gh=gearOn(h).reduce((a,g)=>a+(g.hp||0),0),ge=gearOn(h).reduce((a,g)=>a+(g.en||0),0),ga=gearOn(h).reduce((a,g)=>a+(g.armor||0),0),w=h.eq.weapon&&GEAR[h.eq.weapon],sp=SPIRITRED(h),rs=gearOn(h).some(g=>g.resist);
   const num=(v,l,e)=>`<div class="tw-num"><b>${v}</b><small>${l}</small>${e?`<em>${e}</em>`:''}</div>`;
   view.innerHTML=`${twTop('عدّتي')}<div class="tw">
     <div class="tw-doll"><div class="sd">${['weapon','armor','head'].map(slotB).join('')}</div>
-      <div class="md"><div class="pt" id="twPt">${portrait(h,'g')}</div><b>${esc(h.name)}</b><small>${h.cls} · المستوى ${h.lvl}</small></div>
+      <div class="md"><div class="pt" id="twPt">${portrait(h,'g')}</div><b>${esc(h.name)}</b><small>${clsN(h)} · المستوى ${h.lvl}</small></div>
       <div class="sd">${['ring','neck','charm'].map(slotB).join('')}</div></div>
     <div class="tw-sm" style="text-align:center;margin-top:-4px">${G('دوس','دوسي')} على أي مكان عشان ${G('تلبس','تلبسي')} أو ${G('تقلع','تقلعي')}. الحاجات بتتعمل عند عم حسن وعم فتحي.</div>
     <div class="tw-lbl">أرقامك</div>
@@ -2875,6 +2932,12 @@ SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     <div class="tw-lbl">الصفات <small>الرقم ده بيتزوّد على النرد</small></div>
     <div class="card" style="padding:6px 14px">${STATS.map(s=>{const v=ST(h,s),b=h.st[s]||0,p=stParts(h,s);return `<div class="tw-st"><b>${s}</b><span class="v ${v>b?'up':v<b?'dn':''}">${v?twN(v):'0'}</span><small>${p.length?p.join('، '):STAT_SHORT[s]}</small></div>`}).join('')}</div></div>`;
   twBack();view.querySelectorAll('[data-slot]').forEach(b=>b.onclick=()=>twSlotSheet(b.dataset.slot))};
+/* v4.1: «أحسن» on a slot only when you own something there you don't wear that is stronger: more damage for the weapon, more protection
+   for the armor and the head (then more health), or anything at all when the slot is empty */
+const TW_MAIN={weapon:g=>[g.dmg||0],armor:g=>[g.armor||0],head:g=>[g.armor||0,g.hp||0]};
+function twBetter(h,s){const id=h.eq[s],cur=id&&GEAR[id],own=Object.keys(GEAR).filter(x=>GEAR[x].slot===s&&x!==id&&(h.gear[x]||0)>0);
+  if(!own.length)return false;if(!cur)return true;const f=TW_MAIN[s];if(!f)return false;const c=f(cur);
+  return own.some(x=>{const v=f(GEAR[x]);for(let i=0;i<v.length;i++)if(v[i]!==c[i])return v[i]>c[i];return false})}
 function twSheetX(){const d=document.getElementById('twSh');if(d)d.remove()}
 function twSlotSheet(slot){const h=S.hero;twSheetX();const cur=h.eq[slot]&&GEAR[h.eq[slot]];
   const own=Object.keys(GEAR).filter(id=>GEAR[id].slot===slot&&(h.gear[id]||0)>0).sort((a,b)=>(h.eq[slot]===b)-(h.eq[slot]===a)||GEAR[b].tier-GEAR[a].tier);
@@ -3858,7 +3921,7 @@ function pfStats(h){const gr=h.grown||{},hs=pfHidOf(h),[rn,rc]=REP(h.rep),cr=pfP
     <small>بتأثر على الأسعار وكلام الناس ${G('معاك','معاكي')}</small></div>`}
 function pfSkills(h){const sk=skillsOf(h).slice().sort((a,b)=>a.lv-b.lv),nx=sk.find(s=>s.lv>h.lvl),wid=wSkill(h)&&h.eq.weapon,w=wid&&GEAR[wid];
   return `${nx?`<div class="pf-note">القدرة الجاية: <b>${nx.n}</b> في المستوى ${nx.lv}. فاضلك <span class="num">${pfXpTo(h,nx.lv)}</span> خبرة.</div>`:`<div class="pf-note ok">كل قدرات تخصصك مفتوحة.</div>`}
-  <div class="label">قدرات ال${h.cls} <span style="font-weight:400">(في القتال ${G('دوس','دوسي')} «قدرات» ${G('واختار','واختاري')})</span></div>
+  <div class="label">قدرات ال${clsN(h)} <span style="font-weight:400">(في القتال ${G('دوس','دوسي')} «قدرات» ${G('واختار','واختاري')})</span></div>
   ${sk.map(s=>{const on=h.lvl>=s.lv;return `<div class="pf-sk ${on?'on':'off'}"><span class="bdg">${on?`<span class="num">${s.lv}</span>`:PFI.lock}</span><div class="tx"><b>${s.n}</b><small>${pfTx(s.d,1)}</small>
     <div class="pf-src">${s.pass?'<span class="pf-chip lv">على طول</span>':`<span class="pf-chip en">${PFI.bolt}<span class="num">${s.cost}</span> طاقة</span>${s.roll?`<span class="pf-chip">بتعتمد على ${s.roll}</span>`:'<span class="pf-chip">من غير نرد</span>'}`}${on?'':`<span class="pf-chip lk">${PFI.lock} بتتفتح في المستوى ${s.lv}</span>`}</div></div></div>`}).join('')}
   ${w?`<div class="label">من سلاحك</div><div class="pf-sk on wpn" style="--rc:${RARE[w.tier].c}"><span class="bdg">${pfGearIc(wid,30)}</span><div class="tx"><b style="color:${RARE[w.tier].c}">${w.n}</b><small>${pfTx(w.info)}</small></div></div>`:''}`}
@@ -3931,6 +3994,19 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'4.1',d:'9 أكتوبر',add:[
+    'في كل دكان {تقدر تختار|تقدري تختاري} {عايز|عايزة} تشتري كام، أو {تدوس|تدوسي} «أقصى». وزرار الشرا بيقولك السعر كله.',
+    'وفي البيع {تقدر تختار|تقدري تختاري} عدد اللي {هتبيعه|هتبيعيه}، أو {تدوس|تدوسي} «الكل»، {وتبيع|وتبيعي} مرة واحدة.',
+    'عم حسن الحداد بقى بيبيع نحاس وحديد وفضة. أغلى بكتير من الجبل والسوق، بس موجودة على طول.',
+    'زرار «الشنطة» في البلد: كل اللي {معاك|معاكي} في مكان واحد، والأكل {بتاكله|بتاكليه} منه على طول.',
+    'شغلانة عند عم فتحي: ترقيع هدوم ناس البلد بقماشة واحدة، وبتدي خبرة خياطة كتير.'],
+   fix:[
+    'كارت المغامرة وأول شاشة فيها مبقوش بيقولوا «حوالي 15 دقيقة»، لأنها أقصر من كده.',
+    'الكلام مبقاش بيتحدد لما {تدوس|تدوسي} عليه.',
+    'الخياطة بقت بتعلّم الضعف، عشان مستواها يطلع أسرع.',
+    'السلاح بقى متعلّق على ضهر البطل في الصورة، بدل الدراع الغريبة.',
+    'البنت بقت «محاربة، حرامية، ساحرة، معالجة» و«شابة، كبيرة، عجوزة».',
+    'الرقم الأحمر على العدّة اتشال، وبقى فيه علامة «أحسن» لما يكون {معاك|معاكي} حاجة أحسن من اللي {لابسها|لابساها}.']},
   {v:'4',d:'9 أكتوبر',add:[
     'البلد «كفر الصفصاف»: مكان {تقعد|تقعدي} فيه بين المغامرات.',
     'الحداد عم حسن، والخياط عم فتحي، والطباخة أم سيد: {اعمل|اعملي} سلاحك وهدومك وأكلك من الخامات.',
@@ -3991,6 +4067,80 @@ SCREENS.news=function(){view.scrollTop=0;store('sirdab.newsSeen',NEWS[0].v);
 .news ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:5px;font-size:15px;line-height:1.6}
 .news-dot{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--gold);color:#1a120c;margin-inline-start:6px;vertical-align:middle}`;document.head.appendChild(st)}
 
+/* ---------- الشنطة: everything the hero carries, opened from the town; food is eaten right here ---------- */
+const BAG_ICO='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 8V6.5a4 4 0 0 1 8 0V8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M4.5 9.5Q4.5 8 6 8h12q1.5 0 1.5 1.5l-.8 9.5Q18.5 21 16.6 21H7.4Q5.5 21 5.3 19z" fill="currentColor" opacity=".9"/><rect x="10" y="12" width="4" height="3" rx="1" fill="#1a120c"/></svg>';
+const bagFoods=h=>FOODS.filter(k=>(h.bag[k]||0)>0);
+const bagItems=h=>Object.keys(ITEMS).filter(k=>!FOODS.includes(k)&&(h.bag[k]||0)>0);
+const bagRes=h=>Object.keys(MAT).filter(k=>(h.res[k]||0)>0);
+const bagGear=h=>Object.keys(GEAR).filter(id=>(h.gear[id]||0)>0&&TW_SLOTS.includes(GEAR[id].slot));
+const bagSum=a=>a.reduce((s,n)=>s+n,0);
+function bagLine(h){const f=bagSum(bagFoods(h).map(k=>h.bag[k])),r=bagSum(bagRes(h).map(k=>h.res[k])),p=[];
+  if(f)p.push(f===1?'أكلة':f===2?'أكلتين':`${f} أكلات`);if(r)p.push(r===1?'خامة':r===2?'خامتين':`${r} خامات`);
+  return p.length?p.join(' · '):'فاضية'}
+SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
+  const e=effNow(h),full=e>=EFF_MAX,add=Math.min(5,EFF_MAX-e),fs=bagFoods(h),its=bagItems(h),rs=bagRes(h),gs=bagGear(h);
+  const worn=id=>Object.values(h.eq||{}).includes(id);
+  const row=(ic,name,n,sub,act,c)=>`<div class="card bg-row"${c?` style="--rc:${c}"`:''}><span class="ic">${ic}</span><div class="tx"><b${c?` style="color:${c}"`:''}>${name}${n>1?` <span class="n">×${n}</span>`:''}</b>${sub?`<small>${sub}</small>`:''}</div>${act||''}</div>`;
+  const food=fs.map(k=>row(twFood(k,34),ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),
+    `<button class="bg-eat" data-beat="${k}" ${full?'disabled':''}>${G('كُل','كُلي')}${full?'':`<small>${twN(add)} مجهود</small>`}</button>`)).join('');
+  const items=its.map(k=>row(itemIcon(k,34)||'',ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),'')).join('');
+  const res=rs.map(k=>{const M=MAT[k];return `<div class="bg-mat"><span class="ic">${twMat(k,30)}</span><b>${M.n}</b><small>×${h.res[k]}${M.junk?'':` · ${M.p} جنيه`}</small></div>`}).join('');
+  const gear=gs.map(id=>{const g=GEAR[id],R=RARE[g.tier]||RARE[0];return row(twGear(id,34),g.n,h.gear[id],`${SLOTS[g.slot]}${worn(id)?` · <span class="ok">${g.slot==='weapon'?G('ماسكه','ماسكاه'):G('لابسه','لابساه')}</span>`:''}`,'',R.c)}).join('');
+  const lbl=(t,cap)=>`<div class="tw-lbl">${t}${cap?`<small>${cap}</small>`:''}</div>`;
+  view.innerHTML=`${twTop('الشنطة')}<div class="tw">
+    <div class="card">${twEffHTML(h,0)}</div>
+    ${lbl('أكل',`${bagCount(h,'foul')} من ${bagCap(h,'foul')}`)}
+    ${food||`<div class="card bg-none">مفيش أكل في الشنطة. أم سيد بتبيع أكل وبتطبخ. <button class="btn ghost small" data-bgo="cook">روح لأم سيد</button></div>`}
+    ${full&&fs.length?`<div class="tw-sm" style="color:#a6e3a0">مجهودك مليان. خلّي الأكل للقتال.</div>`:''}
+    ${items?lbl('جرعات وحاجات للمغامرة')+items:''}
+    ${lbl('خامات',rs.length?'بتتباع في السوق، أو تتعمل بيها حاجات':'')}
+    ${res?`<div class="bg-mats">${res}</div>`:`<div class="card bg-none">مفيش خامات. الجبل والترعة والمغامرات بيطلّعوا خامات.</div>`}
+    ${gs.length?lbl('عدّة')+gear+`<button class="btn ghost" data-bgo="gear">${G('البس','البسي')} من عدّتي</button>`:''}
+  </div>`;
+  twBack();
+  view.querySelectorAll('[data-beat]').forEach(b=>b.onclick=()=>twEat(b.dataset.beat,b));
+  view.querySelectorAll('[data-bgo]').forEach(b=>b.onclick=()=>{SFX.bell();twGo(b.dataset.bgo)});
+  twTick()};
+/* the town card gets a «الشنطة» button under the effort bar */
+{const t0=SCREENS.town;SCREENS.town=function(){t0();const h=S.hero,ef=$('#twEff');if(!h||!ef)return;
+  const b=document.createElement('button');b.className='btn ghost bg-open';b.id='twBag';
+  b.innerHTML=`${twGear('bag1',30)||BAG_ICO}<span>الشنطة</span><small>${bagLine(h)}</small>`;
+  ef.parentNode.insertBefore(b,ef.nextSibling);b.onclick=()=>{SFX.page();twGo('bag')}}}
+
+/* ---------- الخياطة: easier to level. Every bit of tailoring teaches double, and عم فتحي has mending jobs ---------- */
+{const lx=lifeXP;lifeXP=function(h,k,n){return lx(h,k,k==='tailor'?(n||1)*2:n)}}
+const MEND={cloth:1,pay:5,xp:2};   /* xp before the doubling above: a mend is worth 4 */
+function mendHTML(h){const has=(h.res.cloth||0)>=MEND.cloth,mx=lifeLvl(h,'tailor')>=10;if(mx)return '';
+  return `<div class="card bg-job"><div class="r1"><b>شغلانة: ترقيع هدوم</b><span class="tw-ch up">${twI('+'+MEND.xp*2)} خبرة خياطة</span></div>
+    <div class="tw-sm">ناس البلد سايبين هدوم مقطّعة عند عم فتحي. كل ترقيعة بقماشة واحدة، وعم فتحي ${G('بيديك','بيديكي')} عليها ${MEND.pay} جنيه.</div>
+    <button class="btn" id="twMend" ${has?'':'disabled'}>${G('رقّع','رقّعي')} حتة <small>قماشة واحدة · ${G('معاك','معاكي')} ${h.res.cloth||0}</small></button>
+    ${has?'':`<div class="tw-miss">ناقصك قماش · من السوق</div>`}</div>`}
+function twMend(btn){const h=S.hero;if(!h||TWN.busy||(h.res.cloth||0)<MEND.cloth)return;TWN.busy=1;
+  takeRes(h,{cloth:MEND.cloth});h.money+=MEND.pay;saveHero();SFX.sew();vib(15);
+  floatAt(btn,`${twI('+'+MEND.xp*2)} خبرة`,'#d9cbff','',22);twMoneyFly(btn,MEND.pay);
+  setTimeout(()=>{TWN.busy=0;lifeXP(h,'tailor',MEND.xp);saveHero();if(S.screen==='tailor')twRender()},650)}
+{const t0=SCREENS.tailor;SCREENS.tailor=function(){t0();const h=S.hero,lf=view.querySelector('.tw-life');if(!h||!lf)return;
+  lf.insertAdjacentHTML('afterend',mendHTML(h));const b=$('#twMend');if(b)b.onclick=()=>twMend(b)}}
+
+{const st=document.createElement('style');st.textContent=`
+.bg-open{display:flex;align-items:center;gap:8px;width:100%;margin-top:10px;min-height:48px;justify-content:flex-start;color:var(--gold2)}
+.bg-open span{font-weight:800;font-size:16px}
+.bg-open small{margin-inline-start:auto;color:var(--mute);font-weight:700;font-size:13px}
+.bg-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-inline-start:3px solid var(--rc,transparent)}
+.bg-row .ic{flex:none;width:38px;height:38px;display:grid;place-items:center}
+.bg-row .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bg-row .tx b{font-size:15px}.bg-row .tx .n{color:var(--gold2);font-size:13px}
+.bg-row .tx small{color:var(--mute);font-size:13px;line-height:1.5}.bg-row .ok{color:#a6e3a0}
+.bg-eat{flex:none;min-width:64px;min-height:48px;border-radius:12px;background:var(--card2);border:1px solid #3d6e44;color:var(--ink);font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:inherit}
+.bg-eat small{color:#a6e3a0;font-size:12px}.bg-eat:disabled{opacity:.45}.bg-eat:active{transform:scale(.95)}
+.bg-mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:8px}
+.bg-mat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.bg-mat b{font-size:14px}.bg-mat small{color:var(--mute);font-size:12px}
+.bg-none{margin-top:8px;color:var(--mute);font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.bg-job{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.bg-job .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.bg-job .r1 b{font-size:15px}
+.bg-job .btn small{display:block;font-size:12px;font-weight:700;opacity:.8}`;document.head.appendChild(st)}
+
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
 function bigWord(t,sub,kind){const d=document.createElement('div');d.className='mword'+(kind?' '+kind:'');d.innerHTML=`<i></i><span>${t}</span>${sub?`<small>${sub}</small>`:''}`;app.appendChild(d);setTimeout(()=>d.remove(),1400)}
@@ -4032,6 +4182,18 @@ function masterWord(heal){bigWord(heal?'شفا معلّم!':'ضربة معلّم
 .sitem .why{color:#f0a090;font-weight:700;margin-top:4px}
 .sitem .deal{position:absolute;top:8px;left:8px;margin:0;font-size:11px;padding:1px 8px}
 .sitem.out{opacity:.55}
+.qty{display:flex;align-items:center;gap:4px;flex:none}
+.qty button{min-width:44px;height:44px;padding:0 8px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--gold2);font:inherit;font-weight:800;font-size:22px;line-height:1;cursor:pointer}
+.qty button.mx{font-size:13px;color:var(--ink)}
+.qty button[disabled]{opacity:.35;pointer-events:none}
+.qty button:active{transform:scale(.94)}
+.qty b{min-width:30px;text-align:center;font-size:19px;font-weight:800;color:var(--ink)}
+.sitem .qbar{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:6px;width:100%;margin-top:8px;align-items:center}
+.sitem .qbar .qty{display:contents}
+.sitem .qbar .qty button{padding:0}
+.sitem .qbar .mx{grid-column:3;grid-row:2}
+.sitem .qbar .buy{grid-column:1/3;grid-row:2;margin-top:0}
+.sitem .buy small{display:block;font-size:11px;font-weight:700;color:var(--mute);line-height:1.3}
 .sback{position:sticky;bottom:-18px;z-index:2;margin:14px -16px -18px;padding:14px 16px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 78%,transparent)}
 /* tap targets: at least 44px */
 .qbtn.qbtn{width:44px;height:44px}
