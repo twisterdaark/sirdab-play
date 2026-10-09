@@ -4366,6 +4366,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.50',d:'9 أكتوبر',add:[],fix:['الميني جيمز بقت بيكسل زي باقي اللعبة: الحدادة، والخياطة، والطبخ، والعصير، والمنجم، والترعة.','في الخياطة: لو {دوست|دوستي} على الزرار اللي تحت {وانت بتقص|وانتي بتقصي}، اللعبة كانت بتعلّق. اتصلحت.']},
   {v:'5.49',d:'9 أكتوبر',add:[],fix:['الصعوبة بقت تكبر مع اللفل أكتر: من لفل 6 الوحوش صحتها بتزيد أسرع، وضربها أجمد، وبقى أصعب {تتفاداها|تتفاديها} أو {تصيبها|تصيبيها}.','الدرع بقى يشيل نص الضربة بالكتير، يعني الوحوش لسه بتوجعك مهما كان لبسك تقيل.','التقوية بقت أخف: كل خطوة في السلاح بتزوّد أقل (+6 ضرر عند +10)، وفي الدرع والراس (+5 عند +10).','الحرامي: «ضربة من الضلمة» بقت ×1.5 بدل ×2، والضربة التانية في لفل 3 من القدرة بقت عادية مش مضاعفة، وفي لفل 5 الباقيين بياخدوا ضربة عادية. «ضربتين ورا بعض» التانية بقت أخف (60%). وفرصة ضربة المعلّم بتزيد أبطأ مع اللفل.','المحارب: «غضب» بقى ×2.5 (و×3 في لفل 5 من القدرة) بدل ×3 و×3.5.','المعالج: «طرد الجن» بقى ×1.7 (و×2.2 في لفل 5) بدل ×2 و×3.']},
   {v:'5.48',d:'9 أكتوبر',add:[],fix:['لو كارت في الحدوتة خلّص صحتك {بتقع|بتقعي} والليلة {بتخسرها|بتخسريها}، زي ما {تقع|تقعي} في القتال (قزازة الصحيان بتنقذك لو {معاك|معاكي}). وكمان النزيف بين الوقفات. قبل كده الصحة كانت بتقف عند 1.','الاستراحة مش بتطلع في وقفتين ورا بعض، ومش بيطلع أكتر من استراحة في نفس الوقفة.']},
   {v:'5.47',d:'9 أكتوبر',add:['لما {تتفادى|تتفادي} ضربة بضربة حظ، بطلك بيرد الضربة على طول (ضربة مرتدة)، في كل أنواع الضرب: الجامدة، والتانية، والجري {عليك|عليكي}.'],fix:['الليلة اللايف: لو صاحبك قفل اللعبة، الكارت بتاعه بيقول «أوفلاين: قفل اللعبة» بدل «بيلعب من موبايله»، والكلام بقى في سطر لوحده بعيد عن اسمه.']},
@@ -5133,7 +5134,7 @@ function tCut(C){const cr=TR(C.h,'tailor','cut'),tol=3.2*C.wl*(1+.12*R3(cr)),N=3
       if(ph==='ready'&&started){const left=1-(t-tStart)/T;E.mgTm.setAttribute('width',(280*clamp(left,0,1)).toFixed(1));E.mgTm.setAttribute('fill',left<.3?'#f0a090':'#ffd36a');if(left<=0)finish()}
       if(ph==='auto'){const P=PATHS[k],j=Math.min(P.length-1,Math.floor((t-t0)/1300*P.length));while(cur<j){cur++;dev[cur]=0;seg(P[cur-1],P[cur],0)}scis(P[cur],cur);if(cur>=P.length-1)finish()}
       if(ph==='gap'&&t-t0>650)next();if(ph==='end'&&t-t0>500)s.done(avg(sc))},
-    down(p){if(ph!=='ready')return;const P=PATHS[k],tip=P[cur];
+    down(p){if(ph!=='ready'||!p)return;const P=PATHS[k],tip=P[cur];
       if(!started){if(Math.hypot(p.x-tip[0],p.y-tip[1])>36){hint(`${C.g('ابدأ','ابدأي')} من الدايرة الصفرا`,1);sf('meh');return}started=1;tStart=t;sf('mgSnip')}
       else if(Math.hypot(p.x-tip[0],p.y-tip[1])>44){hint(`${C.g('كمّل','كمّلي')} من مكان ما ${C.g('وقفت','وقفتي')}`,1);return}
       cut=1;last=[p.x,p.y];sm=dr=last;scis(tip,cur)},
@@ -23376,6 +23377,20 @@ function N_storyDie(){const N=S.night;RES=null;if(N)N.dead=0;if(S.run)S.run.fall
       N.hand=hand.map(c=>c.id)}
     N.pr=hand.some(isR)?1:0}}catch(e){console.error('rest spread: '+e.message)}
   return hand}}
+/* ---------- 5.50: the mini-games in the game's pixel look ----------
+   The craft scenes (smith, tailor, cook), the mine, the river and the farm are drawn as shapes. Instead of keeping two looks,
+   every one of those pictures goes through one filter: it is cut into square blocks (3 screen px, the same size as one art
+   pixel everywhere else) with hard edges, like the hand-made sprites. */
+(function(){const ns='http://www.w3.org/2000/svg';
+  const flt=(id,b)=>`<filter id="${id}" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feFlood x="${b>>1}" y="${b>>1}" width="1" height="1" flood-color="#fff" result="d"/><feComposite in="d" width="${b}" height="${b}" result="c"/><feTile in="c" result="t"/>
+    <feComposite in="SourceGraphic" in2="t" operator="in" result="s"/><feMorphology in="s" operator="dilate" radius="${b>>1}" result="m"/>
+    <feComponentTransfer in="m"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter>`;
+  const s=document.createElementNS(ns,'svg');s.setAttribute('width','0');s.setAttribute('height','0');s.setAttribute('aria-hidden','true');s.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
+  s.innerHTML=flt('pxF3',3)+flt('pxF2',2);document.body.appendChild(s);
+  const st=document.createElement('style');st.textContent=`
+.mg-box>svg,.gx-stage svg,.fsh-cardw svg{filter:url(#pxF3)}
+.mg-ic svg,.mg-card .ic svg,.mg-card svg{filter:url(#pxF2)}`;document.head.appendChild(st)})();
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
