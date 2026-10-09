@@ -4357,6 +4357,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.39',d:'9 أكتوبر',add:[],fix:[
+    'سوق اللاعبين: كل حساب يقدر يعرض 5 حاجات بس في نفس الوقت، عشان السوق ميتملاش من لاعب واحد. هتلاقي العدد مكتوب فوق في «بيع».'
+  ]},
   {v:'5.38',d:'9 أكتوبر',add:[
     'اختيارات جديدة جوه المغامرات محتاجة شغلانة: حدادة، طبخ، صيد، خياطة، زراعة، أو تنقيب. هتلاقيها عند الحداد والفرن والصياد والساقية والغيط وغيرهم.',
     'لو مستوى شغلانتك كفاية، فرصتك كويسة. لو لأ، {تقدر|تقدري} {تجرّب|تجرّبي} بس هتبقى صعبة جدًا. تحت الاختيار مكتوب الشغلانة والمستوى اللي محتاجه ومستواك.',
@@ -19046,8 +19049,9 @@ SCREENS.lb=function(){view.scrollTop=0;const h=S.hero,mine=(FB.user?FB.user.uid+
    signed-in players list spare gear or materials at their own price; another player buys it.
    a listing lives in mk/{id}: open → sold (buyer, in a transaction so only one wins) → paid (seller collects, minus 5%).
    the seller can take an open listing back (open → gone). crafted gear keeps its maker's name (I.by). */
-const MK_MAX=10,MK_FEE=.05,MK_PMAX=1000000;
+const MK_MAX=5,MK_FEE=.05,MK_PMAX=1000000;
 const MK={tab:'buy',rows:null,mine:null,err:'',busy:0,sel:null,price:'',cnt:1,msg:''};
+const mkOpenN=()=>(MK.mine||[]).filter(x=>x.st==='open').length;
 const mkCol=()=>FB.db.collection('mk');
 const mkNet=e=>e&&e.code==='permission-denied'?'السوق لسه بيتجهز.':'مش قادر أوصل للسوق دلوقتي. اتأكد إن فيه نت.';
 /* food rides on kind 'm' with an id of «f:<bag key>», so the rules need no change */
@@ -19075,7 +19079,8 @@ async function mkCollect(){if(!FB.user||MK.col)return;MK.col=1;let got=0,n=0;
 async function mkLoad(){MK.err='';MK.rows=null;if(S.screen==='pmarket')render();
   try{await fbLoad();if(!FB.user){MK.rows=[];return}await mkCollect();
     const q=await mkCol().where('st','==','open').limit(80).get();
-    MK.rows=q.docs.map(d=>Object.assign({_id:d.id},d.data())).filter(x=>x.s!==FB.user.uid).sort((a,b)=>(b.t&&b.t.seconds||0)-(a.t&&a.t.seconds||0))}
+    MK.rows=q.docs.map(d=>Object.assign({_id:d.id},d.data())).filter(x=>x.s!==FB.user.uid).sort((a,b)=>(b.t&&b.t.seconds||0)-(a.t&&a.t.seconds||0));
+    const per={};MK.rows=MK.rows.filter(x=>(per[x.s]=(per[x.s]||0)+1)<=MK_MAX)}
   catch(e){MK.err=mkNet(e);MK.rows=MK.rows||[]}
   if(S.screen==='pmarket')render()}
 
@@ -19096,7 +19101,8 @@ function mkOffers(h){const o=[];Object.keys(MAT).filter(k=>(h.res[k]||0)>0&&MAT[
 async function mkList(){const h=S.hero,o=MK.sel;if(!o||MK.busy||!FB.user)return;
   const p=Math.floor(+MK.price||0),c=o.k==='m'?Math.max(1,Math.min(o.have,99,Math.floor(+MK.cnt||1))):1;
   if(!(p>=1&&p<=MK_PMAX)){MK.msg=G('اكتب سعر من 1 لمليون','اكتبي سعر من 1 لمليون');return render()}
-  if((MK.mine||[]).filter(x=>x.st==='open').length>=MK_MAX){MK.msg=`أقصى حاجة ${MK_MAX} عروض في نفس الوقت.`;return render()}
+  if(MK.mine==null)await mkCollect();if(MK.mine==null){MK.msg=mkNet();return render()}
+  if(mkOpenN()>=MK_MAX){MK.msg=`أقصى حاجة ${MK_MAX} عروض في نفس الوقت. ${G('رجّع','رجّعي')} عرض أو ${G('استنى','استني')} لما حاجة تتباع.`;return render()}
   let I=null;if(o.f){if((h.bag[o.f]||0)<c)return;h.bag[o.f]-=c}else if(o.k==='m'){if((h.res[o.id]||0)<c)return;h.res[o.id]-=c}else{I=giDel(h,o.id,o.u);if(!I)return}
   saveHero();MK.busy=1;render();
   const x={s:FB.user.uid,sh:lbId(h),sn:String(h.name||'').slice(0,20),k:o.k,id:o.id,c,x:I?JSON.stringify((({u,...r})=>r)(I)).slice(0,1500):'',p,st:'open',b:'',bn:'',t:window.firebase.firestore.FieldValue.serverTimestamp()};
@@ -19120,14 +19126,15 @@ SCREENS.pmarket=function(){const h=S.hero;if(!h){S.screen='title';return render(
   let body='';
   if(!FB.user)body=`<div class="card tw-empty">سوق اللاعبين محتاج حساب.<br>${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات (من لينك اللعب)، وبعدها ${G('تقدر تبيع وتشتري','تقدري تبيعي وتشتري')} من لاعيبة تانيين.</div>`;
   else if(MK.tab==='buy'){body=MK.err?`<div class="nnote">${MK.err}</div>`:MK.rows==null?'<div class="nnote">بيحمّل…</div>':!MK.rows.length?`<div class="card tw-empty">مفيش عروض دلوقتي. ${G('اعرض','اعرضي')} حاجة ${G('وخلّيك','وخلّيكي')} أول بياع.</div>`:`<div class="col">${MK.rows.map(x=>row(x,'buy')).join('')}</div>`}
-  else if(MK.tab==='sell'){const O=mkOffers(h),o=MK.sel;
-    body=o?`<div class="card mk-form"><div class="tw-row"><div class="ic">${mkIco(o,44)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''}<small>${G('معاك','معاكي')} ${o.have}</small>${o.k==='g'?by(o.I):''}</div></div>
+  else if(MK.tab==='sell'){const O=mkOffers(h),o=MK.sel,on=mkOpenN(),full=on>=MK_MAX;
+    const cap=`<div class="mk-cap${full?' full':''}">عروضك في السوق: <b>${on} من ${MK_MAX}</b>${full?`<small>${G('رجّع','رجّعي')} عرض من «عروضي» أو ${G('استنى','استني')} لما حاجة تتباع.</small>`:''}</div>`;
+    body=cap+(o?`<div class="card mk-form"><div class="tw-row"><div class="ic">${mkIco(o,44)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''}<small>${G('معاك','معاكي')} ${o.have}</small>${o.k==='g'?by(o.I):''}</div></div>
       ${o.k==='m'?`<label class="mk-l">العدد<input id="mkC" type="number" inputmode="numeric" min="1" max="${Math.min(o.have,99)}" value="${MK.cnt}"></label>`:''}
       <label class="mk-l">السعر (جنيه)<input id="mkP" type="number" inputmode="numeric" min="1" max="${MK_PMAX}" value="${MK.price}" placeholder="${o.sug*(o.k==='m'?MK.cnt:1)}"></label>
       <small class="mk-h">السوق بياخد ${MK_FEE*100}% لما تتباع. لو محدش اشتراها ${G('تقدر ترجّعها','تقدري ترجّعيها')} في أي وقت.</small>${MK.msg?`<div class="nnote">${MK.msg}</div>`:''}
       <button class="btn" id="mkGo" ${MK.busy?'disabled':''}>${G('اعرضها في السوق','اعرضيها في السوق')}</button><button class="btn ghost" id="mkNo" style="margin-top:8px">رجوع</button></div>`
     :!O.length?`<div class="card tw-empty">مفيش حاجة ${G('تعرضها','تعرضيها')}. ${G('هات','هاتي')} حاجات من المنجم أو الترعة، أو ${G('اعمل','اعملي')} عدّة زيادة.</div>`
-    :`<div class="col">${O.map((o,i)=>`<button class="tw-row mk-o" data-mko="${i}"><div class="ic">${mkIco(o,40)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''} <span class="tw-cnt">×${o.have}</span>${o.k==='g'?by(o.I):''}</div><span class="mk-arr">‹</span></button>`).join('')}</div>`}
+    :`<div class="col">${O.map((o,i)=>`<button class="tw-row mk-o" data-mko="${i}" ${full?'disabled':''}><div class="ic">${mkIco(o,40)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''} <span class="tw-cnt">×${o.have}</span>${o.k==='g'?by(o.I):''}</div><span class="mk-arr">‹</span></button>`).join('')}</div>`)}
   else{const M=(MK.mine||[]).filter(x=>x.st==='open'),L=(h.mkLog||[]).slice().reverse();
     body=`${M.length?`<div class="col">${M.map(x=>row(x,'mine')).join('')}</div>`:`<div class="card tw-empty">مفيش عروض ${G("ليك","ليكي")} دلوقتي.</div>`}
     ${L.length?`<div class="tw-lbl">اتباع</div><div class="card">${L.map(l=>`<div class="nrow"><span>${l.n}${l.c>1?' ×'+l.c:''} · المشتري: ${esc(l.b||'لاعب')}</span><b style="color:var(--gold2)">+${l.p}</b></div>`).join('')}</div>`:''}`}
@@ -19145,7 +19152,7 @@ TW_EXTRA.push(h=>({id:'market',go:'pmarket',n:'سوق اللاعبين',w:'بي�
 {const st=document.createElement('style');st.textContent=`
 .mk-tabs{display:flex;gap:6px}.mk-t{flex:1;min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--ink);font:inherit;font-weight:700}
 .mk-t.on{background:rgba(243,193,77,.16);border-color:var(--gold2);color:var(--gold2)}
-.mk-r .tx small{display:block}.mk-o{width:100%;text-align:right;font:inherit;color:var(--ink);cursor:pointer}.mk-arr{margin-inline-start:auto;font-size:22px;color:var(--mute)}
+.mk-r .tx small{display:block}.mk-o{width:100%;text-align:right;font:inherit;color:var(--ink);cursor:pointer}.mk-arr{margin-inline-start:auto;font-size:22px;color:var(--mute)}.mk-cap{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:var(--card2,rgba(255,255,255,.05));font-size:14px}.mk-cap.full{color:var(--gold2)}.mk-cap small{display:block;margin-top:4px;color:var(--mute)}.mk-o:disabled{opacity:.45;cursor:default}
 .mk-form .mk-l{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}.mk-form input{width:140px;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#120d08;color:var(--ink);font:inherit;font-size:18px;padding:0 10px;text-align:center}
 .mk-h{display:block;color:var(--mute);font-size:12px;margin:8px 0}.mk-form .btn{margin-top:6px}
 .q-by{display:block;color:#c9b48c;font-size:12px}`;document.head.appendChild(st)}
