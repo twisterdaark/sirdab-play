@@ -4357,6 +4357,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.45',d:'9 أكتوبر',add:[
+    '16 إنجاز جديد: للحلاق والكوافيرة، ومهمات دوار العمدة، والصناديق، والزرع، والفراخ والجاموسة، ومسابقة الصيد، والمولد. اللي {عمله|عملته} قبل كده بيتحسب {ليك|ليكي} أول ما {تفتح|تفتحي} البلد.'
+  ],fix:[]},
   {v:'5.44',d:'9 أكتوبر',add:[
     '«المولد» في البلد: دكاكين عم حمدي بتفتح الخميس والجمعة والسبت، وكل أسبوع بيبيع 3 حاجات حلوة مختلفة (حمص الشام، حلاوة المولد، ترمس، عسلية، سمسمية) وصندوق المولد.',
     'مسابقة الصيد كل أسبوع: كل سمكة {بتصطادها|بتصطاديها} من الترعة ليها نقط، والنادرة أكتر. عند 20 و50 و100 نقطة فيه جوايز، وفيه ترتيب للصيادين في المولد.'
@@ -23288,6 +23291,42 @@ SCREENS.mouled=function(){const h=S.hero;if(!h){S.screen='title';return render()
 .fc-pz{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;background:#0002;border:1px solid #fff1;text-align:center}
 .fc-pz b{font-size:18px;color:var(--mute)}.fc-pz small{font-size:12px;color:var(--dim);line-height:1.4}.fc-pz.ok{border-color:#7fe07a}.fc-pz.ok b{color:#a6e3a0}.fc-pz.got{opacity:.6}
 .fc-pz i{font-style:normal;font-size:12px;color:#a6e3a0}.fc-pz .btn{min-height:44px;width:100%;margin:0}`;document.head.appendChild(st)}
+/* ---------- 5.45: achievements for the barber, the errands, the farm, the animals and the fair ----------
+   Most are read from the hero's own state (what is owned, counters), checked after a render on the village screens,
+   so an old save that already earned one gets it the next time the village opens. */
+ACH.push(
+  {id:'brb_hair',n:'لوك جديد',d:'{تشتري|تشتري} أول قصة شعر من {صالون عادل|كوافير سماح}',r:20},
+  {id:'brb_dye',n:'لون جديد',d:'{تصبغ|تصبغي} شعرك أول مرة',r:20},
+  {id:'brb_3',n:'{زبون|زبونة} دايم',d:'{تشتري|تشتري} 3 قصات شعر',r:60},
+  {id:'qb_1',n:'أول مهمة',d:'{تسلّم|تسلّمي} أول مهمة في دوار العمدة',r:10},
+  {id:'qb_10',n:'إيد العمدة اليمين',d:'10 مهمات في دوار العمدة',r:40},
+  {id:'qb_25',n:'الكفر كله يعرفك',d:'25 مهمة في دوار العمدة',r:80},
+  {id:'qb_top',n:'مهمة أسطورية',d:'{تسلّم|تسلّمي} مهمة أسطورية',r:60},
+  {id:'box_g',n:'صندوق دهب',d:'{تفتح|تفتحي} صندوق دهب',r:20},
+  {id:'fm_50',n:'إيد خضرا',d:'{تحصد|تحصدي} 50 مرة في الغيط',r:30},
+  {id:'fm_6',n:'{فلاح أصيل|فلاحة أصيلة}',d:'الزراعة توصل مستوى 6',r:50},
+  {id:'fm_hens',n:'عشة فراخ',d:'4 فراخ في الغيط',r:30},
+  {id:'fm_buf',n:'جاموسة في الدار',d:'{تشتري|تشتري} جاموسة',r:20},
+  {id:'fm_eggs',n:'خمسين بيضة',d:'{تلم|تلمي} 50 بيضة',r:30},
+  {id:'fm_milk',n:'لبن الصبح',d:'{تحلب|تحلبي} 20 لبن',r:30},
+  {id:'fc_100',n:'{ريّس|ريّسة} الصيادين',d:'100 نقطة في مسابقة الصيد في أسبوع واحد',r:50},
+  {id:'ml_sweet',n:'حلاوة المولد',d:'{تشتري|تشتري} حاجة من دكاكين المولد',r:10});
+
+/* counters the old code doesn't keep: eggs, milk, and the best errand rank */
+{const f0=addRes;addRes=function(h,k,n){const r=f0.apply(this,arguments);try{if(h&&h===S.hero&&S.screen==='farm'&&(k==='egg'||k==='milk')){h.cnt=h.cnt||{};h.cnt[k]=(h.cnt[k]||0)+(n||1)}}catch(e){}return r}}
+{const g0=qbGive;qbGive=function(h,q){const r=g0.apply(this,arguments);try{h.cnt=h.cnt||{};h.cnt.qbTop=Math.max(h.cnt.qbTop||0,q.r0|0)}catch(e){}return r}}
+{const o0=qbOpen;qbOpen=function(h,k){const r=o0.apply(this,arguments);if(k==='g')setTimeout(()=>ach('box_g'),2400);return r}}
+
+function achScan(h){if(!h||h!==S.hero)return;const c=h.cnt||{},Q=h.qb||{},F=h.farm||{},own=(h.hairOwn||[]).filter(x=>String(x).indexOf(h.g+':')===0).length;
+  const got=[];const chk=(id,ok)=>{if(ok&&!(h.ach&&h.ach[id]))got.push(id)};
+  chk('brb_hair',own>=1);chk('brb_dye',(h.hcOwn||[]).length>=1);chk('brb_3',own>=3);
+  chk('qb_1',(Q.done|0)>=1);chk('qb_10',(Q.done|0)>=10);chk('qb_25',(Q.done|0)>=25);chk('qb_top',(c.qbTop|0)>=6);
+  chk('fm_50',(c.harvest|0)>=50);chk('fm_6',typeof farmL==='function'&&farmL(h)>=6);chk('fm_hens',(F.ch||[]).length>=4);chk('fm_buf',!!F.buf);
+  chk('fm_eggs',(c.egg|0)>=50);chk('fm_milk',(c.milk|0)>=20);
+  chk('fc_100',!!(h.fc&&h.fc.p>=100));chk('ml_sweet',!!(h.mlBuy&&Object.keys(h.mlBuy.n||{}).length));
+  got.forEach((id,i)=>setTimeout(()=>ach(id),900+i*2600))}
+const ACH_SCR=['town','barber','quests','farm','mouled','market','cook','fish','gear','profile'];
+{const r0=render;render=function(){const x=r0.apply(this,arguments);try{if(ACH_SCR.includes(S.screen))achScan(S.hero)}catch(e){console.warn(e)}return x}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
