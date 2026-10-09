@@ -4352,6 +4352,12 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.27',d:'9 أكتوبر',add:[
+    'في الليلة مع صحابك كل واحد بيظهر في القتال بكارته وصحته، والوحوش ممكن تهجم على أي حد فيكم.',
+    'لما {تيجي|تيجي} ترمي الزهر في القصة، كل واحد من صحابك بيرمي زهره من موبايله، وكل واحد بتطلعله نتيجته هو: واحد يعدّي وواحد يتعوّر.'],fix:[
+    'القتال مبقاش بالتصويت: كل واحد بيلعب دوره ويختار حركته بنفسه، وكل صاحب ليه نفس الحركات (ضربة تقيلة، نار، نشل، زئير، استخبى، ارتاح، جرعة).',
+    'حركات القتال بقت بتظهر عند صحابك كمان: الأرقام اللي بتطير، والهزة، والشرار، والأصوات، وشريط الصحة.',
+    'الزهر مبقاش بيترمي لوحده: كل واحد بيرمي زهره بإيده.']},
   {v:'5.26',d:'9 أكتوبر',add:[
     'الصاحب اللي معاك في الليلة بقى عنده حركات أكتر: ضربة تقيلة، ونار على الكل للساحر، ونشل للحرامي، وزئير للمحارب، ويستخبى، ويرتاح، ويشرب زجاجة.'],fix:[
     'الليلة مع صحابك بقت زي الأوفلاين بالظبط: كله بيشوف نفس الشاشة، وكل اختيار وكارت وحركة في القتال بالتصويت، وبيبان مين اختار إيه لحد ما الأغلبية تقرر.',
@@ -20745,7 +20751,7 @@ function coDiceRestore(){const d=$('#dice');if(CO.dOrig!=null&&d){d.innerHTML=CO
     view.querySelectorAll('[data-co]').forEach(b=>b.onclick=()=>coAnswer(+b.dataset.co));
     if(mine&&!CO.buzz){CO.buzz=a.id;vib&&vib([60,40,60]);SFX.page&&SFX.page()}}
   /* the dice */
-  const d=$('#dice');if(d){if(V.d){if(CO.dOrig==null)CO.dOrig=d.innerHTML;if(d.dataset.coH!==V.d){d.innerHTML=coSafe(V.d);d.dataset.coH=V.d}d.className=(V.dc||'').replace(/\bhidden\b/g,'')}else coDiceRestore()}
+  const d=$('#dice');if(d&&!CO.myRoll){if(V.d){if(CO.dOrig==null)CO.dOrig=d.innerHTML;if(d.dataset.coH!==V.d){d.innerHTML=coSafe(V.d);d.dataset.coH=V.d}d.className=(V.dc||'').replace(/\bhidden\b/g,'')}else coDiceRestore()}
   coMarkGuest(V)}}
 /* a tap on the mirrored screen is a vote, never a real click */
 document.addEventListener('click',e=>{if(S.screen!=='coopg'||!$('#coM'))return;const t=e.target;if(!t||!t.closest)return;
@@ -20759,6 +20765,149 @@ document.addEventListener('click',e=>{if(S.screen!=='coopg'||!$('#coM'))return;c
 .co-bar0{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0 4px}.co-bar0 b{font-size:14px}
 .co-ask{border-color:var(--gold)}
 .co-o{display:flex;flex-direction:column;align-items:flex-start;text-align:right;gap:2px}.co-o small{font-weight:400;font-size:12px;opacity:.8}`;document.head.appendChild(st)}
+/* ---------- live night: every player plays their own part (v5.27) ----------
+   Fights are not voted: the host plays the hero and every friend picks their own moves on their own phone.
+   Every friend has a card in the fight with their own health, and the foes can go for any of them.
+   In the story, when the hero rolls the dice, every friend rolls their own dice on their own phone and gets their own result.
+   Dice are never voted and never roll by themselves; each player rolls and closes their own. */
+CO_VSCR.splice(CO_VSCR.indexOf('combat'),1);
+{const h0=coHostEls;coHostEls=function(){return coDiceOpen()?[]:h0.apply(this,arguments)}}
+coAutoRoll=function(){};
+const coOn=()=>CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on';
+const coGx=a=>(m,f)=>a&&a.g==='f'?f:m;
+
+/* the friends after the first one: their own health in the fight */
+CO.al={};CO.alC=null;
+function coAlOf(x){const h=S.hero;let a=CO.al[x.u];
+  if(!a){const r=CO.xs.find(y=>y.u===x.u),p=coJ(r&&r.gp)||{};
+    a=palComp(h,{n:p.n||x.n||'',g:p.g==='f'?'f':'m',c:p.c||'',l:p.l|0,hp:(p.hp|0)||MXH(h),lk:p.lk||'{}'});a.u=x.u;a.k='a'+Object.keys(CO.al).length;CO.al[x.u]=a}
+  return a}
+function coAls(){if(!coOn())return [];const L=coXs().filter(x=>coHere(x.u)).map(coAlOf);
+  if(S.combat&&CO.alC!==S.combat){CO.alC=S.combat;L.forEach(a=>{if(a.hp<=0)a.hp=Math.ceil(a.max/2);a.hide=0})}return L}
+function coAlCard(a){const g=coGx(a),dn=a.hp<=0;
+  return `<div class="mate co-al ${dn?'down':''}" id="al_${a.k}"><div class="pic">${portrait(a,'al'+a.k)}</div><div class="info"><b>${esc(a.name)}</b><div style="margin:4px 0">${hb('al'+a.k,a.hp/a.max*100,'var(--hp)')}</div>${dn?`<span class="dn">${g('وقع','وقعت')}</span><br><span style="color:var(--dim)">${g('هيقوم','هتقوم')} في القتال الجاي</span>`:`صحة ${a.hp}/${a.max}<br><span style="color:var(--dim)">${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}${a.hide?' · '+g('مستخبي','مستخبية'):''}</span>`}</div></div>`}
+function coAlDraw(){if(S.screen!=='combat'||!S.combat||!coLive())return;const c=S.comp,cc=$('#compCard');if(c&&c.friend&&c.hp>0&&cc){const sp=[...cc.querySelectorAll('.info span')].find(x=>/لوحد/.test(x.textContent));if(sp){const g=coGx(c);sp.textContent=`${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}`}}const L=coAls();if(!L.length)return;const sd=view.querySelector('.side');if(!sd||sd.querySelector('.co-al'))return;
+  sd.classList.add('co-many');sd.insertAdjacentHTML('beforeend',L.map(coAlCard).join(''))}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{coAlDraw()}catch(e){}return r}}
+
+/* the foes go for the friends too */
+async function coHitAl(e,a,o){const g=coGx(a),wk=!!e.fx.weak;delete e.fx.weak;const dm=Math.max(1,Math.round(e.dmg*(o.mul||1)));
+  SFX.foeCry(e.art);await say(`${e.name} ${FF(e,'بيهجم','بتهجم')} على ${a.name}!`,'bad',500);
+  if(a.hide){a.hide=0;combat();floatAt($('#al_'+a.k),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('كان مستخبي','كانت مستخبية')}: الضربة ما جتش.`,'good',900);return {d:0,me:0}}
+  const roll=rnd(6)+rnd(6)+1;let d=roll>=10?0:roll>=7?Math.ceil(dm/2):dm;if(d&&wk)d=Math.ceil(d/2);
+  if(d){a.hp=Math.max(0,a.hp-d);combat();const el=$('#al_'+a.k);shake();SFX.hit();vib(50);floatAt(el,'-'+d,'#ff8a7a');if(a.hp<=0)SFX.down();
+    await say(`${e.name} ${FF(e,'ضرب','ضربت')} ${a.name}: -${d} صحة.${wk?` (${FF(e,'مدوّخ','مدوّخة')}: الضربة نص)`:''}${a.hp<=0?` ${a.name} ${g('وقع','وقعت')}!`:''}`,'bad')}
+  else{combat();floatAt($('#al_'+a.k),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} الضربة.`,'good',900)}
+  return {d,me:0}}
+{const ft=foeTurn;foeTurn=async function(e,o){o=o||{};const C=S.combat;
+  if(C&&coLive()&&!o.me&&!(C.me&&C.me.taunt)&&!(C.tutorial)){const L=coAls().filter(a=>a.hp>0);if(L.length&&Math.random()<L.length/(L.length+2))return coHitAl(e,pick(L),o)}
+  return ft.apply(this,arguments)}}
+
+/* every friend picks their own move, with the same moves the first friend has */
+function coAlOpts(a,fs,C,h){const g=coGx(a),c=S.comp,o=fs.map(x=>({k:'hit',i:x.i,t:`${g('اضرب','اضربي')} ${x.f.name}`}));
+  if(a.cls==='معالج'){if(h.hp<MXH(h))o.unshift({k:'hm',t:`${g('عالج','عالجي')} ${h.name}`});if(c&&c.hp>0&&c.hp<c.max)o.push({k:'hc',t:`${g('عالج','عالجي')} ${c.name}`});if(a.hp<a.max)o.push({k:'hs',t:g('عالج نفسك','عالجي نفسك')})}
+  const f0=fs.find(x=>x.i===C.tgt)||fs[0];o.push({k:'pw',i:f0.i,t:`ضربة جامدة على ${f0.f.name}`,s:'ضعف الضرر، بس ممكن تطيش'});
+  if(a.cls==='ساحر')o.push({k:'fire',t:'نار على الكل',s:'بتلسع كل الأعداء'});
+  if(a.cls==='حرامي')o.push({k:'snat',i:f0.i,t:`${g('اخطف','اخطفي')} من ${f0.f.name}`,s:'فلوس للكل'});
+  if(a.cls==='محارب')o.push({k:'roar',t:g('اصرخ فيهم','اصرخي فيهم'),s:`الضربة الجاية على ${h.name} تبقى نص`});
+  o.push({k:'hide',t:g('استخبى','استخبي'),s:'الضربة الجاية عليك ما تجيش'});
+  if(a.hp<a.max)o.push({k:'rest',t:g('ارتاح','ارتاحي'),s:'صحة شوية'});
+  if((h.bag.potion|0)>0&&a.hp<a.max)o.push({k:'pot',t:g('اشرب جرعة شفا من الشنطة','اشربي جرعة شفا من الشنطة'),s:`فاضل ${h.bag.potion}`});
+  return o}
+async function coAlDo(a,o,auto,h,C){const g=coGx(a),lv=Math.min(a.fl||1,(h.lvl||1)+3),el=()=>$('#al_'+a.k),pre=auto?g('من نفسه: ','من نفسها: '):'';
+  const heal=(who,cur,max)=>Math.min(rnd(6)+1+Math.floor(lv/2),max-cur);
+  if(o.k==='hm'){const v=heal(0,h.hp,MXH(h));h.hp+=v;combat();burst(el(),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),v);return say(`${pre}${a.name} ${g('عالجك','عالجتك')}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='hc'){const c=S.comp;if(!c||c.hp<=0)return;const v=heal(0,c.hp,c.max);c.hp+=v;combat();healFx($('#compCard'),v);return say(`${a.name} ${g('عالج','عالجت')} ${c.name}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='hs'){const v=heal(0,a.hp,a.max);a.hp+=v;combat();healFx(el(),v);return say(`${a.name} ${g('عالج نفسه','عالجت نفسها')}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='hide'){a.hide=1;combat();SFX.guard&&SFX.guard();return say(`${a.name} ${g('استخبى','استخبت')}: الضربة الجاية ${g('عليه','عليها')} مش هتيجي.`,'good')}
+  if(o.k==='rest'){const v=Math.min(rnd(3)+2,a.max-a.hp);a.hp+=v;combat();healFx(el(),v);return say(`${a.name} ${g('خد نفسه','خدت نفسها')}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='pot'){if(!(h.bag.potion>0))return;h.bag.potion--;const v=Math.min(5+h.lvl,a.max-a.hp);a.hp+=v;combat();healFx(el(),v);return say(`${a.name} ${g('شرب','شربت')} جرعة شفا: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='roar'){C.cpRoar=1;SFX.cheer&&SFX.cheer();return say(`${a.name} ${g('صرخ','صرخت')} فيهم! الضربة الجاية على ${h.name} هتبقى نص.`,'good')}
+  if(o.k==='fire'){for(const f of C.foes.filter(f=>f.hp>0&&!f.fled))hurtFoe(f,rnd(3)+1);await sleep(450);return say(`${a.name} ${g('رمى','رمت')} نار على الكل!`,'good')}
+  if(o.k==='snat'){const f=C.foes[o.i];if(rnd(6)+rnd(6)+2>=7){const m=rnd(15)+5;h.money+=m;combat();return say(`${a.name} ${g('خطف','خطفت')} ⁦${m}⁩ جنيه من ${f?f.name:'العدو'}!`,'good')}SFX.miss();return say(`${a.name} ${g('حاول يخطف','حاولت تخطف')}.. بس ما ${g('عرفش','عرفتش')}.`)}
+  const f=C.foes[o.i];if(!f||f.hp<=0)return;
+  if(o.k==='pw'){if(rnd(6)+rnd(6)+2>=8){const d=2*(rnd(4)+1+Math.floor(lv/2));hurtFoe(f,d);await sleep(520);return say(`${a.name} ${g('نزل','نزلت')} بضربة جامدة على ${f.name}: -${d}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good')}
+    SFX.miss();return say(`${a.name} ${g('نزل بكل قوته','نزلت بكل قوتها')}.. بس الضربة طاشت.`)}
+  if(rnd(6)+rnd(6)+2>=6){const d=rnd(4)+1+Math.floor(lv/2);hurtFoe(f,d);await sleep(420);return say(`${pre}${a.name} ${g('ضرب','ضربت')} ${f.name}: -${d}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good')}
+  SFX.miss();return say(`${a.name} ${g('حاول يضرب','حاولت تضرب')} ${f.name}.. بس ما جتش.`)}
+coHelpers=async function(){if(!coLive()||!CO.xs.length)return;const h=S.hero;
+  for(const a of coAls()){const C=S.combat;if(!C||h.hp<=0)return;if(a.hp<=0)continue;a.hide=0;const X=C.X,g=coGx(a);
+    const fs=C.foes.map((f,i)=>({f,i})).filter(y=>y.f.hp>0&&!y.f.fled&&!(typeof X_gone==='function'&&X&&X_gone(y.f)));if(!fs.length)return;
+    const opts=coAlOpts(a,fs,C,h);C.log.push({t:`دور ${a.name}: ${g('بيختار','بتختار')} من ${g('موبايله','موبايلها')}..`});combat();coPublish();
+    const r=await coAsk(opts,a.u,CO_WAIT);if(!S.combat)return;let o=r!=null?opts[+r]:null;const auto=!o;if(!o)o=opts.find(y=>y.k==='hit')||opts[0];
+    await coAlDo(a,o,auto,h,C);if(C.foes.every(y=>y.hp<=0))return}};
+
+/* ===== the story: every player rolls their own dice ===== */
+CO.rl=null;CO.rlDone={};CO.myRoll='';
+const coRollOn=()=>coOn()&&!S.combat&&S.screen!=='combat'&&coPlayers().length>1;
+function coRollTxt(t,g,dmg){return t==='full'?g('عدّى','عدّت'):t==='part'?`${g('عدّى','عدّت')} بس ${g('اتخدش','اتخدشت')}: -${dmg} صحة`:`ما ${g('عرفش','عرفتش')}، ${g('واتعوّر','واتعوّرت')}: -${dmg} صحة`}
+function coRollRes(u,t,n){const R=CO.rl;if(!R||R.res[u])return;const me=coMe(),h=S.hero,Rm=CO.room;
+  if(u===me){R.res[u]={n:h.name,txt:t==='full'?G('نجحت','نجحتي'):t==='part'?G('نجحت بتمن','نجحتي بتمن'):'ما نفعتش',k:t,v:n};return coRollShow()}
+  let who=null,g;if(Rm&&u===Rm.g&&S.comp){who=S.comp;g=coGx(S.comp)}else{const x=coXs().find(y=>y.u===u);if(!x)return;who=coAlOf(x);g=coGx(who)}
+  const dmg=t==='full'?0:t==='part'?1:rnd(3)+1;if(dmg)who.hp=Math.max(1,Math.min(who.max,who.hp)-dmg);
+  R.res[u]={n:who.name,txt:coRollTxt(t,g,dmg),k:t,v:n};coRollShow()}
+function coRollShow(){const R=CO.rl;if(!R)return;const P=coPlayers();if(P.every(p=>R.res[p.u]))R.over=1;coRlDraw();setTimeout(coPublish,60)}
+function coRlDraw(){if(CO.role!=='host')return;const old=$('#coRl');if(old)old.remove();const R=CO.rl;if(!R||S.screen==='combat'||!view)return;if(Date.now()-R.t0>90000)return;
+  const P=coPlayers(),rows=P.map(p=>{const r=R.res[p.u];return `<div class="co-rr ${r?'k-'+r.k:''}"><b>${esc(r?r.n:p.n)}</b><span>${r?`🎲 ${r.v!=null?r.v+' · ':''}${esc(r.txt)}`:'⏳ لسه بيرمي'}</span></div>`}).join('');
+  const box=`<div class="card co-rl" id="coRl"><div class="tw-lbl">كل واحد رمى زهره</div>${rows}</div>`;const tp=view.querySelector('.top');if(tp)tp.insertAdjacentHTML('afterend',box);else view.insertAdjacentHTML('afterbegin',box)}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{coRlDraw()}catch(e){}return r}}
+{const rc=rollCheck;rollCheck=function(stat,opt){const p=rc.apply(this,arguments);try{if(coRollOn()){opt=opt||{};
+    const R=CO.rl={id:Date.now().toString(36),st:stat,dc:opt.dc|0,adv:opt.adv?1:0,dz:S.dice||'',t0:Date.now(),res:{}};
+    p.then(x=>{if(CO.rl!==R)return;if(!x||x.cancel){CO.rl=null;coRlDraw();setTimeout(coPublish,60);return}coRollRes(coMe(),x.tier,x.total)});
+    setTimeout(()=>{if(CO.rl!==R)return;coPlayers().forEach(q=>{if(q.u!==coMe()&&!R.res[q.u]){const s=rnd(6)+rnd(6);coRollRes(q.u,s>=10?'full':s>=7?'part':'fail',null)}})},30000);
+    setTimeout(coPublish,150)}}catch(e){}return p}}
+function coRollRead(){const R=CO.rl;if(!R||R.over||CO.role!=='host')return;const Rm=CO.room;
+  const raw=[[Rm&&Rm.g,Rm&&Rm.ans]].concat((CO.xs||[]).map(x=>[x.u,x.ans]));
+  for(const [u,s] of raw){const a=coJ(s);if(u&&a&&a.id==='r:'+R.id&&!R.res[u]&&['full','part','fail'].includes(a.t))coRollRes(u,a.t,a.n|0)}}
+setInterval(()=>{try{coRollRead()}catch(e){}},800);
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);const R=CO.rl;if(R&&!R.over&&Date.now()-R.t0<30000)o.rl={id:R.id,st:R.st,dc:R.dc,adv:R.adv,dz:R.dz};return o}}
+
+/* the friend's phone opens its own dice */
+async function coMyRoll(rl){if(CO.myRoll||CO.rlDone[rl.id]||!S.hero)return;CO.myRoll=rl.id;CO.rlDone[rl.id]=1;coDiceRestore();const d0=S.dice;if(rl.dz)S.dice=rl.dz;
+  let x=null;try{x=await rollCheck(rl.st,{label:G('دورك ترمي زهرك! كل واحد ليه نتيجته','دورك ترمي زهرك! كل واحدة ليها نتيجتها'),dc:rl.dc|0,adv:!!rl.adv})}finally{S.dice=d0;CO.myRoll=''}
+  if(!x||x.cancel||!CO.code)return;const R=CO.room,v=JSON.stringify({id:'r:'+rl.id,t:x.tier,n:x.total|0});
+  try{if(R&&R.g===coMe())await coRef(CO.code).update({ans:v});else await coPRef(CO.code,coMe()).update({ans:v})}catch(e){}
+  if(S.screen==='coopg')render()}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,V=coJ(R&&R.vw);
+    if(R&&R.st==='on'&&V&&V.rl&&V.rl.id&&!CO.rlDone[V.rl.id]&&!CO.myRoll)setTimeout(()=>coMyRoll(V.rl),300)}catch(e){}return r}}
+
+{const st=document.createElement('style');st.textContent=`
+.side.co-many{flex-wrap:wrap}.side.co-many .mate{flex:1 1 calc(50% - 4px)}
+.co-rl{border-color:var(--gold);padding:10px 12px;margin:8px 0}.co-rl .tw-lbl{margin-bottom:6px}
+.co-rr{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:4px 0;border-top:1px solid var(--line)}.co-rr:first-of-type{border-top:0}
+.co-rr span{color:var(--dim);text-align:left}.co-rr.k-full span{color:#a6e3a0}.co-rr.k-part span{color:#f3d48f}.co-rr.k-fail span{color:#f0a090}`;document.head.appendChild(st)}
+/* ---------- live night: the friends see the fight's moves too (v5.27) ----------
+   The host's phone notes every effect it plays (numbers that fly up, shakes, flashes, sparks, banners, sounds) with the id of
+   the card it played on, and sends the last few with the screen (vw.fx). The friend's phone plays them again on the same card
+   of the mirrored screen, and slides the health bars the same way. */
+CO.fx=[];CO.fxN=0;CO.fxT=0;CO.fxSeen=-1;CO.fxRep=0;
+const coFxOn=()=>CO.role==='host'&&!CO.fxRep&&S.screen==='combat'&&coOn()&&coPlayers().length>1;
+const coFxId=el=>{if(!el||el.closest&&el.closest('#dice'))return '';if(el===view)return 'view';if(el===app)return 'app';const x=el.id?el:el.closest&&el.closest('[id]');const id=x&&x.id;return id&&id!=='view'&&id!=='app'?id:''};
+function coFxAdd(f,a){const t=Date.now();CO.fx.push({n:++CO.fxN,f,a});CO.fx=CO.fx.filter(e=>e.n>CO.fxN-16);CO.fxAt=t;
+  if(!CO.fxT)CO.fxT=setTimeout(()=>{CO.fxT=0;coPublish()},140)}
+const coArg=v=>v==null||typeof v==='number'||typeof v==='string'||typeof v==='boolean'?v:Array.isArray(v)&&v.every(x=>typeof x==='string')?v:undefined;
+{const W2=(name,fn,els)=>function(){try{if(coFxOn()){const a=[...arguments].map((v,i)=>els.includes(i)?{'#':coFxId(v)}:coArg(v));if(!els.some(i=>!a[i]||!a[i]['#']))coFxAdd(name,a)}}catch(e){}return fn.apply(this,arguments)};
+  floatAt=W2('floatAt',floatAt,[0]);pop=W2('pop',pop,[0]);burst=W2('burst',burst,[0,1]);cls=W2('cls',cls,[0]);
+  const sh=shake;shake=function(){try{if(coFxOn())coFxAdd('shake',[coArg(arguments[0])])}catch(e){}return sh.apply(this,arguments)};
+  const fl=flash;flash=function(){try{if(coFxOn())coFxAdd('flash',[coArg(arguments[0])])}catch(e){}return fl.apply(this,arguments)};
+  const bd=band;band=function(s1,t,s2,o){try{if(coFxOn())coFxAdd('band',[coArg(s1),coArg(t),coArg(s2),{color:o&&o.color||'',dur:o&&o.dur||0}])}catch(e){}return bd.apply(this,arguments)}}
+/* the sounds of a fight (not the dice ticks) */
+const CO_SNDX=['tick','rattle','page','clack','thud'];
+Object.keys(SFX).forEach(k=>{const f=SFX[k];if(typeof f!=='function'||CO_SNDX.includes(k))return;SFX[k]=function(){try{if(coFxOn())coFxAdd('s',[k,coArg(arguments[0])])}catch(e){}return f.apply(this,arguments)}});
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);if(CO.fx.length&&Date.now()-(CO.fxAt||0)<5000)o.fx=CO.fx;return o}}
+
+/* the friend's phone plays them */
+function coFxPlay(V){const L=(V&&V.fx)||[];if(!L.length)return;const top=L[L.length-1].n;
+  if(CO.fxSeen<0||top<CO.fxSeen-50){CO.fxSeen=top;return}
+  const el=x=>x&&x['#']==='view'?($('#coM')||view):x&&x['#']==='app'?app:x&&x['#']?document.getElementById(x['#']):null;
+  CO.fxRep=1;try{for(const e of L){if(e.n<=CO.fxSeen)continue;CO.fxSeen=e.n;const a=e.a||[];try{
+    if(e.f==='floatAt')floatAt(el(a[0]),a[1],a[2],a[3],a[4]);else if(e.f==='pop')pop(el(a[0]),a[1],a[2]);else if(e.f==='burst')burst(el(a[0]),el(a[1]),a[2],a[3]);
+    else if(e.f==='cls')cls(el(a[0]),a[1]);else if(e.f==='shake')shake(a[0]);else if(e.f==='flash')flash(a[0]);
+    else if(e.f==='band')band(a[0],a[1],a[2],{color:a[3]&&a[3].color,dur:a[3]&&a[3].dur||undefined,sound:false});
+    else if(e.f==='s'&&SFX[a[0]])SFX[a[0]](a[1])}catch(x){}}}finally{CO.fxRep=0}}
+function coBars(){const m=$('#coM');if(!m)return;requestAnimationFrame(()=>requestAnimationFrame(()=>m.querySelectorAll('.hb[data-to]').forEach(b=>{const t=b.dataset.to+'%';[...b.children].slice(0,2).forEach(c=>c.style.width=t)})))}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const h0=CO.mh;const r=g0.apply(this,arguments);try{const V=coJ(CO.room&&CO.room.vw);if(V&&V.m){if(CO.mh!==h0)coBars();setTimeout(()=>coFxPlay(V),30)}}catch(e){}return r}}
+{const s0=coStop;coStop=function(){CO.fxSeen=-1;return s0.apply(this,arguments)}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
