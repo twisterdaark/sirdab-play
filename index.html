@@ -4357,6 +4357,14 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.37',d:'9 أكتوبر',add:[
+    'قبل ما {تعزّز|تعزّزي} أي حاجة، بيبان سطر بيقولك التعزيز ده هيزوّد إيه بالظبط، وإيه اللي بيحصل لو فشل.',
+    'التعزيز بقى على كل حاجة {بتلبسها|بتلبسيها}: العمم والخواتم والقلادات والتمايم كمان. الخاتم والقلادة بيكبر رقمهم الأساسي.',
+    'أحجار نادرة: ياقوتة نار (الوحش بيتحرق)، زمردة دم (كل ضربة بترجّعلك صحة)، كهرمانة رعد (ضرر زيادة ساعات)، لولية البحر (اللي يضربك ياخد ضرر)، وعين القط (ضربة المعلّم أسهل). بتوقع من الوحوش نادرًا، وساعات عم رمضان بيبيع واحد لكام ساعة. {ركّبها|ركّبيها} عند عم حسن أو عم فتحي.',
+    'في القايمة الرئيسية: {بطلك بقى بيتمشى ويلف ويلوّح|بطلتك بقت بتتمشى وتلف وتلوّح} بالسلاح، {وعنده|وعندها} كلام أكتر بكتير، ووطاويط ووحوش بتعدّي في الخلفية.'
+  ],fix:[
+    'العمة المطرزة بالدهب بقت عمة بجد بلفّات دهب وحجر أحمر، مش خوذة.'
+  ]},
   {v:'5.36',d:'9 أكتوبر',add:[
     'القايمة الرئيسية اتجددت: النجوم بتتحرك وبتلمع وساعات نجمة بتقع، {بطلك|بطلتك} {واقف|واقفة} قصاد الوحوش ({دوس|دوسي} {عليه|عليها} {يتنطط|تتنطط} {ويقول|وتقول} حاجة)، والزراير بتتحرك لما {تقرّب|تقرّبي} منها ولما {تدوس|تدوسي}.',
     'عين صغيرة على كل خانة في «عدّتي»: {دوس|دوسي} عليها {تخفي|تخفي} القطعة من الصورة أو {تورّيها|تورّيها}. ونفس الزرار جوه نافذة القطعة.',
@@ -5350,7 +5358,8 @@ const STONE_P={stone1:150,stone2:400};
 /* ---------- pieces ---------- */
 let qSeq=0;const qUid=()=>(Date.now()%2e9).toString(36)+(qSeq++).toString(36)+Math.floor(Math.random()*1296).toString(36);
 const qDur=id=>!!(GEAR[id]&&QDUR.includes(GEAR[id].slot));
-const qCanEnh=id=>qDur(id);
+const ENH_SLOTS=['weapon','armor','head','neck','charm','ring'];
+const qCanEnh=id=>!!GEAR[id]&&ENH_SLOTS.includes(GEAR[id].slot);   /* v5.37: anything you wear can be enhanced */
 const qFem=id=>!!TW_FEMG[id];
 function qMaxD(id,I){if(!qDur(id))return 0;let m=QD[I.q]||40;if((I.t||[]).includes('mateen'))m*=I.e>=4?1.75:1.5;if(I.s2)m*=2;return Math.round(m)}
 function giNew(id,q,o){o=o||{};const I={u:qUid(),q:q==null?1:q,e:o.e||0,t:(o.t||[]).slice()};if(o.nm)I.nm=o.nm;if(o.by)I.by=String(o.by).slice(0,20);if(o.s2)I.s2=1;if(qDur(id))I.d=qMaxD(id,I);return I}
@@ -5377,6 +5386,8 @@ function qView(id,I){const g=GEAR[id];if(!g)return null;if(!I)return g;const v=O
   const mv=(x,d)=>{x=x||0;return Math.max(x>0?1:0,x+d)};
   if(dq){if(m==='hp')v.hp=mv(v.hp,dq*2);else if(m.slice(0,3)==='st:'){const s=m.slice(3);v.st[s]=mv(v.st[s],dq)}else v[m]=mv(v[m],dq)}
   if(I.e){if(g.slot==='weapon')v.dmg=(v.dmg||0)+I.e;else if(g.slot==='armor'||g.slot==='head')v.armor=(v.armor||0)+I.e}
+  /* v5.37: rings, necklaces and charms grow their main number: health +1 a step, a stat or spirit +1 every 3 steps */
+  else if(I.e){const k=Math.floor(I.e/3);if(m==='hp')v.hp=(v.hp||0)+I.e;else if(m==='spirit')v.spirit=(v.spirit||0)+k;else if(m.slice(0,3)==='st:'&&k){const s=m.slice(3);v.st[s]=(v.st[s]||0)+k}}
   if((I.t||[]).includes('khafif'))v.st['خفة']=(v.st['خفة']||0)+(I.e>=4?2:1);
   Object.keys(v.st).forEach(k=>{if(!v.st[k])delete v.st[k]});if(!Object.keys(v.st).length)delete v.st;
   v.n=g.n+(I.e?` +${I.e}`:'');v.q=I.q;v.e=I.e;v.tr=I.t||[];v.inst=I;v.id=id;return v}
@@ -5544,6 +5555,7 @@ function qItemCard(h,x,seen){const {id,I,on}=x,g=GEAR[id],v=qView(id,I),fem=qFem
   if(qCanEnh(id)){if(I.e>=10)acts.push(`<div class="tw-na">آخر درجة تعزيز</div>`);
     else{const [k,p]=ENH[I.e+1],n=h.res[k]||0;
       acts.push(`<button class="tw-act q-enhb" data-enh="${I.u}" ${n?'':'disabled'}><b>${G('عزّز','عزّزي')} لـ${twI('+'+(I.e+1))}</b><small>${n?`${MAT[k].n} · ${Math.round(p*100)}%`:`ناقصك ${MAT[k].n}`}</small></button>`)}}
+  const enhP=qCanEnh(id)&&I.e<10?qEnhPrev(id,I,v):'';
   if(!on&&g.craft){const out=qDisOut(id,I),ck=TWN.conf==='dis:'+I.u;
     acts.push(`<button class="tw-act q-dis${ck?' warn':''}" data-dis="${I.u}"><b>${ck?G('متأكد؟','متأكدة؟'):G('فكّ','فكّي')+(fem?'ها':'ه')}</b><small>${G('هتاخد','هتاخدي')} ${needTxt(out)}${I.e?' وممكن الحجر':''}</small></button>`)}
   const key=id+':'+I.q;if(!on&&I.q<3&&!seen[key]&&qTwin(h,{id,I})){seen[key]=1;const fee=qMergeFee(h,id),ck=TWN.conf==='mrg:'+I.u;
@@ -5555,7 +5567,11 @@ function qItemCard(h,x,seen){const {id,I,on}=x,g=GEAR[id],v=qView(id,I),fem=qFem
     ${I.by?`<small class="q-by">صنعة إيد: ${esc(I.by)}</small>`:''}
     ${I.nm?`<small class="q-eng">محفور ${fem?'عليها':'عليه'}: «${esc(I.nm)}»</small>`:''}
     ${qDurHTML(id,I)}</div></div>
-    ${acts.length?`<div class="q-acts">${acts.join('')}</div>`:''}</div>`}
+    ${enhP}${acts.length?`<div class="q-acts">${acts.join('')}</div>`:''}</div>`}
+/* v5.37: what the next enhancement step would change, said before you try it */
+function qEnhPrev(id,I,v){const nx=I.e+1,nv=qView(id,Object.assign({},I,{e:nx})),df=twDiff(nv,v),[,p]=ENH[nx],notes=[];
+  if(nx===4&&(I.t||[]).length)notes.push('الصفات الخاصة بتقوى');if(nx===7)notes.push('بتاخد صفة خاصة جديدة');if(!df.length&&!['weapon','armor','head'].includes(GEAR[id].slot)){const m3=Math.ceil(nx/3)*3;if(m3<=10)notes.push(`الزيادة الجاية عند ${twI('+'+m3)}`)}if(nx>=8)notes.push('لو فشل، بينزل درجة');else if(p<1)notes.push('لو فشل، الحجر بيروح بس');
+  return `<div class="q-enhp"><span class="lb">لو ${G('عزّزت','عزّزتي')} لـ${twI('+'+nx)}:</span>${df.length?twChips(df):'<span class="tw-ch">الأرقام لسه زي ما هي</span>'}${notes.map(t=>`<span class="q-enhn">${t}</span>`).join('')}</div>`}
 function qBindTab(at){
   view.querySelectorAll('[data-stb]').forEach(b=>b.onclick=()=>qBuyStone(b.dataset.stb,b));
   view.querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>qRepairBtn(b.dataset.rep,!!b.dataset.rm,b));
@@ -5664,6 +5680,8 @@ Object.assign(SFX,{
 .q-it .q-by{display:block;color:#c9b48c;font-size:12px}
 .q-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .q-acts .tw-act{min-height:50px}
+.q-enhp{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:8px;padding:6px 8px;border-radius:10px;background:#5aa0ff14;border:1px dashed #5aa0ff66}.q-enhp .lb{font-size:12px;color:#cfe8ff;font-weight:800;margin-inline-end:2px}
+.q-enhn{font-size:11px;font-weight:800;color:#f2c77a;background:#c9832622;border-radius:8px;padding:1px 7px}
 .q-acts .tw-act.q-enhb{border-color:#5aa0ff;background:linear-gradient(180deg,#1f2c48,#18223a)}.q-acts .tw-act.q-enhb b{color:#cfe8ff}
 .q-acts .tw-act.q-rep{border-color:#3d6e44}.q-acts .tw-act.q-rep b{color:#a6e3a0}
 .q-acts .tw-act.warn{border-color:var(--bad);background:#3a1c18}.q-acts .tw-act.warn b{color:#ffb3a3}
@@ -8528,6 +8546,12 @@ return root.PD})();
       '.cccccccccccc.',
     ] },
   });
+  /* v5.37: the gold-embroidered turban: the same wraps, the folds in gold and a red stone in front */
+  { const T0 = PD.getPart('head', 'turban', 'm').def, gold = r => r.replace(/cc/g, 'yo');
+    const jewel = (rows, y, x) => rows.map((r, i) => i === y ? r.slice(0, x) + 'Rr' + r.slice(x + 2) : r);
+    add('head', 'goldturban', { label: 'عمة مطرزة بالدهب', brim: T0.brim,
+      face: { x: T0.face.x, y: T0.face.y, rows: jewel(T0.face.rows.map(gold), 4, 10) },
+      body: { x: T0.body.x, y: T0.body.y, rows: jewel(T0.body.rows.map(gold), 3, 6) } }); }
   add('head', 'helmet', {
     label: 'خوذة حديد', brim: { face: 11, body: 7 },
     face: { x: 5, y: 1, rows: [
@@ -8662,7 +8686,7 @@ const PX=(function(){
   const GEAR_PART={
     weapon:{shuma:'shuma',copsword:'copsword',dagger:'dagger',ironsword:'ironsword',turqstaff:'turqstaff'},
     armor:{vest:'vest',ironarmor:'ironarmor'},
-    head:{turban:'turban',helmet:'helmet'},
+    head:{turban:'turban',helmet:'helmet',goldturban:'goldturban'},
     neck:{hornneck:'hornneck',hairneck:'hairneck'},
     charm:{amulet:'amulet'},
     ring:{copring:'copring',silring:'silring'}};
@@ -8672,7 +8696,7 @@ const PX=(function(){
     const n=String(g.n||''),hi=(g.tier||0)>=1;
     if(slot==='weapon')return /عصا/.test(n)?'turqstaff':/خنجر|سكين/.test(n)?'dagger':/سيف/.test(n)?(hi?'ironsword':'copsword'):/شوم|نبوت/.test(n)?'shuma':null;
     if(slot==='armor')return hi||/حديد|درع/.test(n)?'ironarmor':'vest';
-    if(slot==='head')return hi||/خوذ/.test(n)?'helmet':'turban';
+    if(slot==='head')return /عمة|عمامة|طاقية|شال/.test(n)?(/دهب/.test(n)?'goldturban':'turban'):hi||/خوذ/.test(n)?'helmet':'turban';
     if(slot==='neck')return (g.tier||0)>=3?'hairneck':'hornneck';
     if(slot==='charm')return 'amulet';
     if(slot==='ring')return hi?'silring':'copring';
@@ -22038,8 +22062,21 @@ const TS_IC={
   b3:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="9" cy="8" r="3.4" fill="currentColor"/><path d="M2.5 20c.6-4 3.2-6 6.5-6s5.9 2 6.5 6z" fill="currentColor"/><circle cx="17" cy="9" r="2.6" fill="currentColor" opacity=".6"/><path d="M15.5 14.2c3.2-.4 5.6 1.4 6 5.8h-4.6" fill="currentColor" opacity=".6"/></svg>',
   bNews:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.6 6.2 6.7.6-5.1 4.4 1.6 6.6L12 16.3 6.2 19.8l1.6-6.6L2.7 8.8l6.7-.6z" fill="currentColor"/></svg>',
   b4:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4.5h6.5c1 0 1.5.6 1.5 1.5v14c0-1-.6-1.6-1.6-1.6H4zM20 4.5h-6.5c-1 0-1.5.6-1.5 1.5v14c0-1 .6-1.6 1.6-1.6H20z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>'};
-const TS_SAY_F=['يلا بينا، الليل طويل.','النداهة مستنياني.. وانا مش هرد.','مستعدة. هاتي النرد.','الكفر نايم، وانا صاحية.','مش خايفة.. يمكن شوية.','سيبيني أظبط عدّتي الأول.'];
-const TS_SAY_M=['يلا بينا، الليل طويل.','النداهة مستنياني.. وانا مش هرد.','مستعد. هات النرد.','الكفر نايم، وانا صاحي.','مش خايف.. يمكن شوية.','سيبني أظبط عدّتي الأول.'];
+/* what the hero says when tapped (the hero is the one talking, so {m|f} follows the hero) */
+const TS_SAY=['يلا بينا، الليل طويل.','النداهة مستنياني.. وانا مش هرد.','{مستعد|مستعدة}. هاتوا النرد.','الكفر نايم، وانا {صاحي|صاحية}.','مش {خايف|خايفة}.. يمكن شوية.',
+  'سيبوني أظبط عدّتي الأول.','الضلمة دي مش هتاكلني.','لو سمعتوا حد بينادي اسمي.. ما تردوش.','أم سيد عاملة فول. {هاكل|هاكل} وأطلع.',
+  'عم حسن قالي السلاح ده يستحمل. نشوف.','القمر النهارده كبير.. ودي مش علامة حلوة.','كل ليلة بطلع وبرجع. لحد دلوقتي.','بتبصوا عليا كده ليه؟',
+  'لو وقعت، {قوّموني|قوّموني}.','الوحوش دي فاكرة إنها مخيفة.','نفسي في كوباية شاي من عند عم صابر.','{بطّلوا|بطّلوا} تزقوني!','الشنطة تقيلة.. ولسه فاضية.',
+  'سمعت إن فيه حاجة في الترعة بتلمع.','أنا مش بطل.. أنا بس ما بعرفش أقعد في البيت.'];
+function tsSay(h){const L=TS_SAY.slice(),add=x=>L.push(x),rp=REP(h.rep||0)[0];
+  if((h.kills||0)>=50)add('{قتلت|قتلت} أكتر من خمسين وحش. والعدّ لسه شغال.');
+  if((h.money||0)>=2000)add('معايا فلوس كتير.. يمكن أشتري حاجة من سوق اللاعيبة.');else if((h.money||0)<50)add('جيبي فاضي.. محتاج مغامرة.');
+  if((h.lvl||1)>=10)add('المستوى ده ما وصلش له حد في الكفر.');else add(`مستوى ${h.lvl||1}.. وطالع.`);
+  if(h.cls==='ساحر')add('النار في إيدي بتستنى.');if(h.cls==='حرامي')add('ما حدش شافني.. صح؟');if(h.cls==='محارب')add('{هات|هاتي} أكبر وحش عندك.'.replace('{هات|هاتي}','هاتوا'));if(h.cls==='معالج')add('لو حد اتعوّر، أنا هنا.');
+  if(/وحشة|سيئة|شريرة/.test(rp))add('الناس بتبعد عني في الشارع. مش فارقة.');else if(/كويسة|عالية|بطل/.test(rp))add('الناس بتسلم عليا في السوق. ده حلو.');
+  if(h.hairOwn&&h.hairOwn.length)add(h.g==='f'?'سماح عملتلي الشعر ده. حلو، صح؟':'عادل حلقلي. بقيت جامد، صح؟');
+  if(h.farm&&h.farm.t&&h.farm.t.harv)add('الحصّادة بتشتغل وانا هنا. ده اسمه بيزنس.');
+  return T(pick(L))}
 const TSM={raf:0,still:false};
 try{TSM.still=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
 /* the star field: a low-resolution canvas (1 art pixel = 2 CSS px) stretched with crisp pixels */
@@ -22074,8 +22111,9 @@ function tsDress(){const h=S.hero,sky=view.querySelector('.t-sky');if(!sky)retur
   /* the hero in the scene */
   if(h){const el=document.createElement('button');el.className='ts-hero';el.setAttribute('aria-label',h.name);
     el.innerHTML=`<span class="sh"></span><span class="fig">${PX.body(h)}</span><span class="say" hidden></span>`;sky.appendChild(el);sky.classList.add('ts-has');
-    let busy=0;el.onclick=e=>{e.stopPropagation();if(busy)return;busy=1;const s=el.querySelector('.say');s.textContent=pick(h.g==='f'?TS_SAY_F:TS_SAY_M);s.hidden=false;
+    let busy=0;el.onclick=e=>{e.stopPropagation();if(busy)return;busy=1;const s=el.querySelector('.say');s.textContent=tsSay(h);s.hidden=false;
       el.classList.remove('jump');void el.offsetWidth;el.classList.add('jump');SFX.tick&&SFX.tick(900);vib&&vib(15);setTimeout(()=>{s.hidden=true;busy=0},2200)}}
+  tsParade(sky);if(h){const he=sky.querySelector('.ts-hero');if(he)tsLife(sky,he,h)}
   /* the small buttons: a grid with icons */
   const col=view.querySelector('.col');if(col){const ids=['b2','b3','bLb','bNews','b4'],bs=ids.map(i=>$('#'+i)).filter(Boolean);
     if(bs.length>=3){const g=document.createElement('div');g.className='ts-grid';bs.forEach(b=>{if(TS_IC[b.id]&&!b.querySelector('svg'))b.insertAdjacentHTML('afterbegin',TS_IC[b.id]);b.classList.add('ts-sm');g.appendChild(b)});
@@ -22094,6 +22132,8 @@ function tsDress(){const h=S.hero,sky=view.querySelector('.t-sky');if(!sky)retur
 .ts-on .sub{animation:tsFade 1.2s .2s ease both}
 @keyframes tsFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .ts-scn{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 70px);mask-image:linear-gradient(to bottom,transparent 0,#000 70px)}
+.t-sky{min-height:240px!important}
+.t-sky.ts-has .ts-giant{width:230px;height:230px;margin-left:-150px;bottom:-14px}
 .t-sky.ts-has .ts-one{left:38%}
 .t-sky.ts-has .ts-pack{justify-content:flex-start;padding-left:6%}
 .ts-hero{position:absolute;right:13%;bottom:20px;width:72px;height:96px;padding:0;border:0;background:none;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
@@ -22124,6 +22164,131 @@ function tsDress(){const h=S.hero,sky=view.querySelector('.t-sky');if(!sky)retur
 .ts-on #pf .xpbar i{position:relative;overflow:hidden}.ts-on #pf .xpbar i:after{content:'';position:absolute;top:0;bottom:0;width:40px;left:-40px;background:linear-gradient(90deg,transparent,#fff8,transparent);animation:tsXp 3s linear infinite}
 @keyframes tsXp{from{left:-40px}to{left:100%}}
 @media (prefers-reduced-motion:reduce){.ts-logo,.ts-hero .fig,.ts-main:before,.ts-in,.ts-on .sub{animation:none}}`;document.head.appendChild(st)}
+
+/* ---------- v5.37: the hero moves about, and things cross the night behind ---------- */
+const TS_BAT='<svg viewBox="0 0 11 6" shape-rendering="crispEdges" style="width:100%;height:100%;display:block"><g class="a" fill="#1f1420"><rect x="0" y="0" width="2" height="1"/><rect x="1" y="1" width="3" height="1"/><rect x="7" y="1" width="3" height="1"/><rect x="9" y="0" width="2" height="1"/><rect x="3" y="2" width="5" height="2"/><rect x="4" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/></g><g class="b" fill="#1f1420"><rect x="3" y="2" width="5" height="2"/><rect x="1" y="3" width="2" height="1"/><rect x="8" y="3" width="2" height="1"/><rect x="0" y="4" width="2" height="1"/><rect x="9" y="4" width="2" height="1"/><rect x="4" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/></g><rect x="4" y="2" width="1" height="1" fill="#e04b3e"/><rect x="6" y="2" width="1" height="1" fill="#e04b3e"/></svg>';
+function tsLife(sky,el,h){if(TSM.still)return;let p=13;el.style.right=p+'%';
+  const fig=el.querySelector('.fig'),say=el.querySelector('.say'),alive=()=>el.isConnected;
+  const step=()=>{if(!alive())return;if(el.classList.contains('jump')&&!say.hidden)return setTimeout(step,1200);
+    const r=Math.random();
+    if(r<.5){const to=Math.round(5+Math.random()*36),dist=Math.abs(to-p);if(dist<4)return setTimeout(step,600);
+      const dur=dist*.11;el.classList.add('walk');fig.style.scale=to<p?'-1 1':'';el.style.transition=`right ${dur}s linear`;el.style.right=to+'%';p=to;
+      setTimeout(()=>{if(!alive())return;el.classList.remove('walk');setTimeout(step,900+Math.random()*1800)},dur*1000)}
+    else if(r<.7){el.classList.remove('swing');void el.offsetWidth;el.classList.add('swing');setTimeout(step,1400+Math.random()*1500)}
+    else if(r<.82){fig.style.scale=fig.style.scale?'':'-1 1';setTimeout(()=>{if(alive())fig.style.scale=fig.style.scale?'':'-1 1'},700);setTimeout(step,1600)}
+    else if(r<.9&&say.hidden){say.textContent=tsSay(h);say.hidden=false;setTimeout(()=>{say.hidden=true},2400);setTimeout(step,2800)}
+    else setTimeout(step,1500+Math.random()*2000)};
+  setTimeout(step,1800)}
+function tsParade(sky){if(TSM.still)return;const alive=()=>sky.isConnected;
+  const go=()=>{if(!alive())return;const W=sky.clientWidth,dir=Math.random()<.5?1:-1,el=document.createElement('div');let dur;
+    if(Math.random()<.45){el.className='ts-bat';el.innerHTML=TS_BAT;el.style.top=(12+Math.random()*40)+'%';dur=6+Math.random()*4}
+    else{const P=tsPool();el.className='ts-walk';el.innerHTML=foeArt(pick(P));dur=13+Math.random()*7;if(dir>0)el.firstElementChild&&(el.firstElementChild.style.scale='-1 1')}
+    el.setAttribute('aria-hidden','true');el.style.left=(dir>0?-70:W+20)+'px';sky.appendChild(el);
+    el.animate([{transform:'translateX(0)'},{transform:`translateX(${dir*(W+90)}px)`}],{duration:dur*1000,easing:'linear'}).onfinish=()=>el.remove();
+    setTimeout(go,(dur*.6+4+Math.random()*7)*1000)};
+  setTimeout(go,2500+Math.random()*2500)}
+{const st=document.createElement('style');st.textContent=`
+.ts-hero{transition:right 2s linear}
+.ts-hero.walk .fig{animation:tsWalk .32s steps(2) infinite}
+.ts-hero.swing .fig svg{animation:tsSwing .6s cubic-bezier(.3,1.5,.5,1)}
+@keyframes tsWalk{0%{translate:0 0}50%{translate:0 -3px}100%{translate:0 0}}
+@keyframes tsSwing{0%{transform:rotate(0)}30%{transform:rotate(-9deg) translateY(-3px)}60%{transform:rotate(6deg)}100%{transform:rotate(0)}}
+.ts-walk{position:absolute;bottom:30px;width:48px;height:48px;z-index:1;opacity:.55;filter:brightness(.4) saturate(.5);pointer-events:none}
+.ts-walk>*{width:100%;height:100%;animation:tsWalk .5s steps(2) infinite}
+.ts-walk svg{width:100%;height:100%}
+.ts-bat{position:absolute;width:33px;height:18px;z-index:1;opacity:.8;pointer-events:none;image-rendering:pixelated}
+.ts-bat .a{animation:tsFlapA .3s steps(1) infinite}.ts-bat .b{animation:tsFlapB .3s steps(1) infinite}
+@keyframes tsFlapA{0%{opacity:1}50%{opacity:0}}@keyframes tsFlapB{0%{opacity:0}50%{opacity:1}}`;document.head.appendChild(st)}
+/* ---------- أحجار نادرة: rare gems you set into a piece you wear (v5.37) ----------
+   Five gems, each for a kind of piece. One gem per piece (I.g); setting a new one breaks the old one.
+   They drop rarely from fights (more from bosses) and now and then عم رمضان has one for sale for a few hours.
+   Effects: ياقوتة نار (weapon: the foe can catch fire, 2 a turn for 2 turns), زمردة دم (weapon: +1 health on every hit),
+   كهرمانة رعد (weapon: sometimes +3 damage), لولية البحر (armor/head: whoever hits you takes 1), عين القط (ring/necklace/charm:
+   ضربة المعلّم +6%). */
+const GEMS={
+  yaqout:{n:'ياقوتة نار',sl:'w',p:1600,c:'#e04b3e',px:['R','r','m'],d:'ضربتك ممكن تولّع في الوحش: بيتحرق 2 كل دور، دورين'},
+  zomorod:{n:'زمردة دم',sl:'w',p:1400,c:'#3a9e55',px:['G','q','z'],d:'كل ضربة {بتضربها|بتضربيها} بترجّعلك 1 صحة'},
+  kahraman:{n:'كهرمانة رعد',sl:'w',p:1500,c:'#f3c14d',px:['Y','y','o'],d:'ساعات بتنزل مع ضربتك رعدة: ضرر +3'},
+  lowli:{n:'لولية البحر',sl:'a',p:1300,c:'#ebe1cc',px:['W','C','c'],d:'اللي يضربك بياخد 1 ضرر'},
+  eincat:{n:'عين القط',sl:'j',p:1200,c:'#c98326',px:['y','o','b'],d:'ضربة المعلّم بتيجي أسهل: +6%'}};
+const GEM_SL={w:['weapon'],a:['armor','head'],j:['neck','charm','ring']},GEM_SLN={w:'السلاح',a:'الدرع أو الراس',j:'الخاتم أو القلادة أو التميمة'};
+const GEM_SET=120;   /* what the craftsman asks to set a gem */
+(function(){const T0=['................','................','....KKKKKKKK....','...KWAAABBBCK...','..KWAAABBBBCCK..','.KKKKKKKKKKKKKK.','.KAWAABBBBBCCCK.','..KAABBBBBCCCK..','...KABBBBCCCK...','....KABBCCCK....','.....KABCCK.....','......KBCK......','.......KK.......','','',''];
+  Object.keys(GEMS).forEach(k=>{const [a,b,c]=GEMS[k].px;MAT[k]={n:GEMS[k].n,c:GEMS[k].c,p:GEMS[k].p,tier:3,gem:1};
+    if(typeof PXI_D!=='undefined')PXI_D[k]='16x16:'+T0.map(r=>r.replace(/A/g,a).replace(/B/g,b).replace(/C/g,c)).join('/')})})();
+const gemFits=(k,id)=>!!(GEMS[k]&&GEAR[id]&&GEM_SL[GEMS[k].sl].includes(GEAR[id].slot));
+/* how many worn pieces carry this gem */
+function gemOn(h,k){let n=0;if(!h||!h.eq)return 0;Object.values(h.eq).forEach(id=>{const o=GEAR[id]&&qWorn(h,id)&&giL(h,id)[0];if(o&&o.g===k)n++});return n}
+const gemChip=I=>I&&I.g&&GEMS[I.g]?`<span class="tw-ch gem-ch" style="--gc:${GEMS[I.g].c}">◆ ${GEMS[I.g].n}</span>`:'';
+
+/* ----- in a fight ----- */
+FXD.burn={c:'#ff8f3a',i:'rage'};
+{const fc=foeChips;foeChips=function(f){let s=fc.apply(this,arguments);const b=f.fx&&f.fx.burn;if(!b)return s;const chip=fxChips([['burn',FF(f,'بيتحرق','بتتحرق'),b.n,b.t]]);
+  return s?s.replace('</div>',chip.replace('<div class="fxs">','').replace(/<\/div>$/,'')+'</div>'):chip}}
+{const ft=foeTick;foeTick=async function(e){const x=e.fx;
+  if(x&&x.burn&&e.hp>0){const b=x.burn,d=Math.min(e.hp,b.d);b.n--;if(b.n<=0)delete x.burn;hurtFoe(e,d,{fx:'poison'});const el=$('#foe'+e.id);if(el)pop(el,['#ff7a3a','#ffd36a','#e04b3e'],16);SFX.fire&&SFX.fire();await sleep(320);
+    await say(`النار بتاكل في ${e.name}: -${d}${e.hp<=0?` · ${e.name} ${FF(e,'وقع','وقعت')} من الحرق!`:x.burn?'':' (النار طفت)'}`,'good',950);if(e.hp<=0)return true}
+  return ft.apply(this,arguments)}}
+/* the hero's own hits: strike and its follow-ups mark the combat so hurtFoe knows */
+{const s0=strike;strike=async function(){const C=S.combat;if(C)C.hh=1;try{return await s0.apply(this,arguments)}finally{if(S.combat)S.combat.hh=0}}}
+{const x0=extraHit;extraHit=async function(){const C=S.combat;if(C)C.hh=1;try{return await x0.apply(this,arguments)}finally{if(S.combat)S.combat.hh=0}}}
+{const hf=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat,h=S.hero;o=o||{};
+  if(!C||!C.hh||!h||o.fx==='poison'||C.tutorial)return hf.apply(this,arguments);
+  const ka=gemOn(h,'kahraman');let thunder=0;if(ka&&f.hp>d&&Math.random()<.22*ka){thunder=3;d+=3}
+  const r=hf.call(this,f,d,o);
+  setTimeout(()=>{const el=$('#foe'+f.id);if(!el)return;if(thunder){floatAt(el,'رعدة! +3','#ffe36a','',22);SFX.bolt&&SFX.bolt()}},120);
+  const ya=gemOn(h,'yaqout');if(ya&&f.hp>0&&Math.random()<.3*ya){fxOn(f.fx,'burn',{d:2,n:2});setTimeout(()=>{const el=$('#foe'+f.id);if(el){floatAt(el,FF(f,'ولّع!','ولّعت!'),'#ff9a5a','',22);pop(el,['#ff7a3a','#ffd36a'],14)}},260)}
+  const zo=gemOn(h,'zomorod');if(zo&&h.hp>0&&h.hp<MXH(h)){const a=Math.min(zo,MXH(h)-h.hp);h.hp+=a;setTimeout(()=>{const el=$('#meCard');if(el){floatAt(el,'+'+a,'#a6e3a0');setBar(el,'me',h.hp/MXH(h)*100)}},300)}
+  return r}}
+/* لولية البحر: the foe that hits you gets 1 back */
+{const f0=foeTurn;foeTurn=async function(e){const C=S.combat;if(C)C.att=e;try{return await f0.apply(this,arguments)}finally{if(S.combat)S.combat.att=null}}}
+{const m0=hurtMe;hurtMe=function(d){const r=m0.apply(this,arguments);try{const C=S.combat,h=S.hero,e=C&&C.att,n=gemOn(h,'lowli');
+  if(e&&n&&e.hp>0&&d>0){const k=Math.min(e.hp,n);setTimeout(()=>{if(!S.combat||e.hp<=0)return;hurtFoe(e,k,{fx:'poison'});const el=$('#foe'+e.id);if(el)floatAt(el,'اللولية ردّت!','#ebe1cc','',18)},380)}}catch(x){}return r}}
+{const c0=critChance;critChance=function(h){let c=c0.apply(this,arguments);const n=gemOn(h,'eincat');if(n)c=Math.min(.5,c+.06*n);return c}}
+
+/* ----- where gems come from ----- */
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;
+  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');if(Math.random()<(boss?.1:.02)){const k=pick(Object.keys(GEMS));addRes(h,k,1);(C.mats=C.mats||[]).push({k,n:1});
+    setTimeout(()=>band('حجر نادر!',GEMS[k].n,T(GEMS[k].d),{dur:2600,sound:SFX.sparkle||SFX.fanfare}),900)}}}catch(x){console.warn(x)}
+  return e0.apply(this,arguments)}}
+/* عم رمضان has a gem now and then: a 3-hour window, about one in three */
+const GEM_WIN=3*3600e3;
+function gemOffer(h){const w=Math.floor(Date.now()/GEM_WIN);let s=w*7919+((h&&h.name||'').length*131);const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};rnd();
+  if(rnd()>.34)return null;const ks=Object.keys(GEMS),k=ks[Math.floor(rnd()*ks.length)];return {w,k,p:Math.round(GEMS[k].p*(1+rnd()*.3)/10)*10,left:GEM_WIN-(Date.now()%GEM_WIN)}}
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='market'||TWN.tab!=='buy')return r;const o=gemOffer(h);if(!o)return r;
+  h.gemBuy=h.gemBuy||{};const got=h.gemBuy[o.w],G0=GEMS[o.k],hrs=Math.ceil(o.left/3600e3);
+  const html=`<div class="card gem-offer" style="--gc:${G0.c}"><div class="gem-ic">${twMat(o.k,46)}</div><div class="tx"><small>حاجة نادرة · بتمشي بعد ${hrs===1?'ساعة':hrs===2?'ساعتين':hrs+' ساعات'}</small><b>${G0.n}</b>
+    <span>${T(G0.d)}</span><em>${'بتتركّب في '+GEM_SLN[G0.sl]}</em></div>
+    ${got?`<span class="gem-got">${G('اشتريتها','اشتريتيها')}</span>`:`<button class="tw-buy" id="gemBuy" ${h.money<o.p?'disabled':''}>${G('اشتري','اشتري')}<small>${o.p} جنيه</small></button>`}</div>`;
+  const anchor=view.querySelector('.tw-npc');(anchor||view.querySelector('.tw')).insertAdjacentHTML(anchor?'afterend':'afterbegin',html);
+  const b=$('#gemBuy');if(b)b.onclick=()=>{if(h.money<o.p||h.gemBuy[o.w])return;h.money-=o.p;h.gemBuy={[o.w]:1};addRes(h,o.k,1);saveHero();SFX.coin&&SFX.coin();
+    band('حجر نادر',`${G('اشتريت','اشتريتي')} ${G0.n}`,`${G('ركّبه','ركّبيه')} عند عم حسن أو عم فتحي`,{dur:2200,sound:SFX.fanfare});twRender()}}catch(e){console.warn(e)}return r}}
+
+/* ----- setting a gem: on every piece card at the smith and the tailor ----- */
+{const q0=qItemCard;qItemCard=function(h,x){let s=q0.apply(this,arguments);try{const {id,I}=x,have=Object.keys(GEMS).filter(k=>gemFits(k,id)&&(h.res[k]||0)>0);
+  s=s.replace('<div class="tw-chs">','<div class="tw-chs">'+gemChip(I));
+  if(!have.length)return s;const open=TWN.gemFor===I.u;
+  const btn=`<button class="tw-act gem-act" data-gemo="${I.u}"><b>${I.g?G('غيّر الحجر','غيّري الحجر'):G('ركّب حجر','ركّبي حجر')}</b><small>${have.length===1?GEMS[have[0]].n:have.length+' أحجار تنفع'}</small></button>`;
+  const pickHTML=open?`<div class="gem-pick">${I.g?`<div class="tw-sm" style="color:#f0a090">الحجر القديم (${GEMS[I.g].n}) هيتكسر.</div>`:''}${have.map(k=>`<button class="gem-row" data-gems="${I.u}" data-gk="${k}" ${h.money<GEM_SET?'disabled':''}><span class="gi">${twMat(k,30)}</span><span class="tx"><b>${GEMS[k].n}</b><small>${T(GEMS[k].d)}</small></span><span class="pr">${GEM_SET} جنيه</span></button>`).join('')}</div>`:'';
+  if(s.includes('<div class="q-acts">'))s=s.replace('<div class="q-acts">','<div class="q-acts">'+btn).replace(/<\/div>$/,pickHTML+'</div>');
+  else s=s.replace(/<\/div>$/,`<div class="q-acts">${btn}</div>${pickHTML}</div>`);
+}catch(e){console.warn(e)}return s}}
+{const b0=qBindTab;qBindTab=function(at){const r=b0.apply(this,arguments);const h=S.hero;
+  view.querySelectorAll('[data-gemo]').forEach(b=>b.onclick=()=>{TWN.gemFor=TWN.gemFor===b.dataset.gemo?null:b.dataset.gemo;SFX.page&&SFX.page();twRender()});
+  view.querySelectorAll('[data-gems]').forEach(b=>b.onclick=()=>{const f=qFind(h,b.dataset.gems),k=b.dataset.gk;if(!f||!gemFits(k,f.id)||!(h.res[k]>0)||h.money<GEM_SET)return;
+    h.money-=GEM_SET;h.res[k]--;const old=f.I.g;f.I.g=k;TWN.gemFor=null;saveHero();SFX.sparkle?SFX.sparkle():SFX.coin&&SFX.coin();
+    band(GEMS[k].n,`${G('ركّبتها','ركّبتيها')} في ${qView(f.id,f.I).n}`,T(GEMS[k].d)+(old?` · ${GEMS[old].n} اتكسرت`:''),{dur:2400,sound:SFX.fanfare});twRender()});
+  return r}}
+{const st=document.createElement('style');st.textContent=`
+.gem-ch{color:var(--gc)!important;border-color:color-mix(in srgb,var(--gc) 55%,transparent)!important;background:color-mix(in srgb,var(--gc) 14%,transparent)!important;font-weight:800}
+.q-acts .tw-act.gem-act{border-color:#c9a0ff;background:linear-gradient(180deg,#2c2140,#211934)}.q-acts .tw-act.gem-act b{color:#e6d6ff}
+.gem-pick{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.gem-row{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-align:right;cursor:pointer}
+.gem-row:disabled{opacity:.5}.gem-row .gi{flex:none}.gem-row .tx{flex:1;display:flex;flex-direction:column}.gem-row small{color:var(--dim);font-size:12px}.gem-row .pr{flex:none;color:#f3d48f;font-weight:800;font-size:13px}
+.gem-offer{display:flex;gap:10px;align-items:center;margin-bottom:10px;border-color:var(--gc);box-shadow:0 0 18px color-mix(in srgb,var(--gc) 30%,transparent)}
+.gem-offer .gem-ic{flex:none;animation:tsBob 2.4s ease-in-out infinite alternate}.gem-offer .tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.gem-offer small{color:var(--gc);font-weight:800;font-size:12px}.gem-offer b{font-size:17px}.gem-offer span{font-size:13px;color:var(--ink)}.gem-offer em{font-style:normal;font-size:12px;color:var(--dim)}
+.gem-got{color:#a6e3a0;font-weight:800;font-size:13px}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
