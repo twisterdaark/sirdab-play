@@ -4352,6 +4352,11 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.26',d:'9 أكتوبر',add:[
+    'الصاحب اللي معاك في الليلة بقى عنده حركات أكتر: ضربة تقيلة، ونار على الكل للساحر، ونشل للحرامي، وزئير للمحارب، ويستخبى، ويرتاح، ويشرب زجاجة.'],fix:[
+    'الليلة مع صحابك بقت زي الأوفلاين بالظبط: كله بيشوف نفس الشاشة، وكل اختيار وكارت وحركة في القتال بالتصويت، وبيبان مين اختار إيه لحد ما الأغلبية تقرر.',
+    'السمعة اللي بتيجي من الاختيارات بتوصل لكل اللي في الليلة، مش لصاحب الأوضة بس.',
+    'الزهر مبقاش بيختفي فجأة: بيفضل قدام الكل لحد ما تدوسوا «تمام».']},
   {v:'5.25',d:'9 أكتوبر',add:[],fix:[
     'الليلة مع صاحب: صحابك بقوا يشوفوا الكروت والاختيارات ويختاروا من موبايلهم، وأول اختيار بيوصل هو اللي بيتعمل. ولو الاختيار فيه زهر، الزهر بيترمي لوحده ويظهر للكل.']},
   {v:'5.24',d:'9 أكتوبر',add:[
@@ -19174,12 +19179,20 @@ function coAsk(opts,to,wait){return new Promise(res=>{const id=++CO.askId+'-'+Da
   let done=0;const fin=v=>{if(done)return;done=1;clearTimeout(tm);CO.waiter=null;CO.chk=null;res(v)};const tm=setTimeout(()=>fin(null),wait||CO_WAIT);CO.waiter=fin;
   const chk=()=>{const x=CO.xs.find(y=>y.u===to),a=coJ(x?x.ans:CO.room&&CO.room.ans);if(a&&a.id===id)fin(a.a)};
   CO.chk=chk;chk()})}
-{const ct=compTurn;compTurn=async function(){const C=S.combat,c=S.comp,h=S.hero;
+{const ct=compTurn;compTurn=async function(){const C=S.combat,c=S.comp,h=S.hero;if(C){C.cpHide=0;C.cpRoar=0}
   if(!(CO.role==='host'&&CO.code&&c&&c.friend&&h.pal&&h.pal.live&&C&&!C.tutorial)||!(CO.room&&CO.room.g))return ct.apply(this,arguments);
   const X=C.X;if(X&&(X.snatch||X.cpRest))return ct.apply(this,arguments);
   const fs=C.foes.map((f,i)=>({f,i})).filter(x=>x.f.hp>0&&!x.f.fled&&!(typeof X_gone==='function'&&X&&X_gone(x.f)));
   const opts=fs.map(x=>({k:'hit',i:x.i,t:`${CG('اضرب','اضربي')} ${x.f.name}`}));
   if(c.cls==='معالج'){if(h.hp<MXH(h))opts.unshift({k:'hm',t:`${CG('عالج','عالجي')} ${h.name}`});if(c.hp<c.max)opts.splice(h.hp<MXH(h)?1:0,0,{k:'hs',t:CG('عالج نفسك','عالجي نفسك')})}
+  /* v5.26: the friend gets more than hitting: a heavy hit, hide, rest, a potion from the bag, and one move of their class */
+  if(fs.length){const f0=fs.find(x=>x.i===C.tgt)||fs[0];opts.push({k:'pw',i:f0.i,t:`ضربة جامدة على ${f0.f.name}`,s:'ضعف الضرر، بس ممكن تطيش'});
+    if(c.cls==='ساحر')opts.push({k:'fire',t:'نار على الكل',s:'بتلسع كل الأعداء'});
+    if(c.cls==='حرامي')opts.push({k:'snat',i:f0.i,t:`${CG('اخطف','اخطفي')} من ${f0.f.name}`,s:'فلوس للكل'});
+    if(c.cls==='محارب')opts.push({k:'roar',t:CG('اصرخ فيهم','اصرخي فيهم'),s:`الضربة الجاية على ${h.name} تبقى نص`})}
+  opts.push({k:'hide',t:CG('استخبى','استخبي'),s:'الضربة الجاية عليك ما تجيش'});
+  if(c.hp<c.max)opts.push({k:'rest',t:CG('ارتاح','ارتاحي'),s:'صحة شوية'});
+  if((h.bag.potion|0)>0&&(c.hp<c.max||h.hp<MXH(h)))opts.push({k:'pot',t:`جرعة شفا من الشنطة لـ${c.hp/c.max<=h.hp/MXH(h)?CG('نفسك','نفسك'):h.name}`,s:`فاضل ${h.bag.potion}`,me:c.hp/c.max<=h.hp/MXH(h)?0:1});
   if(!opts.length)return ct.apply(this,arguments);
   C.log.push({t:`${c.name} ${CG('بيفكر','بتفكر')}..`});combat();coPublish();
   const a=await coAsk(opts);const o=a!=null?opts[+a]:null;
@@ -19188,6 +19201,16 @@ function coAsk(opts,to,wait){return new Promise(res=>{const id=++CO.askId+'-'+Da
   if(o.k==='hm'||o.k==='hs'){const amt=rnd(6)+1+Math.floor(h.lvl/2);
     if(o.k==='hm'){const v=Math.min(amt,MXH(h)-h.hp);h.hp+=v;combat();burst($('#compCard'),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),v);return say(`${c.name} ${CG('عالجك','عالجتك')}: ⁦+${v}⁩ صحة.`,'good')}
     const v=Math.min(amt,c.max-c.hp);c.hp+=v;combat();healFx($('#compCard'),v);return say(`${c.name} ${CG('عالج نفسه','عالجت نفسها')}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='hide'){C.cpHide=1;SFX.guard&&SFX.guard();return say(`${c.name} ${CG('استخبى','استخبت')}: الضربة الجاية عليه مش هتيجي.`,'good')}
+  if(o.k==='rest'){const v=Math.min(rnd(3)+2,c.max-c.hp);c.hp+=v;combat();healFx($('#compCard'),v);return say(`${c.name} ${CG('خد نفسه','خدت نفسها')}: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='pot'){if(!(h.bag.potion>0))return ct.apply(this,arguments);h.bag.potion--;const amt=5+h.lvl;
+    if(o.me){const v=Math.min(amt,MXH(h)-h.hp);h.hp+=v;combat();burst($('#compCard'),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),v);return say(`${c.name} ${CG('ادّاك','ادّتك')} جرعة شفا: ⁦+${v}⁩ صحة.`,'good')}
+    const v=Math.min(amt,c.max-c.hp);c.hp+=v;combat();healFx($('#compCard'),v);return say(`${c.name} ${CG('شرب','شربت')} جرعة شفا: ⁦+${v}⁩ صحة.`,'good')}
+  if(o.k==='roar'){C.cpRoar=1;SFX.cheer&&SFX.cheer();return say(`${c.name} ${CG('صرخ','صرخت')} فيهم! الضربة الجاية على ${h.name} هتبقى نص.`,'good')}
+  if(o.k==='fire'){const L=C.foes.filter(f=>f.hp>0&&!f.fled);for(const f of L){hurtFoe(f,rnd(3)+1)}await sleep(450);return say(`${c.name} ${CG('رمى','رمت')} نار على الكل!`,'good')}
+  if(o.k==='snat'){const f=C.foes[o.i];if(rnd(6)+rnd(6)+2>=7){const m=rnd(15)+5;h.money+=m;combat();return say(`${c.name} ${CG('خطف','خطفت')} ⁦${m}⁩ جنيه من ${f?f.name:'العدو'}!`,'good')}SFX.miss();return say(`${c.name} ${CG('حاول','حاولت')} ${CG('يخطف','تخطف')}.. بس ما عرفش.`)}
+  if(o.k==='pw'){const f=C.foes[o.i];if(!f||f.hp<=0)return ct.apply(this,arguments);if(rnd(6)+rnd(6)+2>=8){const d=2*(rnd(4)+1+Math.floor(h.lvl/2));hurtFoe(f,d);await sleep(520);return say(`${c.name} ${CG('نزل','نزلت')} بضربة جامدة على ${f.name}: -${d}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good')}
+    SFX.miss();return say(`${c.name} ${CG('نزل','نزلت')} بكل قوته.. بس الضربة طاشت.`)}
   const t0=C.tgt,cl=c.cls;C.tgt=o.i;if(cl==='معالج')c.cls='_';
   try{return await ct.apply(this,arguments)}finally{c.cls=cl;if(S.combat)S.combat.tgt=C.foes[t0]&&C.foes[t0].hp>0?t0:C.tgt}}}
 const coLive=()=>CO.role==='host'&&CO.code&&S.hero&&S.hero.pal&&S.hero.pal.live&&S.combat&&!S.combat.tutorial;
@@ -19302,7 +19325,13 @@ TW_EXTRA.push(h=>({id:'adv',go:'coop',n:'ليلة مع صاحب',w:'العبوا
 .co-bar{height:10px;border-radius:6px;background:#0007;overflow:hidden;margin:4px 0 2px}.co-bar i{display:block;height:100%;transition:width .3s}
 .co-foe small,.co-who small{color:var(--mute);font-size:12px}.co-log{font-size:14px;line-height:1.7;color:#e8d9bd}.co-story{white-space:pre-wrap}
 .co-top{text-align:center;color:var(--gold2)}.co-o{margin:0}.co-end b{display:block;font-size:22px;color:var(--gold2);margin-bottom:4px}.co-end small{display:block;color:var(--mute);margin-bottom:8px}`;document.head.appendChild(st)}
-/* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
+
+/* v5.26: the friend's «استخبى» and «اصرخ» last through the foes' turn */
+{const ft=foeTurn;foeTurn=async function(e,o){const C=S.combat,c=S.comp,h=S.hero;if(!C||!(C.cpHide||C.cpRoar))return ft.apply(this,arguments);
+  const ch=c?c.hp:0,hh=h.hp;const r=await ft.apply(this,arguments);
+  if(C.cpHide&&c&&c.hp<ch&&c.hp>=0){c.hp=ch;combat();await say(`${c.name} ${CG('كان مستخبي','كانت مستخبية')}: الضربة ما جتش ${CG('فيه','فيها')}.`,'good')}
+  if(C.cpRoar&&h.hp<hh&&h.hp>0){const back=Math.floor((hh-h.hp)/2);if(back>0){h.hp+=back;combat();await say(`من صرخة ${c?c.name:'صاحبك'}: الضربة بقت نص.`,'good')}C.cpRoar=0}
+  return r}}/* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
 /* the omens: each one changes one or two things; every one has an upside (up) and a downside (dn). say = how الودعية reads it */
@@ -20612,51 +20641,124 @@ TREE_FK.farm={f1:{q:'{بتزرع|بتزرعي} إزاي؟',a:{n:'زرع كتير
     b:{n:'الحراسة',good:'الغربان بتيجي أقل (−40%)',bad:'الزرع أبطأ 5%',fx:{crowless:.4,slow:.05}},
     c:{n:'الحصاد الكبير',good:'المحصول الدهب أكتر (+6%)',bad:'التقاوي أغلى 10%',fx:{gold:.06,seed:.1}}}};
 TREE_IC.farm='<path d="M12 21V10" stroke="#3a9e55" stroke-width="2" stroke-linecap="round"/><path d="M12 13Q4 13 4 5Q12 5 12 13z" fill="#7fe07a"/><path d="M12 10Q19 10 20 3Q12 3 12 10z" fill="#3a9e55"/><rect x="4" y="20" width="16" height="2.5" rx="1.2" fill="#74412a"/>';
-/* ---------- live night: everyone plays the cards, not only the host (v5.25) ----------
-   The host's phone sends the choices on screen (night cards, story choices, «كمّل») with the view. Every friend sees them as buttons;
-   a tap sends a vote ({id:'v:'+sig,a:i}) in the same «ans» field the fights use, and the host's game presses that choice for everyone.
-   The first tap wins, the host can still tap too. While the host rolls the dice, friends see what is being rolled and how it went. */
+/* ---------- live night = the offline game for everyone, decided by votes (v5.26) ----------
+   The host's phone runs the night exactly like offline. It sends its screen (the HTML of #view, and of the dice when they are open)
+   with the view (vw.m); every friend sees that same screen. Any tap on a choice, a card, a fight move, a target or «تمام» is a vote
+   ({id:'v:'+sig,a:index}) in the «ans» field. Players are the host and the friends still here; more than half wins at once, and when
+   everyone voted (or 30 s after the first vote) the most voted wins (a tie goes to the host's pick). A screen with one thing to tap
+   (كمّل، تمام) needs only one tap. Dice that open from a vote roll by themselves and stay until someone taps «تمام».
+   Reputation changes reach every player (vw.rp). The friend who is the companion still picks the companion's own fight moves. */
 const coHash=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return (x>>>0).toString(36)};
-const coVis=el=>{if(!el||el.disabled)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0};
-function coChoiceEls(){if(S.screen==='combat'||S.screen==='coop'||S.screen==='coopg')return [];const d=$('#dice');if(d&&!d.classList.contains('hidden'))return [];if($('#twSh')||$('#fmSh'))return [];
-  return [...view.querySelectorAll('[data-nc], .ch, .btn')].filter(b=>coVis(b)&&!b.classList.contains('ghost')&&!b.classList.contains('small')&&b.id!=='nBag'&&b.id!=='nMe')}
-const coChTxt=b=>{const m=b.querySelector('.ntx')||(b.classList.contains('ch')?b.firstElementChild:null)||b,tb=m.querySelector('b'),sm=m.querySelector('small');
-  const t=(tb&&m!==b?tb.innerText:(m.childNodes[0]&&m.childNodes[0].nodeType===3?m.childNodes[0].textContent:m.innerText)).split('\n')[0].trim().slice(0,80);return {t,s:sm?sm.innerText.trim().slice(0,70):''}};
-{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{const L=coChoiceEls().slice(0,6);
-  if(L.length){o.ch=L.map(coChTxt);o.cs=coHash(S.screen+'|'+o.ch.map(c=>c.t).join('|'));CO.vsig=o.cs;CO.vels=L}else{CO.vsig='';CO.vels=null}
-  if(!o.x&&!o.f){o.x=[...view.querySelectorAll('.card, .note, .nhint')].filter(e=>!e.closest('button')&&!e.querySelector('button')&&coVis(e)).map(e=>e.innerText.trim()).filter(Boolean).join('\n').slice(0,500);const ttl=view.querySelector('.nchips .tag');if(ttl)o.hd=ttl.innerText.slice(0,60)}
-  const d=$('#dice');if(d&&!d.classList.contains('hidden')){const w=$('#dWhat'),r=$('#dRes');o.dz={w:w?w.innerText.slice(0,80):'',r:r&&!r.classList.contains('hidden')?(($('#dTotal')||{}).innerText||'')+' · '+(($('#dBanner')||{}).innerText||''):''}}}catch(e){}
-  return o}}
-/* the host presses a friend's vote */
-CO.vdone=CO.vdone||{};
-function coVotes(){if(CO.role!=='host'||!CO.code||!CO.vsig||!CO.vels)return;const raw=[CO.room&&CO.room.ans].concat((CO.xs||[]).map(x=>x.ans));
-  for(const s of raw){const a=coJ(s);if(!a||typeof a.id!=='string'||a.id.indexOf('v:')!==0||CO.vdone[a.id+'/'+s])continue;CO.vdone[a.id+'/'+s]=1;
-    if(a.id!=='v:'+CO.vsig)continue;const L=coChoiceEls(),b=L[a.a|0];if(!b)continue;
-    const cur=coHash(S.screen+'|'+L.slice(0,6).map(x=>coChTxt(x).t).join('|'));if(cur!==CO.vsig)continue;
-    CO.vsig='';b.click();setTimeout(coPublish,250);setTimeout(coAutoRoll,700);return}}
-/* a friend's choice that needs the dice: the dice roll by themselves on the host, and «تمام» goes by itself after a few seconds */
-function coAutoRoll(){const d=$('#dice'),dz=$('#dz');if(!d||d.classList.contains('hidden')||!dz||!dz.onkeydown)return;const ok0=$('#dOk');
-  if($('#dRes')&&!$('#dRes').classList.contains('hidden'))return;dz.onkeydown({key:'Enter',preventDefault(){}});
-  let n=0;const t=setInterval(()=>{n++;const ok=$('#dOk');if(!d||d.classList.contains('hidden')||n>40){clearInterval(t);return}
-    if(ok&&getComputedStyle(ok).visibility!=='hidden'){if(!ok.dataset.coT)ok.dataset.coT=Date.now();if(Date.now()-ok.dataset.coT>4000){clearInterval(t);ok.click();setTimeout(coPublish,250)}}},250)}
-{const p0=coPublish;coPublish=function(){try{coVotes()}catch(e){}return p0.apply(this,arguments)}}
-{const w0=coWatch;coWatch=function(code,on){return w0.call(this,code,function(){const r=on&&on.apply(this,arguments);try{coVotes()}catch(e){}return r})}}
+const coVis=el=>{if(!el||el.disabled)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden'};
+const CO_VSCR=['story','stop','combat','loot','shop','end','nhome'];
+const CO_SEL='button, .foe, [data-nc]';
+const CO_NOT='#snd,#qb,.qbtn,.ib,.tw-hb,#nMe,#nBag,#twMenu,#unpick,.snd';
+/* the things to vote on, in page order: the screen's, then the dice's */
+function coEls(root,dice){const L=[];if(root&&!dice)root.querySelectorAll(CO_SEL).forEach(b=>{if(!b.matches(CO_NOT)&&!b.closest('.co-bar0')&&!b.closest('.co-ask')&&coVis(b))L.push(b)});
+  if(dice)dice.querySelectorAll('button').forEach(b=>{if(b.id!=='dCancel'&&coVis(b))L.push(b)});return L}
+const coTxt=b=>{const c=b.cloneNode(true);c.querySelectorAll('.co-vt').forEach(x=>x.remove());return (c.textContent||'').replace(/\s+/g,' ').trim().slice(0,60)};
+const coDiceOpen=()=>{const d=$('#dice');return d&&!d.classList.contains('hidden')};
+function coHostEls(){if(!CO_VSCR.includes(S.screen))return [];return coEls(view,coDiceOpen()?$('#dice'):null)}
+const coSigOf=L=>coHash(S.screen+'|'+L.map(coTxt).join('|'));
+const coClean=html=>html.replace(/<span class="co-vt">[\s\S]*?<\/span>/g,'').replace(/<div class="co-vh" id="coVh">[\s\S]*?<\/div>/g,'').replace(/ co-mine/g,'');
 
-/* the friend's screen */
-CO.vote={};
-async function coVote(i){const R=CO.room,V=coJ(R&&R.vw);if(!R||!V||!V.cs||CO.vote[V.cs]!=null)return;CO.vote[V.cs]=i;SFX.page&&SFX.page();vib&&vib(15);render();
+CO.vdone={};CO.V={sig:'',v:{},t0:0};CO.rp={};CO.vsig='';CO.big=1;
+const coMe=()=>FB.user&&FB.user.uid;
+function coPlayers(){const R=CO.room,L=[{u:coMe(),n:S.hero?S.hero.name:''}];if(R&&R.g&&coHere(R.g))L.push({u:R.g,n:R.gn||''});
+  coXs().forEach(x=>{if(coHere(x.u))L.push({u:x.u,n:x.n})});return L}
+const coVoting=()=>CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on'&&coPlayers().length>1&&CO_VSCR.includes(S.screen);
+function coVoteNames(){const nm={};coPlayers().forEach(p=>nm[p.u]=p.n);const out=[];if(CO.V.sig!==CO.vsig)return out;
+  Object.keys(CO.V.v).forEach(u=>{const i=CO.V.v[u];if(nm[u]==null)return;(out[i]=out[i]||[]).push(nm[u])});return out}
+
+/* the view the friends get */
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{
+  const L=coHostEls();CO.vsig=L.length?coSigOf(L):'';o.cs=CO.vsig;o.vt=coVoteNames();o.np=coPlayers().length;o.vs=coVoting()?1:0;
+  if(Object.keys(CO.rp).length)o.rp=CO.rp;
+  let h=coClean(view.innerHTML),d=coDiceOpen()?coClean($('#dice').innerHTML):'';
+  if(!CO.big){h=h.replace(/<svg[\s\S]*?<\/svg>/g,'');d=d.replace(/<svg[\s\S]*?<\/svg>/g,'')}
+  o.m=1;o.h=h;o.d=d;o.dc=d?$('#dice').className:''}catch(e){}return o}}
+/* send it; until the server takes big views (rules from v5.26), send it without the pictures */
+coPublish=function(){if(CO.role!=='host'||!CO.code||!FB.user)return;try{coVotes();coMarkHost()}catch(e){}
+  let o;try{o=coView()}catch(e){return}let s=JSON.stringify(o);
+  if(!CO.big&&s.length>6000){o.h='';o.d='';s=JSON.stringify(o)}
+  if(s===CO.last)return;CO.last=s;coRef(CO.code).update({vw:s}).catch(e=>{if(CO.big&&e&&e.code==='permission-denied'){CO.big=0;CO.last='';setTimeout(coPublish,50)}})};
+
+/* the host counts the votes */
+function coTally(){if(!coVoting()||!CO.vsig||CO.V.sig!==CO.vsig)return;const P=coPlayers(),ids=P.map(p=>p.u),v={};Object.keys(CO.V.v).forEach(u=>{if(ids.includes(u))v[u]=CO.V.v[u]});
+  const n=P.length,need=Math.floor(n/2)+1,cnt={};Object.values(v).forEach(i=>cnt[i]=(cnt[i]||0)+1);const nv=Object.keys(v).length;if(!nv)return;
+  const L=coHostEls();let win=-1;
+  if(L.length===1)win=0;else Object.keys(cnt).forEach(i=>{if(cnt[i]>=need)win=+i});
+  if(win<0&&(nv>=n||Date.now()-CO.V.t0>30000)){const mx=Math.max(...Object.values(cnt)),top=Object.keys(cnt).filter(i=>cnt[i]===mx).map(Number);const hv=v[coMe()];win=top.includes(hv)?hv:pick(top)}
+  if(win<0)return;const b=L[win];if(!b)return;
+  CO.V={sig:'',v:{},t0:0};CO.vsig='';
+  setTimeout(()=>{if(!b.isConnected)return;CO.pass=1;try{b.click()}finally{CO.pass=0}setTimeout(coPublish,200)},450)}
+function coAddVote(u,i){if(CO.V.sig!==CO.vsig)CO.V={sig:CO.vsig,v:{},t0:0};if(!CO.V.t0)CO.V.t0=Date.now();CO.V.v[u]=i;coMarkHost();coTally();coPublish()}
+function coVotes(){if(CO.role!=='host'||!CO.code)return;const R=CO.room;{const L=coHostEls();CO.vsig=L.length?coSigOf(L):''}if(!CO.vsig)return;
+  const raw=[[R&&R.g,R&&R.ans]].concat((CO.xs||[]).map(x=>[x.u,x.ans]));
+  for(const [u,s] of raw){const a=coJ(s);if(!u||!a||typeof a.id!=='string'||a.id.indexOf('v:')!==0||CO.vdone[u+'/'+s])continue;
+    if(a.id!=='v:'+CO.vsig)continue;CO.vdone[u+'/'+s]=1;if(CO.V.sig!==CO.vsig)CO.V={sig:CO.vsig,v:{},t0:Date.now()};if(!CO.V.t0)CO.V.t0=Date.now();CO.V.v[u]=a.a|0}
+  coTally()}
+{const w0=coWatch;coWatch=function(code,on){return w0.call(this,code,function(){const r=on&&on.apply(this,arguments);try{if(CO.role==='host')coVotes()}catch(e){}return r})}}
+setInterval(()=>{try{if(CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on'){coVotes();coMarkHost()}}catch(e){}},1000);
+/* the host's own taps are votes too while friends are in the room */
+document.addEventListener('click',e=>{if(CO.pass||!coVoting())return;const L=coHostEls();const b=e.target&&e.target.closest&&e.target.closest(CO_SEL+', #dice button');const i=b?L.indexOf(b):-1;if(i<0)return;
+  if(L.length===1)return;e.preventDefault();e.stopPropagation();CO.vsig=coSigOf(L);SFX.page&&SFX.page();coAddVote(coMe(),i)},true);
+/* dice in a live night roll by themselves; they stay until someone taps «تمام» */
+function coAutoRoll(){if(!coDiceOpen())return;const dz=$('#dz');if(!dz||!dz.onkeydown)return;if($('#dRes')&&!$('#dRes').classList.contains('hidden'))return;
+  dz.onkeydown({key:'Enter',preventDefault(){}});setTimeout(coPublish,300);setTimeout(coPublish,2600);setTimeout(coPublish,4200)}
+{const rc=rollCheck;rollCheck=function(){const r=rc.apply(this,arguments);if(CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on'&&coPlayers().length>1){setTimeout(coPublish,150);setTimeout(coAutoRoll,1200)}return r}}
+/* the voters' names on the host's screen */
+function coMarkHost(){if(CO.role!=='host')return;const on=coVoting(),L=on?coHostEls():[],N=on?coVoteNames():[],me=CO.V.v[coMe()];
+  L.forEach((b,i)=>{let t=b.querySelector('.co-vt');const names=N[i]||[];if(!names.length){if(t)t.remove();b.classList.remove('co-mine');return}
+    if(!t){t=document.createElement('span');t.className='co-vt';b.appendChild(t)}const tx='✋ '+names.join('، ');if(t.textContent!==tx)t.textContent=tx;b.classList.toggle('co-mine',CO.V.sig===CO.vsig&&me===i)});
+  let hint=$('#coVh');if(on&&L.length>1){const f=L.find(b=>view.contains(b));if(!hint&&f){f.insertAdjacentHTML('beforebegin','<div class="co-vh" id="coVh"></div>');hint=$('#coVh')}
+    const nv=CO.V.sig===CO.vsig?Object.keys(CO.V.v).length:0;if(hint)hint.textContent=`تصويت: الأغلبية بتقرر · ${nv} من ${coPlayers().length}`}else if(hint)hint.remove()}
+
+/* every rep change on the host's hero reaches every friend too */
+{const ar=addRep;addRep=function(n){const r=ar.apply(this,arguments);try{if(CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on'&&n){coPlayers().forEach(p=>{if(p.u!==coMe())CO.rp[p.u]=(CO.rp[p.u]||0)+n});setTimeout(coPublish,100)}}catch(e){}return r}}
+
+/* ===== the friend's phone ===== */
+/* the host's screen comes from another phone: keep only plain markup (no scripts, no on… handlers, no links out) */
+function coSafe(html){const t=document.createElement('template');t.innerHTML=html;t.content.querySelectorAll('script,iframe,object,embed,link,meta,style,form,input,textarea,a').forEach(x=>x.remove());
+  t.content.querySelectorAll('*').forEach(x=>{[...x.attributes].forEach(a=>{const n=a.name.toLowerCase(),v=String(a.value||'');if(n.startsWith('on')||/javascript:/i.test(v)||(n==='href'||n==='src'||n==='xlink:href')&&!/^#/.test(v))x.removeAttribute(a.name)})});
+  const d=document.createElement('div');d.appendChild(t.content);return d.innerHTML}
+CO.vote={};CO.rpGot=null;CO.mh='';CO.dOrig=null;
+async function coVote(i){const R=CO.room,V=coJ(R&&R.vw);if(!R||!V||!V.cs)return;CO.vote[V.cs]=i;SFX.page&&SFX.page();vib&&vib(15);coMarkGuest(V);
   const v=JSON.stringify({id:'v:'+V.cs,a:i,n:Date.now()%100000});try{if(R.g===FB.user.uid)await coRef(CO.code).update({ans:v});else await coPRef(CO.code,FB.user.uid).update({ans:v})}catch(e){CO.err=coNet(e);render()}}
-{const g0=SCREENS.coopg;SCREENS.coopg=function(){g0.apply(this,arguments);const R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask);if(!R||R.st!=='on'||!V)return;
-  const mine=a&&CO.ans[a.id]==null&&FB.user&&(a.to||R.g)===FB.user.uid;if(mine)return;const col=view.querySelector('.col');if(!col)return;let html='';
-  if(V.dz)html+=`<div class="card co-dz"><small>${esc(R.hn)} ${G('بيرمي','بيرمي')} الزهر</small><b>${esc(V.dz.w||'')}</b>${V.dz.r?`<div class="co-dzr">${esc(V.dz.r)}</div>`:'<div class="co-dzr">…</div>'}</div>`;
-  if(V.ch&&V.ch.length&&!V.f){const vt=CO.vote[V.cs];
-    html+=`<div class="tw-lbl">${vt!=null?'اتبعت.. مستنيين الباقي':`${G('اختار','اختاري')} للكل`} <small>أول اختيار بيوصل هو اللي بيتعمل</small></div><div class="col co-chs">${V.ch.map((c,i)=>`<button class="btn co-o${vt===i?' on':''}" data-cv="${i}" ${vt!=null?'disabled':''}><span>${esc(c.t)}</span>${c.s?`<small>${esc(c.s)}</small>`:''}</button>`).join('')}</div>`}
-  if(html)col.insertAdjacentHTML('beforeend',html);
-  view.querySelectorAll('[data-cv]').forEach(b=>b.onclick=()=>coVote(+b.dataset.cv))}}
+const coGEls=()=>coEls($('#coM'),coDiceOpen()&&CO.dOrig!=null?$('#dice'):null);
+function coMarkGuest(V){const L=coGEls(),VT=(V&&V.vt)||[],mine=V?CO.vote[V.cs]:null;
+  L.forEach((b,i)=>{let t=b.querySelector('.co-vt');const names=VT[i]||[];if(names.length){if(!t){t=document.createElement('span');t.className='co-vt';b.appendChild(t)}t.textContent='✋ '+names.join('، ')}else if(t)t.remove();
+    b.classList.toggle('co-mine',mine===i)});
+  const hn=$('#coGh');if(hn){const nv=VT.reduce((x,l)=>x+((l&&l.length)||0),0);hn.textContent=V&&V.cs&&V.vs&&L.length>1?`تصويت: ${G('دوس','دوسي')} على اختيارك · ${nv} من ${V.np||'?'}`:''}}
+function coDiceRestore(){const d=$('#dice');if(CO.dOrig!=null&&d){d.innerHTML=CO.dOrig;d.className='hidden';delete d.dataset.coH;CO.dOrig=null}}
+{const s0=coStop;coStop=function(){coDiceRestore();CO.mh='';CO.rpGot=null;return s0.apply(this,arguments)}}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask),me=coMe();
+  if(!(R&&R.st==='on'&&V&&V.m&&V.h)){coDiceRestore();CO.mh='';return g0.apply(this,arguments)}
+  /* my reputation follows the night */
+  const rp=(V.rp&&V.rp[me])|0;if(CO.rpGot==null)CO.rpGot=0;if(rp!==CO.rpGot&&S.hero){const d=rp-CO.rpGot;CO.rpGot=rp;addRep(d)}
+  const mine=a&&CO.ans[a.id]==null&&me&&(a.to||R.g)===me;
+  const top=`<div class="co-bar0"><button class="ib" id="coGX">اخرج</button><b>ليلة ${esc(R.hn)}</b><span class="tag">${CO.code}</span></div>`;
+  const ask=mine?`<div class="card co-ask"><div class="tw-lbl">${G('دورك! اختار','دورك! اختاري')} ${G('هتعمل','هتعملي')} إيه</div><div class="col">${a.o.map((o,i)=>`<button class="btn co-o" data-co="${i}"><span>${esc(o.t)}</span>${o.s?`<small>${esc(o.s)}</small>`:''}</button>`).join('')}</div></div>`:'';
+  const key=V.h+'|'+(mine?a.id:'');
+  if(CO.mh!==key||!$('#coM')){const y=view.scrollTop;CO.mh=key;view.innerHTML=`${top}<div class="co-gh" id="coGh"></div>${ask}<div id="coM" class="co-m">${coSafe(V.h)}</div>`;view.scrollTop=y;
+    $('#coGX').onclick=()=>{coStop();S.screen=typeof twGo==='function'?'town':'title';render()};
+    view.querySelectorAll('[data-co]').forEach(b=>b.onclick=()=>coAnswer(+b.dataset.co));
+    if(mine&&!CO.buzz){CO.buzz=a.id;vib&&vib([60,40,60]);SFX.page&&SFX.page()}}
+  /* the dice */
+  const d=$('#dice');if(d){if(V.d){if(CO.dOrig==null)CO.dOrig=d.innerHTML;if(d.dataset.coH!==V.d){d.innerHTML=coSafe(V.d);d.dataset.coH=V.d}d.className=(V.dc||'').replace(/\bhidden\b/g,'')}else coDiceRestore()}
+  coMarkGuest(V)}}
+/* a tap on the mirrored screen is a vote, never a real click */
+document.addEventListener('click',e=>{if(S.screen!=='coopg'||!$('#coM'))return;const t=e.target;if(!t||!t.closest)return;
+  if(t.closest('#coGX')||t.closest('[data-co]'))return;const inM=t.closest('#coM'),inD=CO.dOrig!=null&&t.closest('#dice');if(!inM&&!inD)return;
+  e.preventDefault();e.stopPropagation();const b=t.closest(CO_SEL+', #dice button');if(!b)return;const L=coGEls(),i=L.indexOf(b);if(i<0)return;coVote(i)},true);
+['pointerdown','pointerup','keydown'].forEach(ev=>document.addEventListener(ev,e=>{if(S.screen==='coopg'&&CO.dOrig!=null&&e.target&&e.target.closest&&e.target.closest('#dz')){e.preventDefault();e.stopPropagation()}},true));
 {const st=document.createElement('style');st.textContent=`
-.co-chs .co-o{display:flex;flex-direction:column;align-items:flex-start;text-align:right;gap:2px;min-height:52px}.co-chs .co-o small{font-weight:400;font-size:12px;opacity:.8}
-.co-chs .co-o.on{outline:2px solid var(--gold2)}
-.co-dz{text-align:center}.co-dz small{color:var(--dim)}.co-dz b{display:block;font-size:16px;margin:4px 0}.co-dzr{color:var(--gold2);font-weight:800}`;document.head.appendChild(st)}
+.co-vt{display:block;margin-top:4px;font-size:12px;font-weight:800;color:#ffd36a;text-align:right}
+.co-mine{outline:2px solid var(--gold2);outline-offset:2px}
+.co-vh,.co-gh{font-size:13px;color:var(--gold2);text-align:center;margin:6px 0;font-weight:800}.co-gh:empty{display:none}
+.co-bar0{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0 4px}.co-bar0 b{font-size:14px}
+.co-ask{border-color:var(--gold)}
+.co-o{display:flex;flex-direction:column;align-items:flex-start;text-align:right;gap:2px}.co-o small{font-weight:400;font-size:12px;opacity:.8}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
