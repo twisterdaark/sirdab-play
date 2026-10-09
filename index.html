@@ -4339,6 +4339,8 @@ const PF_HPIC={
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
   {v:'5.3',d:'9 أكتوبر',add:[
+    'لو {اتفاديت|اتفاديتي} بضربة حظ، {بترد|بتردي} على اللي هجم بضربة مرتدة على طول.',
+    'في الإعدادات بقى فيه «نسخة احتياطية»: {تحفظ|تحفظي} أبطالك في ملف أو كود {وتبعته|وتبعتيه} لنفسك، ولو الموبايل اتمسح {ترجّعهم|ترجّعيهم} من نفس المكان.',
     'اختياراتك في الليلة بقى ليها نتيجة: اللي {ساعدته|ساعدتيه} أو {سرقته|سرقتيه} أو {زقّيته|زقّيتيه} بيرجعلك بعد كام محطة في كارت جديد، ومكتوب عليه «عشان..» عشان {تعرف|تعرفي} جه منين. فيه 34 كارت زي دول في المغامرات الأربعة.',
     'حاجات {عملتها|عملتيها} بدري بتغيّر كلام وحوش الآخر، وساعات بتفتح اختيار جديد في القتال، زي رجالة عم صالح اللي بيساعدوك لو {رجّعت|رجّعتي} البقرة.',
     'الكروت اللي {شفتها|شفتيها} في آخر ليلتين بقت تطلع أقل، والاختيارات اللي كانت مكررة بنفس الكلام بقى ليها أكتر من صيغة.',
@@ -18193,6 +18195,54 @@ Object.assign(PXI_G,{
     if(k){C.cpPot=(C.cpPot||0)+1;h.bag[k]--;const a=Math.min(ITEMS[k].heal(),c.max-c.hp);c.hp+=a;SFX.gulp();saveHero();combat();healFx($('#compCard'),a);
       return say(`${c.name} ${CG('شرب','شربت')} ${ITEMS[k].name} من شنطتك: ⁦+${a}⁩ صحة.`,'good')}}
   return ct1.apply(this,arguments)}}
+
+/* ---------- backup: every «sirdab.*» save in one file or one code, to bring the heroes back on any phone ---------- */
+const BK_PRE='SRDB1:';
+function bkData(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('sirdab.')===0)o[k]=localStorage.getItem(k)}}catch(e){}
+  Object.keys(MEM).forEach(k=>{if(k.indexOf('sirdab.')===0&&!(k in o))o[k]=MEM[k]});return o}
+const bkCode=()=>BK_PRE+btoa(unescape(encodeURIComponent(JSON.stringify({v:1,t:Date.now(),d:bkData()}))));
+function bkParse(txt){try{txt=String(txt||'').trim();if(txt.indexOf(BK_PRE)===0)txt=decodeURIComponent(escape(atob(txt.slice(BK_PRE.length).replace(/\s+/g,''))));
+  const j=JSON.parse(txt),d=j&&j.d;if(!d||!d['sirdab.heroes'])return null;const hs=JSON.parse(d['sirdab.heroes']);if(!Array.isArray(hs))return null;return {d,n:hs.length,names:hs.map(h=>h&&h.name).filter(Boolean),t:j.t}}catch(e){return null}}
+function bkApply(P){try{Object.keys(localStorage).filter(k=>k.indexOf('sirdab.')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
+  Object.keys(P.d).forEach(k=>{if(k.indexOf('sirdab.')!==0)return;MEM[k]=P.d[k];try{localStorage.setItem(k,P.d[k])}catch(e){}});setTimeout(()=>location.reload(),600)}
+function bkOpen(box){const hs=HEROES.filter(Boolean),B=document.createElement('div');B.className='bk';
+  B.innerHTML=`<div class="bk-t">النسخة الاحتياطية بتحفظ ${hs.length?`أبطالك (${hs.map(h=>esc(h.name)).join('، ')})`:'لعبتك'} وكل حاجتهم في ملف أو كود. ${G('ابعته','ابعتيه')} لنفسك على الواتساب أو الإيميل، ولو الموبايل اتمسح أو ${G('غيّرته','غيّرتيه')} ${G('ترجّعهم','ترجّعيهم')} من هنا.</div>
+    <div class="bk-r"><button class="btn" id="bkFile">احفظ في ملف</button><button class="btn ghost" id="bkCopy">انسخ الكود</button></div>
+    <div class="bk-l">ترجيع النسخة</div>
+    <div class="bk-r"><button class="btn ghost" id="bkLoadF">من ملف</button><input type="file" id="bkIn" accept=".txt,.json,text/plain,application/json" hidden></div>
+    <textarea id="bkTx" rows="2" placeholder="أو ${G('حط','حطي')} الكود هنا" dir="ltr"></textarea>
+    <div id="bkMsg" class="bk-m"></div>`;
+  box.insertBefore(B,box.querySelector('#stOk'));const q=s=>B.querySelector(s),msg=(t,ok)=>{const m=q('#bkMsg');m.innerHTML=t;m.className='bk-m'+(ok?' ok':'')};
+  q('#bkFile').onclick=()=>{try{const a=document.createElement('a'),d=new Date();a.href=URL.createObjectURL(new Blob([bkCode()],{type:'text/plain'}));a.download=`sirdab-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}.txt`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);SFX.coin(1);msg('الملف اتحفظ في التنزيلات.',1)}catch(e){msg(`الموبايل ما رضيش يحفظ الملف.. ${G('جرّب','جرّبي')} «انسخ الكود».`)}};
+  q('#bkCopy').onclick=async()=>{const c=bkCode();let ok=false;try{await navigator.clipboard.writeText(c);ok=true}catch(e){}
+    if(!ok){q('#bkTx').value=c;q('#bkTx').select();try{ok=document.execCommand('copy')}catch(e){}}
+    SFX.coin(1);msg(ok?`الكود اتنسخ. ${G('ابعته','ابعتيه')} لنفسك في مكان أمان.`:`الكود في المربع تحت، ${G('انسخه','انسخيه')} بإيدك.`,1)};
+  let pend=null;const ask=P=>{if(!P){pend=null;return msg('ده مش كود سرداب.. أو اتقص منه حتة.')}pend=P;
+    msg(`فيه ${P.n} ${P.n===1?'بطل':'أبطال'}: ${P.names.map(esc).join('، ')}. اللي على الموبايل دلوقتي هيتمسح ويتحط ده مكانه.<button class="btn" id="bkGo">${G('رجّعهم','رجّعيهم')}</button>`);
+    B.querySelector('#bkGo').onclick=()=>{if(!pend)return;SFX.fanfare&&SFX.fanfare();msg('رجعوا.. اللعبة هتفتح من الأول.',1);bkApply(pend)}};
+  q('#bkLoadF').onclick=()=>q('#bkIn').click();
+  q('#bkIn').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>ask(bkParse(r.result));r.readAsText(f)};
+  q('#bkTx').oninput=e=>{const v=e.target.value.trim();if(v.length>20&&v!==bkCode())ask(bkParse(v))}}
+{const os0=openSettings;openSettings=function(){const had=!!$('#setBg');os0.apply(this,arguments);const d=$('#setBg');if(had||!d)return;const box=d.querySelector('.setbox');
+  const b=document.createElement('button');b.className='setrow';b.id='stBk';b.innerHTML='<span>نسخة احتياطية</span><span class="bk-c">‹</span>';box.insertBefore(b,box.querySelector('#stOk'));
+  b.onclick=()=>{SFX.page&&SFX.page();b.remove();bkOpen(box)}}}
+{const st=document.createElement('style');st.textContent=`
+.bk{display:flex;flex-direction:column;gap:8px;margin:0 0 10px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.bk-t{font-size:13.5px;line-height:1.7;color:var(--ink)}
+.bk-l{font-weight:800;font-size:13px;color:var(--gold2);margin-top:4px}
+.bk-r{display:flex;gap:8px}.bk-r .btn{flex:1 1 0;min-height:46px;margin:0}
+.bk textarea{width:100%;box-sizing:border-box;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#0007;color:var(--ink);font:12px monospace;padding:8px;resize:none}
+.bk-m{font-size:13px;line-height:1.7;color:#f0a090;display:flex;flex-direction:column;gap:8px}.bk-m:empty{display:none}.bk-m.ok{color:#a6e3a0}.bk-m .btn{margin:0;min-height:46px}
+.bk-c{color:var(--mute);font-size:20px}
+.setbox{max-height:92vh;overflow:auto}
+`;document.head.appendChild(st)}
+
+/* ---------- counter: a lucky dodge (ضربة حظ on the dodge roll) answers the foe with a hit of your own, right away ---------- */
+{const ft1=foeTurn;foeTurn=async function(e){const res=await ft1.apply(this,arguments),C=S.combat,h=S.hero;
+  if(res&&!res.end&&res.me&&res.r&&res.r.crit&&res.r.tier==='full'&&!res.d&&C&&!C.tutorial&&e&&e.hp>0&&h.hp>0&&!(C.X&&typeof X_gone==='function'&&X_gone(e))){
+    const el=$('#meCard');if(el)floatAt(el,'ضربة مرتدة!','#ffd36a','crit',24);SFX.clank&&SFX.clank(1.2);await extraHit(e,'ضربة مرتدة');
+    if(S.run)S.run.counters=(S.run.counters||0)+1}
+  return res}}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
