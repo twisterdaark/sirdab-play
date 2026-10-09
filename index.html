@@ -4384,6 +4384,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.58',d:'10 أكتوبر',add:['«اختبار التحول»: التخصص الخفي والأسطوري والسري مبقاش بيتاخد بزرار. لما الفرصة تيجي {بتبدأ|بتبدأي} اختبار من 3 خطوات ليه مهلة بالأيام. لو {نجحت|نجحتي} التخصص ليك، ولو الوقت خلص الفرصة تروح للأبد ومش {بتخسر|بتخسري} حاجة تانية.','الاختبار الشغال بيظهر في «التخصصات» بخطواته والوقت الفاضل، وفي البلد على خانة «التخصصات».','«آثار القدامى»: 4 حاجات نادرة جدًا بتقع من الزعماء: «دفتر الحداد الأول» و«فانوس من غير نار» و«قبضة نحاس مكسورة» و«بذرة سودا». كل أثر بيفتح اختبار تخصص معين حتى لو شروطه ما كملتش.'],fix:['{وانت|وانتي} في اختبار، مفيش فرصة لتخصص تاني لحد ما الاختبار يخلص.']},
   {v:'5.57',d:'10 أكتوبر',add:['التنقيب: الضربة اللي على الشق المنوّر ببلاش، والضربة برا الشق بتتعب إيدك (كل ضربتين بمجهود). ولو المجهود خلص، الضربة برا الشق ما بتعملش حاجة.','9 تخصصات جديدة، وكل واحد ليه 3 قدرات قتال: «المنقّب» و«عين الجبل» و«صاحب العِرق» (خفي) من المنجم، و«الصياد» و«ريّس المركب» و«اللي رجع من الترعة» (خفي) من الترعة، و«معلّم التفصيل» و«طباخ الأفراح» و«ابن الغيط».','التخصص بيدخل بتشويق: الشاشة بتضلم، وقلب بيدق تحت نور صغير، وبعدين أنوار بلون ندرته، وفجأة يظهر.','خانة بحث عند الحداد والخياط والطباخة.'],fix:['فرصة التخصص بتيجي بس من الشغل بإيدك. «{اعمل|اعملي} بسرعة» والصهر و«احصد الكل» مش بيدّوا فرصة.','اللي {ترفضه|ترفضيه} أو {تسيبه|تسيبيه} من النادر والملحمي مش بيستناك: فرصته بترجع بس بعد شغل تاني (25 مرة للنادر و40 للملحمي).','{وانت|وانتي} معاك تخصص، الأعلى منه في نفس الشغلانة لسه ممكن يطلع (الحداد ممكن يبقى أسطى، والأسطى ممكن يبقى وريث).','اسم تخصصك بيظهر مكان اسم الكلاس، وفي «قدراتي».','علامات الفوران في الطبخ بقت بتتملى صح.','الهدية المتكررة في مهمات العمدة بقت سطر واحد.','لوحة مهمات العمدة لو فضيت بتستنى وقتها، مش بتتجدد على طول.']},
   {v:'5.56',d:'10 أكتوبر',add:['كل تخصص بقى بيغيّر أغلب قدراتك في القتال: القدرة الأساسية بتاعة نوعك بتفضل، والباقي بيتبدل بـ3 قدرات خاصة بالتخصص (بتتفتح في المستوى 1 و3 و5).','فيه قدرات ضرب، وقدرات سند للفريق: علاج، درع، دخان، تشجيع، وسلاح متسقي بيزوّد ضرباتك الجاية.','شاشة «التخصصات» وشاشة الاحتفال بيقولولك قدرات التخصص إيه.'],fix:['«سيد الظل»: لو مفيش ضلال، «جيش الضل» بيقوّم ضلّك {انت|انتي} يحارب {معاك|معاكي}.']},
   {v:'5.55',d:'10 أكتوبر',add:['لما {تاخد|تاخدي} تخصص، بتطلع شاشة احتفال كبيرة بلون ندرته، وبتقولك فرصته كانت قد إيه.'],fix:['التخصصات بقت أندر بكتير: النادر 8% في المحاولة، والملحمي 1.5%، والخفي نص في المية، والأسطوري 1 من 2000، والسري 1 من 10000.','مفيش فرصة لتخصص جديد {وانت معاك|وانتي معاكي} تخصص. لو {عايز|عايزة} {تدوّر|تدوّري} على غيره، {سيبه|سيبيه} الأول من شاشة «التخصصات».','«أسطى الحدادين» و«{وريث|وريثة} الحداد الأول» مبقوش محتاجين التخصص اللي قبلهم، ممكن يطلعوا لأي حد شروطه كاملة.']},
@@ -23643,7 +23644,7 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
   else s+=`<div class="tw-sm">الورشة كاملة. مفيش أحسن منها في البلد.</div>`}catch(e){console.warn(e)}return s}}
 {const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;
   view.querySelectorAll('[data-smelt]').forEach(b=>b.onclick=()=>{if(TWN.busy||spLv(h,'smith')<SM_STEEL.lv||!hasRes(h,SM_STEEL.need)||h.money<SM_STEEL.fee)return;
-    takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();SFX.anvil?SFX.anvil():SFX.coin&&SFX.coin();
+    takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);bump('smelt');S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();SFX.anvil?SFX.anvil():SFX.coin&&SFX.coin();
     toast(`${G('سبكت','سبكتي')} ${n===2?'فولاذتين':'فولاذ'} · ${G('عندك','عندك')} ${h.res.steel}`);twRender()});
   view.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{const n=wsN(h),nx=WS[n];if(!nx||+b.dataset.ws!==n||!hasRes(h,nx.need)||h.money<nx.p)return;
     takeRes(h,nx.need);h.money-=nx.p;h.ws=n+1;saveHero();band('الورشة',nx.n,nx.d,{dur:2200,sound:SFX.fanfare});twRender()})}catch(e){console.warn(e)}return r}}
@@ -23905,7 +23906,7 @@ SPK_ADD('falah',[
 Object.values(SPK).forEach(L=>L.forEach(s=>{if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[s.spx.ico]||SKI.bash}));
 /* ----- the town: a tile for التخصصات, the offer when a chance comes, and the screen ----- */
 TW_EXTRA.push(h=>{const s=spFix(h),o=spOn(h),n=0;
-  return {id:'spec',go:'spec',n:'التخصصات',w:o?spName(o,h):G('لسه ما اتخصصتش','لسه ما اتخصصتيش'),s:o?`<span style="color:${SP_R[o.r].c}">${SP_R[o.r].n}</span>`:n?`<span class="ok">${n===1?'تخصص':n+' تخصصات'} ${G('تقدر تاخده','تقدري تاخديه')}</span>`:'الحرفة والقتال بيفتحوها',bell:1,b:n&&!o?'متاح':''}});
+  return {id:'spec',go:'spec',n:'التخصصات',w:o?spName(o,h):G('لسه ما اتخصصتش','لسه ما اتخصصتيش'),s:s.trial&&SP[s.trial.id]?`<span class="ok">اختبار «${spName(SP[s.trial.id],h)}» شغال</span>`:o?`<span style="color:${SP_R[o.r].c}">${SP_R[o.r].n}</span>`:n?`<span class="ok">${n===1?'تخصص':n+' تخصصات'} ${G('تقدر تاخده','تقدري تاخديه')}</span>`:'الحرفة والقتال بيفتحوها',bell:1,b:n&&!o?'متاح':''}});
 {const g=TW_GROUPS.find(x=>x.n==='السوق والصنايعية');if(g&&!g.go.includes('spec'))g.go.push('spec')}
 function spBan(o){const c=o?SP_R[o.r].c:'#6e6152';return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><defs><radialGradient id="spBg"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="#1f1420" stop-opacity="0"/></radialGradient></defs>
   <rect width="160" height="90" fill="#1b1d3b"/><rect width="160" height="90" fill="url(#spBg)"/>${o?PXF_svg(o.px).replace('<svg ','<svg x="50" y="8" width="60" height="78" '):`<text x="80" y="58" text-anchor="middle" font-size="40" fill="#6e6152" font-weight="900">؟</text>`}</svg>`}
@@ -24046,6 +24047,81 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 /* with a specialisation, its name is what you are: shown where the class name was (Twister 5.57) */
 {const c0=clsN;clsN=function(h){const o=spOn(h);return o?spName(o,h):c0.apply(this,arguments)}}
 {const p0=pfSkills;pfSkills=function(h){let H=p0.apply(this,arguments);const o=spOn(h);if(o)H=H.replace('قدرات ال'+spName(o,h),'قدرات «'+spName(o,h)+'»');return H};const t=PF_TABS.find(x=>x.id==='sk');if(t)t.f=pfSkills}
+/* ----- اختبار التحول and آثار القدامى (5.58, plan «سرداب: خطة التخصصات الجديدة») -----
+   A hidden, legendary or secret specialisation is no longer taken with a button. When its chance comes, accepting starts a
+   trial: three steps and a deadline in days. Finish all three in time and it is yours (with the celebration); miss the
+   deadline (or give up) and it is gone for good, nothing else is lost. One trial at a time, and no other chance while one runs.
+   A step is a counter (h.cnt) that has to grow by n from where it was when the trial started.
+   A relic (أثر) drops very rarely from a boss and opens one trial even when its conditions are not met yet. */
+const SPT={
+  heir:{days:7,steps:[{t:'{اعمل|اعملي} 3 حاجات «تحفة» عند الحداد',k:'smQ4',n:3},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1},{t:'{اسبك|اسبكي} فولاذ 3 مرات',k:'smelt',n:3}]},
+  fallah:{days:10,steps:[{t:'{احصد|احصدي} 60 محصول',k:'harvest',n:60},{t:'{اطبخ|اطبخي} 8 أكلات بإيدك',k:'made_cook',n:8},{t:'{اكسب|اكسبي} 5 قتالات',k:'sp_win',n:5}]},
+  sanaa:{days:7,steps:[{t:'{اعمل|اعملي} 5 حاجات عند الحداد',k:'made_smith',n:5},{t:'{اعمل|اعملي} 5 حاجات عند الخياط',k:'made_tailor',n:5},{t:'{اطبخ|اطبخي} 5 أكلات',k:'made_cook',n:5}]},
+  zell:{days:5,steps:[{t:'{اكسب|اكسبي} 10 قتالات',k:'sp_win',n:10},{t:'{اكسب|اكسبي} 3 قتالات صعبة (3 وحوش أو صحتك تحت التلت)',k:'sp_hard',n:3},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]},
+  dam:{days:5,steps:[{t:'{اكسب|اكسبي} 5 قتالات وصحتك تحت التلت',k:'sp_low',n:5},{t:'{اكسب|اكسبي} 10 قتالات',k:'sp_win',n:10},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]},
+  ramad:{days:5,steps:[{t:'{اكسب|اكسبي} 10 قتالات',k:'sp_win',n:10},{t:'{اكسب|اكسبي} 3 قتالات قدام 3 وحوش أو أكتر',k:'sp_many',n:3},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]},
+  tariqa:{days:5,steps:[{t:'{اكسب|اكسبي} 8 قتالات',k:'sp_win',n:8},{t:'{اكسب|اكسبي} 3 قتالات صعبة (3 وحوش أو صحتك تحت التلت)',k:'sp_hard',n:3},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]},
+  erq:{days:5,steps:[{t:'{اكسر|اكسري} 60 صخرة',k:'rocks',n:60},{t:'{اكسر|اكسري} 10 صخرات في الدور 15 أو أعمق',k:'sp_deep',n:10},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]},
+  tera:{days:5,steps:[{t:'{اصطاد|اصطادي} 40 سمكة',k:'fish',n:40},{t:'{اصطاد|اصطادي} سمكة دهب أو تعبان مية',k:'sp_rfish',n:1},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]}};
+const SP_RELIC={heir:{n:'دفتر الحداد الأول',d:'دفتر قديم بخط إيد، فيه سر الحديد اللي ما بيصدّيش'},zell:{n:'فانوس من غير نار',d:'فانوس بينوّر ضلمة بدل النور'},
+  dam:{n:'قبضة نحاس مكسورة',d:'لسه سخنة، كأن حد كان لابسها من شوية'},fallah:{n:'بذرة سودا',d:'بذرة تقيلة كأنها حجر، وبتتحرك لوحدها في الإيد'}};
+const spTrialOf=o=>o&&!SP_KEEP(o)&&SPT[o.id]||null;
+const spDays=ms=>{const d=Math.floor(ms/864e5),hr=Math.floor(ms%864e5/36e5);return d>=1?`${d===1?'يوم':d===2?'يومين':d<=10?d+' أيام':d+' يوم'}${hr?` و${hr===1?'ساعة':hr===2?'ساعتين':hr<=10?hr+' ساعات':hr+' ساعة'}`:''}`:hr>=1?(hr===1?'ساعة':hr===2?'ساعتين':hr<=10?hr+' ساعات':hr+' ساعة'):'أقل من ساعة'};
+function spTrialStart(h,id){const s=spFix(h),T=SPT[id];if(!T)return;const base={};T.steps.forEach(x=>base[x.k]=spCnt(h,x.k));
+  s.trial={id,t0:Date.now(),end:Date.now()+T.days*864e5,base};if(s.offer===id)s.offer='';delete s.no[id];saveHero()}
+function spTrialProg(h){const s=h&&h.sp,tr=s&&s.trial,T=tr&&SPT[tr.id];if(!T)return null;return T.steps.map(x=>({t:x.t,n:x.n,have:Math.max(0,Math.min(x.n,spCnt(h,x.k)-(tr.base[x.k]||0)))}))}
+function spTrialFail(h,why){const s=spFix(h),tr=s.trial;if(!tr)return;s.no[tr.id]=1;s.fail=s.fail||{};s.fail[tr.id]=1;delete s.trial;saveHero();
+  const o=SP[tr.id];if(o)setTimeout(()=>toast(`<b style="color:#f0a090">اختبار «${spName(o,h)}» ${why||'خلص وقته'}</b><br>الفرصة دي راحت`),400)}
+function spTrialTick(h){const s=h&&h.sp,tr=s&&s.trial;if(!tr||h!==S.hero)return;const o=SP[tr.id];if(!o){delete s.trial;return}
+  const P=spTrialProg(h);if(P.every(x=>x.have>=x.n)){delete s.trial;spTake(h,o.id);spCelebrateSoon(h,o);return}
+  if(Date.now()>tr.end)spTrialFail(h)}
+function spCelebrateSoon(h,o){const go=()=>{if(S.combat||document.getElementById('spOv')||document.querySelector('.sp-cel'))return setTimeout(go,1500);spCelebrate(h,o)};setTimeout(go,900)}
+/* no other chance while a trial runs */
+{const e0=spEvent;spEvent=function(h){const s=spFix(h);if(s&&s.trial){spTrialTick(h);return ''}return e0.apply(this,arguments)}}
+{const b0=bump;bump=function(){const r=b0.apply(this,arguments);try{spTrialTick(S.hero)}catch(e){}return r}}
+/* the fight counters, read before the fight is closed */
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let c=null;
+  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha'),low=h.hp<MXH(h)/3,many=C.foes.length>=3;c={boss,low,many}}}catch(e){}
+  const r=e0.apply(this,arguments);
+  if(c)try{const k=h.cnt;k.sp_win=(k.sp_win||0)+1;if(c.boss)k.sp_boss=(k.sp_boss||0)+1;if(c.low)k.sp_low=(k.sp_low||0)+1;if(c.many)k.sp_many=(k.sp_many||0)+1;if(c.low||c.many)k.sp_hard=(k.sp_hard||0)+1;
+    if(c.boss)spRelicDrop(h);spTrialTick(h)}catch(e){console.warn(e)}return r}}
+{const l0=lifeXP;lifeXP=function(h,k){const r=l0.apply(this,arguments);try{if(k==='mine'&&h===S.hero&&spFloor()>=15)bump('sp_deep')}catch(e){}return r}}
+{const a0=addRes;addRes=function(h,k){const r=a0.apply(this,arguments);try{if((k==='goldfish'||k==='eel')&&h===S.hero&&S.screen==='fish')bump('sp_rfish')}catch(e){}return r}}
+/* a relic: 4% from a boss, only one you could use (your class), not one you hold, have or are trying */
+function spRelicDrop(h){const s=spFix(h);s.relic=s.relic||{};if(Math.random()>=.04)return;
+  const L=Object.keys(SP_RELIC).filter(id=>SP[id]&&(!SP[id].cls||SP[id].cls===h.cls)&&!s.relic[id]&&!spHas(h,id)&&!s.had[id]&&!(s.trial&&s.trial.id===id));if(!L.length)return;
+  const id=L[Math.floor(Math.random()*L.length)];s.relic[id]=1;saveHero();
+  setTimeout(()=>{try{band('أثر من القدامى',SP_RELIC[id].n,'بيفتح اختبار تخصص.. في شاشة «التخصصات»',{color:'blue',dur:3000,sound:SFX.shimmer})}catch(e){}},1200)}
+
+/* the offer of a trial specialisation: the steps and the days, and «ابدأ الاختبار» */
+{const s0=spShow;spShow=function(){s0.apply(this,arguments);const ov=document.getElementById('spOv'),h=S.hero;if(!ov||!h)return;const o=SP[h.sp.offer],Q=spTrialOf(o);if(!Q)return;
+  const b=ov.querySelector('.sp-btns');if(b)b.insertAdjacentHTML('beforebegin',`<div class="sp-trq"><b>اختبار التحول · ${spDays(Q.days*864e5)}</b><small>التخصص ده مش بيتاخد بزرار. ${G('عدّي','عدّي')} الاختبار ده في وقته وهو ليك. لو الوقت خلص الفرصة تروح للأبد، ومش ${G('هتخسر','هتخسري')} حاجة تانية.</small><ol>${Q.steps.map(x=>`<li>${T(x.t)}</li>`).join('')}</ol></div>`);
+  const y=ov.querySelector('#spYes');if(!y)return;y.textContent=G('ابدأ الاختبار','ابدأي الاختبار');
+  y.onclick=()=>{spTrialStart(h,o.id);ov.remove();if(!S.combat)render();setTimeout(()=>toast(`<b style="color:${SP_R[o.r].c}">بدأ اختبار «${spName(o,h)}»</b><br>${G('قدامك','قدامك')} ${spDays(Q.days*864e5)} · الخطوات في «التخصصات»`),300)};
+  const w=ov.querySelector('.sp-warn');if(w&&!w.classList.contains('up'))w.textContent=`لو ${G('نجحت','نجحتي')}، ${G('هتسيب','هتسيبي')} «${spName(spOn(h),h)}».`}}
+
+/* the screen: the running trial on top, then the relics */
+{const v0=SCREENS.spec;SCREENS.spec=function(){spTrialTick(S.hero);const r=v0.apply(this,arguments);const h=S.hero;if(!h||S.screen!=='spec')return r;const s=spFix(h);
+  const at=view.querySelector('.sp-scr>.tw-sm');let H='';const tr=s.trial,o=tr&&SP[tr.id];
+  if(o){const P=spTrialProg(h),R=SP_R[o.r];H+=`<div class="tw-lbl">اختبار شغال</div><div class="card sp-tr" style="--rc:${R.c}"><div class="sp-hd">${spIco(o,56)}<div class="tx"><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
+    <div class="sp-tl">فاضل ${spDays(Math.max(0,tr.end-Date.now()))}</div>
+    ${P.map(x=>`<div class="sp-st${x.have>=x.n?' ok':''}"><span>${T(x.t)}</span><i style="--p:${(x.have/x.n*100).toFixed(0)}%"></i><small>${x.have}/${x.n}</small></div>`).join('')}
+    <button class="btn ghost small" id="spTrX">${G('سيب','سيبي')} الاختبار</button></div>`}
+  const rel=Object.keys(s.relic||{}).filter(id=>s.relic[id]&&SP[id]);
+  if(rel.length)H+=`<div class="tw-lbl">آثار القدامى</div>${rel.map(id=>{const x=SP[id],R=SP_R[x.r];return `<div class="card sp-rel" style="--rc:${R.c}"><div class="sp-hd">${spIco(x,48)}<div class="tx"><b>${SP_RELIC[id].n}</b><small>${SP_RELIC[id].d}</small><small style="color:${R.c}">بيفتح اختبار «${spName(x,h)}» (${R.n})</small></div></div>
+    <button class="btn small" data-rel="${id}" ${s.trial?'disabled':''}>${s.trial?'خلّص الاختبار اللي شغال الأول':G('افتح الاختبار','افتحي الاختبار')}</button></div>`}).join('')}`;
+  if(H&&at)at.insertAdjacentHTML('afterend',H);
+  const x=$('#spTrX');if(x)x.onclick=()=>{if(SPV.ask!=='trx'){SPV.ask='trx';x.textContent=G('متأكد؟ الفرصة هتروح','متأكدة؟ الفرصة هتروح');return}SPV.ask='';spTrialFail(h,G('سبته','سبتيه'));render()};
+  view.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>{const id=b.dataset.rel;if(s.trial||!s.relic[id])return;delete s.relic[id];spTrialStart(h,id);SFX.shimmer&&SFX.shimmer();render()});
+  return r}}
+(function(){const st=document.createElement('style');st.textContent=`
+.sp-trq{position:relative;align-self:stretch;text-align:right;background:#0006;border:1px dashed color-mix(in srgb,var(--rc) 60%,transparent);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.sp-trq b{color:var(--rc)}.sp-trq small{opacity:.8;line-height:1.5}.sp-trq ol{margin:4px 0 0;padding-inline-start:20px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.sp-tr,.sp-rel{border-color:color-mix(in srgb,var(--rc) 55%,transparent)}.sp-tr .sp-hd,.sp-rel .sp-hd{display:flex;gap:12px;align-items:center}.sp-tr .tx,.sp-rel .tx{display:flex;flex-direction:column;gap:2px}.sp-rel .tx small{opacity:.8;line-height:1.45}
+.sp-tl{margin:8px 0 6px;font-weight:800;color:#f0c890}
+.sp-st{display:grid;grid-template-columns:1fr auto;gap:2px 8px;margin:6px 0;font-size:14px}.sp-st i{grid-column:1/-1;height:7px;border-radius:4px;background:linear-gradient(90deg,var(--rc) var(--p),#ffffff1a var(--p))}
+.sp-st.ok span{color:#a6e3a0}.sp-st.ok span::before{content:'✓ '}.sp-st small{opacity:.8}
+.sp-tr .btn,.sp-rel .btn{width:100%;margin-top:8px;min-height:44px}`;document.head.appendChild(st)})();
 /* ---------- search at the smith, the tailor and the cook (5.57, Twister): a box on the sticky bar that hides what does not match ---------- */
 const TWQ={smith:'',tailor:'',cook:''};
 /* Arabic letters that people type either way count as the same */
