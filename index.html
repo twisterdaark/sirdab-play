@@ -1946,7 +1946,9 @@ async function strike(f,r,kind,name){
   const fullHp=f.hp===f.max;
   hurtFoe(f,d,{fx:mage?'magic':'',crit:r.crit||mc});await sleep(mage?950:520);
   if(C.combo>=2)comboAt(C.combo);
-  await say(`${r.crit?'ضربة حظ! ':''}${mc?'ضربة معلّم! ':''}${rg?'غضب ×3! ':''}${name} جت في ${f.name}: -${d}${ex?' (طرد الجن ×2)':''}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good');
+  /* a second hit (ضربتين ورا بعض, the sword) follows right away instead of after the usual pause */
+  const nX=!sp&&r.tier==='full'&&C.foes.some(x=>x.hp>0)?(hasSkill(h,'twice')?1:0)+((!sp||h.cls==='حرامي')&&wSkill(h)==='double'?1:0):0;
+  await say(`${r.crit?'ضربة حظ! ':''}${mc?'ضربة معلّم! ':''}${rg?'غضب ×3! ':''}${name} جت في ${f.name}: -${d}${ex?' (طرد الجن ×2)':''}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good',nX?200:undefined);
   if(mc){ach('master');if(S.run)S.run.masters=(S.run.masters||0)+1}if(C.combo===3)ach('combo');
   if(C.combo===2&&!h.ach.combo&&C.foes.some(x=>x.hp>0))toast(`كمان ضربة ناجحة = إنجاز «3 ورا بعض»`);
   if(fullHp&&f.hp<=0&&!C.tutorial){floatAt($('#foe'+f.id),'ضربة واحدة!','#ffd36a','crit',30);ach('oneshot')}
@@ -1956,15 +1958,15 @@ async function strike(f,r,kind,name){
     await say(`${WS_N.stun} ${FF(f,'دوّخته','دوّختها')}: ضربت${FF(f,'ه','ها')} الجاية هتبقى نص.`,'good',1000)}
   if(ws==='poison'&&f.hp>0&&Math.random()<.35){poisonFoe(f,1,3);SFX.venom();floatAt($('#foe'+f.id),FF(f,'اتسمم!','اتسممت!'),'#9be07a','',22);
     await say(`${WS_N.poison} ${FF(f,'سمّمه','سمّمها')}: ${FF(f,'هيخسر','هتخسر')} 1 صحة كل دور لمدة 3 أدوار.`,'good',1000)}
-  if(!sp&&r.tier==='full'){if(hasSkill(h,'twice'))await extraHit(f,'ضربتين ورا بعض');if(ws==='double')await extraHit(f,`${WS_N.double} ضرب تاني`)}
+  if(!sp&&r.tier==='full'){if(hasSkill(h,'twice'))await extraHit(f,'ضربتين ورا بعض',ws==='double');if(ws==='double')await extraHit(f,`${WS_N.double} ضرب تاني`)}
   const e=f.hp>0?f:C.foes.find(x=>x.hp>0);
   if(r.tier==='part'&&e&&!(e.fx&&e.fx.skip)){hurtMe(1);await say(`ضربتك جت، بس ${e.name} ${FF(e,'لحق','لحقت')} ${FF(e,'يخربشك','تخربشك')}: -1 صحة.`,'bad')}
 }
-async function extraHit(f,why){const C=S.combat,h=S.hero,K=CLASSES[h.cls],t=f.hp>0?f:C.foes.find(x=>x.hp>0);if(!t||h.hp<=0)return;
-  await sleep(150);floatAt($('#meCard'),why+'!','#f3d48f','',20);
+async function extraHit(f,why,more){const C=S.combat,h=S.hero,K=CLASSES[h.cls],t=f.hp>0?f:C.foes.find(x=>x.hp>0);if(!t||h.hp<=0)return;
+  floatAt($('#meCard'),why+'!','#f3d48f','',20);
   let d=K.atk.dmg()+(h.lvl-1)+WDMG(h)+thb(h);if(h.cls==='معالج'&&t.spirit)d+=2;if(t.spirit&&hasSkill(h,'exorcise'))d*=2;d=Math.max(1,d);
-  hurtFoe(t,d,{fx:h.cls==='ساحر'?'magic':''});await sleep(h.cls==='ساحر'?950:520);
-  await say(`${why}: -${d} في ${t.name}${t.hp<=0?` · ${t.name} ${FF(t,'وقع','وقعت')}!`:''}`,'good')}
+  hurtFoe(t,d,{fx:h.cls==='ساحر'?'magic':''});await sleep(h.cls==='ساحر'?600:300);
+  await say(`${why}: -${d} في ${t.name}${t.hp<=0?` · ${t.name} ${FF(t,'وقع','وقعت')}!`:''}`,'good',more?200:undefined)}
 async function spinAct(r,name){const C=S.combat,h=S.hero,K=CLASSES[h.cls];
   if(r.tier==='fail')return strike(C.foes[C.tgt],r,'sp',name);
   let d=K.atk.dmg()+(h.lvl-1)+WDMG(h)+thb(h);if(r.crit)d*=2;d=Math.max(1,d);const mc=!C.tutorial&&Math.random()<critChance(h);if(mc){d=Math.ceil(d*1.5);masterWord();await sleep(420)}
@@ -4348,6 +4350,7 @@ const NEWS=[
     'كل مفترق في «الطرق» في الشجرة بقى فيه 3 اختيارات: {تختار|تختاري} واحد والاتنين التانيين يتقفلوا. ولكل اختيار جديد خطوة بعده.'],
   fix:[
     'الشجرة بقت 3 صفحات: الفروع، والروابط، والطرق. والكارت اللي بيشرح أي حاجة {اخترتها|اخترتيها} وزرار الشرا بقوا ثابتين تحت الشاشة، فمش {محتاج|محتاجة} {تنزل|تنزلي} تحت.',
+    'لما {بتضرب|بتضربي} ضربتين ورا بعض (من الحرامي أو من السيف)، الضربة التانية بقت بتيجي على طول من غير وقفة.',
     'الخط اللي {بتقص|بتقصي} عليه في الخياطة بقى شكله مختلف كل مرة.']},
   {v:'5.2',d:'9 أكتوبر',add:[
     'كل الرسم بقى بكسل زي الأبطال: الوحوش في المغامرات الأربعة، وناس البلد، والحاجات، والأماكن. والوحوش الكبار بقوا أكبر في القتال.',
