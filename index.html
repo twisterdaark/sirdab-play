@@ -837,7 +837,7 @@ const titlePrice=h=>titlesOn(h).reduce((a,t)=>a*(t.price||1),1);
 /* effort (مجهود): mining and fishing cost it; it comes back with time or food */
 let EFF_MAX=20;
 /* max effort is 20, plus 2 for every «حلبة عم صابر» bought at the café (h.effUp, up to 10 → 40); effNow keeps EFF_MAX on the active hero's value */
-const effMaxOf=h=>20+2*Math.min(10,(h&&h.effUp)||0)+(h&&treeLink(h,'mine','crown')?4:0);
+const effMaxOf=h=>20+2*Math.min(10,(h&&h.effUp)||0)+(h&&treeLink(h,'mine','crown')?4:0)+(h&&h.treeF?tf(h,'mine','effmax'):0);
 function effNow(h){EFF_MAX=effMaxOf(h);const per=h.hidden.sabr?40000:60000,now=Date.now();if(h.eff.v>=EFF_MAX){h.eff.t=now;return h.eff.v}
   const g=Math.floor((now-h.eff.t)/per);if(g>0){h.eff.v=Math.min(EFF_MAX,h.eff.v+g);h.eff.t+=g*per;if(h.eff.v>=EFF_MAX)h.eff.t=now}return h.eff.v}
 function useEff(h){if(effNow(h)<1)return false;if(h.eff.v>=EFF_MAX)h.eff.t=Date.now();h.eff.v--;return true}
@@ -3403,8 +3403,8 @@ function gxBind(k){$('#back').onclick=()=>{GX.left[k]=1;fsAbort();S.screen=SCREE
    Deeper rocks are harder and the ore is better; from floor 4 an enhancement stone can drop.
    Every hit can be a master hit («ضربة معلّم», 3x), and a hit on the glowing crack counts double. */
 const FLOOR_MAX=10;
-const critOf=h=>.05+.015*(lifeLvl(h,'mine')-1)+.03*R3(trk(h,'mine','heavy'));
-const downOf=h=>.2*(trk(h,'mine','eye')>=4?2:1);
+const critOf=h=>Math.max(.01,.05+.015*(lifeLvl(h,'mine')-1)+.03*R3(trk(h,'mine','heavy'))+tf(h,'mine','crit'));
+const downOf=h=>.2*(trk(h,'mine','eye')>=4?2:1)*Math.max(.2,1+tf(h,'mine','down'));
 const hpOf=(k,F)=>Math.round(ROCK_HP[k]*(1+.12*((F||1)-1)));
 function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max(0,(F||1)-1),pt=.01+.005*L+sb*.015+.004*d;let r=Math.random(),k='stone';
   if(r<pt)k='turq';
@@ -3414,6 +3414,8 @@ function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max
   const ey=R3(trk(h,'mine','eye'));if(ey&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<.04*ey)k=MINE_K[MINE_K.indexOf(k)+1];
   /* رابط «عِرق مدفون» */
   if(treeLink(h,'mine','l1')&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<.06)k=MINE_K[MINE_K.indexOf(k)+1];
+  /* طريقين: دهب الأعماق / نزلة على نزلة */
+  {const o=tf(h,'mine','ore');if(o>0&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<o)k=MINE_K[MINE_K.indexOf(k)+1];else if(o<0&&(k==='iron'||k==='silver')&&Math.random()<-o)k=MINE_K[MINE_K.indexOf(k)-1]}
   return k}
 const rocksN=n=>n===1?'صخرة واحدة':n===2?'صخرتين':n<=10?n+' صخرات':n+' صخرة';
 const crackOf=R=>R.hp>=R.max?0:Math.min(3,Math.ceil((1-R.hp/R.max)*3));
@@ -3482,8 +3484,10 @@ function mnGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks
   const rk=$('#gxRocks');if(rk){const n=V.rocks;rk.textContent=n?rocksN(n):''}}
 function mnSpawn(){const h=S.hero,V=gxVisit('mine');if(GX.rock||GX.busy)return;
   /* نفَس طويل: now and then a rock costs no effort */
-  const br=R3(trk(h,'mine','breath')),free=br>0&&effNow(h)>=1&&Math.random()<.05*br;
+  const br=R3(trk(h,'mine','breath')),pf=.05*br+tf(h,'mine','free'),free=pf>0&&effNow(h)>=1&&Math.random()<pf;
   if(!free&&!useEff(h)){gxTired();mnSlot();mnBtn();return}
+  /* طريقين «إيد تقيلة»: now and then a rock takes 2 */
+  if(!free&&effNow(h)>=1&&Math.random()<tf(h,'mine','cost2'))useEff(h);
   V.hole=0;saveHero();if(free){effUI();floatAt($('#gxEffN'),'ببلاش!','#b4f0c2','',18)}else gxSpent();
   const F=V.floor||1,k=rollRock(h,F),hp=hpOf(k,F);
   GX.rock={k,hp,max:hp,hid:h.id,c:0,f:F,ci:Math.floor(Math.random()*CRK_AT.length),on:0,bonus:0};GX.rubble=0;
@@ -3500,7 +3504,7 @@ function mnHit(e){const h=S.hero,R=GX.rock;if(!R||R.hp<=0||GX.busy)return;const 
   if(pk){pk.style.setProperty('--px',px+'px');pk.style.setProperty('--py',py+'px');cls(pk,'sw');clearTimeout(GX.pkT);GX.pkT=setTimeout(()=>{pk.style.setProperty('--px','0px');pk.style.setProperty('--py','0px')},300)}
   if(imp)imp.style.transform=`translate(${px}px,${py}px)`;
   setTimeout(()=>{if(GX.rock!==R||R.hp<=0)return;const rk=$('#mnRock'),imp=$('#mnImp');if(!rk)return;
-    const crit=Math.random()<critOf(h),big=crit&&trk(h,'mine','heavy')>=4&&Math.random()<.25;
+    const crit=Math.random()<critOf(h),big=crit&&(trk(h,'mine','heavy')>=4&&Math.random()<.25||Math.random()<tf(h,'mine','quake'));
     let d=hitOf(h)*(on?2:1)*(crit?3:1);if(big)d=Math.max(d,R.hp);d=Math.min(d,R.hp);R.hp-=d;
     const extra=crit&&Math.random()<.5;if(extra)R.bonus=(R.bonus||0)+1;
     SFX.clank(crit?1.3:on?1.15:1);vib(crit?[30,20,90]:on?[16,16,34]:14);cls(rk,'hit');cls($('#gxStage'),'jolt');pop(imp,CHIPS[R.k],crit?24:on?16:11);
@@ -3565,10 +3569,11 @@ SCREENS.mine=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 };
 
 /* ---------- الترعة ---------- */
-function rollFish(h){const L=lifeLvl(h,'fish'),sb=h.hidden.sabr?1:0,bt=trk(h,'fish','bait'),b3=R3(bt),r=Math.random(),pg=(.01+.004*L+sb*.01)*(bt>=4?2:1),ps=.08,pb=.08+.015*(L-1)+sb*.03+.015*b3,pq=.25+.01*(L-1)+.015*b3;
+function rollFish(h){const L=lifeLvl(h,'fish'),sb=h.hidden.sabr?1:0,bt=trk(h,'fish','bait'),b3=R3(bt),r=Math.random(),pg=(.01+.004*L+sb*.01)*(bt>=4?2:1)*(1+tf(h,'fish','gold')),ps=.08,pb=.08+.015*(L-1)+sb*.03+.015*b3,pq=.25+.01*(L-1)+.015*b3;
   const f=r<pg?'goldfish':r<pg+ps?'shoe':r<pg+ps+pb?'bouri':r<pg+ps+pb+pq?'qarmout':'bolti';
   /* رابط «صبر الصياد»: the small fish is a bouri now and then */
-  return f==='bolti'&&treeLink(h,'fish','l1')&&Math.random()<.12?'bouri':f}
+  const ra=tf(h,'fish','rare');if(ra<0&&f==='bouri'&&Math.random()<-ra*3)return 'bolti';
+  return f==='bolti'&&(treeLink(h,'fish','l1')&&Math.random()<.12||ra>0&&Math.random()<ra)?'bouri':f}
 const fsWin=h=>650+50*lifeLvl(h,'fish')+(h.hidden.sabr?150:0);
 const fsBobEl=()=>document.getElementById('fshBob');
 /* the float is drawn with its waterline at 0; FS.top is where the line ties on (the tip of its antenna) */
@@ -3620,8 +3625,9 @@ const fsCommit=()=>{const f=FS.pend;FS.pend=null;if(f)f()};
 function fsAbort(){fsCommit();FS.hold=0;if((FS.ph==='cast'||FS.ph==='wait'||FS.ph==='bite'||FS.ph==='fight')&&!FS.fr){const h=S.hero;if(h){h.eff.v=Math.min(EFF_MAX,h.eff.v+1);saveHero()}}FS.tok++;FS.ph='idle'}
 async function fsCast(){const h=S.hero;if(FS.ph!=='idle'&&FS.ph!=='done')return;fsHideCard();
   /* تاج «سيد الترعة»: now and then a cast costs no effort */
-  const fr=treeLink(h,'fish','crown')&&effNow(h)>=1&&Math.random()<.15;FS.fr=fr;
+  const pfr=(treeLink(h,'fish','crown')?.15:0)+tf(h,'fish','free'),fr=pfr>0&&effNow(h)>=1&&Math.random()<pfr;FS.fr=fr;
   if(!fr&&!useEff(h)){gxTired();fsBtn();return}
+  if(!fr&&effNow(h)>=1&&Math.random()<tf(h,'fish','cost2'))useEff(h);
   saveHero();if(fr){effUI();floatAt($('#gxEffN'),'ببلاش!','#b4f0c2','',18)}else gxSpent();FS.n++;const tok=++FS.tok;fsPh('cast');SFX.cast();vib(15);fsSay('هوب!');
   FS.b={m:'fly',t0:performance.now(),d:560,x0:FS.bx,y0:FS.by,arc:110};
   await sleep(560);if(tok!==FS.tok)return;
@@ -3651,8 +3657,8 @@ const REEL={
   goldfish:{fill:.24,drain:.17,lo:.03,hi:.97,tmin:450,tmax:1000,spd:.6,jump:.4,ja:.3,pull:0,pa:0}};  /* wild */
 /* the zone: pushed up while held, falls when let go */
 const RP={up:1.9,g:1.6,d:2.6,vm:1.1};
-const reelZone=h=>Math.min(.6,(.24+.012*(lifeLvl(h,'fish')-1))*(1+.08*R3(trk(h,'fish','steady')))*(treeLink(h,'fish','l2')?1.08:1));
-function reelNew(h,k){const pa=trk(h,'fish','patience'),pc=Math.min(.6,.22*(pa>=4?2:1));
+const reelZone=h=>Math.min(.6,(.24+.012*(lifeLvl(h,'fish')-1))*(1+.08*R3(trk(h,'fish','steady')))*(treeLink(h,'fish','l2')?1.08:1)*Math.max(.5,1+tf(h,'fish','zone')));
+function reelNew(h,k){const pa=trk(h,'fish','patience'),pc=Math.min(.7,.22*(pa>=4?2:1)*Math.max(0,1+tf(h,'fish','chest')));
   return {k,M:REEL[k],zh:reelZone(h),zy:0,zv:0,fy:.45+Math.random()*.25,fv:0,tg:.5,tt:0,burst:0,bv:0,m:.3,t:0,dm:1-.1*R3(pa),
     ent:0,left:0,two:0,inz:0,end:'',st4:trk(h,'fish','steady')>=4,ch:Math.random()<pc?{at:1200+Math.random()*1800,y:.5,on:0,p:0,life:5000,got:0,gone:0}:null,ev:[]}}
 function reelStep(R,dt,hold){if(R.end)return R;const M=R.M,s=dt/1000;R.t+=dt;
@@ -4319,6 +4325,7 @@ const NEWS=[
     'شجرة الشغلانات كبرت: 4 فروع بدل 3، وكل فرع 5 درجات. كل مستوى بيديك 3 نقط، وكل درجة أغلى من اللي قبلها: الأولى بنقطة، والخامسة بـ5.',
     'الدرجة الخامسة في كل فرع ميزة قوية. والفرع الجديد بيزوّد خبرة الشغلانة، ودرجته الخامسة بتديك نقطة زيادة مع كل مستوى.',
     'الشجرة بقى فيها «روابط»: درجتين في فرعين مختلفين بيفتحوا مهارة جديدة، زي «طُعم حلو» 2 و«بال طويل» 3 بيفتحوا «صبر الصياد». ولما {تفتح|تفتحي} الرابطين بيفتح «التاج»، أقوى حاجة في الشجرة.',
+    'الشجرة بقى فيها «طريقين»: اختيارين في كل شغلانة، {تختار|تختاري} واحد والتاني يتقفل. كل اختيار ليه حلو وليه تمن، زي «إيد تقيلة» (ضربة قوية أكتر، بس الصخرة ساعات تاخد 2 مجهود) أو «إيد خفيفة». وبعد الاختيار الأول بيفتح طريق تاني مختلف لكل ناحية.',
     'جوه الجبل والترعة بقى في زرار «{كُل|كُلي}»: {تاكل|تاكلي} من أكل شنطتك {وتكمّل|وتكمّلي} في نفس الدور من غير ما {تطلع|تطلعي} البلد.',
     'عند عم صابر في القهوة بقى في «حلبة عم صابر»: كل كوباية بتكبّر أقصى مجهود 2 على طول، من 20 لحد 40.',
     'عند أم سيد بقى {تقدر|تقدري} {تخبز|تخبزي} عيش: 2 دقيق بيطلّعوا لحد 5 أرغفة. ولعبته جديدة: {تعجن|تعجني} العجينة في دواير، وبعدين {تطلّع|تطلّعي} الأرغفة من الفرن وهي دهبي.',
@@ -5521,7 +5528,7 @@ function treeMig(h){if(!h||h.treeV===2)return;const had=h.tree&&Object.values(h.
 function treeOf(h,k){if(!h)return null;treeMig(h);h.tree=h.tree||{};const T0=TREE[k];if(!T0)return null;const t=h.tree[k]=h.tree[k]||{};T0.br.forEach(b=>{if(!(t[b.id]>=0))t[b.id]=0});return t}
 function treeRank(h,skill,branch){if(!h)return 0;treeMig(h);if(!h.tree||!h.tree[skill])return 0;return Math.max(0,Math.min(5,+h.tree[skill][branch]||0))}
 function treeR(h,skill,branch){const r=treeRank(h,skill,branch);return r>=5?4:r*.75}
-const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return (t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0)+lkSpent(h,k)};
+const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return (t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0)+lkSpent(h,k)+fkSpent(h,k)};
 const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
 function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,3*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
 const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
@@ -5530,7 +5537,9 @@ const TS={k:'smith',from:'smith',sel:null,conf:0};
 /* the button in a skill box (at the smith, the tailor, the cook) */
 /* points only count as news when they buy something: the next rank of a branch, or a link that is open */
 function treeCan(h,k){const p=treePts(h,k);if(!p||!TREE[k])return 0;const t=treeOf(h,k);
-  return TREE[k].br.some(b=>t[b.id]<5&&p>=t[b.id]+1)||(TREE_LK[k]||[]).some(L=>!treeLink(h,k,L.id)&&lkOk(h,k,L)&&p>=lkCost(L))?p:0}
+  const F=tfOf(h,k)||{};
+  return TREE[k].br.some(b=>t[b.id]<5&&p>=t[b.id]+1)||(TREE_LK[k]||[]).some(L=>!treeLink(h,k,L.id)&&lkOk(h,k,L)&&p>=lkCost(L))
+    ||(TREE_FK[k]&&((!F.f1&&fkOpen(h,k,'f1')&&p>=2)||(F.f1&&!F.f1x&&p>=4)||(!F.f2&&fkOpen(h,k,'f2')&&p>=2)))?p:0}
 function treeBtnHTML(h,k){if(!TREE[k])return '';const p=treeCan(h,k);
   return `<button class="tw-tree" data-tree="${k}">${treeIco(k,22)}<span>شجرة ${LIFE[k].n}</span>${p?`<small><span class="pt">${p===1?'نقطة جديدة':p===2?'نقطتين':p+' نقط'}</span></small>`:''}</button>`}
 function treeBind(){view.querySelectorAll('[data-tree]').forEach(b=>b.onclick=()=>treeOpen(b.dataset.tree))}
@@ -5549,7 +5558,8 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
       <div class="tw-sm">كل مستوى ${G('بيديك','بيديكي')} 3 نقط. كل درجة أغلى من اللي قبلها: الأولى بنقطة، والتانية بنقطتين، لحد الخامسة بـ5 نقط. والدرجة الخامسة في كل فرع ميزة قوية.</div></div></div>
     <div class="tr-grid">${T0.br.map(col).join('')}</div>
     ${lkHTML(h,k,p)}
-    <div class="card tr-info" id="trInfo">${TS.sel&&TS.sel.indexOf('L:')===0?lkInfo(h,k,TS.sel.slice(2),p):sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي دايرة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه.</div>`}</div>
+    ${fkHTML(h,k,p)}
+    <div class="card tr-info" id="trInfo">${TS.sel&&TS.sel.indexOf('F:')===0?fkInfo(h,k,TS.sel.slice(2),p):TS.sel&&TS.sel.indexOf('L:')===0?lkInfo(h,k,TS.sel.slice(2),p):sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي دايرة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه.</div>`}</div>
     <div class="tw-lbl">${G('عايز','عايزة')} ${G('توزّع','توزّعي')} من الأول؟</div>
     <div class="card tr-re"><div class="tw-sm">${who?`${who} ${T0.who==='umsayed'?'بترجّعلك':'بيرجّعلك'} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`:`${G('تقدر ترجّع','تقدري ترجّعي')} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`}</div>
       <button class="btn ghost${TS.conf?' q-cf':''}" id="trRe" ${spent&&h.money>=cost?'':'disabled'}>${TS.conf?G('متأكد؟ رجّع النقط','متأكدة؟ رجّعي النقط'):G('رجّع النقط','رجّعي النقط')} · ${cost} جنيه</button>
@@ -5559,6 +5569,8 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   const bb=$('#trBuy');if(bb)bb.onclick=()=>treeBuy(k,bb.dataset.b);
   view.querySelectorAll('[data-lk]').forEach(b=>b.onclick=()=>{TS.sel='L:'+b.dataset.lk;TS.conf=0;SFX.tick(1100);twRender();const i=$('#trInfo');if(i)i.scrollIntoView({block:'nearest',behavior:'smooth'})});
   const lb=$('#lkBuy');if(lb)lb.onclick=()=>lkBuy(k,lb.dataset.b);
+  view.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{TS.sel='F:'+b.dataset.fk;TS.conf=0;SFX.tick(950);twRender();const i=$('#trInfo');if(i)i.scrollIntoView({block:'nearest',behavior:'smooth'})});
+  const fb=$('#fkBuy');if(fb)fb.onclick=()=>fkBuy(k,fb.dataset.b);
   $('#trRe').onclick=()=>treeRespec(k)};
 function treeInfo(h,k,b,i,p){const r=treeRank(h,k,b.id),got=r>i,sp=i===4,need=r===i,cost=i+1;
   const what=sp?T(b.x):`${T(b.r)}: ${b.v(i+1)}`;
@@ -5572,7 +5584,7 @@ function treeBuy(k,bid){const h=S.hero,t=treeOf(h,k),b=TREE[k].br.find(x=>x.id==
   const n=view.querySelector(`[data-n="${bid}"][data-i="${r}"]`);if(n){pop(n,[TREE[k].c,'#ffffff','#fff3b0'],r===4?40:20);cls(n,'pp')}
   if(r+1===5)band(LIFE[k].n,b.n,T(b.x),{dur:2400})}
 function treeRespec(k){const h=S.hero,c=treeCost(h,k);if(!treeSpent(h,k)||h.money<c)return;if(!TS.conf){TS.conf=1;SFX.meh();return twRender()}
-  TS.conf=0;h.money-=c;const t=treeOf(h,k);Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};saveHero();SFX.whoosh();SFX.reg();TS.sel=null;twRender();toast(`النقط رجعت كلها · ${G('دفعت','دفعتي')} ${c} جنيه`)}
+  TS.conf=0;h.money-=c;const t=treeOf(h,k);Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};if(h.treeF)h.treeF[k]={};saveHero();SFX.whoosh();SFX.reg();TS.sel=null;twRender();toast(`النقط رجعت كلها · ${G('دفعت','دفعتي')} ${c} جنيه`)}
 /* a new skill level = a new point */
 {const lx=lifeXP;lifeXP=function(h,k){const r=lx.apply(this,arguments);if(r&&TREE[k]&&h&&treeCan(h,k))setTimeout(()=>toast(`<span style="color:#d9cbff">نقطة جديدة في شجرة ${LIFE[k].n}!</span>`),900);return r}}
 /* the cook screen gets the tree button through its skill box; this binds it */
@@ -5657,6 +5669,86 @@ function lkBuy(k,id){const h=S.hero,L=TREE_LK[k].find(x=>x.id===id);if(!h||!L||t
 .lk-n.got{border-style:solid;border-color:#fff;background:radial-gradient(circle at 50% 30%,#fff4,var(--tc) 80%);color:#1a1030}.lk-n.got b,.lk-n.got .nd .ok{color:#1a1030}
 .lk-n.sel{outline:3px solid var(--gold2);outline-offset:3px}
 .lk-n.pp{animation:pp .5s}
+`;document.head.appendChild(st)}
+
+/* ---------- v5.2 «طريقين»: forks. Pick one side and the other locks (until the tree is reset). Each side has a good part and a price.
+   f1 opens with any branch at rank 2, and each side of it has a follow-up (ax/bx); f2 opens once a link is learned.
+   h.treeF = {mine:{f1:'a',f1x:1,f2:'b'}, ...}. A side costs 2 points, a follow-up 4. tf(h,k,key) sums the numbers of the chosen nodes. ---------- */
+const CRAFT_F=(a2,b2)=>({
+  f1:{q:'شغلك هيبقى إزاي؟',a:{n:'شغل متقن',good:'نتيجة اللعبة بتتحسب أحسن (+8%)',bad:'خبرة الشغلانة أقل (−25%)',fx:{score:.08,xp:-.25}},
+    b:{n:'شغل كتير',good:'خبرة الشغلانة أكتر (+35%)',bad:'نتيجة اللعبة بتتحسب أقل (−5%)',fx:{xp:.35,score:-.05}},ax:a2,bx:b2},
+  f2:{q:'{تحب|تحبي} الحظ ولا الأمان؟',a:{n:'مقامر',good:'20% الحاجة تطلع درجة أعلى',bad:'15% تنزل درجة',fx:{lucky:.2,unlucky:.15}},
+    b:{n:'أمان',good:'الحاجة عمرها ما تنزل درجة',bad:'الحظ الحلو بييجي أقل (−6%)',fx:{safe:1,lucky:-.06}}}});
+const TREE_FK={
+  mine:{f1:{q:'{بتكسّر|بتكسّري} الصخر إزاي؟',a:{n:'إيد تقيلة',good:'الضربة القوية بتيجي أكتر (+8%)',bad:'15% الصخرة تاخد 2 مجهود',fx:{crit:.08,cost2:.15}},
+      b:{n:'إيد خفيفة',good:'12% الصخرة ما تاخدش مجهود',bad:'الضربة القوية بتيجي أقل (−4%)',fx:{free:.12,crit:-.04}},
+      ax:{n:'زلزال',good:'الضربة القوية ممكن تكسر الصخرة مرة واحدة (15%)',fx:{quake:.15}},bx:{n:'صبر الصخر',good:'أقصى مجهود +3',fx:{effmax:3}}},
+    f2:{q:'{بتدوّر|بتدوّري} على إيه؟',a:{n:'دهب الأعماق',good:'الخامة الأحسن بتطلع أكتر (+10%)',bad:'النزلات لتحت أقل (−40%)',fx:{ore:.1,down:-.4}},
+      b:{n:'نزلة على نزلة',good:'النزلات لتحت أكتر (+60%)',bad:'الخامة الأحسن أقل (−4%)',fx:{down:.6,ore:-.04}}}},
+  fish:{f1:{q:'{بتصطاد|بتصطادي} إزاي؟',a:{n:'صبر',good:'المنطقة الخضرا أكبر (+12%)',bad:'البوري بيطلع أقل',fx:{zone:.12,rare:-.06}},
+      b:{n:'طمع',good:'البلطي ممكن يطلع بوري (12%)',bad:'المنطقة الخضرا أصغر (−10%)',fx:{rare:.12,zone:-.1}},
+      ax:{n:'إيد حديد',good:'الصندوق بيظهر أكتر (+50%)',fx:{chest:.5}},bx:{n:'عين الدهب',good:'سمكة الدهب بتطلع الضعف',fx:{gold:1}}},
+    f2:{q:'{بتحب|بتحبي} إيه في الترعة؟',a:{n:'رمي كتير',good:'12% الرمية ما تاخدش مجهود',bad:'الصندوق بيظهر أقل (−50%)',fx:{free:.12,chest:-.5}},
+      b:{n:'كنوز الترعة',good:'الصندوق بيظهر أكتر (+80%)',bad:'10% الرمية تاخد 2 مجهود',fx:{chest:.8,cost2:.1}}}},
+  smith:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الحدادة أكتر (+20%)',fx:{xp:.2}}),
+  tailor:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الخياطة أكتر (+20%)',fx:{xp:.2}}),
+  cook:CRAFT_F({n:'نَفَس حلو',good:'كل أكلة بترجّع 1 مجهود زيادة',fx:{food:1}},{n:'سرعة الإيد',good:'خبرة الطبخ أكتر (+20%)',fx:{xp:.2}})};
+const fkCost=id=>id==='f1x'?4:2;
+function tfOf(h,k){return (h&&h.treeF&&h.treeF[k])||null}
+/* the chosen fork nodes: [{fx}] */
+function tfNodes(h,k){const F=tfOf(h,k);if(!F)return [];const D=TREE_FK[k];if(!D)return [];const r=[];
+  ['f1','f2'].forEach(f=>{const s=F[f];if(s&&D[f]&&D[f][s]){r.push(D[f][s]);if(f==='f1'&&F.f1x&&D.f1[s+'x'])r.push(D.f1[s+'x'])}});return r}
+function tf(h,k,key){if(!h||!h.treeF||!h.treeF[k])return 0;try{return tfNodes(h,k).reduce((a,n)=>a+(+n.fx[key]||0),0)}catch(e){return 0}}
+const fkSpent=(h,k)=>{const F=tfOf(h,k);return F?(F.f1?2:0)+(F.f1x?4:0)+(F.f2?2:0):0};
+function fkOpen(h,k,f){if(f==='f1')return TREE[k].br.some(b=>treeRank(h,k,b.id)>=2);return treeLink(h,k,'l1')||treeLink(h,k,'l2')}
+
+/* ---------- the forks on the tree screen ---------- */
+/* sel 'f1:a' (a side) or 'f1:ax' (its follow-up) */
+function fkNode(k,sel){const [f,id]=sel.split(':'),D=TREE_FK[k][f];return {f,id,side:id[0],x:id.length>1,N:D[id],D}}
+function fkState(h,k,sel,p){const {f,side,x}=fkNode(k,sel),F=tfOf(h,k)||{},open=fkOpen(h,k,f);
+  if(!x){if(F[f]===side)return 'got';if(F[f])return 'lock';return open?(p>=2?'open':'ok'):'no'}
+  if(F[f]!==side)return F[f]?'lock':'no';if(F.f1x)return 'got';return p>=4?'open':'ok'}
+function fkHTML(h,k,p){const D=TREE_FK[k];if(!D)return '';
+  const nd=sel=>{const {N,x}=fkNode(k,sel),st=fkState(h,k,sel,p);
+    return `<button class="fk-n${x?' x':''} ${st}${TS.sel==='F:'+sel?' sel':''}" data-fk="${sel}"><b>${N.n}</b>${x?'':`<small class="g">${N.good}</small><small class="b">${N.bad}</small>`}${st==='lock'?'<span class="lk">اتقفل</span>':''}</button>`};
+  const fork=f=>{const op=fkOpen(h,k,f);return `<div class="card fk"><div class="fk-q">${T(D[f].q)}<small>${op?`${G('اختار','اختاري')} واحد، والتاني هيتقفل`:f==='f1'?'بيفتح لما أي فرع يوصل درجة 2':'بيفتح لما {تتعلم|تتعلمي} رابط'}</small></div>
+    <div class="fk-r">${nd(f+':a')}<span class="fk-or">أو</span>${nd(f+':b')}</div>${f==='f1'?`<div class="fk-r fk-x"><span>${nd('f1:ax')}</span><span class="fk-or"></span><span>${nd('f1:bx')}</span></div>`:''}</div>`};
+  return T(`<div class="tw-lbl">طريقين <small>كل اختيار ليه حلو وليه تمن</small></div>${fork('f1')}${fork('f2')}`)}
+function fkInfo(h,k,sel,p){const {f,side,x,N,D}=fkNode(k,sel),st=fkState(h,k,sel,p),c=x?4:2,other=D[side==='a'?'b':'a'];
+  let act='';if(st==='got')act=`<div class="tw-miss ok">${G('اخترته','اخترتيه')} ✓</div>`;
+  else if(st==='lock')act=`<div class="tw-miss">اتقفل عشان ${G('اخترت','اخترتي')} «${x?D[side==='a'?'b':'a'].n:other.n}». لو ${G('رجّعت','رجّعتي')} النقط ${G('تقدر','تقدري')} ${G('تختار','تختاري')} من الأول.</div>`;
+  else if(st==='no')act=`<div class="tw-miss">${x?`لازم ${G('تختار','تختاري')} «${D[side].n}» الأول`:f==='f1'?'لازم أي فرع يوصل درجة 2 الأول':'لازم {تتعلم|تتعلمي} رابط الأول'}</div>`;
+  else if(st==='ok')act=`<div class="tw-miss">محتاجة ${treeNum(c)}، ومعاك ${p?treeNum(p):'ولا نقطة'}.</div>`;
+  else act=`<button class="btn" id="fkBuy" data-b="${sel}">${G('اختار','اختاري')} ده · ${treeNum(c)}</button>${x?'':`<div class="tw-sm" style="color:#f0a090">«${other.n}» هيتقفل.</div>`}`;
+  return T(`<div class="tr-ih"><b>${N.n}</b><span>${x?'بعد الاختيار':'اختيار'} · ب${treeNum(c)}</span></div><div class="tr-iw"><div style="color:#a6e3a0">+ ${N.good}</div>${N.bad?`<div style="color:#f0a090">− ${N.bad}</div>`:''}</div>${act}`)}
+function fkBuy(k,sel){const h=S.hero,{f,side,x,N}=fkNode(k,sel);if(!h||fkState(h,k,sel,treePts(h,k))!=='open')return;
+  h.treeF=h.treeF||{};const F=h.treeF[k]=h.treeF[k]||{};if(x)F.f1x=1;else F[f]=side;saveHero();SFX.fanfare();flash(TREE[k].c);vib([20,20,40]);twRender();
+  const n=view.querySelector(`[data-fk="${sel}"]`);if(n){pop(n,[TREE[k].c,'#ffffff','#fff3b0'],34);cls(n,'pp')}band(LIFE[k].n,N.n,N.good,{dur:2200})}
+/* the crafts read the forks: score, more or less luck, no bad luck, and xp */
+{const o=craftQ;craftQ=function(h,at,score,addIn,id){const sb=tf(h,at,'score');if(sb)score=Math.max(0,Math.min(1,(+score||0)+sb));const Q=o.call(this,h,at,score,addIn,id);
+  if(TREE_FK[at]&&h){const lu=tf(h,at,'lucky'),un=tf(h,at,'unlucky');
+    if(un>0&&!Q.lucky&&Q.q>0&&Math.random()<un){Q.q--;Q.unlucky=true}
+    if(lu>0&&Q.q<4&&!Q.unlucky&&Math.random()<lu){Q.q++;Q.lucky=true}
+    if(lu<0&&Q.lucky&&Math.random()<-lu*4){Q.q--;Q.lucky=false}
+    if(tf(h,at,'safe')&&Q.unlucky){Q.q++;Q.unlucky=false}}return Q}}
+{const o=fqEff;fqEff=function(h,key){return Math.max(1,o.apply(this,arguments)+(h?tf(h,'cook','food'):0))}}
+{const lx3=lifeXP;lifeXP=function(h,k,n){let m=n||1;const x=TREE_FK[k]&&h?tf(h,k,'xp'):0;if(x){const v=Math.max(0,m*(1+x));m=Math.floor(v)+(Math.random()<v-Math.floor(v)?1:0);if(m<1&&(n||1)>=1&&Math.random()<.5)m=1}return lx3.call(this,h,k,m)}}
+{const st=document.createElement('style');st.textContent=`
+.fk{display:flex;flex-direction:column;gap:8px;padding:12px 10px;margin-bottom:8px}
+.fk-q{text-align:center;font-weight:800;font-size:15px}.fk-q small{display:block;font-size:12px;color:var(--mute);font-weight:700}
+.fk-r{display:grid;grid-template-columns:1fr 26px 1fr;gap:4px;align-items:stretch}
+.fk-or{align-self:center;text-align:center;font-size:12px;font-weight:800;color:var(--gold2)}
+.fk-n{position:relative;min-height:58px;border-radius:14px;border:2px dashed #ffffff30;background:#0005;color:var(--mute);font:inherit;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;text-align:center}
+.fk-n b{font-size:14px;color:var(--fg,#efe6d2)}
+.fk-n small{font-size:11px;line-height:1.35;font-weight:700}.fk-n small.g{color:#a6e3a0}.fk-n small.b{color:#f0a090}
+.fk-n.ok,.fk-n.open{border-style:solid;border-color:var(--tc)}
+.fk-n.open{animation:trOpen 1.4s ease-in-out infinite}
+.fk-n.got{border-style:solid;border-color:#fff;background:radial-gradient(circle at 50% 30%,#fff3,var(--tc) 85%)}.fk-n.got b{color:#1a1030}.fk-n.got small.g{color:#123a1a}.fk-n.got small.b{color:#5a1a14}
+.fk-n.lock{opacity:.45;filter:grayscale(.8)}
+.fk-n .lk{position:absolute;top:-9px;inset-inline-start:8px;font-size:10.5px;font-weight:800;background:#3a1c18;color:#ffb3a3;border:1px solid #f0a09066;border-radius:8px;padding:0 6px}
+.fk-x .fk-n{min-height:48px}.fk-x>span{display:block}
+.fk-n.sel{outline:3px solid var(--gold2);outline-offset:3px}
+.fk-n.pp{animation:pp .5s}
 `;document.head.appendChild(st)}
 /* ---------- v4.2 «قهوة عم صابر»: a bench where effort comes back 3× faster while you sit, tea, and people talking ---------- */
 /* h.tea = {t0, n}: cups drunk since t0; a new hour (from the first cup) starts again at 10 */
