@@ -1770,7 +1770,7 @@ function applyOutcome(o,tier,c){
   const h=S.hero;let extra='';
   if(o.flag)S.flags[o.flag]=1;if(c&&c.flag)S.flags[c.flag]=1;
   if(o.use){h.bag[o.use]=Math.max(0,(h.bag[o.use]||0)-1);extra+=`<div class="note" style="color:var(--mute)">${itemIcon(o.use,20)} ${ITEMS[o.use].name} -1</div>`}
-  if(o.hp){h.hp=Math.max(1,Math.min(MXH(h),h.hp+o.hp));extra+=`<div class="note" style="color:#f0a090">صحتك نقصت ${-o.hp}</div>`}
+  if(o.hp){h.hp=Math.max(0,Math.min(MXH(h),h.hp+o.hp));extra+=`<div class="note" style="color:#f0a090">صحتك نقصت ${-o.hp}</div>`}
   if(o.heal){h.hp=Math.min(MXH(h),h.hp+o.heal);h.energy=MXE(h);extra+=`<div class="note" style="color:#a6e3a0">{ارتحت|ارتحتي}: صحتك زادت ${o.heal} وطاقتك اتملت</div>`}
   if(o.energy){h.energy=Math.max(0,h.energy+o.energy);extra+=`<div class="note" style="color:var(--en)">${BOLT} طاقتك نقصت ${-o.energy}</div>`}
   if(o.money){const m=o.money<0?-Math.min(h.money,-o.money):o.money;h.money+=m;if(m>0)SFX.coin();extra+=`<div class="note" style="color:${m>0?'var(--gold2)':'#f0a090'}">${m>0?'+':''}${m} جنيه</div>`}
@@ -4362,6 +4362,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.48',d:'9 أكتوبر',add:[],fix:['لو كارت في الحدوتة خلّص صحتك {بتقع|بتقعي} والليلة {بتخسرها|بتخسريها}، زي ما {تقع|تقعي} في القتال (قزازة الصحيان بتنقذك لو {معاك|معاكي}). وكمان النزيف بين الوقفات. قبل كده الصحة كانت بتقف عند 1.','الاستراحة مش بتطلع في وقفتين ورا بعض، ومش بيطلع أكتر من استراحة في نفس الوقفة.']},
   {v:'5.47',d:'9 أكتوبر',add:['لما {تتفادى|تتفادي} ضربة بضربة حظ، بطلك بيرد الضربة على طول (ضربة مرتدة)، في كل أنواع الضرب: الجامدة، والتانية، والجري {عليك|عليكي}.'],fix:['الليلة اللايف: لو صاحبك قفل اللعبة، الكارت بتاعه بيقول «أوفلاين: قفل اللعبة» بدل «بيلعب من موبايله»، والكلام بقى في سطر لوحده بعيد عن اسمه.']},
   {v:'5.46',d:'9 أكتوبر',add:['في أي مكان فيه − و+ {تقدر تكتب|تقدري تكتبي} العدد اللي {عايزه|عايزاه} بإيدك في الخانة اللي في النص: البيع والشرا في السوق، دكانة الليلة، الحداد، والأكل.'],fix:['لو {كتبت|كتبتي} رقم أكبر من اللي معاك بيتظبط لوحده على الآخر.']},
   {v:'5.45',d:'9 أكتوبر',add:[
@@ -19334,7 +19335,7 @@ function burAdd(k,why){const B=burOf();if(!B)return '';const was=B[k]||0;B[k]=Ma
 {const cd=N_cardDone;N_cardDone=function(){const N=S.night,B=burOf(),had=!!(N&&N.card);
   const R=cd.apply(this,arguments);
   if(B){if(B.hunted&&B.hAct!==N.act)B.hunted=0;
-    if(had&&B.wounded){const h=S.hero;h.hp=Math.max(1,h.hp-B.wounded);N.bled=B.wounded}}
+    if(had&&B.wounded){const h=S.hero;h.hp=Math.max(0,h.hp-B.wounded);N.bled=B.wounded}}
   return R}}
 if(SC.n_camp){const ce=SC.n_camp.onEnter;SC.n_camp.onEnter=function(){const B=burOf();const R=ce&&ce.apply(this,arguments);if(B)B.wounded=0;N_save();return R}}
 
@@ -23334,6 +23335,41 @@ function achScan(h){if(!h||h!==S.hero)return;const c=h.cnt||{},Q=h.qb||{},F=h.fa
   got.forEach((id,i)=>setTimeout(()=>ach(id),900+i*2600))}
 const ACH_SCR=['town','barber','quests','farm','mouled','market','cook','fish','gear','profile'];
 {const r0=render;render=function(){const x=r0.apply(this,arguments);try{if(ACH_SCR.includes(S.screen))achScan(S.hero)}catch(e){console.warn(e)}return x}}
+/* ---------- 5.48: a story card can kill you, and rests never come two stops in a row ----------
+   A card that takes your last health ends the night like a lost fight (a wake-up bottle saves you once, as in a fight).
+   Bleeding between stops does the same. Outside a night (training, the old adventure) health still stops at 1. */
+function N_dieSave(h){const c=S.comp;if((h.bag.revive||0)>0&&c&&c.hp>0){h.bag.revive--;h.hp=Math.ceil(MXH(h)/2);saveHero();return c}return null}
+function N_storyDie(){const N=S.night;RES=null;if(N)N.dead=0;if(S.run)S.run.falls++;S.combat=null;S.lost={story:1};SFX.down&&SFX.down();S.screen='end';render()}
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){const r=ao.apply(this,arguments),h=S.hero;
+  try{if(h&&h.hp<=0){if(!N_on()){h.hp=1}
+    else{const cp=N_dieSave(h),x=cp?T(`<div class="note" style="color:#a6e3a0">{وقعت|وقعتي}! بس ${cp.name} ${CG(G('صحّاك','صحّاكي'),'صحّتك')} بقزازة صحيان: صحتك بقت ${h.hp}.</div>`)
+        :T(`<div class="note" style="color:#f0a090;font-weight:700">صحتك خلصت.. {وقعت|وقعتي}.</div>`);
+      if(!cp)S.night.dead=1;
+      if(RES){RES.extra=(RES.extra||'')+x;if(!cp)RES.dead=1;const el=view.querySelector('.res');if(el)el.insertAdjacentHTML('beforeend',x)}
+      N_save()}}}catch(e){console.error('story fall: '+e.message)}
+  return r}}
+/* the button under that card leads to the lost night, not to the next scene or fight */
+{const r0=render;render=function(){const x=r0.apply(this,arguments);try{const b=$('#cont');
+  if(b&&S.screen==='story'&&N_on()&&S.hero&&S.hero.hp<=0&&(S.night.dead||(RES&&RES.dead))){b.textContent=G('كمّل','كمّلي');b.onclick=N_storyDie}}catch(e){}return x}}
+/* bleeding out on the road */
+{const cd=N_cardDone;N_cardDone=function(){const R=cd.apply(this,arguments),h=S.hero;
+  try{if(N_on()&&h&&h.hp<=0){const cp=N_dieSave(h);if(cp){toast(T(`{وقعت|وقعتي} من النزيف، بس ${cp.name} ${CG(G('صحّاك','صحّاكي'),'صحّتك')} بقزازة صحيان.`))}else setTimeout(N_storyDie,300)}}catch(e){console.error('bleed fall: '+e.message)}
+  return R}}
+
+/* a saved night that stopped on a card that killed you ends when it opens again */
+{const r0=render;render=function(){const x=r0.apply(this,arguments);try{if(N_on()&&S.night.dead&&S.hero&&S.hero.hp<=0&&S.screen!=='end'&&S.screen!=='combat'&&!$('#cont'))setTimeout(()=>{if(S.night&&S.night.dead&&S.hero.hp<=0&&S.screen!=='end')N_storyDie()},50)}catch(e){}return x}}
+
+/* rests: at most one in a hand, and none right after a hand that had one */
+{const d0=N_deal;N_deal=function(){const hand=d0.apply(this,arguments),N=S.night;
+  try{if(N&&N_on()&&hand&&hand.length){const isR=c=>c&&c.type==='rest';
+    const drop=hand.map((c,i)=>i).filter(i=>isR(hand[i])).filter((i,k)=>N.pr||k>0);
+    if(drop.length){const A=N_act(),s=N.stop,pl=new Set(N.played),deck=DECKS[A.k]||[];
+      const ok=c=>!isR(c)&&!pl.has(c.id)&&N_req(c)&&!hand.includes(c)&&s>=(c.minStop||1)&&s<=(c.maxStop||99);
+      drop.forEach(i=>{const all=deck.filter(ok),calm=all.filter(c=>c.type!=='fight'),L=calm.length?calm:all;if(!L.length)return;
+        const nc=N_wpick(L),old=hand[i];hand[i]=nc;N.dealt[old.id]=Math.max(0,(N.dealt[old.id]||1)-1);N.dealt[nc.id]=(N.dealt[nc.id]||0)+1});
+      N.hand=hand.map(c=>c.id)}
+    N.pr=hand.some(isR)?1:0}}catch(e){console.error('rest spread: '+e.message)}
+  return hand}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
