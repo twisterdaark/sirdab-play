@@ -4366,6 +4366,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.51',d:'9 أكتوبر',add:[],fix:['الترعة كانت بتهنّج الصفحة بعد البيكسل. اتشال الفلتر منها ومن المنجم، والصيد رجع زي ما كان.']},
   {v:'5.50',d:'9 أكتوبر',add:[],fix:['الميني جيمز بقت بيكسل زي باقي اللعبة: الحدادة، والخياطة، والطبخ، والعصير، والمنجم، والترعة.','في الخياطة: لو {دوست|دوستي} على الزرار اللي تحت {وانت بتقص|وانتي بتقصي}، اللعبة كانت بتعلّق. اتصلحت.']},
   {v:'5.49',d:'9 أكتوبر',add:[],fix:['الصعوبة بقت تكبر مع اللفل أكتر: من لفل 6 الوحوش صحتها بتزيد أسرع، وضربها أجمد، وبقى أصعب {تتفاداها|تتفاديها} أو {تصيبها|تصيبيها}.','الدرع بقى يشيل نص الضربة بالكتير، يعني الوحوش لسه بتوجعك مهما كان لبسك تقيل.','التقوية بقت أخف: كل خطوة في السلاح بتزوّد أقل (+6 ضرر عند +10)، وفي الدرع والراس (+5 عند +10).','الحرامي: «ضربة من الضلمة» بقت ×1.5 بدل ×2، والضربة التانية في لفل 3 من القدرة بقت عادية مش مضاعفة، وفي لفل 5 الباقيين بياخدوا ضربة عادية. «ضربتين ورا بعض» التانية بقت أخف (60%). وفرصة ضربة المعلّم بتزيد أبطأ مع اللفل.','المحارب: «غضب» بقى ×2.5 (و×3 في لفل 5 من القدرة) بدل ×3 و×3.5.','المعالج: «طرد الجن» بقى ×1.7 (و×2.2 في لفل 5) بدل ×2 و×3.']},
   {v:'5.48',d:'9 أكتوبر',add:[],fix:['لو كارت في الحدوتة خلّص صحتك {بتقع|بتقعي} والليلة {بتخسرها|بتخسريها}، زي ما {تقع|تقعي} في القتال (قزازة الصحيان بتنقذك لو {معاك|معاكي}). وكمان النزيف بين الوقفات. قبل كده الصحة كانت بتقف عند 1.','الاستراحة مش بتطلع في وقفتين ورا بعض، ومش بيطلع أكتر من استراحة في نفس الوقفة.']},
@@ -23389,7 +23390,8 @@ function N_storyDie(){const N=S.night;RES=null;if(N)N.dead=0;if(S.run)S.run.fall
   const s=document.createElementNS(ns,'svg');s.setAttribute('width','0');s.setAttribute('height','0');s.setAttribute('aria-hidden','true');s.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
   s.innerHTML=flt('pxF3',3)+flt('pxF2',2);document.body.appendChild(s);
   const st=document.createElement('style');st.textContent=`
-.mg-box>svg,.gx-stage svg,.fsh-cardw svg{filter:url(#pxF3)}
+/* 5.51: not on the river and the mine (the river redraws every frame and the filter froze the page) and not on cooking (its own pixel art) */
+.mg-ov:not(.k-cook):not(.k-bread) .mg-box>svg{filter:url(#pxF3)}
 .mg-ic svg,.mg-card .ic svg,.mg-card svg{filter:url(#pxF2)}`;document.head.appendChild(st)})();
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
