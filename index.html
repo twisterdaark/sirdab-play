@@ -1519,8 +1519,8 @@ const HELP=[
   {g:'القتال',h:'القتال واختيار العدو',b:()=>`في دورك ${G('بتختار','بتختاري')} حركة. لو قدامك أكتر من عدو، الأعداء بينوّروا ${G('وتدوس','وتدوسي')} على اللي ${G('عايز','عايزة')} ${G('تضربه','تضربيه')}، وبعدين ترمي. بعد كده رفيقك بيلعب، وبعدين الأعداء. كل عدو بيضرب يا ${G('انت','انتي')} يا رفيقك بنفس الفرصة، ولما يضربك بترمي عشان ${G('تتفادى','تتفادي')}.<br>«${G('استخبى','استخبي')}» ${G('بتخليك','بتخليكي')} ${G('تتفادى','تتفادي')} أسهل المرة الجاية. وكل اللي حصل مكتوب في <b>سجل القتال</b>.`},
   {g:'القتال',h:'الرفيق',b:()=>`${G('معاك','معاكي')} رفيق بيلعب لوحده: ست زينب بتعالج، وحسونة بيضرب. لو وقع، ${G('تقدر','تقدري')} ${G('تصحيه','تصحيه')} بقزازة صحيان. ولو فضل واقع لآخر القتال بيقوم لوحده بعده.`},
   {g:'القتال',h:'الشنطة',p:()=>['potion','bigpotion','revive','salt','wax','foul','grilled'].map(k=>itemIcon(k,28)).join(''),b:()=>Object.keys(ITEMS).filter(k=>k!=='amulet').map(k=>`<b>${ITEMS[k].name}:</b> ${pfTx(ITEMS[k].info())}`).join('<br>')+`<br>في القتال ${G('دوس','دوسي')} «الشنطة»، ${G('اختار','اختاري')} الحاجة، وبعدين على مين: ${G('انت','انتي')} ولا رفيقك. الشنطة بتشيل ${BAG_MAX.pot} جرعات و${BAG_MAX.food||5} أكلات بالكتير.`},
-  {g:'البلد',h:'البلد',p:()=>PF_HPIC.town(),b:()=>`بين المغامرات ${G('بترجع','بترجعي')} <b>البلد</b>، وفيها ناس ${G('هتحتاجهم','هتحتاجيهم')}:<br><b>عم حسن الحداد:</b> سلاح ودروع وخواتم وقلايد.<br><b>عم فتحي الخياط:</b> لبس من القماش والجلد.<br><b>أم سيد الطباخة:</b> أكل يرجّعلك صحتك ومجهودك.<br><b>عم رمضان البياع:</b> بيع وشرا.<br>ومن البلد ${G('تطلع','تطلعي')} <b>الجبل</b> ${G('تنقّب','تنقّبي')}، أو ${G('تنزل','تنزلي')} <b>الترعة</b> ${G('تصطاد','تصطادي')}.`},
-  {g:'البلد',h:'المجهود',p:()=>PF_HPIC.eff(),b:()=>`التنقيب والصيد بيتعبوا: كل مرة ${G('بتنقّب','بتنقّبي')} أو ${G('بتصطاد','بتصطادي')} بتاخد من <b>مجهودك</b>. المجهود ${EFF_MAX} نقطة بالكتير.<br>لما يخلص ${G('استنى','استني')} شوية، بيرجع لوحده نقطة كل دقيقة. ولو ${G('كلت','كلتي')} أكلة بيرجع على طول، في البلد أو جوه الجبل والترعة.<br>وعند عم صابر في القهوة في «حلبة عم صابر»: كل كوباية بتكبّر مجهودك 2 على طول، لحد 40.`},
+  {g:'البلد',h:'البلد',p:()=>PF_HPIC.town(),b:()=>`بين المغامرات ${G('بترجع','بترجعي')} <b>البلد</b>، وفيها ناس ${G('هتحتاجهم','هتحتاجيهم')}:<br><b>عم حسن الحداد:</b> سلاح ودروع وخواتم وقلايد.<br><b>عم فتحي الخياط:</b> لبس من القماش والجلد.<br><b>أم سيد الطباخة:</b> أكل يرجّعلك صحتك ومجهودك.<br><b>عم رمضان البياع:</b> بيع وشرا.<br>ومن البلد ${G('تطلع','تطلعي')} <b>المنجم</b> ${G('تنقّب','تنقّبي')}، أو ${G('تنزل','تنزلي')} <b>الترعة</b> ${G('تصطاد','تصطادي')}.`},
+  {g:'البلد',h:'المجهود',p:()=>PF_HPIC.eff(),b:()=>`التنقيب والصيد بيتعبوا: كل مرة ${G('بتنقّب','بتنقّبي')} أو ${G('بتصطاد','بتصطادي')} بتاخد من <b>مجهودك</b>. المجهود ${EFF_MAX} نقطة بالكتير.<br>لما يخلص ${G('استنى','استني')} شوية، بيرجع لوحده نقطة كل دقيقة. ولو ${G('كلت','كلتي')} أكلة بيرجع على طول، في البلد أو جوه المنجم والترعة.<br>وعند عم صابر في القهوة في «حلبة عم صابر»: كل كوباية بتكبّر مجهودك 2 على طول، لحد 40.`},
   {g:'البلد',h:'الشغلانات',p:()=>PF_HPIC.life(),b:()=>`عندك ${Object.keys(LIFE).length} <b>شغلانات</b>. كل ما ${G('تشتغل','تشتغلي')} في واحدة بتكبر وتطلع مستوى (لحد 10)، وكل مستوى بيفرق:<br>${Object.keys(LIFE).map(k=>`<b>${LIFE[k].n}:</b> ${pfTx(LIFE[k].d)}`).join('<br>')}<br>مستوى كل شغلانة مكتوب في صفحة ${G('بطلك','بطلتك')} تحت «شغلانات».`},
   {g:'البلد',h:'العدّة (6 خانات)',p:()=>PF_HPIC.gear(),b:()=>`${G('تقدر','تقدري')} ${G('تلبس','تلبسي')} حاجة واحدة في كل خانة من الـ6: ${Object.values(SLOTS).join('، ')}.<br>العدّة بتزوّد ضربك، أو بتخلّي الضربة اللي بتجيلك تقل، أو بتزوّد صحتك وصفاتك. وفي سلاح ليه حركة خاصة زي «ضربتين».<br>${G('اشتريها','اشتريها')} أو ${G('اعملها','اعمليها')} بإيدك من الخامات عند الحداد والخياط. واللون بيقولك هي نادرة قد إيه.`},
   {g:'البلد',h:'السوق والسمعة',b:()=>`السوق بيعرض حاجات مختلفة كل مغامرة، وبكمية محدودة («فاضل 2»). ساعات فيه عرض بخصم.<br><b>السمعة:</b> لو ${G('ساعدت','ساعدتي')} الناس سمعتك بتتحسن والأسعار بتقل. لو ${G('سرقت','سرقتي')} أو ${G('كدبت','كدبتي')} أو ${G('أذيت','أذيتي')} حد سمعتك بتوحش، والأسعار بتغلى، وفي ناس ممكن ترفض تتعامل ${G('معاك','معاكي')}.`},
@@ -2511,7 +2511,7 @@ const TW_NPC={hassan:['عم حسن الحداد','#c0683a'],fathy:['عم فتح�
 const TW_WHO={'عجوز الجبل':'oldman','عم رمضان':'ramadan','عم رمضان البياع':'ramadan','العمدة':'omda','عم حسن':'hassan','عم حسن الحداد':'hassan','عم فتحي':'fathy','عم فتحي الخياط':'fathy','أم سيد':'umsayed','أم سيد الطباخة':'umsayed'};
 const TW_FEM={silver:1,hair:1,goldfish:1};                                       /* resources counted with «واحدة» */
 const TW_FEMG={shuma:1,turqstaff:1,turban:1,helmet:1,hornneck:1,hairneck:1,amulet:1,bag1:1,bag2:1};  /* gear with a feminine name: «اعملها» */
-const TW_SRC={stone:'الجبل',copper:'الجبل أو السوق',iron:'الجبل أو السوق',silver:'الجبل أو السوق',turq:'الجبل',bolti:'الترعة',qarmout:'الترعة',bouri:'الترعة',goldfish:'الترعة',cloth:'السوق',bread:'السوق',salskin:'السلاعوة أو السوق',salfang:'السلاعوة أو السوق',horn:'العفاريت أو السوق',hair:'النداهة',stone1:'عم حسن أو تحت في الجبل',stone2:'عم حسن أو الوحوش الكبيرة',stone3:'الوحوش الكبيرة وآخر الجبل'};
+const TW_SRC={stone:'المنجم',copper:'المنجم أو السوق',iron:'المنجم أو السوق',silver:'المنجم أو السوق',turq:'المنجم',bolti:'الترعة',qarmout:'الترعة',bouri:'الترعة',goldfish:'الترعة',cloth:'السوق',bread:'السوق',salskin:'السلاعوة أو السوق',salfang:'السلاعوة أو السوق',horn:'العفاريت أو السوق',hair:'النداهة',stone1:'عم حسن أو تحت في المنجم',stone2:'عم حسن أو الوحوش الكبيرة',stone3:'الوحوش الكبيرة وآخر المنجم'};
 const TW_SLOTS=['weapon','armor','head','ring','neck','charm'];
 
 /* bag upgrades at the tailor: bought in order, each one adds to the last */
@@ -2662,14 +2662,14 @@ function twGoalHTML(h){const c=twGoal(h);if(!c)return '';const who=c.at==='smith
 /* ---------- people talking in town (sometimes a hint of a hidden stat, never its name) ---------- */
 function twLines(h){const L=[
   ['ramadan','البضاعة عندي بتتغير بعد كل مغامرة. {تعالى|تعالي} بدري قبل ما تخلص.'],
-  ['ramadan','أي حاجة {تجيبها|تجيبيها} من الجبل أو الترعة، أنا أشتريها منك بسعرها.'],
-  ['hassan','{هات|هاتي} نحاس من الجبل، وأنا أعلّمك {تعمل|تعملي} سيف بإيدك.'],
+  ['ramadan','أي حاجة {تجيبها|تجيبيها} من المنجم أو الترعة، أنا أشتريها منك بسعرها.'],
+  ['hassan','{هات|هاتي} نحاس من المنجم، وأنا أعلّمك {تعمل|تعملي} سيف بإيدك.'],
   ['hassan','اللي بيعمل حاجته بإيده بيدفع أقل.. وإيده بتتعلم.'],
   ['fathy','جلد السلعوة لو {جبته|جبتيه}، أعملك منه صديري {يحميك|يحميكي}.'],
   ['umsayed','السمك اللي {بتصطاده|بتصطاديه} {هاته|هاتيه}، أشويهولك بعيش سخن.'],
   ['umsayed','الأكل اللي في شنطتك بيرجّعلك صحتك في القتال.. ولو {كلته|كلتيه} هنا بيرجّعلك حيلك.'],
   ['oldman','الصخر اللي بيلمع أزرق ده فيروز. قليل.. بس يستاهل التعب.'],
-  ['oldman','الجبل مش هيجري. {خد نفسك وارجع|خدي نفسك وارجعي} تاني.'],
+  ['oldman','المنجم مش هيجري. {خد نفسك وارجع|خدي نفسك وارجعي} تاني.'],
   ['omda',h.rep>=20?'الكفر كله بيدعيلك. ربنا يحفظك.':h.rep<=-20?'الناس بتقفل الشبابيك أول ما تعدّي. خلّي بالك من سمعتك.':'الكفر هادي النهارده.. بس الترعة لسه بتنده بالليل.']];
   if(!(h.bagLvl>0))L.push(['fathy','شنطتك صغيرة {يا ابني|يا بنتي}. {تعالى|تعالي} أوسّعهالك.']);
   if(h.money<40)L.push(['ramadan','الجيب خفيف؟ {بيع|بيعي} اللي مش {محتاجه|محتاجاه}، أنا بشتري كل حاجة.']);
@@ -2684,7 +2684,7 @@ function twSayHTML(h,fresh){const s=!fresh&&TWN.gr.say||(TWN.gr.say=twSay(h));re
 function twGreet(h,id){const hint=Object.keys(HIDDEN).find(k=>!h.hidden[k]&&TW_WHO[HIDDEN[k].hint.split(':')[0].trim()]===id);if(hint&&Math.random()<.2)return HIDDEN[hint].hint.slice(HIDDEN[hint].hint.indexOf(':')+1).trim();
   const bad=h.rep<=-20,vbad=h.rep<=-60,good=h.rep>=20;
   const L={ramadan:vbad?['عم رمضان بصلك بشك وحط إيده على الفلوس: «{عايز|عايزة} إيه؟»']:bad?['«{اتفضل|اتفضلي}.. بس الأسعار {عليك|عليكي} غير.»']:good?['«أهلاً {بالبطل|بالبطلة}! {اتفضل|اتفضلي}، عندي حاجات حلوة النهارده.»']:['«{اتفضل|اتفضلي}، البضاعة طازة.»','«{بص|بصي} براحتك. اللي يعجبك نتكلم فيه.»'],
-    hassan:vbad?['عم حسن ما رفعش عينه من النار: «{قول|قولي} {عايز|عايزة} إيه {وامشي|وامشي}.»']:['«{هات|هاتي} الحاجة وأنا أعلّمك، أو {خد|خدي} اللي {عايزه|عايزاه} جاهز.»','«الحديد بيحب الإيد اللي بتصبر عليه.»','«ناقصك نحاس ولا حديد؟ عندي جاهز، بس الجبل أرخص.»'],
+    hassan:vbad?['عم حسن ما رفعش عينه من النار: «{قول|قولي} {عايز|عايزة} إيه {وامشي|وامشي}.»']:['«{هات|هاتي} الحاجة وأنا أعلّمك، أو {خد|خدي} اللي {عايزه|عايزاه} جاهز.»','«الحديد بيحب الإيد اللي بتصبر عليه.»','«ناقصك نحاس ولا حديد؟ عندي جاهز، بس المنجم أرخص.»'],
     fathy:vbad?['عم فتحي بصلك من فوق النضارة: «هنشوف.»']:['«{تعالى|تعالي}، {تحب|تحبي} أفصّلك إيه؟»','«الغُرزة الحلوة بتعيش أكتر من صاحبها.»'],
     umsayed:vbad?['أم سيد قلبت وشها: «الأكل للي يستاهله.»']:['«{تعالى|تعالي} يا {حبيبي|حبيبتي}، الأكل سخن.»','«مفيش حاجة بترجّع الروح زي طبق فول.»']}[id]||['«أهلاً.»'];
   return T(pick(L))}
@@ -2697,7 +2697,7 @@ function twEffHTML(h,eat,cook){const e=effNow(h),w=(TWN.effFrom!=null?TWN.effFro
   return `<div class="tw-eff" id="twEff" data-e="${e}"><div class="r1"><b>مجهود</b><span class="v" id="twEv">${e}/${EFF_MAX}</span></div>
     <div class="tw-bar ef" id="twEb"><i style="width:${w}%"></i></div>
     <div class="tw-sm r3"><span>${e>=EFF_MAX?'مليان':`بيرجع 1 كل ${h.hidden.sabr?'40 ثانية':'دقيقة'}`}</span><span id="twEc">${twCd(h)}</span></div>
-    <div class="tw-sm">الجبل والترعة بياخدوا مجهود، والأكل بيرجّعه.</div>
+    <div class="tw-sm">المنجم والترعة بياخدوا مجهود، والأكل بيرجّعه.</div>
     ${eat&&foods.length&&e<EFF_MAX?`<div class="tw-eats">${foods.map(k=>`<button class="tw-eat" data-eat="${k}">${twFood(k,26)}${ITEMS[k].name} ×${h.bag[k]}<small>${twN(Math.min(fqEff(h,k),EFF_MAX-e))}</small></button>`).join('')}</div>`
       :cook&&!foods.length?`<div class="tw-sm" style="color:#f2c77a">مفيش أكل في شنطتك. ${G('اطبخ','اطبخي')} أو ${G('اشتري','اشتري')} من فوق.</div>`:cook&&e>=EFF_MAX?`<div class="tw-sm" style="color:#a6e3a0">مجهودك مليان. خلّي الأكل للقتال.</div>`:''}</div>`}
 function twTick(){clearInterval(TWN.timer);TWN.timer=setInterval(()=>{const h=S.hero,el=$('#twEff');if(!h||!el){clearInterval(TWN.timer);TWN.timer=0;return}
@@ -2708,7 +2708,7 @@ function twEat(k,el){const h=S.hero;if(!h||!(h.bag[k]>0))return;const e0=effNow(
   SFX.munch();setTimeout(()=>SFX.gulp(),380);setTimeout(()=>SFX.heal(),650);vib([20,30,20]);floatAt(el,twI('+'+got)+' مجهود','#7fe0a0','',24);
   TWN.effFrom=e0;twRender();
   requestAnimationFrame(()=>requestAnimationFrame(()=>{TWN.effFrom=null;const b=$('#twEb');if(!b)return;b.firstChild.style.width=h.eff.v/EFF_MAX*100+'%';pop(b,['#7fe0a0','#e9ffe6','#f3d48f'],34);cls(b,'glow');const v=$('#twEv');if(v)cls(v,'pop')}));
-  if(h.eff.v>=EFF_MAX)setTimeout(()=>toast(`مجهودك اتملى! ${G('روح','روحي')} الجبل أو الترعة`),700)}
+  if(h.eff.v>=EFF_MAX)setTimeout(()=>toast(`مجهودك اتملى! ${G('روح','روحي')} المنجم أو الترعة`),700)}
 function twBindEat(){view.querySelectorAll('[data-eat]').forEach(b=>b.onclick=()=>twEat(b.dataset.eat,b))}
 
 /* ---------- the big moment: hammering, sewing or cooking, then the new thing shines ---------- */
@@ -2770,7 +2770,7 @@ SCREENS.town=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     {id:'smith',go:'smith',n:'الحداد',w:'عم حسن',s:cs?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(cs)}</span>`:`حدادة مستوى ${lifeLvl(h,'smith')}`,bell:1},
     {id:'tailor',go:'tailor',n:'الخياط',w:'عم فتحي',s:ct?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(ct)}</span>`:(h.bagLvl||0)<BAGUPS.length?'شنط أكبر وهدوم':`خياطة مستوى ${lifeLvl(h,'tailor')}`,bell:1},
     {id:'cook',go:'cook',n:'الطباخة',w:'أم سيد',s:ck?`<span class="ok">${G('تقدر تطبخ','تقدري تطبخي')} ${ck===1?'أكلة':ck===2?'أكلتين':ck+' أكلات'}</span>`:'فول وسمك مشوي',bell:1},
-    {id:'mountain',go:'mine',n:'الجبل',w:'عجوز الجبل',s:has('mine')?'نحاس وحديد وفضة':'قريب'},
+    {id:'mountain',go:'mine',n:'المنجم',w:'عجوز الجبل',s:has('mine')?'نحاس وحديد وفضة':'قريب'},
     {id:'canal',go:'fish',n:'الترعة',w:'صيد السمك',s:has('fish')?'بلطي وقرموط وبوري':'قريب'},
     {id:'gear',go:'gear',n:'عدّتي',w:'سلاحك وهدومك',s:`${G('لابس','لابسة')} ${eqN} من 6`},
     {id:'cafe',go:'cafe',n:'القهوة',w:'قهوة عم صابر',s:effNow(h)<EFF_MAX?`<span class="ok">${G('اقعد','اقعدي')} على الدكة: المجهود بيرجع ×3</span>`:'دكة وشاي وكلام',wide:1}];
@@ -2817,7 +2817,7 @@ function twMktBuy(h,L,pr){return `${twRepNote(h,'عم رمضان',0,pr)}<div cla
       ${p.price!==p.base?`<small class="rx" style="color:${p.price>p.base?'#f0a090':'#a6e3a0'}">${p.price>p.base?`زيادة ${p.price-p.base} جنيه عشان سمعتك`:`خصم ${p.base-p.price} جنيه`}</small>`:''}</div>
       ${twQB('m:'+e.k,twMktMax(h,e,p.price),p.price,p.was,`data-b="${i}"`,`${p.was?`<s>${p.was}</s>`:''}${p.price} جنيه${!out&&h.money<p.price?`<small>ناقصك ${p.price-h.money}</small>`:''}`)}</div>`}).join('')}</div>`}
 function twMktSell(h){const res=Object.keys(MAT).filter(k=>(h.res[k]||0)>0),gear=qSpare(h);
-  if(!res.length&&!gear.length)return `<div class="card tw-empty">مفيش حاجة ${G('تبيعها','تبيعيها')} دلوقتي.<br>${G('روح','روحي')} الجبل أو الترعة ${G('وهات','وهاتي')} حاجات، وعم رمضان بيشتري كل حاجة.</div>`;
+  if(!res.length&&!gear.length)return `<div class="card tw-empty">مفيش حاجة ${G('تبيعها','تبيعيها')} دلوقتي.<br>${G('روح','روحي')} المنجم أو الترعة ${G('وهات','وهاتي')} حاجات، وعم رمضان بيشتري كل حاجة.</div>`;
   const row=k=>{const m=MAT[k],n=h.res[k],R=RARE[m.tier||0];
     if(!m.p)return `<div class="tw-row" style="--rc:${twRc(m.tier||0)}"><div class="ic">${twMat(k,40)}</div><div class="tx"><b>${m.n}</b> <span class="tw-cnt">×${n}</span><small>عم رمضان ضحك: «ده ما يتباعش!»</small></div><button class="tw-buy warn" data-junk="${k}">ارميه</button></div>`;
     return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b> <span class="tw-cnt">×${n}</span><small>بـ${m.p} جنيه الواحدة</small>${m.tier>=2?`<small style="color:${R.c}">${R.n}. ${G('فكّر','فكّري')} قبل ما ${G('تبيع','تبيعي')}${TW_FEM[k]?'ها':'ه'}</small>`:''}</div>
@@ -2934,7 +2934,7 @@ async function twBag(mode,btn){const h=S.hero,L=h.bagLvl||0,b=BAGUPS[L];if(TWN.b
 /* v4.1: خامات at عم حسن: dearer than the mountain and the market, but always there */
 const twSmP=(h,k)=>({price:twGP(h,MAT[k].p*3),base:Math.round(MAT[k].p*3/5)*5});
 const twSmMax=(h,p)=>qtyMax(99,h.money/p);
-function twSmHTML(h){return `<div class="tw-lbl">خامات <small>أغلى من الجبل والسوق، بس جاهزة على طول</small></div><div class="col">${TW_SMAT.map(k=>twSmRow(h,k)).join('')}</div>`}
+function twSmHTML(h){return `<div class="tw-lbl">خامات <small>أغلى من المنجم والسوق، بس جاهزة على طول</small></div><div class="col">${TW_SMAT.map(k=>twSmRow(h,k)).join('')}</div>`}
 function twSmRow(h,k){const m=MAT[k],R=RARE[m.tier||0],p=twSmP(h,k),have=h.res[k]||0,uses=twUses(k);
   return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${m.tier?R.c:'var(--ink)'}">${m.n}</b>
       ${uses.length?`<small>بيدخل في: ${uses.slice(0,3).join('، ')}</small>`:''}
@@ -3063,8 +3063,8 @@ SCREENS.setup=function(){setup();const b=$('#back');if(b&&S.hero)b.onclick=()=>t
 SCREENS.end=function(){end();const h=S.hero;if(!h)return;if(S.endRes&&!S.endRes.tw){S.endRes.tw=1;twRestock(h);saveHero()}
   const L=S.lost,b=$('#home');if(b){b.textContent=G('ارجع البلد','ارجعي البلد');b.onclick=()=>{if(L&&!L.tutorial){twRestock(h);saveHero()}S.lost=null;S.endRes=null;twGo('town')}}};
 /* a help topic for the town, unless the help already has one */
-if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:()=>`بين كل مغامرة والتانية ${G('بترجع','بترجعي')} <b>البلد</b>:<br><b>السوق:</b> عم رمضان بيبيع قماش وعيش وحاجات بتتغير بعد كل مغامرة، وبيشتري منك أي حاجة ${G('تجيبها','تجيبيها')}.<br><b>الحداد والخياط:</b> ${G('تشتري','تشتري')} العدّة جاهزة، أو ${G('تعملها','تعمليها')} بإيدك من الحاجات اللي ${G('بتجمعها','بتجمعيها')} وبفلوس أقل. وكل ما ${G('تعمل','تعملي')} أكتر ${G('بتتعلم','بتتعلمي')} ${G('وتفتح','وتفتحي')} حاجات أقوى. وعم فتحي بيعمل <b>شنط أكبر</b>.<br><b>الطباخة:</b> ${G('اطبخ','اطبخي')} السمك اللي ${G('بتصطاده','بتصطاديه')}. الأكل بيرجّع صحة في القتال، ولو ${G('كلته','كلتيه')} في البلد بيرجّع <b>المجهود</b>.<br><b>الجبل والترعة:</b> التنقيب والصيد بياخدوا مجهود، والمجهود بيرجع لوحده 1 كل دقيقة.<br><b>عدّتي:</b> ${G('بتلبس','بتلبسي')} العدّة في 6 أماكن حوالين ${G('بطلك','بطلتك')}، و${G('بتشوف','بتشوفي')} كل حاجة بتزوّد إيه.`});
-/* ---------- v4: الجبل (mining) and الترعة (fishing): effort, rocks, fish, sounds ---------- */
+if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:()=>`بين كل مغامرة والتانية ${G('بترجع','بترجعي')} <b>البلد</b>:<br><b>السوق:</b> عم رمضان بيبيع قماش وعيش وحاجات بتتغير بعد كل مغامرة، وبيشتري منك أي حاجة ${G('تجيبها','تجيبيها')}.<br><b>الحداد والخياط:</b> ${G('تشتري','تشتري')} العدّة جاهزة، أو ${G('تعملها','تعمليها')} بإيدك من الحاجات اللي ${G('بتجمعها','بتجمعيها')} وبفلوس أقل. وكل ما ${G('تعمل','تعملي')} أكتر ${G('بتتعلم','بتتعلمي')} ${G('وتفتح','وتفتحي')} حاجات أقوى. وعم فتحي بيعمل <b>شنط أكبر</b>.<br><b>الطباخة:</b> ${G('اطبخ','اطبخي')} السمك اللي ${G('بتصطاده','بتصطاديه')}. الأكل بيرجّع صحة في القتال، ولو ${G('كلته','كلتيه')} في البلد بيرجّع <b>المجهود</b>.<br><b>المنجم والترعة:</b> التنقيب والصيد بياخدوا مجهود، والمجهود بيرجع لوحده 1 كل دقيقة.<br><b>عدّتي:</b> ${G('بتلبس','بتلبسي')} العدّة في 6 أماكن حوالين ${G('بطلك','بطلتك')}، و${G('بتشوف','بتشوفي')} كل حاجة بتزوّد إيه.`});
+/* ---------- v4: المنجم (mining) and الترعة (fishing): effort, rocks, fish, sounds ---------- */
 (function(){const st=document.createElement('style');st.textContent=`
 .gx-stats{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px 12px 3px}
 .gx-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;min-height:24px}
@@ -3269,15 +3269,15 @@ SONGS.amb_mountain={bpm:58,start:()=>[bed(320,.9,.03,'bandpass',.07,180),drone([
   if(i%16===0&&P(.55))doum(t,.06);if(P(.014))clink(t,.014);if(P(.006))whisp(t,.028);
   if(i%8===4&&P(.28))pluck(mel(0,9),t,.04,1.6);if(i%64===40&&P(.5))ney(pick([5,7,8]),t,b*16,.022)}};
 ACH.push(
-  {id:'m_turq',n:'أول فيروزة',d:'أول حجر فيروز يطلع من الجبل',r:30},
-  {id:'m_rocks10',n:'{كسّرت|كسّرتي} 10 صخرات',d:'عشر صخرات اتكسروا في الجبل',r:15},
+  {id:'m_turq',n:'أول فيروزة',d:'أول حجر فيروز يطلع من المنجم',r:30},
+  {id:'m_rocks10',n:'{كسّرت|كسّرتي} 10 صخرات',d:'عشر صخرات اتكسروا في المنجم',r:15},
   {id:'f_first',n:'أول سمكة',d:'أول سمكة تطلع في السنارة',r:10},
   {id:'f_gold',n:'سمكة الدهب',d:'سمكة الدهب تطلع في السنارة',r:60},
   {id:'f_shoe',n:'مبروك؟',d:'شبشب قديم يطلع في السنارة',r:0},
-  {id:'m_floor10',n:'نص الجبل',d:'الدور العاشر في الجبل',r:40},
-  {id:'m_floor20',n:'قاع الجبل',d:'الدور العشرين في الجبل',r:80},
+  {id:'m_floor10',n:'نص المنجم',d:'الدور العاشر في المنجم',r:40},
+  {id:'m_floor20',n:'قاع المنجم',d:'الدور العشرين في المنجم',r:80},
   {id:'f_chest',n:'كنز الترعة',d:'صندوق يطلع من الترعة وسط الشدّة',r:15});
-HELP.splice((HELP.findIndex(t=>t.h==='المجهود')+1)||HELP.length,0,{g:'البلد',h:'الجبل والترعة',b:()=>`في الجبل ${G('بتكسّر','بتكسّري')} صخر ${G('وتطلّع','وتطلّعي')} نحاس وحديد وفضة، وساعات فيروز. وفي الترعة ${G('بتصطاد','بتصطادي')} سمك.<br>كل صخرة جديدة وكل رمية سنارة بتاخد <b>1 مجهود</b>. المجهود بيرجع لوحده واحدة كل دقيقة لحد ${EFF_MAX}.<br><b>الجبل:</b> ${G('دوس','دوسي')} على الصخرة لحد ما تتكسر. ${G('اضرب','اضربي')} على الشق اللي بينوّر: الضربة بضربتين. وساعات تيجي «ضربة معلّم» بتشيل 3 أضعاف. وكل 10 صخرات جسمك بيتشد: صحة +1 على طول (لحد 10).<br><b>النزلة:</b> ساعات لما صخرة تتكسر بتلاقي نزلة للدور اللي تحت. كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أصعب والخام أحسن، ومن الدور 4 ممكن يطلع حجر تعزيز. كل مرة تيجي الجبل ${G('بتبدأ','بتبدأي')} من الدور 1، وآخر دور هو 20، وكل ما ${G('تنزل','تنزلي')} بيطلع خام أغلى: فحم ودهب وزمرد.<br><b>الترعة:</b> ${G('ارمي','ارمي')} السنارة ${G('واستنى','واستني')}. لو العوامة اتهزت بس ما ${G('تشدش','تشديش')}. لما تغطس جامد ${G('دوس','دوسي')} «${G('شد!','شدي!')}» على طول.<br><b>السمك الكبير:</b> القرموط والبوري وسمكة الدهب بيشدّوا. ${G('اضغط','اضغطي')} مطوّل يطلع المربع الأخضر، ${G('وسيب','وسيبي')} ينزل. خلّي السمكة جوّه الأخضر لحد ما العداد يتملى. ولو ظهر صندوق خلّيه جوّه الأخضر شوية ويبقى بتاعك.<br>كل ما ${G('تشتغل','تشتغلي')} أكتر ${G('بتطلع','بتطلعي')} مستوى: الصخر بيتكسر أسرع، ووقت الشدّة بيطول، والحاجات الغالية بتطلع أكتر.`});
+HELP.splice((HELP.findIndex(t=>t.h==='المجهود')+1)||HELP.length,0,{g:'البلد',h:'المنجم والترعة',b:()=>`في المنجم ${G('بتكسّر','بتكسّري')} صخر ${G('وتطلّع','وتطلّعي')} نحاس وحديد وفضة، وساعات فيروز. وفي الترعة ${G('بتصطاد','بتصطادي')} سمك.<br>كل صخرة جديدة وكل رمية سنارة بتاخد <b>1 مجهود</b>. المجهود بيرجع لوحده واحدة كل دقيقة لحد ${EFF_MAX}.<br><b>المنجم:</b> ${G('دوس','دوسي')} على الصخرة لحد ما تتكسر. ${G('اضرب','اضربي')} على الشق اللي بينوّر: الضربة بضربتين. وساعات تيجي «ضربة معلّم» بتشيل 3 أضعاف. وكل 10 صخرات جسمك بيتشد: صحة +1 على طول (لحد 10).<br><b>النزلة:</b> ساعات لما صخرة تتكسر بتلاقي نزلة للدور اللي تحت. كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أصعب والخام أحسن، ومن الدور 4 ممكن يطلع حجر تعزيز. كل مرة تيجي المنجم ${G('بتبدأ','بتبدأي')} من الدور 1، وآخر دور هو 20، وكل ما ${G('تنزل','تنزلي')} بيطلع خام أغلى: فحم ودهب وزمرد.<br><b>الترعة:</b> ${G('ارمي','ارمي')} السنارة ${G('واستنى','واستني')}. لو العوامة اتهزت بس ما ${G('تشدش','تشديش')}. لما تغطس جامد ${G('دوس','دوسي')} «${G('شد!','شدي!')}» على طول.<br><b>السمك الكبير:</b> القرموط والبوري وسمكة الدهب بيشدّوا. ${G('اضغط','اضغطي')} مطوّل يطلع المربع الأخضر، ${G('وسيب','وسيبي')} ينزل. خلّي السمكة جوّه الأخضر لحد ما العداد يتملى. ولو ظهر صندوق خلّيه جوّه الأخضر شوية ويبقى بتاعك.<br>كل ما ${G('تشتغل','تشتغلي')} أكتر ${G('بتطلع','بتطلعي')} مستوى: الصخر بيتكسر أسرع، ووقت الشدّة بيطول، والحاجات الغالية بتطلع أكتر.`});
 
 let GN=0;
 const GX={tm:0,v:null,vis:{},left:{},rock:null,rubble:0,busy:0,lastHit:0,mt:0,down:0,broke:0},
@@ -3372,10 +3372,10 @@ const ICO={
 /* people: عجوز الجبل and عم سيد الصياد */
 const NPC={mine:{n:'عجوز الجبل',art:'oldman',look:{name:'عجوز الجبل',g:'m',cls:'معالج',skin:'#9a6440',hairColor:'#d9d4cc',hair:'أصلع',eyes:'#4a2a14',outfit:'#5a4630',age:'عجوز',beard:'دقن طويلة',mark:'عين مربوطة'}},
   fish:{n:'عم سيد الصياد',look:{name:'عم سيد',g:'m',cls:'ساحر',skin:'#7a4e30',hairColor:'#1b1412',hair:'غطا راس',eyes:'#2a2a2a',outfit:'#2e4a7a',age:'كبير',beard:'شنب',mark:'من غير'}}};
-const SAY={mine:['الفاس تقيلة في الأول.. وبعدين إيدك تتعود.','لو {شفت|شفتي} صخرة بتنوّر أزرق، دي فيروز. {وما تسيبهاش|وما تسيبيهاش}.','كل عشر صخرات {بتكسرهم|بتكسريهم}، جسمك بيتشد حتة.','النحاس للسيف، والحديد للدرع، والفضة للخواتم.','الجبل ده أكل رجالة كتير قبلك. خلّي بالك.','لما {تتعب|تتعبي} {ارتاح|ارتاحي}. الجبل مش هيطير.','كل ما {تضرب|تضربي} أكتر، الصخر بيلين في إيدك.'],
+const SAY={mine:['الفاس تقيلة في الأول.. وبعدين إيدك تتعود.','لو {شفت|شفتي} صخرة بتنوّر أزرق، دي فيروز. {وما تسيبهاش|وما تسيبيهاش}.','كل عشر صخرات {بتكسرهم|بتكسريهم}، جسمك بيتشد حتة.','النحاس للسيف، والحديد للدرع، والفضة للخواتم.','المنجم ده أكل رجالة كتير قبلك. خلّي بالك.','لما {تتعب|تتعبي} {ارتاح|ارتاحي}. المنجم مش هيطير.','كل ما {تضرب|تضربي} أكتر، الصخر بيلين في إيدك.'],
   fish:['العوامة لو رقصت {سيبها|سيبيها}. لو غطست {شد|شدي} على طول.','البلطي رزق كل يوم. القرموط بقى عايز إيد تقيلة.','البوري بيحب المية الهادية.. وطّي صوتك.','بيقولوا فيه سمكة دهب في الترعة دي. أنا بقالي تلاتين سنة ما شفتهاش.','لو {سمعت|سمعتي} حد بينده {عليك|عليكي} من الناحية التانية.. {ما تردش|ما ترديش}.','الترعة دي خدت ناس كتير. ما {تقربش|تقربيش} من الحافة بالليل.','كل ما {تصطاد|تصطادي} أكتر، إيدك بتبقى أسرع على السنارة.']};
-const SAY1={mine:'أول مرة في الجبل؟ {هات|هاتي} صخرة {واضرب|واضربي} فيها لحد ما تتكسر.',fish:'أول مرة؟ {ارمي|ارمي} السنارة {واستنى|واستني}. لما العوامة تغطس جامد {شد|شدي} على طول.'};
-const SAYX={firstRock:'أول صخرة! كده {عرفت|عرفتي} السكة. كل صخرة بتطلّع حاجة.',firstFish:'أول سمكة! إيدك خفيفة.. قلت كده من الأول.',turqSeen:'{شايف|شايفة} النور ده؟ دي فيروز.. {اضربها|اضربيها}!',turq:'الجبل بيحبك النهارده.',silver:'فضة! الحداد هيفرح بيها.',
+const SAY1={mine:'أول مرة في المنجم؟ {هات|هاتي} صخرة {واضرب|واضربي} فيها لحد ما تتكسر.',fish:'أول مرة؟ {ارمي|ارمي} السنارة {واستنى|واستني}. لما العوامة تغطس جامد {شد|شدي} على طول.'};
+const SAYX={firstRock:'أول صخرة! كده {عرفت|عرفتي} السكة. كل صخرة بتطلّع حاجة.',firstFish:'أول سمكة! إيدك خفيفة.. قلت كده من الأول.',turqSeen:'{شايف|شايفة} النور ده؟ دي فيروز.. {اضربها|اضربيها}!',turq:'المنجم بيحبك النهارده.',silver:'فضة! الحداد هيفرح بيها.',
   early:'{استعجلت|استعجلتي}. السمكة لازم تبلع الطُعم الأول.',late:'لما تغطس {شد|شدي} على طول، ما {تستناش|تستنيش}.',shoe:'ده شبشب الحاج عبده! بقاله سنة بيدوّر عليه.',
   gold:'يا ساتر! تلاتين سنة وانا مستنيها، {وانت طلّعتها|وانتي طلّعتيها} كده؟',bouri:'بوري! ده بيتباع غالي.',
   hole:'{شايف|شايفة} النزلة دي؟ تحت الصخر أصعب.. بس الخام أحسن.',deep:'هنا تحت الحجر بيلمع. وساعات يطلع حجر تعزيز.',crit:'أيوه كده! دي ضربة معلّم.',
@@ -3419,7 +3419,7 @@ function gxTick(){const s=S.screen,h=S.hero;if((s!=='mine'&&s!=='fish')||!h||!$(
 function gxBind(k){$('#back').onclick=()=>{GX.left[k]=1;fsAbort();S.screen=SCREENS.town?'town':'title';render()};bindQ();
   GX.v=effNow(S.hero);if(!GX.tm)GX.tm=setInterval(gxTick,500);eatBind()}
 
-/* ---------- الجبل ---------- */
+/* ---------- المنجم ---------- */
 /* floors: every visit starts at floor 1, and a broken rock sometimes opens a way down («نزلة»), down to floor 10.
    Deeper rocks are harder and the ore is better; from floor 4 an enhancement stone can drop.
    Every hit can be a master hit («ضربة معلّم», 3x), and a hit on the glowing crack counts double. */
@@ -3498,7 +3498,7 @@ function mnGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks
   if(best){const g0=GEAR[best.id],at=g0.at==='tailor'?'الخياط':'الحداد';lines.push(best.tot?`فاضلك <b>${missTxt(best.miss)}</b> ${G('وتعمل','وتعملي')} «${g0.n}» عند ${at}`:`<span class="ok">${G('معاك','معاكي')} خامات «${g0.n}».. ${G('روح','روحي')} ${at==='الحداد'?'للحداد':'للخياط'}</span>`)}
   lines.push(`الفاس بتشيل <b>${d}</b> من الصخرة${L<9?` · في مستوى ${3*Math.floor(L/3)+3} تبقى ${d+1}`:''}`);
   lines.push(`الشق اللي بينوّر بضربتين · ضربة معلّم <b>${Math.round(critOf(h)*100)}%</b> بتشيل 3 أضعاف`);
-  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> من ${FLOOR_MAX} · النزلة بتبان ساعات لما صخرة تتكسر${F<3?' · من الدور 3 بيطلع فحم':F<8?' · من الدور 8 بيطلع دهب':F<14?' · من الدور 14 بيطلع زمرد وحجر تعزيز دهبي':' · هنا الزمرد والحجر الدهبي'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع الجبل`);
+  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> من ${FLOOR_MAX} · النزلة بتبان ساعات لما صخرة تتكسر${F<3?' · من الدور 3 بيطلع فحم':F<8?' · من الدور 8 بيطلع دهب':F<14?' · من الدور 14 بيطلع زمرد وحجر تعزيز دهبي':' · هنا الزمرد والحجر الدهبي'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع المنجم`);
   if((h.minehp||0)<10)lines.push(`كل 10 صخرات جسمك بيتشد (صحة ${num(1,'+')}) · فاضل ${rocksN(10-c%10)}`);
   const t0=TITLES.find(t=>t.id==='mountain');if(t0&&!hasTitle(h,'mountain'))lines.push(`لقب «${titleName(t0,h)}» بعد 50 صخرة · ${G('كسرت','كسرتي')} ${c}`);
   g.innerHTML=lines.map(l=>`<div><span>${l}</span></div>`).join('');
@@ -3552,7 +3552,7 @@ function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxSt
   /* the rare-drop band goes first; level, health, title and achievement bands queue after it */
   if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{dur:1800,sound:SFX.sparkle});
   else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{dur:1600,sound:SFX.sparkle});
-  if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في الجبل.. منه سيف وتميمة',{color:'blue',dur:2600,sound:SFX.turq})}
+  if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في المنجم.. منه سيف وتميمة',{color:'blue',dur:2600,sound:SFX.turq})}
   else if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{color:'blue',dur:2400,sound:SFX.turq})}
   if(s3)band(RARE[tierOf('stone3')].n,`${MAT.stone3.n}!`,'أقوى حجر تعزيز.. بيطلع بس في الأعماق',{dur:2600,sound:SFX.turq});
   else if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{color:'blue',dur:2200,sound:SFX.turq});
@@ -3576,12 +3576,12 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
     if(h.eff.v>e0)setTimeout(()=>{effUI();floatAt($('#gxEffN'),num(h.eff.v-e0,'+'),'#b4f0c2','',18)},700)}}
   sfx('mnDown');vib([15,60,15,60,15]);const fd=$('#mnFade');if(fd)cls(fd,'go');
   setTimeout(()=>{GX.busy=0;GX.rubble=0;if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();const em=$('#mnSlot .mn-empty');if(em)em.classList.add('mn-later');
-    mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع الجبل':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
+    mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع المنجم':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
 function mnStay(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;mnSpawn()}
 SCREENS.mine=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const V=gxVisit('mine');if(GX.rock&&GX.rock.hid!==h.id)GX.rock=null;GX.busy=0;
-  view.innerHTML=`${gxTop('الجبل')}${gxStats('mine')}
+  view.innerHTML=`${gxTop('المنجم')}${gxStats('mine')}
   <div class="gx-stage mn-stage" id="gxStage"><div class="bg" id="mnBg" data-f="${V.floor}">${mnBG(V.floor)}</div><div class="mn-fl" id="mnFl"></div><div class="gx-tag" id="gxTag"></div><div id="mnSlot"></div><div class="mn-pick" id="mnPick">${PICK}</div><i class="mn-imp" id="mnImp"></i><div class="mn-pips" id="mnPips"></div><div class="mn-fade" id="mnFade"></div><div class="gx-msg" id="gxMsg"></div></div>
   <button class="btn gx-btn" id="gxGo"></button><button class="btn ghost gx-btn gx-btn2 hidden" id="gxGo2"></button>
   <div class="gx-lbl"><span>اللي طلع ${G('معاك','معاكي')} المرة دي</span><span id="gxRocks"></span></div><div id="gxChipsW">${gxChips(mnKs(V),V)}</div>
@@ -4231,7 +4231,7 @@ const PF_LIFEIC={
   smith:'<svg viewBox="0 0 40 40"><path d="M5 21.5h25q-1 5-7.5 5.2V31h5v4.5H12V31h5v-4.3Q8.5 26 5 21.5z" fill="#6c747d"/><rect x="18.5" y="4.5" width="14" height="6.5" rx="1.6" transform="rotate(-32 25.5 7.75)" fill="#b8c0c8"/><path d="M22.5 10.5L13.5 19" stroke="#9a6a3a" stroke-width="3.2" stroke-linecap="round"/><circle cx="31" cy="18" r="1.6" fill="#ffd36a"/><circle cx="35" cy="14.5" r="1.1" fill="#ffb347"/></svg>',
   tailor:'<svg viewBox="0 0 40 40"><path d="M31.5 4.5L9 33.5" stroke="#e6ecf0" stroke-width="2.8" stroke-linecap="round"/><ellipse cx="29.6" cy="7.2" rx="1.1" ry="2.7" transform="rotate(38 29.6 7.2)" fill="#251d17"/><path d="M29.8 7.4Q40 20 23 24.6Q8.5 28.6 14 37" stroke="#e0703a" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>'
 };
-const PF_LIFEHOW={mine:()=>`بتكبر لما ${G('تنقّب','تنقّبي')} في الجبل`,fish:()=>`بتكبر لما ${G('تصطاد','تصطادي')} من الترعة`,cook:()=>`بتكبر لما ${G('تطبخ','تطبخي')} أكل في البلد`,
+const PF_LIFEHOW={mine:()=>`بتكبر لما ${G('تنقّب','تنقّبي')} في المنجم`,fish:()=>`بتكبر لما ${G('تصطاد','تصطادي')} من الترعة`,cook:()=>`بتكبر لما ${G('تطبخ','تطبخي')} أكل في البلد`,
   smith:()=>`بتكبر لما ${G('تعمل','تعملي')} حاجة بإيدك عند الحداد`,tailor:()=>`بتكبر لما ${G('تعمل','تعملي')} حاجة بإيدك عند الخياط`};
 /* small stand-in pictures, used only when the art has no icon for that thing */
 const PF_SLOTIC={
@@ -4339,7 +4339,7 @@ const PF_HPIC={
     <g fill="#f3b44d"><rect x="16" y="54" width="5" height="7"/><rect x="30" y="54" width="5" height="7"/><rect x="56" y="60" width="5" height="6"/><rect x="110" y="56" width="5" height="7"/><circle cx="88" cy="40" r="1.8"/></g>
     <path d="M150 76q4-20 2-32" stroke="#120d0a" stroke-width="3" fill="none"/><path d="M152 44q-12-5-19 3M152 44q11-6 19 0M152 44q-6-10-15-9M152 44q4-10 14-9" stroke="#120d0a" stroke-width="3" fill="none" stroke-linecap="round"/>
     <rect y="76" width="240" height="10" fill="#1f3340"/><path d="M14 81h30M84 80h24M170 81h40" stroke="#7fb0c8" stroke-width="1.2" opacity=".6"/>
-    <g font-family="Cairo,sans-serif" font-size="10" font-weight="700" text-anchor="middle"><text x="205" y="56" fill="#d9c79a">الجبل</text><text x="60" y="40" fill="#d9c79a">البلد</text><text x="200" y="84" fill="#9fc6ee" font-size="8">الترعة</text></g></svg>`,
+    <g font-family="Cairo,sans-serif" font-size="10" font-weight="700" text-anchor="middle"><text x="205" y="56" fill="#d9c79a">المنجم</text><text x="60" y="40" fill="#d9c79a">البلد</text><text x="200" y="84" fill="#9fc6ee" font-size="8">الترعة</text></g></svg>`,
   eff:()=>`<div class="pf-heff"><span class="ic">${PF_LIFEIC.mine}</span><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800"><span>المجهود</span><span class="num" style="color:#9fd8ff">14/${EFF_MAX}</span></div><div class="bar"><i style="width:70%"></i></div></div><span class="ic">${PF_LIFEIC.fish}</span></div>`,
   life:()=>`<div class="pf-hrow">${Object.keys(LIFE).map(k=>`<span>${PF_LIFEIC[k]}${LIFE[k].n}</span>`).join('')}</div>`,
   gear:()=>`<div class="pf-hrow slots">${Object.keys(SLOTS).map(s=>`<span>${PF_SLOTIC[s](32)}${SLOTS[s]}</span>`).join('')}</div>`,
@@ -4352,6 +4352,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.29',d:'9 أكتوبر',add:[],fix:[
+    'البلد اتنظمت في مجموعات: المغامرات (ومعاها الليلة مع صحابك)، والسوق والصنايعية، والأنشطة، وناس البلد.',
+    'سوق اللاعبين بقى جوه السوق، من زرار فوق.',
+    'الجبل بقى اسمه «المنجم».']},
   {v:'5.28',d:'9 أكتوبر',add:[
     'في الليلة مع صحابك كل واحد بيقاتل بتخصصه زي الأوفلاين بالظبط: ضربة تخصصه، وقدراته على قد مستواه بطاقته هو، والشنطة، واستخبى. والوحش {بتختاره|بتختاريه} بإنك {تدوس|تدوسي} عليه.'],fix:[
     'الأزرار الصفرا اللي كانت بتطلع لصحابك في القتال اتشالت، وبقت شاشة القتال العادية.',
@@ -4622,7 +4626,7 @@ SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     ${full&&fs.length?`<div class="tw-sm" style="color:#a6e3a0">مجهودك مليان. خلّي الأكل للقتال.</div>`:''}
     ${items?lbl('جرعات وحاجات للمغامرة')+items:''}
     ${lbl('خامات',rs.length?'بتتباع في السوق، أو تتعمل بيها حاجات':'')}
-    ${res?`<div class="bg-mats">${res}</div>`:`<div class="card bg-none">مفيش خامات. الجبل والترعة والمغامرات بيطلّعوا خامات.</div>`}
+    ${res?`<div class="bg-mats">${res}</div>`:`<div class="card bg-none">مفيش خامات. المنجم والترعة والمغامرات بيطلّعوا خامات.</div>`}
     ${gs.length?lbl('عدّة')+gear+`<button class="btn ghost" data-bgo="gear">${G('البس','البسي')} من عدّتي</button>`:''}
   </div>`;
   twBack();
@@ -5429,7 +5433,7 @@ function qTabHTML(h,at){const L=qMine(h,at),who=qWhoAt(at),stones=['stone1','sto
       ${twQB('st:'+k,qtyMax(99,h.money/p),p,0,`data-stb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`};
   const have=stones.filter(k=>h.res[k]>0).map(k=>`<span class="tw-nd ok">${twMat(k,18)}${h.res[k]} ${MAT[k].n}</span>`).join('');
   const Q=repairQuote(h,0,at);
-  const stoneH=`<div class="tw-lbl">حجارة التعزيز <small>${at==='smith'?'الحجر الدهبي مش بيتباع: بيطلع من الوحوش الكبيرة وتحت في الجبل':'عم حسن الحداد هو اللي بيبيعها'}</small></div>
+  const stoneH=`<div class="tw-lbl">حجارة التعزيز <small>${at==='smith'?'الحجر الدهبي مش بيتباع: بيطلع من الوحوش الكبيرة وتحت في المنجم':'عم حسن الحداد هو اللي بيبيعها'}</small></div>
     ${have?`<div class="tw-chs">${have}</div>`:''}${at==='smith'?`<div class="col">${['stone1','stone2'].map(sRow).join('')}</div>`:''}`;
   let html='';
   if(Q.items.length>1)html+=`<button class="btn q-repall" data-repall="1" ${h.money>=Q.total?'':'disabled'}>${G('صلّح','صلّحي')} الكل <small>${Q.items.length} حاجات · ${Q.total} جنيه${h.money<Q.total?` · ناقصك ${Q.total-h.money}`:''}</small></button>`;
@@ -5657,7 +5661,7 @@ const TREE={
    h.treeL = {mine:{l1:1,l2:1,crown:1}, ...}; a link costs 3 points, the crown 5. */
 const TREE_LK={
   mine:[{id:'l1',n:'عِرق مدفون',need:[['heavy',2],['eye',3]],x:'الصخرة ممكن تطلع خامة أحسن درجة من اللي فيها (6%)'},
-    {id:'l2',n:'رئة المغارة',need:[['eye',2],['breath',3]],x:'كل ما {تنزل|تنزلي} دور في الجبل {بتاخد|بتاخدي} 2 مجهود'},
+    {id:'l2',n:'رئة المغارة',need:[['eye',2],['breath',3]],x:'كل ما {تنزل|تنزلي} دور في المنجم {بتاخد|بتاخدي} 2 مجهود'},
     {id:'crown',n:'ابن الجبل',x:'أقصى مجهود +4 على طول'}],
   fish:[{id:'l1',n:'صبر الصياد',need:[['bait',2],['patience',3]],x:'البلطي ممكن يطلع بوري (12%)'},
     {id:'l2',n:'إيد وعين',need:[['steady',2],['bait',3]],x:'المنطقة الخضرا أكبر 8% كمان'},
@@ -5966,7 +5970,7 @@ function kfLines(h){const L=[
   ['soad','خلّي بالك من نفسك {يا حبيبي|يا حبيبتي}. الدنيا بالليل مش أمان.']];
   if(h.rep>=20)L.push(['hamdy','الكفر كله بيتكلم عنك. {خلّيك|خلّيكي} كده.']);
   if(h.rep<=-20)L.push(['mansour','{انت|انتي} اللي الناس بتتكلم {عليه|عليها}؟ أنا مش شايف حاجة. أنا بشرب شايي وبس.']);
-  if((h.cnt.rocks||0)>=20)L.push(['adel','شكلك {بتكسر|بتكسري} صخر كتير في الجبل. إيدك باينة عليها.']);
+  if((h.cnt.rocks||0)>=20)L.push(['adel','شكلك {بتكسر|بتكسري} صخر كتير في المنجم. إيدك باينة عليها.']);
   if((h.cnt.fish||0)>=10)L.push(['sameh','عم سيد الصياد بيقول إنك {بقيت|بقيتي} {تصطاد|تصطادي} أحسن منه. بس ما {تقولوش|تقوليلوش} إني قولت.']);
   const w=h.eq&&h.eq.weapon&&typeof qOn==='function'&&qOn(h,'weapon');if(w&&w.I.q>=3)L.push(['sameh',`${GEAR[w.id].n} ${qAdj(w.I.q,qFem(w.id))}؟ ده أحسن من اللي كنت عايز أعمله.`]);
   if(effNow(h)<6)L.push(['saber','{شكلك هلكان|شكلك هلكانة}. {اقعد|اقعدي} {واشرب|واشربي} حاجة سخنة.']);
@@ -6004,7 +6008,7 @@ function kfTick(){const h=S.hero,el=$('#kfB');if(S.screen!=='cafe'||!h||!el){cle
   if(effNow(h)<EFF_MAX)h.eff.t-=2*dt;const e=effNow(h);
   const c=$('#kfEc');if(c)c.textContent=kfCd(h);
   if(e!==e0){el.dataset.e=e;const v=$('#kfEv'),b=$('#kfEb i');if(v){v.textContent=e+'/'+EFF_MAX;cls(v,'pop')}if(b)b.style.width=e/EFF_MAX*100+'%';if(e>e0){floatAt(v,twI('+'+(e-e0)),'#7fe0a0','',18);SFX.blip()}
-    if(e>=EFF_MAX){$('#kfEt').textContent='مجهودك مليان';const tea=$('#kfTea');if(tea)tea.outerHTML=kfTeaHTML(h);$('#kfDrink').onclick=()=>kfDrink();toast(`مجهودك اتملى! ${G('روح','روحي')} الجبل أو الترعة`)}
+    if(e>=EFF_MAX){$('#kfEt').textContent='مجهودك مليان';const tea=$('#kfTea');if(tea)tea.outerHTML=kfTeaHTML(h);$('#kfDrink').onclick=()=>kfDrink();toast(`مجهودك اتملى! ${G('روح','روحي')} المنجم أو الترعة`)}
     if(now-KF.saved>10000){KF.saved=now;saveHero()}}
   if(now-KF.sayAt>7000){KF.sayAt=now;const s=$('#kfSay');if(s){s.outerHTML=kfSayHTML(h);const n=$('#kfSay');n.onclick=function(){n.outerHTML=kfSayHTML(h);SFX.page();KF.sayAt=Date.now();$('#kfSay').onclick=n.onclick}}}}
 function kfDrink(){const h=S.hero,btn=$('#kfDrink');if(!h)return;const e0=effNow(h);if(e0>=EFF_MAX){toast('مجهودك مليان');return}const p=teaPrice(h);if(h.money<p)return;
@@ -6036,7 +6040,7 @@ function cafeArt(){const u='kfA';return `<svg viewBox="0 0 160 90" preserveAspec
 function kfRefill(h){if(!h||effNow(h)>=EFF_MAX)return false;h.eff.v=EFF_MAX;h.eff.t=Date.now();saveHero();return true}
 {const e0=SCREENS.end;SCREENS.end=function(){e0.apply(this,arguments);const h=S.hero;if(!h)return;
   if(S.endRes&&!S.lost){if(S.endRes.kfR==null)S.endRes.kfR=kfRefill(h)?1:0;
-    if(S.endRes.kfR&&$('#again')&&!$('#kfRef')){const d=document.createElement('div');d.id='kfRef';d.className='kf-ref';d.innerHTML=`مجهودك اتملى (${EFF_MAX}/${EFF_MAX}): الجبل والترعة مستنيينك`;$('#again').before(d)}}
+    if(S.endRes.kfR&&$('#again')&&!$('#kfRef')){const d=document.createElement('div');d.id='kfRef';d.className='kf-ref';d.innerHTML=`مجهودك اتملى (${EFF_MAX}/${EFF_MAX}): المنجم والترعة مستنيينك`;$('#again').before(d)}}
   const b=$('#home');if(b&&S.lost){const f=b.onclick;b.onclick=function(){kfRefill(h);return f&&f.apply(this,arguments)}}}}
 
 /* music: the café sounds like the market */
@@ -6066,8 +6070,8 @@ Object.assign(SFX,{
   HELP.splice(at,0,
   {g:'البلد',h:'جودة الشغل',b:()=>`لما ${G('تعمل','تعملي')} حاجة بإيدك ${G('بتلعب','بتلعبي')} لعبة صغيرة عند الحداد أو الخياط أو الطباخة، والنتيجة بتحدد <b>الجودة</b>: ${QN.map((n,i)=>`<b style="color:${QC[i]}">${n}</b>`).join(' · ')}.<br>كل درجة أحسن بتزوّد الحاجة شوية، و«ممتاز» و«تحفة» بييجوا بـ<b>صفة</b> زيادة (حاد، خفيف، متين، مبروك، ضد العفاريت، متشرّب ملح). «تحفة» عليها اسمك.<br><b>حاجة زيادة:</b> قبل الشغل ${G('تقدر تحط','تقدري تحطي')} خامة واحدة زيادة، زي فضة أو ملح، وهي اللي بتختار الصفة لو الشغل طلع «كويس» أو أحسن.<br><b>${G('اعمل','اعملي')} بسرعة:</b> أي حاجة ${G('عملتها','عملتيها')} قبل كده ${G('تقدر تعملها','تقدري تعمليها')} من غير لعب، بس بتطلع «عادي».<br>وساعات الحظ بيرفعها درجة («${G('محظوظ','محظوظة')}!») أو بينزّلها درجة.`},
   {g:'البلد',h:'المتانة والتصليح',b:()=>`السلاح والدرع والراس بيتعبوا: كل قتال بياخد من كل حتة ${G('لابسها','لابساها')} نقطة. الخاتم والقلادة والتميمة ما بيتعبوش.<br>لما الحتة تقرّب تخلص هتشوف تنبيه قبل المغامرة، ولو وصلت صفر <b>بتتكسر وتروح</b>.<br><b>التصليح:</b> عم حسن بيصلّح الحديد والنحاس، وعم فتحي بيصلّح القماش والجلد، من خانة «حاجتك». لو ${G('معاك','معاكي')} من الخامة بتاعتها التصليح بيبقى أرخص، وكل ما مستواك يعلى بيرخص.`},
-  {g:'البلد',h:'التعزيز والفك والدمج',b:()=>`<b>التعزيز:</b> بحجر تعزيز ${G('تقدر تقوّي','تقدري تقوّي')} السلاح أو الدرع أو الراس لحد ${twI('+10')}. كل درجة ضرر أو حماية زيادة.<br>من ${twI('+1')} لـ${twI('+3')} بالحجر العادي وبينجح على طول. من ${twI('+4')} لـ${twI('+7')} بالحجر الأزرق، ولو فشل الحجر بيروح بس. من ${twI('+8')} بالحجر الدهبي، ولو فشل الحتة بتنزل درجة.<br>${twI('+4')} بيقوّي الصفة، و${twI('+7')} بيفتح صفة تانية، و${twI('+10')} الحتة بتنوّر.<br>عم حسن بيبيع الحجر العادي والأزرق. الدهبي بيطلع من الوحوش الكبيرة وتحت في الجبل.<br><b>فكّها:</b> أي حتة مش ${G('لابسها','لابساها')} بترجّع نص خاماتها.<br><b>ادمجهم:</b> حتتين زي بعض وبنفس الجودة بيبقوا حتة واحدة أحسن درجة (لحد «ممتاز»).`},
-  {g:'البلد',h:'شجرة الشغلانة',b:()=>`كل شغلانة ليها <b>شجرة</b> فيها 3 فروع، وكل فرع 4 درجات. كل مستوى ${G('بتطلعه','بتطلعيه')} في الشغلانة ${G('بيديك','بيديكي')} نقطة ${G('تحطها','تحطيها')} في الدرجة اللي ${G('عايزها','عايزاها')}.<br>الدرجة الرابعة في كل فرع حاجة مميزة، وبتتفتح بعد التلاتة اللي قبلها.<br>الشجرة بتتفتح من مربع الشغلانة عند الحداد والخياط والطباخة، ومن زرار «الشجرة» فوق في الجبل والترعة.<br>لو ${G('عايز','عايزة')} ${G('توزّع','توزّعي')} النقط من الأول، صاحب الشغلانة بيرجّعهالك بفلوس.`},
+  {g:'البلد',h:'التعزيز والفك والدمج',b:()=>`<b>التعزيز:</b> بحجر تعزيز ${G('تقدر تقوّي','تقدري تقوّي')} السلاح أو الدرع أو الراس لحد ${twI('+10')}. كل درجة ضرر أو حماية زيادة.<br>من ${twI('+1')} لـ${twI('+3')} بالحجر العادي وبينجح على طول. من ${twI('+4')} لـ${twI('+7')} بالحجر الأزرق، ولو فشل الحجر بيروح بس. من ${twI('+8')} بالحجر الدهبي، ولو فشل الحتة بتنزل درجة.<br>${twI('+4')} بيقوّي الصفة، و${twI('+7')} بيفتح صفة تانية، و${twI('+10')} الحتة بتنوّر.<br>عم حسن بيبيع الحجر العادي والأزرق. الدهبي بيطلع من الوحوش الكبيرة وتحت في المنجم.<br><b>فكّها:</b> أي حتة مش ${G('لابسها','لابساها')} بترجّع نص خاماتها.<br><b>ادمجهم:</b> حتتين زي بعض وبنفس الجودة بيبقوا حتة واحدة أحسن درجة (لحد «ممتاز»).`},
+  {g:'البلد',h:'شجرة الشغلانة',b:()=>`كل شغلانة ليها <b>شجرة</b> فيها 3 فروع، وكل فرع 4 درجات. كل مستوى ${G('بتطلعه','بتطلعيه')} في الشغلانة ${G('بيديك','بيديكي')} نقطة ${G('تحطها','تحطيها')} في الدرجة اللي ${G('عايزها','عايزاها')}.<br>الدرجة الرابعة في كل فرع حاجة مميزة، وبتتفتح بعد التلاتة اللي قبلها.<br>الشجرة بتتفتح من مربع الشغلانة عند الحداد والخياط والطباخة، ومن زرار «الشجرة» فوق في المنجم والترعة.<br>لو ${G('عايز','عايزة')} ${G('توزّع','توزّعي')} النقط من الأول، صاحب الشغلانة بيرجّعهالك بفلوس.`},
   {g:'البلد',h:'قهوة عم صابر',b:()=>`في البلد قهوة فيها <b>دكة</b>: طول ما ${G('انت قاعد','انتي قاعدة')} عليها المجهود بيرجع <b>أسرع 3 مرات</b>، والناس بتتكلم حواليك.<br><b>الشاي:</b> الكوباية بـ10 جنيه وبترجّع 4 مجهود على طول. كل كوباية زيادة في نفس الساعة بالضعف (10، 20، 40...).<br>ولما ${G('ترجع','ترجعي')} من مغامرة مجهودك بيتملى.`});}
 /* ==========================================================================
    سرداب: pixel heroes (p9p.js)
@@ -18248,7 +18252,7 @@ Object.assign(MAT,{
   bayad:{n:'بياض',c:'#e8e4da',p:40,fish:1,tier:1},
   eel:{n:'تعبان مية',c:'#5a4a30',p:70,fish:1,tier:2}
 });
-Object.assign(TW_SRC,{coal:'الجبل من الدور 3',gold:'الجبل من الدور 8',emerald:'الجبل من الدور 14',
+Object.assign(TW_SRC,{coal:'المنجم من الدور 3',gold:'المنجم من الدور 8',emerald:'المنجم من الدور 14',
   bisaria:'الترعة',shrimp:'الترعة من صيد 2',bayad:'الترعة من صيد 4',eel:'الترعة من صيد 6'});
 
 /* ---------- dishes ---------- */
@@ -18995,7 +18999,7 @@ SCREENS.pmarket=function(){const h=S.hero;if(!h){S.screen='title';return render(
       <label class="mk-l">السعر (جنيه)<input id="mkP" type="number" inputmode="numeric" min="1" max="${MK_PMAX}" value="${MK.price}" placeholder="${o.sug*(o.k==='m'?MK.cnt:1)}"></label>
       <small class="mk-h">السوق بياخد ${MK_FEE*100}% لما تتباع. لو محدش اشتراها ${G('تقدر ترجّعها','تقدري ترجّعيها')} في أي وقت.</small>${MK.msg?`<div class="nnote">${MK.msg}</div>`:''}
       <button class="btn" id="mkGo" ${MK.busy?'disabled':''}>${G('اعرضها في السوق','اعرضيها في السوق')}</button><button class="btn ghost" id="mkNo" style="margin-top:8px">رجوع</button></div>`
-    :!O.length?`<div class="card tw-empty">مفيش حاجة ${G('تعرضها','تعرضيها')}. ${G('هات','هاتي')} حاجات من الجبل أو الترعة، أو ${G('اعمل','اعملي')} عدّة زيادة.</div>`
+    :!O.length?`<div class="card tw-empty">مفيش حاجة ${G('تعرضها','تعرضيها')}. ${G('هات','هاتي')} حاجات من المنجم أو الترعة، أو ${G('اعمل','اعملي')} عدّة زيادة.</div>`
     :`<div class="col">${O.map((o,i)=>`<button class="tw-row mk-o" data-mko="${i}"><div class="ic">${mkIco(o,40)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''} <span class="tw-cnt">×${o.have}</span>${o.k==='g'?by(o.I):''}</div><span class="mk-arr">‹</span></button>`).join('')}</div>`}
   else{const M=(MK.mine||[]).filter(x=>x.st==='open'),L=(h.mkLog||[]).slice().reverse();
     body=`${M.length?`<div class="col">${M.map(x=>row(x,'mine')).join('')}</div>`:`<div class="card tw-empty">مفيش عروض ${G("ليك","ليكي")} دلوقتي.</div>`}
@@ -21066,6 +21070,39 @@ document.addEventListener('click',e=>{if(S.screen!=='coopg')return;const t=e.tar
   const s0=coStop;coStop=function(){if(CO.role==='guest')bye();return s0.apply(this,arguments)}}
 /* the dice wait only for the friends still here */
 setInterval(()=>{try{const R=CO.rl;if(R&&!R.over&&CO.role==='host'&&coPlayers().every(p=>R.res[p.u]))coRollShow()}catch(e){}},1000);
+/* ---------- the town, in groups (v5.29) ----------
+   The town's places are grouped under small headings: the adventures (with the live night next to them), the market and the
+   craftsmen, the activities (المنجم، الترعة، الغيط، الطباخة) and the people of the town. The players' market is no longer a
+   tile of its own: it opens from the market. */
+const TW_GROUPS=[
+  {n:'المغامرات',go:['advs','setup','coop'],big:1},
+  {n:'السوق والصنايعية',go:['market','smith','tailor','gear']},
+  {n:'الأنشطة',go:['mine','fish','farm','cook'],sm:'بتاخد مجهود وبتجيب خامات وأكل'},
+  {n:'ناس البلد',go:['hakawati','wada','cafe']}];
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{twGroup()}catch(e){console.warn(e)}return r}}
+function twGroup(){if(S.screen!=='town')return;const G0=view.querySelector('.tw-grid');if(!G0||G0.dataset.grp)return;
+  const T=[...G0.querySelectorAll(':scope > .tw-tile')],used=new Set(),box=document.createElement('div');box.className='tw-groups';
+  T.forEach(b=>{if(b.dataset.go==='pmarket'){b.remove();used.add(b)}});
+  TW_GROUPS.forEach(g=>{const L=g.go.map(go=>T.find(b=>b.dataset.go===go&&!used.has(b))).filter(Boolean);if(!L.length)return;L.forEach(b=>used.add(b));
+    const sec=document.createElement('section');sec.className='tw-sec'+(g.big?' big':'');sec.innerHTML=`<h3><span>${g.n}</span>${g.sm?`<small>${g.sm}</small>`:''}</h3>`;
+    const gr=document.createElement('div');gr.className='tw-grid';gr.dataset.grp=1;L.forEach(b=>{b.classList.remove('wide');gr.appendChild(b)});
+    if(L.length%2)L[L.length-1].classList.add('wide');sec.appendChild(gr);box.appendChild(sec)});
+  const rest=T.filter(b=>!used.has(b));if(rest.length){const last=box.lastElementChild&&box.lastElementChild.querySelector('.tw-grid');rest.forEach(b=>last?last.appendChild(b):box.appendChild(b))}
+  G0.replaceWith(box)}
+/* the players' market opens from the market */
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{if(typeof SCREENS.pmarket!=='function')return r;const st=view.querySelector('.tw-stk');if(!st||$('#twPm'))return r;
+  st.insertAdjacentHTML('beforebegin',`<button class="card tw-pm" id="twPm"><span class="ic">🤝</span><span class="tx"><b>سوق اللاعبين</b><small>بيع واشتري مع لاعيبة تانيين${FB.user?'':' · محتاج حساب جوجل'}</small></span><span class="ar">‹</span></button>`);
+  $('#twPm').onclick=()=>{SFX.bell&&SFX.bell();S.pmFrom='market';twGo('pmarket')}}catch(e){}return r}}
+{const p0=SCREENS.pmarket;if(p0)SCREENS.pmarket=function(){const r=p0.apply(this,arguments);const b=$('#back');if(b&&S.pmFrom==='market')b.onclick=()=>{S.pmFrom='';twGo('market')};return r}}
+{const st=document.createElement('style');st.textContent=`
+.tw-groups{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.tw-sec h3{display:flex;align-items:baseline;gap:8px;margin:0 2px 8px;font-family:var(--display);font-size:17px;color:var(--gold2);font-weight:400}
+.tw-sec h3:after{content:'';flex:1;height:1px;background:linear-gradient(to left,transparent,#e0b25a55);align-self:center}
+.tw-sec h3 small{font-family:var(--body);font-size:11px;color:var(--dim);font-weight:600}
+.tw-sec:not(.big) .tw-tile .ban{height:64px}.tw-sec:not(.big) .tw-tile .lb b{font-size:17px}
+.tw-sec .tw-tile.wide .ban{height:74px}
+.tw-pm{display:flex;align-items:center;gap:12px;width:100%;text-align:right;cursor:pointer;margin:8px 0;border-color:var(--gold)}
+.tw-pm .ic{font-size:24px}.tw-pm .tx{flex:1;display:flex;flex-direction:column}.tw-pm .tx b{color:var(--gold2);font-size:16px}.tw-pm .tx small{color:var(--dim);font-size:12px}.tw-pm .ar{color:var(--gold2);font-size:20px}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
