@@ -1445,6 +1445,7 @@ function create(){
   const d=S.draft=S.draft||{name:'',g:'m',cls:'محارب',skin:LOOK.skin[1],hairColor:LOOK.hairColor[0],hair:'قصير',eyes:LOOK.eyes[0],outfit:LOOK.outfit[0],age:'شاب',beard:'من غير',mark:'من غير',about:''};
   const sw=(k,arr)=>`<div class="wrap">${arr.map(c=>`<button class="swatch ${d[k]===c?'on':''}" data-k="${k}" data-v="${c}" style="background:${c}" aria-label="لون"></button>`).join('')}</div>`;
   const op=(k,arr,lab)=>`<div class="wrap">${arr.map(c=>`<button class="opt ${d[k]===c?'on':''}" data-k="${k}" data-v="${c}">${lab?lab(c):c}</button>`).join('')}</div>`;
+  if(!d.eyesh)d.eyesh='عادي';if(!d.mouth)d.mouth='ابتسامة';
   const C=CLASSES[d.cls];const ed=S.editing;const fem=d.g==='f';
   const st=ed?S.hero.st:C.st;
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>${ed?(fem?'عدّلي شكل بطلتك':'عدّل شكل بطلك'):(fem?'اعملي بطلتك':'اعمل بطلك')}</h2>${qBtn()}</div>
@@ -1464,6 +1465,8 @@ function create(){
   <div class="label">الشعر</div>${op('hair',fem?LOOK.hairF:LOOK.hairM)}
   <div class="label">لون الشعر</div>${sw('hairColor',LOOK.hairColor)}
   <div class="label">لون العينين</div>${sw('eyes',LOOK.eyes)}
+  <div class="label">شكل العين</div>${op('eyesh',LOOK.eyesh)}
+  <div class="label">البُق</div>${op('mouth',LOOK.mouth)}
   <div class="label">السن</div>${op('age',LOOK.age,a=>ageF(a,fem))}
   ${!fem?`<div class="label">الدقن والشنب</div>${op('beard',LOOK.beard)}`:''}
   <div class="label">علامة مميزة</div>${op('mark',fem?LOOK.markF:LOOK.markM)}
@@ -1479,7 +1482,7 @@ function create(){
   bindQ();
   $('#ok').onclick=()=>{
     d.name=$('#nm').value.trim()||(d.g==='f'?'منى':'كريم');d.about=$('#ab').value.trim();
-    if(ed){Object.assign(S.hero,{name:d.name,g:d.g,skin:d.skin,hairColor:d.hairColor,hair:d.hair,eyes:d.eyes,outfit:d.outfit,age:d.age,beard:d.beard,mark:d.mark,about:d.about});saveHero();S.editing=false;S.screen='profile';return render()}
+    if(ed){Object.assign(S.hero,{name:d.name,g:d.g,skin:d.skin,hairColor:d.hairColor,hair:d.hair,eyes:d.eyes,outfit:d.outfit,age:d.age,beard:d.beard,mark:d.mark,eyesh:d.eyesh,mouth:d.mouth,about:d.about});saveHero();S.editing=false;S.screen='profile';return render()}
     if(HEROES.length>=3){S.screen='heroes';return render()}
     const C=CLASSES[d.cls];
     S.hero=fixHero(Object.assign({},d,{st:Object.assign({},C.st),maxhp:C.hp,hp:C.hp,armor:C.armor,energy:3,maxen:3,lvl:1,xp:0,money:60,bag:{potion:2,revive:1},trophies:[],rep:0}));
@@ -1495,11 +1498,11 @@ function profile(){
       <div style="font-size:13px;color:var(--mute)">التخصص: ${clsN(h)} · ${h.g==='f'?'بنت':'ولد'} · ${ageF(h.age,h.g==='f')}</div>
       <div style="font-size:13px;margin-top:4px">المستوى <b>${h.lvl}</b></div>
       <div class="xpbar" style="margin-top:4px"><i style="width:${h.xp/need*100}%"></i></div>
-      <div style="font-size:11.5px;color:var(--dim);margin-top:3px">فاضلك <span class="num">${need-h.xp}</span> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div></div></div>
+      <div style="font-size:11.5px;color:var(--dim);margin-top:3px">فاضلك <span class="num">${need-h.xp}</span> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div><button class="btn ghost small" id="edit" style="margin-top:8px;min-height:44px;padding:6px 14px">✎ ${G('عدّل الشكل','عدّلي الشكل')}</button></div></div>
   ${h.about?`<div class="card" style="margin-top:12px;font-family:var(--story);font-size:16px;line-height:1.7">${esc(h.about)}</div>`:''}
   <div id="ptA"></div><div class="pf-tw"><div class="pf-tabs" role="tablist">${PF_TABS.map(t=>`<button class="pf-tab ${t.id===S.ptab?'on':''}" data-tab="${t.id}" role="tab" aria-selected="${t.id===S.ptab}">${PFI[t.ic]}<span>${t.n}</span></button>`).join('')}</div></div>
   <div id="ppan" role="tabpanel"></div>
-  <div style="height:16px"></div><button class="btn ghost" id="edit">${G('عدّل الشكل','عدّلي الشكل')}</button>`;
+`;
   pfTab(S.ptab);pfBindTabs();
   $('#back').onclick=()=>{S.screen='title';render()};bindQ();
   $('#edit').onclick=()=>{S.editing=true;S.draft=Object.assign({},h);S.screen='create';render()};
@@ -2983,7 +2986,7 @@ async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl
   if(!pr||TWN.busy||!hasRes(h,r.need)||bagFull(h,k))return;const add=pr.add&&pr.add.ok?pr.add:null;
   TWN.busy=1;takeRes(h,r.need);if(add)qTakeAdd(h,add);saveHero();
   let Q={q:1,lucky:false,unlucky:false,traits:[]},played=0,burnt=0;
-  if(pr.go==='play'){const g=await qPlay(TW_BAKE.includes(k)?'bread':'cook',h,{tier:r.tier,name:ITEMS[k].name,icon:twFood(k,64)});played=!g.none;Q=craftQ(h,'cook',g.score,add);
+  if(pr.go==='play'){const g=await qPlay(TW_BAKE.includes(k)?'bread':'cook',h,{tier:r.tier,name:ITEMS[k].name,icon:twFood(k,64),dish:k});played=!g.none;Q=craftQ(h,'cook',g.score,add);
     if(g.burnt){burnt=1;Q={q:0,lucky:false,unlucky:false,traits:[]}}}
   const key=fqKey(k,Q.q,Q.traits[0]||'');fqReg(key);h.bag[key]=(h.bag[key]||0)+1;qMark(h,k);
   /* توفير: sometimes a second dish, sometimes an ingredient comes back */
@@ -4352,6 +4355,17 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.32',d:'9 أكتوبر',add:[
+    'العدّة بقى ليها شكل {تخفيه|تخفيه}: في «عدّتي» زرار لكل حتة {لابسها|لابساها} (الراس، الدرع، السلاح…) يخفي شكلها بس، وقوتها بتفضل زي ما هي. وفيه زرار يخفي كله.',
+    'أشكال عين جديدة: واسعة، مغمّضة، مبسوطة، نعسانة، حادّة، صغيرة، وغمزة.',
+    'أشكال بُق جديدة: ضحكة، سنان، جد، نص ابتسامة، مندهش، زعلان، ولسان.',
+    'شعر جديد للولاد: محلوق، سبايكي، مفروق، وكحكة. وللبنات: كحكة، ضفيرتين، وطويل بغرة.',
+    'عدّة الغيط عند عم عبده، غالية وبالترتيب: سماد (الزرع أسرع وبيطلع أكتر)، فزاعة (مفيش غربان)، رشاش مية (بيسقي لوحده)، صندوق تقاوي (الأرض بتتزرع تاني لوحدها)، وحصّادة (بتحصد {وانت|وانتي} بره).'
+  ],fix:[
+    'زرار «عدّل الشكل» بقى فوق جنب صورتك، مش آخر الصفحة.',
+    'الطبخ: السمكة بتظهر بس لو الأكلة فيها سمك. غير كده {بتقلّب|بتقلّبي} الطعمية أو البصل أو الطماطم أو المحشي أو القصب أو القمح.',
+    'الوصفات بقت بمحاصيل الغيط: قرموط بالصلصة بقرموط وطماطم، وصينية السمك ببوري وطماطم وبصل، وشوربة الجمبري بجمبري وبصل، وطاجن البياض ببياض وطماطم وبصل، والكشري برز ودقيق وبصل وطماطم.'
+  ]},
   {v:'5.31',d:'9 أكتوبر',add:[],fix:[
     'في القتال مع صحابك، مكتوب فوق اسم اللي عليه الدور بالظبط: {انت|انتي}، أو صاحبك، أو الرفيق، أو الأعداء.',
     'جوه الفولدرات في البلد، الإشعار بقى على المكان نفسه، فتعرف{|ي} الحاجة الجديدة فين.',
@@ -4799,7 +4813,7 @@ const KIND={
   tailor:{n:'شغل الخياطة',steps:['القص','الغُرز'],ic:'<svg viewBox="0 0 40 40"><path d="M8 32L30 10" stroke="#e8edf2" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="29" cy="11" rx="3.4" ry="1.6" transform="rotate(-45 29 11)" fill="none" stroke="#9aa4ad" stroke-width="1.3"/><path d="M29 11Q38 22 26 28T12 35" stroke="#c0453a" stroke-width="1.6" fill="none"/></svg>',
     how:g=>[`${g('حط','حطي')} صباعك على أول الخط المنقّط ${g('وحرّكه','وحرّكيه')} عليه لحد آخره من غير ما ${g('تطلع','تطلعي')} برّه.`,`وفي الخياطة ${g('دوس','دوسي')} لما الإبرة تيجي فوق كل علامة بالظبط.`]},
   cook:{n:'الطبخ',steps:['التسوية','الفوران'],ic:'<svg viewBox="0 0 40 40"><path d="M6 16H34L31 31Q20 36 9 31Z" fill="#2a2420" stroke="#000" stroke-width="1.4"/><rect x="4" y="13" width="32" height="5" rx="2.5" fill="#4a4440"/><path d="M15 9q-3-3 0-6M24 9q-3-3 0-6" stroke="#fff" stroke-opacity=".5" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
-    how:g=>[`${g('اقلب','اقلبي')} السمك لما المؤشر يوصل الدهبي، ${g('وشيله','وشيليه')} من على النار قبل الأحمر.`,`ولما حلة تفور ${g('دوس','دوسي')} عليها بسرعة قبل ما تدلق.`]},
+    how:(g,C)=>{const n=(C&&ckFood(C)||{n:'السمك'}).n;return [`${g('اقلب','اقلبي')} ${n} لما المؤشر يوصل الدهبي، ${g('وشيل','وشيلي')} ${n} من على النار قبل الأحمر.`,`ولما حلة تفور ${g('دوس','دوسي')} عليها بسرعة قبل ما تدلق.`]}},
   bread:{n:'العيش',steps:['العجن','الفرن'],ic:'<svg viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="15" ry="9" fill="#d9a24a" stroke="#5a3010" stroke-width="1.4"/><path d="M10 21q10-7 20 0" stroke="#f3d48f" stroke-width="2" fill="none"/></svg>',
     how:g=>[`${g('لف','لفي')} صباعك حوالين العجينة في دواير، لا بسرعة ولا ببطء، لحد ما الدايرة اللي حواليها تتملى.`,`في الفرن الرغيف بينفخ ويحمر: ${g('دوس','دوسي')} على كل رغيف لما يبقى دهبي، قبل ما يتحرق.`]}};
 /* sounds of the games */
@@ -5092,13 +5106,13 @@ function ckDefs(){return `<defs><pattern id="mgTl" width="40" height="40" patter
 function fishShape(){return `<g id="mgFish"><path d="M-70 0 Q-50 -30 0 -30 Q44 -28 56 0 Q44 28 0 30 Q-50 30 -70 0Z" id="mgFB" fill="#b8c4c8" stroke="#2a2018" stroke-width="2"/><path d="M52 0 L82 -24 Q74 0 82 24Z" id="mgFT" fill="#b8c4c8" stroke="#2a2018" stroke-width="2" stroke-linejoin="round"/>
   <path d="M-20 -29 Q0 -44 22 -28" fill="#00000033"/><circle cx="-48" cy="-6" r="5" fill="#f4efe6"/><circle cx="-49" cy="-6" r="2.6" fill="#1a1008"/><path d="M-30 -20 Q-38 0 -30 20" stroke="#0004" stroke-width="2" fill="none"/><g stroke="#0003" stroke-width="2.5" stroke-linecap="round"><path d="M-6 -18 L6 -4 M10 -18 L22 -4 M-6 4 L6 18 M10 4 L22 18"/></g></g>`}
 function cFry(C){const sr=TR(C.h,'cook','steady'),hw=.05*C.wl*(1+.1*R3(sr)),c=.64,G0=.42,R0=.88,sc=[],X=v=>330-v*300;
-  let side=0,v=0,t=0,t0=0,ph='wait',lastF=0,flip=-1e9,burnt=0;const E={},P=[];
-  const s={title:'التسوية',hint:`${C.g('اقلب','اقلبي')} السمك لما المؤشر يوصل الدهبي`,bon:C.bon('steady','الدهبي أوسع'),btn:`${C.g('اقلبه','اقلبيه')}!`,bc:'hot',
+  let side=0,v=0,t=0,t0=0,ph='wait',lastF=0,flip=-1e9,burnt=0;const E={},P=[],F=ckFood(C)||{n:'السمك',svg:fishShape()},RMP=F.ramp||CK_RAMP;
+  const s={title:'التسوية',hint:`${C.g('اقلب','اقلبي')} ${F.n} لما المؤشر يوصل الدهبي`,bon:C.bon('steady','الدهبي أوسع'),btn:`${C.g('اقلب','اقلبي')}!`,bc:'hot',
     scene:()=>`${ckDefs()}<ellipse cx="180" cy="330" rx="150" ry="40" fill="url(#mgFG)" id="mgGlow"/><g id="mgFl">${flames(180,330,170)}</g>
       <path d="M296 262 L352 252 Q358 252 358 258 L358 266 Q358 271 352 271 L296 276Z" fill="#6a4426" stroke="#000" stroke-width="2"/>
       <ellipse cx="180" cy="270" rx="130" ry="46" fill="#141010" stroke="#3a3330" stroke-width="6"/><ellipse cx="180" cy="266" rx="116" ry="36" fill="#3a2a10" opacity=".85"/>
       <g id="mgOil">${Array.from({length:10},()=>'<circle r="2.5" fill="#ffe8a0" opacity="0"/>').join('')}</g>
-      <g id="mgFW" transform="translate(180 262)">${fishShape()}</g>
+      <g id="mgFW" transform="translate(180 262)">${F.svg}</g>
       <g id="mgSm">${Array.from({length:10},()=>'<circle r="10" fill="#9a9090" opacity="0" filter="url(#mgB6)"/>').join('')}</g>
       <g><rect x="26" y="40" width="308" height="30" rx="15" fill="#000b" stroke="#ffffff26" stroke-width="2"/>
         <rect x="${X(G0)}" y="44" width="${X(0)-X(G0)}" height="22" rx="4" fill="#9aa4a8" opacity=".35"/><rect x="${X(R0)}" y="44" width="${X(G0)-X(R0)}" height="22" fill="#6fb36a" opacity=".55"/>
@@ -5109,9 +5123,9 @@ function cFry(C){const sr=TR(C.h,'cook','steady'),hw=.05*C.wl*(1+.1*R3(sr)),c=.6
     upd(dt){t+=dt;
       if(ph==='wait'&&t>650){ph='run';t0=t}
       if(ph==='run'){const past=v>c+hw&&sr>=4?.7:1;v+=dt/1000*(.3+.9*v)*C.sp*(side?1.2:1)*past;if(t-lastF>330){lastF=t;sf('mgFry',.2+.6*v)}if(v>=1){v=1;take(1)}}
-      if(ph==='flip'){const k=clamp((t-flip)/520,0,1);E.mgFW.setAttribute('transform',`translate(180 ${(262-Math.sin(k*Math.PI)*90).toFixed(1)}) scale(1 ${Math.cos(k*Math.PI).toFixed(3)})`);if(k>=1){E.mgFW.setAttribute('transform','translate(180 262)');side=1;v=0;ph='run';t0=t;setBtn(`${C.g('شيله','شيليه')} من على النار!`,'hot');hint(`${C.g('شيله','شيليه')} لما المؤشر يوصل الدهبي، قبل الأحمر`)}}
+      if(ph==='flip'){const k=clamp((t-flip)/520,0,1);E.mgFW.setAttribute('transform',`translate(180 ${(262-Math.sin(k*Math.PI)*90).toFixed(1)}) scale(1 ${Math.cos(k*Math.PI).toFixed(3)})`);if(k>=1){E.mgFW.setAttribute('transform','translate(180 262)');side=1;v=0;ph='run';t0=t;setBtn(`${C.g('شيل','شيلي')} ${F.n}!`,'hot');hint(`${C.g('شيل','شيلي')} ${F.n} من على النار لما المؤشر يوصل الدهبي، قبل الأحمر`)}}
       if(ph==='off'){const k=clamp((t-t0)/420,0,1);E.mgFW.setAttribute('transform',`translate(${180+k*30} ${(262-k*k*180).toFixed(1)})`);if(t-t0>900)s.done(avg(sc))}
-      const col=ramp(CK_RAMP,ph==='flip'||ph==='off'?Math.max(v,0):v);if(ph!=='flip'){E.mgFB.setAttribute('fill',col);E.mgFT.setAttribute('fill',col)}
+      const col=ramp(RMP,ph==='flip'||ph==='off'?Math.max(v,0):v);if(ph!=='flip'){E.mgFB.setAttribute('fill',col);E.mgFT.setAttribute('fill',col)}
       E.mgPt.setAttribute('transform',`translate(${X(v).toFixed(1)} 0)`);E.mgFl.setAttribute('transform',`translate(180 330) scale(${(.7+.4*v).toFixed(2)}) translate(-180 -330)`);
       for(const p of P){if(p.l>0){p.l-=dt;p.y-=dt/1000*50;p.r+=dt/1000*14;sa(p.el,{cx:p.x.toFixed(1),cy:p.y.toFixed(1),r:p.r.toFixed(1),opacity:(clamp(p.l/1000,0,1)*.55).toFixed(2)})}else p.el.setAttribute('opacity',0)}
       if(ph==='run'&&v>.8&&Math.random()<dt/1000*(v>R0?14:5)){const p=P.find(q=>q.l<=0);if(p){p.x=rr(130,230);p.y=250;p.r=8;p.l=1200}}
@@ -5213,7 +5227,7 @@ function card(html,btns,gc){return new Promise(res=>{const ov=MG.el.ov;if(!ov)re
   const bs=[...d.querySelectorAll('button')];bs.forEach(b=>b.disabled=true);setTimeout(()=>bs.forEach(b=>b.disabled=false),450);
   bs.forEach(b=>b.onclick=()=>{if(b.disabled)return;sf('tap');d.remove();MG.card=0;res(b.dataset.v)})})}
 const star=(on,i)=>`<svg viewBox="0 0 24 24" style="animation-delay:${.15+i*.12}s"><path d="M12 2.2l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17l-5.9 3.3 1.3-6.6L2.5 9.1l6.7-.8z" fill="${on?'#ffd36a':'#3a2f25'}" stroke="${on?'#8a5a10':'#5a4a38'}" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
-function howCard(C){const K=KIND[C.kind],L=K.how(C.g);
+function howCard(C){const K=KIND[C.kind],L=K.how(C.g,C);
   return card(`<div class="ic">${C.o.icon||K.ic}</div><div class="k">أول مرة</div><div class="t">${K.n}</div><div class="ln">${L.map((l,i)=>`<div><i>${i+1}</i><span>${l}</span></div>`).join('')}</div>
     <div class="nt">${C.g('جرّب','جرّبي')} الأول ببلاش. التجريب مش بيتحسب، والخامات ما بتروحش.</div>`,[{v:'try',t:`${C.g('جرّب','جرّبي')} الأول`},{v:'go',t:`${C.g('ابدأ','ابدأي')} على طول`,g:1}])}
 function gradeCard(C,r,practice){const G0=GRADES[r.grade],n=G0[2];if(fxOK()){sf('mgEnd',n);if(n>=4)setTimeout(()=>sf('shimmer'),350);buzz(n>=4?[30,30,90]:[20,20,40])}
@@ -6161,6 +6175,8 @@ const PD=(function(){const root={};
   const KINDS = {
     base: { layer: 'body', at: 'body' },     // by gender: skin, head, neck, hands
     face: { layer: 'face', at: 'head' },     // by gender: eyes, brows, mouth, blush
+    eyesh: { layer: 'face', at: 'head' },    // another eye shape over the face's own eyes (p40.js)
+    mouth: { layer: 'face', at: 'head' },    // another mouth over the face's own smile (p40.js)
     age: { layer: 'age', at: 'head' },
     hair: { layer: 'hair', at: 'head' },
     beard: { layer: 'beard', at: 'head' },
@@ -6212,7 +6228,7 @@ const PD=(function(){const root={};
   function partsFor(hero) {
     const g = hero.g === 'f' ? 'f' : 'm', eq = hero.eq || {};
     const outfit = getPart('outfit', hero.cls, g);
-    const pick = [['base', g], ['face', g], ['age', hero.age || 'شاب'], ['hair', hero.hair], ['beard', g === 'm' ? hero.beard : null], ['mark', hero.mark],
+    const pick = [['base', g], ['face', g], ['eyesh', hero.eyesh], ['mouth', hero.mouth], ['age', hero.age || 'شاب'], ['hair', hero.hair], ['beard', g === 'm' ? hero.beard : null], ['mark', hero.mark],
       ['outfit', hero.cls], ['armor', eq.armor], ['neck', eq.neck], ['charm', eq.charm], ['head', eq.head], ['weapon', eq.weapon || (outfit && outfit.def.weapon)], ['ring', eq.ring]];
     return pick.map(([k, key]) => key ? getPart(k, key, g) : null).filter(Boolean);
   }
@@ -8608,12 +8624,12 @@ const PX=(function(){
   /* the game's look object -> a clean look for the doll (a copy; the saved hero is never touched). bare: no head gear, so the hair shows */
   function look(h,bare){
     const g=h.g==='f'?'f':'m',R=PD.RAMPS,eq=h.eq||{},e={};
-    for(const s in GEAR_PART){if(bare&&s==='head')continue;const p=gearPart(s,eq[s]);if(p&&has(s,p,g))e[s]=p}
+    const hid=h.hide||{};for(const s in GEAR_PART){if(bare&&s==='head'||hid[s])continue;const p=gearPart(s,eq[s]);if(p&&has(s,p,g))e[s]=p}
     const cls=h.cls==='متسلل'?'حرامي':h.cls;
     return {g,cls:has('outfit',cls,g)?cls:'محارب',
       skin:near(R.skin,h.skin,'#e0b08a'),hairColor:near(R.hair,h.hairColor,'#1b1412'),eyes:near(R.eyes,h.eyes,'#4a2a14'),outfit:near(R.outfit,h.outfit,'#7a2f2a'),
       hair:has('hair',h.hair,g)?h.hair:(g==='f'?'طويل':'قصير'),age:has('age',h.age,g)?h.age:'شاب',
-      beard:g==='m'&&has('beard',h.beard,g)?h.beard:null,mark:has('mark',h.mark,g)?h.mark:null,eq:e}}
+      beard:g==='m'&&has('beard',h.beard,g)?h.beard:null,mark:has('mark',h.mark,g)?h.mark:null,eyesh:has('eyesh',h.eyesh,g)?h.eyesh:null,mouth:has('mouth',h.mouth,g)?h.mouth:null,eq:e}}
 
   /* which view fits which box. The id is the one each call site passes:
      the big rounded squares (creator 'c', profile 'pr', gear 'g') get the 48x48 bust with the weapon in hand;
@@ -19064,7 +19080,7 @@ if(PXI_D.shoe&&!PXI_D.shbshb)PXI_D.shbshb=PXI_D.shoe;
    signed-in players publish their heroes to pal/{uid}_{heroId} (a look snapshot, class, level, health).
    before a night the player can pick one of them; it walks with them as the companion and fights by itself.
    the pick stays on the hero (h.pal) until changed. */
-const PAL_LOOK=['name','g','cls','skin','hairColor','hair','eyes','outfit','age','beard','mark'];
+const PAL_LOOK=['name','g','cls','skin','hairColor','hair','eyes','outfit','age','beard','mark','eyesh','mouth'];
 const PAL={rows:null,err:'',sent:{}};
 /* friend codes: the first 6 letters of the account id; each hero keeps the list (h.frs) so it rides along in the cloud save */
 const frCode=uid=>String(uid||'').replace(/[^a-z0-9]/gi,'').slice(0,6).toUpperCase();
@@ -21280,6 +21296,214 @@ function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{co
   el.innerHTML=`<span class="ic">🤝</span><span class="tx"><b>${k?`${G('ارجع','ارجعي')} لليلة ${esc(k)}`:'العب مع صحابك لايف'}</b><small>${FB.user?`${G('افتح','افتحي')} ليلة ${G('وادعي','وادعي')} صحابك، أو ${G('ادخل','ادخلي')} ليلتهم بكود · لحد 5`:'محتاج حساب جوجل'}</small></span><span class="ar">‹</span>`;
   const first=view.querySelector('.advc');if(first)first.insertAdjacentElement('beforebegin',el);else view.appendChild(el);
   el.onclick=()=>{SFX.bell&&SFX.bell();CO.err='';CO.from='advs';S.screen='coop';render()}}catch(e){}return r}}
+/* ---------- more looks and gear you can hide (v5.32) ----------
+   1. Eye shapes and mouths: new paper-doll kinds 'eyesh' and 'mouth' (p9p.js draws them right after the face). Each one paints
+      skin over the face's own eyes or smile, then draws its own. 'عادي' and 'ابتسامة' are the face as it was.
+   2. More hair: boys محلوق، سبايكي، مفروق، كحكة; girls كحكة، ضفيرتين، طويل بغرة.
+   3. Gear you can hide: h.hide[slot] keeps the piece on (all its numbers stay) but the drawing leaves it out (PX.look in p9p.js).
+      The switches are in «عدّتي» and in the look editor. */
+(function(){const add=PD.addPart,rev=r=>[...r].reverse().join('');
+  /* ----- eyes: a 4x4 box per eye on the card face (x10-13 and x18-21, y14-17), a 2x2 box when standing (x8-9 and x14-15, y10-11) ----- */
+  const FX={x:9,y:14,rows:Array(4).fill('.ffff....ffff.')},BX={x:8,y:10,rows:['ff....ff','ff....ff']};
+  const fe=(L,R)=>({x:9,y:14,rows:L.map((r,i)=>'.'+r+'....'+(R?R[i]:rev(r))+'.')});
+  const be=(L,R)=>({x:8,y:10,rows:L.map((r,i)=>r+'....'+(R?R[i]:rev(r)))});
+  const OPEN={m:['....','.WK.','.Ke.','.ee.'],f:['....','KWK.','.Ke.','.ee.']},HAPPY=['....','.KK.','K..K','....'];
+  const EYES={
+    'واسع':{m:['.KK.','KWeK','KeeK','.KK.'],f:['KKK.','KWeK','KeeK','.KK.'],b:['WK','ee']},
+    'مغمّض':{m:['....','....','K..K','.KK.'],f:['....','....','K..K','KKK.'],b:['..','KK']},
+    'مبسوط':{m:HAPPY,b:['KK','..']},
+    'نعسان':{m:['....','KKKK','.ee.','....'],f:['....','KKKK','.ee.','....'],b:['KK','.e']},
+    'حادّ':{m:['K...','.KK.','.Ke.','.ee.'],f:['K...','KKK.','.Ke.','.ee.'],b:['K.','.K']},
+    'صغير':{m:['....','.KK.','.KK.','....'],b:['..','.K']},
+    'غمزة':{wink:1}};
+  ['m','f'].forEach(g=>Object.keys(EYES).forEach(k=>{const E=EYES[k];let face,body;
+    if(E.wink){const o=OPEN[g];face=fe(o,HAPPY.map(rev));body=be(['.K','.e'],['KK','..'])}
+    else{face=fe(E[g]||E.m);body=be(E.b)}
+    add('eyesh',k,{g,label:k,face:[FX,face],body:[BX,body]})}));
+  /* ----- mouths: a 6x3 box on the card face (x13-18, y20-22), 4x2 when standing (x10-13, y13-14); a girl's lips are the darker red ----- */
+  const FM={x:13,y:20,rows:Array(3).fill('ffffff')},BM={x:10,y:13,rows:['ffff','ffff']};
+  const MOUTH={
+    'ضحكة':[['.vvvv.','.vmmv.','..vv..'],['vmmv','.vv.']],
+    'سنان':[['vvvvvv','vWWWWv','.vvvv.'],['vWWv','.vv.']],
+    'جد':[['......','.vvvv.','......'],['.vv.']],
+    'نص ابتسامة':[['......','.....v','.vvvv.'],['...v','.vv.']],
+    'مندهش':[['..vv..','.vmmv.','..vv..'],['.vv.','.vv.']],
+    'زعلان':[['......','..vv..','.v..v.'],['.vv.','v..v']],
+    'لسان':[['.vvvv.','..rR..','......'],['vvvv','.rR.']]};
+  const lips=(r,g)=>g==='f'?r.replace(/m/g,'r').replace(/v/g,'m'):r;
+  ['m','f'].forEach(g=>Object.keys(MOUTH).forEach(k=>{const [F,B]=MOUTH[k];
+    add('mouth',k,{g,label:k,face:[FM,{x:13,y:20,rows:F.map(r=>lips(r,g))}],body:[BM,{x:10,y:13,rows:B.map(r=>lips(r,g))}]})}));
+
+  /* ----- more hair ----- */
+  const P=(k,g)=>PD.getPart('hair',k,g).def,arr=v=>Array.isArray(v)?v:[v];
+  const SHORT=P('قصير','m'),SF=arr(SHORT.face)[0],SB=arr(SHORT.body)[0];
+  add('hair','محلوق',{g:'m',
+    face:{x:4,y:3,rows:[
+      '.......hhhhhhhhhh.......', // y3 close to the skull
+      '.....hhjhhjhhjhhjhh.....',
+      '....hjhhjhhjhhjhhjhj....',
+      '...hhhjhhjhhjhhjhhhhj...',
+      '...hjhhjhhjhhjhhjhhjj...',
+      '...hhhhhhhhhhhhhhhhhj...', // y8
+      '...hh..............hj...',
+      '...h................j...',
+      '...h................j...',
+      '...h................j...']},
+    body:{x:4,y:3,rows:[
+      '.....hhhhhh.....', // y3
+      '...hhjhhjhhjh...',
+      '..hhhhhhhhhhhj..',
+      '..hh.........j..',
+      '..h..........j..']}});
+  add('hair','سبايكي',{g:'m',
+    face:[SF,{x:4,y:0,rows:[
+      '.......h...H...h...h....', // y0 the spikes
+      '......hh..hHh.hhh.hhh...',
+      '.....hhHh.hhhhhhhhhhhh..']}],
+    body:[SB,{x:4,y:0,rows:['...h..H..h..h...','..hh.hhh.hh.hh..']}]});
+  add('hair','مفروق',{g:'m',
+    face:{x:4,y:1,rows:SF.rows.slice(0,8).concat([
+      '..hhhhhhhhhhhhhjj..hhj..', // y9 swept to one side
+      '..hhhhhhhhhhjj......hj..',
+      '..hhhhhhjj..........hj..',
+      '..hhh...............hj..',
+      '..hh................hj..',
+      '...h................h...'])},
+    body:{x:4,y:1,rows:SB.rows.slice(0,6).concat(['.hhhhhhhjj...hj.','.hhhjj.......hj.','..h..........h..'])}});
+  const BUN_F={x:4,y:0,rows:['.........hhhhhh.........','........hHHhhhhj........','.........rRrrm..........']},
+        BUN_B={x:4,y:0,rows:['......hhhh......','......rRrm......']};
+  add('hair','كحكة',{g:'m',face:[SF,BUN_F],body:[SB,BUN_B]});
+  const TIED=P('ديل حصان','f'),TF=arr(TIED.face)[0],TB=arr(TIED.body)[0];
+  add('hair','كحكة',{g:'f',face:[TF,BUN_F],body:[TB,BUN_B]});
+  const BR=arr(P('ضفيرة','f').face)[1],BRB=arr(P('ضفيرة','f').body)[1];
+  add('hair','ضفيرتين',{g:'f',
+    face:[TF,BR,{layer:'locks',x:32-BR.x-BR.rows[0].length,y:BR.y,rows:BR.rows.map(rev)}],
+    body:[TB,BRB,{layer:'locks',x:24-BRB.x-BRB.rows[0].length,y:BRB.y,rows:BRB.rows.map(rev)}]});
+  const LONG=P('طويل','f'),LF=arr(LONG.face),SFF=arr(P('قصير','f').face)[1],LB=arr(LONG.body)[0];
+  add('hair','طويل بغرة',{g:'f',
+    face:[LF[0],{x:SFF.x,y:SFF.y,rows:SFF.rows.slice(0,16)}],
+    portrait:LONG.portrait,
+    body:{x:LB.x,y:LB.y,rows:LB.rows.map((r,i)=>i===6?'Hhhjjjjjjjjjjhhj':r)}});
+  LOOK.eyesh=['عادي'].concat(Object.keys(EYES));
+  LOOK.mouth=['ابتسامة'].concat(Object.keys(MOUTH));
+  LOOK.hairM.splice(LOOK.hairM.indexOf('أصلع'),0,'محلوق','سبايكي','مفروق','كحكة');
+  LOOK.hairF.splice(LOOK.hairF.indexOf('غطا راس'),0,'كحكة','ضفيرتين','طويل بغرة');
+})();
+
+/* ----- gear you can hide: one switch per piece you wear, and one for all of it ----- */
+const VAN_SLOTS=['head','armor','weapon','neck','charm','ring'];
+function vanHTML(h){const on=VAN_SLOTS.filter(s=>h.eq&&h.eq[s]);if(!on.length)return '';const hid=h.hide||{},all=on.every(s=>hid[s]);
+  return `<div class="tw-lbl">الشكل <small>اللي ${G('تخفيه','تخفيه')} بيفضل ${G('لابسه','لابساه')} وبيديك نفس القوة</small></div>
+  <div class="card van"><div class="wrap">${on.map(s=>`<button class="opt ${hid[s]?'':'on'}" data-van="${s}">${hid[s]?'🚫':'👁'} ${SLOTS[s]}: ${hid[s]?'مخفي':'باين'}</button>`).join('')}</div>
+  <button class="btn ghost small" data-van="*" style="margin-top:8px;width:100%;min-height:44px">${all?G('ورّي','ورّي')+' العدّة كلها':G('اخفي','اخفي')+' شكل العدّة كلها'}</button></div>`}
+function vanBind(h,after){view.querySelectorAll('[data-van]').forEach(b=>b.onclick=()=>{const s=b.dataset.van,hid=h.hide=h.hide||{},on=VAN_SLOTS.filter(x=>h.eq&&h.eq[x]);
+  if(s==='*'){const all=on.every(x=>hid[x]);on.forEach(x=>{if(all)delete hid[x];else hid[x]=1})}else{if(hid[s])delete hid[s];else hid[s]=1}
+  saveHero();SFX.tick&&SFX.tick(700);after()})}
+{const g0=SCREENS.gear;SCREENS.gear=function(){const r=g0.apply(this,arguments);try{const h=S.hero,hint=view.querySelector('.tw-doll');if(!h||!hint)return r;
+  const x=vanHTML(h);if(!x)return r;const nx=hint.nextElementSibling;(nx||hint).insertAdjacentHTML('afterend',x);
+  vanBind(h,()=>{const y=view.scrollTop;render();view.scrollTop=y})}catch(e){console.warn(e)}return r}}
+/* the look editor: the same switches, on the hero you are editing */
+{const c0=create;create=function(){const r=c0.apply(this,arguments);try{if(!S.editing||!S.hero)return r;const h=S.hero,x=vanHTML(h);if(!x)return r;
+  const ab=$('#ab');const lb=ab&&ab.previousElementSibling;if(!lb)return r;lb.insertAdjacentHTML('beforebegin',x.replace('tw-lbl','label'));
+  vanBind(h,()=>{if(S.draft)S.draft.hide=h.hide;const y=view.scrollTop;S.draft.name=$('#nm').value;S.draft.about=$('#ab').value;render();view.scrollTop=y})}catch(e){console.warn(e)}return r}}
+/* ---------- cooking that fits the dish (v5.32) ----------
+   The frying step shows what you are really cooking: fish only when the dish has fish in it; طعمية, بصل, طماطم, محشي, قصب
+   or قمح otherwise, each with its own raw-to-burnt colours. And the recipes use what the field grows. */
+const CK_FOODS={
+  falafel:{n:'الطعمية',ramp:[[0,'#8aa860'],[.42,'#c8a050'],[.64,'#a8642a'],[.86,'#5a2a10'],[1,'#1e120c']],
+    svg:()=>`<g id="mgFB" stroke="#2a2018" stroke-width="2">${[[-52,2,24],[0,-6,27],[52,4,24]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>
+      <circle id="mgFT" cx="22" cy="22" r="15" stroke="#2a2018" stroke-width="2"/>
+      <g fill="#f4efe6" opacity=".8">${[[-58,-8],[-44,10],[-6,-14],[8,4],[46,-6],[60,12],[18,24],[-60,14]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.2" ry="1.4"/>`).join('')}</g>
+      <g fill="#2f6a2a" opacity=".55">${[[-50,-2],[-2,-20],[10,-6],[54,-4],[26,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2"/>`).join('')}</g>`},
+  onion:{n:'البصل',ramp:[[0,'#efe6d8'],[.42,'#e8c070'],[.64,'#c8862a'],[.86,'#6a3010'],[1,'#1e120c']],
+    svg:()=>{const ring=(x,y,id)=>`<path${id?` id="${id}"`:''} fill-rule="evenodd" stroke="#2a2018" stroke-width="2" d="M${x-21} ${y}a21 15 0 1 0 42 0a21 15 0 1 0 -42 0ZM${x-12} ${y}a12 8 0 1 0 24 0a12 8 0 1 0 -24 0Z"/>`;
+      return `<g id="mgFB">${[[-60,-4],[-18,-12],[24,-6],[64,2],[-40,16]].map(([x,y])=>ring(x,y)).join('')}</g>${ring(14,16,'mgFT')}`}},
+  garlic:{n:'التقلية',ramp:[[0,'#f4efe6'],[.42,'#ecc878'],[.64,'#c8862a'],[.86,'#6a3010'],[1,'#1e120c']],
+    svg:()=>`<g id="mgFB" stroke="#2a2018" stroke-width="1.6">${[[-60,0],[-36,-12],[-14,6],[8,-14],[30,4],[52,-8],[70,8],[-48,16],[18,20]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="9" ry="6" transform="rotate(${i*37%90-45} ${x} ${y})"/>`).join('')}</g>
+      <ellipse id="mgFT" cx="-4" cy="22" rx="8" ry="5" stroke="#2a2018" stroke-width="1.6"/>`},
+  tomato:{n:'الطماطم',ramp:[[0,'#e04b3e'],[.42,'#d0482a'],[.64,'#a8381a'],[.86,'#5a1a0a'],[1,'#1e120c']],
+    svg:()=>`<g id="mgFB" stroke="#2a2018" stroke-width="2">${[[-50,0],[0,-8],[50,2]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="24"/>`).join('')}</g><circle id="mgFT" cx="24" cy="20" r="16" stroke="#2a2018" stroke-width="2"/>
+      <g fill="#ffd36a" opacity=".75">${[[-50,0],[0,-8],[50,2],[24,20]].map(([x,y])=>[0,72,144,216,288].map(a=>`<ellipse cx="${(x+Math.cos(a/57.3)*10).toFixed(1)}" cy="${(y+Math.sin(a/57.3)*10).toFixed(1)}" rx="2.6" ry="1.6"/>`).join('')).join('')}</g>`},
+  roll:{n:'المحشي',ramp:[[0,'#7ab04a'],[.42,'#9aa040'],[.64,'#8a7a2a'],[.86,'#4a3a10'],[1,'#1e120c']],
+    svg:()=>`<g id="mgFB" stroke="#2a2018" stroke-width="2">${[[-46,-10,-12],[8,-12,8],[-20,14,4]].map(([x,y,a])=>`<rect x="${x-30}" y="${y-11}" width="60" height="22" rx="11" transform="rotate(${a} ${x} ${y})"/>`).join('')}</g>
+      <rect id="mgFT" x="34" y="0" width="44" height="20" rx="10" stroke="#2a2018" stroke-width="2" transform="rotate(-10 56 10)"/>
+      <g stroke="#0003" stroke-width="2" fill="none"><path d="M-70 -14 h44 M-16 -14 h44 M-44 12 h44"/></g>`},
+  cane:{n:'القصب',ramp:[[0,'#d8d070'],[.42,'#e0b040'],[.64,'#b07a20'],[.86,'#5a3a10'],[1,'#1e120c']],
+    svg:()=>`<g id="mgFB" stroke="#2a2018" stroke-width="2">${[[-70,-16],[-10,-20],[-50,6],[10,4]].map(([x,y])=>`<rect x="${x}" y="${y}" width="56" height="14" rx="5"/>`).join('')}</g><rect id="mgFT" x="30" y="-8" width="50" height="14" rx="5" stroke="#2a2018" stroke-width="2"/>
+      <g stroke="#0004" stroke-width="2">${[[-42,-16],[18,-20],[-22,6],[38,4],[55,-8]].map(([x,y])=>`<path d="M${x} ${y} v14"/>`).join('')}</g>`},
+  grain:{n:'القمح',ramp:[[0,'#e8d8a0'],[.42,'#d8b060'],[.64,'#b8802a'],[.86,'#5a3010'],[1,'#1e120c']],
+    svg:()=>{const P=[];for(let i=0;i<34;i++){const a=i*2.4,r=8+((i*37)%60);P.push([Math.cos(a)*r*1.3,Math.sin(a)*r*.45])}
+      return `<g id="mgFB" stroke="#2a2018" stroke-width="1.2">${P.map(([x,y],i)=>`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="5" ry="3.2" transform="rotate(${i*29%180} ${x.toFixed(1)} ${y.toFixed(1)})"/>`).join('')}</g><ellipse id="mgFT" cx="0" cy="0" rx="5" ry="3.2" stroke="#2a2018" stroke-width="1.2"/>`}}};
+const CK_DISH={taameya:'falafel',koshary:'onion',molo:'garlic',salata:'tomato',mahshi:'roll',asabj:'cane',bleela:'grain'};
+function ckFood(C){const k=C&&C.o&&C.o.dish,r=k&&TW_REC[k];
+  if(!r||Object.keys(r.need).some(x=>MAT[x]&&MAT[x].fish))return null;
+  const F=CK_FOODS[CK_DISH[k]||'onion'];return {n:F.n,ramp:F.ramp,svg:F.svg()}}
+
+/* the recipes, with what the field grows */
+Object.assign(TW_REC,{
+  qdish:Object.assign({},TW_REC.qdish,{need:{qarmout:1,tamatem:1}}),
+  seniya:Object.assign({},TW_REC.seniya,{need:{bouri:2,tamatem:1,basal:1}}),
+  shrsoup:Object.assign({},TW_REC.shrsoup,{need:{shrimp:2,basal:1}}),
+  bayadtaj:Object.assign({},TW_REC.bayadtaj,{need:{bayad:1,tamatem:1,basal:1}}),
+  koshary:Object.assign({},TW_REC.koshary,{need:{roz:1,flour:1,basal:1,tamatem:1}})});
+/* ---------- عدّة الغيط: farm tools (v5.32) ----------
+   Bought from عم عبده, dear and in order (each needs the one before and a farming level):
+   سماد (a sack per planting: 20% faster and 1 more crop) · فزاعة (no crows) · رشاش (every planting is watered for free) ·
+   صندوق تقاوي (a harvested plot replants the same crop, paid from your money) · حصّادة (ready crops harvest themselves,
+   even while you are away; with the seed box the field keeps going). h.farm.t = {scare,sprink,box,harv}, h.farm.fert = sacks. */
+const FT_LIST=[
+  {id:'scare',n:'فزاعة',ic:'🧍',p:600,lv:2,d:'الغربان مبتقربش من زرعك خالص'},
+  {id:'sprink',n:'رشاش مية',ic:'💧',p:1500,lv:3,d:'أي حاجة {بتزرعها|بتزرعيها} بتتسقي لوحدها ببلاش'},
+  {id:'box',n:'صندوق تقاوي',ic:'📦',p:4000,lv:5,d:'لما {تحصد|تحصدي} أرض، بتتزرع تاني بنفس الزرعة لوحدها (التقاوي من فلوسك)'},
+  {id:'harv',n:'حصّادة',ic:'🌾',p:9000,lv:7,d:'الزرع الجاهز بيتحصد لوحده {وانت|وانتي} بره، والمحصول بيروح شنطتك'}];
+const FT_FERT=30;
+const ftHas=(h,id)=>!!(h.farm&&h.farm.t&&h.farm.t[id]);
+/* a fresh planting: fertilizer if you have it and it is on, water if you have the sprinkler */
+function ftPrep(h,p){if(!p||!p.c||p.x)return 0;p.x=1;const F=h.farm;
+  if((F.fert|0)>0&&F.useF!==0){F.fert--;p.f=1;p.d=Math.round(p.d*.8)}
+  if(ftHas(h,'sprink')&&!p.w){p.w=1;p.t0-=Math.round(p.d*(treeLink(h,'farm','l1')?.45:.3))}return 1}
+function ftPrepAll(h){FARM_FIX(h);const F=h.farm;if(!F.v32){F.v32=1;F.t=F.t||{};F.p.forEach(p=>{if(p&&p.c)p.x=1})}let ch=0;F.p.forEach(p=>{if(ftPrep(h,p))ch=1});if(ch)saveHero()}
+/* the seed box: plant the same crop again from when the last one was ready */
+function ftReplant(h,i,k,at){if(!ftHas(h,'box')||!k||!CROPS[k]||farmL(h)<CROPS[k].lv)return false;const pr=farmPrice(h,k);if(h.money<pr)return false;
+  h.money-=pr;h.farm.p[i]={c:k,t0:at||Date.now(),d:farmDur(h,k)};ftPrep(h,h.farm.p[i]);return true}
+{const fh=farmHarvest;farmHarvest=function(i,el,quiet){const h=S.hero,p=h&&h.farm.p[i],k=p&&p.c,at=p&&p.c?Math.min(Date.now(),p.t0+p.d):0;const r=fh.apply(this,arguments);
+  if(r&&FARM.auto==null)ftReplant(h,i,k,Date.now());return r}}
+/* the harvester: everything that got ready while you were away, plot by plot, replanting from the moment it was ready */
+function ftAuto(h){if(!h||!ftHas(h,'harv'))return;FARM_FIX(h);const n=farmN(h),got={};let any=0;FARM.auto=1;
+  try{for(let i=0;i<n;i++){let g=0;while(g++<12){const p=h.farm.p[i];if(!farmReady(h,p))break;const k=p.c,at=p.t0+p.d,r=farmHarvest(i,null,1);if(!r)break;got[k]=(got[k]||0)+r.n;any=1;if(!ftReplant(h,i,k,at))break}}}
+  finally{FARM.auto=null}
+  if(any){const L=h.farm.log=h.farm.log||{};for(const k in got)L[k]=(L[k]||0)+got[k];saveHero()}}
+{const fy=farmYield;farmYield=function(h,p){const r=fy.apply(this,arguments);if(p&&p.f)r.n+=r.gold?2:1;return r}}
+{const fp=farmPlot;farmPlot=function(h,p,i){let s=fp.apply(this,arguments);if(p&&p.f)s=s.replace('<span class="tg">','<span class="tg"><i class="f">سماد</i>');return s}}
+/* the scarecrow keeps the crows away */
+{const ft=farmTick;farmTick=function(){const h=S.hero;if(h&&ftHas(h,'scare')){FARM.next=Date.now()+6e4;if(FARM.crow>=0){const p=h.farm.p[FARM.crow];if(p)p.cr=0;FARM.crow=-1}}
+  if(h&&S.screen==='farm'&&ftHas(h,'harv')&&h.farm.p.slice(0,farmN(h)).some(p=>farmReady(h,p))){ftAuto(h);return farmRe()}return ft.apply(this,arguments)}}
+{const fr=farmRe;farmRe=function(){const h=S.hero;if(h){ftPrepAll(h)}return fr.apply(this,arguments)}}
+{const tw=SCREENS.town;SCREENS.town=function(){try{const h=S.hero;if(h){ftPrepAll(h);ftAuto(h)}}catch(e){console.warn(e)}return tw.apply(this,arguments)}}
+function ftHTML(h){const F=h.farm,L=farmL(h);let prev=true;
+  const rows=FT_LIST.map(t=>{const own=ftHas(h,t.id),ok=prev&&L>=t.lv;const why=!prev?`محتاج ${FT_LIST[FT_LIST.indexOf(t)-1].n} الأول`:L<t.lv?`زراعة مستوى ${t.lv}`:'';prev=own;
+    return `<div class="tw-row ft-row${own?' own':''}"><div class="ic ft-ic">${t.ic}</div><div class="tx"><b>${t.n}</b><small>${T(t.d)}</small></div>
+      ${own?`<span class="ft-own">${G('عندك','عندك')}</span>`:ok?`<button class="tw-buy" data-ftool="${t.id}" ${h.money<t.p?'disabled':''}>${G('اشتري','اشتري')}<small>${t.p} جنيه</small></button>`
+      :`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">${why}</small></button>`}</div>`}).join('');
+  return `<div class="tw-lbl">عدّة الغيط <small>من عند عم عبده، غالية وبالترتيب</small></div>
+  <div class="card ft">
+    <div class="tw-row ft-row"><div class="ic ft-ic">🌱</div><div class="tx"><b>سماد</b><small>شكارة لكل زرعة: الزرع بيخلص أسرع 20% وبيطلع 1 زيادة · ${G('معاك','معاكي')} <b>${F.fert|0}</b></small>
+      <button class="opt ${F.useF!==0?'on':''}" id="ftUse" style="margin-top:6px;min-height:40px">${F.useF!==0?`بيتحط لوحده لما ${G('تزرع','تزرعي')}`:'مش بيتحط دلوقتي'}</button></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><button class="tw-buy" data-fz="1" ${h.money<FT_FERT?'disabled':''}>شكارة<small>${FT_FERT} جنيه</small></button><button class="tw-buy" data-fz="5" ${h.money<FT_FERT*5-10?'disabled':''} style="font-size:12px">5 شكاير<small>${FT_FERT*5-10} جنيه</small></button></div></div>
+    ${rows}</div>`}
+{const f0=SCREENS.farm;SCREENS.farm=function(){const h=S.hero;if(h){try{ftPrepAll(h);ftAuto(h)}catch(e){console.warn(e)}}const r=f0.apply(this,arguments);
+  try{if(S.screen!=='farm'||!h)return r;const g=view.querySelector('.fm-g'),a=$('#fmAll'),anchor=a||g;if(!anchor)return r;
+    anchor.insertAdjacentHTML('afterend',ftHTML(h));
+    const L=h.farm.log;if(L&&Object.keys(L).length){toast(`الحصّادة ${G('جمعتلك','جمعتلك')} ${Object.keys(L).map(k=>`${L[k]} ${MAT[k].n}`).join(' و')}`);h.farm.log={};saveHero()}
+    view.querySelectorAll('[data-ftool]').forEach(b=>b.onclick=()=>{const t=FT_LIST.find(x=>x.id===b.dataset.ftool);if(!t||h.money<t.p)return;
+      h.money-=t.p;h.farm.t[t.id]=1;ftPrepAll(h);saveHero();SFX.coin&&SFX.coin();band(t.n,`${G('اشتريت','اشتريتي')} ${t.n}`,T(t.d),{dur:2200,sound:SFX.fanfare});farmRe()});
+    view.querySelectorAll('[data-fz]').forEach(b=>b.onclick=()=>{const n=+b.dataset.fz,pr=n===5?FT_FERT*5-10:FT_FERT;if(h.money<pr)return;h.money-=pr;h.farm.fert=(h.farm.fert|0)+n;saveHero();SFX.coin&&SFX.coin();toast(`${G('اشتريت','اشتريتي')} ${n===1?'شكارة سماد':n+' شكاير سماد'}`);farmRe()});
+    const u=$('#ftUse');if(u)u.onclick=()=>{h.farm.useF=h.farm.useF===0?1:0;saveHero();SFX.tick&&SFX.tick(700);farmRe()};
+  }catch(e){console.warn(e)}return r}}
+{const st=document.createElement('style');st.textContent=`
+.ft-row .ft-ic{font-size:26px;display:grid;place-items:center}.ft-row.own{opacity:.85}.ft-row.own .ft-ic{filter:drop-shadow(0 0 6px #7fe07a88)}
+.ft-own{color:#a6e3a0;font-weight:800;font-size:13px;align-self:center;padding:0 6px}
+.fm-p .tg .f{background:#c9832633;color:#f2c77a}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
