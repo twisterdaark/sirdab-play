@@ -4352,6 +4352,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.13',d:'9 أكتوبر',add:[
+    'الشبشب القديم بقى «شبشب طاير» في الشنطة: {ارميه|ارميه} على أي عدو في القتال، بيوجع وساعات بيدوّخ. والعفاريت والأرواح بتتجنن منه.',
+    'سوق اللاعبين: الأكل اللي {بتطبخه|بتطبخيه} بقى ينفع يتعرض ويتباع هو كمان.'
+  ],fix:[]},
   {v:'5.12',d:'9 أكتوبر',add:[
     'سوق اللاعبين في البلد: {اعرض|اعرضي} حديد ونحاس وسمك أو عدّة زيادة بالسعر اللي {يعجبك|يعجبكي}، واشتري من لاعيبة تانيين. لما حاجتك تتباع، الفلوس بتوصلك لوحدها (السوق بياخد 5%). محتاج حساب جوجل.',
     'أي عدّة {بتعملها|بتعمليها} عند عم حسن أو عم فتحي بقى مكتوب عليها «صنعة إيد» واسم اللي عملها، وده بيفضل معاها لو اتباعت لحد تاني.'
@@ -18856,10 +18860,14 @@ const MK_MAX=10,MK_FEE=.05,MK_PMAX=1000000;
 const MK={tab:'buy',rows:null,mine:null,err:'',busy:0,sel:null,price:'',cnt:1,msg:''};
 const mkCol=()=>FB.db.collection('mk');
 const mkNet=e=>e&&e.code==='permission-denied'?'السوق لسه بيتجهز.':'مش قادر أوصل للسوق دلوقتي. اتأكد إن فيه نت.';
+/* food rides on kind 'm' with an id of «f:<bag key>», so the rules need no change */
+const mkF=x=>String(x.id||'').slice(0,2)==='f:',mkFk=x=>String(x.id).slice(2);
+const mkFoodN=k=>ITEMS[k]?ITEMS[k].name:(typeof fqParse==='function'&&ITEMS[fqParse(k).b]?fqName(fqParse(k)):k);
+const mkIsFood=k=>{if(!(ITEMS[k]||typeof fqParse==='function'))return 0;const b=typeof fqParse==='function'?fqParse(k).b:k;return FOODS.includes(b)&&!!ITEMS[b]};
 const mkGet=x=>{try{return x.x?JSON.parse(x.x):null}catch(e){return null}};
-function mkName(x){if(x.k==='m')return MAT[x.id]?MAT[x.id].n:x.id;const I=mkGet(x),v=GEAR[x.id]&&I?qView(x.id,giFix(x.id,I)):null;return v?v.n:(GEAR[x.id]?GEAR[x.id].n:x.id)}
+function mkName(x){if(mkF(x))return mkFoodN(mkFk(x));if(x.k==='m')return MAT[x.id]?MAT[x.id].n:x.id;const I=mkGet(x),v=GEAR[x.id]&&I?qView(x.id,giFix(x.id,I)):null;return v?v.n:(GEAR[x.id]?GEAR[x.id].n:x.id)}
 function giFix(id,I){I=Object.assign({},I);if(!(I.q>=0&&I.q<=4))I.q=1;if(!I.e)I.e=0;if(!Array.isArray(I.t))I.t=[];return I}
-function mkIco(x,w){return x.k==='m'?twMat(x.id,w):twGear(x.id,w)}
+function mkIco(x,w){if(mkF(x)){const k=mkFk(x);return itemIcon2(typeof fqParse==='function'?fqParse(k).b:k,w)}return x.k==='m'?twMat(x.id,w):twGear(x.id,w)}
 function mkHero(sh){return HEROES.find(h=>h&&h.lbId===sh)||S.hero}
 
 /* the seller collects what sold (on opening the market and after signing in) */
@@ -18888,25 +18896,26 @@ async function mkBuy(x,btn){const h=S.hero;if(MK.busy||!FB.user)return;if(h.mone
   catch(e){MK.busy=0;toast(mkNet(e));return render()}
   MK.busy=0;MK.rows=(MK.rows||[]).filter(y=>y._id!==x._id);
   if(!ok){toast('حد سبقك واشتراها.');return render()}
-  h.money-=x.p;if(x.k==='m')addRes(h,x.id,x.c);else{const I=giFix(x.id,mkGet(x)||{});I.u=qUid();giAdd(h,x.id,I)}
+  h.money-=x.p;if(mkF(x)){const k=mkFk(x);if(typeof fqReg==='function'&&/_q\d/.test(k))fqReg(k);h.bag[k]=(h.bag[k]||0)+x.c}else if(x.k==='m')addRes(h,x.id,x.c);else{const I=giFix(x.id,mkGet(x)||{});I.u=qUid();giAdd(h,x.id,I)}
   saveHero();if(typeof fbSoon==='function')fbSoon();SFX.reg&&SFX.reg();toast(`${G('اشتريت','اشتريتي')} ${mkName(x)}${x.c>1?' ×'+x.c:''} من ${esc(x.sn)}`);render()}
 
 /* what can be listed: materials, and spare gear (not the piece being worn) */
 function mkOffers(h){const o=[];Object.keys(MAT).filter(k=>(h.res[k]||0)>0&&MAT[k].p).forEach(k=>o.push({k:'m',id:k,have:h.res[k],sug:MAT[k].p}));
+  Object.keys(h.bag||{}).filter(k=>(h.bag[k]||0)>0&&mkIsFood(k)).forEach(k=>o.push({k:'m',id:'f:'+k,f:k,have:h.bag[k],sug:Math.max(5,(ITEMS[fqParse(k).b]&&ITEMS[fqParse(k).b].price)||15)}));
   qSpare(h).forEach(x=>o.push({k:'g',id:x.id,u:x.us[0],I:x.I,have:x.us.length,sug:qSellP(x.id,x.I)*2}));return o}
 async function mkList(){const h=S.hero,o=MK.sel;if(!o||MK.busy||!FB.user)return;
   const p=Math.floor(+MK.price||0),c=o.k==='m'?Math.max(1,Math.min(o.have,99,Math.floor(+MK.cnt||1))):1;
   if(!(p>=1&&p<=MK_PMAX)){MK.msg=G('اكتب سعر من 1 لمليون','اكتبي سعر من 1 لمليون');return render()}
   if((MK.mine||[]).filter(x=>x.st==='open').length>=MK_MAX){MK.msg=`أقصى حاجة ${MK_MAX} عروض في نفس الوقت.`;return render()}
-  let I=null;if(o.k==='m'){if((h.res[o.id]||0)<c)return;h.res[o.id]-=c}else{I=giDel(h,o.id,o.u);if(!I)return}
+  let I=null;if(o.f){if((h.bag[o.f]||0)<c)return;h.bag[o.f]-=c}else if(o.k==='m'){if((h.res[o.id]||0)<c)return;h.res[o.id]-=c}else{I=giDel(h,o.id,o.u);if(!I)return}
   saveHero();MK.busy=1;render();
   const x={s:FB.user.uid,sh:lbId(h),sn:String(h.name||'').slice(0,20),k:o.k,id:o.id,c,x:I?JSON.stringify((({u,...r})=>r)(I)).slice(0,1500):'',p,st:'open',b:'',bn:'',t:window.firebase.firestore.FieldValue.serverTimestamp()};
   try{const ref=await mkCol().add(x);(MK.mine=MK.mine||[]).push(Object.assign({_id:ref.id},x,{t:null}));MK.sel=null;MK.price='';MK.cnt=1;MK.msg='';MK.tab='mine';SFX.reg&&SFX.reg();toast('العرض نزل السوق.')}
-  catch(e){if(o.k==='m')h.res[o.id]=(h.res[o.id]||0)+c;else giAdd(h,o.id,I);MK.msg=mkNet(e)}
+  catch(e){if(o.f)h.bag[o.f]=(h.bag[o.f]||0)+c;else if(o.k==='m')h.res[o.id]=(h.res[o.id]||0)+c;else giAdd(h,o.id,I);MK.msg=mkNet(e)}
   saveHero();MK.busy=0;render()}
 async function mkBack(x){const h=S.hero;if(MK.busy)return;MK.busy=1;const ref=mkCol().doc(x._id);let ok=0;
   try{await FB.db.runTransaction(async tr=>{const d=await tr.get(ref);if(!d.exists||d.data().st!=='open')return;tr.update(ref,{st:'gone'});ok=1})}catch(e){MK.busy=0;toast(mkNet(e));return render()}
-  MK.busy=0;if(ok){const to=mkHero(x.sh);if(x.k==='m')addRes(to,x.id,x.c);else{const I=giFix(x.id,mkGet(x)||{});I.u=qUid();giAdd(to,x.id,I)}saveHero();mkCol().doc(x._id).delete().catch(()=>{});toast(`${mkName(x)} ${G('رجعتلك','رجعتلكي')}.`)}
+  MK.busy=0;if(ok){const to=mkHero(x.sh);if(mkF(x)){const k=mkFk(x);to.bag[k]=(to.bag[k]||0)+x.c}else if(x.k==='m')addRes(to,x.id,x.c);else{const I=giFix(x.id,mkGet(x)||{});I.u=qUid();giAdd(to,x.id,I)}saveHero();mkCol().doc(x._id).delete().catch(()=>{});toast(`${mkName(x)} ${G('رجعتلك','رجعتلكي')}.`)}
   else{await mkCollect()}MK.mine=(MK.mine||[]).filter(y=>y._id!==x._id);render()}
 
 SCREENS.pmarket=function(){const h=S.hero;if(!h){S.screen='title';return render()}
@@ -18922,13 +18931,13 @@ SCREENS.pmarket=function(){const h=S.hero;if(!h){S.screen='title';return render(
   if(!FB.user)body=`<div class="card tw-empty">سوق اللاعبين محتاج حساب.<br>${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات (من لينك اللعب)، وبعدها ${G('تقدر تبيع وتشتري','تقدري تبيعي وتشتري')} من لاعيبة تانيين.</div>`;
   else if(MK.tab==='buy'){body=MK.err?`<div class="nnote">${MK.err}</div>`:MK.rows==null?'<div class="nnote">بيحمّل…</div>':!MK.rows.length?`<div class="card tw-empty">مفيش عروض دلوقتي. ${G('اعرض','اعرضي')} حاجة ${G('وخلّيك','وخلّيكي')} أول بياع.</div>`:`<div class="col">${MK.rows.map(x=>row(x,'buy')).join('')}</div>`}
   else if(MK.tab==='sell'){const O=mkOffers(h),o=MK.sel;
-    body=o?`<div class="card mk-form"><div class="tw-row"><div class="ic">${mkIco(o,44)}</div><div class="tx"><b>${o.k==='m'?MAT[o.id].n:qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''}<small>${G('معاك','معاكي')} ${o.have}</small>${o.k==='g'?by(o.I):''}</div></div>
+    body=o?`<div class="card mk-form"><div class="tw-row"><div class="ic">${mkIco(o,44)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''}<small>${G('معاك','معاكي')} ${o.have}</small>${o.k==='g'?by(o.I):''}</div></div>
       ${o.k==='m'?`<label class="mk-l">العدد<input id="mkC" type="number" inputmode="numeric" min="1" max="${Math.min(o.have,99)}" value="${MK.cnt}"></label>`:''}
       <label class="mk-l">السعر (جنيه)<input id="mkP" type="number" inputmode="numeric" min="1" max="${MK_PMAX}" value="${MK.price}" placeholder="${o.sug*(o.k==='m'?MK.cnt:1)}"></label>
       <small class="mk-h">السوق بياخد ${MK_FEE*100}% لما تتباع. لو محدش اشتراها ${G('تقدر ترجّعها','تقدري ترجّعيها')} في أي وقت.</small>${MK.msg?`<div class="nnote">${MK.msg}</div>`:''}
       <button class="btn" id="mkGo" ${MK.busy?'disabled':''}>${G('اعرضها في السوق','اعرضيها في السوق')}</button><button class="btn ghost" id="mkNo" style="margin-top:8px">رجوع</button></div>`
     :!O.length?`<div class="card tw-empty">مفيش حاجة ${G('تعرضها','تعرضيها')}. ${G('هات','هاتي')} حاجات من الجبل أو الترعة، أو ${G('اعمل','اعملي')} عدّة زيادة.</div>`
-    :`<div class="col">${O.map((o,i)=>`<button class="tw-row mk-o" data-mko="${i}"><div class="ic">${mkIco(o,40)}</div><div class="tx"><b>${o.k==='m'?MAT[o.id].n:qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''} <span class="tw-cnt">×${o.have}</span>${o.k==='g'?by(o.I):''}</div><span class="mk-arr">‹</span></button>`).join('')}</div>`}
+    :`<div class="col">${O.map((o,i)=>`<button class="tw-row mk-o" data-mko="${i}"><div class="ic">${mkIco(o,40)}</div><div class="tx"><b>${o.k==='m'?mkName(o):qView(o.id,o.I).n}</b>${o.k==='g'?' '+qQChip(o.I.q):''} <span class="tw-cnt">×${o.have}</span>${o.k==='g'?by(o.I):''}</div><span class="mk-arr">‹</span></button>`).join('')}</div>`}
   else{const M=(MK.mine||[]).filter(x=>x.st==='open'),L=(h.mkLog||[]).slice().reverse();
     body=`${M.length?`<div class="col">${M.map(x=>row(x,'mine')).join('')}</div>`:`<div class="card tw-empty">مفيش عروض ${G("ليك","ليكي")} دلوقتي.</div>`}
     ${L.length?`<div class="tw-lbl">اتباع</div><div class="card">${L.map(l=>`<div class="nrow"><span>${l.n}${l.c>1?' ×'+l.c:''} · المشتري: ${esc(l.b||'لاعب')}</span><b style="color:var(--gold2)">+${l.p}</b></div>`).join('')}</div>`:''}`}
@@ -18950,6 +18959,27 @@ TW_EXTRA.push(h=>({id:'market',go:'pmarket',n:'سوق اللاعبين',w:'بي�
 .mk-form .mk-l{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}.mk-form input{width:140px;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#120d08;color:var(--ink);font:inherit;font-size:18px;padding:0 10px;text-align:center}
 .mk-h{display:block;color:var(--mute);font-size:12px;margin:8px 0}.mk-form .btn{margin-top:6px}
 .q-by{display:block;color:#c9b48c;font-size:12px}`;document.head.appendChild(st)}
+/* ---------- the old slipper finally does something ----------
+   a «شبشب قديم» from the canal or a card turns into «شبشب طاير» in the bag: thrown in a fight it hits,
+   often dazes (the foe's next hit is half), and spirits and عفاريت hate it most. */
+Object.assign(ITEMS,{shbshb:{name:'شبشب طاير',price:0,use:'shoe',info:()=>'{ترميه|ترميه} على عدو: ضربة على الدماغ، وساعات {بيدوّخه|بيدوّخه}. العفاريت والأرواح بتتجنن منه.'}});
+if(!BAG_FIGHT.includes('shbshb'))BAG_FIGHT.push('shbshb');
+MAT.shoe.n='شبشب قديم';
+function shoeMove(h){if(!h||!h.res||!(h.res.shoe>0))return;h.bag=h.bag||{};h.bag.shbshb=(h.bag.shbshb||0)+h.res.shoe;h.res.shoe=0}
+(HEROES||[]).forEach(h=>{shoeMove(h);if(h&&h.bag)h.bag.shbshb=h.bag.shbshb||0});
+{const t0=SCREENS.town;SCREENS.town=function(){const h=S.hero;if(h&&h.res&&h.res.shoe>0){const n=h.res.shoe;shoeMove(h);saveHero();setTimeout(()=>toast(`${n===1?'الشبشب القديم':n+' شباشب قديمة'} في الشنطة دلوقتي «شبشب طاير»: ${G('ارميه','ارميه')} على أي عدو في القتال.`),400)}return t0.apply(this,arguments)}}
+{const s0=startCombat;startCombat=function(){shoeMove(S.hero);return s0.apply(this,arguments)}}
+{const it0=itemTargets;itemTargets=function(k){if(k!=='shbshb')return it0.apply(this,arguments);const C=S.combat;
+  return C.foes.filter(f=>f.hp>0&&!f.fled).map(f=>({who:'foe',id:f.id,t:`ارميه على ${f.name}`,s:f.spirit?`${FF(f,'بيتجنن','بتتجنن')} من الشبشب: هيوجع جامد`:'ضربة على الدماغ، وممكن تدوّخ'}))}}
+{const u0=useItem;useItem=async function(k,t){if(k!=='shbshb')return u0.apply(this,arguments);const C=S.combat,h=S.hero;if(!C||C.busy||!t)return;
+  ac();C.busy=true;C.bag=null;C.usedItem=true;h.bag.shbshb=Math.max(0,(h.bag.shbshb||0)-1);
+  const f=C.foes[t.id];if(!f)return afterHero();const sp=!!f.spirit,d=rnd(3)+1+Math.floor(h.lvl/3)+(sp?3:0),dz=f.hp-d>0&&Math.random()<(sp?.7:.45);
+  hurtFoe(f,d,{fx:'salt'});SFX.whoosh&&SFX.whoosh();await sleep(500);
+  if(dz){f.fx=f.fx||{};fxOn(f.fx,'weak');SFX.stun&&SFX.stun();const el=$('#foe'+f.id);if(el)floatAt(el,FF(f,'مدوّخ!','مدوّخة!'),'#ffd36a','',24)}
+  const line=[`{رميت|رميتي} الشبشب في دماغ ${f.name}: -${d}`];if(sp)line.push(`${FF(f,'اتجنن','اتجننت')} من الشبشب`);if(f.hp<=0)line.push(`${f.name} ${FF(f,'وقع','وقعت')}!`);else if(dz)line.push(`${FF(f,'دايخ','دايخة')}: ضربت${FF(f,'ه','ها')} الجاية نص`);
+  await say(line.join(' · '),'good');saveHero();return afterHero()}}
+/* a slipper sprite for the bag */
+if(PXI_D.shoe&&!PXI_D.shbshb)PXI_D.shbshb=PXI_D.shoe;
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
