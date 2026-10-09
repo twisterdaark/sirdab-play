@@ -4367,6 +4367,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.54',d:'10 أكتوبر',add:[],fix:['فرصة التخصص مبقتش بتطلع لما {تفتح|تفتحي} اللعبة. بتطلع بنسبة صغيرة {وانت شغال|وانتي شغالة} في الحرفة (الحدادة والخياطة والطبخ والزرع) أو بعد قتال صعب {تكسبه|تكسبيه}، وبتظهر في مكانك من غير ما تقطع اللي {بتعمله|بتعمليه}.']},
   {v:'5.53',d:'10 أكتوبر',add:['التخصصات: الحرفة والقتال بيفتحوا تخصصات ليها ندرة (نادر، ملحمي، خفي، أسطوري، سري). تخصص واحد في المرة، ولما الفرصة تيجي {تقبل|تقبلي} أو {ترفض|ترفضي}.','طريق الحداد: «{الحداد|الحدادة}» وبعده «أسطى الحدادين» وبعده «{وريث|وريثة} الحداد الأول». كل خطوة الشغل بيطلع أجود، والسلاح اللي {عملته|عملتيه} بإيدك بيضرب أجمد.','تخصصات تانية: {الخياط|الخياطة}، {الطباخ|الطباخة}، {الفلاح الأسطوري|الفلاحة الأسطورية}، وواحد سري لأصحاب الحرف التلاتة. وكل نوع شخصية ليه تخصص خفي في القتال، محدش هيقولك عليه.','الفولاذ: {اسبكه|اسبكيه} عند الحداد من حديد وفحم (من حدادة مستوى 5).','شغل جديد عند الحداد من مستوى 7 لـ10: سيف فولاذ، بلطة، درع زرد، خوذة فولاذ، خاتم فولاذ، وسيف المعلّم.','الورشة: 3 حاجات {تركّبها|تركّبيها} عند الحداد، الشغل بيطلع أجود وأرخص، وآخرها بيسبك فولاذتين.'],fix:[]},
   {v:'5.52',d:'9 أكتوبر',add:[],fix:['الطبخ والعيش اترسموا من جديد بيكسل بجد: الطاسة، والحلل، والعجينة، والفرن، والرغيف، والفوران.','في الترعة: السنارة، والخيط، والعوامة، والبكرة بقوا بيكسل زي باقي الصورة، والعوامة رجعت تبان على المية.']},
   {v:'5.51',d:'9 أكتوبر',add:[],fix:['الترعة كانت بتهنّج الصفحة بعد البيكسل. اتشال الفلتر منها ومن المنجم، والصيد رجع زي ما كان.']},
@@ -23460,8 +23461,9 @@ function fsPxFrame(E,ov){const P=3;
    سرداب: التخصصات (p56/, 5.53)
    A hero can hold one specialisation (تخصص) at a time. Some grow out of a craft (الحداد → أسطى الحدادين → وريث الحداد الأول,
    الخياط، الطباخ، الفلاح الأسطوري), one hidden one per class grows out of the way you fight, and one secret one is for whoever
-   masters three crafts. Every one has a rarity (SP_R). When its conditions are met, its chance (SP_P) is rolled once a day as you
-   walk into town; when it comes, an offer opens: accept (it takes the place of the one you hold) or decline.
+   masters three crafts. Every one has a rarity (SP_R). Once its conditions are met, a small chance (SP_P) is rolled while you do
+   the thing it belongs to (ev: a craft, a harvest, or a hard fight you win), never just for opening the game (Twister, 5.54).
+   When it comes, an offer opens right there: accept (it takes the place of the one you hold) or decline.
    A declined or left rare or epic one waits on the تخصصات screen to take later; a hidden, legendary or secret one that you
    decline or leave never comes back. The rarer ones need much more and only come as a small daily chance, so they stay few.
    Each class file below registers itself with SP_ADD({...}) and keeps its own fight or craft hooks next to it.
@@ -23472,7 +23474,7 @@ function fsPxFrame(E,ov){const P=3;
    ========================================================================== */
 const SP={},SP_ORDER=[];
 const SP_R={rare:{n:'نادر',c:'#6ab4ff',i:0},epic:{n:'ملحمي',c:'#a578d6',i:1},hidden:{n:'خفي',c:'#45c8dc',i:2},legend:{n:'أسطوري',c:'#f3c14d',i:3},secret:{n:'سري',c:'#ff8f73',i:4}};
-const SP_P={rare:1,epic:.35,hidden:.25,legend:.12,secret:.05};
+const SP_P={rare:.2,epic:.08,hidden:.1,legend:.02,secret:.01};   /* per craft, harvest or hard fight once the conditions are met */
 const SP_KEEP=o=>o.r==='rare'||o.r==='epic';
 function SP_ADD(o){SP[o.id]=o;SP_ORDER.push(o.id)}
 function spFix(h){if(!h)return null;const s=h.sp||(h.sp={});s.on=s.on||'';['had','no','roll','later'].forEach(k=>s[k]=s[k]||{});s.offer=s.offer||'';return s}
@@ -23484,13 +23486,14 @@ const spLv=(h,k)=>h&&h.life&&h.life[k]?h.life[k].lvl:1;
 const spCnt=(h,k)=>h&&h.cnt&&h.cnt[k]||0;
 function spOk(h,o){if(o.cls&&h.cls!==o.cls)return false;if(o.from&&!h.sp.had[o.from])return false;try{return !!o.need(h)}catch(e){return false}}
 function spFor(h){return SP_ORDER.map(id=>SP[id]).filter(o=>!o.cls||o.cls===h.cls)}
-/* once a day per class whose conditions are met: the rarest first; a lower one than the one you hold is not offered, it waits on the screen */
-function spCheck(h){const s=spFix(h);if(!s)return '';if(s.offer&&SP[s.offer])return s.offer;s.offer='';
-  const cur=spOn(h),d=spDay();let got='';
-  spFor(h).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(got||s.on===o.id||s.no[o.id]||s.later[o.id]||!spOk(h,o))return;
+/* a roll while you work: ev is the craft ('smith','tailor','cook'), 'farm' or 'fight'; mul makes harder work likelier.
+   The rarest that comes wins; a lower one than the one you hold is not offered, it waits on the screen. */
+function spEvent(h,ev,mul){const s=spFix(h);if(!s)return '';if(s.offer&&SP[s.offer]){spShowSoon();return s.offer}s.offer='';
+  const cur=spOn(h);let got='';
+  spFor(h).filter(o=>[].concat(o.ev).includes(ev)).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(got||s.on===o.id||s.no[o.id]||s.later[o.id]||!spOk(h,o))return;
     if(cur&&SP_R[cur.r].i>SP_R[o.r].i&&cur.id!==o.from){if(SP_KEEP(o)){s.later[o.id]=1;saveHero()}return}
-    if(s.roll[o.id]===d)return;s.roll[o.id]=d;if(Math.random()<SP_P[o.r])got=o.id});
-  if(got)s.offer=got;saveHero();return got}
+    if(Math.random()<SP_P[o.r]*(mul||1))got=o.id});
+  if(got){s.offer=got;saveHero();spShowSoon()}return got}
 function spDrop(h,id){const s=h.sp,o=SP[id];if(!o)return;if(SP_KEEP(o))s.later[id]=1;else s.no[id]=1}
 function spTake(h,id){const s=spFix(h),o=SP[id];if(!o)return;if(s.on&&s.on!==id)spDrop(h,s.on);s.on=id;s.had[id]=1;delete s.later[id];if(s.offer===id)s.offer='';saveHero()}
 function spDecline(h,id){const s=spFix(h);spDrop(h,id);if(s.offer===id)s.offer='';saveHero()}
@@ -23504,7 +23507,12 @@ function spQ(h,at){const o=spOn(h);return o&&o.q&&o.q[at]||0}
 function spCost(h,at){const o=spOn(h);let m=o&&o.cost&&o.cost[at]||1;if(at==='smith'&&typeof wsCost==='function')m*=wsCost(h);return m}
 {const c0=craftQ;craftQ=function(h,at,score){const a=[...arguments];a[2]=Math.min(1,(+score||0)+spQ(h,at)+(at==='smith'&&typeof wsQ==='function'?wsQ(h):0));const r=c0.apply(this,a);
   try{const o=spOn(h);if(o&&o.craftQ)o.craftQ(h,at,r);if(at==='smith'&&h){if(r.q>=3)bump('smQ3');if(r.q>=4)bump('smQ4')}}catch(e){console.warn(e)}return r}}
-{const l0=lifeXP;lifeXP=function(h,k){if(h&&h.cnt&&(k==='smith'||k==='tailor'||k==='cook'))h.cnt['made_'+k]=(h.cnt['made_'+k]||0)+1;return l0.apply(this,arguments)}}
+{const l0=lifeXP;lifeXP=function(h,k,n){if(h&&h.cnt&&(k==='smith'||k==='tailor'||k==='cook'))h.cnt['made_'+k]=(h.cnt['made_'+k]||0)+1;const r=l0.apply(this,arguments);
+  try{if(h&&h===S.hero&&!S.combat&&(k==='smith'||k==='tailor'||k==='cook'||k==='farm'))spEvent(h,k,Math.min(2,.5+.25*(n||1)))}catch(e){console.warn(e)}return r}}
+/* a hard fight you win: a boss, three foes or more, or you end it under a third of your health */
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let hard=0;
+  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');hard=boss?1.5:(C.foes.length>=3||h.hp<MXH(h)/3)?1:0}}catch(e){}
+  const r=e0.apply(this,arguments);try{if(hard)spEvent(h,'fight',hard)}catch(e){console.warn(e)}return r}}
 /* what you made with your own hands (I.by is your name) hits harder or guards better while you hold a craft class */
 {const v0=gView;gView=function(h,id){const v=v0.apply(this,arguments);try{const o=spOn(h),g=GEAR[id],I=giL(h,id)[0];
   if(!v||!o||!o.own||!g||!I||I.by!==h.name)return v;const b=o.own[g.at]||o.own.all;if(!b)return v;
@@ -23530,17 +23538,17 @@ function spIco(o,w){return `<span class="sp-ic" style="width:${w}px;height:${w}p
    «الحداد الأول» is the old smith of the village in the stories: he made the iron that the jinn fear, and whoever reaches
    his level gets his marks. Each step needs the one before it (had, even if you left it later). */
 const SP_HAMMER=P20_grid(16,['','..KKKKKKKKKK','.KWWWccccccgK','.KWccccccccgK','.KcggggggggjK','..KKKKbBKKKK','......KbBK','......KbBK','......KbBK','......KvbK','......KbBK','......KbBK','......KvbK','......KbBK','.......KK','']);
-SP_ADD({id:'hadad',r:'rare',m:'الحداد',f:'الحدادة',px:SP_HAMMER,
+SP_ADD({id:'hadad',ev:'smith',r:'rare',m:'الحداد',f:'الحدادة',px:SP_HAMMER,
   need:h=>spLv(h,'smith')>=4&&(spCnt(h,'made_smith')>=6||spCnt(h,'crafted')>=10),
   prog:h=>`حدادة مستوى 4 (دلوقتي ${spLv(h,'smith')}) و6 حاجات ${G('تعملها','تعمليها')} عند الحداد (${Math.min(6,Math.max(spCnt(h,'made_smith'),Math.floor(spCnt(h,'crafted')*.6)))}/6)`,
   st:{'قوة':1},q:{smith:.05},own:{smith:{w:1,a:1}},
   d:['قوة +1','الشغل عند الحداد بيطلع أجود','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +1 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2']});
-SP_ADD({id:'ostaz',r:'epic',m:'أسطى الحدادين',f:'أسطى الحدادين',from:'hadad',px:P20_rc(SP_HAMMER,{W:'Y',c:'y',g:'o',j:'T'}),
+SP_ADD({id:'ostaz',ev:'smith',r:'epic',m:'أسطى الحدادين',f:'أسطى الحدادين',from:'hadad',px:P20_rc(SP_HAMMER,{W:'Y',c:'y',g:'o',j:'T'}),
   need:h=>spLv(h,'smith')>=7&&spCnt(h,'smQ3')>=3,
   prog:h=>`بعد «الحداد» · حدادة مستوى 7 (دلوقتي ${spLv(h,'smith')}) و3 حاجات «ممتاز» أو أحسن (${Math.min(3,spCnt(h,'smQ3'))}/3)`,
   st:{'قوة':2},q:{smith:.08},cost:{smith:.8},own:{smith:{w:2,a:1}},
   d:['قوة +2','الشغل عند الحداد أجود بكتير، وتمنه أقل 20%','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2','{بتعرف|بتعرفي} تعمل «مطرقة الأسطى»']});
-SP_ADD({id:'heir',r:'legend',m:'وريث الحداد الأول',f:'وريثة الحداد الأول',from:'ostaz',px:P20_rc(SP_HAMMER,{W:'R',c:'r',g:'m',j:'v',b:'o',B:'y',v:'T'}),
+SP_ADD({id:'heir',ev:'smith',r:'legend',m:'وريث الحداد الأول',f:'وريثة الحداد الأول',from:'ostaz',px:P20_rc(SP_HAMMER,{W:'R',c:'r',g:'m',j:'v',b:'o',B:'y',v:'T'}),
   need:h=>spLv(h,'smith')>=9&&spCnt(h,'smQ4')>=2,
   hint:'عم حسن: «جدي كان بيقول إن الحداد الأول ساب علامته في كل تحفة اتعملت بعده.»',
   st:{'قوة':3,'تحمّل':1},hp:4,q:{smith:.12},cost:{smith:.7},own:{smith:{w:2,a:2}},
@@ -23604,25 +23612,25 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
   view.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{const n=wsN(h),nx=WS[n];if(!nx||+b.dataset.ws!==n||!hasRes(h,nx.need)||h.money<nx.p)return;
     takeRes(h,nx.need);h.money-=nx.p;h.ws=n+1;saveHero();band('الورشة',nx.n,nx.d,{dur:2200,sound:SFX.fanfare});twRender()})}catch(e){console.warn(e)}return r}}
 /* ----- the other crafts: الخياط (rare), الطباخ (rare), الفلاح الأسطوري (legendary), and صاحب الصنعة (secret: three crafts at 8) ----- */
-SP_ADD({id:'khayat',r:'rare',m:'الخياط',f:'الخياطة',px:P20_grid(16,['','.........KK','........KWcK','.......KWcK','......KWcK','.....KWcK','....KWcK','...KWcK..KK','..KWcK..KrrK','..KcK..KrRrK','...K..KrRRrK','.....KrRrrK','.....KrrrK','......KKK','','']),
+SP_ADD({id:'khayat',ev:'tailor',r:'rare',m:'الخياط',f:'الخياطة',px:P20_grid(16,['','.........KK','........KWcK','.......KWcK','......KWcK','.....KWcK','....KWcK','...KWcK..KK','..KWcK..KrrK','..KcK..KrRrK','...K..KrRRrK','.....KrRrrK','.....KrrrK','......KKK','','']),
   need:h=>spLv(h,'tailor')>=4&&(spCnt(h,'made_tailor')>=6||spCnt(h,'crafted')>=10),
   prog:h=>`خياطة مستوى 4 (دلوقتي ${spLv(h,'tailor')}) و6 حاجات ${G('تعملها','تعمليها')} عند الخياط (${Math.min(6,spCnt(h,'made_tailor'))}/6)`,
   st:{'خفة':1},q:{tailor:.06},cost:{tailor:.85},own:{tailor:{w:0,a:1}},
   d:['خفة +1','الشغل عند الخياط أجود، وتمنه أقل 15%','الهدوم اللي {عملتها|عملتيها} بإيدك: الصديري الضربة بتقل 1 زيادة · العمة صحة +2']});
-SP_ADD({id:'tabbakh',r:'rare',m:'الطباخ',f:'الطباخة',px:P20_rc(PXI_D.foul,{}),
+SP_ADD({id:'tabbakh',ev:'cook',r:'rare',m:'الطباخ',f:'الطباخة',px:P20_rc(PXI_D.foul,{}),
   need:h=>spLv(h,'cook')>=4&&(spCnt(h,'made_cook')>=10||spCnt(h,'cooked')>=10),
   prog:h=>`طبخ مستوى 4 (دلوقتي ${spLv(h,'cook')}) و10 أكلات (${Math.min(10,Math.max(spCnt(h,'made_cook'),spCnt(h,'cooked')))}/10)`,
   st:{'تحمّل':1},hp:2,q:{cook:.06,bread:.06},food:1.25,
   d:['تحمّل +1 · صحة +2','الأكل اللي {بتطبخه|بتطبخيه} أجود','الأكل بيرجّع صحة ومجهود أكتر بالربع']});
 {const f0=fqMul;fqMul=function(h){let m=f0.apply(this,arguments);const o=spOn(h);if(o&&o.food)m*=o.food;return m}}
-SP_ADD({id:'fallah',r:'legend',m:'الفلاح الأسطوري',f:'الفلاحة الأسطورية',px:P20_grid(16,['......K.K.K','.....KyKyKyK','.....KyKyKyK','......KyKyK','.....KyKyKyK','......KyKyK','.......KqK','.......KqK','......KqKqK','.......KqK','.......KqK','.....KKbKKK','....KbBBBbK','....KbBBBbK','.....KKKKK','']),
+SP_ADD({id:'fallah',ev:'farm',r:'legend',m:'الفلاح الأسطوري',f:'الفلاحة الأسطورية',px:P20_grid(16,['......K.K.K','.....KyKyKyK','.....KyKyKyK','......KyKyK','.....KyKyKyK','......KyKyK','.......KqK','.......KqK','......KqKqK','.......KqK','.......KqK','.....KKbKKK','....KbBBBbK','....KbBBBbK','.....KKKKK','']),
   need:h=>spLv(h,'farm')>=7&&spCnt(h,'harvest')>=200,
   hint:'عم صابر: «فيه فلاح زمان كانت الأرض بتطلع له قبل ما يزرع.»',
   st:{'تحمّل':2,'حكمة':1},hp:3,grow:.7,
   d:['تحمّل +2 · حكمة +1 · صحة +3','الزرع بيطلع أسرع بكتير (وقته ×0.7)','مرة من كل 3 المحصول بيطلع الضعف']});
 function spGrow(h){const o=spOn(h);return o&&o.grow||1}
 {const y0=farmYield;farmYield=function(h){const r=y0.apply(this,arguments);try{if(spHas(h,'fallah')&&r&&!r.gold&&Math.random()<1/3){r.n*=2;r.gold=true}}catch(e){}return r}}
-SP_ADD({id:'sanaa',r:'secret',m:'صاحب الصنعة',f:'صاحبة الصنعة',px:P20_rc(PXI_D.trophy,{}),
+SP_ADD({id:'sanaa',ev:['smith','tailor','cook'],r:'secret',m:'صاحب الصنعة',f:'صاحبة الصنعة',px:P20_rc(PXI_D.trophy,{}),
   need:h=>spLv(h,'smith')>=8&&spLv(h,'tailor')>=8&&spLv(h,'cook')>=8,
   hint:'عجوز الجبل: «اللي إيده تعرف الحديد والقماش والنار، الصنعة كلها بتسمع كلامه.»',
   st:{'قوة':1,'خفة':1,'تحمّل':1,'ذكاء':1,'حكمة':1,'حضور':1},q:{smith:.1,tailor:.1,cook:.1,bread:.1},cost:{smith:.7,tailor:.7},own:{all:{w:1,a:1}},food:1.15,
@@ -23632,7 +23640,7 @@ SP_ADD({id:'sanaa',r:'secret',m:'صاحب الصنعة',f:'صاحبة الصنع
    Each shadow hits once after your turn. They leave when you go back to town. */
 const SPS={list:[]};
 const spShMax=h=>h.lvl>=9?3:2;
-SP_ADD({id:'zell',r:'hidden',cls:'حرامي',m:'سيد الظل',f:'سيدة الظل',px:P20_grid(16,['','.....KKKKKK','....KppppppK','...KpPPPPPPpK','...KpPKKKKPpK','..KpPKhhhhKPpK','..KpPKhQhQKPpK','..KpPKhhhhKPpK','..KppPKKKKPppK','.KpppPPPPPPpppK','.KppppPPPPppppK','KpppppppppppppK','KhpppppppppppphK','.KhhhhhhhhhhhhK','..KKKKKKKKKKKK','']),
+SP_ADD({id:'zell',ev:'fight',r:'hidden',cls:'حرامي',m:'سيد الظل',f:'سيدة الظل',px:P20_grid(16,['','.....KKKKKK','....KppppppK','...KpPPPPPPpK','...KpPKKKKPpK','..KpPKhhhhKPpK','..KpPKhQhQKPpK','..KpPKhhhhKPpK','..KppPKKKKPppK','.KpppPPPPPPpppK','.KppppPPPPppppK','KpppppppppppppK','KhpppppppppppphK','.KhhhhhhhhhhhhK','..KKKKKKKKKKKK','']),
   need:h=>h.lvl>=6&&(h.kills||0)>=80,
   hint:'عم شاكر: «فيه حرامية بيمشوا في الضلمة، ووراهم ضلّ ناس ماتوا على إيديهم.»',
   st:{'خفة':1},
@@ -23648,7 +23656,7 @@ FXD.shade={c:'#c3a2ff',i:'smoke'};
 {const t0=SCREENS.town;SCREENS.town=function(){SPS.list=[];return t0.apply(this,arguments)}}
 
 /* محارب الدم (warrior): the more blood, the harder you hit: +1 for every 20% of health you lost, +2 on a foe under half, and a kill gives health back */
-SP_ADD({id:'dam',r:'hidden',cls:'محارب',m:'محارب الدم',f:'محاربة الدم',px:P20_grid(16,['.......KK','......KRRK','......KRRK','.....KRRrRK','.....KRrrrK','....KRrrrrrK','....KRWrrrrK','...KRWWrrrrmK','...KRWrrrrrmK','...KRrrrrrrmK','...KRrrrrrmmK','....KRrrrmmK','.....KKmmmKK','.......KKK','','']),
+SP_ADD({id:'dam',ev:'fight',r:'hidden',cls:'محارب',m:'محارب الدم',f:'محاربة الدم',px:P20_grid(16,['.......KK','......KRRK','......KRRK','.....KRRrRK','.....KRrrrK','....KRrrrrrK','....KRWrrrrK','...KRWWrrrrmK','...KRWrrrrrmK','...KRrrrrrrmK','...KRrrrrrmmK','....KRrrrmmK','.....KKmmmKK','.......KKK','','']),
   need:h=>h.lvl>=5&&spCnt(h,'lowWins')>=6,
   hint:'عم حسن: «فيه ناس الدم بيصحّيهم. كل ما يتعوّروا، يضربوا أجمد.»',
   st:{'قوة':1},hp:3,
@@ -23659,7 +23667,7 @@ SP_CH.push((h,C)=>{if(!spHas(h,'dam'))return null;const n=Math.min(4,Math.floor(
 FXD.blood={c:'#ff6a5a',i:'rage'};
 
 /* ساحر الرماد (mage): your hits can set the foe on fire, and a burning foe takes more */
-SP_ADD({id:'ramad',r:'hidden',cls:'ساحر',m:'ساحر الرماد',f:'ساحرة الرماد',px:P20_grid(16,['.......K','......KyK','......KyK..K','.....KyYyK.KK','....KoyYyKKoK','....KoyYYyKoK','...KroyYYyoroK','...KroyYWYyorK','..KrooyYWYyorK','..KroyYWWWYyoK','..KroyYWWWYyorK','..KrooyYWYyoorK','...KrooyyyoorK','....KKrrrrrKK','......KKKKK','']),
+SP_ADD({id:'ramad',ev:'fight',r:'hidden',cls:'ساحر',m:'ساحر الرماد',f:'ساحرة الرماد',px:P20_grid(16,['.......K','......KyK','......KyK..K','.....KyYyK.KK','....KoyYyKKoK','....KoyYYyKoK','...KroyYYyoroK','...KroyYWYyorK','..KrooyYWYyorK','..KroyYWWWYyoK','..KroyYWWWYyorK','..KrooyYWYyoorK','...KrooyyyoorK','....KKrrrrrKK','......KKKKK','']),
   need:h=>h.lvl>=5&&(h.kills||0)>=60,
   hint:'عجوز الجبل: «فيه سحرة بيكلموا النار، والنار بترد عليهم.»',
   st:{'ذكاء':1},
@@ -23668,7 +23676,7 @@ SP_ADD({id:'ramad',r:'hidden',cls:'ساحر',m:'ساحر الرماد',f:'ساح
   d:['ذكاء +1','ضربتك ممكن تولّع في الوحش (بيتحرق كل دور، دورين)','ضرر +2 على اللي بيتحرق']});
 
 /* شيخ الطريقة (healer): every fight starts with a slow heal for you and your companion, and spirits fear you */
-SP_ADD({id:'tariqa',r:'hidden',cls:'معالج',m:'شيخ الطريقة',f:'شيخة الطريقة',px:P20_rc(PXI_D.incense,{}),
+SP_ADD({id:'tariqa',ev:'fight',r:'hidden',cls:'معالج',m:'شيخ الطريقة',f:'شيخة الطريقة',px:P20_rc(PXI_D.incense,{}),
   need:h=>h.lvl>=5&&(h.kills||0)>=60,
   hint:'العمدة: «فيه ناس قلبهم نضيف، والعفاريت بتتلم أول ما يدخلوا.»',
   st:{'حكمة':1},
@@ -23682,30 +23690,33 @@ TW_EXTRA.push(h=>{const s=spFix(h),o=spOn(h),n=Object.keys(s.later).filter(id=>S
 function spBan(o){const c=o?SP_R[o.r].c:'#6e6152';return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><defs><radialGradient id="spBg"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="#1f1420" stop-opacity="0"/></radialGradient></defs>
   <rect width="160" height="90" fill="#1b1d3b"/><rect width="160" height="90" fill="url(#spBg)"/>${o?PXF_svg(o.px).replace('<svg ','<svg x="50" y="8" width="60" height="78" '):`<text x="80" y="58" text-anchor="middle" font-size="40" fill="#6e6152" font-weight="900">؟</text>`}</svg>`}
 {const pa=placeArt;placeArt=function(id){if(id==='spec')return spBan(spOn(S.hero));return pa.apply(this,arguments)}}
-/* the offer opens by itself when you walk into town and a chance came */
-{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{const h=S.hero;if(h&&!SPV.shown&&spCheck(h)){SPV.shown=1;setTimeout(()=>{if(S.screen==='town'&&h.sp.offer){S.screen='specOffer';render()}},700)}}catch(e){console.warn(e)}return r}}
-const SPV={shown:0,ask:''};
+/* the offer opens as an overlay right where you are (after the craft, the harvest or the fight), so nothing you were doing is lost */
+const SPV={ask:'',t:0};
 function spCard(h,o,big){const R=SP_R[o.r];return `<div class="card sp-card${big?' big':''}" style="--rc:${R.c}"><div class="sp-hd">${spIco(o,big?96:56)}<div class="tx"><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
   <ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul></div>`}
-SCREENS.specOffer=function(){const h=S.hero;if(!h){S.screen='title';return render()}const s=spFix(h),o=SP[s.offer];if(!o){S.screen='town';return render()}
+function spShowSoon(){clearTimeout(SPV.t);SPV.t=setTimeout(spShow,1300)}
+function spShow(){const h=S.hero;if(!h||document.getElementById('spOv'))return;if(S.combat){spShowSoon();return}const s=spFix(h),o=SP[s.offer];if(!o)return;
   const R=SP_R[o.r],cur=spOn(h),keep=SP_KEEP(o),curKeep=cur&&SP_KEEP(cur);
   const who={rare:'حاجة جديدة اتفتحت',epic:'خطوة لقدام',hidden:'حاجة كانت مستخبية',legend:'حاجة ناس قليلة أوي بتوصلها',secret:'سر'}[o.r];
-  view.innerHTML=`<div class="sp-off" style="--rc:${R.c}"><div class="sp-glow"></div><small class="sp-who">${who}</small><div class="sp-big">${spIco(o,150)}</div>
+  const ov=document.createElement('div');ov.id='spOv';ov.className='sp-ov';
+  ov.innerHTML=`<div class="sp-off" style="--rc:${R.c}"><div class="sp-glow"></div><small class="sp-who">${who}</small><div class="sp-big">${spIco(o,150)}</div>
     <div class="sp-r" style="color:${R.c}">تخصص ${R.n}</div><h2>${spName(o,h)}</h2>${o.hint?`<div class="sp-hint">${T(o.hint)}</div>`:''}
     <ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul>
     ${cur?`<div class="sp-warn">${G('هتسيب','هتسيبي')} «${spName(cur,h)}»${curKeep?` (${G('تقدر ترجعله','تقدري ترجعيله')} بعدين)`:'، ومش هيرجع تاني'}.</div>`:''}
     <div class="sp-btns"><button class="btn" id="spYes">${G('أقبل','أقبلي')}</button><button class="btn ghost" id="spNo">${G('أرفض','أرفضي')}</button></div>
     <div class="sp-sm">${keep?`لو ${G('رفضت','رفضتي')}، ${G('هتلاقيه','هتلاقيه')} في «التخصصات» ${G('تاخده','تاخديه')} وقت ما ${G('تحب','تحبي')}.`:`لو ${G('رفضت','رفضتي')}، الفرصة دي مش هترجع تاني.`}</div></div>`;
+  (document.getElementById('app')||document.body).appendChild(ov);
   try{flash(R.c);SFX.shimmer&&SFX.shimmer();setTimeout(()=>SFX.fanfare&&SFX.fanfare(),350)}catch(e){}
-  $('#spYes').onclick=()=>{spTake(h,o.id);band('تخصص '+R.n,spName(o,h),T(o.d[0]),{color:'blue',dur:2600,sound:SFX.fanfare});S.screen='spec';render()};
-  $('#spNo').onclick=()=>{if(!keep&&SPV.ask!==o.id){SPV.ask=o.id;$('#spNo').textContent=G('متأكد؟ مش هترجع','متأكدة؟ مش هترجع');return}spDecline(h,o.id);SPV.ask='';S.screen='town';render()}};
+  const done=()=>{ov.remove();if(!S.combat)render()};
+  ov.querySelector('#spYes').onclick=()=>{spTake(h,o.id);done();band('تخصص '+R.n,spName(o,h),T(o.d[0]),{color:'blue',dur:2600,sound:SFX.fanfare})};
+  ov.querySelector('#spNo').onclick=e=>{if(!keep&&SPV.ask!==o.id){SPV.ask=o.id;e.target.textContent=G('متأكد؟ مش هترجع','متأكدة؟ مش هترجع');return}spDecline(h,o.id);SPV.ask='';done()}}
 SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}const s=spFix(h),o=spOn(h),all=spFor(h);
   const later=Object.keys(s.later).filter(id=>SP[id]&&!spHas(h,id)&&(!SP[id].cls||SP[id].cls===h.cls)).map(id=>SP[id]);
   const open=all.filter(x=>SP_KEEP(x)&&!spHas(h,x.id)&&!s.later[x.id]&&(!x.from||s.had[x.from]));
   const hid={};all.filter(x=>!SP_KEEP(x)&&!s.had[x.id]&&!s.no[x.id]).forEach(x=>hid[x.r]=(hid[x.r]||0)+1);
   const lost=all.filter(x=>s.no[x.id]);
   view.innerHTML=`${twTop('التخصصات')}<div class="tw sp-scr">
-    <div class="tw-sm">تخصص واحد في المرة. الحرفة والقتال بيفتحوا التخصصات، والنادر منها بييجي فرصة كل يوم ${G('وانت داخل','وانتي داخلة')} البلد.</div>
+    <div class="tw-sm">تخصص واحد في المرة. الحرفة والقتال بيفتحوا التخصصات. الفرصة بتيجي ${G('وانت شغال','وانتي شغالة')} في الحرفة أو بعد قتال صعب، ومش كل مرة.</div>
     ${o?`<div class="tw-lbl">${G('تخصصك','تخصصك')}</div>${spCard(h,o,1)}<button class="btn ghost small" id="spLeave">${G('سيب','سيبي')} التخصص</button>`:`<div class="card sp-none">${G('لسه ما اتخصصتش','لسه ما اتخصصتيش')}.</div>`}
     ${later.length?`<div class="tw-lbl">${G('تقدر تاخد','تقدري تاخدي')}</div>${later.map(x=>spCard(h,x).replace(/<\/div>$/,`<button class="btn small" data-spt="${x.id}">${G('خده','خديه')}${o?` بدل «${spName(o,h)}»`:''}</button></div>`)).join('')}`:''}
     ${open.length?`<div class="tw-lbl">في الطريق</div>${open.map(x=>`<div class="card sp-mini" style="--rc:${SP_R[x.r].c}">${spIco(x,40)}<div class="tx"><b>${spName(x,h)} <small style="color:${SP_R[x.r].c}">${SP_R[x.r].n}</small></b><small>${x.prog?x.prog(h):''}</small></div></div>`).join('')}`:''}
@@ -23724,7 +23735,8 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 .sp-mini{display:flex;gap:10px;align-items:center}.sp-mini .tx{display:flex;flex-direction:column;gap:3px}.sp-mini .tx small{opacity:.8;line-height:1.45}
 .sp-hid{display:flex;flex-direction:column;gap:6px}.sp-hid span{font-weight:800}.sp-hid small{opacity:.75;line-height:1.5}
 .sp-scr>.btn.small{width:100%;min-height:44px}
-.sp-off{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 18px 32px;gap:8px;overflow:hidden}
+.sp-ov{position:fixed;inset:0;z-index:9000;background:#0c0a10;overflow-y:auto;direction:rtl}
+.sp-off{position:relative;min-height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 18px 32px;gap:8px;overflow:hidden}
 .sp-glow{position:absolute;inset:-20% -30% auto;height:420px;background:radial-gradient(closest-side,color-mix(in srgb,var(--rc) 55%,transparent),transparent);opacity:.7;animation:spGlow 2.4s ease-in-out infinite alternate;pointer-events:none}
 @keyframes spGlow{from{transform:scale(.92);opacity:.5}to{transform:scale(1.06);opacity:.85}}
 .sp-who{position:relative;opacity:.8;letter-spacing:.5px}.sp-big{position:relative;animation:spIn .7s cubic-bezier(.2,1.4,.4,1) both}@keyframes spIn{from{transform:scale(.3) rotate(-12deg);opacity:0}}
