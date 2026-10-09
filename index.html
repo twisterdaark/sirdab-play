@@ -4357,6 +4357,14 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.36',d:'9 أكتوبر',add:[
+    'القايمة الرئيسية اتجددت: النجوم بتتحرك وبتلمع وساعات نجمة بتقع، {بطلك|بطلتك} {واقف|واقفة} قصاد الوحوش ({دوس|دوسي} {عليه|عليها} {يتنطط|تتنطط} {ويقول|وتقول} حاجة)، والزراير بتتحرك لما {تقرّب|تقرّبي} منها ولما {تدوس|تدوسي}.',
+    'عين صغيرة على كل خانة في «عدّتي»: {دوس|دوسي} عليها {تخفي|تخفي} القطعة من الصورة أو {تورّيها|تورّيها}. ونفس الزرار جوه نافذة القطعة.',
+    'لو {بطلك|بطلتك} بنت، الحلاق بقى «كوافير سماح»، وسماح عندها 3 تسريحات جديدة: طويل بوردة، ديل بفيونكة، وكحكة بغرة.',
+    'صالون عادل للولاد بقى فيه قصّات رجالي: موهوك، أندر كت، وفلات توب.'
+  ],fix:[
+    'الكلام الجديد عن الصبغات والحلاقة بقى مناسب للولد والبنت.'
+  ]},
   {v:'5.35',d:'9 أكتوبر',add:[
     '«صالون عادل» في ناس البلد: عادل الحلاق بيبيع قصّات (موهوك، ديل حصان، قصة ولادي…) وصبغات شعر (أحمر، أزرق، بنفسجي، أخضر، دهبي، تركواز). {جرّب|جرّبي} على المراية قبل ما {تشتري|تشتري}، واللي {تشتريه|تشتريه} بيفضل بتاعك و{تقدر|تقدري} {ترجع|ترجعي} له ببلاش.',
     'كل مهمة في دوار العمدة ليها درجة: بسيطة، عادية، متوسطة، صعبة، تقيلة، نار، أسطورية. كل ما تصعب، الفلوس والهدايا تكبر.',
@@ -21467,6 +21475,27 @@ function vanBind(h,after){view.querySelectorAll('[data-van]').forEach(b=>b.oncli
 {const c0=create;create=function(){const r=c0.apply(this,arguments);try{if(!S.editing||!S.hero)return r;const h=S.hero,x=vanHTML(h);if(!x)return r;
   const ab=$('#ab');const lb=ab&&ab.previousElementSibling;if(!lb)return r;lb.insertAdjacentHTML('beforebegin',x.replace('tw-lbl','label'));
   vanBind(h,()=>{if(S.draft)S.draft.hide=h.hide;const y=view.scrollTop;S.draft.name=$('#nm').value;S.draft.about=$('#ab').value;render();view.scrollTop=y})}catch(e){console.warn(e)}return r}}
+
+/* ----- v5.36: an eye on each worn slot in «عدّتي», and a show/hide button in the slot's sheet ----- */
+const VAN_EYE='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+const VAN_EYE_X='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path d="M4 20L20 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+function vanToggle(h,s){const hid=h.hide=h.hide||{};if(hid[s])delete hid[s];else hid[s]=1;saveHero();SFX.tick&&SFX.tick(700)}
+{const g0=SCREENS.gear;SCREENS.gear=function(){const r=g0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='gear')return r;
+  view.querySelectorAll('.tw-slot[data-slot]').forEach(b=>{const s=b.dataset.slot;if(!VAN_SLOTS.includes(s)||!(h.eq&&h.eq[s]))return;const off=!!(h.hide&&h.hide[s]);
+    b.insertAdjacentHTML('beforeend',`<span class="van-eye${off?' off':''}" role="button" tabindex="0" aria-label="${off?'ورّي في الصورة':'اخفي من الصورة'}">${off?VAN_EYE_X:VAN_EYE}</span>`);
+    if(off)b.classList.add('van-hid');
+    const e=b.querySelector('.van-eye');e.onclick=ev=>{ev.stopPropagation();ev.preventDefault();vanToggle(h,s);twRender()}})}catch(e){console.warn(e)}return r}}
+{const s0=twSlotSheet;twSlotSheet=function(slot){const r=s0.apply(this,arguments);try{const h=S.hero,d=$('#twSh');if(!h||!d||!VAN_SLOTS.includes(slot)||!(h.eq&&h.eq[slot]))return r;
+  const off=!!(h.hide&&h.hide[slot]),at=d.querySelector('[data-shop]')||d.querySelector('[data-x]');
+  at.insertAdjacentHTML('beforebegin',`<button class="btn ghost small van-sh${off?' off':''}" data-vh="1">${off?VAN_EYE_X:VAN_EYE} ${off?`مخفي من الصورة · ${G('ورّيه','ورّيه')}`:`باين في الصورة · ${G('اخفيه','اخفيه')}`}</button>
+    <div class="tw-sm" style="text-align:center;margin-top:-2px">لو ${G('خفيته','خفيتيه')}، بيفضل ${G('لابسه','لابساه')} وبيديك نفس القوة</div>`);
+  d.querySelector('[data-vh]').onclick=()=>{vanToggle(h,slot);twRender();twSlotSheet(slot)}}catch(e){console.warn(e)}return r}}
+{const st=document.createElement('style');st.textContent=`
+.van-eye{position:absolute;top:-8px;inset-inline-start:-8px;width:40px;height:40px;display:grid;place-items:center;z-index:2;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.van-eye svg{width:26px;height:26px;padding:4px;border-radius:50%;background:#1c1510;border:1px solid var(--line);color:#a6e3a0;box-sizing:border-box;transition:transform .15s}
+.van-eye:active svg{transform:scale(.88)}.van-eye.off svg{color:#f0a090;border-color:#f0a09088}
+.tw-slot.van-hid .ic{opacity:.45}
+.van-sh{gap:8px}.van-sh svg{color:#a6e3a0}.van-sh.off svg{color:#f0a090}`;document.head.appendChild(st)}
 /* ---------- cooking that fits the dish (v5.32) ----------
    The frying step shows what you are really cooking: fish only when the dish has fish in it; طعمية, بصل, طماطم, محشي, قصب
    or قمح otherwise, each with its own raw-to-burnt colours. And the recipes use what the field grows. */
@@ -21658,7 +21687,7 @@ function qbOpen(h,k){const r=Math.random(),L=h.lvl||1;let t,x;
   else if(k==='c'){if(r<.3){x=80+Math.floor(Math.random()*121);h.money+=x;t=`${x} جنيه`}else if(r<.55){const m=pick(['silver','iron']),n=2+Math.floor(Math.random()*2);addRes(h,m,n);t=qbN(m,n)}
     else if(r<.75){const it=pick(['revive','bigpotion'].filter(i=>ITEMS[i]));h.bag[it]=(h.bag[it]||0)+1;t=ITEMS[it].name}else{x=Math.round(L*10*.3)+5;gainXP(x);t=`${x} خبرة`}}
   else{if(r<.3){x=250+Math.floor(Math.random()*351);h.money+=x;t=`${x} جنيه`}else if(r<.5){addRes(h,'turq',2);t=qbN('turq',2)}else if(r<.65&&MAT.goldfish){addRes(h,'goldfish',1);t='سمكة دهب'}
-    else if(r<.82&&typeof BRB_COL!=='undefined'){const c=BRB_COL.find(c=>!(h.hcOwn||[]).includes(c.c));if(c){h.hcOwn=(h.hcOwn||[]).concat([c.c]);t=`صبغة شعر «${c.n}» عند عادل الحلاق`}else{x=400;h.money+=x;t='400 جنيه'}}
+    else if(r<.82&&typeof BRB_COL!=='undefined'){const c=BRB_COL.find(c=>!(h.hcOwn||[]).includes(c.c));if(c){h.hcOwn=(h.hcOwn||[]).concat([c.c]);t=`صبغة شعر «${c.n}» ${h.g==='f'?'عند سماح الكوافيرة':'عند عادل الحلاق'}`}else{x=400;h.money+=x;t='400 جنيه'}}
     else{x=Math.round(L*10*.6)+10;gainXP(x);t=`${x} خبرة`}}
   return t}
 
@@ -21819,8 +21848,8 @@ function coChMine(root){const me=coMe(),h=S.hero;if(!root||!h)return;
    What you buy is yours for good (h.hairOwn = styles, h.hcOwn = colours): you can switch back and forth for free, here or in
    «عدّل الشكل». The gold mystery box from the quests can also give a dye (p43.js). */
 const BRB_HAIR=[
-  {k:'موهوك',g:'m',p:900},{k:'ديل حصان',g:'m',p:1200,n:'ديل حصان'},{k:'ضفيرة',g:'m',p:1500},
-  {k:'قصة ولادي',g:'f',p:900},{k:'موهوك',g:'f',p:1200},{k:'سبايكي',g:'f',p:1500}];
+  {k:'موهوك',g:'m',p:900},{k:'أندر كت',g:'m',p:1200},{k:'فلات توب',g:'m',p:1500},
+  {k:'طويل بوردة',g:'f',p:900},{k:'ديل بفيونكة',g:'f',p:1200},{k:'كحكة بغرة',g:'f',p:1500}];
 const BRB_COL=[{c:'#e04b3e',n:'أحمر نار',p:700,r:['R','r','m','m']},{c:'#2f6fd0',n:'أزرق',p:900,r:['L','l','2','2']},{c:'#6b45a6',n:'بنفسجي',p:900,r:['P','p','2','1']},
   {c:'#3a9e55',n:'أخضر',p:1100,r:['G','q','z','z']},{c:'#f3c14d',n:'أصفر دهبي',p:1300,r:['Y','y','o','o']},{c:'#45c8dc',n:'تركواز',p:1500,r:['Q','O','l','l']}];
 BRB_COL.forEach(c=>{PD.RAMPS.hair[c.c]=c.r});
@@ -21832,7 +21861,21 @@ BRB_COL.forEach(c=>{PD.RAMPS.hair[c.c]=c.r});
     body:[dots(6,12,2,3,x=>x>=4&&x<=7),{x:10,y:0,rows:['.hh.','hHhj','hHhj','hHhj','hhhj','.hj.']}]};
   add('hair','موهوك',Object.assign({g:'m'},MOH));add('hair','موهوك',Object.assign({g:'f'},MOH));
   const cp=(k,from,to)=>{const d=P(k,from);add('hair',k==='قصير'?'قصة ولادي':k,Object.assign({},d,{g:to}))};
-  cp('ديل حصان','f','m');cp('ضفيرة','f','m');cp('قصير','m','f');cp('سبايكي','m','f');
+  cp('ديل حصان','f','m');cp('ضفيرة','f','m');cp('قصير','m','f');cp('سبايكي','m','f');   /* the 5.35 styles stay drawable for anyone who bought one */
+  /* boys: أندر كت (hair on top, shaved sides) and فلات توب (a flat block on top) */
+  const SHT=P('قصير','m'),SF=arr(SHT.face)[0],SB=arr(SHT.body)[0];
+  add('hair','أندر كت',{g:'m',face:[{x:SF.x,y:SF.y,rows:SF.rows.slice(0,7).concat(['..hhhhhhhhhhhhhhhhhhhj..','..hHHhhh..hhh...hh..hj..'])},dots(6,20,10,3,x=>false)],
+    body:[{x:SB.x,y:SB.y,rows:SB.rows.slice(0,5).concat(['.hhhhh.hhhh.hhj.'])},dots(5,14,7,2,x=>false)]});
+  const flat='..h'+'H'.repeat(18)+'j..',flatB='.h'+'H'.repeat(12)+'j.';
+  add('hair','فلات توب',{g:'m',face:{x:SF.x,y:0,rows:[flat,'..hH'+'h'.repeat(16)+'hj..','..h'+'h'.repeat(18)+'j..'].concat(SF.rows.slice(3))},
+    body:{x:SB.x,y:0,rows:[flatB,'.hH'+'h'.repeat(10)+'hj.'].concat(SB.rows.slice(2))}});
+  /* girls: a flower over the ear, a bow on the ponytail, bangs with the bun */
+  const LG=P('طويل','f');const FLW={x:22,y:9,rows:['.R.','RYR','.Rr']},FLB={x:16,y:6,rows:['RY','Rr']};
+  add('hair','طويل بوردة',Object.assign({},LG,{g:'f',face:arr(LG.face).concat([FLW]),body:arr(LG.body).concat([FLB])}));
+  const PT=P('ديل حصان','f'),BOW={x:12,y:0,rows:['rr....rr','rRrmmrRr','rr....rr']},BOWB={x:9,y:0,rows:['rr..rr','rRmmRr']};
+  add('hair','ديل بفيونكة',Object.assign({},PT,{g:'f',face:arr(PT.face).concat([BOW]),body:arr(PT.body).concat([BOWB])}));
+  const BN=P('كحكة','f'),BG=P('طويل بغرة','f'),BANG=arr(BG.face)[1];
+  add('hair','كحكة بغرة',Object.assign({},BN,{g:'f',face:arr(BN.face).concat([BANG])}));
 })();
 const brbFix=h=>{h.hairOwn=h.hairOwn||[];h.hcOwn=h.hcOwn||[];return h};
 const brbHas=(h,k)=>(h.hairOwn||[]).includes(h.g+':'+k);
@@ -21845,19 +21888,23 @@ const brbHas=(h,k)=>(h.hairOwn||[]).includes(h.g+':'+k);
 
 /* the shop */
 const BRB={pv:null};
-TW_NPC.adel=['عادل الحلاق','#3d78a8'];
-if(typeof PXP_NPC!=='undefined')PXP_NPC.adel={look:KF_PPL.adel.look,bg:['l','2']};
+TW_NPC.adel=['عادل الحلاق','#3d78a8'];TW_NPC.samah=['سماح الكوافيرة','#b0566e'];
+if(typeof PXP_NPC!=='undefined'){PXP_NPC.adel={look:KF_PPL.adel.look,bg:['l','2']};
+  PXP_NPC.samah={look:{name:'سماح',g:'f',cls:'معالج',skin:'#e0b08a',hairColor:'#7d2e1e',hair:'طويل بغرة',eyes:'#4a2a14',outfit:'#6b4a8a',age:'شاب',mark:'كحل',eyesh:'واسع',mouth:'ضحكة'},bg:['P','p']}}
+/* who runs the shop: عادل for a boy, سماح for a girl */
+const BRB_WHO=()=>S.hero&&S.hero.g==='f'?{id:'samah',n:'سماح',shop:'كوافير سماح',w:'سماح الكوافيرة'}:{id:'adel',n:'عادل',shop:'صالون عادل',w:'عادل الحلاق'};
 TW_EXTRA.push(h=>{brbFix(h);const n=BRB_HAIR.filter(x=>x.g===h.g&&!brbHas(h,x.k)).length;
-  return {id:'barber',go:'barber',n:'صالون عادل',w:'عادل الحلاق',s:h.hcOwn.length||h.hairOwn.length?`${G('عندك','عندك')} ${h.hairOwn.length+h.hcOwn.length} من عنده`:'قصّات وصبغات مش في أي حتة'}});
+  const W=BRB_WHO();return {id:'barber',go:'barber',n:W.shop,w:W.w,s:h.hcOwn.length||h.hairOwn.length?`${G('عندك','عندك')} ${h.hairOwn.length+h.hcOwn.length} من عنده`:'قصّات وصبغات مش في أي حتة'}});
 {const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('barber'))g.go.splice(1,0,'barber')}
-{const pa=placeArt;placeArt=function(id){if(id==='barber')return brbArt();return pa.apply(this,arguments)}}
-function brbArt(){const pole=[0,1,2,3,4,5,6,7].map(i=>`<rect x="128" y="${18+i*7}" width="10" height="4" fill="#e04b3e"/><rect x="128" y="${22+i*7}" width="10" height="3" fill="#2f6fd0"/>`).join('');
+{const pa=placeArt;placeArt=function(id){if(id==='barber')return brbArt(S.hero&&S.hero.g==='f');return pa.apply(this,arguments)}}
+function brbArt(fem){const c1=fem?'#ff8f73':'#e04b3e',c2=fem?'#a578d6':'#2f6fd0',pole=[0,1,2,3,4,5,6,7].map(i=>`<rect x="128" y="${18+i*7}" width="10" height="4" fill="${c1}"/><rect x="128" y="${22+i*7}" width="10" height="3" fill="${c2}"/>`).join('');
   return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#1b1d3b"/><rect y="64" width="160" height="26" fill="#3a2a20"/>
   <rect x="14" y="10" width="64" height="44" fill="#29305f"/><rect x="18" y="14" width="56" height="36" fill="#93afe2"/><rect x="22" y="18" width="20" height="6" fill="#fffaf0" opacity=".5"/>
-  <rect x="34" y="44" width="28" height="8" fill="#962e3a"/><rect x="30" y="52" width="36" height="12" fill="#e04b3e"/><rect x="44" y="64" width="8" height="14" fill="#8f877b"/><rect x="36" y="76" width="24" height="4" fill="#8f877b"/>
+  <rect x="34" y="44" width="28" height="8" fill="#962e3a"/><rect x="30" y="52" width="36" height="12" fill="${fem?'#a578d6':'#e04b3e'}"/><rect x="44" y="64" width="8" height="14" fill="#8f877b"/><rect x="36" y="76" width="24" height="4" fill="#8f877b"/>
   <rect x="124" y="14" width="18" height="4" fill="#cfc6b8"/>${pole}<rect x="124" y="74" width="18" height="4" fill="#cfc6b8"/>
   <rect x="88" y="30" width="6" height="22" fill="#cfc6b8"/><rect x="96" y="30" width="6" height="22" fill="#cfc6b8"/><rect x="86" y="52" width="18" height="6" fill="#74412a"/></svg>`}
-const BRB_HI=['{اقعد|اقعدي} على الكرسي. عادل هيظبطك.','القصة الحلوة نص الشخصية. والنص التاني الصبغة.','دي حاجات مش هتلاقيها عند حد في الكفر. جايبها من مصر.','اللي يقعد على الكرسي بيقوم واحد تاني.'];
+const BRB_HI_F=['اقعدي يا قمر، هظبطلك شعرك على الآخر.','الشعر الحلو تاج. وأنا بعمل تيجان.','دي حاجات مش هتلاقيها عند حد في الكفر. جايباها من مصر.','البنات كلها هتسألك رحتي فين.'];
+const BRB_HI=['اقعد على الكرسي. عادل هيظبطك.','القصة الحلوة نص الشخصية. والنص التاني الصبغة.','دي حاجات مش هتلاقيها عند حد في الكفر. جايبها من مصر.','اللي يقعد على الكرسي بيقوم واحد تاني.'];
 SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()}brbFix(h);const pv=BRB.pv,fem=h.g==='f';
   const look=Object.assign({},h,{eq:{}},pv?pv.t==='h'?{hair:pv.k}:{hairColor:pv.k}:{});
   const free=fem?LOOK.hairF:LOOK.hairM;
@@ -21869,8 +21916,8 @@ SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()
     const wearing=pv.t==='h'?h.hair===pv.k:h.hairColor===pv.k;
     act=wearing?`<div class="tw-sm" style="text-align:center">ده اللي ${G('عليك','عليكي')} دلوقتي</div>`:own?`<button class="btn" id="brbGo">${G('اعمل','اعملي')} «${nm}» ببلاش</button>`
       :`<button class="btn" id="brbGo" ${h.money<x.p?'disabled':''}>${G('اشتري','اشتري')} «${nm}» بـ${x.p} جنيه</button>${h.money<x.p?`<div class="tw-sm" style="text-align:center">${G('محتاج','محتاجة')} ${x.p-h.money} جنيه كمان</div>`:''}`}
-  view.innerHTML=`${twTop('صالون عادل')}<div class="tw brb">
-    ${twNpcHTML('adel',T(pv?'«{بص|بصي} في المراية. حلوة، صح؟»':'«'+pick(BRB_HI)+'»'))}
+  const W=BRB_WHO();view.innerHTML=`${twTop(W.shop)}<div class="tw brb">
+    ${twNpcHTML(W.id,pv?(fem?'«بصي في المراية. تجنن، صح؟»':'«بص في المراية. حلوة، صح؟»'):'«'+pick(fem?BRB_HI_F:BRB_HI)+'»')}
     <div class="card brb-mir"><div class="brb-pic">${portrait(look,'brb'+(pv?pv.t+(pv.t==='h'?BRB_HAIR.findIndex(y=>y.k===pv.k):BRB_COL.findIndex(y=>y.c===pv.k)):'0'))}</div><div class="brb-st">${PX.body?PX.body(look,true):''}</div>
       <div class="tx"><b>${esc(h.name)}</b><small>${pv?`${G('بتجرّب','بتجرّبي')} ${pv.t==='h'?'قصّة':'صبغة'} «${pv.t==='h'?(BRB_HAIR.find(y=>y.g===h.g&&y.k===pv.k)||{}).n||pv.k:(BRB_COL.find(y=>y.c===pv.k)||{}).n}»`:G('دوس على أي حاجة تجربها','دوسي على أي حاجة تجربيها')}</small>${act}</div></div>
     <div class="tw-lbl">قصّات <small>مش في اختيارات الشخصية الجديدة</small></div><div class="card"><div class="wrap brb-w">${st}</div></div>
@@ -21887,7 +21934,7 @@ SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()
   const go=$('#brbGo');if(go)go.onclick=()=>{const p=BRB.pv;if(!p)return;
     if(p.t==='h'){const x=BRB_HAIR.find(z=>z.g===h.g&&z.k===p.k);if(!brbHas(h,p.k)){if(h.money<x.p)return;h.money-=x.p;h.hairOwn.push(h.g+':'+p.k);SFX.coin&&SFX.coin()}h.hair=p.k}
     else{const x=BRB_COL.find(z=>z.c===p.k);if(!h.hcOwn.includes(p.k)){if(h.money<x.p)return;h.money-=x.p;h.hcOwn.push(p.k);SFX.coin&&SFX.coin()}h.hairColor=p.k}
-    BRB.pv=null;saveHero();band('صالون عادل',T('{شكلك|شكلك} اتغير'),T(pick(['عادل: «نعيمًا!»','عادل: «الكفر كله هيسأل مين حلاقك.»','عادل: «{بص|بصي} في المراية تاني. مش مصدّق؟»'])),{dur:1800,sound:SFX.fanfare});y()};
+    BRB.pv=null;saveHero();const W2=BRB_WHO();band(W2.shop,'شكلك اتغير',pick(fem?['سماح: «نعيمًا يا قمر!»','سماح: «البنات كلها هتسأل مين عملّك ده.»','سماح: «بصي في المراية تاني. مش مصدّقة؟»']:['عادل: «نعيمًا!»','عادل: «الكفر كله هيسأل مين حلاقك.»','عادل: «بص في المراية تاني. مش مصدّق؟»']),{dur:1800,sound:SFX.fanfare});y()};
 };
 {const st=document.createElement('style');st.textContent=`
 .brb-mir{display:flex;gap:12px;align-items:center}.brb-pic{flex:none;width:96px;height:96px;border-radius:14px;overflow:hidden;border:2px solid var(--line)}.brb-pic svg{width:100%;height:100%}
@@ -21935,13 +21982,16 @@ SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()
   ['omda','المهمة التقيلة ما بديهاش لأي حد. لازم أشوف إيدك الأول.'],
   ['adel','القصّة الجديدة بتغير الواحد. ناس دخلت عندي خايفة وطلعت أسود.'],
   ['adel','الصبغة الزرقا دي جايبها من مصر. الكفر كله اتكلم عليها.'],
+  ['samah','الكوافير بتاعي جنب الدوار. البنات بتيجي تتكلم أكتر ما بتعمل شعرها.'],
+  ['samah','الحنة الحمرا دي من أسوان. بتمسك شهر.'],
+  ['samah','جوزي عادل بيقول إن محلي أحلى من محله. وده صح.'],
   ['adel','الموس عندي ما بيرحمش، بس إيدي خفيفة.'],
   ['adel','زبون امبارح طلب أحلقله دقنه. لما خلصت لقيت ورا ودنه علامة زي العضة. ما سألتش.']);
   if((h.kills||0)>=30)L.push(['omda','الناس بقت تعرف اسمك. {اللي قتل|اللي قتلت} الوحوش دي كلها.'],['hassan','سمعت عن الوحوش اللي {قتلتها|قتلتيها}. سلاحك محتاج يتشحذ.']);
   if((cnt.fish||0)>=15)L.push(['umsayed','{انت|انتي} بقيت تجيب سمك أكتر من الصيادين نفسهم.']);
   if((cnt.cooked||0)>=10)L.push(['umsayed','إيدك بقت تعرف الطبيخ. يمكن في يوم {تاخد|تاخدي} مكاني.']);
   if((h.money||0)>=3000)L.push(['ramadan','الفلوس اللي {معاك|معاكي} دي محتاجة تتصرف. البضاعة الجديدة وصلت.']);
-  if(h.hairOwn&&h.hairOwn.length)L.push(['adel','القصّة دي {عليك|عليكي} تجنن. الكل بيسألني عنها.']);
+  if(h.hairOwn&&h.hairOwn.length&&h.g!=='f')L.push(['adel','القصّة دي عليك تجنن. الكل بيسألني عنها.']);
   if((h.lvl||1)>=8)L.push(['oldman','{بقيت|بقيتي} تقيل. الجبل حاسس بخطوتك.']);
   return L}}
 {const k0=kfLines;kfLines=function(h){const L=k0.apply(this,arguments);L.push(
@@ -21977,6 +22027,103 @@ KF_STORIES.push(
   ['شجرة الجميز','الجميزة اللي على أول الكفر عمرها أكبر من الكفر نفسه. محدش بيقطع منها فرع. مرة واحد قطع فرع علشان يعمل منه عصاية. الفرع نزّف عصارة حمرا، والراجل من يومها إيده ما بقتش تقفل.'],
   ['السلعوة والطفل','ست في الكفر صحيت لقت السلعوة واقفة جنب سرير ابنها. ما صرختش. حطت قدامها طبق لبن، وقعدت تغني. السلعوة شربت ومشيت. من ساعتها الستات في الكفر بيحطوا طبق لبن عند الباب في الليالي الصعبة. اللي بيضحك عليهم ما بيكملش الشتا.'],
   ['ساعة الدوار','ساعة الدوار وقفت على تلاتة وتلت من سنين. اليوم اللي وقفت فيه، العمدة القديم مات. العمدة الجديد جاب صنايعي من البندر يصلحها. الصنايعي فتحها، وقفلها، ومشي من غير ما ياخد فلوس، وقال حاجة واحدة بس: سيبوها.']);
+/* ---------- the main menu, dressed up (v5.36) ----------
+   1. A pixel star field on a canvas behind the whole top of the screen: stars drift slowly in three layers and twinkle,
+      a few big ones sparkle, and now and then a shooting star crosses. Still when the phone asks for less motion.
+   2. Your hero stands in the night scene facing the monsters; tap them and they jump and say something.
+   3. The logo shimmers, the buttons slide in one after another, lift when the finger or mouse is on them, squash when
+      pressed, and leave a ripple. The small buttons sit in a 2-column grid with icons. */
+const TS_IC={
+  b2:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>',
+  b3:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="9" cy="8" r="3.4" fill="currentColor"/><path d="M2.5 20c.6-4 3.2-6 6.5-6s5.9 2 6.5 6z" fill="currentColor"/><circle cx="17" cy="9" r="2.6" fill="currentColor" opacity=".6"/><path d="M15.5 14.2c3.2-.4 5.6 1.4 6 5.8h-4.6" fill="currentColor" opacity=".6"/></svg>',
+  bNews:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.6 6.2 6.7.6-5.1 4.4 1.6 6.6L12 16.3 6.2 19.8l1.6-6.6L2.7 8.8l6.7-.6z" fill="currentColor"/></svg>',
+  b4:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4.5h6.5c1 0 1.5.6 1.5 1.5v14c0-1-.6-1.6-1.6-1.6H4zM20 4.5h-6.5c-1 0-1.5.6-1.5 1.5v14c0-1 .6-1.6 1.6-1.6H20z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>'};
+const TS_SAY_F=['يلا بينا، الليل طويل.','النداهة مستنياني.. وانا مش هرد.','مستعدة. هاتي النرد.','الكفر نايم، وانا صاحية.','مش خايفة.. يمكن شوية.','سيبيني أظبط عدّتي الأول.'];
+const TS_SAY_M=['يلا بينا، الليل طويل.','النداهة مستنياني.. وانا مش هرد.','مستعد. هات النرد.','الكفر نايم، وانا صاحي.','مش خايف.. يمكن شوية.','سيبني أظبط عدّتي الأول.'];
+const TSM={raf:0,still:false};
+try{TSM.still=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+/* the star field: a low-resolution canvas (1 art pixel = 2 CSS px) stretched with crisp pixels */
+function tsStars(cv,hgt){const P=2,W=Math.max(1,Math.ceil(cv.clientWidth/P)),H=Math.max(1,Math.ceil(hgt/P));cv.width=W;cv.height=H;const c=cv.getContext('2d');c.imageSmoothingEnabled=false;
+  const COL=['#d8e0ee','#fffaf0','#aaf6ff','#fff0b0','#93afe2'],S=[];
+  for(let i=0;i<Math.round(W*H/90);i++){const L=Math.random()<.55?0:Math.random()<.7?1:2;
+    S.push({x:Math.random()*W,y:Math.random()*H,L,v:[.6,1.4,2.6][L],c:COL[Math.floor(Math.random()*(L===2?5:3))],ph:Math.random()*6.3,sp:.6+Math.random()*1.8,big:L===2&&Math.random()<.35})}
+  let shoot=null,next=performance.now()+2500+Math.random()*4000,t0=performance.now();
+  const draw=now=>{if(!cv.isConnected){TSM.raf=0;return}const t=(now-t0)/1000;c.clearRect(0,0,W,H);
+    S.forEach(s=>{const x=((s.x-(TSM.still?0:t*s.v))%W+W)%W,tw=.55+.45*Math.sin(t*s.sp+s.ph),a=Math.max(0,Math.min(1,tw*(s.y/H<.9?1:.5)));
+      c.globalAlpha=a;c.fillStyle=s.c;const X=Math.floor(x),Y=Math.floor(s.y);c.fillRect(X,Y,1,1);
+      if(s.big&&tw>.75){c.globalAlpha=a*.7;c.fillRect(X-1,Y,1,1);c.fillRect(X+1,Y,1,1);c.fillRect(X,Y-1,1,1);c.fillRect(X,Y+1,1,1);if(tw>.95){c.globalAlpha=a*.35;c.fillRect(X-2,Y,1,1);c.fillRect(X+2,Y,1,1);c.fillRect(X,Y-2,1,1);c.fillRect(X,Y+2,1,1)}}});
+    if(!TSM.still){if(!shoot&&now>next){shoot={x:W*(.3+Math.random()*.7),y:Math.random()*H*.45,vx:-(55+Math.random()*40),vy:22+Math.random()*16,life:0};next=now+5000+Math.random()*7000}
+      if(shoot){shoot.life+=1/60;const k=shoot.life;const hx=shoot.x+shoot.vx*k,hy=shoot.y+shoot.vy*k;
+        for(let i=0;i<10;i++){c.globalAlpha=Math.max(0,(1-i/10)*(1-k/1.2));c.fillStyle=i<2?'#fffaf0':'#aaf6ff';c.fillRect(Math.floor(hx-shoot.vx*i*.012),Math.floor(hy-shoot.vy*i*.012),1,1)}
+        if(k>1.2||hx<-4)shoot=null}}
+    c.globalAlpha=1;if(!TSM.still)TSM.raf=requestAnimationFrame(draw)};
+  if(TSM.raf)cancelAnimationFrame(TSM.raf);TSM.raf=requestAnimationFrame(draw)}
+/* a soft ripple where the finger lands */
+function tsRipple(e){const b=e.currentTarget,r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*1.2,s=document.createElement('span');s.className='ts-rip';
+  s.style.cssText=`width:${d}px;height:${d}px;left:${(e.clientX||r.left+r.width/2)-r.left-d/2}px;top:${(e.clientY||r.top+r.height/2)-r.top-d/2}px`;b.appendChild(s);setTimeout(()=>s.remove(),650)}
+{const t0=SCREENS.title;SCREENS.title=function(){const R=t0.apply(this,arguments);try{tsDress()}catch(e){console.warn(e)}return R}}
+{const r0=render;render=function(){if(S.screen!=='title'){view.classList.remove('ts-on');if(TSM.raf){cancelAnimationFrame(TSM.raf);TSM.raf=0}}return r0.apply(this,arguments)}}
+function tsDress(){const h=S.hero,sky=view.querySelector('.t-sky');if(!sky)return;view.classList.add('ts-on');
+  /* the old painted dots go; the canvas does the stars now */
+  sky.style.background='linear-gradient(to bottom,rgba(6,8,15,0) 0,rgba(6,8,15,0) calc(100% - 230px),rgba(6,8,15,.75) calc(100% - 210px),#06080f calc(100% - 199px))';
+  const t=view.querySelector('.title');if(t){t.classList.add('ts-logo');t.setAttribute('data-t',t.textContent)}
+  const cv=document.createElement('canvas');cv.className='ts-cv';cv.setAttribute('aria-hidden','true');view.insertBefore(cv,view.firstChild);
+  const fit=()=>{if(!cv.isConnected)return window.removeEventListener('resize',onR);const hh=sky.offsetTop+sky.offsetHeight-150;cv.style.height=hh+'px';tsStars(cv,hh)};requestAnimationFrame(fit);
+  let rt=0;const onR=()=>{clearTimeout(rt);rt=setTimeout(fit,150)};window.removeEventListener('resize',TSM.onR||onR);TSM.onR=onR;window.addEventListener('resize',onR);
+  const sv=sky.querySelector(':scope>svg');if(sv)sv.classList.add('ts-scn');
+  /* the hero in the scene */
+  if(h){const el=document.createElement('button');el.className='ts-hero';el.setAttribute('aria-label',h.name);
+    el.innerHTML=`<span class="sh"></span><span class="fig">${PX.body(h)}</span><span class="say" hidden></span>`;sky.appendChild(el);sky.classList.add('ts-has');
+    let busy=0;el.onclick=e=>{e.stopPropagation();if(busy)return;busy=1;const s=el.querySelector('.say');s.textContent=pick(h.g==='f'?TS_SAY_F:TS_SAY_M);s.hidden=false;
+      el.classList.remove('jump');void el.offsetWidth;el.classList.add('jump');SFX.tick&&SFX.tick(900);vib&&vib(15);setTimeout(()=>{s.hidden=true;busy=0},2200)}}
+  /* the small buttons: a grid with icons */
+  const col=view.querySelector('.col');if(col){const ids=['b2','b3','bLb','bNews','b4'],bs=ids.map(i=>$('#'+i)).filter(Boolean);
+    if(bs.length>=3){const g=document.createElement('div');g.className='ts-grid';bs.forEach(b=>{if(TS_IC[b.id]&&!b.querySelector('svg'))b.insertAdjacentHTML('afterbegin',TS_IC[b.id]);b.classList.add('ts-sm');g.appendChild(b)});
+      const row=col.querySelector('.row');if(row&&!row.children.length)row.remove();col.appendChild(g);if(bs.length%2)g.lastElementChild.classList.add('wide')}
+    let i=0;[...col.querySelectorAll(':scope>*, .ts-grid>*')].forEach(x=>{if(x.classList.contains('ts-grid'))return;x.classList.add('ts-in');x.style.animationDelay=(.08+i++*.06)+'s'})}
+  const b1=$('#b1');if(b1)b1.classList.add('ts-main');
+  view.querySelectorAll('.col button, .ts-grid button').forEach(b=>b.addEventListener('pointerdown',tsRipple))}
+{const st=document.createElement('style');st.textContent=`
+#view.ts-on{position:relative}
+#view.ts-on>*:not(.ts-cv){position:relative;z-index:1}
+.ts-cv{position:absolute;left:0;top:0;width:100%;z-index:0;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges}
+.ts-logo{background:linear-gradient(100deg,#c98f2e 0%,#f3d48f 30%,#fff6d6 45%,#f3d48f 60%,#c98f2e 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:none;filter:drop-shadow(0 0 18px #e0b25a55);animation:tsShine 6s ease-in-out infinite,tsFloat 5s ease-in-out infinite alternate}
+@keyframes tsShine{0%,55%{background-position:100% 0}85%,100%{background-position:0 0}}
+@keyframes tsFloat{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+.ts-on .sub{animation:tsFade 1.2s .2s ease both}
+@keyframes tsFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ts-scn{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 70px);mask-image:linear-gradient(to bottom,transparent 0,#000 70px)}
+.t-sky.ts-has .ts-one{left:38%}
+.t-sky.ts-has .ts-pack{justify-content:flex-start;padding-left:6%}
+.ts-hero{position:absolute;right:13%;bottom:20px;width:72px;height:96px;padding:0;border:0;background:none;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
+.ts-hero .fig{position:absolute;inset:0;display:block;animation:tsIdle 1.6s steps(2) infinite;filter:drop-shadow(0 0 10px #f3c14d40)}
+.ts-hero .fig svg{width:100%;height:100%;display:block}
+.ts-hero .sh{position:absolute;left:14px;right:14px;bottom:-3px;height:8px;border-radius:50%;background:#0009}
+.ts-hero.jump .fig{animation:tsJump .55s cubic-bezier(.3,1.6,.5,1)}
+.ts-hero .say{position:absolute;bottom:104px;right:-6px;width:max-content;max-width:170px;background:#fffaf0;color:#2a1a08;font-weight:800;font-size:13px;line-height:1.4;padding:6px 10px;border-radius:12px;
+  box-shadow:0 4px 14px #0008;animation:tsPop .25s ease both;text-align:right}
+.ts-hero .say:after{content:'';position:absolute;bottom:-6px;right:24px;border:6px solid transparent;border-top-color:#fffaf0;border-bottom:0}
+@keyframes tsIdle{0%{transform:translateY(0)}100%{transform:translateY(-2px)}}
+@keyframes tsJump{0%{transform:translateY(0) scale(1,1)}20%{transform:translateY(2px) scale(1.08,.9)}50%{transform:translateY(-22px) scale(.95,1.06)}80%{transform:translateY(0) scale(1.06,.94)}100%{transform:none}}
+@keyframes tsPop{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
+.ts-on .col button{position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.3,1.5,.5,1),box-shadow .22s,border-color .22s,filter .22s}
+@media (hover:hover){.ts-on .col button:hover{transform:translateY(-3px);box-shadow:0 10px 26px #e0b25a33;border-color:var(--gold)}.ts-on .col .btn:not(.ghost):hover{filter:brightness(1.08)}}
+.ts-on .col button:active{transform:scale(.96) translateY(1px);transition-duration:.08s}
+.ts-rip{position:absolute;border-radius:50%;background:#fff;opacity:.28;pointer-events:none;transform:scale(0);animation:tsRip .6s ease-out forwards}
+@keyframes tsRip{to{transform:scale(1);opacity:0}}
+.ts-in{animation:tsUp .5s cubic-bezier(.2,1.2,.4,1) backwards}
+@keyframes tsUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ts-main{font-size:19px;min-height:58px}
+.ts-main:before{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,#fff4 50%,transparent);transform:skewX(-20deg);animation:tsSweep 4.5s 1.2s ease-in-out infinite}
+@keyframes tsSweep{0%{left:-60%}30%,100%{left:130%}}
+.ts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ts-grid .ts-sm{min-height:50px;font-size:14px;gap:6px;padding:6px 8px;width:100%}
+.ts-grid .ts-sm svg{flex:none;color:var(--gold2)}
+.ts-grid .wide{grid-column:1/-1}
+.ts-on #pf .xpbar i{position:relative;overflow:hidden}.ts-on #pf .xpbar i:after{content:'';position:absolute;top:0;bottom:0;width:40px;left:-40px;background:linear-gradient(90deg,transparent,#fff8,transparent);animation:tsXp 3s linear infinite}
+@keyframes tsXp{from{left:-40px}to{left:100%}}
+@media (prefers-reduced-motion:reduce){.ts-logo,.ts-hero .fig,.ts-main:before,.ts-in,.ts-on .sub{animation:none}}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
