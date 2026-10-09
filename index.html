@@ -1681,12 +1681,15 @@ const qtyMax=(...a)=>Math.max(0,Math.min(99,...a.map(v=>Math.floor(v))));
 function qtyN(k,mx){const n=Math.max(1,Math.min(QTY.n[k]||1,mx));QTY.n[k]=n;return n}
 /* the button next to the number: a buy button shows the total, a sell button («بيع 3») shows what you get */
 const qtyLbl=(n,p,w,sell)=>sell?`${G('بيع','بيعي')} ${n}<small>${p*n}\u00a0جنيه</small>`:`${w?`<s>${w*n}</s> `:''}${p*n}\u00a0جنيه${n>1?`<small>${n} × ${p}</small>`:''}`;
-const qtyHTML=(k,n,mx,all)=>`<div class="qty" data-qk="${k}" data-qmax="${mx}"><button data-qd="-1" aria-label="أقل" ${n<=1?'disabled':''}>−</button><b>${n}</b><button data-qd="1" aria-label="أكتر" ${n>=mx?'disabled':''}>+</button><button class="mx" data-qd="max" ${n>=mx?'disabled':''}>${all?'الكل':'أقصى'}</button></div>`;
-/* − + and «أقصى» only change the number and the price on the button next to them (and undo an «متأكد؟» there); then onChange */
-function qtyBind(onChange){view.querySelectorAll('.qty').forEach(q=>{const k=q.dataset.qk,mx=+q.dataset.qmax;
-  q.querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=b.dataset.qd,n0=qtyN(k,mx),n=d==='max'?mx:Math.max(1,Math.min(mx,n0+(+d)));if(n===n0)return;QTY.n[k]=n;
-    const v=q.querySelector('b');v.textContent=n;cls(v,'pop');q.querySelectorAll('button').forEach(x=>x.disabled=x.dataset.qd==='-1'?n<=1:n>=mx);
-    const bb=view.querySelector(`[data-qb="${k}"]`);if(bb){bb.classList.remove('warn');bb.innerHTML=qtyLbl(n,+bb.dataset.p,+bb.dataset.w,bb.dataset.ql==='s')}if(onChange)onChange(k,n)})})}
+const qtyHTML=(k,n,mx,all)=>`<div class="qty" data-qk="${k}" data-qmax="${mx}"><button data-qd="-1" aria-label="أقل" ${n<=1?'disabled':''}>−</button><input class="qin" type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="${mx}" value="${n}" aria-label="العدد"><button data-qd="1" aria-label="أكتر" ${n>=mx?'disabled':''}>+</button><button class="mx" data-qd="max" ${n>=mx?'disabled':''}>${all?'الكل':'أقصى'}</button></div>`;
+/* − + «أقصى» and the number box (5.46: type any number) only change the number and the price on the button next to them (and undo an «متأكد؟» there); then onChange */
+function qtyBind(onChange){view.querySelectorAll('.qty').forEach(q=>{const k=q.dataset.qk,mx=+q.dataset.qmax,v=q.querySelector('.qin');
+  const set=(n,typing)=>{const n0=qtyN(k,mx);n=Math.max(1,Math.min(mx,n|0));if(!typing||String(n)!==v.value)v.value=n;if(n===n0)return;QTY.n[k]=n;
+    if(!typing)cls(v,'pop');q.querySelectorAll('button').forEach(x=>x.disabled=x.dataset.qd==='-1'?n<=1:n>=mx);
+    const bb=view.querySelector(`[data-qb="${k}"]`);if(bb){bb.classList.remove('warn');bb.innerHTML=qtyLbl(n,+bb.dataset.p,+bb.dataset.w,bb.dataset.ql==='s')}if(onChange)onChange(k,n)};
+  q.querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=b.dataset.qd,n0=qtyN(k,mx);set(d==='max'?mx:n0+(+d))});
+  if(v){v.oninput=()=>{const t=v.value.replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c));if(t==='')return;const n=parseInt(t,10);if(n>=1)set(n,n<=mx)};
+    v.onchange=v.onblur=()=>set(parseInt(v.value,10)||1);v.onfocus=()=>{try{v.select()}catch(e){}};v.onkeydown=e=>{if(e.key==='Enter')v.blur()}}})}
 function genShop(){const h=S.hero;const list=[{k:'potion',stock:rnd(3)}];
   [['bigpotion',.7,2],['revive',.55,1],['salt',.85,3],['wax',.7,2],['amulet',h.gear&&h.gear.amulet?0:.45,1]].forEach(([k,p,mx])=>{if(Math.random()<p)list.push({k,stock:rnd(mx)})});
   if(Math.random()<.5)pick(list).deal=1;
@@ -4357,6 +4360,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.46',d:'9 أكتوبر',add:['في أي مكان فيه − و+ {تقدر تكتب|تقدري تكتبي} العدد اللي {عايزه|عايزاه} بإيدك في الخانة اللي في النص: البيع والشرا في السوق، دكانة الليلة، الحداد، والأكل.'],fix:['لو {كتبت|كتبتي} رقم أكبر من اللي معاك بيتظبط لوحده على الآخر.']},
   {v:'5.45',d:'9 أكتوبر',add:[
     '16 إنجاز جديد: للحلاق والكوافيرة، ومهمات دوار العمدة، والصناديق، والزرع، والفراخ والجاموسة، ومسابقة الصيد، والمولد. اللي {عمله|عملته} قبل كده بيتحسب {ليك|ليكي} أول ما {تفتح|تفتحي} البلد.'
   ],fix:[]},
@@ -23375,6 +23379,9 @@ function masterWord(heal){bigWord(heal?'شفا معلّم!':'ضربة معلّم
 .qty button[disabled]{opacity:.35;pointer-events:none}
 .qty button:active{transform:scale(.94)}
 .qty b{min-width:30px;text-align:center;font-size:19px;font-weight:800;color:var(--ink)}
+.qty .qin{width:58px;height:44px;box-sizing:border-box;text-align:center;font:inherit;font-size:19px;font-weight:800;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:0 4px;-moz-appearance:textfield;appearance:textfield}
+.qty .qin::-webkit-outer-spin-button,.qty .qin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qty .qin:focus{outline:2px solid var(--gold2);outline-offset:1px}
 .sitem .qbar{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:6px;width:100%;margin-top:8px;align-items:center}
 .sitem .qbar .qty{display:contents}
 .sitem .qbar .qty button{padding:0}
