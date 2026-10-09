@@ -2667,7 +2667,7 @@ function twGoalHTML(h){const c=twGoal(h);if(!c)return '';const who=c.at==='smith
 /* ---------- people talking in town (sometimes a hint of a hidden stat, never its name) ---------- */
 function twLines(h){const L=[
   ['ramadan','البضاعة عندي بتتغير بعد كل مغامرة. {تعالى|تعالي} بدري قبل ما تخلص.'],
-  ['ramadan','أي حاجة {تجيبها|تجيبيها} من المنجم أو الترعة، أنا أشتريها منك بسعرها.'],
+  ['ramadan','أي حاجة {تجيبها|تجيبيها} من المنجم أو الترعة، أنا أشتريها منك. بسعري أنا طبعًا.'],
   ['hassan','{هات|هاتي} نحاس من المنجم، وأنا أعلّمك {تعمل|تعملي} سيف بإيدك.'],
   ['hassan','اللي بيعمل حاجته بإيده بيدفع أقل.. وإيده بتتعلم.'],
   ['fathy','جلد السلعوة لو {جبته|جبتيه}، أعملك منه صديري {يحميك|يحميكي}.'],
@@ -4357,6 +4357,17 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.35',d:'9 أكتوبر',add:[
+    '«صالون عادل» في ناس البلد: عادل الحلاق بيبيع قصّات (موهوك، ديل حصان، قصة ولادي…) وصبغات شعر (أحمر، أزرق، بنفسجي، أخضر، دهبي، تركواز). {جرّب|جرّبي} على المراية قبل ما {تشتري|تشتري}، واللي {تشتريه|تشتريه} بيفضل بتاعك و{تقدر|تقدري} {ترجع|ترجعي} له ببلاش.',
+    'كل مهمة في دوار العمدة ليها درجة: بسيطة، عادية، متوسطة، صعبة، تقيلة، نار، أسطورية. كل ما تصعب، الفلوس والهدايا تكبر.',
+    'هدايا جديدة في المهمات: خبرة، وصناديق مقفولة (خشب، نحاس، دهب) {وانت|وانتي} وحظك في اللي جواها. الصندوق الدهب ممكن يطلع فيه صبغة شعر.',
+    'مهمات جديدة: {اعمل|اعملي} حتة معينة عند عم حسن الحداد أو عم فتحي الخياط.',
+    'كلام كتير جديد في البلد والقهوة، و8 حكايات جديدة من عم صابر.'
+  ],fix:[
+    'مهمة الصنعة بقت بتقول عند مين بالظبط، وبتقول إن صاحب المهمة هياخد الحتة لما {تسلّم|تسلّمي}.',
+    'العدّ بقى صح: «4 سمكات»، «حاجة واحدة»، «طماطمايتين»، وهكذا.',
+    'عم رمضان مبقاش بيقول إنه بيشتري بسعر الحاجة.'
+  ]},
   {v:'5.34',d:'9 أكتوبر',add:[
     'أشكال عين حادة جديدة: صقر، مكشّر، تعلب، وبارد.',
     'عصير القصب بقى بيتعمل في الخلاط: {وقّف|وقّفي} الخلاط لما العصير يبقى ناعم، قبل ما يبقى مية. دفعتين ورا بعض.'
@@ -21558,56 +21569,98 @@ function ftHTML(h){const F=h.farm,L=farmL(h);let prev=true;
 .ft-row .ft-ic{font-size:26px;display:grid;place-items:center}.ft-row.own{opacity:.85}.ft-row.own .ft-ic{filter:drop-shadow(0 0 6px #7fe07a88)}
 .ft-own{color:#a6e3a0;font-weight:800;font-size:13px;align-self:center;padding:0 6px}
 .fm-p .tg .f{background:#c9832633;color:#f2c77a}`;document.head.appendChild(st)}
-/* ---------- v5.33: the town's errands, selling dishes, and more talk ----------
-   1. «دوار العمدة»: a board of errands from the town's people. Take up to 3 at once; each pays money and often a gift.
-      Kinds: kill (any foe, or one kind you have met), bring (crops, fish, ore: handed over when you claim), cook a dish and
-      bring it, or do something (harvest, fish, break rocks, cook, craft) counted from when you took it.
-      h.qb = {offers:[...], act:[...], at, done}. New offers every 20 minutes.
-   2. Cooked dishes sell at the market (better than their raw ingredients, still under what players pay each other).
-   3. More lines in town and at the café, and short stories from عم صابر. */
+/* ---------- v5.33-5.35: the town's errands, selling dishes, and more talk ----------
+   1. «دوار العمدة»: a board of errands from the town's people. Take up to 3 at once. Each has a rank (بسيطة … أسطورية, QB_RK):
+      the higher the rank, the bigger the job and the better the pay and the gifts (experience, sacks of fertilizer, potions,
+      materials, and mystery boxes of wood, copper or gold that you open on the board).
+      Kinds: kill (any foe, or one kind you have met), bring (crops, fish, ore), cook a dish and bring it, make a piece at
+      the smith or the tailor and bring it, or do something (harvest, fish, break rocks, cook) counted from when you took it.
+      Whatever you bring is taken when you claim. h.qb = {offers, act, at, done}, h.mbox = {w,c,g}. New offers every 20 minutes.
+   2. Cooked dishes sell at the market. 3. More lines in town and at the café, and stories from عم صابر. */
 const QB_MAX=3,QB_EVERY=20*60000;
+const QB_RK=['بسيطة','عادية','متوسطة','صعبة','تقيلة','نار','أسطورية'],QB_RC=['#9a9a9a','#a6e3a0','#6ab4ff','#c9a0ff','#f3c14d','#ff8f73','#ff5ad0'];
 const QB_GIVE={ramadan:'عم رمضان',umsayed:'أم سيد',hassan:'عم حسن',fathy:'عم فتحي',abdo:'عم عبده',omda:'العمدة',oldman:'عجوز الجبل'};
-const QB_DO={harvest:['احصد','احصدي','مرة من الغيط','abdo'],fish:['اصطاد','اصطادي','سمكة من الترعة','umsayed'],rocks:['اكسر','اكسري','صخرة في المنجم','oldman'],
-  cooked:['اطبخ','اطبخي','أكلة عند أم سيد','umsayed'],crafted:['اعمل','اعملي','حاجة عند الحداد أو الخياط','hassan']};
-function qbFix(h){h.qb=h.qb||{offers:[],act:[],at:0,done:0};h.cnt=h.cnt||{};h.kk=h.kk||{};h.kn=h.kn||{};return h.qb}
+const QB_DO={harvest:['احصد','احصدي',['مرة','مرتين','مرات',1],'من الغيط','abdo',3],fish:['اصطاد','اصطادي',['سمكة','سمكتين','سمكات',1],'من الترعة','umsayed',4],
+  rocks:['اكسر','اكسري',['صخرة','صخرتين','صخرات',1],'في المنجم','oldman',5],cooked:['اطبخ','اطبخي',['أكلة','أكلتين','أكلات',1],'عند أم سيد','umsayed',2]};
+/* counting the Egyptian way: حاجة واحدة، حاجتين، 4 حاجات، 12 حاجة */
+const qbCnt=(n,w)=>n===1?`${w[0]} ${w[3]?'واحدة':'واحد'}`:n===2?w[1]:n<=10?`${n} ${w[2]}`:`${n} ${w[0]}`;
+const QB_NOUN={tamatem:['طماطماية','طماطمايتين','طماطمايات',1],basal:['بصلة','بصلتين','بصلات',1],ful:['حزمة فول','حزمتين فول','حزم فول',1],roz:['شكارة رز','شكارتين رز','شكاير رز',1],
+  molokhia:['حزمة ملوخية','حزمتين ملوخية','حزم ملوخية',1],asab:['عود قصب','عودين قصب','عيدان قصب',0],stone:['حجر','حجرين','حجارة',0],copper:['حتة نحاس','حتتين نحاس','حتت نحاس',1],
+  iron:['حتة حديد','حتتين حديد','حتت حديد',1],silver:['حتة فضة','حتتين فضة','حتت فضة',1],turq:['حجر فيروز','حجرين فيروز','حجارة فيروز',0],shrimp:['جمبرية','جمبريتين','جمبريات',1],
+  eel:['تعبان مية','تعبانين مية','تعابين مية',0],cloth:['حتة قماش','حتتين قماش','حتت قماش',1],bread:['رغيف عيش','رغيفين عيش','أرغفة عيش',0],salskin:['جلد سلعوة','جلدين سلعوة','جلود سلعوة',0]};
+const qbN=(k,n)=>{const w=QB_NOUN[k]||(MAT[k]&&MAT[k].fish?[`سمكة ${MAT[k].n}`,`سمكتين ${MAT[k].n}`,`سمكات ${MAT[k].n}`,1]:null);return w?qbCnt(n,w):twCount(k,n)};
+function qbFix(h){h.qb=h.qb||{offers:[],act:[],at:0,done:0};h.cnt=h.cnt||{};h.kk=h.kk||{};h.kn=h.kn||{};h.mbox=h.mbox||{w:0,c:0,g:0};return h.qb}
 const qbVal=k=>MAT[k]?MAT[k].p||1:5;
-function qbGift(h){const r=Math.random();
-  if(r<.25)return {t:'fert',n:2+Math.floor(Math.random()*3)};
-  if(r<.5)return {t:'item',k:Math.random()<.75?'potion':'revive',n:1};
-  if(r<.7){const k=pick(['copper','iron','silver','turq'].filter(x=>MAT[x]));return {t:'res',k,n:k==='turq'||k==='silver'?1:2}}
-  return null}
-const qbGiftTxt=g=>!g?'':g.t==='fert'?`${g.n} شكاير سماد`:g.t==='item'?ITEMS[g.k].name:`${g.n} ${MAT[g.k].n}`;
-function qbMake(h){const L=h.lvl||1,cand=[];
-  cand.push(()=>{const n=3+Math.floor(Math.random()*4);return {k:'kill',n,who:'omda',v:n*12}});
-  const known=Object.keys(h.kn||{});if(known.length)cand.push(()=>{const a=pick(known),n=1+Math.floor(Math.random()*2);return {k:'killa',a,an:h.kn[a],n,who:'omda',v:n*25}});
-  const crops=Object.keys(CROPS).filter(k=>farmL(h)>=CROPS[k].lv);if(crops.length)cand.push(()=>{const r=pick(crops),n=3+Math.floor(Math.random()*4);return {k:'bring',r,n,who:pick(['umsayed','ramadan']),v:Math.round(qbVal(r)*n*1.6)}});
-  const fish=['bolti','qarmout','bisaria','bouri','shrimp'].filter(k=>MAT[k]&&((h.cnt.fish||0)>0||k==='bolti'));cand.push(()=>{const r=pick(fish),n=2+Math.floor(Math.random()*3);return {k:'bring',r,n,who:'umsayed',v:Math.round(qbVal(r)*n*1.6)}});
-  const ores=['stone','copper','iron'].filter(k=>MAT[k]);cand.push(()=>{const r=pick(ores),n=r==='stone'?6:2+Math.floor(Math.random()*3);return {k:'bring',r,n,who:'hassan',v:Math.max(30,Math.round(qbVal(r)*n*1.6))}});
-  const dishes=Object.keys(TW_REC).filter(d=>ITEMS[d]&&lifeLvl(h,'cook')>=TW_REC[d].lv&&!TW_BAKE.includes(d));if(dishes.length)cand.push(()=>{const d=pick(dishes),n=1+(Math.random()<.3?1:0);
+const qbGL=q=>!q.g?[]:Array.isArray(q.g)?q.g:[q.g];
+/* gifts grow with the rank: more of them, and better ones */
+function qbGifts(h,r){const out=[],chance=[.35,.45,.6,.75,.9,1,1][r],n=r>=5?2:1;
+  for(let i=0;i<n;i++){if(Math.random()>chance)continue;const x=Math.random();
+    if(r>=2&&x<.22)out.push({t:'box',k:r>=5?'g':r>=3?'c':'w',n:1});
+    else if(x<.4)out.push({t:'xp',n:Math.max(3,Math.round((h.lvl||1)*10*(.12+.07*r)))});
+    else if(x<.55)out.push({t:'fert',n:2+r});
+    else if(x<.72)out.push({t:'item',k:r>=3&&Math.random()<.5?'revive':'potion',n:1+(r>=4?1:0)});
+    else{const k=r>=4?pick(['silver','turq']):pick(['copper','iron']);out.push({t:'res',k,n:k==='turq'?1:1+Math.floor(r/2)})}}
+  if(r===6&&!out.some(g=>g.t==='box'))out.push({t:'box',k:'g',n:1});return out}
+const QB_BOX={w:'صندوق خشب',c:'صندوق نحاس',g:'صندوق دهب'};
+const qbGiftTxt=g=>g.t==='fert'?qbCnt(g.n,['شكارة سماد','شكارتين سماد','شكاير سماد',1]):g.t==='xp'?`${g.n} خبرة`:g.t==='box'?`${QB_BOX[g.k]} مقفول`:g.t==='item'?(g.n>1?`${g.n} ${ITEMS[g.k].name}`:ITEMS[g.k].name):qbN(g.k,g.n);
+function qbRank(h){const mx=Math.min(6,1+Math.floor((h.lvl||1)/2));let r=0;for(let i=0;i<mx;i++)if(Math.random()<.55)r++;return Math.min(mx,r)}
+function qbMake(h){const L=h.lvl||1,r=qbRank(h),m=1+.5*r,cand=[],R=x=>Math.max(1,Math.round(x));
+  cand.push(()=>{const n=R((3+Math.floor(Math.random()*3))*m);return {k:'kill',n,who:'omda',v:n*12}});
+  const known=Object.keys(h.kn||{});if(known.length)cand.push(()=>{const a=pick(known),n=R((1+Math.floor(Math.random()*2))*(1+.3*r));return {k:'killa',a,an:h.kn[a],n,who:'omda',v:n*25}});
+  const crops=Object.keys(CROPS).filter(k=>farmL(h)>=CROPS[k].lv);if(crops.length)cand.push(()=>{const k=pick(crops),n=R((3+Math.floor(Math.random()*3))*m);return {k:'bring',r:k,n,who:pick(['umsayed','ramadan']),v:Math.round(qbVal(k)*n*1.6)}});
+  const fish=['bolti','qarmout','bisaria','bouri','shrimp'].filter(k=>MAT[k]&&((h.cnt.fish||0)>0||k==='bolti'));cand.push(()=>{const k=pick(fish),n=R((2+Math.floor(Math.random()*2))*m);return {k:'bring',r:k,n,who:'umsayed',v:Math.round(qbVal(k)*n*1.6)}});
+  const ores=['stone','copper','iron'].filter(k=>MAT[k]);cand.push(()=>{const k=pick(ores),n=R((k==='stone'?6:2+Math.floor(Math.random()*2))*m);return {k:'bring',r:k,n,who:'hassan',v:Math.max(30,Math.round(qbVal(k)*n*1.6))}});
+  const dishes=Object.keys(TW_REC).filter(d=>ITEMS[d]&&lifeLvl(h,'cook')>=TW_REC[d].lv&&!TW_BAKE.includes(d));if(dishes.length)cand.push(()=>{const d=pick(dishes),n=1+Math.floor(r/2);
     const v=Object.keys(TW_REC[d].need).reduce((a,k)=>a+qbVal(k)*TW_REC[d].need[k],0);return {k:'dish',d,n,who:pick(['omda','ramadan','fathy']),v:Math.round(v*n*2.2)+20}});
-  Object.keys(QB_DO).forEach(c=>cand.push(()=>{const n=c==='crafted'?1:c==='cooked'?2:c==='harvest'?3:4;return {k:'do',c,n,who:QB_DO[c][3],v:c==='crafted'?60:n*12}}));
-  const q=pick(cand)();q.id=Date.now().toString(36)+Math.floor(Math.random()*1e4);q.m=Math.round((q.v+L*4)/5)*5;q.g=Math.random()<.6?qbGift(h):null;return q}
+  const gear=Object.keys(GEAR).filter(id=>{const g=GEAR[id];return g.craft&&(g.at==='smith'||g.at==='tailor')&&lifeLvl(h,g.at)>=(g.lv||1)});
+  if(gear.length)cand.push(()=>{const id=pick(gear),g=GEAR[id],v=Object.keys(g.craft).reduce((a,k)=>a+qbVal(k)*g.craft[k],0)+(g.cm||30);return {k:'craft',id,at:g.at,n:1,who:pick(['omda','ramadan','oldman']),v:Math.round(v*1.7),rk:Math.min(6,(g.tier|0)*2+(Math.random()<.5?1:0))}});
+  Object.keys(QB_DO).forEach(c=>cand.push(()=>{const n=R(QB_DO[c][5]*m);return {k:'do',c,n,who:QB_DO[c][4],v:n*12}}));
+  const q=pick(cand)();if(q.rk!=null){q.r0=q.rk;delete q.rk}else q.r0=r;const rr=q.r0;
+  q.id=Date.now().toString(36)+Math.floor(Math.random()*1e4);q.m=Math.round((q.v*(1+.35*rr)+L*4)/5)*5;q.g=qbGifts(h,rr);return q}
 function qbRoll(h){const B=qbFix(h);if(B.offers.length&&Date.now()-B.at<QB_EVERY)return;B.at=Date.now();const seen=new Set();B.offers=[];
-  for(let i=0;i<12&&B.offers.length<4;i++){const q=qbMake(h),key=q.k+(q.r||q.d||q.c||q.a||'');if(seen.has(key))continue;seen.add(key);B.offers.push(q)}saveHero()}
+  for(let i=0;i<16&&B.offers.length<5;i++){const q=qbMake(h),key=q.k+(q.r||q.d||q.c||q.a||q.id&&q.k==='craft'&&q.id||'');if(seen.has(key))continue;seen.add(key);B.offers.push(q)}
+  B.offers.sort((a,b)=>(a.r0|0)-(b.r0|0));saveHero()}
 function qbBase(h,q){return q.k==='kill'?h.kills||0:q.k==='killa'?h.kk[q.a]||0:q.k==='do'?h.cnt[q.c]||0:0}
-function qbHave(h,q){if(q.k==='bring')return h.res[q.r]||0;if(q.k==='dish')return Object.keys(h.bag||{}).filter(k=>fqParse(k).b===q.d).reduce((a,k)=>a+(h.bag[k]||0),0);return Math.max(0,qbBase(h,q)-(q.b0||0))}
+const qbSpare=(h,id)=>qSpare(h).filter(x=>x.id===id).sort((a,b)=>a.I.q-b.I.q);
+function qbHave(h,q){if(q.k==='bring')return h.res[q.r]||0;if(q.k==='dish')return Object.keys(h.bag||{}).filter(k=>fqParse(k).b===q.d).reduce((a,k)=>a+(h.bag[k]||0),0);
+  if(q.k==='craft')return qbSpare(h,q.id).reduce((a,x)=>a+x.us.length,0);return Math.max(0,qbBase(h,q)-(q.b0||0))}
 const qbDone=(h,q)=>qbHave(h,q)>=q.n;
 function qbTitle(q){const g=(m,f)=>G(m,f);
-  if(q.k==='kill')return `${g('اقتل','اقتلي')} ${q.n} وحوش في أي مغامرة`;
-  if(q.k==='killa')return `${g('اقتل','اقتلي')} ${q.n===1?q.an:`${q.n} من «${q.an}»`}`;
-  if(q.k==='bring')return `${g('هات','هاتي')} ${q.n} ${MAT[q.r].n}`;
-  if(q.k==='dish')return `${g('اطبخ','اطبخي')} ${q.n===1?'':'2 '}«${ITEMS[q.d].name}» ${g('وهاتها','وهاتيها')}`;
-  const D=QB_DO[q.c];return `${g(D[0],D[1])} ${q.n} ${D[2]}`}
+  if(q.k==='kill')return `${g('اقتل','اقتلي')} ${qbCnt(q.n,['وحش','وحشين','وحوش',0])} في أي مغامرة`;
+  if(q.k==='killa')return `${g('اقتل','اقتلي')} ${q.n===1?`«${q.an}»`:q.n===2?`اتنين من «${q.an}»`:`${q.n} من «${q.an}»`}`;
+  if(q.k==='bring')return `${g('هات','هاتي')} ${qbN(q.r,q.n)}`;
+  if(q.k==='dish')return `${g('اطبخ','اطبخي')} ${q.n===1?`«${ITEMS[q.d].name}»`:q.n===2?`طبقين «${ITEMS[q.d].name}»`:`${q.n} أطباق «${ITEMS[q.d].name}»`}`;
+  if(q.k==='craft')return `${g('اعمل','اعملي')} «${GEAR[q.id].n}» عند ${q.at==='smith'?'عم حسن الحداد':'عم فتحي الخياط'}`;
+  const D=QB_DO[q.c];return `${g(D[0],D[1])} ${qbCnt(q.n,D[2])} ${D[3]}`}
+function qbNote(q){const who=QB_GIVE[q.who]||'';
+  if(q.k==='bring')return `${who} ${qbTakes(q)} الحاجة دي منك لما ${G('تسلّم','تسلّمي')} المهمة`;
+  if(q.k==='dish')return `${who} ${qbTakes(q)} الأكل ده منك لما ${G('تسلّم','تسلّمي')} المهمة`;
+  if(q.k==='craft')return `${who} ${qbTakes(q)} «${GEAR[q.id].n}» منك لما ${G('تسلّم','تسلّمي')} المهمة (حتة مش ${G('لابسها','لابساها')})`;
+  return ''}
 function qbWhy(q){const L={
-  kill:['الليل بقى مخيف والناس خايفة تطلع. {نضّف|نضّفي} الطريق شوية.'],
-  killa:[`«${q.an||''}» ده بيقلق الناس. خلّصنا منه.`],
-  bring:{umsayed:['الطبيخ النهارده ناقصه حاجة، و{انت|انتي} اللي {هتجيبها|هتجيبيها}.','عندي عزومة كبيرة والحاجة خلصت.'],ramadan:['زبون طالب ومستعجل، وأنا ماعنديش.'],hassan:['الفرن جعان وأنا ورايا شغل.']},
+  kill:['الليل بقى مخيف والناس خايفة تطلع. {نضّف|نضّفي} الطريق شوية.','الخفرا بيقولوا الوحوش كترت. {وريهم|وريهم} مين سيد الكفر.'],
+  killa:[`«${q.an||''}» ده بيقلق الناس. خلّصنا منه.`,`كل ليلة حد بيشتكي من «${q.an||''}». كفاية كده.`],
+  bring:{umsayed:['الطبيخ النهارده ناقصه حاجة، و{انت|انتي} اللي {هتجيبها|هتجيبيها}.','عندي عزومة كبيرة والحاجة خلصت.'],ramadan:['زبون طالب ومستعجل، وأنا ماعنديش.','البضاعة خلصت والسوق بكرة.'],hassan:['الفرن جعان وأنا ورايا شغل.']},
   dish:['عندي ضيوف ومراتي تعبانة. ده هيستر الدنيا.','عايز أعزم واحد بقاله زمن ما جاش.'],
+  craft:['ابن أخويا طالع على الجيش وعايز أهاديه بحاجة تحميه.','الخفير بتاعي محتاج عدّة، والصنايعية زحمة.','عايز حاجة متينة، مش من بتاعة السوق.'],
   do:{abdo:['الغيط محتاج إيد، وإيدي ما بقتش زي زمان.'],umsayed:['عايزة أشوف شغلك بنفسي.'],oldman:['المنجم بيكلّم اللي بيكسره.'],hassan:['{وريني|وريني} إيدك عاملة إيه.']}};
   let x=L[q.k];if(x&&!Array.isArray(x))x=x[q.who]||Object.values(x)[0];return T(x&&x.length?x[(q.id||'').length%x.length]:'')}
-function qbGive(h,q){h.money+=q.m;const g=q.g;if(g){if(g.t==='fert'){FARM_FIX(h);h.farm.fert=(h.farm.fert|0)+g.n}else if(g.t==='item')h.bag[g.k]=(h.bag[g.k]||0)+g.n;else addRes(h,g.k,g.n)}}
-function qbTake(h,q){if(q.k==='bring')h.res[q.r]-=q.n;if(q.k==='dish'){let left=q.n;Object.keys(h.bag).filter(k=>fqParse(k).b===q.d&&h.bag[k]>0).sort((a,b)=>fqParse(a).q-fqParse(b).q).forEach(k=>{const t=Math.min(left,h.bag[k]);h.bag[k]-=t;left-=t})}}
+function qbGive(h,q,el){h.money+=q.m;const ups=[];qbGL(q).forEach(g=>{if(g.t==='fert'){FARM_FIX(h);h.farm.fert=(h.farm.fert|0)+g.n}else if(g.t==='item')h.bag[g.k]=(h.bag[g.k]||0)+g.n;
+  else if(g.t==='xp'){const u=gainXP(g.n);if(u&&u.length)ups.push(h.lvl)}else if(g.t==='box'){h.mbox[g.k]=(h.mbox[g.k]||0)+g.n}else addRes(h,g.k,g.n)});return ups}
+function qbTake(h,q){if(q.k==='bring')h.res[q.r]-=q.n;
+  if(q.k==='dish'){let left=q.n;Object.keys(h.bag).filter(k=>fqParse(k).b===q.d&&h.bag[k]>0).sort((a,b)=>fqParse(a).q-fqParse(b).q).forEach(k=>{const t=Math.min(left,h.bag[k]);h.bag[k]-=t;left-=t})}
+  if(q.k==='craft'){const x=qbSpare(h,q.id)[0];if(x)giDel(h,q.id,x.us[0])}}
 const qbReady=h=>{const B=h.qb;return B?B.act.filter(q=>qbDone(h,q)).length:0};
+/* mystery boxes: you never know */
+function qbOpen(h,k){const r=Math.random(),L=h.lvl||1;let t,x;
+  if(k==='w'){if(r<.35){x=20+Math.floor(Math.random()*41);h.money+=x;t=`${x} جنيه`}else if(r<.6){const m=pick(['copper','iron','cloth','bread']),n=2+Math.floor(Math.random()*3);addRes(h,m,n);t=qbN(m,n)}
+    else if(r<.8){h.bag.potion=(h.bag.potion||0)+1;t=ITEMS.potion.name}else{FARM_FIX(h);h.farm.fert=(h.farm.fert|0)+3;t='3 شكاير سماد'}}
+  else if(k==='c'){if(r<.3){x=80+Math.floor(Math.random()*121);h.money+=x;t=`${x} جنيه`}else if(r<.55){const m=pick(['silver','iron']),n=2+Math.floor(Math.random()*2);addRes(h,m,n);t=qbN(m,n)}
+    else if(r<.75){const it=pick(['revive','bigpotion'].filter(i=>ITEMS[i]));h.bag[it]=(h.bag[it]||0)+1;t=ITEMS[it].name}else{x=Math.round(L*10*.3)+5;gainXP(x);t=`${x} خبرة`}}
+  else{if(r<.3){x=250+Math.floor(Math.random()*351);h.money+=x;t=`${x} جنيه`}else if(r<.5){addRes(h,'turq',2);t=qbN('turq',2)}else if(r<.65&&MAT.goldfish){addRes(h,'goldfish',1);t='سمكة دهب'}
+    else if(r<.82&&typeof BRB_COL!=='undefined'){const c=BRB_COL.find(c=>!(h.hcOwn||[]).includes(c.c));if(c){h.hcOwn=(h.hcOwn||[]).concat([c.c]);t=`صبغة شعر «${c.n}» عند عادل الحلاق`}else{x=400;h.money+=x;t='400 جنيه'}}
+    else{x=Math.round(L*10*.6)+10;gainXP(x);t=`${x} خبرة`}}
+  return t}
 
 /* the town tile, in «ناس البلد» */
 TW_EXTRA.push(h=>{qbFix(h);qbRoll(h);const r=qbReady(h),a=h.qb.act.length;
@@ -21618,28 +21671,35 @@ function qbArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid
   <rect x="20" y="22" width="120" height="44" fill="#c9b58a"/><rect x="20" y="22" width="120" height="44" fill="none" stroke="#74412a" stroke-width="4"/><rect x="30" y="66" width="6" height="22" fill="#74412a"/><rect x="124" y="66" width="6" height="22" fill="#74412a"/>
   ${[[30,30,'#fffaf0'],[62,28,'#ebe1cc'],[96,31,'#fffaf0'],[44,46,'#ebe1cc'],[82,47,'#fffaf0'],[112,44,'#ebe1cc']].map(([x,y,c])=>`<rect x="${x}" y="${y}" width="22" height="14" fill="${c}"/><rect x="${x+9}" y="${y-2}" width="4" height="4" fill="#e04b3e"/><rect x="${x+3}" y="${y+5}" width="16" height="1" fill="#8f877b"/><rect x="${x+3}" y="${y+8}" width="11" height="1" fill="#8f877b"/>`).join('')}
   <rect x="140" y="8" width="8" height="8" fill="#fff0b0"/></svg>`}
-SCREENS.quests=function(){const h=S.hero;if(!h){S.screen='title';return render()}qbFix(h);qbRoll(h);const B=h.qb;
+const QB_SHE={umsayed:1};const qbTakes=q=>QB_SHE[q.who]?'هتاخد':'هياخد';
+SCREENS.quests=function(){const h=S.hero;if(!h){S.screen='title';return render()}qbFix(h);qbRoll(h);const B=h.qb,MB=h.mbox;
   const left=Math.max(0,QB_EVERY-(Date.now()-B.at)),mm=Math.ceil(left/60000);
-  const card=(q,on)=>{const have=on?Math.min(q.n,qbHave(h,q)):0,done=on&&qbDone(h,q);
-    return `<div class="card qb-q${done?' rd':''}"><div class="qb-h"><span class="av">${twNpcA(q.who,40)}</span><div class="tx"><small>${QB_GIVE[q.who]||''}</small><b>${qbTitle(q)}</b></div></div>
+  const card=(q,on)=>{const have=on?Math.min(q.n,qbHave(h,q)):0,done=on&&qbDone(h,q),rk=Math.min(6,q.r0|0),gl=qbGL(q),nt=qbNote(q);
+    return `<div class="card qb-q${done?' rd':''}" style="--rk:${QB_RC[rk]}"><div class="qb-h"><span class="av">${twNpcA(q.who,40)}</span><div class="tx"><small>${QB_GIVE[q.who]||''}</small><b>${qbTitle(q)}</b></div><span class="qb-rk">${QB_RK[rk]}</span></div>
       <div class="qb-w">«${qbWhy(q)}»</div>
-      <div class="qb-r"><span class="m">${twI('+'+q.m)} جنيه</span>${q.g?`<span class="g">🎁 ${qbGiftTxt(q.g)}</span>`:''}</div>
+      ${nt?`<div class="qb-nt">✋ ${nt}</div>`:''}
+      <div class="qb-r"><span class="m">${twI('+'+q.m)} جنيه</span>${gl.map(g=>`<span class="g${g.t==='box'?' bx':g.t==='xp'?' xp':''}">${g.t==='box'?'🎁':g.t==='xp'?'✨':'➕'} ${qbGiftTxt(g)}</span>`).join('')}</div>
       ${on?`<div class="qb-p"><span class="tw-bar"><i style="width:${have/q.n*100}%"></i></span><b>${have}/${q.n}</b></div>
-        <div class="qb-b">${done?`<button class="btn small" data-qc="${q.id}">${G('سلّم','سلّمي')} ${G('وخد','وخدي')} الفلوس</button>`:''}<button class="btn ghost small" data-qx="${q.id}">${G('سيبها','سيبيها')}</button></div>`
+        <div class="qb-b">${done?`<button class="btn small" data-qc="${q.id}">${G('سلّم','سلّمي')} ${G('وخد','وخدي')} الجايزة</button>`:''}<button class="btn ghost small" data-qx="${q.id}">${G('سيبها','سيبيها')}</button></div>`
       :`<div class="qb-b"><button class="btn small" data-qa="${q.id}" ${B.act.length>=QB_MAX?'disabled':''}>${G('خدها','خديها')}</button></div>`}</div>`};
+  const boxes=['w','c','g'].filter(k=>MB[k]>0);
   view.innerHTML=`${twTop('دوار العمدة')}<div class="tw qb">
-    ${twNpcHTML('omda',T(pick(['«الكفر محتاجك {يا ابني|يا بنتي}. {اختار|اختاري} اللي {تقدر|تقدري} عليه.»','«كل واحد هنا عنده حاجة ناقصاه. ساعدهم، وهما مش هينسوا.»','«اللي يخدم البلد، البلد تشيله على راسها.»'])))}
+    ${twNpcHTML('omda',T(pick(['«الكفر محتاجك {يا ابني|يا بنتي}. {اختار|اختاري} اللي {تقدر|تقدري} عليه.»','«كل واحد هنا عنده حاجة ناقصاه. ساعدهم، وهما مش هينسوا.»','«اللي يخدم البلد، البلد تشيله على راسها.»','«المهمة التقيلة جايزتها تقيلة. بس {خلي|خلي} بالك من نفسك.»'])))}
+    ${boxes.length?`<div class="tw-lbl">صناديقك <small>${T('جواها حاجة، {وانت|وانتي} وحظك')}</small></div><div class="card qb-bx">${boxes.map(k=>`<div class="qb-bxr"><span class="qb-bi bx${k}"></span><b>${QB_BOX[k]}</b><small>× ${MB[k]}</small><button class="btn small" data-qo="${k}">${G('افتح','افتحي')}</button></div>`).join('')}</div>`:''}
     <div class="tw-lbl">مهماتك <small>${B.act.length} من ${QB_MAX}${B.done?` · ${G('خلّصت','خلّصتي')} ${B.done} قبل كده`:''}</small></div>
     ${B.act.length?B.act.map(q=>card(q,1)).join(''):`<div class="card tw-empty">لسه ما ${G('خدتش','خدتيش')} ولا مهمة. ${G('اختار','اختاري')} من تحت.</div>`}
-    <div class="tw-lbl">مهمات جديدة <small>بتتجدد بعد ${mm} دقيقة</small></div>
+    <div class="tw-lbl">مهمات جديدة <small>كل ما المهمة تصعب، جايزتها تكبر · بتتجدد بعد ${mm} دقيقة</small></div>
     ${B.offers.length?B.offers.map(q=>card(q,0)).join(''):`<div class="card tw-empty">مفيش مهمات دلوقتي. ${G('تعالى','تعالي')} بعد شوية.</div>`}
     <div class="tw-sm" style="text-align:center">${twMon(h)}</div></div>`;
   twBack();
+  const lvUp=(l0)=>{if((h.lvl||1)>l0)setTimeout(()=>band('مستوى جديد',`${G('بقيت','بقيتي')} مستوى ${h.lvl}`,'',{dur:2000,sound:SFX.fanfare}),400)};
   view.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{const i=B.offers.findIndex(q=>q.id===b.dataset.qa);if(i<0||B.act.length>=QB_MAX)return;const q=B.offers.splice(i,1)[0];q.b0=qbBase(h,q);B.act.push(q);saveHero();SFX.page&&SFX.page();twRender()});
   view.querySelectorAll('[data-qx]').forEach(b=>b.onclick=()=>{const i=B.act.findIndex(q=>q.id===b.dataset.qx);if(i<0)return;B.act.splice(i,1);saveHero();SFX.meh&&SFX.meh();twRender()});
-  view.querySelectorAll('[data-qc]').forEach(b=>b.onclick=()=>{const i=B.act.findIndex(q=>q.id===b.dataset.qc);if(i<0)return;const q=B.act[i];if(!qbDone(h,q))return;
+  view.querySelectorAll('[data-qc]').forEach(b=>b.onclick=()=>{const i=B.act.findIndex(q=>q.id===b.dataset.qc);if(i<0)return;const q=B.act[i];if(!qbDone(h,q))return;const l0=h.lvl||1,gl=qbGL(q);
     qbTake(h,q);qbGive(h,q);B.act.splice(i,1);B.done=(B.done||0)+1;saveHero();twMoneyFly&&twMoneyFly(b,q.m);
-    band('المهمة خلصت',`${twI('+'+q.m)} جنيه${q.g?' و'+qbGiftTxt(q.g):''}`,T(pick([`${QB_GIVE[q.who]}: «تسلم {إيدك|إيدك}!»`,`${QB_GIVE[q.who]}: «ربنا يكرمك {يا ابني|يا بنتي}.»`,`${QB_GIVE[q.who]}: «كنت عارف إنك قدها.»`])),{dur:2200,sound:SFX.fanfare});setTimeout(twRender,300)})};
+    band('المهمة خلصت',`${twI('+'+q.m)} جنيه${gl.length?' و'+gl.map(qbGiftTxt).join(' و'):''}`,T(pick([`${QB_GIVE[q.who]}: «تسلم {إيدك|إيدك}!»`,`${QB_GIVE[q.who]}: «ربنا يكرمك {يا ابني|يا بنتي}.»`,`${QB_GIVE[q.who]}: «${QB_SHE[q.who]?'كنت عارفة':'كنت عارف'} {إنك قدها|إنك قدها}.»`])),{dur:2200,sound:SFX.fanfare});lvUp(l0);setTimeout(twRender,300)});
+  view.querySelectorAll('[data-qo]').forEach(b=>b.onclick=()=>{const k=b.dataset.qo;if(!(MB[k]>0))return;const l0=h.lvl||1;MB[k]--;const t=qbOpen(h,k);saveHero();SFX.coin&&SFX.coin();
+    band(QB_BOX[k],`${G('طلعلك','طلعلك')} ${t}`,pick(['حظك حلو النهارده','الصندوق ده كان مستخبي فيه حاجة','مش بطال']),{dur:2200,sound:SFX.fanfare});lvUp(l0);setTimeout(twRender,300)})};
 {const st=document.createElement('style');st.textContent=`
 .qb-q{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.qb-q.rd{border-color:#7fe07a;box-shadow:0 0 12px #7fe07a44}
 .qb-h{display:flex;gap:10px;align-items:center}.qb-h .av{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center}.qb-h .av svg{width:100%;height:100%}
@@ -21647,7 +21707,12 @@ SCREENS.quests=function(){const h=S.hero;if(!h){S.screen='title';return render()
 .qb-w{font-family:var(--story);font-size:15px;color:var(--dim);line-height:1.6}
 .qb-r{display:flex;gap:8px;flex-wrap:wrap}.qb-r span{border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800}.qb-r .m{background:#c99a2e33;color:#f3d48f}.qb-r .g{background:#6b4a8a33;color:#d9cbff}
 .qb-p{display:flex;align-items:center;gap:8px}.qb-p .tw-bar{flex:1;height:10px}.qb-p .tw-bar i{background:linear-gradient(90deg,#3a9e55,#7fe07a)}
-.qb-b{display:flex;gap:8px;flex-wrap:wrap}.qb-b .btn{flex:1;min-height:44px}`;document.head.appendChild(st)}
+.qb-b{display:flex;gap:8px;flex-wrap:wrap}.qb-b .btn{flex:1;min-height:44px}
+.qb-q{border-inline-start:4px solid var(--rk)}.qb-h .tx{flex:1}.qb-rk{flex:none;align-self:flex-start;border:1px solid var(--rk);color:var(--rk);border-radius:10px;padding:1px 9px;font-size:12px;font-weight:800;background:#0004}
+.qb-nt{font-size:13px;color:#f2c77a;background:#c9832618;border-radius:8px;padding:4px 8px}.qb-r .g.bx{background:#c99a2e33;color:#ffe08a}.qb-r .g.xp{background:#2f6fd033;color:#a9cbff}
+.qb-bx{display:flex;flex-direction:column;gap:8px}.qb-bxr{display:flex;align-items:center;gap:10px}.qb-bxr b{flex:1}.qb-bxr small{color:var(--dim);font-weight:800}.qb-bxr b{flex:1;white-space:nowrap}.qb-bxr .btn{min-height:44px;min-width:90px;width:auto;flex:none}
+.qb-bi{width:30px;height:24px;border-radius:3px;position:relative;box-shadow:inset 0 -6px 0 #0003}.qb-bi:after{content:'';position:absolute;left:12px;top:8px;width:6px;height:7px;background:#ffe08a}
+.qb-bi.bxw{background:#8a5a2b}.qb-bi.bxc{background:#c26a3a}.qb-bi.bxg{background:#e2b23a}`;document.head.appendChild(st)}
 
 /* ---------- cooked dishes sell at the market ---------- */
 const fdSellP=k=>{const p=fqParse(k),r=TW_REC[p.b],base=r?Object.keys(r.need).reduce((a,x)=>a+(MAT[x]?MAT[x].p:3)*r.need[x],0):(ITEMS[p.b]&&ITEMS[p.b].price)||10;return Math.max(2,Math.round(base*.8*(QSELL[p.q]||1)))};
@@ -21749,6 +21814,169 @@ function coChMine(root){const me=coMe(),h=S.hero;if(!root||!h)return;
 .ch{flex-wrap:wrap}.ch .co-chs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;justify-content:flex-start}
 .ch .co-chs i{font-style:normal;font-size:11px;font-weight:700;border-radius:8px;padding:1px 7px;background:#0005}
 .ch .co-chs i.c-good{color:#a6e3a0}.ch .co-chs i.c-mid{color:#f3d48f}.ch .co-chs i.c-low{color:#f0a090}`;document.head.appendChild(st)}
+/* ---------- صالون عادل: the barber (v5.35) ----------
+   عادل الحلاق (from the café) opens a shop in «ناس البلد». He sells hair styles and hair dyes you can't pick when you make a hero.
+   What you buy is yours for good (h.hairOwn = styles, h.hcOwn = colours): you can switch back and forth for free, here or in
+   «عدّل الشكل». The gold mystery box from the quests can also give a dye (p43.js). */
+const BRB_HAIR=[
+  {k:'موهوك',g:'m',p:900},{k:'ديل حصان',g:'m',p:1200,n:'ديل حصان'},{k:'ضفيرة',g:'m',p:1500},
+  {k:'قصة ولادي',g:'f',p:900},{k:'موهوك',g:'f',p:1200},{k:'سبايكي',g:'f',p:1500}];
+const BRB_COL=[{c:'#e04b3e',n:'أحمر نار',p:700,r:['R','r','m','m']},{c:'#2f6fd0',n:'أزرق',p:900,r:['L','l','2','2']},{c:'#6b45a6',n:'بنفسجي',p:900,r:['P','p','2','1']},
+  {c:'#3a9e55',n:'أخضر',p:1100,r:['G','q','z','z']},{c:'#f3c14d',n:'أصفر دهبي',p:1300,r:['Y','y','o','o']},{c:'#45c8dc',n:'تركواز',p:1500,r:['Q','O','l','l']}];
+BRB_COL.forEach(c=>{PD.RAMPS.hair[c.c]=c.r});
+(function(){const add=PD.addPart,arr=v=>Array.isArray(v)?v:[v],P=(k,g)=>PD.getPart('hair',k,g).def;
+  /* موهوك: a tall strip down the middle, the sides shaved to a few dots of stubble */
+  const dots=(x0,w,y0,n,skip)=>{const R=[];for(let y=0;y<n;y++){let r='';for(let x=0;x<w;x++)r+=(!skip(x)&&(x+y)%3===0)?'j':'.';R.push(r)}return {x:x0,y:y0,rows:R}};
+  const MOH={face:[dots(7,18,4,5,x=>x>=6&&x<=11),{x:6,y:9,rows:['h..................j','h..................j','h..................j']},
+      {x:13,y:0,rows:['..hh..','.hHhh.','hHHhhj','hHhhhj','hHhhhj','hHhhhj','hHhhhj','hhhhhj','.hhhj.']}],
+    body:[dots(6,12,2,3,x=>x>=4&&x<=7),{x:10,y:0,rows:['.hh.','hHhj','hHhj','hHhj','hhhj','.hj.']}]};
+  add('hair','موهوك',Object.assign({g:'m'},MOH));add('hair','موهوك',Object.assign({g:'f'},MOH));
+  const cp=(k,from,to)=>{const d=P(k,from);add('hair',k==='قصير'?'قصة ولادي':k,Object.assign({},d,{g:to}))};
+  cp('ديل حصان','f','m');cp('ضفيرة','f','m');cp('قصير','m','f');cp('سبايكي','m','f');
+})();
+const brbFix=h=>{h.hairOwn=h.hairOwn||[];h.hcOwn=h.hcOwn||[];return h};
+const brbHas=(h,k)=>(h.hairOwn||[]).includes(h.g+':'+k);
+/* the look editor shows what you bought, after the free choices */
+{const c0=create;create=function(){const h=S.hero,ed=S.editing&&h,added=[];
+  if(ed){brbFix(h);const fem=(S.draft&&S.draft.g||h.g)==='f',L=fem?LOOK.hairF:LOOK.hairM;
+    BRB_HAIR.filter(x=>x.g===(fem?'f':'m')&&brbHas({hairOwn:h.hairOwn,g:x.g},x.k)&&!L.includes(x.k)).forEach(x=>{L.push(x.k);added.push([L,x.k])});
+    h.hcOwn.forEach(c=>{if(!LOOK.hairColor.includes(c)){LOOK.hairColor.push(c);added.push([LOOK.hairColor,c])}})}
+  try{return c0.apply(this,arguments)}finally{added.forEach(([L,k])=>{const i=L.lastIndexOf(k);if(i>=0)L.splice(i,1)})}}}
+
+/* the shop */
+const BRB={pv:null};
+TW_NPC.adel=['عادل الحلاق','#3d78a8'];
+if(typeof PXP_NPC!=='undefined')PXP_NPC.adel={look:KF_PPL.adel.look,bg:['l','2']};
+TW_EXTRA.push(h=>{brbFix(h);const n=BRB_HAIR.filter(x=>x.g===h.g&&!brbHas(h,x.k)).length;
+  return {id:'barber',go:'barber',n:'صالون عادل',w:'عادل الحلاق',s:h.hcOwn.length||h.hairOwn.length?`${G('عندك','عندك')} ${h.hairOwn.length+h.hcOwn.length} من عنده`:'قصّات وصبغات مش في أي حتة'}});
+{const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('barber'))g.go.splice(1,0,'barber')}
+{const pa=placeArt;placeArt=function(id){if(id==='barber')return brbArt();return pa.apply(this,arguments)}}
+function brbArt(){const pole=[0,1,2,3,4,5,6,7].map(i=>`<rect x="128" y="${18+i*7}" width="10" height="4" fill="#e04b3e"/><rect x="128" y="${22+i*7}" width="10" height="3" fill="#2f6fd0"/>`).join('');
+  return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#1b1d3b"/><rect y="64" width="160" height="26" fill="#3a2a20"/>
+  <rect x="14" y="10" width="64" height="44" fill="#29305f"/><rect x="18" y="14" width="56" height="36" fill="#93afe2"/><rect x="22" y="18" width="20" height="6" fill="#fffaf0" opacity=".5"/>
+  <rect x="34" y="44" width="28" height="8" fill="#962e3a"/><rect x="30" y="52" width="36" height="12" fill="#e04b3e"/><rect x="44" y="64" width="8" height="14" fill="#8f877b"/><rect x="36" y="76" width="24" height="4" fill="#8f877b"/>
+  <rect x="124" y="14" width="18" height="4" fill="#cfc6b8"/>${pole}<rect x="124" y="74" width="18" height="4" fill="#cfc6b8"/>
+  <rect x="88" y="30" width="6" height="22" fill="#cfc6b8"/><rect x="96" y="30" width="6" height="22" fill="#cfc6b8"/><rect x="86" y="52" width="18" height="6" fill="#74412a"/></svg>`}
+const BRB_HI=['{اقعد|اقعدي} على الكرسي. عادل هيظبطك.','القصة الحلوة نص الشخصية. والنص التاني الصبغة.','دي حاجات مش هتلاقيها عند حد في الكفر. جايبها من مصر.','اللي يقعد على الكرسي بيقوم واحد تاني.'];
+SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()}brbFix(h);const pv=BRB.pv,fem=h.g==='f';
+  const look=Object.assign({},h,{eq:{}},pv?pv.t==='h'?{hair:pv.k}:{hairColor:pv.k}:{});
+  const free=fem?LOOK.hairF:LOOK.hairM;
+  const st=BRB_HAIR.filter(x=>x.g===h.g).map(x=>{const own=brbHas(h,x.k),on=h.hair===x.k,sel=pv&&pv.t==='h'&&pv.k===x.k;
+    return `<button class="opt brb-o${sel?' on':''}${on?' wear':''}" data-bh="${x.k}"><b>${x.n||x.k}</b><small>${on?G('عليك','عليكي'):own?G('بتاعك','بتاعتك'):x.p+' جنيه'}</small></button>`}).join('');
+  const cl=BRB_COL.map(c=>{const own=h.hcOwn.includes(c.c),on=h.hairColor===c.c,sel=pv&&pv.t==='c'&&pv.k===c.c;
+    return `<button class="opt brb-o brb-c${sel?' on':''}${on?' wear':''}" data-bc="${c.c}"><i style="background:${c.c}"></i><b>${c.n}</b><small>${on?G('عليك','عليكي'):own?G('بتاعك','بتاعتك'):c.p+' جنيه'}</small></button>`}).join('');
+  let act='';if(pv){const x=pv.t==='h'?BRB_HAIR.find(y=>y.g===h.g&&y.k===pv.k):BRB_COL.find(y=>y.c===pv.k),own=pv.t==='h'?brbHas(h,pv.k):h.hcOwn.includes(pv.k),nm=x.n||x.k;
+    const wearing=pv.t==='h'?h.hair===pv.k:h.hairColor===pv.k;
+    act=wearing?`<div class="tw-sm" style="text-align:center">ده اللي ${G('عليك','عليكي')} دلوقتي</div>`:own?`<button class="btn" id="brbGo">${G('اعمل','اعملي')} «${nm}» ببلاش</button>`
+      :`<button class="btn" id="brbGo" ${h.money<x.p?'disabled':''}>${G('اشتري','اشتري')} «${nm}» بـ${x.p} جنيه</button>${h.money<x.p?`<div class="tw-sm" style="text-align:center">${G('محتاج','محتاجة')} ${x.p-h.money} جنيه كمان</div>`:''}`}
+  view.innerHTML=`${twTop('صالون عادل')}<div class="tw brb">
+    ${twNpcHTML('adel',T(pv?'«{بص|بصي} في المراية. حلوة، صح؟»':'«'+pick(BRB_HI)+'»'))}
+    <div class="card brb-mir"><div class="brb-pic">${portrait(look,'brb'+(pv?pv.t+(pv.t==='h'?BRB_HAIR.findIndex(y=>y.k===pv.k):BRB_COL.findIndex(y=>y.c===pv.k)):'0'))}</div><div class="brb-st">${PX.body?PX.body(look,true):''}</div>
+      <div class="tx"><b>${esc(h.name)}</b><small>${pv?`${G('بتجرّب','بتجرّبي')} ${pv.t==='h'?'قصّة':'صبغة'} «${pv.t==='h'?(BRB_HAIR.find(y=>y.g===h.g&&y.k===pv.k)||{}).n||pv.k:(BRB_COL.find(y=>y.c===pv.k)||{}).n}»`:G('دوس على أي حاجة تجربها','دوسي على أي حاجة تجربيها')}</small>${act}</div></div>
+    <div class="tw-lbl">قصّات <small>مش في اختيارات الشخصية الجديدة</small></div><div class="card"><div class="wrap brb-w">${st}</div></div>
+    <div class="tw-lbl">صبغات <small>الصبغة بتفضل {معاك|معاكي}، {ترجع|ترجعي} لها وقت ما {تحب|تحبي}</small></div><div class="card"><div class="wrap brb-w">${cl}</div></div>
+    <div class="tw-lbl">الشكل العادي <small>ببلاش</small></div><div class="card"><div class="wrap brb-w">${free.map(k=>`<button class="opt${h.hair===k?' on':''}" data-bf="${k}">${k}</button>`).join('')}</div>
+      <div class="wrap brb-w" style="margin-top:8px">${LOOK.hairColor.map(c=>`<button class="swatch${h.hairColor===c?' on':''}" data-bfc="${c}" style="background:${c}" aria-label="لون"></button>`).join('')}</div></div>
+    <div class="tw-sm" style="text-align:center">${twMon(h)}</div></div>`.replace(/\{([^|{}]*)\|([^{}]*)\}/g,(_,m,f)=>fem?f:m);
+  twBack();const b0=$('#back');if(b0)b0.onclick=()=>{BRB.pv=null;twGo('town')};
+  const y=()=>{const s=view.scrollTop;render();view.scrollTop=s};
+  view.querySelectorAll('[data-bh]').forEach(b=>b.onclick=()=>{BRB.pv={t:'h',k:b.dataset.bh};SFX.tick&&SFX.tick(700);y()});
+  view.querySelectorAll('[data-bc]').forEach(b=>b.onclick=()=>{BRB.pv={t:'c',k:b.dataset.bc};SFX.tick&&SFX.tick(700);y()});
+  view.querySelectorAll('[data-bf]').forEach(b=>b.onclick=()=>{h.hair=b.dataset.bf;BRB.pv=null;saveHero();SFX.tick&&SFX.tick(700);y()});
+  view.querySelectorAll('[data-bfc]').forEach(b=>b.onclick=()=>{h.hairColor=b.dataset.bfc;BRB.pv=null;saveHero();SFX.tick&&SFX.tick(700);y()});
+  const go=$('#brbGo');if(go)go.onclick=()=>{const p=BRB.pv;if(!p)return;
+    if(p.t==='h'){const x=BRB_HAIR.find(z=>z.g===h.g&&z.k===p.k);if(!brbHas(h,p.k)){if(h.money<x.p)return;h.money-=x.p;h.hairOwn.push(h.g+':'+p.k);SFX.coin&&SFX.coin()}h.hair=p.k}
+    else{const x=BRB_COL.find(z=>z.c===p.k);if(!h.hcOwn.includes(p.k)){if(h.money<x.p)return;h.money-=x.p;h.hcOwn.push(p.k);SFX.coin&&SFX.coin()}h.hairColor=p.k}
+    BRB.pv=null;saveHero();band('صالون عادل',T('{شكلك|شكلك} اتغير'),T(pick(['عادل: «نعيمًا!»','عادل: «الكفر كله هيسأل مين حلاقك.»','عادل: «{بص|بصي} في المراية تاني. مش مصدّق؟»'])),{dur:1800,sound:SFX.fanfare});y()};
+};
+{const st=document.createElement('style');st.textContent=`
+.brb-mir{display:flex;gap:12px;align-items:center}.brb-pic{flex:none;width:96px;height:96px;border-radius:14px;overflow:hidden;border:2px solid var(--line)}.brb-pic svg{width:100%;height:100%}
+.brb-st{flex:none;width:48px;height:64px}.brb-st svg{width:100%;height:100%}
+.brb-mir .tx{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}.brb-mir .tx small{color:var(--dim);font-size:13px}.brb-mir .btn{min-height:44px;font-size:15px}
+.brb-w{gap:6px}.brb-o{display:flex;flex-direction:column;align-items:center;min-height:52px;padding:4px 10px}.brb-o b{font-size:14px}.brb-o small{font-size:11px;color:#f2c77a}
+.brb-o.wear{border-color:#7fe07a}.brb-c{flex-direction:column}.brb-c i{display:block;width:22px;height:12px;border-radius:4px;border:1px solid #0006}`;document.head.appendChild(st)}
+/* ---------- more talk (v5.35): town lines, café lines, and more of عم صابر's stories ---------- */
+{const l0=twLines;twLines=function(h){const L=l0.apply(this,arguments),cnt=h.cnt||{};L.push(
+  ['ramadan','الفلوس بتيجي وتروح. البضاعة الحلوة هي اللي بتفضل في الدماغ.'],
+  ['ramadan','فيه واحد كل أسبوع بيشتري مني ملح كتير. سألته بتعمل بيه إيه، قال: بحط على العتبة.'],
+  ['ramadan','أنا مش بفاصل. بس لو {فاصلت|فاصلتي} حلو ممكن أضحك.'],
+  ['ramadan','الشنطة اللي على ضهرك دي محتاجة تكبر. {روح|روحي} لعم فتحي.'],
+  ['ramadan','أبويا الله يرحمه كان بيقول: البيعة الأولى في اليوم بركة، ما تفاصلش فيها.'],
+  ['ramadan','بيقولوا في سوق اللاعبين حد باع سمكة دهب بألف. أنا لو معايا واحدة ما أبيعهاش.'],
+  ['hassan','الحديد ما بيكدبش. لو الضربة غلط، هيقولك.'],
+  ['hassan','سيف من غير اسم زي راجل من غير أصل. {سمّي|سمّي} سلاحك.'],
+  ['hassan','الشرار ده بيطير في كل حتة. علشان كده أنا ما عنديش حواجب.'],
+  ['hassan','فيه ناس بتيجي تتفرج على الكور بس. أنا بحب ده، النار بتحب الجمهور.'],
+  ['hassan','الدرع التقيل بيحميك، بس بيبطّأك. {اختار|اختاري} على حسب ما {انت|انتي}.'],
+  ['hassan','ابن أخت عادل عايز يتعلم. قولتله: أول سنة بتكنس بس.'],
+  ['fathy','الإبرة أخطر من السيف. السيف بيجرح مرة، الإبرة بتشك كل يوم.'],
+  ['fathy','الغرزة المستعجلة بتفك في أول ليلة. {خد|خدي} وقتك.'],
+  ['fathy','الصوف ده من خرفان الحاج سعيد. هو بيقول إنها بتحلم.'],
+  ['fathy','الشنطة الكبيرة نعمة ونقمة. بتشيل كتير، وبتخليك تشيل حاجات ما لهاش لازمة.'],
+  ['fathy','عمري ما خيطت كفن. ولا هخيط. فيه حاجات ما بتتعملش بالفلوس.'],
+  ['umsayed','الفول المدمس عايز ليلة كاملة على نار هادية. زي الحب كده.'],
+  ['umsayed','العصير في الخلاط لازم يبقى ناعم. اللي فيه حتت ده مش عصير، ده عقاب.'],
+  ['umsayed','جوزي كان بيقول إن أكلي بيرجّع الروح. أنا بقول إنه كان جعان بس.'],
+  ['umsayed','الملوخية ليها شهقة. اللي ما بيشهقش عليها، بتطلع ماسخة.'],
+  ['umsayed','{خد|خدي} {معاك|معاكي} أكل قبل الليلة. الغيطان ما فيهاش مطاعم.'],
+  ['umsayed','فيه ناس بتطبخ بعنيها، وناس بتطبخ بقلبها. أنا بطبخ بالاتنين.'],
+  ['abdo','الزرعة زي العيل الصغير. لو نسيتها يوم، تزعل منك أسبوع.'],
+  ['abdo','القصب ده طويل وصبور. {اتعلم|اتعلمي} منه.'],
+  ['abdo','فيه أرض في آخر الغيط ما بنزرعهاش. جدي قال اللي يزرعها ما يحصدهاش.'],
+  ['abdo','الرشاش ده اختراع. زمان كنا بنشيل المية على راسنا.'],
+  ['abdo','الطماطم بتحب الشمس. وأنا بحب الضل. علشان كده بنتقابل الصبح بس.'],
+  ['oldman','الفيروز ده مش حجر. ده دمعة الجبل.'],
+  ['oldman','اللي بيكسر الصخر بغضب، الصخر بيكسره.'],
+  ['oldman','الضلمة في المنجم مش فاضية. بس اللي جوّاها مش بيأذي اللي ماشي في حاله.'],
+  ['oldman','عيني دي راحت في المنجم. التانية لسه شايفة كفاية.'],
+  ['omda','الناس بتجيلي بمشاكلها. وأنا بوزعها على اللي يقدر.'],
+  ['omda','فيه حد بيسيب أكل على باب الدوار كل ليلة. محدش عارف مين. ولا عايز أعرف.'],
+  ['omda','ساعة الدوار واقفة من سنين. ومحدش رضي يصلحها.'],
+  ['omda','المهمة التقيلة ما بديهاش لأي حد. لازم أشوف إيدك الأول.'],
+  ['adel','القصّة الجديدة بتغير الواحد. ناس دخلت عندي خايفة وطلعت أسود.'],
+  ['adel','الصبغة الزرقا دي جايبها من مصر. الكفر كله اتكلم عليها.'],
+  ['adel','الموس عندي ما بيرحمش، بس إيدي خفيفة.'],
+  ['adel','زبون امبارح طلب أحلقله دقنه. لما خلصت لقيت ورا ودنه علامة زي العضة. ما سألتش.']);
+  if((h.kills||0)>=30)L.push(['omda','الناس بقت تعرف اسمك. {اللي قتل|اللي قتلت} الوحوش دي كلها.'],['hassan','سمعت عن الوحوش اللي {قتلتها|قتلتيها}. سلاحك محتاج يتشحذ.']);
+  if((cnt.fish||0)>=15)L.push(['umsayed','{انت|انتي} بقيت تجيب سمك أكتر من الصيادين نفسهم.']);
+  if((cnt.cooked||0)>=10)L.push(['umsayed','إيدك بقت تعرف الطبيخ. يمكن في يوم {تاخد|تاخدي} مكاني.']);
+  if((h.money||0)>=3000)L.push(['ramadan','الفلوس اللي {معاك|معاكي} دي محتاجة تتصرف. البضاعة الجديدة وصلت.']);
+  if(h.hairOwn&&h.hairOwn.length)L.push(['adel','القصّة دي {عليك|عليكي} تجنن. الكل بيسألني عنها.']);
+  if((h.lvl||1)>=8)L.push(['oldman','{بقيت|بقيتي} تقيل. الجبل حاسس بخطوتك.']);
+  return L}}
+{const k0=kfLines;kfLines=function(h){const L=k0.apply(this,arguments);L.push(
+  ['saber','الشاي الخفيف ده للضيوف. الشاي التقيل للي هيسهر.'],
+  ['saber','الدكة دي اتصلحت سبع مرات. وكل مرة حد بيقعد عليها ويقول إنها مريحة.'],
+  ['saber','زمان كان فيه شاعر بيقعد هنا ويقول أشعار عن الترعة. ليلة ما رجعش. القصيدة الأخيرة ما خلصتش.'],
+  ['saber','القهوة دي بتسمع أكتر ما بتتكلم. زيي.'],
+  ['saber','لو {عايز|عايزة} حكاية، {اسأل|اسألي}. عندي حكايات أكتر من الشاي.'],
+  ['mansour','الدومينو زي الحياة. اللي بيقفل الأول بيكسب، بس اللي بيعرف يستنى بيكسب أكتر.'],
+  ['mansour','أنا وصابر ما اتخانقناش من أربعين سنة. لأني دايمًا عنده حق. هو بيقول كده.'],
+  ['mansour','الشباب دلوقتي بيلعبوا بالموبايل. أنا بلعب بالحجارة، الحجارة ما بتفصلش شحن.'],
+  ['mansour','امبارح الطاولة اتحركت لوحدها. قولت لصابر، قالي: دي الرياح. مفيش رياح.'],
+  ['adel','عندي محل جنب الدوار دلوقتي. {عدّي|عدّي} عليا، عندي قصّات ما شفتهاش قبل كده.'],
+  ['adel','الشعر بيطلع تاني. الكلام اللي بيتقال على كرسي الحلاقة ما بيرجعش.'],
+  ['adel','واحد طلب مني أصبغ شعره أخضر. قولتله: مالك؟ قال: عايز النداهة ما تعرفنيش.'],
+  ['hamdy','ابني بيقول إنه شاف نور في الغيط بالليل. قولتله: ده عم عبده بيسقي. هو عارف إن عم عبده بينام بدري.'],
+  ['hamdy','الترعة دي غرّقت ناس كتير. بس برضه بنشرب منها. الدنيا كده.'],
+  ['hamdy','لو {شفت|شفتي} كلب أسود قاعد على الجسر، {لف|لفي} من الناحية التانية. {ما تسألش|ما تسأليش} ليه.'],
+  ['sameh','في مصر الناس بتجري طول الوقت. هنا الناس بتمشي، بس بتبص وراها.'],
+  ['sameh','أنا عايز أفتح محل موبايلات هنا. بس الشبكة ما بتجيش غير جنب المقابر.'],
+  ['sameh','عم رمضان بيشتري برخص وبيبيع بغلا. لو {عايز|عايزة} {تكسب|تكسبي}، {بيع|بيعي} للناس مش له.'],
+  ['soad','العيش البلدي عايز إيد، مش مكنة.'],
+  ['soad','الفرن عندي بيسخن لوحده الفجر. أنا ما بقتش بسأل.'],
+  ['soad','بنت أختي بتعرف تعمل كحك أحلى مني. بس ما تقولهاش إني قلت كده.'],
+  ['soad','الست اللي بتعجن بالليل في آخر الكفر.. امبارح لقيت رغيف من عندها على عتبة بيتي.']);
+  return L}}
+KF_STORIES.push(
+  ['الجاموسة البيضا','في سنة الجفاف ظهرت في الكفر جاموسة بيضا ملهاش صاحب. كانت بتدّي لبن كتير، والناس كلها شربت منه. لما المطر نزل، الجاموسة اختفت. فيه ناس بتقول إنها كانت نعمة، وناس بتقول إنها كانت دين، وإن الدين لسه ما اتدفعش.'],
+  ['حارس الجسر','زمان كان فيه خفير على الجسر اسمه عم شعبان. ما كانش بينام، ولا بياكل قدام حد. في ليلة عدّى عليه عيال بيضحكوا، فقالهم: روحوا قبل ما الترعة تصحى. تاني يوم لقوا الجسر فاضي، وعصايته مغروزة في الطين. لحد النهارده محدش شالها.'],
+  ['المراية','عادل الحلاق عنده مراية قديمة ما بيحطهاش في المحل. بيقول إنها كانت بتاعة أبوه، وإن أبوه بص فيها في ليلة وشاف حد واقف وراه. لما لف ما لقاش حد. من ساعتها عادل بيحلق قدام مراية جديدة، والقديمة متغطية بملاية.'],
+  ['فرح من غير معازيم','مرة الكفر كله سمع زغاريط ودف جاي من ناحية الغيطان. افتكروا فيه فرح، وطلع شوية شباب يباركوا. لقوا كراسي مرصوصة وأكل سخن، ومفيش ولا حد. واحد منهم أكل لقمة. التانيين رجعوا من غيره. أمه لسه بتحط له طبق كل ليلة.'],
+  ['الواد اللي باع ضله','حكاية قديمة عن واد طمّاع قابل راجل غريب على الترعة، وعرض عليه شوال فلوس قصاد ضله. الواد ضحك وقال ماشي. تاني يوم الناس لاحظوا إنه بيمشي في الشمس من غير ضل. أول الأمر اتباهى بفلوسه. بعدها بقى ما بيطلعش غير بالليل. وفي الآخر ما طلعش خالص.'],
+  ['شجرة الجميز','الجميزة اللي على أول الكفر عمرها أكبر من الكفر نفسه. محدش بيقطع منها فرع. مرة واحد قطع فرع علشان يعمل منه عصاية. الفرع نزّف عصارة حمرا، والراجل من يومها إيده ما بقتش تقفل.'],
+  ['السلعوة والطفل','ست في الكفر صحيت لقت السلعوة واقفة جنب سرير ابنها. ما صرختش. حطت قدامها طبق لبن، وقعدت تغني. السلعوة شربت ومشيت. من ساعتها الستات في الكفر بيحطوا طبق لبن عند الباب في الليالي الصعبة. اللي بيضحك عليهم ما بيكملش الشتا.'],
+  ['ساعة الدوار','ساعة الدوار وقفت على تلاتة وتلت من سنين. اليوم اللي وقفت فيه، العمدة القديم مات. العمدة الجديد جاب صنايعي من البندر يصلحها. الصنايعي فتحها، وقفلها، ومشي من غير ما ياخد فلوس، وقال حاجة واحدة بس: سيبوها.']);
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
