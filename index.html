@@ -1944,31 +1944,40 @@ async function strike(f,r,kind,name){
   if(r.crit)d*=2;d=Math.max(1,d);const mc=!C.tutorial&&Math.random()<critChance(h);if(mc){d=Math.ceil(d*1.5);masterWord();await sleep(420)}
   C.combo++;if(S.run)S.run.maxCombo=Math.max(S.run.maxCombo,C.combo);
   const fullHp=f.hp===f.max;
-  hurtFoe(f,d,{fx:mage?'magic':'',crit:r.crit||mc});await sleep(mage?950:520);
-  if(C.combo>=2)comboAt(C.combo);
-  /* a second hit (ضربتين ورا بعض, the sword) follows right away instead of after the usual pause */
-  const nX=!sp&&r.tier!=='fail'&&C.foes.some(x=>x.hp>0)?(hasSkill(h,'twice')&&(r.tier==='full'||skL(h,'twice')>=2)?1:0)+((!sp||h.cls==='حرامي')&&wSkill(h)==='double'?1:0):0;
-  await say(`${r.crit?'ضربة حظ! ':''}${mc?'ضربة معلّم! ':''}${rg?'غضب ×3! ':''}${name} جت في ${f.name}: -${d}${ex?' (طرد الجن ×2)':''}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,'good',nX?200:undefined);
+  /* the follow-up hits (ضربتين ورا بعض, the sword) are worked out first, so they land right on top of this one */
+  const ws=!sp||h.cls==='حرامي'?wSkill(h):null,full=r.tier==='full';
+  const tw=!sp&&hasSkill(h,'twice')&&(full||skTwPart(h)),dbl=!sp&&full&&ws==='double',t3=tw&&skL(h,'twice')>=5&&Math.random()<.35;
+  const nX=(tw?1:0)+(t3?1:0)+(dbl?1:0);
+  hurtFoe(f,d,{fx:mage?'magic':'',crit:r.crit||mc});
+  /* weapon effects (the club's daze, the dagger's poison) land with the hit itself, no extra pause */
+  let wx='';
+  if(ws==='stun'&&full&&f.hp>0){fxOn(f.fx,'weak');SFX.stun();floatAt($('#foe'+f.id),FF(f,'مدوّخ!','مدوّخة!'),'#ffd36a','',24);wx+=` · ${WS_N.stun} ${FF(f,'دوّخته','دوّختها')}: ضربت${FF(f,'ه','ها')} الجاية نص`}
+  if(ws==='poison'&&f.hp>0&&Math.random()<.35){poisonFoe(f,1,3);SFX.venom();floatAt($('#foe'+f.id),FF(f,'اتسمم!','اتسممت!'),'#9be07a','',22);wx+=` · ${WS_N.poison} ${FF(f,'سمّمه','سمّمها')}: -1 كل دور 3 أدوار`}
+  await sleep(nX?(mage?320:170):(mage?950:520));
+  if(C.combo>=2&&!nX)comboAt(C.combo);
+  await say(`${r.crit?'ضربة حظ! ':''}${mc?'ضربة معلّم! ':''}${rg?'غضب ×3! ':''}${name} جت في ${f.name}: -${d}${ex?' (طرد الجن ×2)':''}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}${wx}`,'good',nX?0:undefined);
+  if(nX&&C.foes.some(x=>x.hp>0)){let n=nX;
+    if(tw)await extraHit(f,'ضربتين ورا بعض',--n,skL(h,'twice')>=4?2:0,0,nX-n+1);
+    if(t3)await extraHit(f,'وتالتة!',--n,0,0,nX-n+1);
+    if(dbl)await extraHit(f,`${WS_N.double} ضرب تاني`,--n,0,0,nX-n+1);
+    if(C.combo>=2)comboAt(C.combo)}
   if(mc){ach('master');if(S.run)S.run.masters=(S.run.masters||0)+1}if(C.combo===3)ach('combo');
   if(C.combo===2&&!h.ach.combo&&C.foes.some(x=>x.hp>0))toast(`كمان ضربة ناجحة = إنجاز «3 ورا بعض»`);
   if(fullHp&&f.hp<=0&&!C.tutorial){floatAt($('#foe'+f.id),'ضربة واحدة!','#ffd36a','crit',30);ach('oneshot')}
   /* weapon skills work on the normal attack (and on the thief's special, it's a stab too) */
-  const ws=!sp||h.cls==='حرامي'?wSkill(h):null;
-  if(ws==='stun'&&r.tier==='full'&&f.hp>0){fxOn(f.fx,'weak');SFX.stun();floatAt($('#foe'+f.id),FF(f,'مدوّخ!','مدوّخة!'),'#ffd36a','',24);
-    await say(`${WS_N.stun} ${FF(f,'دوّخته','دوّختها')}: ضربت${FF(f,'ه','ها')} الجاية هتبقى نص.`,'good',1000)}
-  if(ws==='poison'&&f.hp>0&&Math.random()<.35){poisonFoe(f,1,3);SFX.venom();floatAt($('#foe'+f.id),FF(f,'اتسمم!','اتسممت!'),'#9be07a','',22);
-    await say(`${WS_N.poison} ${FF(f,'سمّمه','سمّمها')}: ${FF(f,'هيخسر','هتخسر')} 1 صحة كل دور لمدة 3 أدوار.`,'good',1000)}
-  if(!sp&&r.tier!=='fail'){const full=r.tier==='full',tw=hasSkill(h,'twice')&&(full||skTwPart(h)),dbl=full&&ws==='double',t3=tw&&skL(h,'twice')>=5&&Math.random()<.35;
-    if(tw)await extraHit(f,'ضربتين ورا بعض',dbl||t3,skL(h,'twice')>=4?2:0);if(t3)await extraHit(f,'وتالتة!',dbl);if(dbl)await extraHit(f,`${WS_N.double} ضرب تاني`);
+  if(!sp&&r.tier!=='fail'){
     if(full&&ws==='cleave'){const o=C.foes.find(x=>x.hp>0&&x!==f&&!(x.X&&x.X.gone));if(o)await extraHit(o,`${WS_N.cleave} وصل لـ${o.name}`,0,0,.5)}}
   const e=f.hp>0?f:C.foes.find(x=>x.hp>0);
   if(r.tier==='part'&&e&&!(e.fx&&e.fx.skip)){hurtMe(1);await say(`ضربتك جت، بس ${e.name} ${FF(e,'لحق','لحقت')} ${FF(e,'يخربشك','تخربشك')}: -1 صحة.`,'bad')}
 }
-async function extraHit(f,why,more,bon,frac){const C=S.combat,h=S.hero,K=CLASSES[h.cls],t=f.hp>0?f:C.foes.find(x=>x.hp>0);if(!t||h.hp<=0)return;
-  floatAt($('#meCard'),why+'!','#f3d48f','',20);
+async function extraHit(f,why,more,bon,frac,n){const C=S.combat,h=S.hero,K=CLASSES[h.cls],t=f.hp>0?f:C.foes.find(x=>x.hp>0);if(!t||h.hp<=0)return;
+  const mg=h.cls==='ساحر';
   let d=K.atk.dmg()+(h.lvl-1)+WDMG(h)+thb(h)+(bon||0);if(h.cls==='معالج'&&t.spirit)d+=2;if(t.spirit&&hasSkill(h,'exorcise'))d=skExo(h,d);if(frac)d=Math.ceil(d*frac);d=Math.max(1,d);
-  hurtFoe(t,d,{fx:h.cls==='ساحر'?'magic':''});await sleep(h.cls==='ساحر'?600:300);
-  await say(`${why}: -${d} في ${t.name}${t.hp<=0?` · ${t.name} ${FF(t,'وقع','وقعت')}!`:''}`,'good',more?200:undefined)}
+  /* a chained hit (n = 2, 3..) lands on top of the one before it, with a big ×n pop */
+  if(n){floatAt($('#foe'+t.id),'×'+n+'!','#ffd36a','crit',26+6*n);try{SFX.swing();SFX.crit()}catch(e){}vib(40);const el=$('#foe'+t.id);if(el)cls(el,'xhit')}
+  else floatAt($('#meCard'),why+'!','#f3d48f','',20);
+  hurtFoe(t,d,{fx:mg?'magic':'',crit:!!n});await sleep(n?(more?(mg?300:160):(mg?600:420)):(mg?600:300));
+  await say(`${why}: -${d} في ${t.name}${t.hp<=0?` · ${t.name} ${FF(t,'وقع','وقعت')}!`:''}`,'good',more?0:undefined)}
 async function spinAct(r,name){const C=S.combat,h=S.hero,K=CLASSES[h.cls];
   if(r.tier==='fail')return strike(C.foes[C.tgt],r,'sp',name);
   let d=K.atk.dmg()+(h.lvl-1)+WDMG(h)+thb(h)+skB(h,'sp');if(r.crit)d*=2;d=Math.max(1,d);const mc=!C.tutorial&&Math.random()<critChance(h);if(mc){d=Math.ceil(d*1.5);masterWord();await sleep(420)}
@@ -3954,16 +3963,16 @@ async function skillAct(s,f,r){
   if(id==='bolt'||id==='storm')return aoeAct(s,r);
   if(id==='bash'){if(r.tier==='fail')return miss(`${s.n} ما جتش في ${f.name}.`);
     let d=rnd(3)+WDMG(h)+thb(h)+skB(h,'bash');if(r.crit)d*=2;C.combo++;if(S.run)S.run.maxCombo=Math.max(S.run.maxCombo,C.combo);
-    SFX.bash();hurtFoe(f,d,{crit:r.crit});await sleep(560);if(f.hp>0){fxOn(f.fx,'skip',{n:skL(h,'bash')>=3?2:1});SFX.stun();floatAt(fe(),FF(f,'اتلخبط!','اتلخبطت!'),'#ffd36a','',22)}
+    SFX.bash();hurtFoe(f,d,{crit:r.crit});if(f.hp>0){fxOn(f.fx,'skip',{n:skL(h,'bash')>=3?2:1});SFX.stun();floatAt(fe(),FF(f,'اتلخبط!','اتلخبطت!'),'#ffd36a','',22)}await sleep(560);
     if(C.combo>=2)comboAt(C.combo);if(C.combo===3)ach('combo');
     await say(`${r.crit?'ضربة حظ! ':''}${s.n} جت في ${f.name}: -${d}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:skL(h,'bash')>=3?` · ${FF(f,'هيفوّت','هتفوّت')} دورين`:` · ${FF(f,'هيفوّت دوره','هتفوّت دورها')} الجاي`}`,'good');
     if(r.tier==='part')await skScratch(f,s);return}
   if(id==='venom'){if(r.tier==='fail')return miss(`السم ما لحقش يدخل في ${f.name}.`);
-    {const v=skVen(h);poisonFoe(f,v.d,v.n)}SFX.venom();burst(me,fe(),'#7fe06a',26);await sleep(520);cls(fe(),'hit');floatAt(fe(),FF(f,'اتسمم!','اتسممت!'),'#9be07a','',24);
+    {const v=skVen(h);poisonFoe(f,v.d,v.n)}SFX.venom();burst(me,fe(),'#7fe06a',26);await sleep(200);cls(fe(),'hit');floatAt(fe(),FF(f,'اتسمم!','اتسممت!'),'#9be07a','',24);
     await say(`${f.name} ${FF(f,'اتسمم','اتسممت')}: ${FF(f,'هيخسر','هتخسر')} ${skVen(h).d} صحة كل دور لمدة ${skVen(h).n} أدوار.`,'good');
     if(r.tier==='part')await skScratch(f,s);return}
   if(id==='freeze'){if(r.tier==='fail')return miss(`التلج ما مسكش في ${f.name}.`);
-    const n=r.tier==='full'?(skL(h,'freeze')>=3?3:2):1;fxOn(f.fx,'skip',{n,ice:1});SFX.freeze();burst(me,fe(),'#9fe0ff',40);await sleep(520);flash('#bfeaff');cls(fe(),'hit');floatAt(fe(),FF(f,'اتجمّد!','اتجمّدت!'),'#bfeaff','',26);
+    const n=r.tier==='full'?(skL(h,'freeze')>=3?3:2):1;fxOn(f.fx,'skip',{n,ice:1});SFX.freeze();burst(me,fe(),'#9fe0ff',40);await sleep(200);flash('#bfeaff');cls(fe(),'hit');floatAt(fe(),FF(f,'اتجمّد!','اتجمّدت!'),'#bfeaff','',26);
     return say(`${f.name} ${FF(f,'اتجمّد','اتجمّدت')}: ${FF(f,'هيفوّت','هتفوّت')} ${n>2?n+' أدوار':n>1?'دورين':FF(f,'دوره','دورها')+' الجاي'}.`,'good')}
   if(id==='snatch'){if(r.tier==='fail')return miss(`${f.name} ${FF(f,'خد باله','خدت بالها')} {وانت بتمد|وانتي بتمدي} إيدك.. ما {خدتش|خدتيش} حاجة.`);
     f.snatched=1;SFX.snatch();const dr=FOE_DROPS[f.art]||[],Lt=LOOT[f.art]||LOOT.dummy;
@@ -4340,6 +4349,15 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.5',d:'9 أكتوبر',add:[
+    'الاختيار الغلط ليه تمن. لو {اتمسكت|اتمسكتي} {وانت بتسرق|وانتي بتسرقي} {هتبقى مطارد|هتبقي مطاردة}: الوحوش أقوى لحد آخر الفصل. لو {عملت|عملتي} حاجة شريرة أوي ممكن {تبقى ملعون|تبقي ملعونة}: كل رمية أصعب لحد آخر الليلة. ولو {وقعت|وقعتي} وقعة وحشة {هتبقى متعور|هتبقي متعورة} {وتنزف|وتنزفي} بعد كل كارت لحد الاستراحة.',
+    'لو الحاجات دي اتلمّت عليك، كبير الفصل بيبقى أقوى بكتير. الاختيارات الخطر عليها علامة ⚠ عشان {تفكر|تفكري} قبل ما {تختار|تختاري}.',
+    'في القتال بقى فيه زرار «{ارتاح|ارتاحي}»: {بتاخد|بتاخدي} نفسك وطاقتك تزيد 2، بس العدو بيضرب.'
+  ],fix:[
+    'لو {وقعت|وقعتي} في الليل بقيت {بتخسر|بتخسري} أكتر: الخبرة اللي {خدتها|خدتيها} الليلة، الفلوس اللي {كسبتها|كسبتيها} وحتة من اللي معاك، و3 حاجات من الشنطة.',
+    'الضربة التانية (ضربتين ورا بعض، السيف) بقت بتنزل على طول ورا الأولى، والسم والدوخة والوقعة بيظهروا مع الضربة نفسها من غير استنى.',
+    'زرار القدرات بيبقى مطفي بجد لما طاقتك متكفيش.'
+  ]},
   {v:'5.4',d:'9 أكتوبر',add:[
     'كل قدرة بقى ليها 5 مستويات. كل مستوى {بتطلعه|بتطلعيه} {بيديك|بيديكي} نقطة قدرة {تعلّي|تعلّي} بيها أي قدرة من صفحة بطلك (قدراتي). المستوى 2 و4 بيقوّوا القدرة، والمستوى 3 و5 بيغيّروها: «ضربة من الضلمة» مثلاً بتضرب نفس العدو مرتين في المستوى 3، وبتضرب كل اللي في المكان في المستوى 5.',
     'المستويات العالية أغلى في النقط ومحتاجة مستوى أعلى، فلازم {تختار|تختاري} تعلّي إيه.',
@@ -18339,7 +18357,10 @@ function skLvHTML(h,s,full){const L=skL(h,s.id),D=skDOf(h,s.id);if(!D.length)ret
 
 /* skills that cost no energy now and then (warcry, smoke, shield, freeze, cheer, raise at levels 2 and 4) */
 {const a0=skillAct;skillAct=async function(s,f,r){const C=S.combat,h=S.hero;
-  const R=await a0.apply(this,arguments);
+  /* when an extra effect follows, the skill's own line doesn't wait: the effect lands right with it */
+  const ok=r&&r.tier!=='fail',L=id=>skL(h,id);
+  const after=ok&&((s.id==='sp'&&(L('sp')>=3||(h.cls==='محارب'&&L('sp')>=3)))||(s.id==='bash'&&L('bash')>=5)||(s.id==='venom'&&L('venom')>=5)||(s.id==='freeze'&&L('freeze')>=5)||(s.id==='bolt'&&L('bolt')>=3)||(s.id==='storm'&&L('storm')>=3));
+  if(after&&C)C.chain=1;let R;try{R=await a0.apply(this,arguments)}finally{if(C)C.chain=0}
   /* the changes at level 3 and 5 that come after the skill's own move */
   if(r&&r.tier!=='fail'&&s.id==='sp'&&C.foes.some(x=>x.hp>0))await skSpAfter(h,f,r,s);
   if(r&&r.tier!=='fail'&&s.id==='bash'&&skL(h,'bash')>=5)await skAll(h,f,x=>{const d=rnd(3)+WDMG(h)+skB(h,'bash');hurtFoe(x,d);if(x.hp>0)fxOn(x.fx,'skip',{n:1});return d},'الخبطة');
@@ -18349,6 +18370,7 @@ function skLvHTML(h,s,full){const L=skL(h,s.id),D=skDOf(h,s.id);if(!D.length)ret
   if(r&&r.tier!=='fail'&&s.id==='storm'&&skL(h,'storm')>=3){C.foes.filter(x=>x.hp>0).forEach(x=>poisonFoe(x,1,2));combat();await say('النار لسه ماسكة فيهم: 1 كل دور لمدة دورين.','good',600)}
   if(s.id==='warcry'&&skL(h,'warcry')>=5){const a=Math.min(4,MXH(h)-h.hp);if(a){h.hp+=a;combat();healFx($('#meCard'),a)}}
   return R}}
+{const y0=say;say=function(t,k,wait){if(S.combat&&S.combat.chain)wait=Math.min(wait===undefined?PACE:wait,120);return y0.call(this,t,k,wait)}}
 async function skAll(h,f,hit,why){const C=S.combat,ts=C.foes.filter(x=>x.hp>0&&x!==f&&!(x.X&&x.X.gone));if(!ts.length)return;
   let d=0;ts.forEach((x,i)=>setTimeout(()=>{d=hit(x)},i*120));await sleep(300+ts.length*120);combat();
   await say(`${why} جت في ${ts.length>1?'الباقيين':ts[0].name}${d?`: -${d}`:''}${ts.some(x=>x.hp<=0)?' · '+ts.filter(x=>x.hp<=0).map(x=>x.name+' '+FF(x,'وقع','وقعت')).join('، ')+'!':''}`,'good',700)}
@@ -18397,6 +18419,129 @@ addCards('rare',[
 .sk-lv{display:inline-block;font-size:11px;font-weight:800;color:#d9cbff;margin-inline-end:6px}
 .sk-lvb{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:#b9a0ff;color:#1a1030;font-size:11px;font-weight:800;vertical-align:2px;margin-inline-start:4px}
 `;document.head.appendChild(st)}
+/* ---------- burdens: a bad choice keeps costing you for the rest of the night ----------
+   N.bur={hunted,cursed,wounded,hAct}. Planted by applyOutcome (theft, very evil deeds, a bad fall),
+   saved with S.night, shown as a strip on every stop. */
+const BUR_MAX=3;
+const BUR_DEF={
+  hunted:{n:'مطارد{|ة}',c:'#f0a090',d:s=>`الوحوش أقوى ${s*20}٪ وبتضرب أجمد`,end:'لحد آخر الفصل'},
+  cursed:{n:'ملعون{|ة}',c:'#c9a0ff',d:s=>`كل رمية أصعب ${s}`,end:'لحد آخر الليلة'},
+  wounded:{n:'متعور{|ة}',c:'#ff8a7a',d:s=>`{بتنزف|بتنزفي} ${s} صحة بعد كل كارت`,end:'لحد الاستراحة'}
+};
+const burOf=()=>{const N=S.night;if(!N||!N_on())return null;return N.bur=N.bur||{hunted:0,cursed:0,wounded:0}};
+const burSum=B=>B?(B.hunted||0)+(B.cursed||0)+(B.wounded||0):0;
+const burKinds=B=>B?['hunted','cursed','wounded'].filter(k=>B[k]>0).length:0;
+const burHeavy=B=>burSum(B)>=3||burKinds(B)>=2;
+function burAdd(k,why){const B=burOf();if(!B)return '';const was=B[k]||0;B[k]=Math.min(k==='cursed'?2:BUR_MAX,was+1);if(k==='hunted')B.hAct=S.night.act;
+  if(B[k]===was)return '';const D=BUR_DEF[k];
+  return `<div class="note bur-note" style="color:${D.c}">${was?'زاد عليك':'من دلوقتي'}: <b>${D.n}</b>${was?' تاني':''}. ${why} ${D.d(B[k])}، ${D.end}.</div>`}
+
+/* plant */
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){
+  const R=ao.apply(this,arguments);
+  try{if(o&&typeof o==='object'&&N_on()&&!o.noBur){let x='';
+    if((o.ach==='thief'||(c&&c.stat&&burThief(c)))&&(tier==='fail'||(S.hero.cls!=='حرامي'&&(tier==='part'||Math.random()<.25))))x+=burAdd('hunted',tier==='full'?'حد شافك {وانت بتسرق|وانتي بتسرقي} وبلّغ.':'اللي {سرقته|سرقتيه} عرف وبعت وراك ناسه.');
+    const r=o.rep&&o.rep[0];
+    if(r<=-15||(r<=-10&&Math.random()<.4))x+=burAdd('cursed','اللي {عملته|عملتيه} ده ليه تمن، والليلة مش ناسياه.');
+    if(tier==='fail'&&o.hp<=-3)x+=burAdd('wounded','الجرح ده مش هيقفل لوحده.');
+    if(o.heal){const B=burOf();if(B&&B.wounded){B.wounded=0;x+=`<div class="note" style="color:#a6e3a0">الجرح اتربط ووقف النزيف.</div>`}}
+    if(x&&typeof RES==='object'&&RES){RES.extra=(RES.extra||'')+T(x);N_save();render();setTimeout(()=>{try{SFX.hurt()}catch(e){}},300)}}}
+  catch(e){console.error('bur plant: '+e.message)}
+  return R}}
+
+/* cursed: every roll in the night is harder */
+{const rc=rollCheck;rollCheck=function(stat,opt){const B=burOf();
+  if(B&&B.cursed){opt=Object.assign({},opt||{});opt.dc=(opt.dc||0)+B.cursed}
+  return rc.call(this,stat,opt)}}
+
+/* hunted: foes come stronger; a heavy load makes the act boss nastier */
+{const sc=startCombat;startCombat=function(foes,win,tutorial){const B=burOf();
+  if(B&&!tutorial&&Array.isArray(foes)){if(B.hunted&&B.hAct!==S.night.act)B.hunted=0;
+    const hs=B.hunted||0,hv=burHeavy(B);
+    if(hs||hv)foes=foes.map(f=>{let g=Object.assign({},f);
+      if(hs){g.hp=Math.round(g.hp*(1+.2*hs));g.dmg=(g.dmg||0)+Math.ceil(hs/2)}
+      if(hv&&(g.boss||g.art==='nadaha')){g.hp=Math.round(g.hp*1.3);g.dmg=(g.dmg||0)+1}
+      return g})}
+  const R=sc.call(this,foes,win,tutorial);
+  try{const C=S.combat;if(B&&C&&!tutorial&&C.log){const hs=B.hunted||0,boss=C.foes.some(f=>f.boss||f.art==='nadaha');
+    if(hs)C.log.push({t:`${hs>1?'الناس اللي وراك كترت':'اللي بيطاردوك سبقوك'}: الوحوش هنا أقوى من العادي.`});
+    if(boss&&burHeavy(B))C.log.push({t:'كل اللي {عملته|عملتيه} الليلة دي جه معاك هنا: الكبير أقوى بكتير.'});
+    C.log.forEach(l=>{if(typeof l.t==='string')l.t=T(l.t)})}}catch(e){console.error('bur fight: '+e.message)}
+  return R}}
+
+/* wounded: you bleed after every card; the act changing clears the hunters */
+{const cd=N_cardDone;N_cardDone=function(){const N=S.night,B=burOf(),had=!!(N&&N.card);
+  const R=cd.apply(this,arguments);
+  if(B){if(B.hunted&&B.hAct!==N.act)B.hunted=0;
+    if(had&&B.wounded){const h=S.hero;h.hp=Math.max(1,h.hp-B.wounded);N.bled=B.wounded}}
+  return R}}
+if(SC.n_camp){const ce=SC.n_camp.onEnter;SC.n_camp.onEnter=function(){const B=burOf();const R=ce&&ce.apply(this,arguments);if(B)B.wounded=0;N_save();return R}}
+
+/* reading a choice: does any of its outcomes steal, or do something very evil? (function outcomes are read from their source, never called) */
+const burSrc=c=>{const r=c&&c.res;if(!r)return '';if(typeof r==='function')return r.toString();
+  if(typeof r!=='object')return '';return [r].concat(['full','part','fail'].map(k=>r[k])).map(o=>!o?'':typeof o==='function'?o.toString():JSON.stringify(o)).join(' ')};
+const burThief=c=>/ach["']?\s*:\s*["']thief/.test(burSrc(c));
+const burEvil=c=>{let m=0;burSrc(c).replace(/rep["']?\s*:\s*\[\s*-(\d+)/g,(_,n)=>{m=Math.max(m,+n)});return m};
+const burRisk=c=>burThief(c)?'لو {اتمسكت|اتمسكتي} {هتبقى مطارد|هتبقي مطاردة}':burEvil(c)>=10?'حاجة زي دي ليها تمن':'';
+{const o0=N_opts;N_opts=function(key,all){const out=o0.apply(this,arguments);if(!N_on())return out;
+  return out.map(c=>{const w=burRisk(c);return w&&!(c.sub||'').includes('⚠')?Object.assign({},c,{sub:(c.sub?c.sub+' · ':'')+'⚠ '+w}):c})}}
+
+/* the strip on every stop */
+function burStripHTML(){const B=burOf();if(!B||!burSum(B))return '';
+  if(B.hunted&&B.hAct!==S.night.act)B.hunted=0;
+  const it=['hunted','cursed','wounded'].filter(k=>B[k]>0).map(k=>{const D=BUR_DEF[k];
+    return `<div class="bur-it" style="border-color:${D.c}"><b style="color:${D.c}">${D.n}${B[k]>1?' ×'+B[k]:''}</b><small>${D.d(B[k])} · ${D.end}</small></div>`}).join('');
+  const N=S.night,bl=N.bled?`<div class="bur-bled">{نزفت|نزفتي} ${N.bled} صحة</div>`:'';N.bled=0;
+  return T(`<div class="bur-strip">${it}${burHeavy(B)?'<div class="bur-boss">الكبير في آخر الفصل هيبقى أقوى بسبب اختياراتك.</div>':''}${bl}</div>`)}
+{const st0=SCREENS.stop;SCREENS.stop=function(){st0.apply(this,arguments);if(S.screen!=='stop'||!N_on())return;
+  try{const p=view.querySelector('.npath'),x=burStripHTML();if(p&&x)p.insertAdjacentHTML('afterend',x)}catch(e){console.error('bur strip: '+e.message)}}}
+
+{const st=document.createElement('style');st.textContent=`
+.bur-strip{display:flex;flex-direction:column;gap:5px;margin:6px 0 4px}
+.bur-it{border:1px solid;border-radius:12px;padding:6px 10px;background:#00000040;display:flex;flex-direction:column;gap:1px}
+.bur-it b{font-size:14px}.bur-it small{font-size:12px;color:var(--mute);line-height:1.5}
+.bur-boss{font-size:12px;color:#f0a090;font-weight:700}.bur-bled{font-size:12px;color:#ff8a7a;font-weight:700}
+.bur-note b{font-weight:800}`;document.head.appendChild(st)}
+
+/* a knock-down or a broken call that comes right after a hit shows up with it, not after the usual reading pause */
+{const y0=say;say=function(t,k,wait){const C=S.combat,X=C&&C.X;
+  if(X&&k==='good'&&((X.hitWk&&X.hitWk.length)||/^ضربة حظ/.test(String(t))))wait=Math.min(wait===undefined?PACE:wait,150);
+  return y0.call(this,t,k,wait)}}
+
+/* ---------- in a fight: «ارتاح» gives back energy for your turn; an unusable skills button looks off ---------- */
+const REST_EN=2;
+{const c0=combat;combat=function(){const R=c0.apply(this,arguments);const C=S.combat,h=S.hero;
+  try{const acts=view.querySelector('.acts');if(C&&h&&acts&&!acts.querySelector('[data-a="rest"]')&&acts.querySelector('[data-a="def"]')){
+    const dis=C.busy||C.phase!=='me',full=h.energy>=MXE(h),en=Math.min(REST_EN,MXE(h)-h.energy);
+    acts.insertAdjacentHTML('beforeend',`<button class="act rest" data-a="rest" ${dis||full?'disabled':''}><b>${G('ارتاح','ارتاحي')}</b><small>${full?'طاقتك مليانة':`${G('خد','خدي')} نفسك: ${BOLT} ${N_pl(en)} طاقة، بس العدو هيضرب`}</small></button>`);
+    const b=acts.querySelector('[data-a="rest"]');b.onclick=()=>heroAct('rest')}}catch(e){console.error('rest btn: '+e.message)}
+  return R}}
+{const ha=heroAct;heroAct=async function(a){const C=S.combat,h=S.hero;
+  if(a==='rest'){if(!C||C.busy||C.phase!=='me'||h.energy>=MXE(h))return;ac();C.busy=true;
+    const g=Math.min(REST_EN,MXE(h)-h.energy);h.energy+=g;try{SFX.heal()}catch(e){}const el=$('#meCard');if(el)floatAt(el,'+'+g+' طاقة','#9fd0ff','',22);
+    await say(`${esc(h.name)} ${G('خد نفسه','خدت نفسها')}: ${N_pl(g)} طاقة.`);return afterHero()}
+  return ha.apply(this,arguments)}}
+{const st=document.createElement('style');st.textContent=`
+.act.rest{grid-column:1/-1;padding:8px 12px;border-style:dashed}.act.rest b{color:#9fd0ff}
+.acts .act[disabled],.acts.enter .act[disabled]{opacity:.4;animation:none}
+.act.main[disabled]{background:var(--card);border-color:var(--line);filter:grayscale(1)}.act.main[disabled] b{color:var(--mute)}`;document.head.appendChild(st)}
+
+/* ---------- dying costs you: the night's experience, the money you came with and things from the bag ---------- */
+{const ls=N_lossScreen;N_lossScreen=function(){const h=S.hero,N=S.night;const R0=ls.apply(this,arguments);
+  try{const R=N&&N.lossRes;if(!R)return R0;
+    if(!R.pen){const kept=Math.max(0,R.earned-R.lost),m=Math.min(h.money,kept+Math.floor(Math.max(0,h.money-kept)*.15));h.money-=m;
+      const x=Math.min(h.xp||0,R.xp||0);h.xp=(h.xp||0)-x;
+      const pool=[];Object.keys(h.bag||{}).forEach(k=>{if(ITEMS[k]&&h.bag[k]>0)for(let i=0;i<h.bag[k];i++)pool.push(k)});
+      const its={};for(let i=0;i<3&&pool.length;i++){const k=pool.splice(Math.floor(Math.random()*pool.length),1)[0];h.bag[k]--;its[k]=(its[k]||0)+1}
+      R.pen={m,x,its};saveHero()}
+    const P=R.pen,s=view.querySelector('.nsum');if(!s)return R0;const rows=s.querySelectorAll('.nrow');
+    rows.forEach(r=>{const t=r.querySelector('span');if(!t)return;if(t.textContent==='الخبرة')r.querySelector('b').innerHTML=P.x?`<span style="color:#f0a090">⁦-${P.x}⁩ (راحت)</span>`:'—';
+      if(t.textContent==='الفلوس')r.querySelector('b').innerHTML=`<span style="color:#f0a090">⁦-${R.lost+P.m}⁩ جنيه</span>`});
+    const it=Object.keys(P.its);const nn=s.querySelector('.nnote');
+    const txt=`${G('وانت','وانتي')} واقع${G('','ة')} اتسرق منك: ${R.lost+P.m} جنيه${it.length?' و'+it.map(k=>(P.its[k]>1?P.its[k]+' ':'')+ITEMS[k].name).join(' و'):''}.${P.x?` والخبرة اللي ${G('خدتها','خدتيها')} الليلة دي راحت.`:''} ${G('خلي بالك','خلي بالك')} من صحتك المرة الجاية.`;
+    if(nn){nn.textContent=txt;nn.style.color='#f0a090'}else s.insertAdjacentHTML('beforeend',`<div class="nnote" style="color:#f0a090">${txt}</div>`)}
+  catch(e){console.error('loss pen: '+e.message)}
+  return R0}}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
