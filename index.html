@@ -4352,6 +4352,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.24',d:'9 أكتوبر',add:[
+    'شجرة للزراعة زي باقي الشغلانات (من زرار «شجرة زراعة» في الغيط): زرع أسرع، ومحصول دهب أكتر، وغراب بيستنى أكتر، وخبرة أكتر.',
+    'روابط الشجرة: سقاية أقوى، وتقاوي أرخص، والتاج بيديك أرض زيادة. وطريقين {تختار|تختاري} منهم ازاي {بتزرع|بتزرعي}.'],fix:[]},
   {v:'5.23',d:'9 أكتوبر',add:[
     'الغيط في البلد عند عم عبده الفلاح: {اشتري|اشتري} تقاوي {وازرع|وازرعي} فول وطماطم وبصل ورز وملوخية وقصب، والزرع بيكبر حتى {وانت|وانتي} بره اللعبة.',
     '{تقدر تسقي|تقدري تسقي} الزرع مرة وهو بيكبر بمجهود 1، فيخلص أسرع ويجيب أكتر. وخلّي عينك على الغربان: لو ما {طيّرتهاش|طيّرتيهاش} بسرعة بتاكل من المحصول.',
@@ -20422,12 +20425,16 @@ const CROPS={
   molokhia:{seed:15,min:15,y:[2,3],xp:3,lv:4},
   asab:{seed:25,min:25,y:[2,4],xp:4,lv:6}};
 const farmL=h=>lifeLvl(h,'farm');
-const farmN=h=>{const L=farmL(h);return 3+(L>=3?1:0)+(L>=6?1:0)+(L>=9?1:0)};
-const farmDur=(h,k)=>Math.round(CROPS[k].min*60000*(1-.04*(farmL(h)-1)));
+const farmN=h=>{const L=farmL(h);return 3+(L>=3?1:0)+(L>=6?1:0)+(L>=9?1:0)+(treeLink(h,'farm','crown')?1:0)};
+const farmDur=(h,k)=>Math.round(CROPS[k].min*60000*(1-.04*(farmL(h)-1))*(1-farmTr(h,'grow',4)/100)*(1+farmF(h,'slow')));
 const farmLeft=(h,p)=>p&&p.c?Math.max(0,p.t0+p.d-Date.now()):0;
 const farmReady=(h,p)=>p&&p.c&&farmLeft(h,p)<=0;
-const farmPrice=(h,k)=>twGP(h,CROPS[k].seed);
+const farmPrice=(h,k)=>Math.max(1,Math.round(twGP(h,CROPS[k].seed)*(treeLink(h,'farm','l2')?.75:1)*Math.max(.4,1+farmF(h,'seed'))));
 const farmT=ms=>{const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m?`${m}:${String(s%60).padStart(2,'0')}`:`${s} ث`};
+/* the tree: rank 1-4 of a branch gives a small bonus (TREE_U), rank 5 its strong passive; forks add fx keys */
+const farmR=(h,b)=>treeRank(h,'farm',b);
+const farmTr=(h,b,per)=>TREE_U(per,Math.min(4,farmR(h,b)));
+const farmF=(h,key)=>h&&h.treeF?tf(h,'farm',key):0;
 const FARM={crow:-1,crowT:0,next:0,tm:0,sheet:-1};
 
 /* ---------- pixel art: the crops (16x16) and the dishes (recolours) ---------- */
@@ -20513,7 +20520,7 @@ SCREENS.farm=function(){const h=S.hero;if(!h){S.screen='title';return render()}F
     ${rd>1?`<button class="btn" id="fmAll">${G('احصد','احصدي')} الكل (${rd})</button>`:''}
     <div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أرض فاضية ${G('وازرع','وازرعي')}. الزرع بيكبر ${G('وانت','وانتي')} بره. وهو بيكبر ${G('تقدر تسقيه','تقدري تسقيه')} مرة بمجهود 1: بيخلص أسرع وبيجيب أكتر.</div>
     <div class="card">${twEffHTML(h,1,1)}</div></div>`;
-  twBack();twTick();
+  twBack();twTick();if(typeof treeBind==='function')treeBind();
   view.querySelectorAll('[data-fp]').forEach(b=>b.onclick=()=>farmTap(+b.dataset.fp,b));
   const a=$('#fmAll');if(a)a.onclick=()=>farmHarvestAll();
   clearInterval(FARM.tm);FARM.next=FARM.next||Date.now()+9000;FARM.tm=setInterval(farmTick,1000)};
@@ -20526,21 +20533,23 @@ function farmTick(){const h=S.hero;if(S.screen!=='farm'||!h||!$('.fm-g')){clearI
     if(el&&(1-left/p.d>=.5)!==!!el.dataset.big){el.dataset.big=1;const pl=el.querySelector('.pl');if(pl&&!el.classList.contains('rd'))pl.innerHTML=FARM_SPROUT(1)}}
   /* the crow: lands on a growing plot; gone after 5 seconds with part of the crop */
   const now=Date.now();
-  if(FARM.crow>=0&&now>FARM.crowT){const p=P[FARM.crow];FARM.crow=-1;if(p&&p.c&&!farmReady(h,p)&&!p.e){p.e=1;saveHero();toast(`الغراب ${G('سبقك','سبقك')} وكل شوية من ال${MAT[p.c].n}.`);SFX.bad&&SFX.bad()}re=true}
+  if(FARM.crow>=0&&now>FARM.crowT){const p=P[FARM.crow];FARM.crow=-1;if(p&&p.c&&!farmReady(h,p)&&!p.e&&farmR(h,'guard')>=5){toast('الغراب لف حوالين الزرع وطار من غير ما ياخد حاجة.')}
+    else if(p&&p.c&&!farmReady(h,p)&&!p.e){p.e=1;saveHero();toast(`الغراب ${G('سبقك','سبقك')} وكل شوية من ال${MAT[p.c].n}.`);SFX.bad&&SFX.bad()}re=true}
   else if(FARM.crow<0&&now>FARM.next){FARM.next=now+12000+Math.random()*10000;
     const can=[];for(let i=0;i<n;i++){const p=P[i];if(p&&p.c&&!farmReady(h,p)&&!p.e&&!p.cr)can.push(i)}
-    if(can.length&&Math.random()<.45){FARM.crow=pick(can);P[FARM.crow].cr=1;FARM.crowT=now+5000;SFX.whoosh&&SFX.whoosh();vib&&vib([20,40,20]);re=true}}
+    if(can.length&&Math.random()<.45*Math.max(0,1-farmF(h,'crowless'))){FARM.crow=pick(can);P[FARM.crow].cr=1;FARM.crowT=now+5000+1000*Math.min(4,farmR(h,'guard'))+1000*farmF(h,'crow');SFX.whoosh&&SFX.whoosh();vib&&vib([20,40,20]);re=true}}
   if(re)farmRe()}
 function farmTap(i,el){const h=S.hero,p=h.farm.p[i];if(!h)return;
   if(FARM.crow===i){FARM.crow=-1;SFX.whoosh&&SFX.whoosh();vib&&vib(20);lifeXP(h,'farm',1);saveHero();floatAt(el,`${G('طيّرته','طيّرتيه')}!`,'#a6e3a0','',18);pop(el,['#1f1420','#29305f','#ffffff'],14);bump('crows');setTimeout(farmRe,350);return}
   if(!p||!p.c)return farmSheet(i);
   if(farmReady(h,p))return farmHarvest(i,el);
   if(p.w){toast(`ال${MAT[p.c].n} ${G('سقيته','سقيتيه')} خلاص. فاضله ${farmT(farmLeft(h,p))}.`);return}
-  if(!useEff(h)){toast(`مفيش مجهود ${G('تسقي','تسقي')} بيه. ${G('ارتاح','ارتاحي')} في القهوة أو ${G('كُل','كُلي')} حاجة.`);return}
-  const left=farmLeft(h,p);p.t0-=Math.round(left*.3);p.w=1;saveHero();SFX.pour&&SFX.pour();vib&&vib(15);
-  floatAt(el,'اتسقى: أسرع وأكتر','#6ab4ff','',16);pop(el,['#6ab4ff','#aaf6ff','#ffffff'],14);setTimeout(farmRe,300)}
-function farmYield(h,p){const c=CROPS[p.c],L=farmL(h);let n=c.y[0]+Math.floor(Math.random()*(c.y[1]-c.y[0]+1))+Math.floor(L/3)+(p.w?1:0)-(p.e?1:0);n=Math.max(1,n);
-  const gold=Math.random()<.05+.01*L;return {n:gold?n*2:n,gold}}
+  const wfree=farmR(h,'grow')>=5||Math.random()<farmF(h,'wfree');
+  if(!wfree&&!useEff(h)){toast(`مفيش مجهود ${G('تسقي','تسقي')} بيه. ${G('ارتاح','ارتاحي')} في القهوة أو ${G('كُل','كُلي')} حاجة.`);return}
+  const left=farmLeft(h,p);p.t0-=Math.round(left*(treeLink(h,'farm','l1')?.45:.3));p.w=1;saveHero();SFX.pour&&SFX.pour();vib&&vib(15);
+  floatAt(el,wfree?'اتسقى ببلاش!':'اتسقى: أسرع وأكتر','#6ab4ff','',16);pop(el,['#6ab4ff','#aaf6ff','#ffffff'],14);setTimeout(farmRe,300)}
+function farmYield(h,p){const c=CROPS[p.c],L=farmL(h);let n=c.y[0]+Math.floor(Math.random()*(c.y[1]-c.y[0]+1))+Math.floor(L/3)+(p.w?1:0)-(p.e?1:0)+(farmR(h,'yield')>=5?1:0)+(Math.random()<farmF(h,'plus')?1:0);n=Math.max(1,n);
+  const gold=Math.random()<Math.max(0,.05+.01*L+farmTr(h,'yield',3)/100+farmF(h,'gold'));return {n:gold?n*2:n,gold}}
 function farmHarvest(i,el,quiet){const h=S.hero,p=h.farm.p[i];if(!p||!farmReady(h,p))return null;const k=p.c,{n,gold}=farmYield(h,p);
   addRes(h,k,n);h.farm.p[i]={};const up=lifeXP(h,'farm',CROPS[k].xp+(p.w?1:0));bump('harvest',n);
   if(!quiet){saveHero();SFX.good&&SFX.good();vib&&vib(25);if(el){floatAt(el,`${twI('+'+n)} ${MAT[k].n}`,'#a6e3a0','',20);pop(el,[MAT[k].c,'#ffffff','#7fe07a'],18)}
@@ -20582,6 +20591,25 @@ function farmSheet(i){const h=S.hero;farmSheetX();const L=farmL(h),n=farmN(h),em
 .fm-p .crow{position:absolute;top:24px;right:6px;width:40px;height:30px;animation:fmCr .5s ease-in-out infinite}.fm-p .crow svg{width:100%;height:100%}
 @keyframes fmCr{50%{transform:translateY(-3px)}}`;document.head.appendChild(st)}
 {const lh=twLifeHTML;twLifeHTML=function(h,k){const s=lh.apply(this,arguments);return k==='farm'?s.replace('. .<br>',`. كل محصول ${G('بتحصده','بتحصديه')} بيعلّمك.<br>`):s}}
+
+/* ---------- شجرة الزراعة ---------- */
+TREE.farm={c:'#9fe08a',who:'abdo',br:[
+  {id:'grow',n:'إيد خضرا',r:'الزرع بيكبر أسرع',x:'السقي عمره ما بياخد مجهود',v:n=>`+${TREE_U(4,n)}%`},
+  {id:'yield',n:'أرض كريمة',r:'المحصول الدهب بيطلع أكتر',x:'كل محصول بيطلع 1 زيادة',v:n=>`+${TREE_U(3,n)}%`},
+  {id:'guard',n:'عين على الغيط',r:'الغراب بيستنى أكتر قبل ما ياكل',x:'الغراب عمره ما بياكل من زرعك',v:n=>`+${Math.min(4,n)} ث`},
+  {id:'xp',n:'ابن الأرض',r:'خبرة الزراعة أكتر',x:'مع كل مستوى في الزراعة {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]};
+TREE_LK.farm=[{id:'l1',n:'سقاية بالراحة',need:[['grow',2],['yield',3]],x:'السقي بيقصّر الباقي 45% بدل 30%'},
+  {id:'l2',n:'تقاوي منقّية',need:[['yield',2],['guard',3]],x:'التقاوي أرخص 25%'},
+  {id:'crown',n:'سيد الغيط',x:'أرض زيادة في الغيط'}];
+TREE_FK.farm={f1:{q:'{بتزرع|بتزرعي} إزاي؟',a:{n:'زرع كتير',good:'التقاوي أرخص 20%',bad:'المحصول الدهب أقل (−2%)',fx:{seed:-.2,gold:-.02}},
+    b:{n:'على مهله',good:'30% المحصول يطلع 1 زيادة',bad:'الزرع أبطأ 10%',fx:{plus:.3,slow:.1}},
+    c:{n:'عين الفلاح',good:'خبرة الزراعة أكتر (+30%)',bad:'الزرع أبطأ 5%',fx:{xp:.3,slow:.05}},
+    ax:{n:'شروة',good:'التقاوي أرخص 15% كمان',fx:{seed:-.15}},bx:{n:'بركة الأرض',good:'المحصول الدهب أكتر (+5%)',fx:{gold:.05}},
+    cx:{n:'فلاح قديم',good:'خبرة الزراعة أكتر (+20%)',fx:{xp:.2}}},
+  f2:{q:'{بتهتم|بتهتمي} بإيه في الغيط؟',a:{n:'السقاية',good:'30% السقي ما ياخدش مجهود',bad:'الغراب بيستنى أقل (−1 ث)',fx:{wfree:.3,crow:-1}},
+    b:{n:'الحراسة',good:'الغربان بتيجي أقل (−40%)',bad:'الزرع أبطأ 5%',fx:{crowless:.4,slow:.05}},
+    c:{n:'الحصاد الكبير',good:'المحصول الدهب أكتر (+6%)',bad:'التقاوي أغلى 10%',fx:{gold:.06,seed:.1}}}};
+TREE_IC.farm='<path d="M12 21V10" stroke="#3a9e55" stroke-width="2" stroke-linecap="round"/><path d="M12 13Q4 13 4 5Q12 5 12 13z" fill="#7fe07a"/><path d="M12 10Q19 10 20 3Q12 3 12 10z" fill="#3a9e55"/><rect x="4" y="20" width="16" height="2.5" rx="1.2" fill="#74412a"/>';
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
