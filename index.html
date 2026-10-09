@@ -4357,6 +4357,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.40',d:'9 أكتوبر',add:[],fix:[
+    'دوار العمدة كان بيقف ومش بيفتح لما تطلع مهمة «اعمل حتة عند الحداد أو الخياط»، وده كمان اللي كان بيخلّي الصندوق يفضل ظاهر بعد ما {تفتحه|تفتحيه}. اتصلح، والمهمات البايظة دي اتشالت لوحدها.'
+  ]},
   {v:'5.39',d:'9 أكتوبر',add:[],fix:[
     'سوق اللاعبين: كل حساب يقدر يعرض 5 حاجات بس في نفس الوقت، عشان السوق ميتملاش من لاعب واحد. هتلاقي العدد مكتوب فوق في «بيع».'
   ]},
@@ -21654,7 +21657,10 @@ const QB_NOUN={tamatem:['طماطماية','طماطمايتين','طماطما�
   iron:['حتة حديد','حتتين حديد','حتت حديد',1],silver:['حتة فضة','حتتين فضة','حتت فضة',1],turq:['حجر فيروز','حجرين فيروز','حجارة فيروز',0],shrimp:['جمبرية','جمبريتين','جمبريات',1],
   eel:['تعبان مية','تعبانين مية','تعابين مية',0],cloth:['حتة قماش','حتتين قماش','حتت قماش',1],bread:['رغيف عيش','رغيفين عيش','أرغفة عيش',0],salskin:['جلد سلعوة','جلدين سلعوة','جلود سلعوة',0]};
 const qbN=(k,n)=>{const w=QB_NOUN[k]||(MAT[k]&&MAT[k].fish?[`سمكة ${MAT[k].n}`,`سمكتين ${MAT[k].n}`,`سمكات ${MAT[k].n}`,1]:null);return w?qbCnt(n,w):twCount(k,n)};
-function qbFix(h){h.qb=h.qb||{offers:[],act:[],at:0,done:0};h.cnt=h.cnt||{};h.kk=h.kk||{};h.kn=h.kn||{};h.mbox=h.mbox||{w:0,c:0,g:0};return h.qb}
+function qbFix(h){h.qb=h.qb||{offers:[],act:[],at:0,done:0};h.cnt=h.cnt||{};h.kk=h.kk||{};h.kn=h.kn||{};h.mbox=h.mbox||{w:0,c:0,g:0};
+  /* craft errands used to keep the gear id in q.id, which the errand's own id overwrote; drop those */
+  const ok=q=>q&&(q.k!=='craft'||!!GEAR[q.gid]);h.qb.offers=(h.qb.offers||[]).filter(ok);h.qb.act=(h.qb.act||[]).filter(ok);return h.qb}
+const qbGN=q=>GEAR[q.gid]?GEAR[q.gid].n:'حتة';
 const qbVal=k=>MAT[k]?MAT[k].p||1:5;
 const qbGL=q=>!q.g?[]:Array.isArray(q.g)?q.g:[q.g];
 /* gifts grow with the rank: more of them, and better ones */
@@ -21678,29 +21684,29 @@ function qbMake(h){const L=h.lvl||1,r=qbRank(h),m=1+.5*r,cand=[],R=x=>Math.max(1
   const dishes=Object.keys(TW_REC).filter(d=>ITEMS[d]&&lifeLvl(h,'cook')>=TW_REC[d].lv&&!TW_BAKE.includes(d));if(dishes.length)cand.push(()=>{const d=pick(dishes),n=1+Math.floor(r/2);
     const v=Object.keys(TW_REC[d].need).reduce((a,k)=>a+qbVal(k)*TW_REC[d].need[k],0);return {k:'dish',d,n,who:pick(['omda','ramadan','fathy']),v:Math.round(v*n*2.2)+20}});
   const gear=Object.keys(GEAR).filter(id=>{const g=GEAR[id];return g.craft&&(g.at==='smith'||g.at==='tailor')&&lifeLvl(h,g.at)>=(g.lv||1)});
-  if(gear.length)cand.push(()=>{const id=pick(gear),g=GEAR[id],v=Object.keys(g.craft).reduce((a,k)=>a+qbVal(k)*g.craft[k],0)+(g.cm||30);return {k:'craft',id,at:g.at,n:1,who:pick(['omda','ramadan','oldman']),v:Math.round(v*1.7),rk:Math.min(6,(g.tier|0)*2+(Math.random()<.5?1:0))}});
+  if(gear.length)cand.push(()=>{const id=pick(gear),g=GEAR[id],v=Object.keys(g.craft).reduce((a,k)=>a+qbVal(k)*g.craft[k],0)+(g.cm||30);return {k:'craft',gid:id,at:g.at,n:1,who:pick(['omda','ramadan','oldman']),v:Math.round(v*1.7),rk:Math.min(6,(g.tier|0)*2+(Math.random()<.5?1:0))}});
   Object.keys(QB_DO).forEach(c=>cand.push(()=>{const n=R(QB_DO[c][5]*m);return {k:'do',c,n,who:QB_DO[c][4],v:n*12}}));
   const q=pick(cand)();if(q.rk!=null){q.r0=q.rk;delete q.rk}else q.r0=r;const rr=q.r0;
   q.id=Date.now().toString(36)+Math.floor(Math.random()*1e4);q.m=Math.round((q.v*(1+.35*rr)+L*4)/5)*5;q.g=qbGifts(h,rr);return q}
 function qbRoll(h){const B=qbFix(h);if(B.offers.length&&Date.now()-B.at<QB_EVERY)return;B.at=Date.now();const seen=new Set();B.offers=[];
-  for(let i=0;i<16&&B.offers.length<5;i++){const q=qbMake(h),key=q.k+(q.r||q.d||q.c||q.a||q.id&&q.k==='craft'&&q.id||'');if(seen.has(key))continue;seen.add(key);B.offers.push(q)}
+  for(let i=0;i<16&&B.offers.length<5;i++){const q=qbMake(h),key=q.k+(q.r||q.d||q.c||q.a||q.k==='craft'&&q.gid||'');if(seen.has(key))continue;seen.add(key);B.offers.push(q)}
   B.offers.sort((a,b)=>(a.r0|0)-(b.r0|0));saveHero()}
 function qbBase(h,q){return q.k==='kill'?h.kills||0:q.k==='killa'?h.kk[q.a]||0:q.k==='do'?h.cnt[q.c]||0:0}
 const qbSpare=(h,id)=>qSpare(h).filter(x=>x.id===id).sort((a,b)=>a.I.q-b.I.q);
 function qbHave(h,q){if(q.k==='bring')return h.res[q.r]||0;if(q.k==='dish')return Object.keys(h.bag||{}).filter(k=>fqParse(k).b===q.d).reduce((a,k)=>a+(h.bag[k]||0),0);
-  if(q.k==='craft')return qbSpare(h,q.id).reduce((a,x)=>a+x.us.length,0);return Math.max(0,qbBase(h,q)-(q.b0||0))}
+  if(q.k==='craft')return qbSpare(h,q.gid).reduce((a,x)=>a+x.us.length,0);return Math.max(0,qbBase(h,q)-(q.b0||0))}
 const qbDone=(h,q)=>qbHave(h,q)>=q.n;
 function qbTitle(q){const g=(m,f)=>G(m,f);
   if(q.k==='kill')return `${g('اقتل','اقتلي')} ${qbCnt(q.n,['وحش','وحشين','وحوش',0])} في أي مغامرة`;
   if(q.k==='killa')return `${g('اقتل','اقتلي')} ${q.n===1?`«${q.an}»`:q.n===2?`اتنين من «${q.an}»`:`${q.n} من «${q.an}»`}`;
   if(q.k==='bring')return `${g('هات','هاتي')} ${qbN(q.r,q.n)}`;
   if(q.k==='dish')return `${g('اطبخ','اطبخي')} ${q.n===1?`«${ITEMS[q.d].name}»`:q.n===2?`طبقين «${ITEMS[q.d].name}»`:`${q.n} أطباق «${ITEMS[q.d].name}»`}`;
-  if(q.k==='craft')return `${g('اعمل','اعملي')} «${GEAR[q.id].n}» عند ${q.at==='smith'?'عم حسن الحداد':'عم فتحي الخياط'}`;
+  if(q.k==='craft')return `${g('اعمل','اعملي')} «${qbGN(q)}» عند ${q.at==='smith'?'عم حسن الحداد':'عم فتحي الخياط'}`;
   const D=QB_DO[q.c];return `${g(D[0],D[1])} ${qbCnt(q.n,D[2])} ${D[3]}`}
 function qbNote(q){const who=QB_GIVE[q.who]||'';
   if(q.k==='bring')return `${who} ${qbTakes(q)} الحاجة دي منك لما ${G('تسلّم','تسلّمي')} المهمة`;
   if(q.k==='dish')return `${who} ${qbTakes(q)} الأكل ده منك لما ${G('تسلّم','تسلّمي')} المهمة`;
-  if(q.k==='craft')return `${who} ${qbTakes(q)} «${GEAR[q.id].n}» منك لما ${G('تسلّم','تسلّمي')} المهمة (حتة مش ${G('لابسها','لابساها')})`;
+  if(q.k==='craft')return `${who} ${qbTakes(q)} «${qbGN(q)}» منك لما ${G('تسلّم','تسلّمي')} المهمة (حتة مش ${G('لابسها','لابساها')})`;
   return ''}
 function qbWhy(q){const L={
   kill:['الليل بقى مخيف والناس خايفة تطلع. {نضّف|نضّفي} الطريق شوية.','الخفرا بيقولوا الوحوش كترت. {وريهم|وريهم} مين سيد الكفر.'],
@@ -21714,7 +21720,7 @@ function qbGive(h,q,el){h.money+=q.m;const ups=[];qbGL(q).forEach(g=>{if(g.t==='
   else if(g.t==='xp'){const u=gainXP(g.n);if(u&&u.length)ups.push(h.lvl)}else if(g.t==='box'){h.mbox[g.k]=(h.mbox[g.k]||0)+g.n}else addRes(h,g.k,g.n)});return ups}
 function qbTake(h,q){if(q.k==='bring')h.res[q.r]-=q.n;
   if(q.k==='dish'){let left=q.n;Object.keys(h.bag).filter(k=>fqParse(k).b===q.d&&h.bag[k]>0).sort((a,b)=>fqParse(a).q-fqParse(b).q).forEach(k=>{const t=Math.min(left,h.bag[k]);h.bag[k]-=t;left-=t})}
-  if(q.k==='craft'){const x=qbSpare(h,q.id)[0];if(x)giDel(h,q.id,x.us[0])}}
+  if(q.k==='craft'){const x=qbSpare(h,q.gid)[0];if(x)giDel(h,q.gid,x.us[0])}}
 const qbReady=h=>{const B=h.qb;return B?B.act.filter(q=>qbDone(h,q)).length:0};
 /* mystery boxes: you never know */
 function qbOpen(h,k){const r=Math.random(),L=h.lvl||1;let t,x;
