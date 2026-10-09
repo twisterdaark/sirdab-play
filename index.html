@@ -2068,7 +2068,9 @@ async function foeTurn(e,o){o=o||{};const C=S.combat,h=S.hero,c=S.comp;
         await say(`الدرع السحري مص ضربة ${e.name} كلها!`,'good')}
       else if(d){hurtMe(d);const why=[wk?FF(e,'مدوّخ','مدوّخة'):'',tn?'صرخة الحرب':'',red?spiritWhy(h):''].filter(Boolean);
         await say((r.tier==='part'?`{اتفاديت|اتفاديتي} نص الضربة: -${d} صحة.`:`الضربة جت {فيك|فيكي}: -${d} صحة.`)+(why.length?` (خفّت عشان ${why.join(' و')})`:''),'bad')}
-      else{floatAt($('#meCard'),G('اتفاديت!','اتفاديتي!'),'#a6e3a0');SFX.dodge();await say(`{اتفاديت|اتفاديتي} الضربة!`,'good')}
+      else{floatAt($('#meCard'),G('اتفاديت!','اتفاديتي!'),'#a6e3a0');SFX.dodge();await say(`{اتفاديت|اتفاديتي} الضربة!`,'good');
+        /* a lucky dodge answers at once (p20.js), on every hit: a second hit, a charge, a heavy one */
+        if(r.crit&&typeof counterHit==='function')await counterHit(e)}
       if(h.hp<=0&&await fall())return {end:true};
       return {r,d,me:1};
     }
@@ -4360,6 +4362,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.47',d:'9 أكتوبر',add:['لما {تتفادى|تتفادي} ضربة بضربة حظ، بطلك بيرد الضربة على طول (ضربة مرتدة)، في كل أنواع الضرب: الجامدة، والتانية، والجري {عليك|عليكي}.'],fix:['الليلة اللايف: لو صاحبك قفل اللعبة، الكارت بتاعه بيقول «أوفلاين: قفل اللعبة» بدل «بيلعب من موبايله»، والكلام بقى في سطر لوحده بعيد عن اسمه.']},
   {v:'5.46',d:'9 أكتوبر',add:['في أي مكان فيه − و+ {تقدر تكتب|تقدري تكتبي} العدد اللي {عايزه|عايزاه} بإيدك في الخانة اللي في النص: البيع والشرا في السوق، دكانة الليلة، الحداد، والأكل.'],fix:['لو {كتبت|كتبتي} رقم أكبر من اللي معاك بيتظبط لوحده على الآخر.']},
   {v:'5.45',d:'9 أكتوبر',add:[
     '16 إنجاز جديد: للحلاق والكوافيرة، ومهمات دوار العمدة، والصناديق، والزرع، والفراخ والجاموسة، ومسابقة الصيد، والمولد. اللي {عمله|عملته} قبل كده بيتحسب {ليك|ليكي} أول ما {تفتح|تفتحي} البلد.'
@@ -19124,11 +19127,11 @@ function bkOpen(box){const hs=HEROES.filter(Boolean),B=document.createElement('d
 `;document.head.appendChild(st)}
 
 /* ---------- counter: a lucky dodge (ضربة حظ on the dodge roll) answers the foe with a hit of your own, right away ---------- */
-{const ft1=foeTurn;foeTurn=async function(e){const res=await ft1.apply(this,arguments),C=S.combat,h=S.hero;
-  if(res&&!res.end&&res.me&&res.r&&res.r.crit&&res.r.tier==='full'&&!res.d&&C&&!C.tutorial&&e&&e.hp>0&&h.hp>0&&!(C.X&&typeof X_gone==='function'&&X_gone(e))){
-    const el=$('#meCard');if(el)floatAt(el,'ضربة مرتدة!','#ffd36a','crit',24);SFX.clank&&SFX.clank(1.2);await extraHit(e,'ضربة مرتدة');
-    if(S.run)S.run.counters=(S.run.counters||0)+1}
-  return res}}
+async function counterHit(e){const C=S.combat,h=S.hero;
+  if(!C||C.tutorial||!e||e.hp<=0||h.hp<=0||(C.X&&typeof X_gone==='function'&&X_gone(e)))return;
+  const el=$('#meCard');if(el)floatAt(el,'ضربة مرتدة!','#ffd36a','crit',24);SFX.clank&&SFX.clank(1.2);
+  await sleep(350);await extraHit(e,'ضربة مرتدة');
+  if(S.run)S.run.counters=(S.run.counters||0)+1}
 /* ==========================================================================
    سرداب: skill levels (p21.js, v5.4)
    Every class skill has levels 1..5. Each hero level gives one «نقطة قدرة»; a rare trader in the night
@@ -21561,8 +21564,8 @@ function coAlOf(x){const h=S.hero;let a=CO.al[x.u];
 function coAls(){if(!coOn())return [];const L=coXs().filter(x=>coHere(x.u)).map(coAlOf);
   if(S.combat&&CO.alC!==S.combat){CO.alC=S.combat;L.forEach(a=>{if(a.hp<=0)a.hp=Math.ceil(a.max/2);a.hide=0})}return L}
 function coAlCard(a){const g=coGx(a),dn=a.hp<=0;
-  return `<div class="mate co-al ${dn?'down':''}" id="al_${a.k}"><div class="pic">${portrait(a,'al'+a.k)}</div><div class="info"><b>${esc(a.name)}</b><div style="margin:4px 0">${hb('al'+a.k,a.hp/a.max*100,'var(--hp)')}</div>${dn?`<span class="dn">${g('وقع','وقعت')}</span><br><span style="color:var(--dim)">${g('هيقوم','هتقوم')} في القتال الجاي</span>`:`صحة ${a.hp}/${a.max}<br><span style="color:var(--dim)">${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}${a.hide?' · '+g('مستخبي','مستخبية'):''}</span>`}</div></div>`}
-function coAlDraw(){if(S.screen!=='combat'||!S.combat||!coLive())return;const c=S.comp,cc=$('#compCard');if(c&&c.friend&&c.hp>0&&cc){const sp=[...cc.querySelectorAll('.info span')].find(x=>/لوحد/.test(x.textContent));if(sp){const g=coGx(c);sp.textContent=`${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}`}}const L=coAls();if(!L.length)return;const sd=view.querySelector('.side');if(!sd||sd.querySelector('.co-al'))return;
+  return `<div class="mate co-al ${dn?'down':''}" id="al_${a.k}"><div class="pic">${portrait(a,'al'+a.k)}</div><div class="info"><b>${esc(a.name)}</b><div style="margin:4px 0">${hb('al'+a.k,a.hp/a.max*100,'var(--hp)')}</div>${dn?`<span class="dn">${g('وقع','وقعت')}</span><br><span style="color:var(--dim)">${g('هيقوم','هتقوم')} في القتال الجاي</span>`:`صحة ${a.hp}/${a.max}<br><span class="co-st" style="color:var(--dim)">${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}${a.hide?' · '+g('مستخبي','مستخبية'):''}</span>`}</div></div>`}
+function coAlDraw(){if(S.screen!=='combat'||!S.combat||!coLive())return;const c=S.comp,cc=$('#compCard');if(c&&c.friend&&c.hp>0&&cc){const sp=[...cc.querySelectorAll('.info span')].find(x=>/لوحد|موبايل/.test(x.textContent));if(sp){const g=coGx(c),on=coHere(CO.room&&CO.room.g);sp.classList.add('co-st');sp.classList.toggle('co-off',!on);sp.textContent=on?`${g('بيلعب','بتلعب')} من ${g('موبايله','موبايلها')}`:`أوفلاين: ${g('قفل','قفلت')} اللعبة، ${g('وبيلعب لوحده','وبتلعب لوحدها')}`}}const L=coAls();if(!L.length)return;const sd=view.querySelector('.side');if(!sd||sd.querySelector('.co-al'))return;
   sd.classList.add('co-many');sd.insertAdjacentHTML('beforeend',L.map(coAlCard).join(''))}
 {const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{coAlDraw()}catch(e){}return r}}
 
@@ -21648,7 +21651,7 @@ async function coMyRoll(rl){if(CO.myRoll||CO.rlDone[rl.id]||!S.hero)return;CO.my
     if(R&&R.st==='on'&&V&&V.rl&&V.rl.id&&!CO.rlDone[V.rl.id]&&!CO.myRoll)setTimeout(()=>coMyRoll(V.rl),300)}catch(e){}return r}}
 
 {const st=document.createElement('style');st.textContent=`
-.side.co-many{flex-wrap:wrap}.side.co-many .mate{flex:1 1 calc(50% - 4px)}
+.mate .info span.co-st{display:block;margin-top:4px;line-height:1.45}.mate .info span.co-off{color:#f0a090!important}.side.co-many{flex-wrap:wrap}.side.co-many .mate{flex:1 1 calc(50% - 4px)}
 .co-rl{border-color:var(--gold);padding:10px 12px;margin:8px 0}.co-rl .tw-lbl{margin-bottom:6px}
 .co-rr{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:4px 0;border-top:1px solid var(--line)}.co-rr:first-of-type{border-top:0}
 .co-rr span{color:var(--dim);text-align:left}
