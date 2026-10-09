@@ -4367,6 +4367,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.55',d:'10 أكتوبر',add:['لما {تاخد|تاخدي} تخصص، بتطلع شاشة احتفال كبيرة بلون ندرته، وبتقولك فرصته كانت قد إيه.'],fix:['التخصصات بقت أندر بكتير: النادر 8% في المحاولة، والملحمي 1.5%، والخفي نص في المية، والأسطوري 1 من 2000، والسري 1 من 10000.','مفيش فرصة لتخصص جديد {وانت معاك|وانتي معاكي} تخصص. لو {عايز|عايزة} {تدوّر|تدوّري} على غيره، {سيبه|سيبيه} الأول من شاشة «التخصصات».','«أسطى الحدادين» و«{وريث|وريثة} الحداد الأول» مبقوش محتاجين التخصص اللي قبلهم، ممكن يطلعوا لأي حد شروطه كاملة.']},
   {v:'5.54',d:'10 أكتوبر',add:[],fix:['فرصة التخصص مبقتش بتطلع لما {تفتح|تفتحي} اللعبة. بتطلع بنسبة صغيرة {وانت شغال|وانتي شغالة} في الحرفة (الحدادة والخياطة والطبخ والزرع) أو بعد قتال صعب {تكسبه|تكسبيه}، وبتظهر في مكانك من غير ما تقطع اللي {بتعمله|بتعمليه}.']},
   {v:'5.53',d:'10 أكتوبر',add:['التخصصات: الحرفة والقتال بيفتحوا تخصصات ليها ندرة (نادر، ملحمي، خفي، أسطوري، سري). تخصص واحد في المرة، ولما الفرصة تيجي {تقبل|تقبلي} أو {ترفض|ترفضي}.','طريق الحداد: «{الحداد|الحدادة}» وبعده «أسطى الحدادين» وبعده «{وريث|وريثة} الحداد الأول». كل خطوة الشغل بيطلع أجود، والسلاح اللي {عملته|عملتيه} بإيدك بيضرب أجمد.','تخصصات تانية: {الخياط|الخياطة}، {الطباخ|الطباخة}، {الفلاح الأسطوري|الفلاحة الأسطورية}، وواحد سري لأصحاب الحرف التلاتة. وكل نوع شخصية ليه تخصص خفي في القتال، محدش هيقولك عليه.','الفولاذ: {اسبكه|اسبكيه} عند الحداد من حديد وفحم (من حدادة مستوى 5).','شغل جديد عند الحداد من مستوى 7 لـ10: سيف فولاذ، بلطة، درع زرد، خوذة فولاذ، خاتم فولاذ، وسيف المعلّم.','الورشة: 3 حاجات {تركّبها|تركّبيها} عند الحداد، الشغل بيطلع أجود وأرخص، وآخرها بيسبك فولاذتين.'],fix:[]},
   {v:'5.52',d:'9 أكتوبر',add:[],fix:['الطبخ والعيش اترسموا من جديد بيكسل بجد: الطاسة، والحلل، والعجينة، والفرن، والرغيف، والفوران.','في الترعة: السنارة، والخيط، والعوامة، والبكرة بقوا بيكسل زي باقي الصورة، والعوامة رجعت تبان على المية.']},
@@ -23474,7 +23475,7 @@ function fsPxFrame(E,ov){const P=3;
    ========================================================================== */
 const SP={},SP_ORDER=[];
 const SP_R={rare:{n:'نادر',c:'#6ab4ff',i:0},epic:{n:'ملحمي',c:'#a578d6',i:1},hidden:{n:'خفي',c:'#45c8dc',i:2},legend:{n:'أسطوري',c:'#f3c14d',i:3},secret:{n:'سري',c:'#ff8f73',i:4}};
-const SP_P={rare:.2,epic:.08,hidden:.1,legend:.02,secret:.01};   /* per craft, harvest or hard fight once the conditions are met */
+const SP_P={rare:.08,epic:.015,hidden:.005,legend:.0005,secret:.0001};   /* per craft, harvest or hard fight once the conditions are met (Twister 5.55: rare, so it means something) */
 const SP_KEEP=o=>o.r==='rare'||o.r==='epic';
 function SP_ADD(o){SP[o.id]=o;SP_ORDER.push(o.id)}
 function spFix(h){if(!h)return null;const s=h.sp||(h.sp={});s.on=s.on||'';['had','no','roll','later'].forEach(k=>s[k]=s[k]||{});s.offer=s.offer||'';return s}
@@ -23488,10 +23489,11 @@ function spOk(h,o){if(o.cls&&h.cls!==o.cls)return false;if(o.from&&!h.sp.had[o.f
 function spFor(h){return SP_ORDER.map(id=>SP[id]).filter(o=>!o.cls||o.cls===h.cls)}
 /* a roll while you work: ev is the craft ('smith','tailor','cook'), 'farm' or 'fight'; mul makes harder work likelier.
    The rarest that comes wins; a lower one than the one you hold is not offered, it waits on the screen. */
-function spEvent(h,ev,mul){const s=spFix(h);if(!s)return '';if(s.offer&&SP[s.offer]){spShowSoon();return s.offer}s.offer='';
-  const cur=spOn(h);let got='';
-  spFor(h).filter(o=>[].concat(o.ev).includes(ev)).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(got||s.on===o.id||s.no[o.id]||s.later[o.id]||!spOk(h,o))return;
-    if(cur&&SP_R[cur.r].i>SP_R[o.r].i&&cur.id!==o.from){if(SP_KEEP(o)){s.later[o.id]=1;saveHero()}return}
+function spEvent(h,ev,mul){const s=spFix(h);if(!s)return '';
+  /* no chance at all while you hold a specialisation: leave it first (Twister 5.55) */
+  if(s.on){s.offer='';return ''}
+  if(s.offer&&SP[s.offer]){spShowSoon();return s.offer}s.offer='';let got='';
+  spFor(h).filter(o=>[].concat(o.ev).includes(ev)).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(got||s.no[o.id]||s.later[o.id]||!spOk(h,o))return;
     if(Math.random()<SP_P[o.r]*(mul||1))got=o.id});
   if(got){s.offer=got;saveHero();spShowSoon()}return got}
 function spDrop(h,id){const s=h.sp,o=SP[id];if(!o)return;if(SP_KEEP(o))s.later[id]=1;else s.no[id]=1}
@@ -23543,12 +23545,12 @@ SP_ADD({id:'hadad',ev:'smith',r:'rare',m:'الحداد',f:'الحدادة',px:SP
   prog:h=>`حدادة مستوى 4 (دلوقتي ${spLv(h,'smith')}) و6 حاجات ${G('تعملها','تعمليها')} عند الحداد (${Math.min(6,Math.max(spCnt(h,'made_smith'),Math.floor(spCnt(h,'crafted')*.6)))}/6)`,
   st:{'قوة':1},q:{smith:.05},own:{smith:{w:1,a:1}},
   d:['قوة +1','الشغل عند الحداد بيطلع أجود','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +1 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2']});
-SP_ADD({id:'ostaz',ev:'smith',r:'epic',m:'أسطى الحدادين',f:'أسطى الحدادين',from:'hadad',px:P20_rc(SP_HAMMER,{W:'Y',c:'y',g:'o',j:'T'}),
+SP_ADD({id:'ostaz',ev:'smith',r:'epic',m:'أسطى الحدادين',f:'أسطى الحدادين',px:P20_rc(SP_HAMMER,{W:'Y',c:'y',g:'o',j:'T'}),
   need:h=>spLv(h,'smith')>=7&&spCnt(h,'smQ3')>=3,
-  prog:h=>`بعد «الحداد» · حدادة مستوى 7 (دلوقتي ${spLv(h,'smith')}) و3 حاجات «ممتاز» أو أحسن (${Math.min(3,spCnt(h,'smQ3'))}/3)`,
+  prog:h=>`حدادة مستوى 7 (دلوقتي ${spLv(h,'smith')}) و3 حاجات «ممتاز» أو أحسن (${Math.min(3,spCnt(h,'smQ3'))}/3)`,
   st:{'قوة':2},q:{smith:.08},cost:{smith:.8},own:{smith:{w:2,a:1}},
   d:['قوة +2','الشغل عند الحداد أجود بكتير، وتمنه أقل 20%','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2','{بتعرف|بتعرفي} تعمل «مطرقة الأسطى»']});
-SP_ADD({id:'heir',ev:'smith',r:'legend',m:'وريث الحداد الأول',f:'وريثة الحداد الأول',from:'ostaz',px:P20_rc(SP_HAMMER,{W:'R',c:'r',g:'m',j:'v',b:'o',B:'y',v:'T'}),
+SP_ADD({id:'heir',ev:'smith',r:'legend',m:'وريث الحداد الأول',f:'وريثة الحداد الأول',px:P20_rc(SP_HAMMER,{W:'R',c:'r',g:'m',j:'v',b:'o',B:'y',v:'T'}),
   need:h=>spLv(h,'smith')>=9&&spCnt(h,'smQ4')>=2,
   hint:'عم حسن: «جدي كان بيقول إن الحداد الأول ساب علامته في كل تحفة اتعملت بعده.»',
   st:{'قوة':3,'تحمّل':1},hp:4,q:{smith:.12},cost:{smith:.7},own:{smith:{w:2,a:2}},
@@ -23692,6 +23694,24 @@ function spBan(o){const c=o?SP_R[o.r].c:'#6e6152';return `<svg viewBox="0 0 160 
 {const pa=placeArt;placeArt=function(id){if(id==='spec')return spBan(spOn(S.hero));return pa.apply(this,arguments)}}
 /* the offer opens as an overlay right where you are (after the craft, the harvest or the fight), so nothing you were doing is lost */
 const SPV={ask:'',t:0};
+/* taking a specialisation: a full-screen celebration in its rarity's colour, bigger the rarer it is (Twister 5.55) */
+function spCelebrate(h,o){const R=SP_R[o.r],big=R.i,ov=document.createElement('div');ov.className='sp-cel r'+big;ov.style.setProperty('--rc',R.c);
+  const odds=Math.round(1/SP_P[o.r]),oddsTx=odds>=1000?odds.toLocaleString('en-US'):odds;
+  const N=24+big*14,parts=Array.from({length:N},(_,i)=>{const a=i/N*360+Math.random()*12,d=110+Math.random()*(160+big*40),c=[R.c,'#fff3b0','#ffffff',R.c][i%4];
+    return `<i class="sp-pt" style="--a:${a}deg;--d:${d}px;--c:${c};--t:${(.7+Math.random()*.7).toFixed(2)}s;--w:${4+Math.round(Math.random()*5)}px"></i>`}).join('');
+  const conf=Array.from({length:18+big*10},()=>`<b class="sp-cf" style="left:${Math.round(Math.random()*100)}%;--c:${['#f3c14d','#ff8f73','#6ab4ff','#a578d6','#7fe07a',R.c][Math.floor(Math.random()*6)]};--t:${(2.2+Math.random()*2).toFixed(2)}s;--dl:${(Math.random()*1.4).toFixed(2)}s;--r:${Math.round(Math.random()*720-360)}deg"></b>`).join('');
+  ov.innerHTML=`<div class="sp-rays"></div><div class="sp-flash"></div>${conf}<div class="sp-in">
+    <div class="sp-t1">${big>=3?'حاجة ناس قليلة أوي بتوصلها':'تخصص جديد!'}</div>
+    <div class="sp-ico-w"><div class="sp-burst">${parts}</div><div class="sp-halo"></div>${spIco(o,170)}</div>
+    <div class="sp-rk">تخصص ${R.n}</div><div class="sp-nm">${spName(o,h)}</div>
+    <div class="sp-odds">فرصته كانت 1 من ${oddsTx}</div>
+    <ul class="sp-dl">${o.d.map((x,i)=>`<li style="--i:${i}">${T(x)}</li>`).join('')}</ul>
+    <button class="btn sp-go">${G('يلا بينا!','يلا بينا!')}</button></div>`;
+  (document.getElementById('app')||document.body).appendChild(ov);
+  try{flash(R.c);vib(big>=3?[80,40,80,40,200]:[60,30,120]);SFX.reveal&&SFX.reveal();setTimeout(()=>SFX.levelup&&SFX.levelup(),420);setTimeout(()=>SFX.fanfare&&SFX.fanfare(),900);if(big>=3)setTimeout(()=>{SFX.master&&SFX.master();flash('#fff3b0')},1500)}catch(e){}
+  const close=()=>{ov.classList.add('out');setTimeout(()=>{ov.remove();if(!S.combat)render()},350)};
+  setTimeout(()=>{const b=ov.querySelector('.sp-go');if(b){b.classList.add('on');b.onclick=close}},1400+big*250)}
+
 function spCard(h,o,big){const R=SP_R[o.r];return `<div class="card sp-card${big?' big':''}" style="--rc:${R.c}"><div class="sp-hd">${spIco(o,big?96:56)}<div class="tx"><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
   <ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul></div>`}
 function spShowSoon(){clearTimeout(SPV.t);SPV.t=setTimeout(spShow,1300)}
@@ -23708,7 +23728,7 @@ function spShow(){const h=S.hero;if(!h||document.getElementById('spOv'))return;i
   (document.getElementById('app')||document.body).appendChild(ov);
   try{flash(R.c);SFX.shimmer&&SFX.shimmer();setTimeout(()=>SFX.fanfare&&SFX.fanfare(),350)}catch(e){}
   const done=()=>{ov.remove();if(!S.combat)render()};
-  ov.querySelector('#spYes').onclick=()=>{spTake(h,o.id);done();band('تخصص '+R.n,spName(o,h),T(o.d[0]),{color:'blue',dur:2600,sound:SFX.fanfare})};
+  ov.querySelector('#spYes').onclick=()=>{spTake(h,o.id);ov.remove();spCelebrate(h,o)};
   ov.querySelector('#spNo').onclick=e=>{if(!keep&&SPV.ask!==o.id){SPV.ask=o.id;e.target.textContent=G('متأكد؟ مش هترجع','متأكدة؟ مش هترجع');return}spDecline(h,o.id);SPV.ask='';done()}}
 SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}const s=spFix(h),o=spOn(h),all=spFor(h);
   const later=Object.keys(s.later).filter(id=>SP[id]&&!spHas(h,id)&&(!SP[id].cls||SP[id].cls===h.cls)).map(id=>SP[id]);
@@ -23717,7 +23737,7 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   const lost=all.filter(x=>s.no[x.id]);
   view.innerHTML=`${twTop('التخصصات')}<div class="tw sp-scr">
     <div class="tw-sm">تخصص واحد في المرة. الحرفة والقتال بيفتحوا التخصصات. الفرصة بتيجي ${G('وانت شغال','وانتي شغالة')} في الحرفة أو بعد قتال صعب، ومش كل مرة.</div>
-    ${o?`<div class="tw-lbl">${G('تخصصك','تخصصك')}</div>${spCard(h,o,1)}<button class="btn ghost small" id="spLeave">${G('سيب','سيبي')} التخصص</button>`:`<div class="card sp-none">${G('لسه ما اتخصصتش','لسه ما اتخصصتيش')}.</div>`}
+    ${o?`<div class="tw-lbl">${G('تخصصك','تخصصك')}</div>${spCard(h,o,1)}<button class="btn ghost small" id="spLeave">${G('سيب','سيبي')} التخصص</button><div class="tw-sm sp-lvn">${G('وانت معاك','وانتي معاكي')} تخصص، مفيش فرصة لتخصص تاني. لو ${G('عايز','عايزة')} ${G('تدوّر','تدوّري')} على غيره ${G('سيبه','سيبيه')} الأول.</div>`:`<div class="card sp-none">${G('لسه ما اتخصصتش','لسه ما اتخصصتيش')}.</div>`}
     ${later.length?`<div class="tw-lbl">${G('تقدر تاخد','تقدري تاخدي')}</div>${later.map(x=>spCard(h,x).replace(/<\/div>$/,`<button class="btn small" data-spt="${x.id}">${G('خده','خديه')}${o?` بدل «${spName(o,h)}»`:''}</button></div>`)).join('')}`:''}
     ${open.length?`<div class="tw-lbl">في الطريق</div>${open.map(x=>`<div class="card sp-mini" style="--rc:${SP_R[x.r].c}">${spIco(x,40)}<div class="tx"><b>${spName(x,h)} <small style="color:${SP_R[x.r].c}">${SP_R[x.r].n}</small></b><small>${x.prog?x.prog(h):''}</small></div></div>`).join('')}`:''}
     ${Object.keys(hid).length?`<div class="tw-lbl">لسه مستخبي</div><div class="card sp-hid">${Object.keys(hid).sort((a,b)=>SP_R[a].i-SP_R[b].i).map(r=>`<span style="color:${SP_R[r].c}">${hid[r]===1?'تخصص':hid[r]+' تخصصات'} ${SP_R[r].n}</span>`).join('')}<small>محدش هيقولك عليهم. ${G('اشتغل','اشتغلي')} و${G('حارب','حاربي')}، ويمكن ييجي يوم وتلاقي الفرصة قدامك.</small></div>`:''}
@@ -23725,7 +23745,7 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   twBack();
   const lv=$('#spLeave');if(lv)lv.onclick=()=>{if(SPV.ask!=='leave'){SPV.ask='leave';lv.textContent=SP_KEEP(o)?G('متأكد؟ تقدر ترجعله','متأكدة؟ تقدري ترجعيله'):G('متأكد؟ مش هيرجع تاني','متأكدة؟ مش هيرجع تاني');return}SPV.ask='';spLeave(h);render()};
   view.querySelectorAll('[data-spt]').forEach(b=>b.onclick=()=>{const x=SP[b.dataset.spt];if(!x)return;if(o&&!SP_KEEP(o)&&SPV.ask!==x.id){SPV.ask=x.id;b.textContent=G('متأكد؟ اللي معاك مش هيرجع','متأكدة؟ اللي معاكي مش هيرجع');return}
-    SPV.ask='';spTake(h,x.id);SFX.fanfare&&SFX.fanfare();render()})};
+    SPV.ask='';spTake(h,x.id);render();spCelebrate(h,x)})};
 (function(){const st=document.createElement('style');st.textContent=`
 .sp-ic{display:inline-block;flex:none}.sp-ic svg{display:block;width:100%;height:100%}
 .sp-card{border-color:color-mix(in srgb,var(--rc) 55%,transparent)}.sp-card .sp-hd{display:flex;gap:12px;align-items:center}.sp-card .tx{display:flex;flex-direction:column;gap:2px}.sp-card .tx b{font-size:19px}
@@ -23744,7 +23764,34 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 .sp-hint{position:relative;font-style:italic;opacity:.8;font-size:14px;line-height:1.6;max-width:330px}
 .sp-off .sp-d{position:relative;text-align:right;align-self:stretch;background:#0005;border:1px solid color-mix(in srgb,var(--rc) 40%,transparent);border-radius:14px;padding:12px 30px 12px 14px}
 .sp-warn{position:relative;color:#f0a090;font-size:14px}.sp-btns{position:relative;display:flex;gap:10px;align-self:stretch;margin-top:6px}.sp-btns .btn{flex:1;min-height:48px}
-.sp-sm{position:relative;font-size:13px;opacity:.75;line-height:1.5}`;document.head.appendChild(st)})();
+.sp-sm{position:relative;font-size:13px;opacity:.75;line-height:1.5}
+.sp-lvn{margin-top:-4px;opacity:.75}
+.sp-cel{position:fixed;inset:0;z-index:9100;background:#07050b;overflow:hidden;direction:rtl;display:flex;align-items:center;justify-content:center;animation:spCelIn .35s ease both}
+.sp-cel.out{animation:spCelOut .35s ease both}@keyframes spCelIn{from{opacity:0}}@keyframes spCelOut{to{opacity:0;transform:scale(1.05)}}
+.sp-rays{position:absolute;left:50%;top:38%;width:240vmax;height:240vmax;margin:-120vmax 0 0 -120vmax;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--rc) 38%,transparent) 0 7deg,transparent 7deg 18deg);animation:spSpin 14s linear infinite;opacity:.55;mask:radial-gradient(closest-side,#000 18%,transparent 70%);-webkit-mask:radial-gradient(closest-side,#000 18%,transparent 70%)}
+.sp-cel.r3 .sp-rays,.sp-cel.r4 .sp-rays{animation-duration:8s;opacity:.8}
+@keyframes spSpin{to{transform:rotate(360deg)}}
+.sp-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,#fff 0,var(--rc) 30%,transparent 65%);animation:spFl 1.1s ease-out both;pointer-events:none}@keyframes spFl{0%{opacity:1}100%{opacity:0}}
+.sp-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:20px 18px;max-width:440px;width:100%;max-height:100%;overflow-y:auto}
+.sp-t1{font-size:16px;font-weight:900;letter-spacing:.5px;color:#fff3b0;animation:spUp .5s .15s both}
+.sp-ico-w{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;margin:4px 0}
+.sp-ico-w .sp-ic{position:relative;animation:spPop .9s .25s cubic-bezier(.2,1.6,.4,1) both,spBob 2.4s 1.2s ease-in-out infinite}
+.sp-halo{position:absolute;inset:6px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--rc) 70%,#fff 10%),transparent);animation:spHalo 1.6s ease-in-out infinite alternate}
+@keyframes spPop{0%{transform:scale(0) rotate(-30deg);filter:brightness(4)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:none;filter:none}}
+@keyframes spBob{50%{transform:translateY(-8px)}}@keyframes spHalo{from{transform:scale(.8);opacity:.5}to{transform:scale(1.15);opacity:1}}
+.sp-burst{position:absolute;left:50%;top:50%}
+.sp-pt{position:absolute;width:var(--w);height:var(--w);background:var(--c);box-shadow:0 0 8px var(--c);animation:spPt var(--t) .3s cubic-bezier(.1,.8,.3,1) both;transform:rotate(var(--a)) translateX(0)}
+@keyframes spPt{0%{transform:rotate(var(--a)) translateX(0) scale(1.4);opacity:1}100%{transform:rotate(var(--a)) translateX(var(--d)) scale(.2);opacity:0}}
+.sp-cf{position:absolute;top:-20px;width:8px;height:12px;background:var(--c);animation:spCf var(--t) var(--dl) linear infinite}
+@keyframes spCf{to{transform:translateY(110vh) rotate(var(--r))}}
+.sp-rk{font-weight:900;font-size:17px;color:var(--rc);animation:spUp .5s .7s both;text-shadow:0 0 14px var(--rc)}
+.sp-nm{font-size:36px;font-weight:900;line-height:1.15;background:linear-gradient(100deg,#fff 20%,var(--rc) 40%,#fff3b0 55%,var(--rc) 70%,#fff 90%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:spUp .6s .85s both,spShine 2.6s 1.4s linear infinite}
+@keyframes spShine{to{background-position:-250% 0}}@keyframes spUp{from{opacity:0;transform:translateY(16px) scale(.9)}}
+.sp-odds{font-size:13px;opacity:.85;color:#fff3b0;animation:spUp .5s 1.05s both}
+.sp-dl{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;align-self:stretch}
+.sp-dl li{background:#ffffff0d;border:1px solid color-mix(in srgb,var(--rc) 45%,transparent);border-radius:12px;padding:8px 12px;font-size:14px;line-height:1.5;text-align:right;animation:spUp .45s calc(1.2s + var(--i)*.18s) both}
+.sp-go{margin-top:10px;align-self:stretch;min-height:50px;opacity:0;pointer-events:none;transition:opacity .3s}.sp-go.on{opacity:1;pointer-events:auto;animation:spGoP 1.2s ease-in-out infinite}
+@keyframes spGoP{50%{transform:scale(1.03)}}`;document.head.appendChild(st)})();
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
