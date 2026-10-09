@@ -3918,6 +3918,68 @@ const PF_HPIC={
   hidden:()=>`<div class="pf-hhid">${PFI.eye}<span>صفة مخفية اتفتحت!</span></div>`
 };
 
+/* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
+const NEWS=[
+  {v:'4',d:'9 أكتوبر',add:[
+    'البلد «كفر الصفصاف»: مكان {تقعد|تقعدي} فيه بين المغامرات.',
+    'الحداد عم حسن، والخياط عم فتحي، والطباخة أم سيد: {اعمل|اعملي} سلاحك وهدومك وأكلك من الخامات.',
+    'الجبل والترعة: تعدين وصيد. بياخدوا «مجهود» بيرجع لوحده مع الوقت، والأكل بيرجّعه أسرع.',
+    'شغلانات ليها مستويات: تعدين، صيد، طبخ، حدادة، خياطة. كل ما {تشتغل|تشتغلي} أكتر بتفتح حاجات جديدة.',
+    'عدّتي: 6 أماكن للعدّة (سلاح، درع، راس، خاتم، قلادة، تميمة)، والعدّة بتبان على البطل.',
+    'قدرات لكل تخصص في القتال، وقدرات جديدة بتتفتح مع المستوى.',
+    'ألقاب {بتكسبها|بتكسبيها} من الشغل والمغامرات، {وتختار|وتختاري} لقب يبان جنب اسمك.',
+    'حاجات أسطورية {بتعملها|بتعمليها} بإيدك، زي قلادة شعر النداهة.',
+    'السوق بقى بيشتري ويبيع الخامات.'],
+   fix:[
+    'الكلام بقى صح للبنت في كل حتة، وكان في حوالي 95 جملة بصيغة الولد.',
+    'الزراير الصغيرة كبرت عشان تتداس بسهولة.',
+    'الشاشة مبقتش تطلع برّه لما البطل يتعور.',
+    'الجبل والترعة بقى ليهم صوت.',
+    'صور العدّة والخامات بقت مرسومة.',
+    'الأبطال القديمة بتفتح زي ما هي.']},
+  {v:'3.7',d:'8 أكتوبر',add:[
+    'السوق بقى شاشة لوحده، {بتفتحها|بتفتحيها} من كارت فوق الاختيارات.'],
+   fix:[
+    'الصوت كله بقى أهدى، وأصوات القوايم والتنبيهات بقت أوطى.']},
+  {v:'3.6',d:'8 أكتوبر',add:[
+    'الإعدادات: زرار للصوت كله، وزرار للمزيكا لوحدها، وسلايدر لكل واحد. المزيكا بتبدأ على 20%.'],
+   fix:[
+    'الملح بقى بيعوّر النداهة وبيدوّخها.',
+    'الأعداء بقوا بيقووا مع مستواك، عشان المغامرة تفضل صعبة.']},
+  {v:'3',d:'أكتوبر',add:[
+    'أول نسخة: {بتعمل بطلك|بتعملي بطلتك} بأربع تخصصات، {وتختار|وتختاري} النرد، {وتلعب|وتلعبي} مغامرة «النداهة» بالصناديق والإنجازات والمزيكا.'],fix:[]}
+];
+let NEWS_FROM='title';
+const newsUnseen=()=>store('sirdab.newsSeen')!==NEWS[0].v;
+/* players who already had a hero see the news once, by themselves, when a new version opens; brand-new players don't */
+if(!HEROES.length)store('sirdab.newsSeen',NEWS[0].v);
+else if(newsUnseen()&&S.screen==='title'){NEWS_FROM='title';S.screen='news'}
+SCREENS.news=function(){view.scrollTop=0;store('sirdab.newsSeen',NEWS[0].v);
+  const li=a=>a.map(x=>`<li>${T(x)}</li>`).join('');
+  view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>الجديد في اللعبة</h2><span style="width:40px"></span></div>
+  <div class="col news">${NEWS.map((n,i)=>`<div class="card news-v${i?'':' now'}">
+    <div class="news-h"><b>نسخة ${n.v}</b><small>${n.d}</small>${i?'':'<span class="tag">دلوقتي</span>'}</div>
+    ${n.add.length?`<div class="news-k">اتضاف</div><ul>${li(n.add)}</ul>`:''}
+    ${n.fix.length?`<div class="news-k fx">اتعدّل</div><ul>${li(n.fix)}</ul>`:''}</div>`).join('')}
+  <button class="btn" id="newsOk">تمام</button></div>`;
+  const out=()=>{S.screen=NEWS_FROM||'title';render()};$('#back').onclick=out;$('#newsOk').onclick=out};
+/* a button on the title screen opens it again */
+{const t0=SCREENS.title;SCREENS.title=function(){t0();const b4=$('#b4');if(!b4)return;
+  const b=document.createElement('button');b.className='btn ghost small';b.id='bNews';
+  b.innerHTML=`الجديد في نسخة ${NEWS[0].v}${newsUnseen()?' <span class="news-dot">جديد</span>':''}`;
+  b4.parentNode.insertBefore(b,b4);b.onclick=()=>{NEWS_FROM='title';S.screen='news';render()}}}
+{const st=document.createElement('style');st.textContent=`
+.news .news-v{display:flex;flex-direction:column;gap:6px;padding:14px 16px}
+.news .news-v.now{border-color:var(--gold)}
+.news .news-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.news .news-h b{font-size:18px;color:var(--gold2)}
+.news .news-h small{color:var(--dim);font-size:13px}
+.news .news-h .tag{margin-inline-start:auto;color:var(--gold2)}
+.news .news-k{font-size:13px;font-weight:700;color:var(--ok);margin-top:4px}
+.news .news-k.fx{color:var(--gold)}
+.news ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:5px;font-size:15px;line-height:1.6}
+.news-dot{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--gold);color:#1a120c;margin-inline-start:6px;vertical-align:middle}`;document.head.appendChild(st)}
+
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
 function bigWord(t,sub,kind){const d=document.createElement('div');d.className='mword'+(kind?' '+kind:'');d.innerHTML=`<i></i><span>${t}</span>${sub?`<small>${sub}</small>`:''}`;app.appendChild(d);setTimeout(()=>d.remove(),1400)}
