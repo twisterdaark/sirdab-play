@@ -1208,8 +1208,8 @@ function a4blob(x,y,r,i){const n=7,pt=[];for(let j=0;j<n;j++){const a=j*2*Math.P
 function a4cry(x,y,l,a,wd){const r=a*Math.PI/180,dx=Math.cos(r),dy=Math.sin(r),nx=-dy*wd/2,ny=dx*wd/2,P=(t,s)=>`${(x+dx*l*t+nx*s).toFixed(1)} ${(y+dy*l*t+ny*s).toFixed(1)}`;
   return [`M${P(0,-1)} L${P(.74,-1)} L${P(1,0)} L${P(.74,1)} L${P(0,1)}Z`,`M${P(0,0)} L${P(1,0)} L${P(.74,1)} L${P(0,1)}Z`]}
 function rockArt(kind,crack,w){const u=a4u();crack=Math.max(0,Math.min(3,crack|0));w=w===undefined?150:w;
-  const base={stone:['#b8ae9a','#8a8070','#524c42'],copper:['#ae9888','#84705e','#4a3e36'],iron:['#9ca2a8','#6c7278','#3a3e44'],silver:['#a6a4a0','#7a7874','#44423e'],turq:['#8a9ca2','#5a6a72','#30393f']}[kind]||['#b8ae9a','#8a8070','#524c42'];
-  const ore={copper:['#ffd6a6','#dc8a40','#6e3010'],iron:['#f2f6fa','#94a2ae','#2e3840'],silver:['#ffffff','#e2e8ee','#8894a0'],turq:['#e0fffb','#46d0c8','#0f6662']}[kind];
+  const base={stone:['#b8ae9a','#8a8070','#524c42'],copper:['#ae9888','#84705e','#4a3e36'],iron:['#9ca2a8','#6c7278','#3a3e44'],silver:['#a6a4a0','#7a7874','#44423e'],turq:['#8a9ca2','#5a6a72','#30393f'],coal:['#7a746c','#55504a','#2c2926'],gold:['#a89a84','#7c6e5a','#423828'],emerald:['#7e9488','#52665a','#28362e']}[kind]||['#b8ae9a','#8a8070','#524c42'];
+  const ore={copper:['#ffd6a6','#dc8a40','#6e3010'],iron:['#f2f6fa','#94a2ae','#2e3840'],silver:['#ffffff','#e2e8ee','#8894a0'],turq:['#e0fffb','#46d0c8','#0f6662'],coal:['#6a6a74','#26242a','#08070a'],gold:['#fff6c0','#f3c14d','#8a5a10'],emerald:['#e0ffe8','#3ee07a','#0c5a2c']}[kind];
   const out='M12 86 L7 70 L12 54 L22 42 L34 32 L46 24 L60 20 L72 22 L84 20 L96 30 L104 44 L110 60 L108 76 L104 87 Q60 92 12 86Z';
   const chips=[[3,'M7 70 L12 54 L18 59 L16 67 L9.6 72Z'],[2,'M84 20 L96 30 L91.6 35 L83 31.4 L80.4 23Z'],[3,'M34 32 L46 24 L48.6 31 L39.6 35.4Z']].filter(c=>crack>=c[0]);
   const nug=[[44,57,5.4],[64,33,4.6],[79,63,5.8],[25,71,4.4],[58,75,4.8],[95,55,3.8]];
@@ -1217,7 +1217,7 @@ function rockArt(kind,crack,w){const u=a4u();crack=Math.max(0,Math.min(3,crack|0
   if(ore){const g=1+crack*.1;
     ores=`<path d="M22 74 Q32 66 44 57 Q54 44 64 33 M58 75 Q68 70 79 63 Q88 58 95 55" stroke="${kind==='iron'?'#7a4026':ore[2]}" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>${a4rg(u+'o',ore,.35,.3,.75)}`;
     ores+=nug.map(([x,y,r],i)=>{r*=g;const d=a4blob(x,y,r,i);
-      return `${kind==='iron'?a4glow(u+'x'+i,'#9a4a26',x,y,r*2.1,.5):''}${kind==='turq'?a4glow(u+'n'+i,'#5ff0e6',x,y,r*2.6,.7):''}<path d="${d}" fill="#000" opacity=".35" transform="translate(.8 1.4)"/><path d="${d}" fill="url(#${u}o)" stroke="${ore[2]}" stroke-width="1"/><circle cx="${(x-r*.32).toFixed(1)}" cy="${(y-r*.34).toFixed(1)}" r="${(r*.26).toFixed(1)}" fill="#fff" opacity=".85"/>`}).join('');
+      return `${kind==='iron'?a4glow(u+'x'+i,'#9a4a26',x,y,r*2.1,.5):''}${kind==='turq'?a4glow(u+'n'+i,'#5ff0e6',x,y,r*2.6,.7):kind==='emerald'?a4glow(u+'n'+i,'#5ef08a',x,y,r*2.6,.7):kind==='gold'?a4glow(u+'n'+i,'#ffd86a',x,y,r*2.2,.55):''}<path d="${d}" fill="#000" opacity=".35" transform="translate(.8 1.4)"/><path d="${d}" fill="url(#${u}o)" stroke="${ore[2]}" stroke-width="1"/><circle cx="${(x-r*.32).toFixed(1)}" cy="${(y-r*.34).toFixed(1)}" r="${(r*.26).toFixed(1)}" fill="#fff" opacity=".85"/>`}).join('');
     if(kind==='turq'){const cl=[[60,28,15,-100,6],[66,29,11,-62,5],[54,30,9,-140,4.4],[98,50,12,-20,5],[97,56,8,10,4]];
       cry=`${a4glow(u+'c','#5ff0e6',62,22,22,.8)}${a4lg(u+'q',['#e8fffc','#5ce0d6','#128a84'],1,0)}`+cl.map(([x,y,l,a,wd])=>{const [o1,o2]=a4cry(x,y,l*(1+crack*.08),a,wd);return `<path d="${o1}" fill="url(#${u}q)" stroke="#0b4846" stroke-width="1" stroke-linejoin="round"/><path d="${o2}" fill="#0b4846" opacity=".22"/>`}).join('')}
     if(kind==='silver'||kind==='turq')ores+=a4star(70,30,4+crack,'#fff',1.4)+a4star(34,66,3+crack*.6,'#fff',1.8,.5)+(crack>1?a4star(86,62,3.4,'#fff',1.6,.9):'');
@@ -3258,17 +3258,22 @@ ACH.push(
   {id:'f_first',n:'أول سمكة',d:'أول سمكة تطلع في السنارة',r:10},
   {id:'f_gold',n:'سمكة الدهب',d:'سمكة الدهب تطلع في السنارة',r:60},
   {id:'f_shoe',n:'مبروك؟',d:'شبشب قديم يطلع في السنارة',r:0},
-  {id:'m_floor10',n:'قاع الجبل',d:'الدور العاشر في الجبل',r:40},
+  {id:'m_floor10',n:'نص الجبل',d:'الدور العاشر في الجبل',r:40},
+  {id:'m_floor20',n:'قاع الجبل',d:'الدور العشرين في الجبل',r:80},
   {id:'f_chest',n:'كنز الترعة',d:'صندوق يطلع من الترعة وسط الشدّة',r:15});
-HELP.splice((HELP.findIndex(t=>t.h==='المجهود')+1)||HELP.length,0,{g:'البلد',h:'الجبل والترعة',b:()=>`في الجبل ${G('بتكسّر','بتكسّري')} صخر ${G('وتطلّع','وتطلّعي')} نحاس وحديد وفضة، وساعات فيروز. وفي الترعة ${G('بتصطاد','بتصطادي')} سمك.<br>كل صخرة جديدة وكل رمية سنارة بتاخد <b>1 مجهود</b>. المجهود بيرجع لوحده واحدة كل دقيقة لحد ${EFF_MAX}.<br><b>الجبل:</b> ${G('دوس','دوسي')} على الصخرة لحد ما تتكسر. ${G('اضرب','اضربي')} على الشق اللي بينوّر: الضربة بضربتين. وساعات تيجي «ضربة معلّم» بتشيل 3 أضعاف. وكل 10 صخرات جسمك بيتشد: صحة +1 على طول (لحد 10).<br><b>النزلة:</b> ساعات لما صخرة تتكسر بتلاقي نزلة للدور اللي تحت. كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أصعب والخام أحسن، ومن الدور 4 ممكن يطلع حجر تعزيز. كل مرة تيجي الجبل ${G('بتبدأ','بتبدأي')} من الدور 1، وآخر دور هو 10.<br><b>الترعة:</b> ${G('ارمي','ارمي')} السنارة ${G('واستنى','واستني')}. لو العوامة اتهزت بس ما ${G('تشدش','تشديش')}. لما تغطس جامد ${G('دوس','دوسي')} «${G('شد!','شدي!')}» على طول.<br><b>السمك الكبير:</b> القرموط والبوري وسمكة الدهب بيشدّوا. ${G('اضغط','اضغطي')} مطوّل يطلع المربع الأخضر، ${G('وسيب','وسيبي')} ينزل. خلّي السمكة جوّه الأخضر لحد ما العداد يتملى. ولو ظهر صندوق خلّيه جوّه الأخضر شوية ويبقى بتاعك.<br>كل ما ${G('تشتغل','تشتغلي')} أكتر ${G('بتطلع','بتطلعي')} مستوى: الصخر بيتكسر أسرع، ووقت الشدّة بيطول، والحاجات الغالية بتطلع أكتر.`});
+HELP.splice((HELP.findIndex(t=>t.h==='المجهود')+1)||HELP.length,0,{g:'البلد',h:'الجبل والترعة',b:()=>`في الجبل ${G('بتكسّر','بتكسّري')} صخر ${G('وتطلّع','وتطلّعي')} نحاس وحديد وفضة، وساعات فيروز. وفي الترعة ${G('بتصطاد','بتصطادي')} سمك.<br>كل صخرة جديدة وكل رمية سنارة بتاخد <b>1 مجهود</b>. المجهود بيرجع لوحده واحدة كل دقيقة لحد ${EFF_MAX}.<br><b>الجبل:</b> ${G('دوس','دوسي')} على الصخرة لحد ما تتكسر. ${G('اضرب','اضربي')} على الشق اللي بينوّر: الضربة بضربتين. وساعات تيجي «ضربة معلّم» بتشيل 3 أضعاف. وكل 10 صخرات جسمك بيتشد: صحة +1 على طول (لحد 10).<br><b>النزلة:</b> ساعات لما صخرة تتكسر بتلاقي نزلة للدور اللي تحت. كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أصعب والخام أحسن، ومن الدور 4 ممكن يطلع حجر تعزيز. كل مرة تيجي الجبل ${G('بتبدأ','بتبدأي')} من الدور 1، وآخر دور هو 20، وكل ما ${G('تنزل','تنزلي')} بيطلع خام أغلى: فحم ودهب وزمرد.<br><b>الترعة:</b> ${G('ارمي','ارمي')} السنارة ${G('واستنى','واستني')}. لو العوامة اتهزت بس ما ${G('تشدش','تشديش')}. لما تغطس جامد ${G('دوس','دوسي')} «${G('شد!','شدي!')}» على طول.<br><b>السمك الكبير:</b> القرموط والبوري وسمكة الدهب بيشدّوا. ${G('اضغط','اضغطي')} مطوّل يطلع المربع الأخضر، ${G('وسيب','وسيبي')} ينزل. خلّي السمكة جوّه الأخضر لحد ما العداد يتملى. ولو ظهر صندوق خلّيه جوّه الأخضر شوية ويبقى بتاعك.<br>كل ما ${G('تشتغل','تشتغلي')} أكتر ${G('بتطلع','بتطلعي')} مستوى: الصخر بيتكسر أسرع، ووقت الشدّة بيطول، والحاجات الغالية بتطلع أكتر.`});
 
 let GN=0;
 const GX={tm:0,v:null,vis:{},left:{},rock:null,rubble:0,busy:0,lastHit:0,mt:0,down:0,broke:0},
   FS={ph:'idle',tok:0,raf:0,pend:null,gdown:'',top:-28,clip:null,b:{m:'hang'},dip:0,dv:0,dipT:0,bend:0,bendT:0,bx:300,by:110,n:0,cr:0,biteAt:0,ov:null,el:null,down:''};
 const MINE_K=['stone','copper','iron','silver','turq'],FISH_K=['bolti','qarmout','bouri','goldfish','shoe'];
-const ROCK_HP={stone:3,copper:4,iron:5,silver:6,turq:8};
-const ROCK_N={stone:'صخرة عادية',copper:'صخرة فيها نحاس',iron:'صخرة فيها حديد',silver:'صخرة فيها فضة',turq:'صخرة فيروز!'};
-const CHIPS={stone:['#8a8070','#5e564c','#b8ac98'],copper:['#8a7a6a','#d8823a','#ffb070','#5e544a'],iron:['#7a8088','#a0563a','#c8d0d8','#4a4e54'],silver:['#80868e','#eef4f8','#ffffff','#4e5258'],turq:['#62686c','#40d8cc','#bffff9','#ffffff']};
+/* v5.3: ores of the deep floors and fish that bite at higher fishing levels; their chips show once reached */
+const MINE_X=['coal','gold','emerald'],MX_AT={coal:3,gold:8,emerald:14},FISH_X=['bisaria','shrimp','bayad','eel'],FX_AT={bisaria:1,shrimp:2,bayad:4,eel:6};
+const isFishK=k=>FISH_K.includes(k)||FISH_X.includes(k),isMineK=k=>MINE_K.includes(k)||MINE_X.includes(k);
+const fsKs=h=>FISH_K.concat(FISH_X.filter(k=>MAT[k]&&lifeLvl(h,'fish')>=FX_AT[k]));
+const ROCK_HP={stone:3,copper:4,iron:5,silver:6,turq:8,coal:4,gold:7,emerald:10};
+const ROCK_N={stone:'صخرة عادية',copper:'صخرة فيها نحاس',iron:'صخرة فيها حديد',silver:'صخرة فيها فضة',turq:'صخرة فيروز!',coal:'صخرة فيها فحم',gold:'صخرة فيها دهب!',emerald:'صخرة زمرد!'};
+const CHIPS={stone:['#8a8070','#5e564c','#b8ac98'],copper:['#8a7a6a','#d8823a','#ffb070','#5e544a'],iron:['#7a8088','#a0563a','#c8d0d8','#4a4e54'],silver:['#80868e','#eef4f8','#ffffff','#4e5258'],turq:['#62686c','#40d8cc','#bffff9','#ffffff'],coal:['#55504a','#26242a','#6a6a74','#08070a'],gold:['#7c6e5a','#f3c14d','#fff6c0','#8a5a10'],emerald:['#52665a','#3ee07a','#e0ffe8','#0c5a2c']};
 const SPL=['#d8ecf8','#ffffff','#8fc0e0','#5f90b0'];
 /* where the rod, line and float sit. p4c's fishScene() draws its own still rod (tip at 120.6,185.6) and a still line to the
    float spot (195,200): that line is taken out and the moving one here starts at the same tip. The fallback scene gets a rod here that bends. */
@@ -3385,7 +3390,7 @@ function gxMsgOff(){const m=$('#gxMsg');if(m&&m.classList.contains('on')){m.clas
 /* a floating word on its own row of the stage, so several drops never pile on each other */
 function gxFloatRow(j,t,c){const st=$('#gxStage');if(!st)return;const a=document.createElement('i');a.style.cssText=`position:absolute;left:50%;top:${46-j*13}%;width:2px;height:2px;pointer-events:none`;st.appendChild(a);floatAt(a,t,c,'',24);setTimeout(()=>a.remove(),50)}
 /* a resource icon flies from a point into its counter, which ticks up when it lands */
-function gxFly(a,k,delay){const to=view.querySelector(`.gx-chip[data-r="${k}"]`),V=GX.vis[FISH_K.includes(k)?'fish':'mine']||{n:{}};if(!to||!a)return;
+function gxFly(a,k,delay){const to=view.querySelector(`.gx-chip[data-r="${k}"]`),V=GX.vis[isFishK(k)?'fish':'mine']||{n:{}};if(!to||!a)return;
   const b=rectOf(to),d=document.createElement('div');d.className='gx-fly';d.innerHTML=AR.mat(k,30);app.appendChild(d);
   const sx=a.x+(Math.random()-.5)*44,sy=a.y+(Math.random()-.5)*24,mx=sx+(Math.random()-.5)*90,my=Math.min(sy,b.y)-60-Math.random()*40;
   const an=d.animate([{transform:`translate(${sx-15}px,${sy-15}px) scale(.4)`,opacity:0},{transform:`translate(${mx-15}px,${my-15}px) scale(1.35)`,opacity:1,offset:.38},{transform:`translate(${b.x-15}px,${b.y-15}px) scale(.85)`,opacity:1}],{duration:820,delay:delay||0,easing:'cubic-bezier(.45,0,.6,1)',fill:'both'});
@@ -3402,13 +3407,13 @@ function gxBind(k){$('#back').onclick=()=>{GX.left[k]=1;fsAbort();S.screen=SCREE
 /* floors: every visit starts at floor 1, and a broken rock sometimes opens a way down («نزلة»), down to floor 10.
    Deeper rocks are harder and the ore is better; from floor 4 an enhancement stone can drop.
    Every hit can be a master hit («ضربة معلّم», 3x), and a hit on the glowing crack counts double. */
-const FLOOR_MAX=10;
+const FLOOR_MAX=20;
 const critOf=h=>Math.max(.01,.05+.015*(lifeLvl(h,'mine')-1)+.03*R3(trk(h,'mine','heavy'))+tf(h,'mine','crit'));
 const downOf=h=>.2*(trk(h,'mine','eye')>=4?2:1)*Math.max(.2,1+tf(h,'mine','down'));
-const hpOf=(k,F)=>Math.round(ROCK_HP[k]*(1+.12*((F||1)-1)));
-function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max(0,(F||1)-1),pt=.01+.005*L+sb*.015+.004*d;let r=Math.random(),k='stone';
-  if(r<pt)k='turq';
-  else{const w=[['stone',Math.max(6,50-4*L-3*d)],['copper',Math.max(14,30-1.5*d)],['iron',10+2*L+2.5*d],['silver',2+1.5*L+sb*2+1.4*d]],tot=w.reduce((a,x)=>a+x[1],0);r=(r-pt)/(1-pt)*tot;
+const hpOf=(k,F)=>{F=F||1;return Math.round(ROCK_HP[k]*(1+.12*(Math.min(F,10)-1)+.06*Math.max(0,F-10)))};
+function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max(0,(F||1)-1),gm=tf(h,'mine','gem')>0?2:1,pt=(.01+.005*L+sb*.015+.004*d)*gm,pe=F>=14?(.012+.004*(F-14))*gm:0;let r=Math.random(),k='stone';
+  if(r<pe)k='emerald';else if(r<pe+pt)k='turq';
+  else{const w=[['stone',Math.max(6,50-4*L-3*d)],['copper',Math.max(14,30-1.5*d)],['iron',10+2*L+2.5*d],['silver',2+1.5*L+sb*2+1.4*d]];if(F>=3)w.push(['coal',F>12?6:10]);if(F>=8)w.push(['gold',3+.8*(F-8)]);const tot=w.reduce((a,x)=>a+x[1],0);r=(r-pe-pt)/(1-pe-pt)*tot;
     for(const [kk,v] of w){if(r<v){k=kk;break}r-=v}}
   /* عين الجبل: a better ore now and then */
   const ey=R3(trk(h,'mine','eye'));if(ey&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<.04*ey)k=MINE_K[MINE_K.indexOf(k)+1];
@@ -3432,7 +3437,7 @@ const HOLE=`<svg viewBox="0 0 240 130"><defs><radialGradient id="g9hP" cy="40%">
   <ellipse class="rim" cx="120" cy="96" rx="84" ry="20" fill="none" stroke="#ffd36a" stroke-width="3"/>
   <g fill="#4a3a2c" stroke="#0008" stroke-width="1"><path d="M26 100 l8 -9 l12 2 l3 9Z"/><path d="M186 104 l7 -10 l14 1 l4 10Z"/><path d="M62 116 l6 -6 l10 1 l2 6Z"/><path d="M158 118 l5 -6 l11 1 l2 6Z"/></g></svg>`;
 /* inside the mountain: rock walls, timber and a lamp; deeper floors are darker and the glints change colour */
-function caveBG(F){const P=F>=7?['#14131c','#07060a','#2a2a3a','#40d8cc']:F>=4?['#1c1714','#090706','#33302e','#d8e0e8']:['#2a2018','#0e0a08','#3e3024','#e0a060'],v=Math.min(.6,.1+.05*F);
+function caveBG(F){const P=F>=15?['#0e1a16','#030806','#1e3a30','#5ef08a']:F>=11?['#1e1410','#0a0504','#3a2a1c','#ffcf4a']:F>=7?['#14131c','#07060a','#2a2a3a','#40d8cc']:F>=4?['#1c1714','#090706','#33302e','#d8e0e8']:['#2a2018','#0e0a08','#3e3024','#e0a060'],v=Math.min(.6,.1+.05*F);
   const gl=[[70,110],[300,84],[250,190],[120,200],[330,160],[40,180],[196,120]].map(([x,y],i)=>`<path d="M${x} ${y-5} l1.4 3.6 l3.6 1.4 l-3.6 1.4 l-1.4 3.6 l-1.4 -3.6 l-3.6 -1.4 l3.6 -1.4Z" fill="${P[3]}" opacity="${(.35+.1*(i%3)).toFixed(2)}"/>`).join('');
   return `<svg viewBox="0 0 390 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g9cB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset="1" stop-color="${P[1]}"/></linearGradient><radialGradient id="g9cL"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".5"/><stop offset="1" stop-color="#ffcf7a" stop-opacity="0"/></radialGradient><radialGradient id="g9cV" cx="50%" cy="60%" r="68%"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${(v+.3).toFixed(2)}"/></radialGradient></defs>
   <rect width="390" height="300" fill="url(#g9cB)"/>
@@ -3444,7 +3449,7 @@ function caveBG(F){const P=F>=7?['#14131c','#07060a','#2a2a3a','#40d8cc']:F>=4?[
   <path d="M0 244 Q195 226 390 244 V300 H0Z" fill="${P[1]}"/><g fill="#2b2018" stroke="#0006" stroke-width="1" opacity=".9"><path d="M22 266 l12 -10 l16 3 l5 11Z"/><path d="M318 262 l10 -12 l18 2 l6 12Z"/><path d="M350 284 l8 -7 l12 2 l3 7Z"/></g>
   <rect width="390" height="300" fill="url(#g9cV)"/></svg>`}
 const mnBG=F=>F>1?caveBG(F):mineBG();
-const mnKs=V=>MINE_K.concat(['stone1','stone2'].filter(k=>MAT[k]&&V.n[k]));
+const mnKs=V=>MINE_K.concat(MINE_X.filter(k=>MAT[k]&&(V.n[k]||(V.deep||1)>=MX_AT[k])),['stone1','stone2','stone3'].filter(k=>MAT[k]&&V.n[k]));
 function mnChips(){const w=$('#gxChipsW');if(w)w.innerHTML=gxChips(mnKs(gxVisit('mine')),gxVisit('mine'))}
 function mnFloorUI(pp){const V=gxVisit('mine'),f=$('#mnFl'),bg=$('#mnBg');if(f){f.innerHTML=`${LADDER}الدور ${V.floor}`;if(pp)cls(f,'pp')}if(bg&&bg.dataset.f!=String(V.floor)){bg.dataset.f=V.floor;bg.innerHTML=mnBG(V.floor)}}
 function mnWord(t,sub,c){const st=$('#gxStage');if(!st)return;const w=document.createElement('div');w.className='mn-word'+(c?' '+c:'');w.innerHTML=`${t}${sub?`<small>${sub}</small>`:''}`;st.appendChild(w);setTimeout(()=>w.remove(),1200)}
@@ -3470,14 +3475,14 @@ function mnBtn(){const b=$('#gxGo'),b2=$('#gxGo2'),h=S.hero,V=gxVisit('mine'),ho
   else if(hole){b.className='btn gx-btn';b.innerHTML=`${G('انزل','انزلي')} للدور ${V.floor+1} <span class="gx-cost">ببلاش</span>`}
   else if(effNow(h)<1){b.className='btn gx-btn wait';b.innerHTML=`${G('تعبت','تعبتي')} · اللي جاي بعد <span class="gx-cd">${mmss(effLeft(h))}</span>`}
   else{b.className='btn gx-btn';b.innerHTML=`${G('هات','هاتي')} صخرة جديدة <span class="gx-cost">${ICO.drop}1 مجهود</span>`}}
-const MINE_GEAR=()=>Object.keys(GEAR).filter(id=>{const c=GEAR[id].craft;return c&&Object.keys(c).every(k=>MINE_K.includes(k))});
+const MINE_GEAR=()=>Object.keys(GEAR).filter(id=>{const c=GEAR[id].craft;return c&&Object.keys(c).every(k=>isMineK(k))});
 const missTxt=m=>Object.keys(m).map(k=>m[k]===1?`${resN(k)} ${k==='silver'?'واحدة':'واحد'}`:`${m[k]} ${resN(k)}`).join(' و');
 function mnGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks||0,L=lifeLvl(h,'mine'),d=hitOf(h),V=gxVisit('mine'),F=V.floor||1,lines=[];let best=null;
   MINE_GEAR().forEach(id=>{if(h.gear[id])return;const need=GEAR[id].craft,miss={};let tot=0;Object.keys(need).forEach(k=>{const m=need[k]-(h.res[k]||0);if(m>0){miss[k]=m;tot+=m}});if(!best||tot<best.tot)best={id,miss,tot}});
   if(best){const g0=GEAR[best.id],at=g0.at==='tailor'?'الخياط':'الحداد';lines.push(best.tot?`فاضلك <b>${missTxt(best.miss)}</b> ${G('وتعمل','وتعملي')} «${g0.n}» عند ${at}`:`<span class="ok">${G('معاك','معاكي')} خامات «${g0.n}».. ${G('روح','روحي')} ${at==='الحداد'?'للحداد':'للخياط'}</span>`)}
   lines.push(`الفاس بتشيل <b>${d}</b> من الصخرة${L<9?` · في مستوى ${3*Math.floor(L/3)+3} تبقى ${d+1}`:''}`);
   lines.push(`الشق اللي بينوّر بضربتين · ضربة معلّم <b>${Math.round(critOf(h)*100)}%</b> بتشيل 3 أضعاف`);
-  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> · النزلة بتبان ساعات لما صخرة تتكسر${!MAT.stone1?'':F<4?' · من الدور 4 ممكن يطلع حجر تعزيز':F>=7&&MAT.stone2?' · هنا ممكن يطلع حجر تعزيز.. وساعات أزرق':' · هنا ممكن يطلع حجر تعزيز'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع الجبل`);
+  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> من ${FLOOR_MAX} · النزلة بتبان ساعات لما صخرة تتكسر${F<3?' · من الدور 3 بيطلع فحم':F<8?' · من الدور 8 بيطلع دهب':F<14?' · من الدور 14 بيطلع زمرد وحجر تعزيز دهبي':' · هنا الزمرد والحجر الدهبي'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع الجبل`);
   if((h.minehp||0)<10)lines.push(`كل 10 صخرات جسمك بيتشد (صحة ${num(1,'+')}) · فاضل ${rocksN(10-c%10)}`);
   const t0=TITLES.find(t=>t.id==='mountain');if(t0&&!hasTitle(h,'mountain'))lines.push(`لقب «${titleName(t0,h)}» بعد 50 صخرة · ${G('كسرت','كسرتي')} ${c}`);
   g.innerHTML=lines.map(l=>`<div><span>${l}</span></div>`).join('');
@@ -3493,7 +3498,9 @@ function mnSpawn(){const h=S.hero,V=gxVisit('mine');if(GX.rock||GX.busy)return;
   GX.rock={k,hp,max:hp,hid:h.id,c:0,f:F,ci:Math.floor(Math.random()*CRK_AT.length),on:0,bonus:0};GX.rubble=0;
   mnSlot(true);mnBtn();SFX.rockIn();if(free)setTimeout(()=>floatAt($('#gxStage'),'نفَس طويل: الصخرة دي ببلاش','#b4f0c2','',20),350);
   setTimeout(()=>{const r=$('#mnRock'),R=GX.rock;if(!r||!R||R.k!==k)return;R.on=1;mnCrack(R);cls($('#gxStage'),'jolt');vib(25);pop(r,CHIPS.stone,10);
-    if(k==='turq'){SFX.turq();flash('#40c8c0');pop(r,['#40e0d0','#bffff9','#ffffff'],46);floatAt(r,'فيروز!','#8ff8f0','crit',40);gxSay('mine',SAYX.turqSeen)}
+    if(k==='emerald'){SFX.turq();flash('#5ef08a');pop(r,['#3ee07a','#e0ffe8','#ffffff'],46);floatAt(r,'زمرد!','#9ff8b8','crit',40)}
+    else if(k==='gold'){SFX.sparkle();pop(r,['#f3c14d','#fff6c0'],20)}
+    else if(k==='turq'){SFX.turq();flash('#40c8c0');pop(r,['#40e0d0','#bffff9','#ffffff'],46);floatAt(r,'فيروز!','#8ff8f0','crit',40);gxSay('mine',SAYX.turqSeen)}
     else if(k==='silver'){SFX.sparkle();pop(r,['#eef4f8','#ffffff'],16)}},250)}
 /* a hit: from a tap on the stage (e) or from the button. The pick strikes where the finger is. */
 function mnHit(e){const h=S.hero,R=GX.rock;if(!R||R.hp<=0||GX.busy)return;const now=performance.now();if(now-GX.lastHit<100)return;GX.lastHit=now;
@@ -3520,16 +3527,19 @@ function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxSt
   const L=lifeLvl(h,'mine'),t=tierOf(R.k),drops=[[R.k,(Math.random()<.3+.03*L+(h.hidden.sabr?.1:0)?2:1)+(R.bonus||0)]];
   if(R.k!=='stone'&&Math.random()<.35)drops.push(['stone',1]);
   /* enhancement stones on the deep floors */
-  const s1=F>=4&&MAT.stone1&&Math.random()<.03+.012*(F-4),s2=F>=7&&MAT.stone2&&Math.random()<.015+.01*(F-7);
-  if(s1)drops.push(['stone1',1]);if(s2)drops.push(['stone2',1]);
-  const newChip=drops.some(([k])=>!MINE_K.includes(k)&&!V.n[k]);
+  const s1=F>=4&&MAT.stone1&&Math.random()<Math.min(.14,.03+.012*(F-4)),s2=F>=7&&MAT.stone2&&Math.random()<Math.min(.1,.015+.01*(F-7)),s3=F>=14&&MAT.stone3&&Math.random()<.006+.003*(F-14);
+  if(s1)drops.push(['stone1',1]);if(s2)drops.push(['stone2',1]);if(s3)drops.push(['stone3',1]);
+  const newChip=drops.some(([k])=>!mnKs(V).includes(k));
   drops.forEach(([k,n])=>{addRes(h,k,n);V.n[k]=(V.n[k]||0)+n});V.rocks++;
   /* a way down, sometimes */
   if(F<FLOOR_MAX&&Math.random()<downOf(h))V.hole=1;
   /* the rare-drop band goes first; level, health, title and achievement bands queue after it */
-  if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{dur:1600,sound:SFX.sparkle});
-  if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{color:'blue',dur:2400,sound:SFX.turq})}
-  if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{color:'blue',dur:2200,sound:SFX.turq});
+  if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{dur:1800,sound:SFX.sparkle});
+  else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{dur:1600,sound:SFX.sparkle});
+  if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في الجبل.. منه سيف وتميمة',{color:'blue',dur:2600,sound:SFX.turq})}
+  else if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{color:'blue',dur:2400,sound:SFX.turq})}
+  if(s3)band(RARE[tierOf('stone3')].n,`${MAT.stone3.n}!`,'أقوى حجر تعزيز.. بيطلع بس في الأعماق',{dur:2600,sound:SFX.turq});
+  else if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{color:'blue',dur:2200,sound:SFX.turq});
   else if(s1)band(RARE[tierOf('stone1')].n,`${MAT.stone1.n}!`,'بيقوّي العدة عند الحداد',{dur:1800,sound:SFX.sparkle});
   const xp=1+t,up=lifeXP(h,'mine',xp);bump('rocks');const c=h.cnt.rocks;
   if(c%10===0&&(h.minehp||0)<10){h.minehp=(h.minehp||0)+1;band('كل 10 صخرات','جسمك اتشد',`صحة +1 على طول · صحتك الكاملة بقت ${MXH(h)}`,{dur:2200,sound:SFX.levelup})}
@@ -3550,8 +3560,8 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
     if(h.eff.v>e0)setTimeout(()=>{effUI();floatAt($('#gxEffN'),num(h.eff.v-e0,'+'),'#b4f0c2','',18)},700)}}
   sfx('mnDown');vib([15,60,15,60,15]);const fd=$('#mnFade');if(fd)cls(fd,'go');
   setTimeout(()=>{GX.busy=0;GX.rubble=0;if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();const em=$('#mnSlot .mn-empty');if(em)em.classList.add('mn-later');
-    mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع الجبل':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
-    if(F===4)gxSay('mine',SAYX.deep);if(F>=FLOOR_MAX)ach('m_floor10')},480)}
+    mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع الجبل':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
+    if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
 function mnStay(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;mnSpawn()}
 SCREENS.mine=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const V=gxVisit('mine');if(GX.rock&&GX.rock.hid!==h.id)GX.rock=null;GX.busy=0;
@@ -3570,6 +3580,8 @@ SCREENS.mine=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 
 /* ---------- الترعة ---------- */
 function rollFish(h){const L=lifeLvl(h,'fish'),sb=h.hidden.sabr?1:0,bt=trk(h,'fish','bait'),b3=R3(bt),r=Math.random(),pg=(.01+.004*L+sb*.01)*(bt>=4?2:1)*(1+tf(h,'fish','gold')),ps=.08,pb=.08+.015*(L-1)+sb*.03+.015*b3,pq=.25+.01*(L-1)+.015*b3;
+  const fl=L,bg=1+Math.max(0,tf(h,'fish','big')),r2=Math.random(),pe=fl>=6?(.025+.005*(fl-6))*bg:0,pby=fl>=4?(.04+.005*(fl-4))*bg:0,psh=fl>=2?.07:0,pbs=.1;
+  if(MAT.eel&&r2<pe)return 'eel';if(MAT.bayad&&r2<pe+pby)return 'bayad';if(MAT.shrimp&&r2<pe+pby+psh)return 'shrimp';if(MAT.bisaria&&r2<pe+pby+psh+pbs)return 'bisaria';
   const f=r<pg?'goldfish':r<pg+ps?'shoe':r<pg+ps+pb?'bouri':r<pg+ps+pb+pq?'qarmout':'bolti';
   /* رابط «صبر الصياد»: the small fish is a bouri now and then */
   const ra=tf(h,'fish','rare');if(ra<0&&f==='bouri'&&Math.random()<-ra*3)return 'bolti';
@@ -3614,7 +3626,7 @@ function fsBtn(){const b=$('#gxGo'),h=S.hero,ph=FS.ph;if(!b)return;
   else if(ph==='cast'||ph==='reel'||ph==='fail'){b.className='btn gx-btn wait';b.textContent=ph==='reel'?'بتشد..':'...'}
   else if(effNow(h)<1){b.className='btn gx-btn wait';b.innerHTML=`${G('تعبت','تعبتي')} · اللي جاي بعد <span class="gx-cd">${mmss(effLeft(h))}</span>`}
   else{b.className='btn gx-btn';b.innerHTML=`${FS.n?'ارمي تاني':'ارمي السنارة'} <span class="gx-cost">${ICO.drop}1 مجهود</span>`}}
-function fsGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const V=gxVisit('fish'),worth=FISH_K.reduce((a,k)=>a+(V.n[k]||0)*MAT[k].p,0),c=h.cnt.fish||0,lines=[];
+function fsGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const V=gxVisit('fish'),worth=fsKs(h).reduce((a,k)=>a+(V.n[k]||0)*MAT[k].p,0),c=h.cnt.fish||0,lines=[];
   const w=$('#gxWorth');if(w)w.textContent=worth?`تسوى ${worth} جنيه`:'';
   lines.push(`وقت الشدّة عندك <b>${(fsWin(h)/1000).toFixed(2)} ثانية</b>${lifeLvl(h,'fish')<10?' · بيطول كل ما '+G('مستواك','مستواكي')+' يعلى':''}`);
   lines.push(`السمك الكبير بيشد: الأخضر عندك <b>${Math.round(reelZone(h)*100)}%</b> من العمود${lifeLvl(h,'fish')<10?' · بيكبر مع المستوى':''}`);
@@ -3654,7 +3666,9 @@ function fsFail(why){const tok=++FS.tok;fsPh('fail');FS.dipT=0;FS.bendT=0;FS.dv-
 const REEL={
   qarmout:{fill:.23,drain:.14,lo:.24,hi:.75,tmin:1000,tmax:2000,spd:.4,jump:0,ja:0,pull:.45,pa:.24},   /* heavy, dives down */
   bouri:{fill:.23,drain:.14,lo:.08,hi:.95,tmin:500,tmax:1100,spd:.48,jump:.3,ja:.24,pull:0,pa:0},       /* fast, jumps */
-  goldfish:{fill:.24,drain:.17,lo:.03,hi:.97,tmin:450,tmax:1000,spd:.6,jump:.4,ja:.3,pull:0,pa:0}};  /* wild */
+  goldfish:{fill:.24,drain:.17,lo:.03,hi:.97,tmin:450,tmax:1000,spd:.6,jump:.4,ja:.3,pull:0,pa:0},
+  bayad:{fill:.2,drain:.15,lo:.18,hi:.8,tmin:900,tmax:1800,spd:.45,jump:.15,ja:.2,pull:.5,pa:.28},   /* big and heavy */
+  eel:{fill:.21,drain:.18,lo:.04,hi:.96,tmin:350,tmax:800,spd:.62,jump:.25,ja:.28,pull:.3,pa:.2}};   /* slippery, twists */  /* wild */
 /* the zone: pushed up while held, falls when let go */
 const RP={up:1.9,g:1.6,d:2.6,vm:1.1};
 const reelZone=h=>Math.min(.6,(.24+.012*(lifeLvl(h,'fish')-1))*(1+.08*R3(trk(h,'fish','steady')))*(treeLink(h,'fish','l2')?1.08:1)*Math.max(.5,1+tf(h,'fish','zone')));
@@ -3727,6 +3741,8 @@ function fsLand(k,o){o=o||{};fsCommit();const h=S.hero,V=gxVisit('fish'),tok=++F
   fsSay(o.fight?(n>1?'سمكتين مرة واحدة!':k==='goldfish'?G('غلبتها!','غلبتيها!'):G('غلبته!','غلبتيه!')):`${G('شدّيت','شدّيتي')}! ردّ فعلك ${((o.rt||0)/1000).toFixed(2)} ثانية`,'good');
   FS.b={m:'reel',t0:performance.now(),d:600,x0:FS.bx,y0:FS.by,arc:50};
   FS.pend=()=>{
+    if(k==='eel')band(RARE[2].n,'تعبان مية!','بيتلوّى.. بس بيتشوي حلو عند أم سيد',{color:'blue',dur:2200,sound:SFX.sparkle});
+    if(k==='bayad')band(RARE[1].n,'سمكة بياض!','سمكة كبيرة.. تعمل طاجن',{dur:1800,sound:SFX.sparkle});
     if(k==='goldfish')band(RARE[3].n,'سمكة دهب!','الصيادين بيحكوا عنها.. ومحدش شافها',{dur:2800,sound:()=>{SFX.shimmer();setTimeout(SFX.fanfare,300)}});
     const up=lifeXP(h,'fish',xp);bump(M.junk?'shoes':'fish',n);
     if(M.junk)ach('f_shoe');else{ach('f_first');if(k==='goldfish')ach('f_gold')}
@@ -3747,7 +3763,7 @@ SCREENS.fish=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   view.innerHTML=`${gxTop('الترعة')}${gxStats('fish')}
   <div class="gx-stage fsh-stage" id="gxStage" data-ph="idle"><div class="bg">${sc}</div><div class="fsh-ov">${fsOverlay()}</div><div class="fsh-say" id="fshSay"></div><div class="fsh-cardw" id="fshCard"></div><div class="gx-msg" id="gxMsg"></div></div>
   <button class="btn gx-btn" id="gxGo"></button>
-  <div class="gx-lbl"><span>سمك المرة دي</span><span id="gxWorth"></span></div>${gxChips(FISH_K,V)}
+  <div class="gx-lbl"><span>سمك المرة دي</span><span id="gxWorth"></span></div>${gxChips(fsKs(S.hero),V)}
   <div class="gx-goal" id="gxGoal"></div>${gxNpcHTML('fish')}`;
   FS.b={m:'hang'};FS.dip=FS.dv=FS.dipT=FS.bend=FS.bendT=0;FS.n=0;
   fsSay(`${G('دوس','دوسي')} «ارمي السنارة» ${G('واستنى','واستني')} العوامة تغطس`);fsBtn();fsGoal();gxBind('fish');
@@ -4320,6 +4336,19 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.3',d:'9 أكتوبر',add:[
+    'اختياراتك في الليلة بقى ليها نتيجة: اللي {ساعدته|ساعدتيه} أو {سرقته|سرقتيه} أو {زقّيته|زقّيتيه} بيرجعلك بعد كام محطة في كارت جديد، ومكتوب عليه «عشان..» عشان {تعرف|تعرفي} جه منين. فيه 34 كارت زي دول في المغامرات الأربعة.',
+    'حاجات {عملتها|عملتيها} بدري بتغيّر كلام وحوش الآخر، وساعات بتفتح اختيار جديد في القتال، زي رجالة عم صالح اللي بيساعدوك لو {رجّعت|رجّعتي} البقرة.',
+    'الكروت اللي {شفتها|شفتيها} في آخر ليلتين بقت تطلع أقل، والاختيارات اللي كانت مكررة بنفس الكلام بقى ليها أكتر من صيغة.',
+    'الجبل بقى 20 دور بدل 10، والصخر بعد الدور 10 بيصعب بالراحة. وفيه خامات جديدة: فحم من الدور 3، ودهب من الدور 8، وزمرد من الدور 14. وحجر التعزيز الدهبي بقى بيطلع في الأعماق.',
+    'سمك جديد في الترعة كل ما مستوى الصيد يعلى: بساريا، وجمبري من مستوى 2، وبياض من مستوى 4، وتعبان مية من مستوى 6. البياض والتعبان بيشدّوا جامد.',
+    '5 أكلات جديدة عند أم سيد: بساريا مقلية، وشوربة جمبري، وفطير مشلتت من الدقيق، وطاجن بياض، وتعبان مية مشوي.',
+    'الرفيق بقى يشرب جرعة شفا من شنطتك لما صحته تقل قوي، بدل ما يسيب نفسه يقع. مرتين في القتال بالكتير.',
+    'عدّة جديدة: خاتم دهب، وقلادة دهب، ودرع حديد مسقّي على الفحم، وتميمة زمرد، وسيف الزمرد عند الحداد، وعمة مطرزة بالدهب عند الخياط.',
+    'كل مفترق في «الطرق» في الشجرة بقى فيه 3 اختيارات: {تختار|تختاري} واحد والاتنين التانيين يتقفلوا. ولكل اختيار جديد خطوة بعده.'],
+  fix:[
+    'الشجرة بقت 3 صفحات: الفروع، والروابط، والطرق. والكارت اللي بيشرح أي حاجة {اخترتها|اخترتيها} وزرار الشرا بقوا ثابتين تحت الشاشة، فمش {محتاج|محتاجة} {تنزل|تنزلي} تحت.',
+    'الخط اللي {بتقص|بتقصي} عليه في الخياطة بقى شكله مختلف كل مرة.']},
   {v:'5.2',d:'9 أكتوبر',add:[
     'كل الرسم بقى بكسل زي الأبطال: الوحوش في المغامرات الأربعة، وناس البلد، والحاجات، والأماكن. والوحوش الكبار بقوا أكبر في القتال.',
     'شجرة الشغلانات كبرت: 4 فروع بدل 3، وكل فرع 5 درجات. كل مستوى بيديك 3 نقط، وكل درجة أغلى من اللي قبلها: الأولى بنقطة، والخامسة بـ5.',
@@ -4832,9 +4861,12 @@ function clDefs(){return `<defs><pattern id="mgWv" width="6" height="6" patternU
   <path d="M26 34 Q180 26 334 30" stroke="#ffffff22" stroke-width="2" fill="none"/>`}
 const SCIS='<g id="mgSc"><g transform="rotate(-14)"><path d="M0 0 L-46 -5 Q-50 -1 -46 2Z" fill="#dfe6ec" stroke="#3a4048" stroke-width="1.2"/></g><g transform="rotate(14)"><path d="M0 0 L-46 5 Q-50 1 -46 -2Z" fill="#c8d0d8" stroke="#3a4048" stroke-width="1.2"/></g><circle r="3" fill="#5a6068"/><ellipse cx="16" cy="-9" rx="10" ry="7" fill="none" stroke="#c0453a" stroke-width="4.5"/><ellipse cx="16" cy="9" rx="10" ry="7" fill="none" stroke="#c0453a" stroke-width="4.5"/></g>';
 /* the three cut lines: a bow, an S and a wave; each one a little harder, with less time */
-function cutPath(k){const pts=[],ph=rr(0,1)<.5?1:-1,y0=[96,206,312][k];
-  for(let i=0;i<=160;i++){const u=i/160,x=318-276*u;let y;
-    if(k===0)y=y0+ph*34*Math.sin(Math.PI*u);else if(k===1)y=y0+ph*40*Math.sin(2*Math.PI*u);else y=y0+ph*(26*Math.sin(3*Math.PI*u)+8*Math.sin(7*Math.PI*u));pts.push([x,y])}
+/* a new line every time: random bends (more on later cuts), smooth curves or, sometimes, sharp zigzag corners */
+function cutPath(k){const pts=[],y0=[96,206,312][k],A=30+5*k,n=1+k+Math.floor(rr(0,2.4)),zig=k>0&&rr(0,1)<.35,cp=[[0,y0+rr(-8,8)]];
+  for(let j=1;j<=n;j++){const u=j/(n+1)+rr(-.25,.25)/(n+1),prev=cp[cp.length-1][1]-y0;let d=rr(.45,1)*A*(rr(0,1)<.75?-Math.sign(prev||rr(-1,1)):Math.sign(prev||1));cp.push([u,y0+clamp(d,-A,A)])}
+  cp.push([1,y0+rr(-10,10)]);
+  for(let i=0;i<=160;i++){const u=i/160,x=318-276*u;let j=0;while(j<cp.length-2&&u>cp[j+1][0])j++;const a=cp[j],b=cp[j+1],f=clamp((u-a[0])/((b[0]-a[0])||1),0,1),e=zig?f:(1-Math.cos(Math.PI*f))/2;
+    pts.push([x,a[1]+(b[1]-a[1])*e])}
   const out=[pts[0]];let acc=0;for(let i=1;i<pts.length;i++){const a=out[out.length-1],b=pts[i],d=Math.hypot(b[0]-a[0],b[1]-a[1]);acc+=d;if(acc>=3){out.push(b);acc=0}}if(out[out.length-1]!==pts[pts.length-1])out.push(pts[pts.length-1]);return out}
 function segD(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],L2=dx*dx+dy*dy||1,u=clamp(((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L2,0,1);return Math.hypot(p[0]-a[0]-u*dx,p[1]-a[1]-u*dy)}
 function tCut(C){const cr=TR(C.h,'tailor','cut'),tol=3.2*C.wl*(1+.12*R3(cr)),N=3,sc=[],PATHS=[0,1,2].map(cutPath);
@@ -5055,7 +5087,7 @@ async function play(kind,h,o,sim){
     if(!MG.sim)await gradeCard(R,r,0);return r}
   finally{unmount()}}
 mgImpl=(kind,h,o)=>{if(!KIND[kind]||!h||MG.on)return Promise.resolve({score:.5,grade:'ok'});return play(kind,h,o).catch(e=>{console.error('mg',e);try{unmount()}catch(x){}return {score:.5,grade:'ok'}})};
-mgDev={MG,adv,play,ctx,runGame,gradeOf,unmount,mount};
+mgDev={MG,adv,play,ctx,runGame,gradeOf,unmount,mount,cutPath};
 }
 /* ---------- v4.2 الحرف: every piece of gear is its own thing now (quality, traits, wear, enhancement), and dishes have quality too ---------- */
 /* Saved data (all created lazily, so old heroes load as they are):
@@ -5533,7 +5565,7 @@ const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
 function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,3*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
 const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
 const treeNum=n=>n===1?'نقطة واحدة':n===2?'نقطتين':n+' نقط';
-const TS={k:'smith',from:'smith',sel:null,conf:0};
+const TS={k:'smith',from:'smith',sel:null,conf:0,tab:'br'};
 /* the button in a skill box (at the smith, the tailor, the cook) */
 /* points only count as news when they buy something: the next rank of a branch, or a link that is open */
 function treeCan(h,k){const p=treePts(h,k);if(!p||!TREE[k])return 0;const t=treeOf(h,k);
@@ -5543,7 +5575,7 @@ function treeCan(h,k){const p=treePts(h,k);if(!p||!TREE[k])return 0;const t=tree
 function treeBtnHTML(h,k){if(!TREE[k])return '';const p=treeCan(h,k);
   return `<button class="tw-tree" data-tree="${k}">${treeIco(k,22)}<span>شجرة ${LIFE[k].n}</span>${p?`<small><span class="pt">${p===1?'نقطة جديدة':p===2?'نقطتين':p+' نقط'}</span></small>`:''}</button>`}
 function treeBind(){view.querySelectorAll('[data-tree]').forEach(b=>b.onclick=()=>treeOpen(b.dataset.tree))}
-function treeOpen(k){TS.k=k;TS.from=S.screen;TS.sel=null;TS.conf=0;SFX.page();S.screen='tree';render();view.scrollTop=0}
+function treeOpen(k){TS.k=k;TS.from=S.screen;TS.sel=null;TS.conf=0;TS.tab='br';SFX.page();S.screen='tree';render();view.scrollTop=0}
 SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}const k=TREE[TS.k]?TS.k:'smith',T0=TREE[k],t=treeOf(h,k),p=treePts(h,k),c=T0.c;
   const who=T0.who&&TW_NPC[T0.who]?TW_NPC[T0.who][0]:null,cost=treeCost(h,k),spent=treeSpent(h,k);
   const node=(b,i)=>{const r=t[b.id],got=r>i,next=r===i,open=next&&p>=i+1,sp=i===4;
@@ -5555,11 +5587,10 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   view.innerHTML=`<div class="top twtop"><button class="ib" id="back">رجوع</button><h2>شجرة ${LIFE[k].n}</h2><span style="width:44px"></span></div>
   <div class="tw tr" style="--tc:${c}">
     <div class="card tr-top"><span class="ic">${treeIco(k,40)}</span><div class="tx"><div class="r1"><b>${LIFE[k].n} مستوى ${treeLvl(h,k)}</b><span class="tr-pts${treeCan(h,k)?' on':''}">${p===0?'مفيش نقط':treeCan(h,k)?treeNum(p):`${treeNum(p)}، مش كفاية`}</span></div>
-      <div class="tw-sm">كل مستوى ${G('بيديك','بيديكي')} 3 نقط. كل درجة أغلى من اللي قبلها: الأولى بنقطة، والتانية بنقطتين، لحد الخامسة بـ5 نقط. والدرجة الخامسة في كل فرع ميزة قوية.</div></div></div>
-    <div class="tr-grid">${T0.br.map(col).join('')}</div>
-    ${lkHTML(h,k,p)}
-    ${fkHTML(h,k,p)}
-    <div class="card tr-info" id="trInfo">${TS.sel&&TS.sel.indexOf('F:')===0?fkInfo(h,k,TS.sel.slice(2),p):TS.sel&&TS.sel.indexOf('L:')===0?lkInfo(h,k,TS.sel.slice(2),p):sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي دايرة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه.</div>`}</div>
+      <div class="tw-sm">كل مستوى = 3 نقط · الدرجة 1 بنقطة لحد الدرجة 5 بـ5 نقط</div></div></div>
+    ${trTabsHTML(h,k,p)}
+    ${TS.tab==='lk'?lkHTML(h,k,p):TS.tab==='fk'?fkHTML(h,k,p):`<div class="tr-grid">${T0.br.map(col).join('')}</div>`}
+    <div class="card tr-info${TS.sel?'':' empty'}" id="trInfo">${TS.sel&&TS.sel.indexOf('F:')===0?fkInfo(h,k,TS.sel.slice(2),p):TS.sel&&TS.sel.indexOf('L:')===0?lkInfo(h,k,TS.sel.slice(2),p):sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي حاجة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه ${G('وتشتريها','وتشتريها')} من هنا.</div>`}</div>
     <div class="tw-lbl">${G('عايز','عايزة')} ${G('توزّع','توزّعي')} من الأول؟</div>
     <div class="card tr-re"><div class="tw-sm">${who?`${who} ${T0.who==='umsayed'?'بترجّعلك':'بيرجّعلك'} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`:`${G('تقدر ترجّع','تقدري ترجّعي')} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`}</div>
       <button class="btn ghost${TS.conf?' q-cf':''}" id="trRe" ${spent&&h.money>=cost?'':'disabled'}>${TS.conf?G('متأكد؟ رجّع النقط','متأكدة؟ رجّعي النقط'):G('رجّع النقط','رجّعي النقط')} · ${cost} جنيه</button>
@@ -5567,9 +5598,10 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   $('#back').onclick=()=>{SFX.page();S.screen=TS.from&&SCREENS[TS.from]?TS.from:'town';render();view.scrollTop=0};
   view.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{TS.sel=b.dataset.n+b.dataset.i;TS.conf=0;SFX.tick(800+(+b.dataset.i)*120);twRender()});
   const bb=$('#trBuy');if(bb)bb.onclick=()=>treeBuy(k,bb.dataset.b);
-  view.querySelectorAll('[data-lk]').forEach(b=>b.onclick=()=>{TS.sel='L:'+b.dataset.lk;TS.conf=0;SFX.tick(1100);twRender();const i=$('#trInfo');if(i)i.scrollIntoView({block:'nearest',behavior:'smooth'})});
+  view.querySelectorAll('[data-lk]').forEach(b=>b.onclick=()=>{TS.sel='L:'+b.dataset.lk;TS.conf=0;SFX.tick(1100);twRender()});
   const lb=$('#lkBuy');if(lb)lb.onclick=()=>lkBuy(k,lb.dataset.b);
-  view.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{TS.sel='F:'+b.dataset.fk;TS.conf=0;SFX.tick(950);twRender();const i=$('#trInfo');if(i)i.scrollIntoView({block:'nearest',behavior:'smooth'})});
+  view.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{TS.sel='F:'+b.dataset.fk;TS.conf=0;SFX.tick(950);twRender()});
+  view.querySelectorAll('[data-tt]').forEach(b=>b.onclick=()=>{if(TS.tab===b.dataset.tt)return;TS.tab=b.dataset.tt;TS.sel=null;TS.conf=0;SFX.page();render();view.scrollTop=0});
   const fb=$('#fkBuy');if(fb)fb.onclick=()=>fkBuy(k,fb.dataset.b);
   $('#trRe').onclick=()=>treeRespec(k)};
 function treeInfo(h,k,b,i,p){const r=treeRank(h,k,b.id),got=r>i,sp=i===4,need=r===i,cost=i+1;
@@ -5636,6 +5668,14 @@ Object.assign(SFX,{treeUp:W(t=>{[0,7,12].forEach((n,i)=>{const g=eg(t+i*.07,.004
 const lkBr=(k,b)=>TREE[k].br.find(x=>x.id===b).n;
 function lkNeedHTML(h,k,L){if(L.id==='crown')return ['l1','l2'].map(id=>{const o=TREE_LK[k].find(x=>x.id===id);return `<span class="${treeLink(h,k,id)?'ok':''}">${treeLink(h,k,id)?'✓':'○'} ${o.n}</span>`}).join('');
   return L.need.map(([b,r])=>{const ok=treeRank(h,k,b)>=r;return `<span class="${ok?'ok':''}">${ok?'✓':'○'} ${lkBr(k,b)} ${r}</span>`}).join('')}
+/* the tree is split in three tabs (branches, links, forks) so nothing needs a long scroll; a dot marks a tab with something to buy */
+function trTabsHTML(h,k,p){const T0=TREE[k],Ls=TREE_LK[k]||[],D=TREE_FK[k];
+  const brN=T0.br.filter(b=>{const r=treeRank(h,k,b.id);return r<5&&p>=r+1}).length;
+  const lkN=Ls.filter(L=>!treeLink(h,k,L.id)&&lkOk(h,k,L)&&p>=lkCost(L)).length,lkG=Ls.filter(L=>treeLink(h,k,L.id)).length;
+  const fs=D?['f1:a','f1:b','f1:c','f1:ax','f1:bx','f1:cx','f2:a','f2:b','f2:c'].filter(x=>{const [f,sd]=x.split(':');return D[f]&&D[f][sd]}):[];
+  const fkN=fs.filter(x=>fkState(h,k,x,p)==='open').length,F=(h.treeF&&h.treeF[k])||{},fkG=(F.f1?1:0)+(F.f1x?1:0)+(F.f2?1:0);
+  const tb=(id,n,sub,on)=>`<button class="tr-tab${TS.tab===id?' on':''}" data-tt="${id}"><b>${n}</b><small>${sub}</small>${on?'<i></i>':''}</button>`;
+  return `<div class="tr-tabs">${tb('br','الفروع','4 فروع',brN)}${Ls.length?tb('lk','الروابط',`${lkG} من ${Ls.length}`,lkN):''}${fs.length?tb('fk','الطرق',fkG?`${fkG} ${fkG===1?'اختيار':'اختيارات'}`:'لسه',fkN):''}</div>`}
 function lkHTML(h,k,p){const Ls=TREE_LK[k];if(!Ls)return '';
   const nd=L=>{const got=treeLink(h,k,L.id),ok=lkOk(h,k,L),open=!got&&ok&&p>=lkCost(L);
     return `<button class="lk-n${L.id==='crown'?' cr':''}${got?' got':ok?' ok':''}${open?' open':''}${TS.sel==='L:'+L.id?' sel':''}" data-lk="${L.id}"><b>${L.n}</b><span class="nd">${lkNeedHTML(h,k,L)}</span></button>`};
@@ -5674,25 +5714,33 @@ function lkBuy(k,id){const h=S.hero,L=TREE_LK[k].find(x=>x.id===id);if(!h||!L||t
 /* ---------- v5.2 «طريقين»: forks. Pick one side and the other locks (until the tree is reset). Each side has a good part and a price.
    f1 opens with any branch at rank 2, and each side of it has a follow-up (ax/bx); f2 opens once a link is learned.
    h.treeF = {mine:{f1:'a',f1x:1,f2:'b'}, ...}. A side costs 2 points, a follow-up 4. tf(h,k,key) sums the numbers of the chosen nodes. ---------- */
-const CRAFT_F=(a2,b2)=>({
+const CRAFT_F=(a2,b2,c2)=>({
   f1:{q:'شغلك هيبقى إزاي؟',a:{n:'شغل متقن',good:'نتيجة اللعبة بتتحسب أحسن (+8%)',bad:'خبرة الشغلانة أقل (−25%)',fx:{score:.08,xp:-.25}},
-    b:{n:'شغل كتير',good:'خبرة الشغلانة أكتر (+35%)',bad:'نتيجة اللعبة بتتحسب أقل (−5%)',fx:{xp:.35,score:-.05}},ax:a2,bx:b2},
+    b:{n:'شغل كتير',good:'خبرة الشغلانة أكتر (+35%)',bad:'نتيجة اللعبة بتتحسب أقل (−5%)',fx:{xp:.35,score:-.05}},
+    c:{n:'على مهلك',good:'النتيجة أحسن شوية (+4%) والحظ الحلو أكتر (+4%)',bad:'خبرة الشغلانة أقل (−10%)',fx:{score:.04,lucky:.04,xp:-.1}},ax:a2,bx:b2,cx:c2},
   f2:{q:'{تحب|تحبي} الحظ ولا الأمان؟',a:{n:'مقامر',good:'20% الحاجة تطلع درجة أعلى',bad:'15% تنزل درجة',fx:{lucky:.2,unlucky:.15}},
-    b:{n:'أمان',good:'الحاجة عمرها ما تنزل درجة',bad:'الحظ الحلو بييجي أقل (−6%)',fx:{safe:1,lucky:-.06}}}});
+    b:{n:'أمان',good:'الحاجة عمرها ما تنزل درجة',bad:'الحظ الحلو بييجي أقل (−6%)',fx:{safe:1,lucky:-.06}},
+    c:{n:'نص ونص',good:'الحظ الحلو أكتر (+8%)، ونص مرات الحظ الوحش بتعدّي',bad:'خبرة الشغلانة أقل (−10%)',fx:{lucky:.08,halfsafe:.5,xp:-.1}}}});
 const TREE_FK={
   mine:{f1:{q:'{بتكسّر|بتكسّري} الصخر إزاي؟',a:{n:'إيد تقيلة',good:'الضربة القوية بتيجي أكتر (+8%)',bad:'15% الصخرة تاخد 2 مجهود',fx:{crit:.08,cost2:.15}},
       b:{n:'إيد خفيفة',good:'12% الصخرة ما تاخدش مجهود',bad:'الضربة القوية بتيجي أقل (−4%)',fx:{free:.12,crit:-.04}},
-      ax:{n:'زلزال',good:'الضربة القوية ممكن تكسر الصخرة مرة واحدة (15%)',fx:{quake:.15}},bx:{n:'صبر الصخر',good:'أقصى مجهود +3',fx:{effmax:3}}},
+      c:{n:'عين الصنايعي',good:'خبرة التعدين أكتر (+30%)',bad:'الضربة القوية أقل (−3%)',fx:{xp:.3,crit:-.03}},
+      ax:{n:'زلزال',good:'الضربة القوية ممكن تكسر الصخرة مرة واحدة (15%)',fx:{quake:.15}},bx:{n:'صبر الصخر',good:'أقصى مجهود +3',fx:{effmax:3}},
+      cx:{n:'نفَس المعلّم',good:'أقصى مجهود +2، والخامة الأحسن أكتر (+3%)',fx:{effmax:2,ore:.03}}},
     f2:{q:'{بتدوّر|بتدوّري} على إيه؟',a:{n:'دهب الأعماق',good:'الخامة الأحسن بتطلع أكتر (+10%)',bad:'النزلات لتحت أقل (−40%)',fx:{ore:.1,down:-.4}},
-      b:{n:'نزلة على نزلة',good:'النزلات لتحت أكتر (+60%)',bad:'الخامة الأحسن أقل (−4%)',fx:{down:.6,ore:-.04}}}},
+      b:{n:'نزلة على نزلة',good:'النزلات لتحت أكتر (+60%)',bad:'الخامة الأحسن أقل (−4%)',fx:{down:.6,ore:-.04}},
+      c:{n:'صياد الحجارة',good:'الفيروز والزمرد بيطلعوا الضعف',bad:'النزلات لتحت أقل (−20%)',fx:{gem:1,down:-.2}}}},
   fish:{f1:{q:'{بتصطاد|بتصطادي} إزاي؟',a:{n:'صبر',good:'المنطقة الخضرا أكبر (+12%)',bad:'البوري بيطلع أقل',fx:{zone:.12,rare:-.06}},
       b:{n:'طمع',good:'البلطي ممكن يطلع بوري (12%)',bad:'المنطقة الخضرا أصغر (−10%)',fx:{rare:.12,zone:-.1}},
-      ax:{n:'إيد حديد',good:'الصندوق بيظهر أكتر (+50%)',fx:{chest:.5}},bx:{n:'عين الدهب',good:'سمكة الدهب بتطلع الضعف',fx:{gold:1}}},
+      c:{n:'سمع الميّه',good:'الصندوق بيظهر أكتر (+40%)',bad:'المنطقة الخضرا أصغر (−5%)',fx:{chest:.4,zone:-.05}},
+      ax:{n:'إيد حديد',good:'الصندوق بيظهر أكتر (+50%)',fx:{chest:.5}},bx:{n:'عين الدهب',good:'سمكة الدهب بتطلع الضعف',fx:{gold:1}},
+      cx:{n:'حظ الصياد',good:'سمكة الدهب أكتر (+50%) والبوري أكتر شوية',fx:{gold:.5,rare:.05}}},
     f2:{q:'{بتحب|بتحبي} إيه في الترعة؟',a:{n:'رمي كتير',good:'12% الرمية ما تاخدش مجهود',bad:'الصندوق بيظهر أقل (−50%)',fx:{free:.12,chest:-.5}},
-      b:{n:'كنوز الترعة',good:'الصندوق بيظهر أكتر (+80%)',bad:'10% الرمية تاخد 2 مجهود',fx:{chest:.8,cost2:.1}}}},
-  smith:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الحدادة أكتر (+20%)',fx:{xp:.2}}),
-  tailor:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الخياطة أكتر (+20%)',fx:{xp:.2}}),
-  cook:CRAFT_F({n:'نَفَس حلو',good:'كل أكلة بترجّع 1 مجهود زيادة',fx:{food:1}},{n:'سرعة الإيد',good:'خبرة الطبخ أكتر (+20%)',fx:{xp:.2}})};
+      b:{n:'كنوز الترعة',good:'الصندوق بيظهر أكتر (+80%)',bad:'10% الرمية تاخد 2 مجهود',fx:{chest:.8,cost2:.1}},
+      c:{n:'صيد الكبار',good:'السمك الكبير (البياض والتعبان) بيطلع أكتر',bad:'5% الرمية تاخد 2 مجهود',fx:{big:.6,cost2:.05}}}},
+  smith:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الحدادة أكتر (+20%)',fx:{xp:.2}},{n:'نَفَس طويل',good:'نتيجة اللعبة أحسن (+5%)',fx:{score:.05}}),
+  tailor:CRAFT_F({n:'إيد الفنان',good:'10% الحاجة تطلع درجة أعلى',fx:{lucky:.1}},{n:'سرعة الإيد',good:'خبرة الخياطة أكتر (+20%)',fx:{xp:.2}},{n:'نَفَس طويل',good:'نتيجة اللعبة أحسن (+5%)',fx:{score:.05}}),
+  cook:CRAFT_F({n:'نَفَس حلو',good:'كل أكلة بترجّع 1 مجهود زيادة',fx:{food:1}},{n:'سرعة الإيد',good:'خبرة الطبخ أكتر (+20%)',fx:{xp:.2}},{n:'نَفَس طويل',good:'نتيجة اللعبة أحسن (+5%)',fx:{score:.05}})};
 const fkCost=id=>id==='f1x'?4:2;
 function tfOf(h,k){return (h&&h.treeF&&h.treeF[k])||null}
 /* the chosen fork nodes: [{fx}] */
@@ -5710,16 +5758,16 @@ function fkState(h,k,sel,p){const {f,side,x}=fkNode(k,sel),F=tfOf(h,k)||{},open=
   if(F[f]!==side)return F[f]?'lock':'no';if(F.f1x)return 'got';return p>=4?'open':'ok'}
 function fkHTML(h,k,p){const D=TREE_FK[k];if(!D)return '';
   const nd=sel=>{const {N,x}=fkNode(k,sel),st=fkState(h,k,sel,p);
-    return `<button class="fk-n${x?' x':''} ${st}${TS.sel==='F:'+sel?' sel':''}" data-fk="${sel}"><b>${N.n}</b>${x?'':`<small class="g">${N.good}</small><small class="b">${N.bad}</small>`}${st==='lock'?'<span class="lk">اتقفل</span>':''}</button>`};
-  const fork=f=>{const op=fkOpen(h,k,f);return `<div class="card fk"><div class="fk-q">${T(D[f].q)}<small>${op?`${G('اختار','اختاري')} واحد، والتاني هيتقفل`:f==='f1'?'بيفتح لما أي فرع يوصل درجة 2':'بيفتح لما {تتعلم|تتعلمي} رابط'}</small></div>
-    <div class="fk-r">${nd(f+':a')}<span class="fk-or">أو</span>${nd(f+':b')}</div>${f==='f1'?`<div class="fk-r fk-x"><span>${nd('f1:ax')}</span><span class="fk-or"></span><span>${nd('f1:bx')}</span></div>`:''}</div>`};
-  return T(`<div class="tw-lbl">طريقين <small>كل اختيار ليه حلو وليه تمن</small></div>${fork('f1')}${fork('f2')}`)}
-function fkInfo(h,k,sel,p){const {f,side,x,N,D}=fkNode(k,sel),st=fkState(h,k,sel,p),c=x?4:2,other=D[side==='a'?'b':'a'];
+    return `<button class="fk-n${x?' x':''} ${st}${TS.sel==='F:'+sel?' sel':''}" data-fk="${sel}">${x?'<small class="up">بعدها</small>':''}<b>${N.n}</b>${st==='lock'?'<span class="lk">اتقفل</span>':st==='got'?'<span class="lk ok">✓</span>':''}</button>`};
+  const fork=f=>{const op=fkOpen(h,k,f);return `<div class="card fk"><div class="fk-q">${T(D[f].q)}<small>${op?`${G('اختار','اختاري')} واحد، والباقي هيتقفل`:f==='f1'?'بيفتح لما أي فرع يوصل درجة 2':'بيفتح لما {تتعلم|تتعلمي} رابط'}</small></div>
+    <div class="fk-cols">${['a','b','c'].filter(sd=>D[f][sd]).map(sd=>`<div class="fk-o">${nd(f+':'+sd)}${f==='f1'&&D.f1[sd+'x']?`<i class="fk-ln"></i>${nd('f1:'+sd+'x')}`:''}</div>`).join('')}</div></div>`};
+  return T(`<div class="tw-sm tr-sub">كل اختيار ليه حلو وليه تمن، ${G('واختار','واختاري')} واحد بس</div>${fork('f1')}${fork('f2')}`)}
+function fkInfo(h,k,sel,p){const {f,side,x,N,D}=fkNode(k,sel),st=fkState(h,k,sel,p),c=x?4:2,F=tfOf(h,k)||{},others=['a','b','c'].filter(z=>z!==side&&D[z]).map(z=>`«${D[z].n}»`).join(' و');
   let act='';if(st==='got')act=`<div class="tw-miss ok">${G('اخترته','اخترتيه')} ✓</div>`;
-  else if(st==='lock')act=`<div class="tw-miss">اتقفل عشان ${G('اخترت','اخترتي')} «${x?D[side==='a'?'b':'a'].n:other.n}». لو ${G('رجّعت','رجّعتي')} النقط ${G('تقدر','تقدري')} ${G('تختار','تختاري')} من الأول.</div>`;
+  else if(st==='lock')act=`<div class="tw-miss">اتقفل عشان ${G('اخترت','اخترتي')} «${D[F[f]]?D[F[f]].n:''}». لو ${G('رجّعت','رجّعتي')} النقط ${G('تقدر','تقدري')} ${G('تختار','تختاري')} من الأول.</div>`;
   else if(st==='no')act=`<div class="tw-miss">${x?`لازم ${G('تختار','تختاري')} «${D[side].n}» الأول`:f==='f1'?'لازم أي فرع يوصل درجة 2 الأول':'لازم {تتعلم|تتعلمي} رابط الأول'}</div>`;
   else if(st==='ok')act=`<div class="tw-miss">محتاجة ${treeNum(c)}، ومعاك ${p?treeNum(p):'ولا نقطة'}.</div>`;
-  else act=`<button class="btn" id="fkBuy" data-b="${sel}">${G('اختار','اختاري')} ده · ${treeNum(c)}</button>${x?'':`<div class="tw-sm" style="color:#f0a090">«${other.n}» هيتقفل.</div>`}`;
+  else act=`<button class="btn" id="fkBuy" data-b="${sel}">${G('اختار','اختاري')} ده · ${treeNum(c)}</button>${x?'':`<div class="tw-sm" style="color:#f0a090">${others} هيتقفلوا.</div>`}`;
   return T(`<div class="tr-ih"><b>${N.n}</b><span>${x?'بعد الاختيار':'اختيار'} · ب${treeNum(c)}</span></div><div class="tr-iw"><div style="color:#a6e3a0">+ ${N.good}</div>${N.bad?`<div style="color:#f0a090">− ${N.bad}</div>`:''}</div>${act}`)}
 function fkBuy(k,sel){const h=S.hero,{f,side,x,N}=fkNode(k,sel);if(!h||fkState(h,k,sel,treePts(h,k))!=='open')return;
   h.treeF=h.treeF||{};const F=h.treeF[k]=h.treeF[k]||{};if(x)F.f1x=1;else F[f]=side;saveHero();SFX.fanfare();flash(TREE[k].c);vib([20,20,40]);twRender();
@@ -5730,14 +5778,14 @@ function fkBuy(k,sel){const h=S.hero,{f,side,x,N}=fkNode(k,sel);if(!h||fkState(h
     if(un>0&&!Q.lucky&&Q.q>0&&Math.random()<un){Q.q--;Q.unlucky=true}
     if(lu>0&&Q.q<4&&!Q.unlucky&&Math.random()<lu){Q.q++;Q.lucky=true}
     if(lu<0&&Q.lucky&&Math.random()<-lu*4){Q.q--;Q.lucky=false}
-    if(tf(h,at,'safe')&&Q.unlucky){Q.q++;Q.unlucky=false}}return Q}}
+    if(Q.unlucky&&(tf(h,at,'safe')||Math.random()<tf(h,at,'halfsafe'))){Q.q++;Q.unlucky=false}}return Q}}
 {const o=fqEff;fqEff=function(h,key){return Math.max(1,o.apply(this,arguments)+(h?tf(h,'cook','food'):0))}}
 {const lx3=lifeXP;lifeXP=function(h,k,n){let m=n||1;const x=TREE_FK[k]&&h?tf(h,k,'xp'):0;if(x){const v=Math.max(0,m*(1+x));m=Math.floor(v)+(Math.random()<v-Math.floor(v)?1:0);if(m<1&&(n||1)>=1&&Math.random()<.5)m=1}return lx3.call(this,h,k,m)}}
 {const st=document.createElement('style');st.textContent=`
 .fk{display:flex;flex-direction:column;gap:8px;padding:12px 10px;margin-bottom:8px}
 .fk-q{text-align:center;font-weight:800;font-size:15px}.fk-q small{display:block;font-size:12px;color:var(--mute);font-weight:700}
-.fk-r{display:grid;grid-template-columns:1fr 26px 1fr;gap:4px;align-items:stretch}
-.fk-or{align-self:center;text-align:center;font-size:12px;font-weight:800;color:var(--gold2)}
+.fk-o{display:flex;flex-direction:column;gap:4px}.fk-xw{padding-inline-start:26px;position:relative}.fk-xw::before{content:'';position:absolute;inset-inline-start:10px;top:-4px;height:50%;width:12px;border-inline-start:3px solid #ffffff22;border-bottom:3px solid #ffffff22}
+.fk-or{display:block;text-align:center;font-size:12px;font-weight:800;color:var(--gold2);line-height:1.2}
 .fk-n{position:relative;min-height:58px;border-radius:14px;border:2px dashed #ffffff30;background:#0005;color:var(--mute);font:inherit;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;text-align:center}
 .fk-n b{font-size:14px;color:var(--fg,#efe6d2)}
 .fk-n small{font-size:11px;line-height:1.35;font-weight:700}.fk-n small.g{color:#a6e3a0}.fk-n small.b{color:#f0a090}
@@ -5746,9 +5794,24 @@ function fkBuy(k,sel){const h=S.hero,{f,side,x,N}=fkNode(k,sel);if(!h||fkState(h
 .fk-n.got{border-style:solid;border-color:#fff;background:radial-gradient(circle at 50% 30%,#fff3,var(--tc) 85%)}.fk-n.got b{color:#1a1030}.fk-n.got small.g{color:#123a1a}.fk-n.got small.b{color:#5a1a14}
 .fk-n.lock{opacity:.45;filter:grayscale(.8)}
 .fk-n .lk{position:absolute;top:-9px;inset-inline-start:8px;font-size:10.5px;font-weight:800;background:#3a1c18;color:#ffb3a3;border:1px solid #f0a09066;border-radius:8px;padding:0 6px}
-.fk-x .fk-n{min-height:48px}.fk-x>span{display:block}
+.fk-xw .fk-n{min-height:44px}
 .fk-n.sel{outline:3px solid var(--gold2);outline-offset:3px}
 .fk-n.pp{animation:pp .5s}
+.fk-cols{display:flex;gap:6px;align-items:stretch}.fk-cols .fk-o{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:0}
+.fk-ln{display:block;width:3px;height:10px;background:#ffffff26;border-radius:2px;margin:0 auto}
+.fk-n{min-height:60px;padding:8px 4px;justify-content:center}.fk-n b{font-size:13px;line-height:1.35}
+.fk-n.x{min-height:48px;border-radius:12px}.fk-n.x b{font-size:12px}.fk-n .up{font-size:10px;color:var(--mute);font-weight:800}
+.fk-n .lk.ok{background:#1c3a20;color:#a6e3a0;border-color:#a6e3a066}
+.fk .fk-q{margin-bottom:2px}
+.tr-sub{text-align:center;margin:-2px 0 6px}
+.tr-tabs{display:flex;gap:6px;margin:2px 0 8px}
+.tr-tab{flex:1 1 0;min-width:0;min-height:52px;border-radius:14px;border:2px solid #ffffff1f;background:#0005;color:var(--mute);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;position:relative;padding:4px}
+.tr-tab b{font-size:14.5px;color:var(--fg,#efe6d2)}.tr-tab small{font-size:11px;font-weight:700}
+.tr-tab.on{border-color:var(--tc);background:color-mix(in srgb,var(--tc) 22%,#0008)}.tr-tab.on b{color:var(--tc)}
+.tr-tab i{position:absolute;top:6px;inset-inline-end:8px;width:10px;height:10px;border-radius:50%;background:var(--tc);box-shadow:0 0 8px var(--tc);animation:giftPulse 1.6s infinite}
+.tr-info{position:sticky;bottom:8px;z-index:6;background:#1a1530;border:2px solid var(--tc);box-shadow:0 -8px 24px #000a;min-height:0;margin-top:10px}
+.tr-n{width:44px;height:44px}.tr-n.sp{width:50px;height:50px;margin-top:2px}.tr-ln{height:7px!important}.tr-h{min-height:40px}
+.tr-info.empty{border-color:#ffffff22;padding-block:10px}
 `;document.head.appendChild(st)}
 /* ---------- v4.2 «قهوة عم صابر»: a bench where effort comes back 3× faster while you sit, tea, and people talking ---------- */
 /* h.tea = {t0, n}: cups drunk since t0; a new hour (from the first cup) starts again at 10 */
@@ -8882,14 +8945,14 @@ addCards('kafr',[
  {id:'k_beggar',type:'people',stars:0,title:'الراجل الغلبان',teaser:'قاعد على باب السوق وإيده ممدودة',maxStop:5,
   scene:{art:'market',chip:'باب السوق',text:()=>`على باب السوق راجل غلبان قاعد على حصيرة مقطعة، وإيده ممدودة. بصلك بعينين صاحية: «أي حاجة يا {باشا|ست الكل}.. من الصبح ما دقتش لقمة.»`,
    ch:()=>{const k=K_food();return [
-    S.hero.money>=10&&{t:'أدّيله 10 جنيه',res:{tier:'plain',flag:'beggar',money:-10,rep:[8,'{ساعدت|ساعدتي} محتاج'],t:'الراجل مسك إيدك: «ربنا يكرمك. {خد|خدي} بالك.. الجن بيكره <b>الملح</b>. ارمي عليهم ملح يجروا.»',go:'next'}},
-    {t:'أزقه من على الباب',res:{tier:'plain',flag:'beggar',rep:[-8,'{أذيت|أذيتي} واحد غلبان'],t:'الراجل وقع على جنبه، والناس بصت {عليك|عليكي} وسكتت.',go:'next'}},
+    S.hero.money>=10&&{t:'أدّيله 10 جنيه',res:{tier:'plain',flag:'beggar',money:-10,rep:[8,'{ساعدت|ساعدتي} محتاج'],t:'الراجل مسك إيدك: «ربنا يكرمك. {خد|خدي} بالك.. الجن بيكره <b>الملح</b>. ارمي عليهم ملح يجروا.»',follow:'f_beg_gift',go:'next'}},
+    {t:'أزقه من على الباب',res:{tier:'plain',flag:'beggar',rep:[-8,'{أذيت|أذيتي} واحد غلبان'],t:'الراجل وقع على جنبه، والناس بصت {عليك|عليكي} وسكتت.',follow:'f_beg_sons',go:'next'}},
     {t:'أعدّي من غير ما أبصله',res:{tier:'plain',t:'صوته فضل {وراك|وراكي} لحد آخر السوق: «ولا حتى نص رغيف؟»',go:'next'}},
-    k&&{opt:1,t:'أقسم معاه الأكل اللي معايا',sub:K_eat(k),res:{tier:'full',use:k,item:'salt',flag:'beggar',rep:[10,'{قسمت|قسمتي} أكلك مع محتاج'],t:'أكل وعينه بتدمع، وطلّع من جيبه كيس ملح: «{خده|خديه}.. الجن بيكره <b>الملح</b>. ارمي عليهم ملح يجروا.»',go:'next'}},
+    k&&{opt:1,t:'أقسم معاه الأكل اللي معايا',sub:K_eat(k),res:{tier:'full',use:k,item:'salt',flag:'beggar',rep:[10,'{قسمت|قسمتي} أكلك مع محتاج'],t:'أكل وعينه بتدمع، وطلّع من جيبه كيس ملح: «{خده|خديه}.. الجن بيكره <b>الملح</b>. ارمي عليهم ملح يجروا.»',follow:'f_beg_gift',go:'next'}},
     {opt:1,t:'أخطف صحن الفكة اللي قدامه',stat:'خفة',res:{
       full:{ach:'thief',t:'{خطفت|خطفتي} الصحن {ومشيت|ومشيتي} عادي. فيه 7 جنيه فكة وزرار قميص.',money:7,go:'next'},
-      part:{t:'{خطفته|خطفتيه}، بس الراجل صرخ والسوق كله {شافك|شافك}.',money:7,rep:[-15,'{سرقت|سرقتي} واحد غلبان'],go:'next'},
-      fail:{t:'الراجل مسك رجلك وصرخ، والرجالة {لموا عليك|لموا عليكي}. {خدت|خدتي} كام قلم على {قفاك|قفاكي}.',hp:-2,rep:[-15,'{حاولت تسرق|حاولتي تسرقي} واحد غلبان'],go:'next'}}}
+      part:{t:'{خطفته|خطفتيه}، بس الراجل صرخ والسوق كله {شافك|شافك}.',money:7,rep:[-15,'{سرقت|سرقتي} واحد غلبان'],follow:'f_beg_sons',go:'next'},
+      fail:{t:'الراجل مسك رجلك وصرخ، والرجالة {لموا عليك|لموا عليكي}. {خدت|خدتي} كام قلم على {قفاك|قفاكي}.',hp:-2,rep:[-15,'{حاولت تسرق|حاولتي تسرقي} واحد غلبان'],follow:'f_beg_sons',go:'next'}}}
    ].filter(Boolean)}}},
 
  {id:'k_shop',type:'shop',stars:0,title:'دكان عم رمضان',teaser:'جرعات وملح وشمع.. والفصال مسموح',
@@ -9031,29 +9094,29 @@ addCards('kafr',[
   more:{b:{art:'k_room',chip:'جوه البيت',text:()=>`جوه ريحة تراب وعفن، والضلمة تقيلة. في الركن صندوق خشب عليه قفل صدي. والصوت سكت مرة واحدة.. بس حاجة بتتنفس ورا الحيطة.`,
    ch:()=>[
     {t:'أفتح الصندوق',stat:'خفة',adv:!!S.flags.k_quiet,res:{
-      full:{t:'القفل فتح في إيدك. جوه صرة فلوس قديمة وجرعة شفا كبيرة. {خرجت|خرجتي} قبل ما اللي ورا الحيطة يتحرك.',money:45,item:'bigpotion',go:'next'},
-      part:{t:'{خطفت|خطفتي} الصرة.. وإيد ساقعة مسكت رجلك. {شديت|شديتي} نفسك {وجريت|وجريتي}.',money:25,hp:-2,go:'next'},
+      full:{t:'القفل فتح في إيدك. جوه صرة فلوس قديمة وجرعة شفا كبيرة. {خرجت|خرجتي} قبل ما اللي ورا الحيطة يتحرك.',money:45,item:'bigpotion',follow:'f_house_breath',mark:'nf_house',go:'next'},
+      part:{t:'{خطفت|خطفتي} الصرة.. وإيد ساقعة مسكت رجلك. {شديت|شديتي} نفسك {وجريت|وجريتي}.',money:25,hp:-2,follow:'f_house_breath',mark:'nf_house',go:'next'},
       fail:{t:'القفل زيّق بصوت عالي. الأرض فتحت تحت رجلك {ووقعت|ووقعتي} في سرداب ضلمة، وحاجة لمست رقبتك قبل ما {تطلع|تطلعي} جري.',hp:-3,go:'next'}}},
-    {t:'آخد الكوز النحاس اللي على الرف وأخرج',res:{tier:'plain',mats:{copper:2},t:'{خطفت|خطفتي} الكوز {وخرجت|وخرجتي} من غير ما {تبص|تبصي} {وراك|وراكي}. النفس اللي ورا الحيطة فضل ماشي {معاك|معاكي} لحد الباب.',go:'next'}},
+    {t:'آخد الكوز النحاس اللي على الرف وأخرج',res:{tier:'plain',mats:{copper:2},t:'{خطفت|خطفتي} الكوز {وخرجت|وخرجتي} من غير ما {تبص|تبصي} {وراك|وراكي}. النفس اللي ورا الحيطة فضل ماشي {معاك|معاكي} لحد الباب.',follow:'f_house_breath',mark:'nf_house',go:'next'}},
     {t:'أخرج زي ما دخلت',res:{tier:'plain',t:'{رجعت|رجعتي} لورا خطوة خطوة. برة {بصيت|بصيتي} {وراك|وراكي}: الباب اللي كان مرمي على الأرض.. رجع مكانه ومقفول.',go:'next'}}
    ]}}},
 
  {id:'k_thief',type:'fight',stars:1,title:'حرامي السوق',teaser:'«امسك حرامي!» وهو جاي ناحيتك',maxStop:5,
   scene:{art:'market',chip:'السوق',text:()=>`«امسك حرامي!» شاب ملثم بيجري في السوق وفي إيده شنطة ست كبيرة، والست واقعة على الأرض بتصرخ. وهو جاي ناحيتك بالظبط.`,
    ch:()=>[
-    {t:'أقف في وشه',res:{tier:'plain',t:'{وقفت|وقفتي} في نص السكة. الحرامي طلّع مطوة: «{وسّع|وسّعي} أحسنلك!»',fight:[K_THIEF()],go:'next'}},
+    {t:'أقف في وشه',res:{tier:'plain',t:'{وقفت|وقفتي} في نص السكة. الحرامي طلّع مطوة: «{وسّع|وسّعي} أحسنلك!»',fight:[K_THIEF()],follow:{id:'f_thief_lady',why:'عشان {وقفت|وقفتي} في وش حرامي السوق..'},go:'next'}},
     {t:'أمد رجلي وأوقعه',stat:'خفة',res:{
-      full:{t:'الحرامي اتكعبل في رجلك وطار على وشه. {رجّعت|رجّعتي} الشنطة للست، وإدتك 20 جنيه من جواها.',money:20,rep:[8,'{مسكت|مسكتي} حرامي السوق'],go:'next'},
-      part:{t:'وقع، بس شرّحك بالمطوة وهو بيقوم، وساب الشنطة وهرب. الست خدت شنطتها وبتشكرك.',hp:-2,rep:[6,'{رجّعت|رجّعتي} شنطة ست كبيرة'],go:'next'},
+      full:{t:'الحرامي اتكعبل في رجلك وطار على وشه. {رجّعت|رجّعتي} الشنطة للست، وإدتك 20 جنيه من جواها.',money:20,rep:[8,'{مسكت|مسكتي} حرامي السوق'],follow:'f_thief_lady',mark:'nf_thiefCaught',go:'next'},
+      part:{t:'وقع، بس شرّحك بالمطوة وهو بيقوم، وساب الشنطة وهرب. الست خدت شنطتها وبتشكرك.',hp:-2,rep:[6,'{رجّعت|رجّعتي} شنطة ست كبيرة'],follow:'f_thief_lady',go:'next'},
       fail:{t:'نط من فوق رجلك وخبطك بكوعه في بطنك، وضاع في الزحمة.',hp:-1,go:'next'}}},
-    {t:'أوسّعله السكة',res:{tier:'plain',rep:[-3,'{سبت|سبتي} حرامي يعدّي'],t:'{وسّعت|وسّعتي}. الحرامي عدّى زي الريح، والست بصتلك وهي بتعيط.',go:'next'}},
+    {t:'أوسّعله السكة',res:{tier:'plain',rep:[-3,'{سبت|سبتي} حرامي يعدّي'],t:'{وسّعت|وسّعتي}. الحرامي عدّى زي الريح، والست بصتلك وهي بتعيط.',follow:'f_thief_job',go:'next'}},
     {opt:1,t:'أجري وراه',stat:'تحمّل',res:{
-      full:{t:'{جريت|جريتي} وراه لحد الكوبري {ومسكته|ومسكتيه} من قفاه. السوق كله صقف، والست إدتك 25 جنيه.',money:25,rep:[8,'{مسكت|مسكتي} حرامي السوق'],go:'next'},
+      full:{t:'{جريت|جريتي} وراه لحد الكوبري {ومسكته|ومسكتيه} من قفاه. السوق كله صقف، والست إدتك 25 جنيه.',money:25,rep:[8,'{مسكت|مسكتي} حرامي السوق'],follow:'f_thief_lady',mark:'nf_thiefCaught',go:'next'},
       part:{t:'{لحقته|لحقتيه} عند الكوبري، بس رمى الشنطة في الترعة ونط وراها. {تعبت|تعبتي} على الفاضي.',energy:-1,go:'next'},
       fail:{t:'دخل في حواري {ما تعرفهاش|ما تعرفيهاش}، {وتهت|وتهتي} لحد ما {رجليك|رجليكي} ما بقتش {شايلاك|شايلاكي}.',energy:-1,hp:-1,go:'next'}}},
     {opt:1,t:'أعرض عليه نص نص',stat:'حضور',res:{
-      full:{t:'الحرامي ضحك ورمالك 30 جنيه من الشنطة وهو بيجري. الست شافتك.',money:30,rep:[-10,'{شاركت|شاركتي} حرامي'],go:'next'},
-      part:{t:'رمالك 15 جنيه بس: «ده نصيبك يا {شريكي|شريكتي}.» والست شافت كل حاجة.',money:15,rep:[-10,'{شاركت|شاركتي} حرامي'],go:'next'},
+      full:{t:'الحرامي ضحك ورمالك 30 جنيه من الشنطة وهو بيجري. الست شافتك.',money:30,rep:[-10,'{شاركت|شاركتي} حرامي'],follow:{id:'f_thief_job',why:'عشان {شاركت|شاركتي} حرامي السوق..'},go:'next'},
+      part:{t:'رمالك 15 جنيه بس: «ده نصيبك يا {شريكي|شريكتي}.» والست شافت كل حاجة.',money:15,rep:[-10,'{شاركت|شاركتي} حرامي'],follow:{id:'f_thief_job',why:'عشان {شاركت|شاركتي} حرامي السوق..'},go:'next'},
       fail:{t:'«نص نص؟ ده انا اللي جريت!» وهجم {عليك|عليكي} بالمطوة.',rep:[-5,'{حاولت تشارك|حاولتي تشاركي} حرامي'],fight:[K_THIEF()],go:'next'}}}
    ]}},
 
@@ -9410,20 +9473,20 @@ addCards('kafr',[
  {id:'k_grave',type:'trade',stars:1,title:'عم مرسي التُربي',teaser:'بيبيع حاجات طالعة من التُرب',minStop:6,
   scene:{art:'k_graves',chip:'طرف الجبانة',onEnter:()=>K_snd('whisper'),text:()=>`على طرف الجبانة، عم مرسي التُربي قاعد على قبر قديم وقدامه منديل مفرود: خاتم، ومشط عضم، وحلق صغير. «حاجات الأموات ما بتنفعهمش. {اختار|اختاري} برخص التراب.» وجنبه قبر لسه مفتوح.`,
    ch:()=>{const k=K_food();return [
-    S.hero.money>=20&&{t:'أشتري الخاتم (20 جنيه)',res:{tier:'plain',money:-20,mats:{copper:3},rep:[-4,'{اشتريت|اشتريتي} حاجة من قبر'],t:'الخاتم تقيل وساقع، ومحفور جواه اسم ست ممسوح. عم مرسي غمزلك: «نحاس صافي.»',go:'next'}},
+    S.hero.money>=20&&{t:'أشتري الخاتم (20 جنيه)',res:{tier:'plain',money:-20,mats:{copper:3},rep:[-4,'{اشتريت|اشتريتي} حاجة من قبر'],t:'الخاتم تقيل وساقع، ومحفور جواه اسم ست ممسوح. عم مرسي غمزلك: «نحاس صافي.»',follow:'f_grave_lady',go:'next'}},
     {t:'أخليه يرجّع الحاجات للقبر',stat:'حضور',res:{
       full:{t:'عم مرسي بلع ريقه ورجّع الحاجات في القبر المفتوح، {وانت واقف|وانتي واقفة} فوق راسه لحد ما ردم آخر حفنة.',xp:2,rep:[8,'{رجّعت|رجّعتي} حق الأموات'],go:'next'},
       part:{t:'رجّع المشط والحلق، والخاتم «وقع» في جيبه. {سبته|سبتيه}.. المهم الباقي رجع.',xp:1,rep:[4,'{رجّعت|رجّعتي} حق الأموات'],go:'next'},
       fail:{t:'«{انت|انتي} مين عشان {تحاسبني|تحاسبيني}؟» ورمى في وشك حفنة تراب من القبر. عينك ولعت.',hp:-1,energy:-1,go:'next'}}},
     {t:'أمشي من غير ما ألمس حاجة',res:{tier:'plain',t:'«محدش بيرفض هدية الأموات..» قالها {وانت ماشي|وانتي ماشية}، وضحك ضحكة ناشفة.',go:'next'}},
-    k&&{opt:1,t:'أبادله الأكل اللي معايا بالحلق',sub:K_eat(k),res:{tier:'plain',use:k,mats:{copper:2},rep:[-2,'{بادلت|بادلتي} على حاجة من قبر'],t:'خطف الأكل وكله وهو قاعد على القبر. الحلق صغير.. حلق عيلة.',go:'next'}},
+    k&&{opt:1,t:'أبادله الأكل اللي معايا بالحلق',sub:K_eat(k),res:{tier:'plain',use:k,mats:{copper:2},rep:[-2,'{بادلت|بادلتي} على حاجة من قبر'],t:'خطف الأكل وكله وهو قاعد على القبر. الحلق صغير.. حلق عيلة.',follow:'f_grave_lady',go:'next'}},
     {opt:1,t:'أهدده أقول للعمدة لو ما دفعش',stat:'حضور',res:{
       full:{t:'وشه اصفر، وطلّع من تحت الحجر 35 جنيه: «{خد|خدي} وما {شفتنيش|شفتينيش}.»',money:35,rep:[-4,'{ابتزّيت|ابتزّيتي} التُربي'],go:'next'},
       part:{t:'رمالك 15 جنيه: «ده اللي فيه النصيب.»',money:15,rep:[-4,'{ابتزّيت|ابتزّيتي} التُربي'],go:'next'},
       fail:{t:'رفع الفاس: «العمدة بيشتري مني!» وضرب الفاس في الأرض جنب رجلك.',hp:-1,go:'next'}}},
     {opt:1,t:'أنبش القبر المفتوح بنفسي',stat:'خفة',res:{
-      full:{t:'{مدّيت|مدّيتي} إيدك في الطين البارد {ولقيت|ولقيتي} صرة فيها 45 جنيه.. وإيد ناشفة لسه ماسكة فيها.',money:45,rep:[-10,'{نبشت|نبشتي} قبر'],go:'next'},
-      part:{t:'{طلّعت|طلّعتي} 20 جنيه، وحاجة جوه القبر عضت صباعك.',money:20,hp:-2,rep:[-10,'{نبشت|نبشتي} قبر'],go:'next'},
+      full:{t:'{مدّيت|مدّيتي} إيدك في الطين البارد {ولقيت|ولقيتي} صرة فيها 45 جنيه.. وإيد ناشفة لسه ماسكة فيها.',money:45,rep:[-10,'{نبشت|نبشتي} قبر'],follow:'f_grave_lady',go:'next'},
+      part:{t:'{طلّعت|طلّعتي} 20 جنيه، وحاجة جوه القبر عضت صباعك.',money:20,hp:-2,rep:[-10,'{نبشت|نبشتي} قبر'],follow:'f_grave_lady',go:'next'},
       fail:{t:'الطين انهار {ووقعت|ووقعتي} في القبر لحد وسطك. عم مرسي طلّعك وهو بيضحك.',hp:-2,rep:[-8,'{نزلت|نزلتي} قبر عشان فلوس'],go:'next'}}}
    ].filter(Boolean)}}},
 
@@ -9706,17 +9769,17 @@ addCards('ghitan',[
    ch:()=>[
     {t:'«البقرة دي مش بتاعتكم.»',sub:'قتال مع الاتنين',res:{tier:'plain',t:'الحرامي الكبير ضحك: «بقت بتاعتنا.» والاتنين فتحوا المطاوي.',fight:G_THIEVES(),go:'next'}},
     {t:'أطلب نصيبي عشان أسكت',stat:'حضور',res:{
-      full:{t:'الحرامي ضحك وحط في إيدك 40 جنيه: «{انت|انتي} مننا بقى.»',money:40,rep:[-10,'{شاركت|شاركتي} حرامية'],go:'next'},
-      part:{t:'رمالك 15 جنيه في الطين: «{خد|خدي} دول {وغور|وغوري}.»',money:15,rep:[-8,'{شاركت|شاركتي} حرامية'],go:'next'},
+      full:{t:'الحرامي ضحك وحط في إيدك 40 جنيه: «{انت|انتي} مننا بقى.»',money:40,rep:[-10,'{شاركت|شاركتي} حرامية'],follow:'f_cow_catch',go:'next'},
+      part:{t:'رمالك 15 جنيه في الطين: «{خد|خدي} دول {وغور|وغوري}.»',money:15,rep:[-8,'{شاركت|شاركتي} حرامية'],follow:'f_cow_catch',go:'next'},
       fail:{t:'«نصيب؟! ده {انت|انتي} اللي {هتدفع|هتدفعي}.» وهجموا.',fight:G_THIEVES(),go:'next'}}},
     {t:'«ما شفتش حاجة.» وأكمل',ghost:1,res:{tier:'plain',t:'{عديت|عديتي} من جنبهم وعينك في الأرض. البقرة فضلت تخور ورا ضهرك لحد ما الصوت بعد.',go:'next'}},
     {t:'أزعق: «أبو رجل مسلوخة وراكم!»',stat:'حضور',opt:1,res:{
-      full:{t:'الاتنين بصوا وراهم، ورموا الحبل وجريوا يصرخوا. {رجّعت|رجّعتي} البقرة لأول دار، وصاحبها {إداك|إداكي} 30 جنيه.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],go:'next'},
+      full:{t:'الاتنين بصوا وراهم، ورموا الحبل وجريوا يصرخوا. {رجّعت|رجّعتي} البقرة لأول دار، وصاحبها {إداك|إداكي} 30 جنيه.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],follow:'f_cow_feast',go:'next'},
       part:{t:'واحد جري، والتاني فهم اللعبة.',fight:G_THIEVES(1),go:'next'},
       fail:{t:'«أبو رجل مسلوخة؟ إحنا أبو رجل مسلوخة يا {حلو|حلوة}.» وهجموا.',fight:G_THIEVES(),go:'next'}}},
-    G_cls('حرامي')&&{t:'أفك حبل البقرة من غير ما ياخدوا بالهم',sub:'عشان {انت حرامي|انتي حرامية} أصلاً',opt:1,res:{tier:'full',t:'{فكيت|فكيتي} الحبل وهما بيتكلموا، والبقرة مشيت {معاك|معاكي} زي الحمل. صاحبها {إداك|إداكي} 30 جنيه، والحرامية لسه بيدوّروا.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],go:'next'}},
+    G_cls('حرامي')&&{t:'أفك حبل البقرة من غير ما ياخدوا بالهم',sub:'عشان {انت حرامي|انتي حرامية} أصلاً',opt:1,res:{tier:'full',t:'{فكيت|فكيتي} الحبل وهما بيتكلموا، والبقرة مشيت {معاك|معاكي} زي الحمل. صاحبها {إداك|إداكي} 30 جنيه، والحرامية لسه بيدوّروا.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],follow:'f_cow_feast',go:'next'}},
     {t:'أرمي طوبة وأشاور: «الغفير جاي!»',stat:'ذكاء',opt:1,res:{
-      full:{t:'الطوبة خبطت في الضلمة زي صوت رجلين. الاتنين سابوا البقرة وطاروا. صاحبها {إداك|إداكي} 30 جنيه.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],go:'next'},
+      full:{t:'الطوبة خبطت في الضلمة زي صوت رجلين. الاتنين سابوا البقرة وطاروا. صاحبها {إداك|إداكي} 30 جنيه.',money:30,rep:[8,'{رجّعت|رجّعتي} بقرة مسروقة'],follow:'f_cow_feast',go:'next'},
       part:{t:'الصغير صدق وجري. الكبير لف {عليك|عليكي} بالمطوة.',fight:G_THIEVES(1),go:'next'},
       fail:{t:'الطوبة وقعت جنب رجلك. الحرامي ضحك: «غفير مين يا {حبيبي|حبيبتي}؟»',fight:G_THIEVES(),go:'next'}}}
    ].filter(Boolean)}},
@@ -9893,8 +9956,8 @@ addCards('ghitan',[
       fail:{t:'جنب الحفرة هبط {ووقعت|ووقعتي} جوه والتراب فوقك. رجب طلّعك بالعافية.',hp:-3,go:'next'}}},
     {t:'«ده دجل.» وأمشي',ghost:1,res:{tier:'plain',t:'رجب ما ردش. فضل يحفر ويكلم نفسه. {بعدت|بعدتي}، وصوت الفاس لسه في ودانك.',go:'next'}},
     {t:'أستنى الكنز يطلع وأخطفه',stat:'قوة',opt:1,res:{
-      full:{t:'أول ما الجرة طلعت، {خطفتها|خطفتيها} {وزقيته|وزقيتيه} في الحفرة. 70 جنيه قديمة.. وصوته بيصرخ من تحت.',money:70,rep:[-15,'{سرقت|سرقتي} راجل غلبان'],go:'next'},
-      part:{t:'{خطفت|خطفتي} نص الفلوس، ورجب نزل على كتفك بضهر الفاس.',money:35,hp:-2,rep:[-12,'{سرقت|سرقتي} راجل غلبان'],go:'next'},
+      full:{t:'أول ما الجرة طلعت، {خطفتها|خطفتيها} {وزقيته|وزقيتيه} في الحفرة. 70 جنيه قديمة.. وصوته بيصرخ من تحت.',money:70,rep:[-15,'{سرقت|سرقتي} راجل غلبان'],follow:'f_ragab_pit',go:'next'},
+      part:{t:'{خطفت|خطفتي} نص الفلوس، ورجب نزل على كتفك بضهر الفاس.',money:35,hp:-2,rep:[-12,'{سرقت|سرقتي} راجل غلبان'],follow:'f_ragab_pit',go:'next'},
       fail:{t:'رجب طلع أسرع منك. الفاس جه في كتفك.',hp:-3,rep:[-8,'{حاولت تسرق|حاولتي تسرقي} راجل غلبان'],go:'next'}}},
     G_salt()&&{t:'أرش ملح في الحفرة عشان الرصد يمشي',sub:'هتستعمل كيس ملح',opt:1,res:{tier:'full',use:'salt',t:'الحفرة طلّعت دخان أسود وصوت زي الأنين، وبعدين الأرض لانت. رجب طلّع جرة فلوس {وإداك|وإداكي} نصها وهو بيبوس إيدك.',money:45,go:'next'}},
     G_cls('ساحر')&&{t:'أفك الرصد بسحري',sub:'عشان {انت ساحر|انتي ساحرة}',opt:1,res:{tier:'full',t:'الحفرة نوّرت أزرق، والجرة طلعت لوحدها زي ما تكون حد زقها من تحت. رجب ادّالك نصها وهو مش مصدق.',money:40,xp:1,go:'next'}}
@@ -10907,8 +10970,8 @@ addCards('tera',[
     S.hero.money>=30&&{t:'أديله 30 جنيه كمان',res:{tier:'full',t:'حط الفلوس في جيبه وشد الحبل. وعلى الشط قالك: «جدك سمع اسمه هنا وما ردش.. وعشان كده عاش. {اعمل|اعملي} زيه.»',money:-30,flag:'warned',xp:2,go:'next'}},
     {t:'أنقّط له دم من صباعي',sub:'الدم بيسد الدين',res:{tier:'part',t:'جرح صباعك بموس ونقّط الدم في المية، والخربشة سكتت. «دلوقتي المية {عرفاك|عرفاكي}.. ومش هتغلط {فيك|فيكي}.»',hp:-3,flag:'warned',xp:2,go:'next'}},
     {t:'أزقه في المية وآخد الحبل',stat:'قوة',res:{
-      full:{t:'{زقيته|زقيتيه} {وشديت|وشديتي} الحبل لوحدك، والمية بلعته من غير صوت. على الشط {لقيت|لقيتي} علبة فلوسه: <b>50 جنيه</b>.',money:50,rep:[-18,'{زقيت|زقيتي} راجل عجوز في الترعة'],go:'next'},
-      part:{t:'مسك في رجلك وهو بيقع، ووقعتوا انتوا الاتنين. {طلعت|طلعتي} لوحدك.. وهو لأ.',hp:-3,rep:[-15,'{زقيت|زقيتي} راجل عجوز في الترعة'],go:'next'},
+      full:{t:'{زقيته|زقيتيه} {وشديت|وشديتي} الحبل لوحدك، والمية بلعته من غير صوت. على الشط {لقيت|لقيتي} علبة فلوسه: <b>50 جنيه</b>.',money:50,rep:[-18,'{زقيت|زقيتي} راجل عجوز في الترعة'],follow:'f_ferry_ghost',mark:'nf_ferry',go:'next'},
+      part:{t:'مسك في رجلك وهو بيقع، ووقعتوا انتوا الاتنين. {طلعت|طلعتي} لوحدك.. وهو لأ.',hp:-3,rep:[-15,'{زقيت|زقيتي} راجل عجوز في الترعة'],follow:'f_ferry_ghost',mark:'nf_ferry',go:'next'},
       fail:{t:'عم بيومي ما اتهزش، كأنه متسمّر في الخشب. هو اللي زقك {ووقعت|ووقعتي} في المية.',hp:-3,rep:[-8,'{حاولت تزق|حاولتي تزقي} راجل عجوز'],go:'next'}}},
     {t:'أنط وأكمل عوم',res:{tier:'part',t:'{نطيت|نطيتي} في المية السودا. حاجات لمست {رجليك|رجليكي} مرتين قبل ما {توصل|توصلي} الشط.',hp:-2,energy:-1,go:'next'}}
    ].filter(Boolean)}}},
@@ -11962,14 +12025,14 @@ addCards('p_garden',[
   scene:{chip:'جنب سور السراية',onEnter:()=>PJ_snd('clank'),text:()=>`جنب سور السراية حفرة كبيرة، وحواليها تلات رجالة بيحفروا على نور فانوس، وريحة لحمة مشوية طالعة من نار صغيرة. المعلم صبري مسح عرقه وبصلك: «{جاي|جاية} تشتغل ولا {جاي|جاية} تتفرج؟»`,
    ch:()=>[
     {t:'أشتغل معاهم شوية',stat:'قوة',res:{
-      full:{t:'{حفرت|حفرتي} لحد ما الكوريك خبط في حاجة حديد. المعلم صبري {إداك|إداكي} نصيبك وحتة حديد: «{انت|انتي} مننا من النهارده.»',money:40,mats:{iron:1},flag:'j_pal',go:'next'},
-      part:{t:'{حفرت|حفرتي} لحد ما ضهرك اتقطم. المعلم {إداك|إداكي} 20 جنيه وهو بيضحك.',money:20,hp:-2,flag:'j_pal',go:'next'},
+      full:{t:'{حفرت|حفرتي} لحد ما الكوريك خبط في حاجة حديد. المعلم صبري {إداك|إداكي} نصيبك وحتة حديد: «{انت|انتي} مننا من النهارده.»',money:40,mats:{iron:1},flag:'j_pal',follow:'f_jdig_offer',go:'next'},
+      part:{t:'{حفرت|حفرتي} لحد ما ضهرك اتقطم. المعلم {إداك|إداكي} 20 جنيه وهو بيضحك.',money:20,hp:-2,flag:'j_pal',follow:'f_jdig_offer',go:'next'},
       fail:{t:'الكوريك نزل على رجلك بدل الأرض. الرجالة ضحكوا، والمعلم صبري قالك: «{روّح|روّحي} يا {حبيبي|حبيبتي}.»',hp:-4,go:'next'}}},
-    {t:'أقعد آكل معاهم لقمة',flag:'j_pal',res:{tier:'plain',flag:'p_meat',xp:1,t:'إدّولك رغيف ولحمة من على النار. {كلت|كلتي}، {وخبيت|وخبيتي} عضمة كبيرة في هدومك. المعلم صبري ضحك: «للكلب؟ {شاطر|شاطرة}.»',go:'next'}},
+    {t:'أقعد آكل معاهم لقمة',flag:'j_pal',res:{tier:'plain',flag:'p_meat',xp:1,t:'إدّولك رغيف ولحمة من على النار. {كلت|كلتي}، {وخبيت|وخبيتي} عضمة كبيرة في هدومك. المعلم صبري ضحك: «للكلب؟ {شاطر|شاطرة}.»',follow:{id:'f_jdig_offer',why:'عشان {كلت|كلتي} عيش وملح مع الحفارين..'},go:'next'}},
     {t:'أقولهم سلام وأمشي',res:{tier:'plain',t:'المعلم صبري رجع للحفرة: «لو {شفت|شفتي} الكلب الأسود، {قوله|قوليله} احنا مالناش دعوة.»',go:'next'}},
     {opt:1,t:'أسرق من عدتهم',stat:'خفة',res:{
-      full:{ach:'thief',t:'{شديت|شديتي} الفانوس ولفة حديد من جنب الحفرة وهما مدفونين في الشغل. النار بقت {معاك|معاكي}.',flag:'j_fire',mats:{iron:2},go:'next'},
-      part:{t:'{خطفت|خطفتي} حتة حديد، بس واحد شافك وزعق.',mats:{iron:1},rep:[-6,'{سرقت|سرقتي} الحفارين'],go:'next'},
+      full:{ach:'thief',t:'{شديت|شديتي} الفانوس ولفة حديد من جنب الحفرة وهما مدفونين في الشغل. النار بقت {معاك|معاكي}.',flag:'j_fire',mats:{iron:2},follow:'f_jdig_ambush',go:'next'},
+      part:{t:'{خطفت|خطفتي} حتة حديد، بس واحد شافك وزعق.',mats:{iron:1},rep:[-6,'{سرقت|سرقتي} الحفارين'],follow:'f_jdig_ambush',go:'next'},
       fail:{t:'المعلم صبري مسك إيدك: «{بتسرق|بتسرقي} الحرامية؟!» ورفع الكوريك.',fight:[PJ_CHIEF(),PJ_DIG()],go:'next'}}},
     {opt:1,t:'أطردهم من السراية',sub:'دي مش أرضهم',res:{tier:'plain',rep:[5,'{وقفت|وقفتي} قدام حرامية الكنوز'],t:'«السراية دي مش بتاعتكم.» المعلم صبري ضحك وشاور لرجالته.',fight:[PJ_CHIEF(),PJ_DIG()],go:'next'}},
     S.flags.p_key&&{opt:1,t:'أبيعلهم مفتاح الباب الورّاني',sub:'المفتاح هيروح منك',res:()=>{S.flags.p_key=0;return {tier:'fail',money:80,rep:[-5,'{بعت|بعتي} مفتاح السراية للحرامية'],t:'المعلم صبري قلّب المفتاح في إيده وعينه لمعت، وعدّلك 80 جنيه: «ده يسوى أكتر.. بس ماشي.»',go:'next'}}}
@@ -12056,11 +12119,11 @@ addCards('p_garden',[
   scene:{chip:'تحت النخلة العالية',text:()=>`تحت نخلة عالية ولدين بيضحكوا، وفوقها واد تالت حاضن الجريد وبيصرخ: «نزّلوني!» جايين على رهان: مين يبات في جنينة الباشا. حاجة جريت ورا حمادة من الحشيش، فطلع النخلة من الخضة.`,
    ch:()=>{const k=PJ_food();return [
     {t:'أطلع أنزّل حمادة',stat:'خفة',res:{
-      full:{t:'{طلعت|طلعتي} النخلة {ونزّلته|ونزّلتيه} على ضهرك. حمادة باس راسك، والعيال {إدوك|إدوكي} فلوس الرهان كلها.',money:20,rep:[6,'{نزّلت|نزّلتي} عيل من فوق نخلة'],xp:2,go:'next'},
-      part:{t:'{نزّلته|نزّلتيه}، بس الجريد شق دراعك.',hp:-2,rep:[5,'{نزّلت|نزّلتي} عيل من فوق نخلة'],go:'next'},
-      fail:{t:'الجريد اتكسر ووقعتوا انتوا الاتنين في الشوك. حمادة بخير.. {انت|انتي} لأ.',hp:-4,rep:[4,'{نزّلت|نزّلتي} عيل من فوق نخلة'],go:'next'}}},
+      full:{t:'{طلعت|طلعتي} النخلة {ونزّلته|ونزّلتيه} على ضهرك. حمادة باس راسك، والعيال {إدوك|إدوكي} فلوس الرهان كلها.',money:20,rep:[6,'{نزّلت|نزّلتي} عيل من فوق نخلة'],xp:2,follow:'f_kids_dad',go:'next'},
+      part:{t:'{نزّلته|نزّلتيه}، بس الجريد شق دراعك.',hp:-2,rep:[5,'{نزّلت|نزّلتي} عيل من فوق نخلة'],follow:'f_kids_dad',go:'next'},
+      fail:{t:'الجريد اتكسر ووقعتوا انتوا الاتنين في الشوك. حمادة بخير.. {انت|انتي} لأ.',hp:-4,rep:[4,'{نزّلت|نزّلتي} عيل من فوق نخلة'],follow:'f_kids_dad',go:'next'}}},
     {t:'أخوّفهم عشان يروّحوا',stat:'حضور',res:{
-      full:{t:'{حكيتلهم|حكيتيلهم} عن الكلب الأسود اللي بيرجع كل سبعين سنة. حمادة نط من النخلة لوحده، والتلاتة جريوا على البلد من غير ما يبصوا وراهم.',rep:[4,'{رجّعت|رجّعتي} عيال البلد بيوتهم'],xp:2,go:'next'},
+      full:{t:'{حكيتلهم|حكيتيلهم} عن الكلب الأسود اللي بيرجع كل سبعين سنة. حمادة نط من النخلة لوحده، والتلاتة جريوا على البلد من غير ما يبصوا وراهم.',rep:[4,'{رجّعت|رجّعتي} عيال البلد بيوتهم'],xp:2,follow:'f_kids_dad',go:'next'},
       part:{t:'الولدين جريوا وسابوا حمادة فوق. {نزّلته|نزّلتيه} {وزقيته|وزقيتيه} وراهم.',xp:1,go:'next'},
       fail:{t:'«احنا مش عيال!» والتلاتة ضحكوا {عليك|عليكي}. هيباتوا هنا.. ربنا يستر.',go:'next'}}},
     {t:'أسيبهم في رهانهم',res:{tier:'plain',t:'{مشيت|مشيتي}، وصوت حمادة فضل يصرخ {وراك|وراكي}: «يا {عم|أبلة}! يا..»',go:'next'}},
@@ -12459,8 +12522,8 @@ addCards('p_palace',[
    ch:()=>[
     {t:'آخد علبة المزيكا',sub:'حاجة بتاعتها.. يمكن تلزم',res:()=>{PQ_snd('q_box');return {tier:'plain',flag:'q_box',t:'{لفّيت|لفّيتي} المفتاح الصغير، والراقصة لفّت على لحن حزين. في السراية كلها البيانو سكت.. كأنه بيسمع. {حطيتها|حطيتيها} في شنطتك.',go:'next'}}},
     {t:'أفتح علبة المجوهرات',stat:'خفة',res:{
-      full:{ach:'thief',t:'عقد لولي وحلق دهب. {خبيتهم|خبيتيهم} في هدومك، وورا ضهرك المخدة اتنفضت.',money:80,go:'next'},
-      part:{t:'{خطفت|خطفتي} الحلق بس، والعلبة قفلت على صوابعك زي البُق.',money:35,hp:-3,go:'next'},
+      full:{ach:'thief',t:'عقد لولي وحلق دهب. {خبيتهم|خبيتيهم} في هدومك، وورا ضهرك المخدة اتنفضت.',money:80,follow:'f_jewel_maid',mark:'nf_jewel',go:'next'},
+      part:{t:'{خطفت|خطفتي} الحلق بس، والعلبة قفلت على صوابعك زي البُق.',money:35,hp:-3,follow:'f_jewel_maid',mark:'nf_jewel',go:'next'},
       fail:{t:'العلبة فاضية.. إلا من صرخة ست طلعت منها في ودنك. {وقعت|وقعتي} على ركبك وودانك بتصفّر.',hp:-3,go:'next'}}},
     {t:'أسيب كل حاجة مكانها',res:{tier:'plain',t:'{خرجت|خرجتي} من غير ما {تلمس|تلمسي} حاجة. {وانت خارج|وانتي خارجة}، المخدة اتعدلت لوحدها.',go:'next'}},
     {opt:1,t:'أريّح دقيقتين على السرير',res:()=>({tier:'plain',heal:PQ_rest(.25),t:'{غفيت|غفيتي} دقيقتين، {وصحيت|وصحيتي} على إيد ساقعة بتلعب في شعرك وصوت ست بيهمس: «نام يا حبيبي.» {قمت مخضوض|قمتي مخضوضة}، بس جسمك ارتاح.',go:'next'})},
@@ -12569,15 +12632,15 @@ addCards('p_palace',[
  {id:'q_wounded',type:'trade',stars:0,title:'حمادة الجريح',teaser:'واحد من صيادين الكنوز.. بينزف',
   scene:{art:'q_corr',chip:'الطرقة',text:()=>`شاب ساند ضهره على الحيطة، ورجله ملفوفة بقماشة غرقانة دم، وجنبه كوريك وشنطة. «أنا حمادة.. المعلم صبحي سابني هنا لما الهانم طلعتلنا.» ومد إيده: «فيه حاجة توقف الدم؟»`,
    ch:()=>{const k=PQ_food();return [
-    PQ_pot()&&{t:'أديله جرعة شفا',sub:'{هتستعمل|هتستعملي} جرعة شفا',res:{tier:'full',use:'potion',rep:[8,'{ساعدت|ساعدتي} واحد بينزف'],mats:{iron:2},money:35,t:'شرب الجرعة والدم وقف. فتح الشنطة: «{خد|خدي} اللي {عايزه|عايزاه}، أنا مش راجع هنا تاني.»',go:'next'}},
+    PQ_pot()&&{t:'أديله جرعة شفا',sub:'{هتستعمل|هتستعملي} جرعة شفا',res:{tier:'full',use:'potion',rep:[8,'{ساعدت|ساعدتي} واحد بينزف'],mats:{iron:2},money:35,t:'شرب الجرعة والدم وقف. فتح الشنطة: «{خد|خدي} اللي {عايزه|عايزاه}، أنا مش راجع هنا تاني.»',follow:'f_hamada_back',go:'next'}},
     {t:'أربطله رجله كويس',stat:'حكمة',res:{
-      full:{t:'{ربطتها|ربطتيها} صح والدم وقف. حمادة {إداك|إداكي} كيس ملح من شنطته: «ده اللي نفعنا هنا.»',item:'salt',rep:[6,'{ساعدت|ساعدتي} واحد بينزف'],xp:1,go:'next'},
-      part:{t:'الدم قلّ. حمادة شكرك وقام يعرج ناحية الباب.',rep:[4,'{ساعدت|ساعدتي} واحد بينزف'],go:'next'},
+      full:{t:'{ربطتها|ربطتيها} صح والدم وقف. حمادة {إداك|إداكي} كيس ملح من شنطته: «ده اللي نفعنا هنا.»',item:'salt',rep:[6,'{ساعدت|ساعدتي} واحد بينزف'],xp:1,follow:'f_hamada_back',go:'next'},
+      part:{t:'الدم قلّ. حمادة شكرك وقام يعرج ناحية الباب.',rep:[4,'{ساعدت|ساعدتي} واحد بينزف'],follow:'f_hamada_back',go:'next'},
       fail:{t:'{شديت|شديتي} الرباط جامد، وحمادة صرخ وزقك في صدرك.',hp:-2,go:'next'}}},
     {t:'أسيبه وأكمّل',res:{tier:'plain',rep:[-3,'{سبت|سبتي} واحد بينزف'],t:'«{استنى|استني}!..» صوته فضل ورا ضهرك شوية، وبعدين سكت.',go:'next'}},
-    {opt:1,t:'آخد شنطته وأمشي',res:()=>({tier:'fail',money:35,mats:{iron:2},rep:[-15,'{سرقت|سرقتي} واحد بينزف'],t:`{شديت|شديتي} الشنطة من جنبه وهو مش قادر يقوم، و${PQ_cp()} ${CG('بص في الأرض','بصت في الأرض')}. عياطه فضل ورا ضهرك لحد آخر الطرقة.`,go:'next'})},
+    {opt:1,t:'آخد شنطته وأمشي',res:()=>({tier:'fail',money:35,mats:{iron:2},rep:[-15,'{سرقت|سرقتي} واحد بينزف'],t:`{شديت|شديتي} الشنطة من جنبه وهو مش قادر يقوم، و${PQ_cp()} ${CG('بص في الأرض','بصت في الأرض')}. عياطه فضل ورا ضهرك لحد آخر الطرقة.`,follow:'f_hamada_rob',go:'next'})},
     {opt:1,t:'أسأله عن الهانم',res:{tier:'plain',xp:2,t:'«بتطلع من المراية الكبيرة اللي في أوضة اللبس. ولما بتندهك.. {اقفل|اقفلي} ودانك.» وغمّض عينيه من الوجع.',go:'next'}},
-    k&&{opt:1,t:'أديله الأكل اللي معايا',sub:PQ_eat(k),res:{tier:'full',use:k,rep:[6,'{أكلت|أكلتي} واحد جعان'],money:20,mats:{copper:1},t:'أكل وهو بيعيط، {وإداك|وإداكي} 20 جنيه وكوز نحاس: «ده كل اللي طلعت بيه.»',go:'next'}}
+    k&&{opt:1,t:'أديله الأكل اللي معايا',sub:PQ_eat(k),res:{tier:'full',use:k,rep:[6,'{أكلت|أكلتي} واحد جعان'],money:20,mats:{copper:1},t:'أكل وهو بيعيط، {وإداك|وإداكي} 20 جنيه وكوز نحاس: «ده كل اللي طلعت بيه.»',follow:'f_hamada_back',go:'next'}}
    ].filter(Boolean)}}},
 
  {id:'q_portrait',type:'trade',stars:1,title:'صورة الباشا',teaser:'عينيه بتمشي {وراك|وراكي}.. وبيتكلم',
@@ -12996,7 +13059,7 @@ const PD_CARDS=[
  {id:'d_jar',type:'trade',stars:1,title:'زير الجنيهات',teaser:'زير فخار مليان جنيهات دهب',
   scene:{art:'p_cellar',chip:'ركن ضلمة',onEnter:()=>PD_snd('d_whisper'),text:()=>`في ركن ضلمة، زير فخار مكسور من فوق، وجواه جنيهات دهب قديمة عليها وش الباشا. أول ما {قربت|قربتي}، الحيطة اتنفّست: «اللي ياخد.. يدفع.»`,
    ch:()=>{const k=PD_food();return [
-    {t:'آخد حفنة وأدفع من دمي',sub:'{هتخسر|هتخسري} صحة كتير',res:()=>({tier:'fail',hp:-Math.min(6,Math.max(3,Math.floor(S.hero.hp*.4))),money:70,t:'{مدّيت|مدّيتي} إيدك، والجنيهات كانت سخنة زي الجمر. إيدك طلعت مليانة دهب.. ودمك اتسحب من صوابعك.',go:'next'})},
+    {t:'آخد حفنة وأدفع من دمي',sub:'{هتخسر|هتخسري} صحة كتير',res:()=>({tier:'fail',hp:-Math.min(6,Math.max(3,Math.floor(S.hero.hp*.4))),money:70,t:'{مدّيت|مدّيتي} إيدك، والجنيهات كانت سخنة زي الجمر. إيدك طلعت مليانة دهب.. ودمك اتسحب من صوابعك.',follow:'f_jar_heat',go:'next'})},
     {t:'آخد جنيه واحد بس',res:{tier:'part',money:15,energy:-1,t:'{خدت|خدتي} جنيه واحد. الحيطة سكتت، بس جسمك تقل كأنك {شايل|شايلة} شوال.',go:'next'}},
     {t:'أسيب الزير في حاله',res:{tier:'plain',xp:2,t:'{سبت|سبتي} الزير. ورا ضهرك، الجنيهات رنّت لوحدها.. كأنها بتضحك.',go:'next'}},
     {opt:1,t:'أطلّع الجنيهات بحتة خشب من غير ما ألمسها',stat:'خفة',res:{
@@ -13004,8 +13067,8 @@ const PD_CARDS=[
       part:{t:'الخشبة ولّعت في نص الشغل، {ولحقت|ولحقتي} شوية بس.',money:15,hp:-2,go:'next'},
       fail:{t:'جنيه وقع على إيدك ولزق فيها زي الجمرة.',hp:-4,go:'next'}}},
     {opt:1,t:'أكسر الزير وألم اللي يقع',stat:'قوة',res:{
-      full:{t:'الزير اتكسر والجنيهات اتفرشت على الأرض. {لمّيت|لمّيتي} اللي {قدرت|قدرتي} عليه قبل ما يسخن.',money:50,go:'next'},
-      part:{t:'{لمّيت|لمّيتي} شوية، بس الجنيهات لسعت إيدك زي الجمر.',money:25,hp:-3,go:'next'},
+      full:{t:'الزير اتكسر والجنيهات اتفرشت على الأرض. {لمّيت|لمّيتي} اللي {قدرت|قدرتي} عليه قبل ما يسخن.',money:50,follow:'f_jar_heat',go:'next'},
+      part:{t:'{لمّيت|لمّيتي} شوية، بس الجنيهات لسعت إيدك زي الجمر.',money:25,hp:-3,follow:'f_jar_heat',go:'next'},
       fail:{t:'الجنيهات اتقلبت عقارب صفرا، وواحدة كبيرة طلعت تجري ناحيتك.',fight:[PD_f('scorp')],go:'next'}}},
     k&&{opt:1,keep:1,t:'أسيب أكل مكان اللي آخده',sub:PD_eat(k),res:{tier:'full',use:k,money:40,t:'{حطيت|حطيتي} الأكل جوه الزير {وخدت|وخدتي} حفنة. الحيطة شمّت الأكل وسكتت.. التبديل عجبها.',go:'next'}},
     S.hero.bag.salt>0&&{opt:1,keep:1,t:'أرمي ملح في الزير الأول',sub:'{هتستعمل|هتستعملي} كيس ملح',res:{tier:'full',use:'salt',money:45,t:'الملح نزل على الجنيهات وطلّع دخان. لما {مدّيت|مدّيتي} إيدك، كانت باردة وساكتة.',go:'next'}}
@@ -13170,10 +13233,10 @@ const PD_CARDS=[
  {id:'d_boy',type:'people',stars:0,title:'الواد الهربان',teaser:'واد صغير مستخبي ورا برميل',maxStop:9,
   scene:{art:'p_cellar',chip:'ورا البراميل',text:()=>`واد صغير مستخبي ورا برميل، هدومه مقطعة ودراعه بينزف. «أنا عصام.. كنت بشيل الشوالات للدجال. هو عايز يدبح حد عند باب الكنز.. فهربت.»`,
    ch:()=>{const h=S.hero,k=PD_food();return [
-    h.bag.potion>0&&{t:'أدّيله جرعة شفا',sub:'{هتستعمل|هتستعملي} جرعة شفا',res:{tier:'full',use:'potion',rep:[8,'{أنقذت|أنقذتي} عصام'],mats:{silver:1},t:'شرب الجرعة، واللون رجع لوشه. وطلّع من جيبه حتة فضة: «سرقتها من الدجال.. {خدها|خديها} {انت|انتي}.»',go:'next'}},
-    {t:'أربطله الجرح بحتة من هدومي',res:{tier:'full',xp:2,rep:[5,'{ساعدت|ساعدتي} عصام'],t:'{قطعت|قطعتي} حتة من كمك {وربطت|وربطتي} دراعه. عصام شاور على ممر: «الطريق ده ما فيهوش تماثيل.»',go:'next'}},
+    h.bag.potion>0&&{t:'أدّيله جرعة شفا',sub:'{هتستعمل|هتستعملي} جرعة شفا',res:{tier:'full',use:'potion',rep:[8,'{أنقذت|أنقذتي} عصام'],mats:{silver:1},t:'شرب الجرعة، واللون رجع لوشه. وطلّع من جيبه حتة فضة: «سرقتها من الدجال.. {خدها|خديها} {انت|انتي}.»',follow:'f_esam_back',go:'next'}},
+    {t:'أربطله الجرح بحتة من هدومي',res:{tier:'full',xp:2,rep:[5,'{ساعدت|ساعدتي} عصام'],t:'{قطعت|قطعتي} حتة من كمك {وربطت|وربطتي} دراعه. عصام شاور على ممر: «الطريق ده ما فيهوش تماثيل.»',follow:'f_esam_back',go:'next'}},
     {t:'أقوله يطلع فوق ويستخبى',res:{tier:'plain',t:'«حاضر..» وجري ناحية السلم. صوت رجليه الحافية بعد في الضلمة.',go:'next'}},
-    k&&{opt:1,keep:1,t:'أدّيله حاجة ياكلها',sub:PD_eat(k),res:{tier:'full',use:k,money:20,rep:[6,'{أكّلت|أكّلتي} عصام'],t:'أكل كأنه ما كلش من يومين، وطلّع من جيبه 20 جنيه: «دي أجرتي من الدجال.. مش عايزها.»',go:'next'}},
+    k&&{opt:1,keep:1,t:'أدّيله حاجة ياكلها',sub:PD_eat(k),res:{tier:'full',use:k,money:20,rep:[6,'{أكّلت|أكّلتي} عصام'],t:'أكل كأنه ما كلش من يومين، وطلّع من جيبه 20 جنيه: «دي أجرتي من الدجال.. مش عايزها.»',follow:'f_esam_back',go:'next'}},
     {opt:1,t:'أفتش جيوبه',res:()=>({tier:'fail',money:20,rep:[-10,'{سرقت|سرقتي} واد متعور'],t:`{لقيت|لقيتي} 20 جنيه أجرته من الدجال، {وخدتهم|وخدتيهم}. عصام بصلك وعيط من غير صوت، و${PD_cp()} ${CG('لف وشه','لفّت وشها')}.`,go:'next'})},
     {opt:1,t:'أسلّمه للدجال وآخد مكافأة',res:()=>({tier:'fail',money:50,rep:[-20,'{سلّمت|سلّمتي} عصام للدجال'],t:`{شدّيته|شدّيتيه} من دراعه المجروح لحد قاعة الدجال. الدجال {إداك|إداكي} 50 جنيه وضحك: «ده ينفع للرصد.» و${PD_cp()} ${CG('ماشي {وراك|وراكي} ساكت','ماشية {وراك|وراكي} ساكتة')}.`,go:'next'})}
    ].filter(Boolean)}}}
@@ -13513,13 +13576,13 @@ addCards('m_road',[
   scene:{art:'m_road',chip:'الدرب',text:()=>'بنت صغيرة حافية ماشية بعصاية أطول منها، وبتنده: «يا بيضا! يا بيضا!» دي هدى، بنت عم رشاد الراعي. معزتها البيضا هربت ناحية الجبل، والشمس خلاص غطست.',
    ch:()=>[
     {t:'أدوّر معاها على المعزة',stat:'حكمة',res:{
-      full:{mats:{bread:2},xp:2,rep:[6,'{لقيت|لقيتي} معزة هدى'],t:'{لقيت|لقيتي} المعزة مستخبية في شق صخرة وبتترعش. هدى حضنتها، وطلّعت من جيبها رغيفين ملفوفين في منديل: «دول {ليك|ليكي}.»',go:'next'},
-      part:{energy:-1,rep:[4,'{ساعدت|ساعدتي} هدى'],t:'دوّرتوا ساعة لحد ما المعزة طلعت لوحدها من ورا صخرة. هدى ضحكت، {وانت مش قادر|وانتي مش قادرة} {تاخد|تاخدي} نفسك.',go:'next'},
-      fail:{hp:-1,rep:[2,'{ساعدت|ساعدتي} هدى'],t:'{لقيت|لقيتي} المعزة.. أو اللي فاضل منها، ورا الصخر. هدى ما عيطتش. بصت ناحية الجبل وقالت: «الديب الأغبر.» ومشيت ساكتة.',go:'next'}}},
-    {t:'أرجّعها لأبوها عند النار',res:{tier:'full',item:'foul',energy:-1,rep:[5,'{رجّعت|رجّعتي} هدى لأبوها'],t:'{مسكت|مسكتي} إيدها {ورجّعتها|ورجّعتيها} لحد نار الرعيان. أبوها {إداك|إداكي} طبق فول سخن: «المعزة تتعوّض.. البنت لأ.»',go:'next'}},
+      full:{mats:{bread:2},xp:2,rep:[6,'{لقيت|لقيتي} معزة هدى'],t:'{لقيت|لقيتي} المعزة مستخبية في شق صخرة وبتترعش. هدى حضنتها، وطلّعت من جيبها رغيفين ملفوفين في منديل: «دول {ليك|ليكي}.»',follow:'f_huda_dad',go:'next'},
+      part:{energy:-1,rep:[4,'{ساعدت|ساعدتي} هدى'],t:'دوّرتوا ساعة لحد ما المعزة طلعت لوحدها من ورا صخرة. هدى ضحكت، {وانت مش قادر|وانتي مش قادرة} {تاخد|تاخدي} نفسك.',follow:'f_huda_dad',go:'next'},
+      fail:{hp:-1,rep:[2,'{ساعدت|ساعدتي} هدى'],t:'{لقيت|لقيتي} المعزة.. أو اللي فاضل منها، ورا الصخر. هدى ما عيطتش. بصت ناحية الجبل وقالت: «الديب الأغبر.» ومشيت ساكتة.',follow:'f_huda_dad',go:'next'}}},
+    {t:'أرجّعها لأبوها عند النار',res:{tier:'full',item:'foul',energy:-1,rep:[5,'{رجّعت|رجّعتي} هدى لأبوها'],t:'{مسكت|مسكتي} إيدها {ورجّعتها|ورجّعتيها} لحد نار الرعيان. أبوها {إداك|إداكي} طبق فول سخن: «المعزة تتعوّض.. البنت لأ.»',follow:'f_huda_dad',go:'next'}},
     {t:'أقولها «روّحي» وأكمّل',res:{tier:'plain',t:'هدى بصتلك وكملت تنده. صوتها فضل ورا ضهرك لحد ما بقى صوت ديب بيعوي.',go:'next'}},
     S.hero.money>=10&&{opt:1,t:'أدّيها 10 جنيه وأقولها تروّح',res:{tier:'plain',money:-10,rep:[3,'{إديت|إديتي} هدى فلوس'],t:'هدى خدت الفلوس وبصت فيها: «دي مش هتجيب البيضا.» ومشيت ناحية النار وهي بتعيط من غير صوت.',go:'next'}},
-    {opt:1,t:'أخوّفها بحكاية الضبعة عشان تروّح',res:()=>({tier:'fail',rep:[-4,'{خضّيت|خضّيتي} بنت صغيرة'],t:`هدى جريت تصرخ ناحية النار، ووقعت منها عصايتها. ${MA_cn()} ${CG(G('بصلك','بصلكي'),G('بصتلك','بصتلكي'))}: «ليه كده؟»`,go:'next'})}
+    {opt:1,t:'أخوّفها بحكاية الضبعة عشان تروّح',res:()=>({tier:'fail',rep:[-4,'{خضّيت|خضّيتي} بنت صغيرة'],t:`هدى جريت تصرخ ناحية النار، ووقعت منها عصايتها. ${MA_cn()} ${CG(G('بصلك','بصلكي'),G('بصتلك','بصتلكي'))}: «ليه كده؟»`,follow:'f_huda_angry',go:'next'})}
    ].filter(Boolean)}},
 
  {id:'ma_wolves',type:'fight',stars:2,title:'ديابة على الدرب',teaser:'عينين صفرا بتلمع ورا الصخر',
@@ -13615,15 +13678,15 @@ addCards('m_road',[
   scene:{art:'m_road',chip:'على جنب الدرب',onEnter:()=>SFX.foeCry('ma_wolf'),text:()=>'جمل ميت مرمي على جنب الدرب، والخُرج لسه مربوط على ضهره. ديبين بيقطّعوا فيه، وواحد تالت أكبر واقف يحرسهم. لما {شافوك|شافوكي}، سابوا اللحمة.. ولفوا ناحيتك.',
    ch:()=>{const f=S.flags,big=o=>MA_WOLF(Object.assign({name:'ديب كبير',hp:10},o));return [
     {t:'أحاربهم',sub:'الجعان فيهم مش هيسيب اللحمة',res:{tier:'plain',t:'الديب الجعان خطف حتة لحمة وجري بيها في الضلمة. فضل الكبير وواحد تاني.. والاتنين بيكشّروا.',fight:[big(),MA_WOLF()],go:'next'}},
-    f.m_fire&&{t:'أهجم بالنار وأشد الخُرج',sub:'الصغيرين هيجروا، والكبير هيستناك',res:{tier:'full',money:70,t:'النار طيّرت الديبين الصغيرين. {شديت|شديتي} الخُرج: جواه 70 جنيه. بس الكبير ما جريش.. ونط {عليك|عليكي}.',fight:[big({daze:1})],go:'next'}},
+    f.m_fire&&{t:'أهجم بالنار وأشد الخُرج',sub:'الصغيرين هيجروا، والكبير هيستناك',res:{tier:'full',money:70,t:'النار طيّرت الديبين الصغيرين. {شديت|شديتي} الخُرج: جواه 70 جنيه. بس الكبير ما جريش.. ونط {عليك|عليكي}.',fight:[big({daze:1})],follow:'f_camel_owner',go:'next'}},
     {t:'أسيبهم ياكلوا وألف من بعيد',res:{tier:'plain',t:'{لفّيت|لفّيتي} من بعيد، وصوت التقطيع فضل ماشي {معاك|معاكي}. الخُرج فضل للديابة.. واللي جواه كمان.',go:'next'}},
     {opt:1,t:'أستنى يشبعوا وأتسحب للخُرج',stat:'خفة',res:{
-      full:{money:80,mats:{cloth:1},xp:2,t:'{استنيت|استنيتي} لحد ما بطونهم اتملت وناموا جنب الجمل. {فكيت|فكيتي} الخُرج: 80 جنيه، وحتة قماش، وريحة موت.',go:'next'},
-      part:{money:80,t:'{فكيت|فكيتي} الخُرج، والكبير فتح عينه.',fight:[big()],go:'next'},
+      full:{money:80,mats:{cloth:1},xp:2,t:'{استنيت|استنيتي} لحد ما بطونهم اتملت وناموا جنب الجمل. {فكيت|فكيتي} الخُرج: 80 جنيه، وحتة قماش، وريحة موت.',follow:'f_camel_owner',go:'next'},
+      part:{money:80,t:'{فكيت|فكيتي} الخُرج، والكبير فتح عينه.',fight:[big()],follow:'f_camel_owner',go:'next'},
       fail:{t:'رجلك داست على عضمة وطقّت. التلاتة رفعوا راسهم مع بعض.',fight:[big(),MA_WOLF(),MA_WOLF({name:'ديب جعان'})],go:'next'}}},
-    f.ma_meat&&{opt:1,t:'أرمي اللحمة الناشفة بعيد عن الجمل',res:()=>{delete S.flags.ma_meat;return {tier:'full',money:70,xp:2,t:'التلاتة جريوا ورا اللحمة واتخانقوا عليها. {فكيت|فكيتي} الخُرج على مهلك: 70 جنيه وسكينة صدية.',go:'next'}}},
+    f.ma_meat&&{opt:1,t:'أرمي اللحمة الناشفة بعيد عن الجمل',res:()=>{delete S.flags.ma_meat;return {tier:'full',money:70,xp:2,t:'التلاتة جريوا ورا اللحمة واتخانقوا عليها. {فكيت|فكيتي} الخُرج على مهلك: 70 جنيه وسكينة صدية.',follow:'f_camel_owner',go:'next'}}},
     {opt:1,t:'أنشّن على الكبير بحجر',stat:'قوة',res:{
-      full:{money:70,xp:2,t:'الحجر جه في راس الكبير، فوقع ومقامش. الاتنين التانيين بصوا لبعض وهربوا، والخُرج بقى بتاعك: 70 جنيه.',go:'next'},
+      full:{money:70,xp:2,t:'الحجر جه في راس الكبير، فوقع ومقامش. الاتنين التانيين بصوا لبعض وهربوا، والخُرج بقى بتاعك: 70 جنيه.',follow:'f_camel_owner',go:'next'},
       part:{t:'الكبير وقع.. بس الاتنين التانيين ما هربوش.',fight:[MA_WOLF(),MA_WOLF({name:'ديب جعان'})],go:'next'},
       fail:{t:'الحجر عدّى من فوق راسه، والتلاتة جايين.',fight:[big(),MA_WOLF(),MA_WOLF({name:'ديب جعان'})],go:'next'}}}
    ].filter(Boolean)}}},
@@ -13646,13 +13709,13 @@ addCards('m_road',[
    ch:()=>[
     {t:'أحط حجر وأكمّل',res:{tier:'plain',xp:2,t:'{حطيت|حطيتي} حجر فوق الكوم. الريح هديت مرة واحدة، كأن حد قالك شكرًا.',go:'next'}},
     {t:'أشد السكينة',stat:'خفة',res:{
-      full:{mats:{copper:2},money:25,t:'السكينة طلعت في إيدك بالراحة: نحاس قديم عليه نقش. وتحتها 25 جنيه فضة قديمة.',go:'next'},
-      part:{mats:{copper:2},hp:-3,t:'السكينة طلعت، والكوم اتهد على رجلك.',go:'next'},
+      full:{mats:{copper:2},money:25,t:'السكينة طلعت في إيدك بالراحة: نحاس قديم عليه نقش. وتحتها 25 جنيه فضة قديمة.',follow:'f_cairn_ghost',go:'next'},
+      part:{mats:{copper:2},hp:-3,t:'السكينة طلعت، والكوم اتهد على رجلك.',follow:'f_cairn_ghost',go:'next'},
       fail:{hp:-4,t:'إيد ناشفة طلعت من بين الحجارة ومسكت رسغك. {شديت|شديتي} بكل قوتك، {وسبت|وسبتي} حتة من جلدك ورا.',go:'next'}}},
     {t:'أعدّي من غير ما ألمسه',res:{tier:'plain',t:'{عدّيت|عدّيتي} من بعيد. لما {بصيت|بصيتي} {وراك|وراكي}، الكوم كان أعلى بحجر.. ومحدش حطه.',go:'next'}},
     {opt:1,t:'أهد الكوم وأدوّر على اللي تحته',stat:'قوة',res:{
-      full:()=>({money:70,rep:[-8,'{نبشت|نبشتي} قبر'],t:`تحت الحجارة عضم، وجنبه صرة فيها 70 جنيه وحزام جلد. {خدت|خدتي} الفلوس، و${MA_cn()} ${CG('لف وشه','لفت وشها')} الناحية التانية.`,go:'next'}),
-      part:{money:30,hp:-2,rep:[-8,'{نبشت|نبشتي} قبر'],t:'الحجارة وقعت على إيدك، {ولحقت|ولحقتي} تخطف 30 جنيه من الصرة اللي تحت.',go:'next'},
+      full:()=>({money:70,rep:[-8,'{نبشت|نبشتي} قبر'],t:`تحت الحجارة عضم، وجنبه صرة فيها 70 جنيه وحزام جلد. {خدت|خدتي} الفلوس، و${MA_cn()} ${CG('لف وشه','لفت وشها')} الناحية التانية.`,follow:'f_cairn_ghost',go:'next'}),
+      part:{money:30,hp:-2,rep:[-8,'{نبشت|نبشتي} قبر'],t:'الحجارة وقعت على إيدك، {ولحقت|ولحقتي} تخطف 30 جنيه من الصرة اللي تحت.',follow:'f_cairn_ghost',go:'next'},
       fail:{rep:[-8,'{نبشت|نبشتي} قبر'],t:'الحجارة اتحركت لوحدها، وقامت من تحتها زوبعة صغيرة بتصفّر.',fight:[MA_DUST()],go:'next'}}},
     MA_cls('ساحر')&&{opt:1,t:'أكلم اللي تحت الكوم',sub:'سحر',res:{tier:'full',xp:3,flag:'ma_tip',t:'صوت ناشف طلع من بين الحجارة: «أنا كنت لوحدي، وما كانش معايا نار. الأغبر ما بيخافش من حاجة غير النار.. {وخليك|وخليكي} سابقه قبل ما يعوي لعياله.»',go:'next'}}
    ].filter(Boolean)}},
@@ -14205,15 +14268,15 @@ addCards('m_quarry',[
  {id:'mb_wire',type:'trade',stars:1,title:'حرامية السلك',teaser:'اتنين بيقطعوا نحاس الونش القديم',
   scene:{art:'m_quarry',chip:'الونش القديم',onEnter:()=>MB_snd('clank'),text:()=>`تحت الونش القديم اتنين شباب بيقطعوا كابلات النحاس ويلفّوها. الكبير فيهم شافك وشاور على الكوم: «{تعالى|تعالي} {شيل|شيلي} معانا.. والقسمة بالعدل.»`,
    ch:()=>[
-    {t:'أشيل معاهم وآخد نصيبي',res:{tier:'plain',mats:{copper:3},rep:[-6,'{سرقت|سرقتي} نحاس المحجر'],t:'{شلت|شلتي} معاهم لحد ما إيدك اسودت. والقسمة طلعت بالعدل فعلًا: تلات لفات نحاس {ليك|ليكي}.',go:'next'}},
+    {t:'أشيل معاهم وآخد نصيبي',res:{tier:'plain',mats:{copper:3},rep:[-6,'{سرقت|سرقتي} نحاس المحجر'],t:'{شلت|شلتي} معاهم لحد ما إيدك اسودت. والقسمة طلعت بالعدل فعلًا: تلات لفات نحاس {ليك|ليكي}.',follow:'f_wire_guard',mark:'nf_wire',go:'next'}},
     {t:'أطردهم من هنا',stat:'حضور',res:{
       full:{mats:{copper:2},rep:[5,'{طردت|طردتي} حرامية النحاس'],t:'جريوا وسابوا وراهم لفتين نحاس وكماشة.',go:'next'},
       part:{t:'جريوا، بس خدوا النحاس كله معاهم.',go:'next'},
       fail:{t:'«{انت|انتي} مين أصلًا؟» ورفعوا الكماشات.',fight:MB_THIEVES(),go:'next'}}},
     {t:'ماليش دعوة، أكمّل',res:{tier:'plain',t:'صوت المقص على السلك فضل ماشي {وراك|وراكي}: طق.. طق.. طق.',go:'next'}},
     {opt:1,t:'أستناهم يخلّصوا وأخطف الكوم',stat:'خفة',res:{
-      full:{ach:'thief',mats:{copper:5},t:'لما راحوا يجيبوا الموتوسيكل، الكوم كله بقى في شنطتك. حرامي سرق حرامي.. والحساب صفر.',go:'next'},
-      part:{mats:{copper:2},hp:-2,t:'{خطفت|خطفتي} لفتين، والصغير رماك بالكماشة في ضهرك.',go:'next'},
+      full:{ach:'thief',mats:{copper:5},t:'لما راحوا يجيبوا الموتوسيكل، الكوم كله بقى في شنطتك. حرامي سرق حرامي.. والحساب صفر.',follow:{id:'f_wire_guard',why:'عشان {خطفت|خطفتي} كوم النحاس..'},mark:'nf_wire',go:'next'},
+      part:{mats:{copper:2},hp:-2,t:'{خطفت|خطفتي} لفتين، والصغير رماك بالكماشة في ضهرك.',follow:{id:'f_wire_guard',why:'عشان {خطفت|خطفتي} نحاس الونش..'},mark:'nf_wire',go:'next'},
       fail:{t:'رجعوا بدري، {ولقوك|ولقوكي} فوق الكوم.',fight:MB_THIEVES(),go:'next'}}},
     {opt:1,t:'أحذّرهم من الغول',res:{tier:'plain',xp:2,flag:'mb_iron',t:'الصغير ضحك.. والكبير وشه اصفر: «إحنا ماشيين.» رموا العدة وجريوا، {ولقيت|ولقيتي} وسطها إسفين حديد تقيل.',go:'next'}},
     S.hero.money>=30&&{opt:1,t:'أشتري منهم النحاس بـ30 جنيه',res:{tier:'plain',money:-30,mats:{copper:4},t:'«ده ببلاش!» عدّوا الفلوس ونطّوا على الموتوسيكل قبل ما {تغيّر|تغيّري} رأيك.',go:'next'}}
@@ -14556,12 +14619,12 @@ const MC_CARDS=[
   scene:{art:'mc_camp',chip:'نار الصيادين',text:()=>`اتنين قاعدين على نار صغيرة، معاهم شبكة وحبال وسكاكين طويلة: <b>مجدي</b> وأخوه <b>ممدوح</b>. مجدي ضحك: «جايين ورا الضبعة زيك. مخ الضبع بيتباع للسحرة بالدهب.. {عايز|عايزة} حاجة من عندنا؟»`,
    ch:()=>{const h=S.hero,pt=MC_pr(35),pp=MC_pr(50);return [
     h.money>=pt&&!S.flags.mc_torch&&{t:`أشتري منهم شعلة (${pt} جنيه)`,sub:'الضبع بيخاف من النار',res:{tier:'plain',money:-pt,flag:'mc_torch',t:'مجدي لف خيشة غرقانة جاز على عصاية: «دي تولّع ساعة. {اضرب|اضربي} بيها في الوش، مش في الضهر.»',go:'next'}},
-    {t:'أتفق معاهم نروح على الضبعة سوا',res:{tier:'plain',flag:'mc_hunt',item:'salt',xp:2,t:'«اتفقنا!» ممدوح {إداك|إداكي} كيس ملح: «ده للعين. {اسبقنا|اسبقينا} واحنا وراك على طول.» ورجعوا قعدوا جنب النار.',go:'next'}},
+    {t:'أتفق معاهم نروح على الضبعة سوا',res:{tier:'plain',flag:'mc_hunt',item:'salt',xp:2,t:'«اتفقنا!» ممدوح {إداك|إداكي} كيس ملح: «ده للعين. {اسبقنا|اسبقينا} واحنا وراك على طول.» ورجعوا قعدوا جنب النار.',follow:'f_hunt_bait',go:'next'}},
     {t:'أسيبهم في حالهم',res:{tier:'plain',t:'«براحتك.. بس لو {وقعت|وقعتي} جوه، مخك {انت|انتي} كمان بيتباع.» وضحكوا الاتنين.',go:'next'}},
     h.money>=pp&&{opt:1,t:`أشتري جرعة شفا (${pp} جنيه)`,res:{tier:'plain',money:-pp,item:'potion',t:'ممدوح طلّع الجرعة من شنطة ريحتها جاز: «أصلية.. يمكن.»',go:'next'}},
     {opt:1,t:'أسرق صرتهم وهما نايمين',stat:'خفة',res:{
-      full:{ach:'thief',money:75,rep:[-4,'{سرقت|سرقتي} صيادين الضباع'],t:'{استنيت|استنيتي} لحد ما ناموا، {وسحبت|وسحبتي} الصرة من تحت راس مجدي. 75 جنيه، ريحتها ريحة ضبع.',go:'next'},
-      part:{money:75,rep:[-8,'{سرقت|سرقتي} صيادين الضباع'],t:'{خدت|خدتي} الصرة، وممدوح فتح عين.. وقفلها تاني. بكرة هيحكي للمحاجر كلها.',go:'next'},
+      full:{ach:'thief',money:75,rep:[-4,'{سرقت|سرقتي} صيادين الضباع'],t:'{استنيت|استنيتي} لحد ما ناموا، {وسحبت|وسحبتي} الصرة من تحت راس مجدي. 75 جنيه، ريحتها ريحة ضبع.',follow:'f_hunt_rob',go:'next'},
+      part:{money:75,rep:[-8,'{سرقت|سرقتي} صيادين الضباع'],t:'{خدت|خدتي} الصرة، وممدوح فتح عين.. وقفلها تاني. بكرة هيحكي للمحاجر كلها.',follow:'f_hunt_rob',go:'next'},
       fail:{rep:[-8,'{حاولت تسرق|حاولتي تسرقي} صيادين الضباع'],t:'مجدي صحي والسكينة في إيده: «ده احنا {عزمناك|عزمناكي}!»',fight:MC_HUNT(),go:'next'}}},
     {opt:1,t:'أطردهم من المغارة',sub:'قتال',res:{tier:'plain',rep:[4,'{طردت|طردتي} صيادين الضباع'],t:'«المغارة دي مش سوق.» مجدي قام وطلّع السكينة، وممدوح مسك الشبكة.',fight:MC_HUNT(),go:'next'}}
    ].filter(Boolean)}}},
@@ -14677,14 +14740,14 @@ const MC_CARDS=[
  {id:'mc_tied',type:'people',stars:1,title:'الراجل المربوط',teaser:'متكتّف في عمود، ومتلطّخ دم',
   scene:{art:'m_cave',chip:'عمود خشب',text:()=>`راجل متكتّف في عمود خشب، وهدومه متلطخة دم معزة. «أنا <b>عماد</b>! مجدي وممدوح ربطوني هنا طُعم للضبعة عشان يصطادوها.. {فكّني|فكّيني} أبوس إيدك!»`,
    ch:()=>[
-    {t:'أفك الحبل',res:{tier:'full',item:'potion',rep:[6,'{فكّيت|فكّيتي} عماد'],t:'عماد وقع على ركبه، وطلّع من جيبه جرعة شفا: «دي كانت عشاني لو الضبعة عضتني.. {خدها|خديها}.» وجري ناحية الخروج.',go:'next'}},
+    {t:'أفك الحبل',res:{tier:'full',item:'potion',rep:[6,'{فكّيت|فكّيتي} عماد'],t:'عماد وقع على ركبه، وطلّع من جيبه جرعة شفا: «دي كانت عشاني لو الضبعة عضتني.. {خدها|خديها}.» وجري ناحية الخروج.',follow:'f_emad_back',go:'next'}},
     {t:'أسيبه.. يمكن يشغلها عني',res:{tier:'fail',flag:'mc_bait',rep:[-10,'{سبت|سبتي} عماد طُعم للضبعة'],t:'{مشيت|مشيتي} وصوته بيترجاك. بعد شوية.. الصوت سكت مرة واحدة، والضحكة اللي جوه بقت شبعانة.',go:'next'}},
     {t:'أفكه بس بشرط يدفع',stat:'حضور',res:{
-      full:{money:60,t:'«حاضر حاضر!» دفع 60 جنيه قبل ما الحبل يتفك، وجري من غير ما يشكرك.',go:'next'},
-      part:{money:25,t:'معاه 25 جنيه بس. {خدتهم|خدتيهم} {وفكّيته|وفكّيتيه}.',go:'next'},
-      fail:{rep:[2,'{فكّيت|فكّيتي} عماد'],t:'«مفيش معايا ولا مليم!» {فكّيته|فكّيتيه} برضه، وهو جري.',go:'next'}}},
+      full:{money:60,t:'«حاضر حاضر!» دفع 60 جنيه قبل ما الحبل يتفك، وجري من غير ما يشكرك.',follow:'f_emad_back',go:'next'},
+      part:{money:25,t:'معاه 25 جنيه بس. {خدتهم|خدتيهم} {وفكّيته|وفكّيتيه}.',follow:'f_emad_back',go:'next'},
+      fail:{rep:[2,'{فكّيت|فكّيتي} عماد'],t:'«مفيش معايا ولا مليم!» {فكّيته|فكّيتيه} برضه، وهو جري.',follow:'f_emad_back',go:'next'}}},
     {opt:1,t:'أفتّش جيوبه الأول',res:{tier:'fail',money:35,rep:[-8,'{سرقت|سرقتي} واحد متكتّف'],t:'{خدت|خدتي} 35 جنيه من جيبه {وفكّيته|وفكّيتيه}. بصلك بقرف وهو بيجري: «{انت|انتي} أوحش من مجدي.»',go:'next'}},
-    MC_cls('معالج')&&{opt:1,keep:1,t:'أفكه وأداوي الجرح اللي في راسه',res:{tier:'full',xp:3,item:'salt',rep:[8,'{فكّيت|فكّيتي} عماد {وداويته|وداويتيه}'],t:'{نضّفت|نضّفتي} الجرح {وربطته|وربطتيه}. عماد طلّع كيس ملح كان مخبيه: «مجدي كان هيرشه في عينها.. {انت|انتي} أولى بيه.»',go:'next'}},
+    MC_cls('معالج')&&{opt:1,keep:1,t:'أفكه وأداوي الجرح اللي في راسه',res:{tier:'full',xp:3,item:'salt',rep:[8,'{فكّيت|فكّيتي} عماد {وداويته|وداويتيه}'],t:'{نضّفت|نضّفتي} الجرح {وربطته|وربطتيه}. عماد طلّع كيس ملح كان مخبيه: «مجدي كان هيرشه في عينها.. {انت|انتي} أولى بيه.»',follow:'f_emad_back',go:'next'}},
     !S.flags.mc_asked&&{opt:1,t:'أسأله الضبعة بتخاف من إيه',res:{tier:'plain',flag:'mc_asked',xp:2,t:'عماد بلع ريقه: «من النار.. والملح في عينيها. ولو ضحكت، {اقرص|اقرصي} نفسك لحد ما تصرخ.» وبعدين افتكر إنه لسه مربوط: «{فكّني|فكّيني} بقى!»',go:'mc_tied'}}
    ].filter(Boolean)}},
 
@@ -15136,17 +15199,17 @@ addCards('u_old',[
   scene:{art:'u_old',chip:'الطريق للخان',text:()=>'خالد ومراته ماشيين ناحية الخان وبيتخانقوا. هو شايل جوال، وهي شايلة زلعة. خالد شافك وضحك: «رايحين السوق. أنا هبيع شخيرها، وهي هتبيع كسلي.» ومراته ضربته بالشبشب: «وطولة لسانك!»',
    ch:()=>[
     {t:'أقولهم يرجعوا بيتهم',stat:'حضور',res:{
-      full:{money:40,xp:3,rep:[8,'{رجّعت|رجّعتي} خالد ومراته'],t:'{حكيت|حكيتي} لهم عن مصطفى اللي رجع زي الحيطة. سكتوا، وبصوا لبعض، ورجعوا. مراته {إدتك|إدتكي} 40 جنيه: «دول كانوا للسوق.»',go:'next'},
-      part:{xp:2,rep:[4,'{نصحت|نصحتي} خالد ومراته'],t:'هي رجعت، وهو كمّل لوحده: «أنا رايح أبيع نكدها من غير ما تعرف!»',go:'next'},
+      full:{money:40,xp:3,rep:[8,'{رجّعت|رجّعتي} خالد ومراته'],t:'{حكيت|حكيتي} لهم عن مصطفى اللي رجع زي الحيطة. سكتوا، وبصوا لبعض، ورجعوا. مراته {إدتك|إدتكي} 40 جنيه: «دول كانوا للسوق.»',follow:'f_khalid_gift',go:'next'},
+      part:{xp:2,rep:[4,'{نصحت|نصحتي} خالد ومراته'],t:'هي رجعت، وهو كمّل لوحده: «أنا رايح أبيع نكدها من غير ما تعرف!»',follow:'f_khalid_gift',go:'next'},
       fail:{energy:-1,t:'«{وانت|وانتي} مالك؟ اللي عايز يبيع يبيع.» وكمّلوا ماشيين وهما بيتخانقوا.',go:'next'}}},
-    {t:'أمشي معاهم حتة',res:{tier:'plain',xp:3,flag:'ua_tip',t:'خالد حكى طول الطريق: «جدي كان بيقول أبو كيس بيلف قبل الخان. ما بيعديش الملح، ولو لمس حديد إيده تتحرق.» ومراته قالت: «وجدك ده اتشال في الكيس.»',go:'next'}},
+    {t:'أمشي معاهم حتة',res:{tier:'plain',xp:3,flag:'ua_tip',t:'خالد حكى طول الطريق: «جدي كان بيقول أبو كيس بيلف قبل الخان. ما بيعديش الملح، ولو لمس حديد إيده تتحرق.» ومراته قالت: «وجدك ده اتشال في الكيس.»',follow:{id:'f_khalid_gift',why:'عشان {مشيت|مشيتي} مع خالد ومراته..'},go:'next'}},
     {t:'أسيبهم في حالهم',res:{tier:'plain',t:'صوت خناقتهم فضل جاي من بعيد لحد ما بقى زي دوشة السوق نفسه.',go:'next'}},
     S.hero.money>=10&&{opt:1,t:'أشتري الشخير قبل ما يوصلوا (10 جنيه)',res:{tier:'plain',money:-10,xp:3,t:'خالد خد العشرة وفتح الجوال قدامك: فاضي. «{اتفضل|اتفضلي}. الشخير بتاعك.» ومراته ضحكت لأول مرة من سنين.',go:'next'}},
     {opt:1,t:'أسرق الجوال من على كتفه',stat:'خفة',res:{
-      full:{ach:'thief',mats:{cloth:2},money:50,t:'الجوال كان فيه قماش وصرة فلوس، تمن الرحلة. {خدته|خدتيه} وهما بيتخانقوا ومحدش خد باله.',go:'next'},
-      part:{mats:{cloth:2},rep:[-10,'{سرقت|سرقتي} خالد'],t:'{خطفت|خطفتي} الجوال، ومراته شافتك وزغرطت: «أحسن! خليه يتعلم!»',go:'next'},
+      full:{ach:'thief',mats:{cloth:2},money:50,t:'الجوال كان فيه قماش وصرة فلوس، تمن الرحلة. {خدته|خدتيه} وهما بيتخانقوا ومحدش خد باله.',follow:'f_khalid_thief',mark:'nf_khalidThief',go:'next'},
+      part:{mats:{cloth:2},rep:[-10,'{سرقت|سرقتي} خالد'],t:'{خطفت|خطفتي} الجوال، ومراته شافتك وزغرطت: «أحسن! خليه يتعلم!»',follow:'f_khalid_thief',mark:'nf_khalidThief',go:'next'},
       fail:{hp:-3,rep:[-8,'{حاولت تسرق|حاولتي تسرقي} خالد'],t:'مراته شافتك قبل ما توصل، ونزلت {عليك|عليكي} بالشبشب هي وهو مع بعض. أول حاجة اتفقوا عليها من سنين.',go:'next'}}},
-    UA_has('foul')&&{opt:1,t:'أعزمهم على طبق الفول اللي معايا',sub:'{هتستعمل|هتستعملي} طبق فول',res:{tier:'full',use:'foul',xp:3,rep:[6,'{أكلت|أكلتي} خالد ومراته'],t:'قعدتوا على عتبة وكلتوا. خالد قال: «أنا مش هبيع شخيرها.. ده بيونسني.» ورجعوا بيتهم ماسكين إيد بعض.',go:'next'}}
+    UA_has('foul')&&{opt:1,t:'أعزمهم على طبق الفول اللي معايا',sub:'{هتستعمل|هتستعملي} طبق فول',res:{tier:'full',use:'foul',xp:3,rep:[6,'{أكلت|أكلتي} خالد ومراته'],t:'قعدتوا على عتبة وكلتوا. خالد قال: «أنا مش هبيع شخيرها.. ده بيونسني.» ورجعوا بيتهم ماسكين إيد بعض.',follow:{id:'f_khalid_gift',why:'عشان {أكلت|أكلتي} خالد ومراته..'},go:'next'}}
    ].filter(Boolean)}},
 
  {id:'ua_broker',type:'trade',stars:3,title:'سمسار الطريق',teaser:'بيشتري منك أي حاجة.. إلا الفلوس',minStop:3,
@@ -15156,7 +15219,7 @@ addCards('u_old',[
     {t:'أضربه هو وصبيانه',sub:'قتال',res:{tier:'plain',t:'السمسار قام من على الكرسي على مهله وطقطق صوابعه: «يا ولاد.. {الزبون مش عايز يبيع|الزبونة مش عايزة تبيع}.»',fight:UA_BROKER(3),go:'next'}},
     {t:'أرفض وألف من حارة تانية',res:{tier:'plain',energy:-1,t:'{لفيت|لفيتي} من حارة ضيقة مليانة طوب. السمسار زعق وراك: «هتيجي السوق برضه.. والسوق ما بيدّيش زيي!»',go:'next'}},
     {opt:1,t:'أبيعله نومي',sub:'{هتتعب|هتتعبي}',res:()=>({tier:'plain',energy:-Math.max(2,S.hero.energy),money:80,t:'السمسار حط إيده على عينك وسحب حاجة زي الخيط. عينك نشفت، وكل التعب اللي ما {نمتهوش|نمتيهوش} نزل على كتافك مرة واحدة. 80 جنيه في إيدك.',go:'next'})},
-    {opt:1,t:`أبيعله اسم ${n}`,sub:'وسخة بس مربحة',res:()=>({tier:'fail',money:130,rep:[-12,`{بعت|بعتي} اسم ${n} للسمسار`],t:`السمسار كتب اسم ${n} في دفتر صغير وعدّلك 130 جنيه. ${n} ${CG('بصلك','بصتلك')} وقال${CG('','ت')}: «هو انا اسمي إيه؟» وفضل${CG('','ت')} طول الطريق ${CG('ساكت','ساكتة')}.`,go:'next'})},
+    {opt:1,t:`أبيعله اسم ${n}`,sub:'وسخة بس مربحة',res:()=>({tier:'fail',money:130,rep:[-12,`{بعت|بعتي} اسم ${n} للسمسار`],t:`السمسار كتب اسم ${n} في دفتر صغير وعدّلك 130 جنيه. ${n} ${CG('بصلك','بصتلك')} وقال${CG('','ت')}: «هو انا اسمي إيه؟» وفضل${CG('','ت')} طول الطريق ${CG('ساكت','ساكتة')}.`,follow:'f_broker_name',mark:'nf_brokerName',go:'next'})},
     {opt:1,t:'أبيعله ضل ضلي',sub:'نصباية',stat:'حضور',res:{
       full:{money:120,xp:3,t:'{قعدت|قعدتي} تشرحله إن ضل الضل أندر حاجة في الدنيا. السمسار دفع 120 جنيه، وكتب في الدفتر: «ضل ضل.. نادر.» وصبيانه بيصقفوا.',go:'next'},
       part:{money:40,t:'السمسار ضيّق عينه: «ضل ضلك؟ ماشي.. بس بأربعين.» {خدتهم|خدتيهم} {وجريت|وجريتي} قبل ما يفكر.',go:'next'},
@@ -15278,7 +15341,7 @@ addCards('u_old',[
    ch:()=>[
     {t:'أوصفله الطريق الصح',res:{tier:'plain',mats:{silver:1},xp:3,t:'الضيف شكرك، ومد إيده وسلّم {عليك|عليكي}، وساب في كفك عملة فضة قديمة. {عدّيت|عدّيتي} صوابعك: خمسة. لسه كاملين.',go:'next'}},
     {t:'أوصفله طريق غلط',stat:'حضور',res:{
-      full:{money:70,xp:3,t:'الضيف مشي في الطريق الغلط وهو بيشكرك. وقع منه منديل معقود، جواه 70 جنيه بالعملة القديمة.. وبتشتغل عادي.',go:'next'},
+      full:{money:70,xp:3,t:'الضيف مشي في الطريق الغلط وهو بيشكرك. وقع منه منديل معقود، جواه 70 جنيه بالعملة القديمة.. وبتشتغل عادي.',follow:{id:'f_hooves_debt',why:'عشان {توّهت|توّهتي} الضيف اللي بحوافر..'},mark:'nf_hoovesLost',go:'next'},
       part:{hp:-3,t:'الضيف وقف بعد خطوتين ولف: «ده مش طريق الخان.» ورفسك بحافره في رجلك من غير ما يتحرك من مكانه.',go:'next'},
       fail:{hp:-5,energy:-1,t:'الضيف ضحك: «أنا ماشي في الطريق ده من قبل ما جدك يتولد.» وحط حافره على رجلك وداس.',go:'next'}}},
     {t:'أعدّي من غير ما أرد',res:{tier:'plain',t:'{عدّيت|عدّيتي} وعينك في الأرض. {وانت ماشي|وانتي ماشية} {سمعت|سمعتي} صوت حوافر بتطقطق وراك.. وبعدين سكتت.',go:'next'}},
@@ -15288,7 +15351,7 @@ addCards('u_old',[
       part:{money:90,hp:-3,t:'{خدت|خدتي} الصرة، والحافر لحق قصبة رجلك.',go:'next'},
       fail:{hp:-4,t:'الضيف مسك إيدك وضغط لحد ما صوابعك طقطقت: «إيدك دي ممكن تتباع.»',go:'next'}}},
     {opt:1,t:'أسلّم عليه وأعد صوابعي',sub:'سلام العفاريت',res:()=>Math.random()<.65?{tier:'full',mats:{silver:1},money:40,xp:3,t:'{سلّمت|سلّمتي}، وإيده كانت ناعمة زي الحرير. {عدّيت|عدّيتي}: خمسة. وفي كفك عملة فضة و40 جنيه. «اتفاق.» واتنهد كأنه خسران.',go:'next'}
-      :{tier:'fail',hp:-4,money:50,t:'{سلّمت|سلّمتي}، و{عدّيت|عدّيتي}: خمسة.. بس الصغير ساقع زي التلج ومش بيتحرك. الضيف ساب في كفك 50 جنيه: «سلفة. نتحاسب في السوق.»',go:'next'}}
+      :{tier:'fail',hp:-4,money:50,t:'{سلّمت|سلّمتي}، و{عدّيت|عدّيتي}: خمسة.. بس الصغير ساقع زي التلج ومش بيتحرك. الضيف ساب في كفك 50 جنيه: «سلفة. نتحاسب في السوق.»',follow:{id:'f_hooves_debt',why:'عشان {خدت|خدتي} سلفة من الضيف اللي بحوافر..'},go:'next'}}
    ].filter(Boolean)}},
 
  {id:'ua_pigeon',type:'test',stars:1,title:'برج الحمام',teaser:'طاقة فوق خالص فيها حاجة بتلمع',
@@ -15725,8 +15788,8 @@ const UB_CARDS=[
       part:()=>{UB_dropRoo();return {money:60,t:`${UB_jd('part')} تعادل.. والكبير خطف الديك وهو بيضحك، ورمى لك 60 جنيه. «التعادل لينا.»`,go:'next'}},
       fail:()=>{UB_dropRoo();return {t:`${UB_jd('fail')} الكبير خد الديك من رقبته. سكت الديك، وسكتت الترابيزة، وبعدين العفاريت ضحكوا كلهم مع بعض.`,go:'next'}}}},
     {opt:1,t:'أقلب الترابيزة وأخطف اللي عليها',stat:'قوة',res:{
-      full:{money:110,xp:2,t:'{قلبت|قلبتي} الجلد بالنرد بالفلوس، {ولميت|ولميتي} 110 جنيه قبل ما يقوموا من على الأرض.',go:'next'},
-      part:{money:50,hp:-4,t:'{لميت|لميتي} 50 جنيه، وحافر الكبير جه في جنبك {وانت بتجري|وانتي بتجري}.',go:'next'},
+      full:{money:110,xp:2,t:'{قلبت|قلبتي} الجلد بالنرد بالفلوس، {ولميت|ولميتي} 110 جنيه قبل ما يقوموا من على الأرض.',follow:'f_dice_gang',go:'next'},
+      part:{money:50,hp:-4,t:'{لميت|لميتي} 50 جنيه، وحافر الكبير جه في جنبك {وانت بتجري|وانتي بتجري}.',follow:'f_dice_gang',go:'next'},
       fail:{t:'الترابيزة ما اتقلبتش.. {انت|انتي} اللي {اتقلبت|اتقلبتي}. العفاريت قاموا.',fight:[UB_GAMBLER(),UB_GAMBLER({name:'مقامر أعور'})],go:'next'}}}
    ].filter(Boolean)}},
   more:{b:{art:'ub_dice',chip:'ترابيزة الرهان',text:()=>`الكبير لم النرد وبصلك بعين بتلمع: «${S.flags.ub_pot||0} جنيه.. {تضاعفهم|تضاعفيهم}؟ رمية واحدة: يا الضعف، يا ولا حاجة.»`,
@@ -16038,13 +16101,13 @@ UB_CARDS.push(
  {id:'ub_years',type:'people',stars:1,title:'ضفيرة سناء',teaser:'حلاق من الجن بيقص ضفيرة بنت',
   scene:{art:'u_souq',chip:'دكان الحلاق',text:()=>'قدام دكان حلاق، بنت بني آدمة قاعدة على كرسي وعينيها حمرا: <b>سناء</b>. الحلاق جني ماسك موس طويل وضفيرتها الطويلة: «كل سنة من عمرك بشبر. الضفيرة دي فيها تلات سنين، يعني علاج أمك تلات سنين.» سناء بلعت ريقها وما اتحركتش.',
    ch:()=>{const h=S.hero,pp=UB_pr(60);return [
-    h.money>=pp&&{t:`أدفع لها ${pp} جنيه وتقوم`,res:{tier:'full',money:-pp,xp:3,rep:[8,'{ساعدت|ساعدتي} سناء'],t:'سناء مسكت الفلوس وما صدقتش. قامت من على الكرسي وضفيرتها لسه في مكانها، والحلاق شتم ورجّع الموس جيبه.',go:'next'}},
+    h.money>=pp&&{t:`أدفع لها ${pp} جنيه وتقوم`,res:{tier:'full',money:-pp,xp:3,rep:[8,'{ساعدت|ساعدتي} سناء'],t:'سناء مسكت الفلوس وما صدقتش. قامت من على الكرسي وضفيرتها لسه في مكانها، والحلاق شتم ورجّع الموس جيبه.',follow:'f_sanaa_back',go:'next'}},
     {t:'أقف قدام الحلاق',stat:'حضور',res:{
-      full:{xp:4,rep:[8,'{وقفت|وقفتي} مع سناء'],t:'«الضفيرة دي مش للبيع.» الحلاق بص في عينك شوية، وبعدين ضحك وطوى الموس: «ماشي. السوق راجع السنة الجاية.» سناء جريت من غير ما تقول ولا كلمة.',go:'next'},
-      part:{hp:-3,rep:[6,'{وقفت|وقفتي} مع سناء'],t:'الحلاق زقك بكتفه، بس سناء استغلت اللحظة وجريت. الموس جرحك في دراعك وهو بيلف.',go:'next'},
+      full:{xp:4,rep:[8,'{وقفت|وقفتي} مع سناء'],t:'«الضفيرة دي مش للبيع.» الحلاق بص في عينك شوية، وبعدين ضحك وطوى الموس: «ماشي. السوق راجع السنة الجاية.» سناء جريت من غير ما تقول ولا كلمة.',follow:'f_sanaa_back',go:'next'},
+      part:{hp:-3,rep:[6,'{وقفت|وقفتي} مع سناء'],t:'الحلاق زقك بكتفه، بس سناء استغلت اللحظة وجريت. الموس جرحك في دراعك وهو بيلف.',follow:'f_sanaa_back',go:'next'},
       fail:{hp:-5,t:'الحلاق لف الموس في الهوا وحلق نص حاجبك في حركة واحدة: «{هتقف|هتقفي} تاني؟» سناء فضلت مكانها، والضفيرة وقعت على الأرض.',go:'next'}}},
     {t:'أسيبها',res:{tier:'plain',t:'{مشيت|مشيتي}. ورا ضهرك صوت الموس بيقص.. ومحدش عيط.',go:'next'}},
-    h.energy>=3&&{opt:1,t:'أدفع من نومي بدالها',sub:'3 طاقة',res:{tier:'full',energy:-3,xp:3,rep:[10,'{دفعت|دفعتي} عن سناء من نومك'],t:'الحلاق شم جبينك: «نوم بني آدم.. ده أحسن من الشعر.» خد اللي خده، وعينيك بقت تقيلة زي الحجر. سناء باست إيدك وجريت.',go:'next'}},
+    h.energy>=3&&{opt:1,t:'أدفع من نومي بدالها',sub:'3 طاقة',res:{tier:'full',energy:-3,xp:3,rep:[10,'{دفعت|دفعتي} عن سناء من نومك'],t:'الحلاق شم جبينك: «نوم بني آدم.. ده أحسن من الشعر.» خد اللي خده، وعينيك بقت تقيلة زي الحجر. سناء باست إيدك وجريت.',follow:'f_sanaa_back',go:'next'}},
     {opt:1,t:'أشتري الضفيرة وأبيعها لحد تاني',sub:'شر',res:{tier:'fail',money:60,rep:[-8,'{بعت|بعتي} ضفيرة سناء'],t:'{استنيت|استنيتي} الحلاق يقص، {واشتريت|واشتريتي} منه الضفيرة بفكة، {وبعتها|وبعتيها} لجنية على أول الصف بمكسب 60 جنيه. سناء لمت اللي فاضل من شعرها وما بصتلكش.',go:'next'}},
     {opt:1,t:'أسأل سناء: أمك عندها إيه؟',res:{tier:'plain',xp:3,t:'«عيانة من سنة. الدكاترة قالوا مالهاش علاج، والجن قالوا ليها.» سناء بصت للضفيرة: «شعري كان أطول من كده. دي تاني مرة.»',go:'next'}}
    ].filter(Boolean)}}}
@@ -16572,14 +16635,14 @@ const UC_CARDS=[
   scene:{art:'uc_vault',chip:'شق في السقف',text:()=>`واحد ملثّم نازل من شق في السقف على حبل، وفي إيده شوال فاضي. شال اللثام: «<b>نبيل</b>. بسرق من العفاريت: هما بيسرقوا من الناس، وأنا بسرق منهم. يبقى عدل. تيجي معايا؟ الخزنة اللي جنب أوضة الكبير فيها دهب يكفّينا الاتنين.»`,
    ch:()=>[
     {t:'أدخل معاه الخزنة',stat:'خفة',res:{
-      full:{money:120,mats:{silver:1},xp:2,t:'الخزنة فتحت قدام سلك نبيل. {ملّيت|ملّيتي} جيوبك: 120 جنيه وحتة فضة. نبيل غمزلك وطلع على حبله.',go:'next'},
-      part:{money:60,hp:-5,t:'خدتوا نص اللي فيها، والباب الحديد اتقفل على كتفك. نبيل {شدّك|شدّك} لبرا.',go:'next'},
+      full:{money:120,mats:{silver:1},xp:2,t:'الخزنة فتحت قدام سلك نبيل. {ملّيت|ملّيتي} جيوبك: 120 جنيه وحتة فضة. نبيل غمزلك وطلع على حبله.',follow:'f_nabil_back',go:'next'},
+      part:{money:60,hp:-5,t:'خدتوا نص اللي فيها، والباب الحديد اتقفل على كتفك. نبيل {شدّك|شدّك} لبرا.',follow:'f_nabil_back',go:'next'},
       fail:{t:'جرس الخزنة رن. نبيل طلع على حبله {وسابك|وسابكي} لوحدك مع خدامين جايين جري.',fight:[UC_f('servant'),UC_f('servant')],go:'next'}}},
     {t:'أقوله لأ وأكمّل',res:{tier:'plain',t:'نبيل هز كتافه: «براحتك. الشغلانة موجودة لو {غيّرت|غيّرتي} رأيك.» وطلع على الحبل زي القرد.',go:'next'}},
-    {t:'أسلّمه للخدامين',sub:'العفاريت بتدفع للي يمسك حرامي',res:{tier:'fail',money:80,rep:[-8,'{سلّمت|سلّمتي} نبيل للعفاريت'],t:'{ندهت|ندهتي} على الخدامين. نبيل بصلك وهما بيشدوه من رجله: «ده {انت|انتي} بني آدم زيي!» وأمين المخازن كتب اسمه في الدفتر، {وإداك|وإداكي} 80 جنيه.',go:'next'}},
+    {t:'أسلّمه للخدامين',sub:'العفاريت بتدفع للي يمسك حرامي',res:{tier:'fail',money:80,rep:[-8,'{سلّمت|سلّمتي} نبيل للعفاريت'],t:'{ندهت|ندهتي} على الخدامين. نبيل بصلك وهما بيشدوه من رجله: «ده {انت|انتي} بني آدم زيي!» وأمين المخازن كتب اسمه في الدفتر، {وإداك|وإداكي} 80 جنيه.',follow:'f_nabil_revenge',go:'next'}},
     {opt:1,t:'أسأله على سكة للكبير',res:{tier:'plain',flag:'uc_rope',xp:2,t:'نبيل شاور على الشق: «ده بيطلع فوق أوضة الكبير على طول. {انزل|انزلي} منه وهو مش واخد باله، {واضرب|واضربي} الأول.»',go:'next'}},
     {opt:1,t:'آخد اللي معاه بالعافية',sub:'قتال',res:{tier:'plain',rep:[-4,'{ضربت|ضربتي} حرامي غلبان'],t:'«كده؟!» نبيل طلّع مطوة ووقف.',fight:[UC_f('thief')],go:'next'}},
-    UC_cls('حرامي')&&{opt:1,keep:1,t:'«{حرامي زيك|حرامية زيك}.. نقسم»',res:{tier:'full',money:100,xp:3,flag:'uc_rope',t:'نبيل ضحك: «{زميل|زميلة}؟» دخلتوا الخزنة سوا وخرجتوا في خمس دقايق. وقبل ما يطلع قالك على شق بينزل على أوضة الكبير.',go:'next'}}
+    UC_cls('حرامي')&&{opt:1,keep:1,t:'«{حرامي زيك|حرامية زيك}.. نقسم»',res:{tier:'full',money:100,xp:3,flag:'uc_rope',t:'نبيل ضحك: «{زميل|زميلة}؟» دخلتوا الخزنة سوا وخرجتوا في خمس دقايق. وقبل ما يطلع قالك على شق بينزل على أوضة الكبير.',follow:'f_nabil_back',go:'next'}}
    ].filter(Boolean)}},
 
  {id:'uc_years',type:'trade',stars:2,title:'بياع السنين',teaser:'سنين عمر في قزايز، للبيع وللشرا',
@@ -17609,6 +17672,524 @@ async function brBake(btn){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_F
   SFX.heal();toast(`${g.burnt?`الفرن حرق أغلبه، و${G('لحقت','لحقتي')} رغيف واحد`:n>=5?'عيش سخن ومنفوخ!':n>=3?'عيش حلو':'عيش ماشي حاله'} · ${twI('+'+n)} عيش`)}
 {const o=SCREENS.cook;SCREENS.cook=function(){const r=o.apply(this,arguments);const h=S.hero;if(!h||S.screen!=='cook')return r;
   const lb=[...view.querySelectorAll('.tw-lbl')].find(e=>/أكل جاهز/.test(e.textContent));if(lb){lb.insertAdjacentHTML('beforebegin',brRowsHTML(h));brBind()}return r}}
+
+/* ---------- follow-ups: what you chose comes back later in the same night (prefix NF_) ----------
+   An outcome plants one with  follow:'<card id>'  or  follow:{id,in:[2,4],why:'..'}  (a list works too).
+   The card then comes 2 to 4 stops later, guaranteed as one of the cards in the hand, with a small «عشان..» line.
+   A follow-up card lives in DECKS.fol (never dealt by itself). acts:[..] ties it to places; it drops when no place is left.
+   Pending follow-ups are in S.night.fol, so they are saved after every stop.
+   An outcome may also set more flags with  mark:'x'  or  mark:['x','y']  (echoes read them later).
+   Echoes: NF_echoText(scene,fn) adds a line to a scene's text, NF_echoCh(scene,fn) adds a choice; fn reads S.flags. */
+const NF_IN=[2,4];        /* stops until a follow-up comes */
+const NF_TRIES=2;         /* a follow-up the player passes on comes once more, 2 stops later */
+const NF_SEEN=[.3,.6];    /* across nights: weight of a card seen 1 or 2 nights ago (same adventure) */
+const NF_f=k=>!!(S.flags&&S.flags[k]);
+const NF_has=k=>(S.hero.bag[k]||0)>0;
+const NF_cn=()=>S.comp?S.comp.name:'رفيقك';
+const NF_rest=p=>Math.max(2,Math.ceil(MXH(S.hero)*p));
+const NF_take=(k,n)=>{const h=S.hero;h.res=h.res||{};const a=Math.min(h.res[k]||0,n);if(a>0)h.res[k]-=a;return a};
+function NF_list(){const N=S.night;return N?(N.fol=N.fol||[]):[]}
+function NF_plant(f){if(!N_on()||!f)return;const N=S.night,L=NF_list();
+  [].concat(f).forEach(x=>{if(!x)return;if(typeof x==='string')x={id:x};const c=CARD[x.id];if(!c||N.played.includes(x.id)||L.some(e=>e.id===x.id))return;
+    const r=x.in||c.fin||NF_IN,d=r[0]+Math.floor(Math.random()*(r[1]-r[0]+1));
+    L.push({id:x.id,due:(N.stops||0)+d,at:N.stops||0,why:x.why||null});if(x.flag)S.flags[x.flag]=1})}
+/* the follow-up due now (or null); ones that can never come any more are dropped */
+function NF_due(){const N=S.night,A=N_act(),s=N.stop,L=NF_list(),later=N_acts().slice(N.act).map(a=>a.k);
+  for(let i=L.length-1;i>=0;i--){const e=L[i],c=CARD[e.id];if(!c||N.played.includes(e.id)||(c.acts&&!c.acts.some(k=>later.includes(k))))L.splice(i,1)}
+  const can=L.filter(e=>{const c=CARD[e.id];if(c.acts&&!c.acts.includes(A.k))return false;if(!N_req(c))return false;
+    if(e.due<=N.stops)return true;
+    /* tied to this place and the act is ending: it comes at the last stop instead of dropping */
+    return !!c.acts&&s>=A.stops&&e.at<N.stops&&!c.acts.some(k=>later.slice(1).includes(k))});
+  can.sort((a,b)=>a.due-b.due);return can[0]||null}
+function NF_inject(hand){const N=S.night;N.folShow={};if(!hand)return;const e=NF_due();if(!e)return;const c=CARD[e.id];if(!c||hand.includes(c))return;
+  const A=N_act(),cnt=t=>hand.filter(x=>x.type===t).length;
+  let idx=hand.map((x,i)=>i).filter(i=>{const x=hand[i];if(x.id==='n_road')return true;
+    return !(x.type==='prep'&&N.stop>=A.stops)&&!(x.type==='rest'&&cnt('rest')===1)&&!(x.type==='shop'&&cnt('shop')===1)&&x.place!=='rare'&&!(N.folShow[x.id])});
+  if(!idx.length)idx=hand.map((x,i)=>i).filter(i=>hand[i].type!=='prep');
+  if(hand.length<3)hand.push(c);else{if(!idx.length)return;const i=pick(idx),o=hand[i];N.dealt[o.id]=Math.max(0,(N.dealt[o.id]||1)-1);if(!N.dealt[o.id])delete N.dealt[o.id];hand[i]=c}
+  N.dealt[c.id]=(N.dealt[c.id]||0)+1;e.tries=(e.tries||0)+1;e.due=N.stops+2;N.folShow[c.id]=e.why||c.why||1;
+  if(e.tries>=NF_TRIES){const L=NF_list();L.splice(L.indexOf(e),1)}
+  N.hand=hand.map(x=>x.id)}
+/* across nights: cards the hero saw in the last 1 or 2 nights of this adventure come a little less (never zero) */
+function NF_mem(){const h=S.hero,N=S.night;if(!h||!N)return null;h.seenC=h.seenC||{};const k=N.adv||'nadaha';return h.seenC[k]=h.seenC[k]||{n:0,c:{}}}
+function NF_wDown(){const N=S.night,m=NF_mem();if(!m||!N.nfN)return null;const out=[];
+  Object.keys(m.c).forEach(id=>{const c=CARD[id],ago=N.nfN-m.c[id];if(!c||ago<1||ago>NF_SEEN.length)return;
+    out.push([c,Object.prototype.hasOwnProperty.call(c,'w'),c.w]);c.w=(c.w==null?1:+c.w||0)*NF_SEEN[ago-1]});return out}
+function NF_wBack(a){(a||[]).forEach(([c,had,w])=>{if(had)c.w=w;else delete c.w})}
+function NF_seen(hand){const N=S.night,m=NF_mem();if(!m||!N.nfN||!hand)return;hand.forEach(c=>{if(c&&c.id!=='n_road'&&!c.fol)m.c[c.id]=N.nfN});
+  Object.keys(m.c).forEach(id=>{if(N.nfN-m.c[id]>3)delete m.c[id]})}
+/* the outer wrap of the deal goes on once every part has wrapped it (so later swaps never take the follow-up out) */
+let NF_on=0;
+function NF_install(){if(NF_on)return;NF_on=1;const d0=N_deal;
+  N_deal=function(){const w=N_on()?NF_wDown():null;let hand;try{hand=d0.apply(this,arguments)}finally{NF_wBack(w)}
+    if(N_on()){try{NF_inject(hand)}catch(e){console.error('NF deal: '+e.message)}try{NF_seen(hand)}catch(e){}}
+    return hand}}
+{const b0=N_begin;N_begin=function(){NF_install();const r=b0.apply(this,arguments);const N=S.night;if(N&&S.hero){N.fol=[];const m=NF_mem();m.n=(m.n||0)+1;N.nfN=m.n;N_save()}return r}}
+{const r0=N_resume;N_resume=function(){NF_install();return r0.apply(this,arguments)}}
+{const p0=N_pick;N_pick=function(id){const N=S.night;if(N&&N.folShow&&N.folShow[id]&&N.hand&&N.hand.includes(id)){const L=NF_list(),i=L.findIndex(e=>e.id===id);if(i>=0)L.splice(i,1)}return p0.apply(this,arguments)}}
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){if(o&&typeof o==='object'&&N_on()){
+    try{if(o.mark)[].concat(o.mark).forEach(k=>{if(k)S.flags[k]=1});if(o.follow)NF_plant(o.follow);else if(c&&c.follow)NF_plant(c.follow)}catch(e){console.error('NF plant: '+e.message)}}
+  return ao.apply(this,arguments)}}
+/* the stop screen: a follow-up card carries a small line that says why it came */
+{const st0=SCREENS.stop;SCREENS.stop=function(){NF_install();st0.apply(this,arguments);const N=S.night;if(S.screen!=='stop'||!N||!N.folShow)return;
+  Object.keys(N.folShow).forEach(id=>{const b=view.querySelector(`[data-nc="${id}"] .ntx`),w=N.folShow[id];if(!b||b.querySelector('.nfw'))return;
+    let t='';try{t=typeof w==='function'?w():w===1?'':w}catch(e){t=''}if(!t)t='اللي {عملته|عملتيه} قبل كده رجعلك..';
+    b.insertAdjacentHTML('afterbegin',`<em class="nfw">${T(t)}</em>`);b.closest('.ncard').classList.add('nfol')})}}
+/* echoes: a scene's text or choices change a little because of an earlier choice */
+function NF_echoText(key,fn){const sc=SC[key];if(!sc)return;const t0=sc.text;
+  sc.text=function(){let a='',b='';try{a=t0?t0.apply(this,arguments):''}catch(e){console.error('scene '+key+': '+e.message)}try{b=fn()||''}catch(e){console.error('NF echo '+key+': '+e.message)}return a+(b?`<br><span class="nfe">(${b})</span>`:'')}}
+function NF_echoCh(key,fn){const sc=SC[key];if(!sc)return;const c0=sc.ch;
+  sc.ch=function(){const a=(c0?c0.apply(this,arguments):[])||[];let x=null;try{x=fn()}catch(e){console.error('NF echo '+key+': '+e.message)}const add=[].concat(x||[]).filter(Boolean);if(!add.length)return a;
+    const out=a.slice();out.splice(Math.min(1,out.length),0,...add);return out}}
+
+/* ---------- less repetition: the commonest choice words get a few wordings, fixed per card ---------- */
+const NF_VARY={
+  'أحاربه':['أحاربه','أهجم عليه','أقف قصاده وأضرب','أشد سلاحي وأهجم عليه','أواجهه'],
+  'أحاربهم':['أحاربهم','أهجم عليهم','أقف قصادهم','أواجههم'],
+  'أحاربها':['أحاربها','أهجم عليها','أقف قصادها وأضرب','أواجهها'],
+  'أكمّل طريقي':['أكمّل طريقي','أسيب المكان وأكمّل','أبعد وأكمّل مشي','أعدّي وأكمّل'],
+  'أرمي عليه ملح':['أرمي عليه ملح','أرش عليه حفنة ملح','أحدفه بالملح'],
+  'أتفرج وأمشي':['أتفرج وأمشي','أبص شوية وأكمّل','أتفرج من بعيد وأمشي']};
+const NF_hash=s=>{let x=7;for(let i=0;i<s.length;i++)x=(x*31+s.charCodeAt(i))>>>0;return x};
+{const o0=N_opts;N_opts=function(key,all){const out=o0.apply(this,arguments);return out.map(c=>{const v=c&&typeof c.t==='string'&&NF_VARY[c.t];return v?Object.assign({},c,{t:v[NF_hash(key)%v.length]}):c})}}
+
+/* ---------- foes of the follow-ups (art reused from each place) ---------- */
+const NF_FOE={
+  sons:()=>[{name:'ونيس',art:'k_awad',hp:7,dmg:2},{name:'مدحت',art:'k_awad',hp:6,dmg:2}],
+  houseThing:()=>({name:'ساكنة البيت',art:'k_qarina',hp:9,dmg:2,fem:1,spirit:1,weak:['salt','iron']}),
+  graveLady:()=>({name:'صاحبة الخاتم',art:'k_qarina',hp:10,dmg:2,fem:1,spirit:1,weak:['salt','incense']}),
+  ragab:()=>({name:'رجب',art:'g_tarm',hp:9,dmg:2}),
+  saleh:()=>[{name:'راجل من رجالة عم صالح',art:'g_tar',hp:7,dmg:2},{name:'ابن عم صالح',art:'g_tar',hp:6,dmg:2}],
+  bayoumi:()=>({name:'عم بيومي الغريق',art:'t_drowned',hp:14,dmg:3,spirit:1,weak:['salt','fire'],traits:['thick']}),
+  sobhi:()=>[{name:'المعلم صبحي',art:'q_hunter',hp:9,dmg:2},{name:'صياد كنوز',art:'q_hunter',hp:7,dmg:2}],
+  maid:()=>({name:'خدامة الهانم',art:'q_servant',hp:9,dmg:2,fem:1,spirit:1,weak:['salt'],traits:['vanish']}),
+  rashad:()=>({name:'عم رشاد',art:'ma_bandit',hp:10,dmg:3}),
+  lost:()=>({name:'التايه',art:'ma_dust',hp:10,dmg:3,spirit:1,weak:['iron','salt'],traits:['vanish']}),
+  ashraf:()=>[{name:'أشرف',art:'mb_smug',hp:10,dmg:3},{name:'خفير المقاول',art:'mb_smug',hp:8,dmg:3}],
+  hooves:()=>({name:'الضيف اللي بحوافر',art:'ub_pick',hp:13,dmg:4,weak:['salt','iron'],traits:['fast']}),
+  gamblers:()=>[{name:'مقامر من الجن',art:'ub_pick',hp:11,dmg:3,weak:['iron','salt'],traits:['fast']},{name:'مقامر أعور',art:'ub_pick',hp:10,dmg:3,weak:['iron','salt']}],
+  broker:()=>[{name:'صبي سمسار',art:'ua_boy',hp:9,dmg:3},{name:'صبي بنبوت',art:'ua_boy',hp:9,dmg:3}]};
+const NF_fight=k=>NF_FOE[k]();
+
+/* ---------- the follow-up cards ---------- */
+addCards('fol',[
+ /* ===== النداهة ===== */
+ {id:'f_beg_gift',fol:1,type:'people',stars:0,title:'الراجل الغلبان تاني',teaser:'جاي يجري {وراك|وراكي} وبينهج',why:'عشان {ساعدت|ساعدتي} الراجل الغلبان..',
+  scene:{text:()=>'الراجل الغلبان اللي كان على باب السوق جاي يجري {وراك|وراكي} وبينهج، وفي إيده صرة صغيرة. «{استنى|استني}! من ساعة ما {ساعدتني|ساعدتيني} وأنا بدوّر {عليك|عليكي}. اللي زيك ما يمشيش الليلة دي إيده فاضية.»',
+   ch:()=>[
+    {t:'آخد الصرة وأشكره',res:{tier:'full',item:'potion',xp:1,mark:'nf_beg',t:'فتح الصرة: جرعة شفا ملفوفة في ورقة جرنال. «دي كانت لبكرة.. بس {انت أحوج|انتي أحوج}.» وشاور على الضلمة: «والملح.. خليه في إيدك، مش في الشنطة.»',go:'next'}},
+    {t:'أقوله يخليها لنفسه',res:{tier:'plain',xp:2,flag:'warned',rep:[6,'{سبت|سبتي} للغلبان رزقه'],mark:'nf_beg',t:'بصلك كتير، وبعدين مال على ودنك: «طب {خد|خدي} دي بدالها: لو حد ندهك باسمك عند الترعة.. {ما تبصش|ما تبصيش} {وراك|وراكي}.» وساب الصرة في جيبه ومشي.',go:'next'}},
+    {t:'أمشي معاه لحد عشته',res:()=>({tier:'plain',heal:NF_rest(.25),mark:'nf_beg',t:'عشته أوضة طين قد الكف، ومراته عملتلك شاي تقيل في كوباية مشروخة. {قعدت|قعدتي} عشر دقايق، {وقمت|وقمتي} وجسمك أخف.',go:'next'})}
+   ]}},
+ {id:'f_beg_sons',fol:1,type:'fight',stars:1,title:'ولاد الراجل الغلبان',teaser:'اتنين قافلين السكة وبيبصوا لإيدك',why:'عشان {أذيت|أذيتي} الراجل الغلبان..',
+  scene:{text:()=>'اتنين شباب قافلين الحارة بنبابيت: ونيس ومدحت، ولاد الراجل الغلبان اللي على باب السوق. «أبونا رجع البيت بيعيط. {انت|انتي} بقى اللي {عملت|عملتي} فيه كده؟»',
+   ch:()=>[
+    S.hero.money>=20&&{t:'أعتذر وأدفع 20 جنيه',res:{tier:'plain',money:-20,rep:[6,'{رجّعت|رجّعتي} حق الراجل الغلبان'],t:'ونيس عد الفلوس، ومدحت لسه ماسك النبوت. «المرة الجاية {بص|بصي} للناس قبل ما {تمد|تمدي} إيدك.» ووسّعولك.',go:'next'}},
+    {t:'أحاربهم',res:{tier:'plain',rep:[-4,'{ضربت|ضربتي} ولاد الراجل الغلبان'],t:'«يبقى {انت|انتي} اللي {اخترت|اخترتي}.» والنبوتين اترفعوا مع بعض.',fight:NF_fight('sons'),go:'next'}},
+    {t:'أجري من حارة جانبية',stat:'خفة',res:{
+      full:{xp:2,t:'{نطيت|نطيتي} من فوق سور واطي {ودخلت|ودخلتي} حارة تانية. صوتهم بيزعق وراك، بس رجليهم ما لحقتكش.',go:'next'},
+      part:{hp:-2,t:'{هربت|هربتي}، بس النبوت لحق كتفك {وانت بتنط|وانتي بتنطي}.',go:'next'},
+      fail:{t:'الحارة طلعت سد. ونيس ضحك: «على فين؟»',fight:NF_fight('sons'),go:'next'}}}
+   ]}},
+ {id:'f_thief_job',fol:1,type:'trade',stars:1,acts:['kafr','ghitan'],title:'الحرامي راجع',teaser:'«عندي شغلانة.. وتلزمني إيد زي إيدك»',why:'عشان {سبت|سبتي} حرامي السوق يعدّي..',
+  scene:{text:()=>'الشاب الملثم بتاع السوق طالعلك من ورا حيطة، ونازل اللثام وبيضحك: «{انت|انتي} {شفت|شفتي} وشي وما {قلتش|قلتيش}، يبقى {انت|انتي} مننا. دار المعلم شوقي فاضية الليلة.. هو قاعد في صوان العزا. {تيجي|تيجي} نقسم؟»',
+   ch:()=>[
+    {t:'أدخل معاه الدار',stat:'خفة',res:{
+      full:{ach:'thief',money:40,rep:[-10,'{سرقت|سرقتي} دار المعلم شوقي'],t:'الشباك الورّاني فتح بسلك، ولمّيتوا اللي في الدرج في دقيقتين. الحرامي {إداك|إداكي} نصك بالظبط: «أنا حرامي، بس مش نصّاب.»',go:'next'},
+      part:{money:20,hp:-2,rep:[-10,'{سرقت|سرقتي} دار المعلم شوقي'],t:'الكلب صحي. {نطيت|نطيتي} من الشباك بنص الفلوس، والإزاز جرح دراعك.',go:'next'},
+      fail:{money:-20,rep:[-15,'{اتمسكت|اتمسكتي} في دار المعلم شوقي'],t:'الحرامي جري أول ما الباب زيّق، {وانت اللي اتمسكت|وانتي اللي اتمسكتي}. {دفعت|دفعتي} 20 جنيه للخفير عشان يسيبك، والكفر كله عرف.',go:'next'}}},
+    {t:'أرفض وأكمّل',res:{tier:'plain',xp:1,t:'هز كتافه: «براحتك. بس {افتكر|افتكري}: {انت|انتي} اللي {سبتني|سبتيني} أعدّي.» ورجع للضلمة.',go:'next'}},
+    {t:'أمسكه وأسلّمه للخفر',stat:'قوة',res:{
+      full:{money:15,rep:[10,'{سلّمت|سلّمتي} حرامي السوق للخفر'],mark:'nf_thiefCaught',t:'{لفيت|لفيتي} دراعه ورا ضهره لحد ما صرخ. الخفير {إداك|إداكي} 15 جنيه مكافأة، والست الكبيرة بتاعة الشنطة هتسمع.',go:'next'},
+      part:{hp:-2,rep:[3,'{حاولت تمسك|حاولتي تمسكي} حرامي'],t:'فلت منك وساب في إيدك لثامه بس، وخدش وشك بضوافره.',go:'next'},
+      fail:{t:'طلّع المطوة: «كده؟ ده انا كنت {فاكرك|فاكراكي} {صاحبي|صاحبتي}.»',fight:[K_THIEF()],go:'next'}}}
+   ]}},
+ {id:'f_thief_lady',fol:1,type:'rest',stars:0,acts:['kafr'],title:'بيت الست اللي اتسرقت',teaser:'بنتها واقفة على الباب {مستنياك|مستنياكي}',why:'عشان {وقفت|وقفتي} لحرامي السوق..',
+  scene:{art:'village',text:()=>'على باب دار واطية واقفة بنت شايلة لمبة: سعدية، بنت الست الكبيرة اللي اتسرقت في السوق. «أمي حلفت ما تنام غير لما {تتعشى|تتعشي} عندنا. {اتفضل|اتفضلي}.. العيش لسه سخن.»',
+   ch:()=>[
+    {t:'أدخل أتعشى وأريّح',res:()=>({tier:'plain',heal:NF_rest(.4),mark:'nf_thiefCaught',t:'الست الكبيرة قعدت جنبك تحطلك في الطبق وتقول: «كُل يا {ابني|بنتي}، الليل طويل.» {قمت|قمتي} وجسمك اترد فيه الروح.',go:'next'})},
+    {t:'آخد لقمة في إيدي وأكمّل',res:{tier:'plain',item:'foul',xp:1,mark:'nf_thiefCaught',t:'سعدية لفّتلك طبق فول ورغيفين في فوطة: «خليه {معاك|معاكي}، الطريق للغيطان طويل.»',go:'next'}},
+    {t:'أشكرهم وأمشي',res:{tier:'plain',rep:[3,'الكفر بيحكي عن جدعنتك'],t:'الست الكبيرة طلعت على الباب ودعتلك بصوت عالي، والجيران سمعوا.',go:'next'}}
+   ]}},
+ {id:'f_house_breath',fol:1,type:'fight',stars:2,title:'النفَس اللي {وراك|وراكي}',teaser:'من ساعة البيت المهجور وفيه حد ماشي {وراك|وراكي}',why:'عشان {خدت|خدتي} حاجة من البيت المهجور..',
+  scene:{text:()=>'من ساعة ما {خرجت|خرجتي} من البيت المهجور وفيه نفَس تقيل ورا ودنك. دلوقتي السكة فاضية، والنفَس بقى صوت ست ناشف: «{رجّع|رجّعي} اللي {خدته|خدتيه}.. الحاجة دي مش {ليك|ليكي}.»',
+   ch:()=>[
+    S.hero.money>=20&&{t:'أرمي 20 جنيه على الأرض وأمشي',res:{tier:'plain',money:-20,xp:1,t:'الفلوس اختفت قبل ما تلمس التراب، والنفَس سكت. بس {وانت ماشي|وانتي ماشية} {سمعت|سمعتي} الضحكة: «المرة الجاية {اسأل|اسألي} قبل ما {تاخد|تاخدي}.»',go:'next'}},
+    {t:'ألف وأواجهها',res:{tier:'plain',t:'{لفيت|لفيتي}، والهوا اتجمع قدامك في شكل ست طويلة شعرها مفرود لحد الأرض.',fight:[NF_fight('houseThing')],go:'next'}},
+    NF_has('salt')&&{t:'أرش ملح ورا ضهري',sub:'{هتستعمل|هتستعملي} كيس ملح',res:{tier:'full',use:'salt',xp:2,t:'الملح نزل في الهوا، وصرخة رفيعة خرجت من الضلمة وبعدت. النفَس اللي ورا ودنك راح.. وفضلت الحاجة اللي {خدتها|خدتيها}.',go:'next'}}
+   ]}},
+ {id:'f_grave_lady',fol:1,type:'test',stars:2,title:'صاحبة الخاتم',teaser:'ست بكفن أبيض بتدوّر على حاجة',why:'عشان {خدت|خدتي} حاجة من التُرب..',
+  scene:{text:()=>'ست ملفوفة في كفن أبيض واقفة في نص السكة، وصوابعها بتعد في الهوا: «خاتم.. حلق.. مشط..» لما {قربت|قربتي} شمّت الهوا ناحيتك: «ريحة حاجتي {عليك|عليكي}.»',
+   ch:()=>[
+    {t:'أرجّعلها النحاس اللي خدته',sub:'لو {معاك|معاكي} نحاس',res:()=>{const a=NF_take('copper',3);return a?{tier:'full',xp:3,rep:[6,'{رجّعت|رجّعتي} حق الأموات'],t:'{حطيت|حطيتي} النحاس في إيدها الساقعة. قفلت صوابعها عليه، ومشيت ناحية الجبانة من غير ما رجليها تلمس الأرض.',go:'next'}
+      :{tier:'fail',t:'{مدّيت|مدّيتي} إيدك فاضية. الست بصت فيها.. وصرخت.',fight:[NF_fight('graveLady')],go:'next'}}},
+    {t:'أجري من غير ما أبص ورايا',stat:'تحمّل',res:{
+      full:{xp:2,t:'{جريت|جريتي} لحد ما رجليك ولعت. لما {وقفت|وقفتي}، صوت العد كان بعيد.. بعيد خالص.',go:'next'},
+      part:{hp:-2,t:'{هربت|هربتي}، بس ضوافر ساقعة خربشت قفاك قبل ما {تبعد|تبعدي}.',go:'next'},
+      fail:{hp:-2,energy:-1,t:'الكفن لف على رجلك {ووقعت|ووقعتي}. لما {قمت|قمتي}، كانت قدامك.',fight:[NF_fight('graveLady')],go:'next'}}},
+    {t:'أواجهها',res:{tier:'plain',t:'الست رفعت إيديها، والكفن طار حواليها زي الجناحات.',fight:[NF_fight('graveLady')],go:'next'}}
+   ]}},
+ {id:'f_ragab_pit',fol:1,type:'fight',stars:2,acts:['ghitan','tera'],title:'رجب طالع من الحفرة',teaser:'متغطّي طين، والفاس في إيده',why:'عشان {خطفت|خطفتي} جرة رجب..',
+  scene:{text:()=>'رجب بتاع الحفرة طالع من الضلمة متغطّي طين من راسه لرجله، والفاس في إيده بتنقّط: «{افتكرت|افتكرتي} إني هفضل تحت؟ الجرة دي أنا اللي حفرتلها سبع ليالي.»',
+   ch:()=>[
+    S.hero.money>=30&&{t:'أرجّعله 30 جنيه',res:{tier:'plain',money:-30,rep:[6,'{رجّعت|رجّعتي} لرجب حقه'],t:'خطف الفلوس وعدّها مرتين، وبعدين بصلك بقرف: «الباقي يحرق إيدك.» ورجع للغيط.',go:'next'}},
+    {t:'أحاربه',res:{tier:'plain',rep:[-3,'{ضربت|ضربتي} رجب بتاع الحفرة'],t:'رجب رفع الفاس فوق راسه وزعق زعقة الغيط كله سمعها.',fight:[NF_fight('ragab')],go:'next'}},
+    {t:'أقوله الرصد هو اللي خدها',stat:'حضور',res:{
+      full:{xp:3,t:'وشه اتقلب، وبص للأرض تحت رجليه: «الرصد..؟» ورجع يجري على حفرته يحفر تاني.',go:'next'},
+      part:{hp:-2,t:'مصدقش، بس الفاس نزلت على كتفك بضهرها مش بحدها. «{غور|غوري}.»',go:'next'},
+      fail:{t:'«رصد مين يا {نصاب|نصابة}؟!»',fight:[NF_fight('ragab')],go:'next'}}}
+   ]}},
+ {id:'f_cow_feast',fol:1,type:'rest',stars:0,acts:['ghitan'],title:'عشا عند عم صالح',teaser:'صاحب البقرة {مستنيك|مستنياكي} على باب الدار',why:'عشان {رجّعت|رجّعتي} البقرة لصاحبها..',
+  scene:{art:'village',text:()=>'عم صالح، صاحب البقرة اللي {رجّعتها|رجّعتيها}، واقف على باب داره ومعاه رجالة عيلته، وريحة بيض بالسمنة طالعة من جوه. «اللي يرجّع بقرة لصاحبها يبقى من العيلة. {اتفضل|اتفضلي}.»',
+   ch:()=>[
+    {t:'آكل وأريّح شوية',res:()=>({tier:'plain',heal:NF_rest(.4),t:'أكلتوا على الطبلية، والبقرة بتخور برة كأنها بتسلّم. {قمت|قمتي} وجسمك اترد فيه الروح.',go:'next'})},
+    {t:'أطلب منه رجالته معايا لآخر الغيطان',res:{tier:'plain',xp:2,flag:'nf_salehMen',t:'عم صالح خبط على صدره: «ولادي {وراك|وراكي} بالنبابيت والكلوبات. لو {زعقت|زعقتي}، هيوصلوا.»',go:'next'}},
+    {t:'آخد كلوب وأكمّل',res:{tier:'plain',item:'torch',t:'عم صالح {إداك|إداكي} شعلة ملفوفة جاز: «النار بتكشف اللي في الدرة.»',go:'next'}}
+   ]}},
+ {id:'f_cow_catch',fol:1,type:'fight',stars:2,title:'رجالة عم صالح',teaser:'نبابيت ولمبة جاز، وبيدوّروا على حد',why:'عشان {خدت|خدتي} نصيب من حرامية المواشي..',
+  scene:{text:()=>'لمبة جاز اترفعت في وشك. عم صالح ورجالته لقوا البقرة.. ولقوا الحرامية، والحرامية قالوا إن فيه حد {قبض|قبضت} عشان {يسكت|تسكت}. «{انت|انتي} بقى؟»',
+   ch:()=>[
+    S.hero.money>=30&&{t:'أرجّع الفلوس وأعتذر',res:{tier:'plain',money:-30,rep:[-2,'{خدت|خدتي} رشوة من حرامية'],t:'عم صالح خد الفلوس وتف في الأرض: «{روّح|روّحي}. واللي يشوفك في الغيط ده تاني يكسر رجلك.»',go:'next'}},
+    {t:'أنكر وأقول إني ما شفتش حد',stat:'حضور',res:{
+      full:{xp:2,t:'بصوا لبعض.. وعم صالح نزّل اللمبة: «يمكن الحرامية كدابين.» وسابوك.',go:'next'},
+      part:{rep:[-6,'الغيطان بتقول {إنك|إنك} {شريك|شريكة} حرامية'],t:'سابوك، بس صوتهم وراك بيحكوا لكل اللي يعدّي.',go:'next'},
+      fail:{t:'«كداب {وبجح|وبجحة}!»',fight:NF_fight('saleh'),go:'next'}}},
+    {t:'أحاربهم',res:{tier:'plain',rep:[-6,'{ضربت|ضربتي} أصحاب البقرة'],t:'عم صالح شاور لرجالته، والنبابيت نزلت.',fight:NF_fight('saleh'),go:'next'}}
+   ]}},
+ {id:'f_ferry_ghost',fol:1,type:'fight',stars:3,acts:['tera'],title:'عم بيومي رجع',teaser:'المعدّية جاية لوحدها.. وعليها حد مبلول',why:'عشان {زقيت|زقيتي} عم بيومي في الترعة..',
+  scene:{art:'t_ferry',text:()=>'المعدّية جاية على المية من غير ما حد يشد الحبل. وعليها واقف عم بيومي، والمية بتنقّط من هدومه وعينيه بيضا خالص. «الدين كبر يا {ابن|بنت} الأصول.. والمية {عرفاك|عرفاكي} دلوقتي.»',
+   ch:()=>[
+    {t:'أحاربه',res:{tier:'plain',t:'عم بيومي نط من المعدّية، ورجليه ما غطستش في الطين.',fight:[NF_fight('bayoumi')],go:'next'}},
+    S.hero.money>=60&&{t:'أرمي فلوسه وزيادة في المية',sub:'60 جنيه',res:{tier:'plain',money:-60,rep:[4,'{سدّيت|سدّيتي} دين عم بيومي'],t:'الفلوس غطست، وعم بيومي غطس وراها من غير صوت. المعدّية رجعت مكانها، والحبل اتشد لوحده.',go:'next'}},
+    {t:'أجري بعيد عن الشط',stat:'خفة',res:{
+      full:{xp:3,t:'{جريت|جريتي} لحد ما ريحة المية راحت. وراك، المعدّية لفت ورجعت.. هتستناك.',go:'next'},
+      part:{hp:-3,t:'إيد مبلولة مسكت رجلك وشدت، {وفلتّ|وفلتّي} {وانت سايب|وانتي سايبة} جلد.',go:'next'},
+      fail:{t:'الطين شد رجلك لحد الركبة، وعم بيومي وصل.',fight:[NF_fight('bayoumi')],go:'next'}}}
+   ]}},
+
+ /* ===== سرداب الباشا ===== */
+ {id:'f_jdig_offer',fol:1,type:'trade',stars:2,acts:['p_garden','p_palace'],title:'المعلم صبري بيندهلك',teaser:'«{تعالى|تعالي} يا {شريكي|شريكتي}.. لقينا حاجة»',why:'عشان {اشتغلت|اشتغلتي} مع الحفارين..',
+  scene:{text:()=>'المعلم صبري بتاع الحفارين بيشاورلك من ورا شجرة: «{تعالى|تعالي} يا {شريكي|شريكتي}!» تحت السور طلعلهم صندوق حديد مقفول بختم أحمر، والرجالة خايفين يلمسوه. «{انت|انتي} إيدك خفيفة.. {افتح|افتحي} {وليك|وليكي} التلت.»',
+   ch:()=>[
+    {t:'أفتح الصندوق بنفسي',stat:'قوة',res:{
+      full:{money:60,mats:{iron:1},xp:2,t:'الختم اتكسر والغطا اتفتح: جنيهات قديمة وحتة حديد مشغولة. المعلم صبري عدّ التلت في إيدك: «قولتلك {انت|انتي} مننا.»',go:'next'},
+      part:{money:30,hp:-3,t:'الغطا فتح وطلع منه دخان سخن لسع وشك. الرجالة لمّوا اللي جوه وادولك 30 جنيه.',go:'next'},
+      fail:{t:'الختم الأحمر ساح وبقى دم، ومن الصندوق طلع عفريت قد العيل وبيضحك.',fight:[PJ_JINN()],go:'next'}}},
+    {t:'أخلّيه هو يفتحه وآخد نصيبي',res:{tier:'plain',money:25,xp:1,t:'المعلم صبري فتحه وإيده اتحرقت لحد الكوع. {خدت|خدتي} 25 جنيه من الحسبة، وهو بيشتم الختم.',go:'next'}},
+    {t:'أسيبهم في صندوقهم',res:{tier:'plain',xp:1,t:'«{خوّاف|خوّافة}!» قالها وضحك. {وانت ماشي|وانتي ماشية} {سمعت|سمعتي} الختم بيطرقع.',go:'next'}}
+   ]}},
+ {id:'f_jdig_ambush',fol:1,type:'fight',stars:2,title:'الحفارين عرفوا',teaser:'كواريك مرفوعة، وواحد بيشاور {عليك|عليكي}',why:'عشان {سرقت|سرقتي} عِدّة الحفارين..',
+  scene:{text:()=>'تلات رجالة طالعين من ورا عمود، والمعلم صبري في النص: «هو ده.. {الحرامي|الحرامية} اللي {سرق|سرقت} عِدّتنا وإحنا شغالين.» والكواريك اترفعت.',
+   ch:()=>[
+    S.hero.money>=35&&{t:'أدفع تمن اللي خدته',sub:'35 جنيه',res:{tier:'plain',money:-35,t:'المعلم صبري عدّ الفلوس: «الحديد اتباع، والحساب خلص.» وشاور لرجالته يرجعوا.',go:'next'}},
+    {t:'أحاربهم',res:{tier:'plain',t:'«{مسكناك|مسكناكي}.»',fight:[PJ_CHIEF(),PJ_DIG()],go:'next'}},
+    {t:'أقولهم الكلب الأسود وراهم',stat:'حضور',res:{
+      full:{xp:3,t:'الرجالة لفوا وراهم في نفس اللحظة، {وانت اختفيت|وانتي اختفيتي} بين الشجر.',go:'next'},
+      part:{hp:-2,t:'واحد بس صدّق. التاني لحقك بضهر الكوريك.',go:'next'},
+      fail:{t:'المعلم صبري ضحك: «إحنا اللي بنأكّل الكلب.»',fight:[PJ_CHIEF(),PJ_DIG()],go:'next'}}}
+   ]}},
+ {id:'f_kids_dad',fol:1,type:'people',stars:0,acts:['p_garden'],title:'أبو العيال',teaser:'راجل بفانوس بيدوّر {عليك|عليكي}',why:'عشان {رجّعت|رجّعتي} عيال الرهان..',
+  scene:{text:()=>'راجل بجلابية وفانوس جاي من ناحية البلد: عم أشرف، أبو واحد من عيال الرهان. «العيال حكولي. ربنا {يخليك|يخليكي}.. {خد|خدي} دي، أنا جايبها من الجزار عشان الكلب اللي بيقولوا عليه.»',
+   ch:()=>[
+    {t:'آخد العضمة واللحمة',res:{tier:'full',flag:'p_meat',xp:2,t:'لفة لحمة نيّة وعضمة كبيرة. «الكلب اللي هناك جعان من زمان. اللي يأكّله.. يعدّي.»',go:'next'}},
+    {t:'أطلب منه فانوسه',res:{tier:'plain',item:'torch',t:'عم أشرف ادّالك الفانوس وفضل في الضلمة: «أنا عارف السكة لبيتي بعيني.»',go:'next'}},
+    {t:'أقوله يقفل على العيال الليلة',res:{tier:'plain',xp:2,rep:[4,'أهل البلد بيشكروك'],t:'«قفلت عليهم بالمفتاح.» ضحك، وبعدين وشه جد: «ولو ما {رجعتش|رجعتيش}.. هنبعت حد.»',go:'next'}}
+   ]}},
+ {id:'f_hamada_back',fol:1,type:'people',stars:1,acts:['p_palace','p_cellar'],title:'حمادة رجع',teaser:'بيعرج.. وفي إيده حاجة {ليك|ليكي}',why:'عشان {ساعدت|ساعدتي} حمادة الجريح..',
+  scene:{text:()=>'حمادة، صياد الكنوز الجريح، جاي يعرج على الحيطة. «ما قدرتش أمشي و{انت|انتي} لسه جوه. المعلم صبحي ناوي يسيبك قدام الرصد مكانه. {خد|خدي} دول.»',
+   ch:()=>[
+    {t:'آخد اللي جايبه',res:{tier:'full',item:'salt',money:30,mark:'nf_hamada',t:'كيس ملح و30 جنيه من نصيبه. «الملح ده اللي نفعنا تحت. والفلوس.. مش عايزها، دي ريحتها دم.»',go:'next'}},
+    {t:'أخليه يوريني سكة أمان',res:()=>({tier:'plain',heal:NF_rest(.2),xp:2,mark:'nf_hamada',t:'دخلك من باب خدامين ضيق، وقعدتوا دقيقتين في أوضة فاضية لحد ما الخطوات اللي في الطرقة بعدت.',go:'next'})},
+    {t:'أقوله يخرج من السراية',res:{tier:'plain',rep:[4,'{رجّعت|رجّعتي} حمادة لأهله'],xp:1,mark:'nf_hamada',t:'«حاضر..» وقف على الباب وبصلك: «خلّي بالك من صبحي.»',go:'next'}}
+   ]}},
+ {id:'f_hamada_rob',fol:1,type:'fight',stars:2,title:'المعلم صبحي',teaser:'«الشنطة دي بتاعت واد من رجالتي»',why:'عشان {خدت|خدتي} شنطة حمادة..',
+  scene:{text:()=>'المعلم صبحي وواحد من صيادين الكنوز قافلين الطرقة. صبحي شاور على شنطتك: «دي شنطة حمادة. لقيناه بينزف في الطرقة، وقالنا مين {خدها|خدتها}.»',
+   ch:()=>[
+    S.hero.money>=35&&{t:'أرجّع الفلوس اللي كانت فيها',sub:'35 جنيه',res:{tier:'plain',money:-35,t:'صبحي عدّها وضحك: «حمادة مش هيشوفها برضه.» وحطها في جيبه.',go:'next'}},
+    {t:'أحاربهم',res:{tier:'plain',t:'صبحي طلّع الكوريك من ضهره: «يبقى بالعافية.»',fight:NF_fight('sobhi'),go:'next'}},
+    {t:'أقوله هو اللي ساب حمادة يموت',stat:'حضور',res:{
+      full:{xp:3,t:'صاحبه بص لصبحي وسكت. صبحي اتلخبط: «ماشي.. {روح|روحي}.» والاتنين بقوا يبصوا لبعض.',go:'next'},
+      part:{hp:-2,t:'سابوك، بس صبحي خبطك بكتفه في الحيطة وهو معدّي.',go:'next'},
+      fail:{t:'«أنا اللي سبته؟ ماشي.»',fight:NF_fight('sobhi'),go:'next'}}}
+   ]}},
+ {id:'f_jewel_maid',fol:1,type:'fight',stars:2,acts:['p_palace','p_cellar'],title:'خدامة الهانم',teaser:'صينية فضة فاضية.. ومستنية حاجة',why:'عشان {خدت|خدتي} مجوهرات الهانم..',
+  scene:{text:()=>'خدامة بلبس أسود ومريلة بيضا طالعة من الحيطة نفسها، وقدامها صينية فضة فاضية. «الهانم بتسأل على عقدها.. {حطه|حطيه} هنا لو {سمحت|سمحتي}.» وابتسامتها ما وصلتش لعينيها.',
+   ch:()=>[
+    S.hero.money>=40&&{t:'أحط فلوس على الصينية',sub:'40 جنيه',res:{tier:'plain',money:-40,xp:2,t:'الخدامة بصت للفلوس وقلبتهم بصباعها: «الهانم ما بتحبش الفكة.. بس هتقبل.» واختفت في الحيطة.',go:'next'}},
+    {t:'أحاربها',res:{tier:'plain',t:'الصينية وقعت ورنّت، والخدامة اتمدت لحد السقف.',fight:[NF_fight('maid')],go:'next'}},
+    {t:'أعدّي من جنبها ومش هرجّع حاجة',res:{tier:'fail',hp:-3,t:'{عدّيت|عدّيتي}، وإيدها الساقعة لمست رقبتك مكان العقد. لسه {حاسس|حاسة} بيها.. والهانم دلوقتي {عارفاك|عارفاكي}.',go:'next'}}
+   ]}},
+ {id:'f_jar_heat',fol:1,type:'test',stars:2,acts:['p_cellar'],title:'الجنيهات بتسخن',teaser:'جيبك بيحرق.. والدهب بيتكلم',why:'عشان {خدت|خدتي} من زير الجنيهات..',
+  scene:{text:()=>'جيبك بقى سخن زي الفرن. الجنيهات اللي {خدتها|خدتيها} من الزير بتخبط في بعض وبتهمس بصوت الحيطة: «اللي ياخد.. يدفع. والدفع لسه ما خلصش.»',
+   ch:()=>[
+    S.hero.money>=35&&{t:'أرمي نص الجنيهات على الأرض',sub:'35 جنيه',res:{tier:'plain',money:-35,xp:2,t:'الجنيهات وقعت ورنّت وجريت لوحدها ناحية الضلمة. جيبك برد.',go:'next'}},
+    {t:'أستحمل وأكمّل',stat:'تحمّل',res:{
+      full:{xp:3,t:'{عضيت|عضيتي} على سنانك لحد ما السخونية هديت. الدهب سكت.. زعلان، بس سكت.',go:'next'},
+      part:{hp:-3,t:'السخونية خلّت جلد جنبك يحمر. بس الفلوس فضلت.',go:'next'},
+      fail:{t:'الجنيهات نطّت من جيبك واتقلبت عقارب صفرا.',fight:[PD_f('scorp')],go:'next'}}},
+    NF_has('salt')&&{t:'أرش ملح على جيبي',sub:'{هتستعمل|هتستعملي} كيس ملح',res:{tier:'full',use:'salt',xp:2,t:'الملح نزل على الجيب وطلّع دخان ريحته شياط. الهمس سكت خالص.',go:'next'}}
+   ]}},
+ {id:'f_esam_back',fol:1,type:'people',stars:0,acts:['p_cellar'],title:'عصام راجع',teaser:'جاي يجري من الضلمة ومعاه حاجة',why:'عشان {ساعدت|ساعدتي} عصام..',
+  scene:{text:()=>'عصام، الواد الهربان، جاي يجري ودراعه لسه مربوط. «ما طلعتش.. رجعت أجيبلك دي من عند الدجال وهو نايم.» وفي إيده صرة وشعلة مطفية.',
+   ch:()=>[
+    {t:'آخد الصرة',res:{tier:'full',money:30,mats:{silver:1},t:'جواها 30 جنيه وحتة فضة. «دي فلوس ناس الدجال ضحك عليهم. {انت|انتي} أولى.»',go:'next'}},
+    {t:'آخد الشعلة',res:{tier:'full',item:'torch',xp:1,t:'«الجاز فيها لسه. التماثيل بتكره النور.»',go:'next'}},
+    {t:'أشده من إيده لحد السلم وأطلّعه',res:{tier:'plain',rep:[6,'{طلّعت|طلّعتي} عصام من السرداب'],energy:-1,t:'{طلّعته|طلّعتيه} لحد أول السلم، وزقيته لفوق. صوت رجليه الحافية بعد.. المرة دي لبرة.',go:'next'}}
+   ]}},
+
+ /* ===== مغارة الضبع ===== */
+ {id:'f_huda_dad',fol:1,type:'people',stars:0,acts:['m_road','m_quarry'],title:'عم رشاد الراعي',teaser:'الراعي جاي ورا خطوتك بكلبه',why:'عشان {ساعدت|ساعدتي} هدى..',
+  scene:{text:()=>'عم رشاد الراعي، أبو هدى، لاحقك على الدرب ومعاه كلب سلوقي رفيع وعصاية طرفها والع. «هدى حكتلي. الليلة دي مش ليلة حد يمشي فيها لوحده.»',
+   ch:()=>[
+    {t:'آخد العصاية المولّعة',res:{tier:'full',flag:'m_fire',mark:'nf_rashad',xp:2,t:'«النار دي من نار الرعيان. الديب الأغبر يعرف ريحتها.. ويخاف منها.»',go:'next'}},
+    {t:'أشرب لبن المعزة وأريّح',res:()=>({tier:'plain',heal:NF_rest(.3),mark:'nf_rashad',t:'قعدتوا على صخرة، وعم رشاد صبّلك لبن سخن من قربة. الكلب نام على رجلك.',go:'next'})},
+    {t:'أطلب منه يمشي جنبي شوية',res:{tier:'plain',xp:2,mark:'nf_rashad',t:'مشي جنبك لحد آخر الدرب، والكلب قدامكم بيشم الأرض. «من هنا {انت|انتي} لوحدك.. بس الكلب هيفضل يعوي لو حاجة قربت.»',go:'next'}}
+   ]}},
+ {id:'f_huda_angry',fol:1,type:'people',stars:1,acts:['m_road','m_quarry'],title:'أبو هدى زعلان',teaser:'عصاية رعي في إيده، وعينه حمرا',why:'عشان {خضّيت|خضّيتي} هدى..',
+  scene:{text:()=>'عم رشاد الراعي واقف في نص الدرب، والعصاية في إيده. «بنتي رجعت بتترعش وما بتتكلمش. وقالت إن فيه حد خوّفها بالضبعة. {انت|انتي}؟»',
+   ch:()=>[
+    S.hero.money>=20&&{t:'أعتذر وأدّيله 20 جنيه لهدى',res:{tier:'plain',money:-20,rep:[4,'{صالحت|صالحتي} أبو هدى'],t:'خد الفلوس وسكت شوية: «الفلوس ما بتشيلش الخضة.. بس ماشي.» ومشي.',go:'next'}},
+    {t:'أقف قدامه',stat:'حضور',res:{
+      full:{xp:2,t:'«كنت عايزها تروّح قبل الضلمة.» بصلك كتير، ونزّل العصاية: «كان فيه ألف طريقة غير دي.»',go:'next'},
+      part:{rep:[-4,'الرعيان بيحكوا {عليك|عليكي}'],t:'سابك، بس هيحكي لكل نار رعيان على الدرب.',go:'next'},
+      fail:{t:'العصاية نزلت.',fight:[NF_fight('rashad')],go:'next'}}},
+    {t:'أحاربه',res:{tier:'plain',rep:[-8,'{ضربت|ضربتي} راعي غلبان'],t:'«ماشي.» وشد العصاية بإيديه الاتنين.',fight:[NF_fight('rashad')],go:'next'}}
+   ]}},
+ {id:'f_camel_owner',fol:1,type:'people',stars:1,title:'صاحب الجمل',teaser:'راجل عجوز بيدوّر على جمله',why:'عشان {خدت|خدتي} الخُرج من على الجمل الميت..',
+  scene:{text:()=>'عم عبد الحميد الجمّال ماشي بعكاز وبينده: «يا بركة! يا بركة!» لما شافك سألك: «{شفت|شفتي} جمل محمّل؟ عليه خُرج فيه تمن الموسم كله.. وعيالي مستنيينه.»',
+   ch:()=>[
+    S.hero.money>=50&&{t:'أرجّعله الفلوس اللي في الخُرج',sub:'50 جنيه',res:{tier:'plain',money:-50,xp:4,rep:[10,'{رجّعت|رجّعتي} فلوس الجمّال'],t:'عد الفلوس وإيده بتترعش، وبعدين باس راسك: «الجمل راح.. بس العيال هتاكل.»',go:'next'}},
+    {t:'أقوله الديابة كلت الجمل والخُرج',res:{tier:'plain',rep:[-4,'{كدبت|كدبتي} على راجل عجوز'],t:'قعد على صخرة وحط وشه في إيديه. {مشيت|مشيتي}، والخُرج في شنطتك تقيل.',go:'next'}},
+    {t:'أبيعله مكان الجمل',sub:'بفلوس',res:{tier:'fail',money:20,rep:[-8,'{بعت|بعتي} لجمّال مكان جمله الميت'],t:'دفعلك عشرين جنيه كانوا آخر اللي معاه، ومشي ناحية الديابة يجري. {عارف|عارفة} هيلاقي إيه.',go:'next'}}
+   ]}},
+ {id:'f_cairn_ghost',fol:1,type:'fight',stars:2,acts:['m_road','m_quarry'],title:'صاحب الكوم',teaser:'زوبعة بتلف {حواليك|حواليكي} ومش بتسيبك',why:'عشان {نبشت|نبشتي} كوم الحجارة..',
+  scene:{text:()=>'زوبعة صغيرة بتلف {حواليك|حواليكي} من ساعة كوم الحجارة، وجواها صوت ناشف: «أنا كنت نايم تحت. {صحّيتني|صحّيتيني}.. {وخدت|وخدتي} حاجتي.»',
+   ch:()=>[
+    S.hero.money>=30&&{t:'أرمي فلوسه للريح',sub:'30 جنيه',res:{tier:'plain',money:-30,xp:2,t:'الفلوس طارت في الزوبعة ولفت ولفت.. وبعدين الريح نامت والفلوس معاها.',go:'next'}},
+    {t:'أحط حجر في الأرض وأعتذر',stat:'حكمة',res:{
+      full:{xp:4,t:'{حطيت|حطيتي} حجر {وقلت|وقلتي} الكلمة بالراحة. الزوبعة وقفت، والرملة نزلت كوم صغير جنب رجلك.',go:'next'},
+      part:{hp:-2,energy:-1,t:'الزوبعة هديت، بس الرملة دخلت في عينك وبقك.',go:'next'},
+      fail:{t:'الريح ضحكت: «اعتذار؟»',fight:[NF_fight('lost')],go:'next'}}},
+    {t:'أضرب في قلب الزوبعة',res:{tier:'plain',t:'الزوبعة اتجمعت وبقت راجل رملة.',fight:[NF_fight('lost')],go:'next'}}
+   ]}},
+ {id:'f_wire_guard',fol:1,type:'fight',stars:2,acts:['m_quarry'],title:'رجالة المقاول',teaser:'كشاف في وشك: «النحاس ده جه منين؟»',why:'عشان {شلت|شلتي} نحاس الونش..',
+  scene:{text:()=>'كشاف قوي في وشك. أشرف، راجل المقاول بتاع المحجر، ومعاه خفير شايل شومة: «إيدك سودا من النحاس.. والونش القديم بقى عضم. النحاس ده جه منين؟»',
+   ch:()=>[
+    {t:'أرجّع النحاس',sub:'لو {معاك|معاكي} نحاس',res:()=>{const a=NF_take('copper',3);return a?{tier:'plain',xp:2,t:`{طلّعت|طلّعتي} ${a===1?'لفة':a===2?'لفتين':a+' لفات'} نحاس من شنطتك. أشرف خدهم: «امشي. وما {تقربش|تقربيش} من الونش تاني.»`,go:'next'}
+      :{tier:'fail',t:'شنطتك فاضية من النحاس. أشرف ضحك: «يبقى {بعته|بعتيه}.»',fight:NF_fight('ashraf'),go:'next'}}},
+    S.hero.money>=40&&{t:'أدفعله 40 جنيه يسكت',res:{tier:'plain',money:-40,rep:[-3,'{رشيت|رشيتي} راجل المقاول'],t:'أشرف عد الفلوس وطفى الكشاف: «ما {شفتكش|شفتكيش}.»',go:'next'}},
+    {t:'أحاربهم',res:{tier:'plain',t:'الخفير رفع الشومة، وأشرف حط الكشاف على الأرض.',fight:NF_fight('ashraf'),go:'next'}}
+   ]}},
+ {id:'f_hunt_rob',fol:1,type:'fight',stars:2,acts:['m_cave'],title:'مجدي وممدوح',teaser:'«الصرة بتاعتنا يا {شاطر|شاطرة}»',why:'عشان {سرقت|سرقتي} صيادين الضباع..',
+  scene:{text:()=>'مجدي وممدوح طالعين من ورا صخرة، والشبكة متشدودة بينهم. مجدي بيلعب بالسكينة: «ريحة صرتنا {عليك|عليكي}. الضبع بيشم من بعيد.. واحنا كمان.»',
+   ch:()=>[
+    S.hero.money>=75&&{t:'أرجّعلهم الصرة',sub:'75 جنيه',res:{tier:'plain',money:-75,t:'ممدوح خطف الصرة وعدّها. مجدي ضحك: «{شاطر|شاطرة}. ولو {قابلت|قابلتي} الضبعة، {قولها|قوليلها} إننا جايين.»',go:'next'}},
+    {t:'أحاربهم',res:{tier:'plain',t:'الشبكة طارت ناحيتك.',fight:MC_HUNT(),go:'next'}},
+    {t:'أشاور ورا ضهرهم: «الضبعة!»',stat:'حضور',res:{
+      full:{xp:3,t:'الاتنين لفوا بالسكاكين، والضحكة اللي جاية من جوه المغارة ساعدتك. {اختفيت|اختفيتي} في الضلمة.',go:'next'},
+      part:{hp:-3,t:'ممدوح لف، ومجدي لأ. السكينة لحقت دراعك {وانت بتجري|وانتي بتجري}.',go:'next'},
+      fail:{t:'«نفس الحركة بتاعتنا!»',fight:MC_HUNT(),go:'next'}}}
+   ]}},
+ {id:'f_hunt_bait',fol:1,type:'trade',stars:2,acts:['m_cave'],title:'الصيادين عايزين طُعم',teaser:'«الضبعة قريبة.. وناقصنا حاجة»',why:'عشان {اتفقت|اتفقتي} مع صيادين الضباع..',
+  scene:{text:()=>'مجدي وممدوح لاحقينك وبينهجوا. «اتفاقنا لسه قايم. الضبعة قريبة، وناقصنا طُعم يقف في النور لحد ما نرمي الشبكة. {انت|انتي} أو اللي {معاك|معاكي}.»',
+   ch:()=>[
+    {t:'أقف أنا في النور',sub:'{هتتعور|هتتعوري}، بس الفلوس حلوة',res:{tier:'plain',hp:-4,money:60,xp:3,t:'{وقفت|وقفتي} في النور لحد ما ضبع شاب نط {عليك|عليكي}، والشبكة نزلت عليه. ضوافره لحقتك، بس مجدي {إداك|إداكي} 60 جنيه.',go:'next'}},
+    {t:`أخلّي ${NF_cn()} ${CG('يقف','تقف')}`,sub:'شر',res:()=>{const c=S.comp;if(c)c.hp=Math.max(1,c.hp-Math.ceil(c.max/2));const n=NF_cn();return {tier:'fail',money:60,rep:[-10,`{خلّيت|خلّيتي} ${n} طُعم`],t:`${n} ${CG('وقف','وقفت')} في النور من غير ولا كلمة. الشبكة نزلت متأخر، و${n} ${CG('رجع','رجعت')} ${CG('متعور ومش بيبص','متعورة ومش بتبص')} في وشك.`,go:'next'}}},
+    {t:'أفض الاتفاق',res:{tier:'plain',xp:1,t:'«براحتك.» مجدي بصق في الأرض: «بس الملح اللي خدته.. خليه. هتحتاجه.»',go:'next'}}
+   ]}},
+ {id:'f_emad_back',fol:1,type:'people',stars:0,acts:['m_cave'],title:'عماد رجع',teaser:'بيجري ناحيتك ومعاه شعلة',why:'عشان {فكّيت|فكّيتي} عماد..',
+  scene:{text:()=>'عماد، اللي كان متكتّف في العمود، راجع يجري ومعاه شعلة ومطرة مية. «ما قدرتش أسيبك جوه. {خد|خدي}.. ومش هقولك {ارجع|ارجعي}.. {انت|انتي} مش {هترجع|هترجعي}.»',
+   ch:()=>[
+    {t:'آخد الشعلة',res:{tier:'full',item:'torch',mark:'nf_emad',xp:2,t:'«دي ولّعتها من نار مجدي وهو نايم.» وضحك أول ضحكة من ساعة ما {فكّيته|فكّيتيه}.',go:'next'}},
+    {t:'أشرب وأريّح دقيقة',res:()=>({tier:'plain',heal:NF_rest(.25),mark:'nf_emad',t:'مية ساقعة من المطرة، وعماد قاعد يحرس الممر لحد ما نفسك رجع.',go:'next'})},
+    {t:'أقوله يستناني برة ومعاه نار',res:{tier:'plain',xp:2,mark:'nf_emad',t:'«هولّع نار على باب المغارة. لو {شفتها|شفتيها}، يبقى الطريق قرب.»',go:'next'}}
+   ]}},
+
+ /* ===== سوق العفاريت ===== */
+ {id:'f_khalid_gift',fol:1,type:'people',stars:0,acts:['u_souq','u_deep'],title:'خالد في السوق',teaser:'«{استنى|استني}! مراتي باعتالك حاجة»',why:'عشان {وقفت|وقفتي} مع خالد ومراته..',
+  scene:{text:()=>'خالد، اللي كان رايح يبيع شخير مراته، طالعلك من الزحمة وبينهج. «رجعت أوصّل مراتي ورجعت تاني. هي اللي قالتلي: «{الحقه وإديله|الحقها وإديلها} دول.»»',
+   ch:()=>[
+    {t:'آخد اللي باعتاه',res:()=>({tier:'full',item:NF_has('salt')?'potion':'salt',money:30,xp:2,t:'صرة فيها 30 جنيه و'+(NF_has('salt')?'جرعة شفا':'كيس ملح')+'. «بتقول: اللي يرجّع حد لبيته.. ربنا يرجّعه.»',go:'next'})},
+    {t:'أقوله يرجع بيته قبل الديك',res:{tier:'plain',xp:3,rep:[6,'{رجّعت|رجّعتي} خالد بيته'],t:'«حاضر.. بس {خد|خدي} بالك: البياعين هنا بيعرفوا مين معاه فلوس من ريحته.» وضاع في الزحمة ناحية الباب.',go:'next'}}
+   ]}},
+ {id:'f_khalid_thief',fol:1,type:'trade',stars:1,acts:['u_souq','u_deep'],title:'خالد ومراته لقوك',teaser:'«هو ده! اللي خد الجوال!»',why:'عشان {سرقت|سرقتي} جوال خالد..',
+  scene:{text:()=>'«هو ده!» خالد ومراته شاورين {عليك|عليكي} وسط الزحمة. العفاريت لفوا كلهم: في سوقهم، اللي يسرق بني آدم قبل ما يتباع.. بيدفع غرامة. واحد بكرش وقرنين قرّب: «الغرامة يا {حلو|حلوة}.»',
+   ch:()=>[
+    S.hero.money>=50&&{t:'أرجّعلهم فلوسهم',sub:'50 جنيه',res:{tier:'plain',money:-50,rep:[2,'{رجّعت|رجّعتي} فلوس خالد'],t:'مراته خطفت الفلوس وعدّتها، وخالد بص في الأرض. العفريت أبو قرنين اتضايق: «خلاص؟ ما فيش غرامة؟»',go:'next'}},
+    S.hero.energy>=3&&{t:'أدفع الغرامة من نومي',sub:'3 طاقة',res:{tier:'plain',energy:-3,xp:2,t:'العفريت شم جبينك وسحب حاجة زي الخيط. عينيك تقلت، والفلوس فضلت في جيبك.',go:'next'}},
+    {t:'أجري في الزحمة',stat:'خفة',res:{
+      full:{xp:3,t:'{دخلت|دخلتي} بين فرشتين {واختفيت|واختفيتي}. وراك العفاريت بيضحكوا: «هيرجع.. كلهم بيرجعوا.»',go:'next'},
+      part:{hp:-4,t:'حافر لحقك في جنبك، بس {فلتّ|فلتّي}.',go:'next'},
+      fail:{t:'العفريت أبو قرنين مسكك من ياقتك، وصاحبه جه.',fight:NF_fight('gamblers'),go:'next'}}}
+   ]}},
+ {id:'f_hooves_debt',fol:1,type:'trade',stars:2,acts:['u_souq','u_deep'],title:'الضيف عايز حسابه',teaser:'طقطقة حوافر {وراك|وراكي} في الزحمة',why:'عشان اللي بينك وبين الضيف اللي بحوافر..',
+  scene:{text:()=>'طقطقة حوافر على البلاط {وراك|وراكي}، وإيد ناعمة على كتفك. الضيف اللي بحوافر، بنفس الجلابية والعمة: '+(NF_f('nf_hoovesLost')?'«{وصفتلي|وصفتيلي} طريق غلط، {وفاكر|وفاكرة} إن اللي زيي بيتوه؟ الطريق الغلط طلع ساعتين.. وساعتي غالية. نتحاسب.»':'«قلنا نتحاسب في السوق. ودلوقتي إحنا في السوق.»'),
+   ch:()=>[
+    S.hero.money>=60&&{t:'أدفعله 60 جنيه',res:{tier:'plain',money:-60,xp:2,t:'عدّها بحافره وسلّم {عليك|عليكي}. {عدّيت|عدّيتي} صوابعك: خمسة. «حساب نضيف.»',go:'next'}},
+    {t:'أدفع من دمي',sub:'صحتك هتقل',res:()=>({tier:'plain',hp:-Math.max(4,Math.ceil(MXH(S.hero)*.15)),xp:2,t:'طلّع إبرة صغيرة وشكّ صباعك، وشرب النقطة من على الإبرة: «طعمه أحلى من الفلوس.»',go:'next'})},
+    NF_has('salt')&&{t:'أرش ملح على حوافره',sub:'{هتستعمل|هتستعملي} كيس ملح',res:{tier:'full',use:'salt',xp:3,t:'نهق نهقة حمار وجري، وحوافره بترقص على البلاط. السوق كله ضحك.. وهو مش هيسامح.',go:'next'}},
+    {t:'أحاربه',res:{tier:'plain',t:'الضيف شال العمة، وتحتها ودنين طوال.',fight:[NF_fight('hooves')],go:'next'}}
+   ]}},
+ {id:'f_sanaa_back',fol:1,type:'people',stars:1,acts:['u_souq','u_deep'],title:'سناء رجعت',teaser:'ضفيرتها في مكانها.. وجاية عليك',why:'عشان {وقفت|وقفتي} مع سناء..',
+  scene:{text:()=>'سناء، اللي كان الحلاق هيقص ضفيرتها، طالعة من بين الفوانيس. «ما عرفتش أشكرك. أمي كانت باعتاني ببخور أبيعه.. {خده|خديه} {انت|انتي}. وعارفة مكان محدش بيعدّي عليه، {ترتاح|ترتاحي} فيه.»',
+   ch:()=>[
+    {t:'آخد البخور',res:{tier:'full',item:'incense',mark:'nf_sanaa',xp:2,t:'البخور ملفوف في ورق أخضر، وريحته مش ريحة السوق. «العفاريت بتعطس منه.»',go:'next'}},
+    {t:'أروح معاها المكان الهادي',res:()=>({tier:'plain',heal:NF_rest(.3),mark:'nf_sanaa',t:'ورا فرشة سجاد مهجورة ركن ساكت. سناء قعدت تحرس، {وغمّضت|وغمّضتي} عينك خمس دقايق كاملين.',go:'next'})},
+    {t:'أقولها تروّح لأمها',res:{tier:'plain',rep:[4,'{رجّعت|رجّعتي} سناء لأمها'],mark:'nf_sanaa',xp:2,t:'«أمي لسه عيانة..» بس مشيت. الضفيرة بتتهز وراها لحد الباب.',go:'next'}}
+   ]}},
+ {id:'f_dice_gang',fol:1,type:'fight',stars:2,acts:['u_souq','u_deep'],title:'المقامرين عايزين فلوسهم',teaser:'نرد عضم بيترمي على رجلك',why:'عشان {قلبت|قلبتي} ترابيزة النرد..',
+  scene:{text:()=>'نرد عضم وقع قدام رجلك وفضل يلف. الاتنين بتوع الترابيزة اللي {قلبتها|قلبتيها} واقفين قدامك، والكبير رجله المعزة بتخبط في البلاط. «الفلوس اللي {لمّيتها|لمّيتيها} من على الجلد. ولا نلعب عليها؟»',
+   ch:()=>[
+    S.hero.money>=60&&{t:'أرجّعلهم 60 جنيه',res:{tier:'plain',money:-60,t:'الكبير لمّ الفلوس بحافره: «{خسران شريف|خسرانة شريفة}. ده أحسن نوع.»',go:'next'}},
+    {t:'أراهن: رمية واحدة على كل حاجة',stat:'خفة',res:{
+      full:{money:60,xp:3,t:'رميتك عليت على رميته. الكبير بص للنرد كتير، وبعدين ضحك ودفع: «النهارده يومك.»',go:'next'},
+      part:{t:'تعادل. «التعادل عندنا ما بيتحسبش.» وسابوك ومشيوا.',go:'next'},
+      fail:{money:-60,t:'الكبير رمى ستتين، ولمّ الفلوس وهو بيغني.',go:'next'}}},
+    {t:'أحاربهم',res:{tier:'plain',t:'«يبقى نلعب بطريقة تانية.»',fight:NF_fight('gamblers'),go:'next'}}
+   ]}},
+ {id:'f_broker_name',fol:1,type:'test',stars:2,acts:['u_souq','u_deep'],title:'حد بينده على رفيقك',teaser:'اسم رفيقك على لسان بياع',why:'عشان {بعت|بعتي} اسم رفيقك للسمسار..',
+  scene:{text:()=>{const n=NF_cn();return `بياع عفريت واقف على فرشة وبينده: «${n}! ${n}! {تعالى|تعالي}!» و${n} ${CG('بدأ يمشي ناحيته','بدأت تمشي ناحيته')} وعينيه فاضية. الاسم اللي {بعته|بعتيه} للسمسار اتباع تاني.. والبياع عايز صاحبه كمان.`},
+   ch:()=>{const n=NF_cn();return [
+    S.hero.money>=90&&{t:`أشتري اسم ${n} تاني`,sub:'90 جنيه',res:{tier:'plain',money:-90,rep:[4,`{رجّعت|رجّعتي} اسم ${n}`],t:`البياع لف الاسم في ورقة ورماهولك. ${n} ${CG('وقف وبص حواليه','وقفت وبصت حواليها')}: «أنا كنت رايح فين؟»`,go:'next'}},
+    {t:`أمسك ${n} وأشده لورا`,stat:'قوة',res:{
+      full:{xp:3,t:`{شدّيت|شدّيتي} ${n} بكل قوتك لحد ما الصوت بعد. ${CG('فاق','فاقت')} على كتفك، والبياع بيشتم.`,go:'next'},
+      part:()=>{const c=S.comp;if(c)c.hp=Math.max(1,c.hp-Math.ceil(c.max/3));return {tier:'part',hp:-2,t:`{شدّيته|شدّيتيها}، بس ${n} ${CG('اتخبط','اتخبطت')} في عمود وهو بيقاوم.`,go:'next'}},
+      fail:{t:'البياع شاور لصبيانه.',fight:NF_fight('broker'),go:'next'}}},
+    {t:`أسيب ${n} ${CG('يروح','تروح')}`,sub:'شر',res:()=>{const c=S.comp;if(c)c.hp=Math.max(1,Math.ceil(c.hp/2));return {tier:'fail',rep:[-10,`{سبت|سبتي} ${n} للبياع`],t:`${n} ${CG('وقف عند الفرشة ساعة','وقفت عند الفرشة ساعة')}، ${CG('ورجع','ورجعت')} ${CG('ناقص حاجة مش عارف هي إيه','ناقصة حاجة مش عارفة هي إيه')}.`,go:'next'}}}
+   ]}}},
+ {id:'f_nabil_back',fol:1,type:'trade',stars:1,acts:['u_deep'],title:'نبيل نازل من السقف',teaser:'الحبل نازل تاني.. ونبيل بيضحك',why:'عشان {دخلت|دخلتي} الخزنة مع نبيل..',
+  scene:{text:()=>'الحبل نزل قدامك، ونبيل متعلق فيه بالمقلوب. «{يا شريكي|يا شريكتي}! فيه مخزن تاني.. مخزن السنين. بس محتاج حد يمسك الحبل.»',
+   ch:()=>[
+    {t:'أمسك الحبل وآخد نصيبي',stat:'قوة',res:{
+      full:{money:90,xp:2,flag:'uc_rope',t:'نبيل طلع بشوالين، {وإداك|وإداكي} 90 جنيه. وقبل ما يطلع قالك: «الشق ده بيطلع فوق أوضة الكبير.. {افتكر|افتكري}.»',go:'next'},
+      part:{money:40,hp:-3,t:'الحبل سحب إيدك على الحجر لحد ما اتقشرت. نبيل {إداك|إداكي} 40 جنيه بس: «الشوال التاني وقع.»',go:'next'},
+      fail:{t:'الحبل فلت، ونبيل وقع على خدام صاحي.',fight:[UC_f('servant')],go:'next'}}},
+    {t:'أقوله كفاية عليا',res:{tier:'plain',xp:2,flag:'uc_rope',t:'«براحتك. بس {خد|خدي} دي ببلاش: الشق ده بيطلع فوق أوضة الكبير.» وطلع.',go:'next'}}
+   ]}},
+ {id:'f_nabil_revenge',fol:1,type:'fight',stars:2,acts:['u_deep'],title:'نبيل هرب',teaser:'«{افتكرتني|افتكرتيني}؟»',why:'عشان {سلّمت|سلّمتي} نبيل للعفاريت..',
+  scene:{text:()=>'نبيل واقف في آخر الدهليز، ورجله لسه فيها أثر السلسلة. «العفاريت ما بيعرفوش يربطوا حرامي. {انت|انتي} بقى.. {عارف|عارفة} يعني إيه بني آدم يبيع بني آدم؟»',
+   ch:()=>[
+    S.hero.money>=80&&{t:'أرجّعله الفلوس اللي خدتها عليه',sub:'80 جنيه',res:{tier:'plain',money:-80,t:'نبيل خد الفلوس ورماها في وشك تاني، ولمّها هو بنفسه: «ده حقي. والباقي ربنا يحاسبك عليه.»',go:'next'}},
+    {t:'أحاربه',res:{tier:'plain',t:'نبيل طلّع مطوتين.',fight:[UC_f('thief',{hp:13})],go:'next'}},
+    {t:'أجري ناحية الخدامين',stat:'خفة',res:{
+      full:{xp:3,t:'{جريت|جريتي} لحد ما {وصلت|وصلتي} لخدامين واقفين، ونبيل وقف في الضلمة ورجع.',go:'next'},
+      part:{hp:-4,t:'مطوته لحقت ضهرك {وانت بتجري|وانتي بتجري}.',go:'next'},
+      fail:{t:'الدهليز طلع مقفول.',fight:[UC_f('thief',{hp:13})],go:'next'}}}
+   ]}}
+]);
+
+/* ---------- echoes: earlier choices show up in later cards and in the act bosses ---------- */
+/* النداهة */
+NF_echoText('k_cafe',()=>NF_f('nf_thiefCaught')?'الرجالة في القهوة بيشاوروا {عليك|عليكي}: «ده اللي مسك حرامي السوق.»':'');
+NF_echoCh('k_cafe',()=>NF_f('nf_thiefCaught')&&!NF_f('nf_cafeTea')&&{t:'أشرب الشاي اللي عزموني عليه',res:()=>({tier:'plain',flag:'nf_cafeTea',heal:NF_rest(.15),t:'عم صلاح حط قدامك شاي تقيل: «على حساب القهوة. اللي يمسك حرامي ما يدفعش.»',go:'next'})});
+NF_echoText('k_boss',()=>NF_f('nf_beg')?'الراجل الغلبان قالك: الملح في إيدك، مش في الشنطة.':NF_f('nf_house')?'والنفَس اللي من البيت المهجور لسه ورا ودنك.':'');
+NF_echoText('g_boss',()=>NF_f('nf_salehMen')?'ورجالة عم صالح {وراك|وراكي} في الدرة بالكلوبات.':'');
+NF_echoCh('g_boss',()=>NF_f('nf_salehMen')&&{t:'أزعق لرجالة عم صالح',sub:'هيبدأ القتال متعور ومدروخ',res:{tier:'full',t:'الكلوبات ولعت من كل ناحية، والطوب نزل عليه زي المطر. أبو رجل مسلوخة صرخ ولف حوالين نفسه.. ورجالة عم صالح جريوا وسابوهولك.',fight:[G_ABU({hurt:.3,daze:1})],go:'next'}});
+NF_echoText('edge',()=>NF_f('nf_ferry')?'ووسط الأصوات اللي بتنده، صوت عم بيومي: «الدين يا {ابن|بنت} الأصول..»':NF_f('t_ferryPaid')?'وعم بيومي بعيد على معديته، رافع الفانوس ليك.':'');
+/* سرداب الباشا */
+NF_echoText('p_boss1',()=>NF_f('j_pal')?'والحفارين بيبصوا من فوق السور، والمعلم صبري بيشاورلك.':'');
+NF_echoCh('p_boss1',()=>NF_f('j_pal')&&{t:'أزعق للحفارين يرموا الطوب',sub:'هيبدأ القتال متعور',res:{tier:'full',t:'«يا ولاد!» الطوب نزل من فوق السور على راس الكلب، وبعدين الحفارين اختفوا. الكلب لف ناحيتك.. وهو بيعرج.',fight:[PJ_HOUND({hurt:.25})],go:'next'}});
+NF_echoText('q_dining',()=>NF_f('nf_jewel')?'الكرسي اللي على راس السفرة لف ناحيتك لوحده.. وبص على رقبتك.':'');
+NF_echoText('p_boss2',()=>NF_f('nf_jewel')?'وهي شايفة عقدها {معاك|معاكي}.. ووشها اتقلب.':'');
+NF_echoText('p_boss3',()=>NF_f('nf_hamada')?'حمادة قالك: صبحي كان ناوي يسيبك هنا مكانه.':'');
+/* مغارة الضبع */
+NF_echoText('m_boss1',()=>NF_f('nf_rashad')?'وكلب عم رشاد بيعوي من بعيد، بيقولك هو فين.':'');
+NF_echoText('mb_shift',()=>NF_f('nf_wire')?'الشغيلة بيبصوا على إيدك السودا من النحاس وبيسكتوا.':'');
+NF_echoText('m_boss3',()=>NF_f('nf_emad')?'وبرة، على باب المغارة، نار عماد والعة.':NF_f('mc_bait')?'وريحة دم عماد لسه في المكان.':'');
+/* سوق العفاريت */
+NF_echoText('ub_cafe',()=>NF_f('nf_khalidThief')?'القهوجي بص {عليك|عليكي} وضحك: «{انت|انتي} اللي خالد بيدوّر عليه؟»':'');
+NF_echoText('u_boss2',()=>NF_f('nf_sanaa')?'ولما فتحت بقها.. طلع صوت سناء. «الصوت ده كان هيبقى بتاعي.»':'');
+NF_echoText('u_boss3',()=>NF_f('nf_brokerName')?`ومعاه دفتر السمسار، وفيه اسم ${NF_cn()} مكتوب بالأحمر.`:'');
+
+(function(){const st=document.createElement('style');st.textContent=`
+.ncard .nfw{display:block;font-style:normal;font-size:13px;font-weight:700;color:var(--gold2);line-height:1.4}
+.ncard.nfol{box-shadow:0 0 0 1px #f3d48f55,0 0 14px #f3c14d22}
+.nfe{color:var(--mute)}`;document.head.appendChild(st)})();
+/* ==========================================================================
+   سرداب: more craft content (p20.js, v5.3)
+   New ores from the deep mine floors (فحم من الدور 3، دهب من 8، زمرد من 14), new fish at higher
+   fishing levels (بساريا، جمبري، بياض، تعبان مية), five new dishes at أم سيد and six new pieces of gear.
+   The mine and canal logic for them lives in p9b.js (MINE_X, FISH_X); this file registers the
+   materials, recipes, gear and their pixel art.
+   ========================================================================== */
+Object.assign(MAT,{
+  coal:{n:'فحم',c:'#4a4650',p:8},
+  gold:{n:'دهب',c:'#f3c14d',p:60,tier:1},
+  emerald:{n:'زمرد',c:'#3ee07a',p:160,tier:2},
+  bisaria:{n:'بساريا',c:'#c8d4dc',p:5,fish:1},
+  shrimp:{n:'جمبري',c:'#ff8f73',p:16,fish:1},
+  bayad:{n:'بياض',c:'#e8e4da',p:40,fish:1,tier:1},
+  eel:{n:'تعبان مية',c:'#5a4a30',p:70,fish:1,tier:2}
+});
+Object.assign(TW_SRC,{coal:'الجبل من الدور 3',gold:'الجبل من الدور 8',emerald:'الجبل من الدور 14',
+  bisaria:'الترعة',shrimp:'الترعة من صيد 2',bayad:'الترعة من صيد 4',eel:'الترعة من صيد 6'});
+
+/* ---------- dishes ---------- */
+Object.assign(FOOD_HEAL,{bisfry:7,shrsoup:10,fateer:9,bayadtaj:15,eelgrill:17});
+Object.assign(ITEMS,{
+  bisfry:{name:'بساريا مقلية',price:0,info:()=>foodInfo('bisfry'),use:'heal',kind:'food',heal:()=>foodHeal('bisfry')},
+  shrsoup:{name:'شوربة جمبري',price:0,info:()=>foodInfo('shrsoup'),use:'heal',kind:'food',heal:()=>foodHeal('shrsoup')},
+  fateer:{name:'فطير مشلتت',price:0,info:()=>foodInfo('fateer'),use:'heal',kind:'food',heal:()=>foodHeal('fateer')},
+  bayadtaj:{name:'طاجن بياض',price:0,info:()=>foodInfo('bayadtaj'),use:'heal',kind:'food',heal:()=>foodHeal('bayadtaj')},
+  eelgrill:{name:'تعبان مية مشوي',price:0,info:()=>foodInfo('eelgrill'),use:'heal',kind:'food',heal:()=>foodHeal('eelgrill')}
+});
+['bisfry','shrsoup','fateer','bayadtaj','eelgrill'].forEach(k=>{if(!FOODS.includes(k))FOODS.push(k);if(!FQ_COOK.includes(k))FQ_COOK.push(k)});
+Object.assign(FQ_FEM,{bisfry:1,shrsoup:1});
+Object.assign(TW_REC,{
+  bisfry:{need:{bisaria:3,bread:1},lv:1,tier:0},
+  shrsoup:{need:{shrimp:2,bread:1},lv:2,tier:1},
+  fateer:{need:{flour:3},lv:2,tier:1},
+  bayadtaj:{need:{bayad:1,bread:2},lv:4,tier:2},
+  eelgrill:{need:{eel:1,bread:1},lv:5,tier:2}
+});
+/* a hero saved before this file existed has no bag slot for the new dishes */
+(HEROES||[]).forEach(h=>{if(h&&h.bag)['bisfry','shrsoup','fateer','bayadtaj','eelgrill'].forEach(k=>h.bag[k]=h.bag[k]||0)});
+
+/* ---------- gear ---------- */
+Object.assign(GEAR,{
+  coalarmor:{n:'درع حديد مسقّي',slot:'armor',tier:2,armor:3,st:{'خفة':-1},at:'smith',craft:{iron:4,coal:3},cm:140,lv:4,info:'الحديد اتسقى على نار الفحم: الضربة بتقل 3، بس بيتقّلك (خفة −1)'},
+  goldring:{n:'خاتم دهب',slot:'ring',tier:2,st:{'قوة':1,'حضور':2},at:'smith',craft:{gold:2},cm:80,lv:3,info:'قوة +1 · حضور +2'},
+  goldneck:{n:'قلادة دهب',slot:'neck',tier:2,en:1,hp:2,at:'smith',craft:{gold:2,silver:1},cm:90,lv:4,info:'طاقة +1 في القتال · صحة +2'},
+  emcharm:{n:'تميمة زمرد',slot:'charm',tier:3,spirit:2,hp:3,at:'smith',craft:{emerald:1,gold:1},cm:150,lv:5,info:'العفاريت والأرواح تعوّرك 2 أقل · صحة +3'},
+  emsword:{n:'سيف الزمرد',slot:'weapon',tier:3,dmg:4,skill:'double',at:'smith',craft:{emerald:2,iron:3,gold:1},cm:220,lv:6,info:'ضرر عالي · «ضربتين»: لو {نجحت|نجحتي} كامل، {بتضرب|بتضربي} مرة كمان'},
+  goldturban:{n:'عمة مطرزة بالدهب',slot:'head',tier:2,hp:4,st:{'حضور':2},at:'tailor',craft:{cloth:3,gold:1},cm:70,lv:3,info:'صحة +4 · حضور +2'}
+});
+Object.assign(TW_FEMG,{goldneck:1,emcharm:1,goldturban:1});
+
+/* ---------- pixel art: most are recolours of existing sprites, the eel and the shrimp are new ---------- */
+const P20_rc=(d,m)=>d.replace(/[A-Za-z]/g,c=>m[c]||c);
+const P20_grid=(w,rows)=>`${w}x${rows.length}:`+rows.map(r=>r.padEnd(w,'.')).join('/');
+Object.assign(PXI_D,{
+  coal:P20_rc(PXI_D.stone,{C:'n',c:'i',g:'h',j:'K'}),
+  gold:P20_rc(PXI_D.copper,{s:'y',t:'o',S:'Y',T:'o',q:'T'}),
+  emerald:P20_rc(PXI_D.turq,{Q:'G',O:'q',l:'z'}),
+  bisaria:P20_rc(PXI_D.bolti,{q:'u',z:'n',g:'c'}),
+  bayad:P20_rc(PXI_D.qarmout,{i:'c',j:'C',n:'g',c:'g'}),
+  eel:P20_grid(24,['','','....................KK','..KKKK.............KbBK','.KBBBBKK..........KbBK','KBWKBBBBKK.......KbBBK','KBBBBBBBBBK.....KbBBK','.KssBBBBBBBKKKKKbBBK','..KKsssBBBBBBBBBBBK','....KKKssssBBBBBBK','.......KKKKssssKK','...........KKKK','','']),
+  shrimp:P20_grid(24,['.........KK','.......KKRRK..K','.....KKRRRrK.K','....KRRRRrrKK','...KRWKRrrmK','...KRRRRrrmK','....KKRRrrmK','......KKrrmK','.....KRRrmK','....KRrrmmK','....KRrmmK','.....KKmK.KK','.......KKKmK','.........KK'].map(r=>'....'+r)),
+  bisfry:P20_rc(PXI_D.grilled,{b:'y',T:'o'}),
+  shrsoup:P20_rc(PXI_D.foul,{T:'R',t:'r',q:'r',G:'R'}),
+  fateer:P20_rc(PXI_D.bread,{S:'Y',s:'y',t:'o',T:'o',C:'W'}),
+  bayadtaj:P20_rc(PXI_D.seniya,{B:'b',o:'B',r:'W',R:'C'}),
+  eelgrill:P20_rc(PXI_D.grilled,{y:'B',o:'b',Y:'s'})
+});
+Object.assign(PXI_FISH,{bisaria:1,shrimp:1,bayad:1,eel:1});
+Object.assign(PXI_G,{
+  goldring:P20_rc(PXI_G.copring,{s:'y',t:'o'}),
+  goldneck:P20_rc(PXI_G.amulet,{b:'o',c:'y',W:'Y',g:'o',L:'r',Q:'R',l:'m'}),
+  coalarmor:P20_rc(PXI_G.ironarmor,{W:'n',c:'j',g:'i'}),
+  emcharm:P20_rc(PXI_G.amulet,{L:'G',Q:'G',l:'q',W:'C'}),
+  emsword:P20_rc(PXI_G.ironsword,{W:'G',c:'G',g:'q'}),
+  goldturban:P20_rc(PXI_G.turban,{g:'y'})
+});
+
+/* ---------- your companion drinks a potion from your bag when low, instead of letting itself fall (twice a fight at most) ---------- */
+{const ct1=compTurn;compTurn=async function(){const C=S.combat,h=S.hero,c=S.comp,X=C&&C.X;
+  if(C&&!C.tutorial&&c&&c.hp>0&&c.hp/c.max<.35&&!(X&&X.snatch)&&(C.cpPot||0)<2){
+    const k=['potion','bigpotion'].find(q=>(h.bag[q]||0)>0&&ITEMS[q]&&ITEMS[q].heal&&(q==='bigpotion'||c.max-c.hp<=ITEMS[q].heal()+3))||['bigpotion','potion'].find(q=>(h.bag[q]||0)>0);
+    if(k){C.cpPot=(C.cpPot||0)+1;h.bag[k]--;const a=Math.min(ITEMS[k].heal(),c.max-c.hp);c.hp+=a;SFX.gulp();saveHero();combat();healFx($('#compCard'),a);
+      return say(`${c.name} ${CG('شرب','شربت')} ${ITEMS[k].name} من شنطتك: ⁦+${a}⁩ صحة.`,'good')}}
+  return ct1.apply(this,arguments)}}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
