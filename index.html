@@ -4357,6 +4357,11 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.38',d:'9 أكتوبر',add:[
+    'اختيارات جديدة جوه المغامرات محتاجة شغلانة: حدادة، طبخ، صيد، خياطة، زراعة، أو تنقيب. هتلاقيها عند الحداد والفرن والصياد والساقية والغيط وغيرهم.',
+    'لو مستوى شغلانتك كفاية، فرصتك كويسة. لو لأ، {تقدر|تقدري} {تجرّب|تجرّبي} بس هتبقى صعبة جدًا. تحت الاختيار مكتوب الشغلانة والمستوى اللي محتاجه ومستواك.',
+    'لما {تستعمل|تستعملي} شغلانتك في المغامرة {بتاخد|بتاخدي} فيها خبرة، وساعات {بتطلع|بتطلعي} بخامات أو {بتصلّح|بتصلّحي} عدّتك أو {بتكسب|بتكسبي} سمعة.'
+  ],fix:[]},
   {v:'5.37',d:'9 أكتوبر',add:[
     'قبل ما {تعزّز|تعزّزي} أي حاجة، بيبان سطر بيقولك التعزيز ده هيزوّد إيه بالظبط، وإيه اللي بيحصل لو فشل.',
     'التعزيز بقى على كل حاجة {بتلبسها|بتلبسيها}: العمم والخواتم والقلادات والتمايم كمان. الخاتم والقلادة بيكبر رقمهم الأساسي.',
@@ -22289,6 +22294,116 @@ function gemOffer(h){const w=Math.floor(Date.now()/GEM_WIN);let s=w*7919+((h&&h.
 .gem-offer .gem-ic{flex:none;animation:tsBob 2.4s ease-in-out infinite alternate}.gem-offer .tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 .gem-offer small{color:var(--gc);font-weight:800;font-size:12px}.gem-offer b{font-size:17px}.gem-offer span{font-size:13px;color:var(--ink)}.gem-offer em{font-style:normal;font-size:12px;color:var(--dim)}
 .gem-got{color:#a6e3a0;font-weight:800;font-size:13px}`;document.head.appendChild(st)}
+/* ---------- الشغلانات inside the adventures (v5.38) ----------
+   Some stops get one extra choice that only someone who knows a trade can really pull off: {job:[skill,level], stat, t, res}.
+   With the level (or more) the roll is easy (3 easier than usual); without it, it is 4 harder: you can still try, but it
+   will most likely fail. The choice shows what it needs and whether you have it. Using the trade gives that trade 1 XP.
+   Outcomes can also carry mat:[key,n] (a material into the bag) and fix:1 (everything you wear is mended). */
+const JOB_EASY=3,JOB_HARD=4;
+const jobN=k=>(LIFE[k]&&LIFE[k].n)||k;
+const jobHas=(h,c)=>!!(c&&c.job&&h&&h.life&&h.life[c.job[0]]&&lifeLvl(h,c.job[0])>=c.job[1]);
+const jobDC=(h,c)=>(S.training?0:lvlDC(h))+(jobHas(h,c)?-JOB_EASY:JOB_HARD);
+/* the extra choice for each stop; each shows once a night */
+const JOB_CH={
+  k_forge:()=>({job:['smith',3],stat:'قوة',t:'أمسك المطرقة مكان الأسطى وأظبط عدّتي على الكور',res:{
+    full:{fix:1,money:20,t:'{مسكت|مسكتي} الجمر زي ما عم حسن علّمك. كل حاجة {لابسها|لابساها} رجعت زي الجديدة، والأسطى حمدي {إداك|إداكي} 20 جنيه: «إيدك تتلف في حرير.»',go:'next'},
+    part:{fix:1,hp:-1,t:'{صلّحت|صلّحتي} عدّتك، بس شرارة نطت على إيدك.',go:'next'},
+    fail:{hp:-3,t:'الحديد اتلوى في إيدك، والجمر لسعك. الأسطى حمدي شد المطرقة منك: «دي مش لعبة.»',go:'next'}}}),
+  k_house:()=>({job:['smith',4],stat:'خفة',t:'أفتح قفل الصندوق بحتة سلك زي الحدادين',res:{
+    full:{money:60,mat:['stone1',1],t:'القفل فتح في تلات لفّات. جواه 60 جنيه قديمة وحجر تعزيز ملفوف في قماشة.',go:'next'},
+    part:{money:25,t:'القفل فتح نصه بس. {طلّعت|طلّعتي} 25 جنيه من الشق قبل ما السلك يتكسر.',go:'next'},
+    fail:{hp:-2,t:'السلك اتكسر جوه القفل، وحاجة من جوه الصندوق خبطت في الخشب. {بعدت|بعدتي} بسرعة.',go:'next'}}}),
+  k_oven:()=>({job:['cook',3],stat:'حكمة',t:'أقف مع أم سعيد على الفرن وأخبز أنا',res:{
+    full:{heal:6,item:'foul',rep:[4,'{خبزت|خبزتي} مع أم سعيد'],t:'العيش طلع منفوخ ومحمّر. أم سعيد ضحكت: «إيدك تتلف في حرير.» وإدتك طبق فول سخن.',go:'next'},
+    part:{heal:3,t:'نص العيش اتحرق، بس اللي اتاكل كان حلو.',go:'next'},
+    fail:{hp:-1,t:'العجين لزق في إيدك ووقع في النار. أم سعيد بصت للسما ومردتش.',go:'next'}}}),
+  k_grind:()=>({job:['smith',5],stat:'قوة',t:'أوقّف الماكينة من السير زي الصنايعية',res:{
+    full:{rep:[8,'{وقّفت|وقّفتي} الماكينة'],money:40,t:'{فكّيت|فكّيتي} السير في ثانية، والماكينة سكتت. عم شعبان {حضنك|حضنك} {وإداك|وإداكي} 40 جنيه.',go:'next'},
+    part:{hp:-2,t:'السير لسع إيدك، بس الماكينة وقفت.',go:'next'},
+    fail:{hp:-4,t:'الماكينة شدت كمّك. {شديت|شديتي} نفسك في آخر لحظة، ودمك على الحديد.',go:'next'}}}),
+  t_fisher:()=>({job:['fish',3],stat:'خفة',t:'أقعد جنبه وأصطاد معاه للصبح',res:{
+    full:{item:'grilled',mat:['bolti',2],t:'{طلّعت|طلّعتي} بلطيتين ورا بعض. الصياد {شوالك|شوالك} واحدة على النار: «{انت صياد|انتي صيادة} بجد.»',go:'next'},
+    part:{mat:['bolti',1],t:'بلطية واحدة صغيرة. أحسن من مفيش.',go:'next'},
+    fail:{t:'السنارة اتشبكت في الغاب واتقطعت. الصياد ضحك لحد ما سعل.',go:'next'}}}),
+  t_nets:()=>({job:['tailor',3],stat:'حكمة',t:'أخيّط الشبكة المقطوعة لعم سعد',res:{
+    full:{money:35,rep:[6,'{خيّطت|خيّطتي} شبكة عم سعد'],t:'{خيّطت|خيّطتي} الشق بغرزة متينة. عم سعد قال إنه عمره ما شاف شبكة متخيطة كده، {وإداك|وإداكي} 35 جنيه.',go:'next'},
+    part:{money:10,t:'الشبكة اتقفلت، بس بغرزة عوجا. عم سعد {إداك|إداكي} 10 جنيه وهو بيضحك.',go:'next'},
+    fail:{t:'الخيط اتعقد في صوابعك والشبكة اتلخبطت أكتر. عم سعد خدها منك من غير كلمة.',go:'next'}}}),
+  t_buffalo:()=>({job:['farm',4],stat:'قوة',t:'أطلّع الجاموسة بحيلة الفلاحين',res:{
+    full:{money:40,rep:[8,'{طلّعت|طلّعتي} الجاموسة'],t:'{حطيت|حطيتي} حزمة برسيم قدامها {وسندت|وسندتي} رجلها الورانية. طلعت من الطين زي ما تكون ما كانتش غرزانة. صاحبها {إداك|إداكي} 40 جنيه.',go:'next'},
+    part:{hp:-1,money:15,t:'طلعت، بس رفستك وهي طالعة.',go:'next'},
+    fail:{hp:-2,t:'الطين شدك انت كمان. {طلعت|طلعتي} بالعافية، والجاموسة لسه مكانها.',go:'next'}}}),
+  t_bridge:()=>({job:['tailor',4],stat:'خفة',t:'أربط الخشب بحبال متينة وأعدّي',res:{
+    full:{xp:1,t:'{ربطت|ربطتي} الخشب بعقدة الخياطين، والكوبري شالك {وانت ماشي|وانتي ماشية} عليه زي الأرض.',go:'next'},
+    part:{hp:-1,t:'الحبل زق تحت رجلك، بس {عدّيت|عدّيتي}.',go:'next'},
+    fail:{hp:-3,t:'العقدة فكت في النص، {ووقعت|ووقعتي} في المية الساقعة.',go:'next'}}}),
+  g_saqia:()=>({job:['smith',4],stat:'قوة',t:'أصلّح الترس المكسور في الساقية',res:{
+    full:{money:45,rep:[8,'{صلّحت|صلّحتي} ساقية عم شحاتة'],t:'{ركّبت|ركّبتي} الترس، والساقية لفت بزقة واحدة. عم شحاتة صحي على صوتها وعيّط: «بقالها سنة واقفة!» {وإداك|وإداكي} 45 جنيه.',go:'next'},
+    part:{money:15,t:'لفت لفتين ووقفت. أحسن من الأول.',go:'next'},
+    fail:{hp:-2,t:'الترس وقع على رجلك.',go:'next'}}}),
+  g_farmer:()=>({job:['farm',3],stat:'حضور',t:'أكلمه في الزرع عشان يعرف إني فلاح زيه',res:{
+    full:{mat:['tamatem',3],rep:[5,'{صاحبت|صاحبتي} صاحب الأرض'],t:'نزّل البندقية لما {قلتله|قلتيله} إن الطماطم بتاعته محتاجة سماد. ضحك {وإداك|وإداكي} 3 طماطمايات: «{انت ابن|انتي بنت} أرض.»',go:'next'},
+    part:{t:'نزّل البندقية، بس فضل يبص {عليك|عليكي} لحد ما {مشيت|مشيتي}.',go:'next'},
+    fail:{hp:-2,t:'«فلاح مين؟ ده {انت ما تعرفش|انتي ما تعرفيش} البرسيم من الفول!» ضرب طلقة في الهوا، والرش جه في كتفك.',go:'next'}}}),
+  g_cane:()=>({job:['farm',5],stat:'خفة',t:'أمشي في القصب زي أهل الغيط، من غير ما ورقة تتهز',res:{
+    full:{mat:['asab',3],t:'{عدّيت|عدّيتي} القصب كله من غير صوت، واللي كان جوه ما حسّش {بيك|بيكي}. {وانت طالع|وانتي طالعة} {كسرت|كسرتي} 3 عيدان قصب.',go:'next'},
+    part:{t:'ورقة واحدة اتهزت، والحاجة اللي جوه وقفت. {عدّيت|عدّيتي} بسرعة.',go:'next'},
+    fail:{hp:-3,t:'القصب قطع إيدك، والحاجة اللي جوه جريت {وراك|وراكي} لحد طرف الغيط.',go:'next'}}}),
+  g_tanner:()=>({job:['tailor',5],stat:'حكمة',t:'أساعد عم جابر في تقطيع الجلود',res:{
+    full:{money:50,mat:['cloth',2],t:'{قطّعت|قطّعتي} الجلد على الخط. عم جابر {إداك|إداكي} 50 جنيه وحتتين قماش: «إيدك إيد خياط.»',go:'next'},
+    part:{money:20,t:'جلدة واحدة باظت، بس الباقي تمام.',go:'next'},
+    fail:{hp:-2,money:-20,t:'السكينة اتزحلقت وبوّظت أغلى جلدة عنده. {دفعت|دفعتي} 20 جنيه.',go:'next'}}}),
+  j_gardener:()=>({job:['farm',6],stat:'حكمة',t:'أعلّم عم عطية إزاي الورد الناشف يرجع',res:{
+    full:{heal:5,item:'potion',rep:[8,'{رجّعت|رجّعتي} ورد عم عطية'],t:'{قلّبت|قلّبتي} الطين {وقصّيت|وقصّيتي} الناشف. عم عطية دمعت عينه {وإداك|وإداكي} جرعة: «من أيام الباشا ما حدش كلمني في الورد.»',go:'next'},
+    part:{t:'عود واحد اخضر. عم عطية ابتسم.',go:'next'},
+    fail:{t:'الطين كان ناشف زي الحجر. عم عطية كمّل سقي بالجردل الفاضي.',go:'next'}}}),
+  j_kitchen:()=>({job:['cook',4],stat:'حكمة',t:'أطبخ حاجة على الكانون الوالع',res:{
+    full:{heal:8,item:'foul',t:'{عملت|عملتي} حلة فول على الكانون {وأكلت|وأكلتي} لحد ما {شبعت|شبعتي}، وفضل طبق للطريق.',go:'next'},
+    part:{heal:4,t:'الأكل لزق في الحلة، بس اتاكل.',go:'next'},
+    fail:{hp:-2,t:'الحلة فارت على إيدك.',go:'next'}}}),
+  q_pantry:()=>({job:['cook',5],stat:'حكمة',t:'أعرف من الريحة أنهي برطمان لسه صالح',res:{
+    full:{item:'bigpotion',heal:4,t:'{شميت|شميتي} البرطمانات واحد واحد. {لقيت|لقيتي} عسل أبيض لسه زي ما هو، وجنبه قزازة شفا كبيرة.',go:'next'},
+    part:{heal:2,t:'برطمان مخلل واحد بس كان صالح.',go:'next'},
+    fail:{hp:-2,t:'{دقت|دقتي} حاجة فاسدة، ومعدتك قلبت.',go:'next'}}}),
+  q_room:()=>({job:['smith',6],stat:'خفة',t:'أفك قفل علبة المجوهرات من غير ما المزيكا تشتغل',res:{
+    full:{mat:['gold',1],money:80,t:'القفل فتح بصوت واطي. جوه حتة دهب و80 جنيه، والمزيكا ما اشتغلتش.',go:'next'},
+    part:{money:30,t:'{خدت|خدتي} 30 جنيه، والمزيكا اشتغلت. حاجة في الأوضة اتحركت.',go:'next'},
+    fail:{hp:-3,t:'العلبة قفلت على صوابعك، والمزيكا اشتغلت عالي.',go:'next'}}}),
+  d_stairs:()=>({job:['mine',4],stat:'قوة',t:'أنزل على الصخر زي المنقبين، من غير السلم',res:{
+    full:{mat:['iron',2],t:'{مسكت|مسكتي} في شقوق الصخر زي ما عجوز الجبل علّمك، {ونزلت|ونزلتي} بأمان. في الطريق {قلعت|قلعتي} حتتين حديد.',go:'next'},
+    part:{hp:-1,t:'رجلك زحلقت آخر متر، بس {نزلت|نزلتي}.',go:'next'},
+    fail:{hp:-4,t:'الصخرة طلعت في إيدك {ووقعت|ووقعتي}.',go:'next'}}}),
+  d_hunters:()=>({job:['mine',5],stat:'حكمة',t:'أوريهم فين الحيطة ضعيفة',res:{
+    full:{money:70,mat:['turq',1],t:'{خبطت|خبطتي} على الحيطة {وسمعت|وسمعتي} الفراغ. كسروها في ضربتين، {وإدوك|وإدوكي} 70 جنيه وحجر فيروز.',go:'next'},
+    part:{money:25,t:'كان فيه فراغ، بس صغير.',go:'next'},
+    fail:{hp:-2,t:'{شاورت|شاورتي} على حيطة شايلة السقف. حتة وقعت على كتفك.',go:'next'}}})};
+/* add the choice to its stop, once a night */
+function jobAttach(){Object.keys(JOB_CH).forEach(id=>{const sc=SC[id];if(!sc||sc.J_w)return;sc.J_w=1;const c0=sc.ch;
+  sc.ch=function(){const L=(c0.apply(this,arguments)||[]).slice();try{const h=S.hero;if(!S.training&&h&&h.life&&!(S.flags&&S.flags['job_'+id])){const c=JOB_CH[id]();if(c&&h.life[c.job[0]]){c.flag='job_'+id;c.jobId=id;L.push(c)}}}catch(e){console.warn(e)}
+    S.jobChs=L;S.jobScene=S.scene;return L}})}
+jobAttach();
+/* the choice: shows the trade it needs; the chance on it counts the trade */
+function jobDress(){if(S.screen!=='story'||!S.jobChs||S.jobScene!==S.scene)return;const h=S.hero;
+  view.querySelectorAll('.ch[data-i]').forEach(b=>{const c=S.jobChs[+b.dataset.i];if(!c||!c.job||b.querySelector('.jobt'))return;const ok=jobHas(h,c),L=h.life[c.job[0]]?lifeLvl(h,c.job[0]):0;
+    const m=ST(h,c.stat)+(c.adv?1:0)-jobDC(h,c),[cw,cc]=CHANCE(m),ch=b.querySelector('.chance');if(ch){ch.className='chance '+cc;ch.textContent=`فرصتك ${cw}`}
+    b.classList.add('jobch',ok?'ok':'no');
+    const nd=b.firstElementChild||b;nd.insertAdjacentHTML('beforeend',`<span class="jobt ${ok?'ok':'no'}">${ok?'✓':'✗'} ${jobN(c.job[0])} ${c.job[1]}${ok?'':` <small>(${G('عندك','عندك')} ${L})</small>`}</span>`)})}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{jobDress()}catch(e){console.warn(e)}return r}}
+{const c0=choose;choose=async function(c){if(!c||!c.job)return c0.apply(this,arguments);
+  ac();const h=S.hero,ok=jobHas(h,c);
+  const r=await rollCheck(c.stat,{label:T(c.t),adv:!!c.adv,cancel:true,dc:jobDC(h,c)});if(r.cancel)return;
+  let o=c.res[r.tier];if(typeof o==='function')o=o();if(typeof o==='string')o={t:o};o=Object.assign({},o);
+  const notes=[];
+  if(o.mat){const [k,n]=o.mat;if(MAT[k])o.mats=Object.assign({},o.mats,{[k]:n})}
+  if(o.fix){let any=0;Object.values(h.eq||{}).forEach(id=>{if(!qDur(id))return;const I=qWorn(h,id)&&giL(h,id)[0];if(I){const mx=qMaxD(id,I);if(I.d!=null&&I.d<mx){I.d=mx;any=1}}});if(any)notes.push(`<div class="note" style="color:#a6e3a0">عدّتك رجعت جديدة</div>`)}
+  const before=lifeLvl(h,c.job[0]);lifeXP(h,c.job[0],ok?1:2);if(lifeLvl(h,c.job[0])>before)notes.push(`<div class="note" style="color:var(--gold2)">${jobN(c.job[0])} {طلعت|طلعت} مستوى ${lifeLvl(h,c.job[0])}</div>`);
+  else notes.push(`<div class="note" style="color:var(--mute)">${jobN(c.job[0])}: +${ok?1:2} خبرة</div>`);
+  delete o.mat;delete o.fix;
+  applyOutcome(o,r.tier,c);if(RES&&notes.length){RES.extra=(RES.extra||'')+T(notes.join(''));render()}}}
+{const st=document.createElement('style');st.textContent=`
+.ch.jobch{border-color:#c9a0ff66}.ch.jobch.ok{border-color:#7fe07a88}
+.jobt{display:flex;width:max-content;margin-top:5px;align-items:center;gap:4px;font-size:12px;font-weight:800;border-radius:8px;padding:1px 8px;margin-bottom:3px;white-space:nowrap}
+.jobt.ok{color:#a6e3a0;background:#3a9e5522;border:1px solid #3a9e5566}.jobt.no{color:#f0a090;background:#e04b3e1c;border:1px solid #e04b3e55}.jobt small{font-size:10px;opacity:.85}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
