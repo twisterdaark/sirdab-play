@@ -2954,9 +2954,9 @@ SCREENS.cook=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     <div class="tw-stk"><div class="tw-wal"><span>الأكل في شنطتك: <b style="color:${fc>=cap?'#f0a090':'var(--ink)'}">${fc} من ${cap}</b></span>${twMon(h)}</div></div>
     <div class="tw-lbl">${G('اطبخ','اطبخي')} بإيدك <small>ببلاش، من السمك اللي ${G('بتصطاده','بتصطاديه')}</small></div>
     <div class="col">${Object.keys(TW_REC).map(k=>twRecRow(h,k)).join('')}</div>
-    <div class="tw-lbl">أكل جاهز من عند أم سيد</div>
+    <div class="tw-lbl">أكل وشرب جاهز من عند أم سيد</div>
     ${twRepNote(h,'أم سيد',1,pr)}
-    <div class="col">${['foul','grilled'].map(k=>twFoodRow(h,k)).join('')}</div>
+    <div class="col">${['foul','grilled','shai','ahwa','erqsous'].map(k=>twFoodRow(h,k)).join('')}</div>
     <div class="tw-lbl">${G('كُل','كُلي')} ${G('وارجّع','وارجّعي')} مجهودك</div>
     <div class="card">${twEffHTML(h,1,1)}</div></div>`;
   twBack();twBindEat();twTick();
@@ -4349,6 +4349,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.6',d:'9 أكتوبر',add:[
+    'أكل وشرب بيرجّعوا الطاقة في القتال: شاي بالنعناع وقهوة محوّجة وإزازة عرقسوس، {هتلاقيهم|هتلاقيهم} عند أم سيد وفي سوق الليل.',
+    'أكلتين جداد {تطبخهم|تطبخيهم}: بليلة باللبن وطبق كشري، بيرجّعوا صحة وطاقة مع بعض.'
+  ],fix:[]},
   {v:'5.5',d:'9 أكتوبر',add:[
     'الاختيار الغلط ليه تمن. لو {اتمسكت|اتمسكتي} {وانت بتسرق|وانتي بتسرقي} {هتبقى مطارد|هتبقي مطاردة}: الوحوش أقوى لحد آخر الفصل. لو {عملت|عملتي} حاجة شريرة أوي ممكن {تبقى ملعون|تبقي ملعونة}: كل رمية أصعب لحد آخر الليلة. ولو {وقعت|وقعتي} وقعة وحشة {هتبقى متعور|هتبقي متعورة} {وتنزف|وتنزفي} بعد كل كارت لحد الاستراحة.',
     'لو الحاجات دي اتلمّت عليك، كبير الفصل بيبقى أقوى بكتير. الاختيارات الخطر عليها علامة ⚠ عشان {تفكر|تفكري} قبل ما {تختار|تختاري}.',
@@ -18542,6 +18546,58 @@ const REST_EN=2;
     if(nn){nn.textContent=txt;nn.style.color='#f0a090'}else s.insertAdjacentHTML('beforeend',`<div class="nnote" style="color:#f0a090">${txt}</div>`)}
   catch(e){console.error('loss pen: '+e.message)}
   return R0}}
+/* ---------- food and drink that give back energy in a fight ----------
+   drinks (شاي، قهوة، عرقسوس) are bought at the market and the town food shop and only give energy;
+   two cooked dishes (بليلة، كشري) heal and give energy too. */
+const EN_GIVE={shai:2,ahwa:3,erqsous:4,bleela:2,koshary:2};
+const enBase=k=>{if(EN_GIVE[k])return k;try{if(typeof fqParse==='function'){const p=fqParse(k);if(p&&p.b&&EN_GIVE[p.b])return p.b}}catch(e){}return null};
+const enOf=k=>{const b=enBase(k);return b?EN_GIVE[b]:0};
+
+Object.assign(ITEMS,{
+  shai:{name:'شاي بالنعناع',price:20,kind:'pot',use:'energy',info:()=>`طاقة ${N_pl(EN_GIVE.shai)} في القتال`},
+  ahwa:{name:'قهوة محوّجة',price:35,kind:'pot',use:'energy',info:()=>`طاقة ${N_pl(EN_GIVE.ahwa)} في القتال`},
+  erqsous:{name:'إزازة عرقسوس',price:55,kind:'pot',use:'energy',info:()=>`طاقة ${N_pl(EN_GIVE.erqsous)} في القتال، ساقعة ومتلجة`}
+});
+Object.assign(FOOD_HEAL,{bleela:4,koshary:8});
+Object.assign(ITEMS,{
+  bleela:{name:'بليلة باللبن',price:0,info:()=>foodInfo('bleela'),use:'heal',kind:'food',heal:()=>foodHeal('bleela')},
+  koshary:{name:'طبق كشري',price:0,info:()=>foodInfo('koshary'),use:'heal',kind:'food',heal:()=>foodHeal('koshary')}
+});
+['bleela','koshary'].forEach(k=>{if(!FOODS.includes(k))FOODS.push(k);if(!FQ_COOK.includes(k))FQ_COOK.push(k)});
+Object.assign(FQ_FEM,{bleela:1});
+Object.assign(TW_REC,{bleela:{need:{flour:2},lv:1,tier:0},koshary:{need:{flour:2,bread:1},lv:3,tier:1}});
+['shai','ahwa','erqsous'].forEach(k=>{if(!BAG_FIGHT.includes(k))BAG_FIGHT.push(k)});
+(HEROES||[]).forEach(h=>{if(h&&h.bag)['shai','ahwa','erqsous','bleela','koshary'].forEach(k=>h.bag[k]=h.bag[k]||0)});
+
+/* the cooked ones say they give energy too */
+{const fi=fqInfo;fqInfo=function(key){const s=fi.apply(this,arguments),e=enOf(key);return e?s+` · طاقة ${N_pl(e)}`:s}}
+
+/* pixel sprites */
+Object.assign(PXI_D,{
+  shai:P20_rc(PXI_D.potion,{R:'o',r:'b',m:'B'}),
+  ahwa:P20_rc(PXI_D.potion,{R:'b',r:'B',m:'K',W:'o'}),
+  erqsous:P20_rc(PXI_D.bigpotion,{R:'B',r:'b',m:'K',Y:'n',y:'j',o:'j'}),
+  bleela:P20_rc(PXI_D.foul,{T:'W',t:'C',b:'c',q:'C',G:'W',y:'o'}),
+  koshary:P20_rc(PXI_D.foul,{T:'o',t:'r',b:'y',q:'R',G:'R'})
+});
+
+/* in a fight: who can take it, and what it does */
+{const it0=itemTargets;itemTargets=function(k){const out=it0.apply(this,arguments),h=S.hero,e=enOf(k);
+  if(e&&h.energy<MXE(h)&&!out.some(o=>o.who==='me')){const drink=ITEMS[k].kind==='pot';
+    out.unshift({who:'me',t:drink?G('اشربها انت','اشربيها انتي'):G('كُل انت','كُلي انتي'),s:`طاقتك ${h.energy}/${MXE(h)}`})}
+  else if(e){const m=out.find(o=>o.who==='me');if(m)m.s+=` · طاقة ${h.energy}/${MXE(h)}`}
+  return out}}
+{const u0=useItem;useItem=async function(k,t){const C=S.combat,h=S.hero,it=ITEMS[k],e=enOf(k);
+  if(!C||C.busy||!t||!it)return u0.apply(this,arguments);
+  if(it.use==='energy'){ac();C.busy=true;C.bag=null;C.usedItem=true;h.bag[k]=Math.max(0,(h.bag[k]||0)-1);SFX.gulp();
+    const g=Math.min(e,MXE(h)-h.energy);h.energy+=g;combat();const el=$('#meCard');if(el){floatAt(el,'+'+g+' طاقة','#9fd0ff','',24);pop(el,['#9fd0ff','#e6f4ff'],18)}
+    await say(`${esc(h.name)} ${G('شرب','شربت')} ${it.name}: ${N_pl(g)} طاقة.`,'good');saveHero();return afterHero()}
+  if(e&&t.who==='me'){const g=Math.min(e,MXE(h)-h.energy);if(g>0){h.energy+=g;setTimeout(()=>{const el=$('#meCard');if(el)floatAt(el,'+'+g+' طاقة','#9fd0ff','',20)},250)}}
+  return u0.apply(this,arguments)}}
+
+/* where to get them: the night market and the town food shop */
+{const g0=genShop;genShop=function(){const L=g0.apply(this,arguments);
+  if(Math.random()<.8)L.push({k:'shai',stock:rnd(3)});if(Math.random()<.5)L.push({k:'ahwa',stock:rnd(2)});if(Math.random()<.25)L.push({k:'erqsous',stock:1});return L}}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
