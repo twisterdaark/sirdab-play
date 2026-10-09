@@ -4357,6 +4357,12 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.34',d:'9 أكتوبر',add:[
+    'أشكال عين حادة جديدة: صقر، مكشّر، تعلب، وبارد.',
+    'عصير القصب بقى بيتعمل في الخلاط: {وقّف|وقّفي} الخلاط لما العصير يبقى ناعم، قبل ما يبقى مية. دفعتين ورا بعض.'
+  ],fix:[
+    'لما {تخفي|تخفي} السلاح، مبقاش فيه سلاح تاني بيظهر في إيدك.'
+  ]},
   {v:'5.33',d:'9 أكتوبر',add:[
     '«دوار العمدة» في ناس البلد: مهمات من ناس الكفر بفلوس وهدايا. {تقدر|تقدري} {تاخد|تاخدي} لحد 3 مع بعض: {اقتل|اقتلي} وحوش، {هات|هاتي} طماطم أو سمك أو حجر، {اطبخ|اطبخي} أكلة {وهاتها|وهاتيها}، {احصد|احصدي}، {اصطاد|اصطادي}… والمهمات بتتجدد كل 20 دقيقة.',
     'الأكل اللي {بتطبخه|بتطبخيه} بقى يتباع في السوق.',
@@ -4823,7 +4829,7 @@ const KIND={
   tailor:{n:'شغل الخياطة',steps:['القص','الغُرز'],ic:'<svg viewBox="0 0 40 40"><path d="M8 32L30 10" stroke="#e8edf2" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="29" cy="11" rx="3.4" ry="1.6" transform="rotate(-45 29 11)" fill="none" stroke="#9aa4ad" stroke-width="1.3"/><path d="M29 11Q38 22 26 28T12 35" stroke="#c0453a" stroke-width="1.6" fill="none"/></svg>',
     how:g=>[`${g('حط','حطي')} صباعك على أول الخط المنقّط ${g('وحرّكه','وحرّكيه')} عليه لحد آخره من غير ما ${g('تطلع','تطلعي')} برّه.`,`وفي الخياطة ${g('دوس','دوسي')} لما الإبرة تيجي فوق كل علامة بالظبط.`]},
   cook:{n:'الطبخ',steps:['التسوية','الفوران'],ic:'<svg viewBox="0 0 40 40"><path d="M6 16H34L31 31Q20 36 9 31Z" fill="#2a2420" stroke="#000" stroke-width="1.4"/><rect x="4" y="13" width="32" height="5" rx="2.5" fill="#4a4440"/><path d="M15 9q-3-3 0-6M24 9q-3-3 0-6" stroke="#fff" stroke-opacity=".5" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
-    how:(g,C)=>{const n=(C&&ckFood(C)||{n:'السمك'}).n;return [`${g('اقلب','اقلبي')} ${n} لما المؤشر يوصل الدهبي، ${g('وشيل','وشيلي')} ${n} من على النار قبل الأحمر.`,`ولما حلة تفور ${g('دوس','دوسي')} عليها بسرعة قبل ما تدلق.`]}},
+    how:(g,C)=>{if(C&&typeof ckJuice==='function'&&ckJuice(C))return [`الخلاط بيشتغل ${g('وانت','وانتي')} ${g('بتتفرج','بتتفرجي')}. ${g('وقّفه','وقّفيه')} لما المؤشر يوصل الدهبي: العصير يبقى ناعم.`,`لو ${g('سبته','سبتيه')} زيادة العصير بيبقى مية. ودفعتين ورا بعض.`];const n=(C&&ckFood(C)||{n:'السمك'}).n;return [`${g('اقلب','اقلبي')} ${n} لما المؤشر يوصل الدهبي، ${g('وشيل','وشيلي')} ${n} من على النار قبل الأحمر.`,`ولما حلة تفور ${g('دوس','دوسي')} عليها بسرعة قبل ما تدلق.`]}},
   bread:{n:'العيش',steps:['العجن','الفرن'],ic:'<svg viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="15" ry="9" fill="#d9a24a" stroke="#5a3010" stroke-width="1.4"/><path d="M10 21q10-7 20 0" stroke="#f3d48f" stroke-width="2" fill="none"/></svg>',
     how:g=>[`${g('لف','لفي')} صباعك حوالين العجينة في دواير، لا بسرعة ولا ببطء، لحد ما الدايرة اللي حواليها تتملى.`,`في الفرن الرغيف بينفخ ويحمر: ${g('دوس','دوسي')} على كل رغيف لما يبقى دهبي، قبل ما يتحرق.`]}};
 /* sounds of the games */
@@ -4895,6 +4901,8 @@ async function runGame(C){const k=C.kind;MG.C=C;let score=0;
     C.brk=[['القص',c>=.88?'مظبوط':c>=.6?'كويس':'معووج شوية'],['الغُرز',C.np?`${C.np} مظبوطة من ${C.nst}`:'ولا واحدة مظبوطة']]}
   else if(k==='bread'){const a=await stepRun(bKnead(C),0),b=await stepRun(bOven(C),1);score=.4*a+.6*b+C.bonus;C.parts=[a,b];
     C.brk=[['العجن',a>=.99?'ناعمة ومظبوطة':a>=.6?'كويسة':'لسه ناشفة'],['الفرن',C.good?`${C.good} مظبوطين من ${C.nl}`:'ولا رغيف مظبوط']];if(C.burnt)score=Math.min(score,.29)}
+  else if(typeof ckJuice==='function'&&ckJuice(C)){const a=await stepRun(cBlend(C,0),0),b=await stepRun(cBlend(C,1),1);score=.5*a+.5*b+C.bonus;C.parts=[a,b];
+    const w=x=>x>=.9?'ناعم مظبوط':x>=.6?'ناعم':x<=.15?'بقى مية':'فيه حتت';C.brk=[['الدفعة الأولى',w(a)],['الدفعة التانية',w(b)]]}
   else{const f=await stepRun(cFry(C),0),b=await stepRun(cBoil(C),1);score=.5*f+.5*b+C.bonus;C.parts=[f,b];
     C.brk=[['التسوية',C.burnt?'اتحرق':f>=.9?'مستوي مظبوط':f>=.6?'مستوي':'نيّ شوية'],['الفوران',C.caught?`${C.g('لحقت','لحقتي')} ${C.caught} من ${C.nb}`:C.g('ما لحقتش ولا واحدة','ما لحقتيش ولا واحدة')]];
     if(C.burnt)score=Math.min(score,.29)}
@@ -5147,6 +5155,34 @@ function cFry(C){const sr=TR(C.h,'cook','steady'),hw=.05*C.wl*(1+.1*R3(sr)),c=.6
     const T={p:['دهبي مظبوط!','#ffd36a',1],g:['دهبي','#a6e3a0',0],o:[v<c?'مستوي، بس بدري':'مستوي، بس زيادة','#d8c8a8',0],r:['لسه نيّ..','#9fc6ee',0],b:['اتحرق!','#f0a090',1]}[gr];sayAt(180,200,T[0],T[1],T[2]);
     if(gr==='p'){sf('mgPerfect');buzz([20,30,60]);popAt(180,250,['#ffd36a','#fff3b0','#c8862a'],26)}else if(gr==='g'){sf('mgGood');buzz(25);popAt(180,250,['#ffd36a','#c8862a'],12)}else{sf('mgBad');buzz(gr==='b'?[60,40,120]:60);if(gr==='b')for(let i=0;i<6;i++){const p=P.find(q2=>q2.l<=0);if(p){p.x=rr(120,240);p.y=250;p.r=12;p.l=1500}}}
     if(side===0){ph='flip';flip=t;sf('mgFlip');setBtn('','',1)}else{ph='off';t0=t;setBtn('','',1);sf('equipMetal')}}
+  return s}
+/* ---------- العصير: the blender (v5.34). Two batches; stop the blender when it is smooth, before it turns to water ---------- */
+const BL_RAMP=[[0,'#b8c878'],[.42,'#d8d860'],[.64,'#f0e070'],[.86,'#e8eccc'],[1,'#dfe6ec']];
+function cBlend(C,n){const sr=TR(C.h,'cook','steady'),hw=.05*C.wl*(1+.1*R3(sr)),c=.64,G0=.42,R0=.9,X=v=>330-v*300;let v=0,t=0,t0=0,ph='wait',q=0;const E={};
+  const s={title:n?'الدفعة التانية':'الخلاط',hint:`${C.g('وقّف','وقّفي')} الخلاط لما المؤشر يوصل الدهبي: العصير ناعم`,bon:C.bon('steady','الدهبي أوسع'),btn:`${C.g('وقّف','وقّفي')}!`,bc:'hot',
+    scene:()=>`${ckDefs()}<rect x="118" y="292" width="124" height="34" rx="8" fill="#3a3330" stroke="#000" stroke-width="2"/><circle cx="180" cy="309" r="7" fill="#d0483b" stroke="#000" stroke-width="1.5"/>
+      <g id="mgJar"><path d="M128 120 L232 120 L222 290 L138 290Z" fill="#ffffff14" stroke="#dfe6ec" stroke-width="3"/>
+      <clipPath id="mgJc"><path d="M130 122 L230 122 L220 288 L140 288Z"/></clipPath><g clip-path="url(#mgJc)"><rect id="mgLq" x="120" y="200" width="120" height="100" fill="#b8c878"/>
+      <g id="mgCh">${Array.from({length:9},(_,i)=>`<rect x="${140+(i%3)*26}" y="${210+Math.floor(i/3)*22}" width="16" height="12" rx="3" fill="#c8b040" stroke="#6a5a10" stroke-width="1.5"/>`).join('')}</g></g>
+      <path d="M180 286 l-16 -6 M180 286 l16 -6" stroke="#9aa4a8" stroke-width="4" stroke-linecap="round"/><rect x="124" y="108" width="112" height="14" rx="4" fill="#3a3330" stroke="#000" stroke-width="2"/></g>
+      <g><rect x="26" y="40" width="308" height="30" rx="15" fill="#000b" stroke="#ffffff26" stroke-width="2"/>
+        <rect x="${X(G0)}" y="44" width="${X(0)-X(G0)}" height="22" rx="4" fill="#9aa4a8" opacity=".35"/><rect x="${X(R0)}" y="44" width="${X(G0)-X(R0)}" height="22" fill="#6fb36a" opacity=".55"/>
+        <rect x="${X(1)}" y="44" width="${X(R0)-X(1)}" height="22" rx="4" fill="#9fc6ee" opacity=".75"/><rect x="${X(c+hw)}" y="41" width="${X(c-hw)-X(c+hw)}" height="28" rx="5" fill="#f3c14d" stroke="#fff3b0" stroke-width="2"/>
+        <g id="mgPt" transform="translate(${X(0)} 0)"><path d="M0 74 l-8 12 h16Z" fill="#fff" stroke="#000" stroke-width="1.5"/><rect x="-2.5" y="36" width="5" height="38" rx="2.5" fill="#fff" stroke="#000" stroke-width="1"/></g></g>`,
+    init(){['mgJar','mgLq','mgCh','mgPt'].forEach(id=>E[id]=at(id))},
+    upd(dt){t+=dt;if(ph==='wait'&&t>650){ph='run';t0=t}
+      if(ph==='run'){v+=dt/1000*(.25+.75*v)*C.sp*(n?1.15:1);if(v>=1){v=1;take(1)}
+        const sh=(Math.random()-.5)*3*(.4+v);E.mgJar.setAttribute('transform',`translate(${sh.toFixed(1)} ${(Math.random()-.5).toFixed(1)})`);
+        if(Math.random()<dt/1000*3)buzz(8)}
+      E.mgLq.setAttribute('fill',ramp(BL_RAMP,v));E.mgLq.setAttribute('y',(200-v*60).toFixed(1));E.mgLq.setAttribute('height',(100+v*60).toFixed(1));
+      [...E.mgCh.children].forEach((r,i)=>{const k=clamp(1-v*1.5+i*.02,0,1);r.setAttribute('opacity',k.toFixed(2));if(ph==='run')r.setAttribute('transform',`rotate(${(t/4+i*40)%360} ${152+(i%3)*26} ${216+Math.floor(i/3)*22}) scale(1)`)});
+      E.mgPt.setAttribute('transform',`translate(${X(v).toFixed(1)} 0)`);
+      if(ph==='off'&&t-t0>900)s.done(q)},
+    down(){if(ph==='run')take(0)},peek:()=>({id:'blend',ph,v,c,hw,t})};
+  function take(auto){const d=Math.abs(v-c);let gr;ph='off';t0=t;setBtn('','',1);E.mgJar.setAttribute('transform','');
+    if(v>=R0||auto){q=.15;gr='b'}else if(d<=hw){q=bandSc(v,c,hw);gr=d<=.3*hw?'p':'g'}else if(v>=G0){const e=(d-hw)/Math.max(.01,(v<c?c-hw-G0:R0-c-hw));q=.55-.3*clamp(e,0,1);gr='o'}else{q=.1+.15*(v/G0);gr='r'}
+    C.ev(gr==='p');const T0={p:['ناعم مظبوط!','#ffd36a',1],g:['ناعم','#a6e3a0',0],o:[v<c?'لسه فيه حتت صغيرة':'خفيف شوية','#d8c8a8',0],r:['لسه حتت كبيرة..','#9fc6ee',0],b:['بقى مية..','#9fc6ee',1]}[gr];sayAt(180,180,T0[0],T0[1],T0[2]);
+    if(gr==='p'){sf('mgPerfect');buzz([20,30,60]);popAt(180,200,['#f0e070','#fff3b0','#a6e3a0'],26)}else if(gr==='g'){sf('mgGood');buzz(25);popAt(180,200,['#f0e070','#a6e3a0'],12)}else{sf('mgBad');buzz(60)}}
   return s}
 function pot(cx,i){return `<g id="mgPo${i}"><g id="mgPF${i}">${flames(cx,330,110)}</g><ellipse cx="${cx}" cy="322" rx="64" ry="8" fill="#000" opacity=".5"/>
   <path d="M${cx-66} 206 L${cx-60} 300 Q${cx} 318 ${cx+60} 300 L${cx+66} 206Z" fill="#3a3330" stroke="#000" stroke-width="2.5"/><path d="M${cx-58} 220 L${cx-54} 292" stroke="#ffffff1a" stroke-width="6" stroke-linecap="round"/>
@@ -8634,7 +8670,7 @@ const PX=(function(){
   /* the game's look object -> a clean look for the doll (a copy; the saved hero is never touched). bare: no head gear, so the hair shows */
   function look(h,bare){
     const g=h.g==='f'?'f':'m',R=PD.RAMPS,eq=h.eq||{},e={};
-    const hid=h.hide||{};for(const s in GEAR_PART){if(bare&&s==='head'||hid[s])continue;const p=gearPart(s,eq[s]);if(p&&has(s,p,g))e[s]=p}
+    const hid=h.hide||{};for(const s in GEAR_PART){if(bare&&s==='head'||hid[s])continue;const p=gearPart(s,eq[s]);if(p&&has(s,p,g))e[s]=p}if(hid.weapon)e.weapon='none';
     const cls=h.cls==='متسلل'?'حرامي':h.cls;
     return {g,cls:has('outfit',cls,g)?cls:'محارب',
       skin:near(R.skin,h.skin,'#e0b08a'),hairColor:near(R.hair,h.hairColor,'#1b1412'),eyes:near(R.eyes,h.eyes,'#4a2a14'),outfit:near(R.outfit,h.outfit,'#7a2f2a'),
@@ -21325,6 +21361,10 @@ function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{co
     'نعسان':{m:['....','KKKK','.ee.','....'],f:['....','KKKK','.ee.','....'],b:['KK','.e']},
     'حادّ':{m:['K...','.KK.','.Ke.','.ee.'],f:['K...','KKK.','.Ke.','.ee.'],b:['K.','.K']},
     'صغير':{m:['....','.KK.','.KK.','....'],b:['..','.K']},
+    'صقر':{m:['KK..','.KKK','.WeK','..e.'],b:['K.','KK']},
+    'مكشّر':{m:['K...','KKKK','.Ke.','....'],b:['KK','.K']},
+    'تعلب':{m:['....','KKK.','.eeK','....'],b:['K.','.e']},
+    'بارد':{m:['....','KKKK','.eK.','....'],b:['KK','e.']},
     'غمزة':{wink:1}};
   ['m','f'].forEach(g=>Object.keys(EYES).forEach(k=>{const E=EYES[k];let face,body;
     if(E.wink){const o=OPEN[g];face=fe(o,HAPPY.map(rev));body=be(['.K','.e'],['KK','..'])}
@@ -21456,6 +21496,10 @@ Object.assign(TW_REC,{
   shrsoup:Object.assign({},TW_REC.shrsoup,{need:{shrimp:2,basal:1}}),
   bayadtaj:Object.assign({},TW_REC.bayadtaj,{need:{bayad:1,tamatem:1,basal:1}}),
   koshary:Object.assign({},TW_REC.koshary,{need:{roz:1,flour:1,basal:1,tamatem:1}})});
+
+/* juices go in the blender instead of the pan (v5.34) */
+const CK_JUICE=['asabj'];
+const ckJuice=C=>!!(C&&C.o&&CK_JUICE.includes(C.o.dish));
 /* ---------- عدّة الغيط: farm tools (v5.32) ----------
    Bought from عم عبده, dear and in order (each needs the one before and a farming level):
    سماد (a sack per planting: 20% faster and 1 more crop) · فزاعة (no crows) · رشاش (every planting is watered for free) ·
