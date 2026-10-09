@@ -4349,6 +4349,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.7',d:'9 أكتوبر',add:[
+    'شاشة البداية بقت بتورّيك وحش مختلف كل مرة تفتح اللعبة، وساعات مجموعة وحوش جنب بعض، ونادراً وحش عملاق مالي السما.'
+  ],fix:[]},
   {v:'5.6',d:'9 أكتوبر',add:[
     'أكل وشرب بيرجّعوا الطاقة في القتال: شاي بالنعناع وقهوة محوّجة وإزازة عرقسوس، {هتلاقيهم|هتلاقيهم} عند أم سيد وفي سوق الليل.',
     'أكلتين جداد {تطبخهم|تطبخيهم}: بليلة باللبن وطبق كشري، بيرجّعوا صحة وطاقة مع بعض.'
@@ -18598,6 +18601,30 @@ Object.assign(PXI_D,{
 /* where to get them: the night market and the town food shop */
 {const g0=genShop;genShop=function(){const L=g0.apply(this,arguments);
   if(Math.random()<.8)L.push({k:'shai',stock:rnd(3)});if(Math.random()<.5)L.push({k:'ahwa',stock:rnd(2)});if(Math.random()<.25)L.push({k:'erqsous',stock:1});return L}}
+/* ---------- the title screen: a different monster every time it opens ----------
+   mostly one monster, sometimes a pack side by side, and now and then one giant that fills the sky. */
+const TS_SKIP=['dummy','k_thief','k_ghafir','g_thief','ma_bandit','mb_smug','mb_cutter','ua_ghafir','ua_broker','ua_boy','ub_broker','uc_thief','q_cook','q_hunter','mc_hunter','k_awad','ub_seller','uc_servant','q_servant','d_digger','j_digger'];
+const TS_BIG=['nadaha','k_ghoula','j_hound','q_hanem','d_rasad','ma_grey','mb_ghoul','mc_dabaa','ua_kis','uc_master','t_redeye','mb_nasnas','j_jinn','t_drowned'];
+const tsPool=()=>Object.keys(FOE_ART_X).filter(k=>!TS_SKIP.includes(k));
+const tsPick=(L,n)=>{const a=L.slice(),o=[];while(o.length<n&&a.length)o.push(a.splice(Math.floor(Math.random()*a.length),1)[0]);return o};
+function tsLineup(){const r=Math.random(),P=tsPool();
+  if(r<.15){const k=pick(TS_BIG.filter(x=>FOE_ART_X[x]||x==='nadaha'));return `<div class="ts-mon ts-giant">${foeArt(k)}</div>`}
+  if(r<.42){const ks=tsPick(P,Math.random()<.5?2:3),sz=ks.length===3?[84,104,84]:[100,100];
+    return `<div class="ts-pack">${ks.map((k,i)=>`<div class="ts-mon" style="width:${sz[i]}px;height:${sz[i]}px;animation-delay:${i*.4}s">${foeArt(k)}</div>`).join('')}</div>`}
+  return `<div class="ts-mon ts-one">${foeArt(pick(P))}</div>`}
+{const t0=title;title=function(){const R=t0.apply(this,arguments);
+  try{const sky=view.querySelector('.t-sky');const old=sky&&[...sky.children].find(d=>d.style&&d.style.width==='116px');
+    if(old){old.insertAdjacentHTML('afterend',tsLineup());old.remove()}}catch(e){console.error('title mon: '+e.message)}
+  return R}}
+{const st=document.createElement('style');st.textContent=`
+.ts-mon{opacity:.92;filter:drop-shadow(0 0 22px #7fe0ff55);animation:tsBob 3.2s ease-in-out infinite alternate}
+.ts-mon svg{width:100%;height:100%}
+.ts-one{position:absolute;left:50%;bottom:26px;width:116px;height:116px;margin-left:-58px}
+.ts-pack{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:flex-end;gap:2px}
+.ts-giant{position:absolute;left:50%;bottom:-34px;width:300px;height:300px;margin-left:-150px;opacity:.88;filter:brightness(.8) drop-shadow(0 0 30px #d0483b88);animation:tsBreathe 4.5s ease-in-out infinite alternate}
+@keyframes tsBob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@keyframes tsBreathe{from{transform:scale(1)}to{transform:scale(1.035) translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.ts-mon{animation:none}}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
