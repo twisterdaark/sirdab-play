@@ -4352,6 +4352,12 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.31',d:'9 أكتوبر',add:[],fix:[
+    'في القتال مع صحابك، مكتوب فوق اسم اللي عليه الدور بالظبط: {انت|انتي}، أو صاحبك، أو الرفيق، أو الأعداء.',
+    'جوه الفولدرات في البلد، الإشعار بقى على المكان نفسه، فتعرف{|ي} الحاجة الجديدة فين.',
+    'الإشعارات بقت للحاجات اللي تقدر{|ي} تعمل فيها حاجة بس: بضاعة جديدة، رمية ببلاش، محصول جاهز، أو حاجة تقدر{|ي} تعملها.',
+    'تقدر{|ي} تعلّم{|ي} على الإشعار إنه اتشاف بعلامة ✓، أو «اتشافوا كلهم» جوه الفولدر. وبيتشال لوحده لما تفتح{|ي} المكان.'
+  ]},
   {v:'5.30',d:'9 أكتوبر',add:[],fix:[
     'البلد بقت فولدرات: المغامرات ظاهرة على طول، والسوق والصنايعية والأنشطة وناس البلد بيتفتحوا بدوسة. والفولدر المقفول بيقولك لو جواه حاجة جاهزة.',
     'الليلة مع صحابك بقت جوه المغامرات، من زرار فوق.',
@@ -21052,8 +21058,7 @@ function coGApply(){const R=CO.room,a=coJ(R&&R.ask),me=coMe(),m=$('#coM');if(!m)
   const mine=a&&CO.ans[a.id]==null&&R&&R.st==='on'&&me&&(a.to||R.g)===me&&coFightAsk(a);
   view.querySelectorAll('.co-ask').forEach(x=>{if(coFightAsk(a))x.style.display='none'});
   const V=coJ(R&&R.vw),fight=!!(V&&V.s==='combat');m.classList.toggle('co-lock',fight&&!mine);
-  if(fight&&!mine){const who=(()=>{const L=(R.ask&&coJ(R.ask))||null;if(L&&CO.ans[L.id]==null&&L.to&&L.to!==me){const x=CO.xs.find(y=>y.u===L.to),p=x?coJ(x.gp)||{}:L.to===R.g?coJ(R.gp)||{}:{};if(p.n)return p.n}return R.hn||''})();
-    m.querySelectorAll('.turn').forEach(t=>{if(/^\s*دورك|مين؟/.test(t.textContent))t.textContent=`دور ${who}`})}
+  if(fight&&!mine&&V.tu)m.querySelectorAll('.turn').forEach(t=>{t.textContent=V.tuU&&V.tuU===me?'دورك':`دور ${V.tu}`})
   if(!mine){CO.gp={id:'',m:'',sk:''};return}
   if(CO.gp.id!==a.id)CO.gp={id:a.id,m:'',sk:''};
   m.querySelectorAll('.co-gp').forEach(x=>x.remove());m.querySelectorAll('.turn').forEach(x=>x.style.display='none');
@@ -21161,11 +21166,15 @@ async function coAnswerR(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!
   try{setTimeout(()=>coDiceClock(1),60);x=await rollCheck(st,{label:`${nm}: ${G('ارمي','ارمي')} زهرك`})}finally{S.dice=d0;CO.myRoll=''}
   const v=JSON.stringify({id:a.id,a:{i,t:x&&x.tier||'fail',n:(x&&x.total)|0}});
   try{if(R.g===coMe())await coRef(CO.code).update({ans:v});else await coPRef(CO.code,coMe()).update({ans:v})}catch(e){}if(S.screen==='coopg')render()}
-{const v0=coView;coView=function(){const o=v0.apply(this,arguments);o.dz=S.dice||'';return o}}
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);o.dz=S.dice||'';if(S.combat&&S.screen==='combat'){const t=coTurnWho();o.tu=t.n;o.tuU=t.u}return o}}
+/* whose turn it is right now, by name: a friend, your companion, the host, or the foes */
+function coTurnWho(){const C=S.combat,u=CO.turnU,R=CO.room;
+  if(u){if(R&&u===R.g&&S.comp)return{n:S.comp.name,u};const a=CO.al[u];if(a)return{n:a.name,u}}
+  if(C&&C.phase==='me')return{n:S.hero.name,u:coMe()};return{n:'الأعداء',u:''}}
 /* the light is on whoever's turn it is */
 {const d0=coAlDraw;coAlDraw=function(){d0.apply(this,arguments);try{if(S.screen!=='combat'||!coLive())return;const C=S.combat,u=CO.turnU,R=CO.room;
   let el=null;if(u){el=R&&u===R.g?$('#compCard'):(CO.al[u]?$('#al_'+CO.al[u].k):null)}else if(C.phase==='me'&&!C.busy)el=$('#meCard');
-  view.querySelectorAll('.side .mate').forEach(x=>x.classList.toggle('co-turnp',x===el));const me=$('#meCard');if(me)me.classList.toggle('co-dim',!!el&&el!==me)}catch(e){}}}
+  view.querySelectorAll('.side .mate').forEach(x=>x.classList.toggle('co-turnp',x===el));if(u){const w=coTurnWho();view.querySelectorAll('.turn').forEach(t=>{t.textContent=`دور ${w.n}`;t.classList.remove('me');t.classList.add('them')})}const me=$('#meCard');if(me)me.classList.toggle('co-dim',!!el&&el!==me)}catch(e){}}}
 {const st=document.createElement('style');st.textContent=`.side .mate.co-turnp{border-color:var(--gold);box-shadow:0 0 16px #e0b25a66}.side .mate.me.co-dim{border-color:var(--line);box-shadow:none}`;document.head.appendChild(st)}
 
 /* ===== one story result for everyone: everyone rolls, the roll in the middle of yours decides the story for all of you ===== */
@@ -21215,8 +21224,19 @@ function twGroup(){if(S.screen!=='town')return;const G0=view.querySelector('.tw-
   G0.replaceWith(box);twFolds(box)}
 /* every group but the adventures is a folder: closed it shows its places small and what is ready inside; one opens at a time */
 function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{const h3=sec.querySelector('h3'),gr=sec.querySelector('.tw-grid'),T=[...gr.querySelectorAll('.tw-tile')],nm=h3.querySelector('span').textContent;
-  const ready=T.map(b=>{const n=(b.querySelector('.lb b')||{}).textContent||'',bd=b.querySelector('.bdg'),ok=b.querySelector('.lb em .ok,.lb em .new');
-    const t=bd?bd.textContent:ok?(b.querySelector('.lb em').textContent||'').trim():'';return t?`${n}: ${t}`:''}).filter(Boolean);
+  /* only things you can act on count: a red badge (new stock, a free throw, a crop ready) or a green «you can make» line.
+     Each one is a notification until you open that place or mark it as read; it comes back only when it changes. */
+  const h=S.hero,seen=h.twSeen||(h.twSeen={});
+  const ready=T.map(b=>{const go=b.dataset.go,n=(b.querySelector('.lb b')||{}).textContent||'',bd=b.querySelector('.bdg'),ok=b.querySelector('.lb em .ok');
+    const t=bd?bd.textContent:ok?ok.textContent.trim():'';if(!t){delete seen[go];return''}
+    if(seen[go]===t){if(bd)bd.remove();return''}
+    if(!bd)b.insertAdjacentHTML('beforeend','<span class="bdg">جديد</span>');
+    b.insertAdjacentHTML('beforeend',`<span class="tw-rd" data-rd="${go}" title="اتشاف">✓</span>`);b.dataset.sig=t;b.classList.add('tw-unr');
+    return `${n}: ${bd?bd.textContent:t}`}).filter(Boolean);
+  if(ready.length){const mk=document.createElement('button');mk.className='btn ghost small tw-rdall';mk.textContent='✓ اتشافوا كلهم';
+    mk.onclick=e=>{e.stopPropagation();T.forEach(b=>{if(b.dataset.sig)seen[b.dataset.go]=b.dataset.sig});saveHero();SFX.page&&SFX.page();render()};gr.appendChild(mk)}
+  gr.addEventListener('click',e=>{const x=e.target.closest('.tw-rd');if(x){e.stopPropagation();e.preventDefault();const b=x.closest('.tw-tile');seen[x.dataset.rd]=b.dataset.sig;saveHero();SFX.page&&SFX.page();render();return}
+    const b=e.target.closest('.tw-tile');if(b&&b.dataset.sig){seen[b.dataset.go]=b.dataset.sig;saveHero()}},true);
   const thumbs=T.map(b=>`<span class="th">${(b.querySelector('.ban')||{}).innerHTML||''}</span>`).join('');
   const names=T.map(b=>(b.querySelector('.lb b')||{}).textContent||'').join('، ');
   const hd=document.createElement('button');hd.className='tw-fh';hd.innerHTML=`<span class="ths">${thumbs}</span><span class="tx"><b>${nm}</b><small class="${ready.length?'rd':''}">${ready.length?esc(ready.slice(0,2).join(' · '))+(ready.length>2?` · و${ready.length-2} كمان`:''):esc(names)}</small></span>${ready.length?`<span class="dot">${ready.length}</span>`:''}<span class="chv">‹</span>`;
@@ -21247,6 +21267,10 @@ function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{co
 .tw-fh .dot{flex:none;min-width:22px;height:22px;border-radius:11px;background:#d0483b;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 6px}
 .tw-fh .chv{flex:none;color:var(--gold2);font-size:22px;transition:transform .2s}.tw-sec.open .tw-fh .chv{transform:rotate(-90deg)}
 .tw-sec.fold>.tw-grid{display:none;padding:0 10px 10px}.tw-sec.fold.open>.tw-grid{display:grid;animation:twIn .35s ease both}
+.tw-tile .tw-rd{position:absolute;top:2px;inset-inline-end:2px;width:40px;height:40px;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800;cursor:pointer;z-index:2}
+.tw-tile .tw-rd:before{content:'';position:absolute;inset:8px;border-radius:50%;background:#0009;border:1px solid #fff6;z-index:-1}
+.tw-tile.tw-unr{border-color:#d0483b99}
+.tw-rdall{grid-column:1/-1;min-height:44px;width:100%}
 .tw-pm{display:flex;align-items:center;gap:12px;width:100%;text-align:right;cursor:pointer;margin:8px 0;border-color:var(--gold)}
 .tw-pm .ic{font-size:24px}.tw-pm .tx{flex:1;display:flex;flex-direction:column}.tw-pm .tx b{color:var(--gold2);font-size:16px}.tw-pm .tx small{color:var(--dim);font-size:12px}.tw-pm .ar{color:var(--gold2);font-size:20px}`;document.head.appendChild(st)}
 
