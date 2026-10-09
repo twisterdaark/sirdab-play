@@ -4351,6 +4351,11 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.10',d:'9 أكتوبر',add:[
+    'لو اللعبة اتفتحت مرتين (تابتين أو موبايلين بنفس الحساب)، القديمة بتقف وتقولك، عشان ما يبقاش في نسختين من {بطلك|بطلتك} بيتلخبطوا. {تقدر|تقدري} {ترجع|ترجعي} تلعب من أي واحدة بدوسة.'
+  ],fix:[
+    'شجرة الشغلانات: كل مستوى بقى بـ8 نقط بدل 3، عشان {تقدر|تقدري} تفتح الفروع والروابط والطرق. النقط اتحسبت من جديد على مستواك الحالي.'
+  ]},
   {v:'5.9',d:'9 أكتوبر',add:[
     '«حسابي» في الإعدادات: {ادخل|ادخلي} بحساب جوجل وأبطالك هيتحفظوا في السحابة لوحدهم. لو الموبايل ضاع أو {غيّرته|غيّرتيه}، {تدخل|تدخلي} تاني وكل حاجة ترجع. بيشتغل من لينك اللعب.'
   ],fix:[]},
@@ -5610,7 +5615,8 @@ function treeRank(h,skill,branch){if(!h)return 0;treeMig(h);if(!h.tree||!h.tree[
 function treeR(h,skill,branch){const r=treeRank(h,skill,branch);return r>=5?4:r*.75}
 const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return (t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0)+lkSpent(h,k)+fkSpent(h,k)};
 const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
-function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,3*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
+const TREE_PPL=8;
+function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,TREE_PPL*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
 const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
 const treeNum=n=>n===1?'نقطة واحدة':n===2?'نقطتين':n+' نقط';
 const TS={k:'smith',from:'smith',sel:null,conf:0,tab:'br'};
@@ -5635,7 +5641,7 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   view.innerHTML=`<div class="top twtop"><button class="ib" id="back">رجوع</button><h2>شجرة ${LIFE[k].n}</h2><span style="width:44px"></span></div>
   <div class="tw tr" style="--tc:${c}">
     <div class="card tr-top"><span class="ic">${treeIco(k,40)}</span><div class="tx"><div class="r1"><b>${LIFE[k].n} مستوى ${treeLvl(h,k)}</b><span class="tr-pts${treeCan(h,k)?' on':''}">${p===0?'مفيش نقط':treeCan(h,k)?treeNum(p):`${treeNum(p)}، مش كفاية`}</span></div>
-      <div class="tw-sm">كل مستوى = 3 نقط · الدرجة 1 بنقطة لحد الدرجة 5 بـ5 نقط</div></div></div>
+      <div class="tw-sm">كل مستوى = ${TREE_PPL} نقط · الدرجة 1 بنقطة لحد الدرجة 5 بـ5 نقط</div></div></div>
     ${trTabsHTML(h,k,p)}
     ${TS.tab==='lk'?lkHTML(h,k,p):TS.tab==='fk'?fkHTML(h,k,p):`<div class="tr-grid">${T0.br.map(col).join('')}</div>`}
     <div class="card tr-info${TS.sel?'':' empty'}" id="trInfo">${TS.sel&&TS.sel.indexOf('F:')===0?fkInfo(h,k,TS.sel.slice(2),p):TS.sel&&TS.sel.indexOf('L:')===0?lkInfo(h,k,TS.sel.slice(2),p):sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي حاجة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه ${G('وتشتريها','وتشتريها')} من هنا.</div>`}</div>
@@ -18639,7 +18645,10 @@ function tsLineup(){const r=Math.random(),P=tsPool();
    of the Firebase project (not a secret: the Firestore rules let each account touch only its own document). */
 const FB_CFG={"apiKey":"AIzaSyDIy89OJP1LKKbsK3z-us6v7RkvrA4nDaU","authDomain":"sirdab-soc5w7.firebaseapp.com","projectId":"sirdab-soc5w7","storageBucket":"sirdab-soc5w7.firebasestorage.app","messagingSenderId":"652350763208","appId":"1:652350763208:web:d00768937f8d4e5a7e75fd"};
 const FB_V='10.12.2',FB_FLAG='srdb.fb';
-const FB={app:null,auth:null,db:null,user:null,busy:0,last:0,timer:0,err:''};
+const FB={app:null,auth:null,db:null,user:null,busy:0,last:0,timer:0,err:'',sid:Math.random().toString(36).slice(2,10)+Date.now().toString(36),locked:0,unsub:null};
+const FB_SYNC='srdb.fbt';
+const fbSyncT=()=>{try{return +localStorage.getItem(FB_SYNC)||0}catch(e){return 0}};
+const fbSetSync=t=>{try{localStorage.setItem(FB_SYNC,String(t))}catch(e){}};
 const fbOn=()=>!!FB_CFG;
 function fbScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s)})}
 let FB_READY=null;
@@ -18652,11 +18661,13 @@ function fbLoad(){if(!fbOn())return Promise.reject(new Error('nocfg'));if(FB_REA
 const fbDoc=()=>FB.db.collection('users').doc(FB.user.uid);
 const fbSum=()=>HEROES.filter(Boolean).map(h=>({n:String(h.name||'').slice(0,24),l:h.lvl||1}));
 /* the rules accept exactly {data: string under 900000 chars, updatedAt: timestamp, v: int} */
-function fbPut(o){let D={code:o.code,t:o.t||Date.now(),sum:o.sum||fbSum(),prev:o.prev||''};let s=JSON.stringify(D);
+function fbPut(o){let D={code:o.code,t:o.t||Date.now(),sum:o.sum||fbSum(),prev:o.prev||'',sid:FB.sid};fbSetSync(D.t);let s=JSON.stringify(D);
   if(s.length>880000){D.prev='';s=JSON.stringify(D)}if(s.length>880000)throw {code:'too-big'};
   return fbDoc().set({data:s,updatedAt:window.firebase.firestore.FieldValue.serverTimestamp(),v:1})}
-async function fbUp(force){if(!FB.user||FB.busy)return;FB.busy=1;try{const code=bkCode();
-    let prev='';if(force!=='first'){try{const C=await fbGet();if(C&&C.code&&C.code!==code)prev=C.code}catch(e){}}
+async function fbUp(force){if(!FB.user||FB.busy||FB.locked)return;FB.busy=1;try{const code=bkCode();
+    let prev='';if(force!=='first'){let C=null;try{C=await fbGet()}catch(e){}
+      if(C&&C.sid&&C.sid!==FB.sid&&(C.t||0)>fbSyncT()&&C.code!==code){FB.busy=0;return fbLock('cloud',C)}
+      if(C&&C.code&&C.code!==code)prev=C.code}
     await fbPut({code,prev});FB.last=Date.now();FB.err=''}
   catch(e){FB.err=e&&e.code||'up';console.error('cloud up: '+(e&&e.message||e&&e.code))}finally{FB.busy=0;fbPaint()}}
 function fbSoon(){if(!FB.user)return;clearTimeout(FB.timer);FB.timer=setTimeout(()=>fbUp(),20000)}
@@ -18713,12 +18724,46 @@ function fbOpen(box){const B=document.createElement('div');B.className='bk';B.id
 {const sv=saveHero;saveHero=function(){const R=sv.apply(this,arguments);if(FB.user)fbSoon();return R}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&FB.user&&FB.timer){clearTimeout(FB.timer);FB.timer=0;fbUp()}});
 /* someone who signed in before gets reconnected quietly when the game opens */
-try{if(fbOn()&&localStorage.getItem(FB_FLAG)==='1')setTimeout(()=>fbLoad().then(()=>{if(FB.user)FB.auth.getRedirectResult().catch(()=>{})}).catch(()=>{}),1500)}catch(e){}
+try{if(fbOn()&&localStorage.getItem(FB_FLAG)==='1')setTimeout(()=>fbLoad().then(()=>{if(FB.user){FB.auth.getRedirectResult().catch(()=>{});fbResume()}}).catch(()=>{}),1500)}catch(e){}
 {const st=document.createElement('style');st.textContent=`
 .fb-s{display:flex;flex-direction:column;gap:8px}.fb-who{display:flex;flex-direction:column}.fb-who b{font-size:15px;color:var(--ink)}.fb-who small{font-size:12px;color:var(--mute);text-align:right}
 .fb-t{font-size:13px;color:#a6e3a0}.fb-g{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#222;min-height:48px;margin:0}
 .fb-m{font-size:13px;line-height:1.7;color:#f0a090;display:flex;flex-direction:column;gap:8px}.fb-m:empty{display:none}.fb-m.ok{color:#a6e3a0}.fb-m .btn{margin:0;min-height:48px}
 .fb-m .btn span{display:flex;flex-direction:column}.fb-m .btn small{font-size:12px;opacity:.8;font-weight:400}`;document.head.appendChild(st)}
+
+/* ---------- one game at a time ----------
+   Two tabs on one phone: the newest tab wins, the older one locks (it shares the same save on the phone).
+   Two phones on one account: the cloud copy carries the id of the game that wrote it; when another game
+   wrote after our last sync, this one locks before it can overwrite, and offers to take the newer copy. */
+function fbLock(why,C){if(FB.locked)return;FB.locked=1;clearTimeout(FB.timer);
+  const d=document.createElement('div');d.id='fbLock';
+  const cloud=why==='cloud';
+  d.innerHTML=`<div class="fbl-box"><div class="fbl-ic">⚠</div><b>${cloud?'حسابك اتلعب بيه من مكان تاني':'اللعبة مفتوحة في تابة تانية'}</b>
+    <p>${cloud?`عشان التقدّم ما يتلخبطش، اللعبة دي وقفت. ${G('نزّل','نزّلي')} آخر نسخة من السحابة ${G('وكمّل','وكمّلي')} هنا، أو ${G('كمّل','كمّلي')} من المكان التاني.`:`عشان أبطالك ما يتلخبطوش، ${G('كمّل','كمّلي')} من التابة التانية، أو ${G('رجّع','رجّعي')} اللعب هنا.`}</p>
+    <button class="btn" id="fblGo">${cloud?G('نزّل آخر نسخة وكمّل هنا','نزّلي آخر نسخة وكمّلي هنا'):G('العب هنا','العبي هنا')}</button></div>`;
+  document.body.appendChild(d);try{SFX.meh&&SFX.meh()}catch(e){}
+  d.querySelector('#fblGo').onclick=()=>{
+    if(cloud){const P=C&&C.code&&bkParse(C.code);if(P){fbSetSync(C.t||Date.now());try{localStorage.setItem('srdb.tab',FB.sid)}catch(e){}return bkApply(P)}}
+    try{localStorage.setItem('srdb.tab',FB.sid)}catch(e){}location.reload()}}
+/* the same phone: the tab that opened last owns the save */
+try{localStorage.setItem('srdb.tab',FB.sid)}catch(e){}
+window.addEventListener('storage',e=>{if(e.key==='srdb.tab'&&e.newValue&&e.newValue!==FB.sid)fbLock('tab')});
+{const sv=saveHero;saveHero=function(){if(FB.locked)return;return sv.apply(this,arguments)}}
+/* another phone: watch the cloud copy while signed in */
+function fbWatch(){if(!FB.user||FB.unsub)return;try{FB.unsub=fbDoc().onSnapshot(s=>{if(!s.exists||s.metadata.hasPendingWrites)return;
+    let C=null;try{C=JSON.parse(s.data().data||'null')}catch(e){}if(!C||!C.sid||C.sid===FB.sid)return;
+    if((C.t||0)>fbSyncT()&&C.code!==bkCode())fbLock('cloud',C)},()=>{})}catch(e){}}
+/* coming back signed in: if the cloud moved on since this phone last synced, offer it before anything is saved */
+async function fbResume(){if(!FB.user||FB.locked)return;let C=null;try{C=await fbGet()}catch(e){return}
+  if(!C||!C.code){fbWatch();return fbUp('first')}
+  if(C.code===bkCode()){fbSetSync(C.t||0);return fbWatch()}
+  if((C.t||0)>fbSyncT()&&C.sid!==FB.sid)return fbLock('cloud',C);
+  fbWatch();fbUp()}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);try{const C=await fbGet();if(C&&C.code===bkCode())fbSetSync(C.t||0)}catch(e){}fbWatch();return R}}
+{const st=document.createElement('style');st.textContent=`
+#fbLock{position:fixed;inset:0;z-index:99990;background:#05070cf0;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}
+.fbl-box{max-width:360px;width:100%;background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.fbl-ic{font-size:34px;color:var(--gold2)}.fbl-box b{font-size:18px;color:var(--gold2)}.fbl-box p{margin:0;font-size:14px;line-height:1.8;color:var(--ink)}.fbl-box .btn{margin:0;min-height:48px}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
