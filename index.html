@@ -3621,7 +3621,7 @@ const fsBobEl=()=>document.getElementById('fshBob');
 /* the float is drawn with its waterline at 0; FS.top is where the line ties on (the tip of its antenna) */
 function fsBob(){const b=AR.bob();if(!b){FS.top=-28;return BOB}FS.top=-22.5;
   return b.replace(/<svg\b([^>]*)>/,(m,a)=>`<svg x="-10" y="-22.5" width="20" height="40"${a.replace(/\s(?:x|y|width|height)="[^"]*"/g,'')}>`)}
-function fsOverlay(){return `<svg id="fshOv" viewBox="0 0 390 300" preserveAspectRatio="xMidYMid slice"><defs><clipPath id="g9fClip"><rect x="-40" y="-80" width="470" height="${FG.fy+80}"/></clipPath></defs><g id="fshRips"></g><path id="fshLine" fill="none" stroke="#f4ead8" stroke-opacity=".8" stroke-width="1.1"/><g id="fshWrap"><g id="fshBob">${fsBob()}</g></g>${FG.own?'<path id="fshRod" fill="none" stroke="#2e1c0e" stroke-width="6" stroke-linecap="round"/><path id="fshRod2" fill="none" stroke="#9a6a3a" stroke-width="2.2" stroke-linecap="round"/><g id="fshReel"><circle r="9" fill="#2a2a2e" stroke="#8a8a90" stroke-width="2"/><g id="fshCrank"><path d="M0 0 L0 -12" stroke="#c8c8cc" stroke-width="2.4" stroke-linecap="round"/><circle cx="0" cy="-12" r="2.6" fill="#c8c8cc"/></g></g>':''}</svg>`}
+function fsOverlay(){const s=`<svg id="fshOv" viewBox="0 0 390 300" preserveAspectRatio="xMidYMid slice"><defs><clipPath id="g9fClip"><rect x="-40" y="-80" width="470" height="${FG.fy+80}"/></clipPath></defs><g id="fshRips"></g><path id="fshLine" fill="none" stroke="#f4ead8" stroke-opacity=".8" stroke-width="1.1"/><g id="fshWrap"><g id="fshBob">${fsBob()}</g></g>${FG.own?'<path id="fshRod" fill="none" stroke="#2e1c0e" stroke-width="6" stroke-linecap="round"/><path id="fshRod2" fill="none" stroke="#9a6a3a" stroke-width="2.2" stroke-linecap="round"/><g id="fshReel"><circle r="9" fill="#2a2a2e" stroke="#8a8a90" stroke-width="2"/><g id="fshCrank"><path d="M0 0 L0 -12" stroke="#c8c8cc" stroke-width="2.4" stroke-linecap="round"/><circle cx="0" cy="-12" r="2.6" fill="#c8c8cc"/></g></g>':''}</svg>`;return typeof fsOvPx==='function'?fsOvPx(s):s}
 /* one loop draws the line and the float (and the rod, when it is ours); the float springs down on nibbles and bites */
 function fsLoop(){const ov=document.getElementById('fshOv');if(!ov){FS.raf=0;return}
   if(FS.ov!==ov){FS.ov=ov;FS.clip=null;FS.el={bob:ov.querySelector('#fshBob'),wrap:ov.querySelector('#fshWrap'),line:ov.querySelector('#fshLine'),rod:ov.querySelector('#fshRod'),rod2:ov.querySelector('#fshRod2'),reel:ov.querySelector('#fshReel'),crank:ov.querySelector('#fshCrank')}}
@@ -3641,6 +3641,7 @@ function fsLoop(){const ov=document.getElementById('fshOv');if(!ov){FS.raf=0;ret
   if(own){const rd=`M408 322 Q${cx} ${cy} ${tx.toFixed(1)} ${ty.toFixed(1)}`;E.rod.setAttribute('d',rd);E.rod2.setAttribute('d',rd);
     const t=.35,rx=(1-t)*(1-t)*408+2*(1-t)*t*cx+t*t*tx,ry=(1-t)*(1-t)*322+2*(1-t)*t*cy+t*t*ty;if(b.m==='reel')FS.cr+=26;
     E.reel.setAttribute('transform',`translate(${rx.toFixed(1)} ${ry.toFixed(1)})`);E.crank.setAttribute('transform',`rotate(${FS.cr%360})`)}
+  if(typeof fsPxFrame==='function')try{fsPxFrame(E,ov)}catch(e){}
   FS.raf=requestAnimationFrame(fsLoop)}
 function fsRipple(n,big){const g=document.getElementById('fshRips');if(!g)return;for(let i=0;i<n;i++){const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
   e.setAttribute('cx',(FS.b.m==='float'?FG.fx:FS.bx).toFixed(1));e.setAttribute('cy',FG.fy+2);e.setAttribute('rx',big?18:12);e.setAttribute('ry',big?5:3.5);e.setAttribute('class','fsh-rip');e.style.animationDelay=(i*.2)+'s';g.appendChild(e);setTimeout(()=>e.remove(),1500+i*200)}}
@@ -4366,6 +4367,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.52',d:'9 أكتوبر',add:[],fix:['الطبخ والعيش اترسموا من جديد بيكسل بجد: الطاسة، والحلل، والعجينة، والفرن، والرغيف، والفوران.','في الترعة: السنارة، والخيط، والعوامة، والبكرة بقوا بيكسل زي باقي الصورة، والعوامة رجعت تبان على المية.']},
   {v:'5.51',d:'9 أكتوبر',add:[],fix:['الترعة كانت بتهنّج الصفحة بعد البيكسل. اتشال الفلتر منها ومن المنجم، والصيد رجع زي ما كان.']},
   {v:'5.50',d:'9 أكتوبر',add:[],fix:['الميني جيمز بقت بيكسل زي باقي اللعبة: الحدادة، والخياطة، والطبخ، والعصير، والمنجم، والترعة.','في الخياطة: لو {دوست|دوستي} على الزرار اللي تحت {وانت بتقص|وانتي بتقصي}، اللعبة كانت بتعلّق. اتصلحت.']},
   {v:'5.49',d:'9 أكتوبر',add:[],fix:['الصعوبة بقت تكبر مع اللفل أكتر: من لفل 6 الوحوش صحتها بتزيد أسرع، وضربها أجمد، وبقى أصعب {تتفاداها|تتفاديها} أو {تصيبها|تصيبيها}.','الدرع بقى يشيل نص الضربة بالكتير، يعني الوحوش لسه بتوجعك مهما كان لبسك تقيل.','التقوية بقت أخف: كل خطوة في السلاح بتزوّد أقل (+6 ضرر عند +10)، وفي الدرع والراس (+5 عند +10).','الحرامي: «ضربة من الضلمة» بقت ×1.5 بدل ×2، والضربة التانية في لفل 3 من القدرة بقت عادية مش مضاعفة، وفي لفل 5 الباقيين بياخدوا ضربة عادية. «ضربتين ورا بعض» التانية بقت أخف (60%). وفرصة ضربة المعلّم بتزيد أبطأ مع اللفل.','المحارب: «غضب» بقى ×2.5 (و×3 في لفل 5 من القدرة) بدل ×3 و×3.5.','المعالج: «طرد الجن» بقى ×1.7 (و×2.2 في لفل 5) بدل ×2 و×3.']},
@@ -4958,7 +4960,7 @@ function header(s,n){const d=MG.el.hd;if(!d)return;d.querySelector('b').textCont
   if(n!=null&&MG.el.dots)[...MG.el.dots.children].forEach((x,i)=>x.className=i<n?'ok':i===n?'on':'')}
 function hint(t,warn){const d=MG.el.hd&&MG.el.hd.querySelector('span');if(!d)return;d.textContent=t;d.className=warn?'warn':'';cls(d,'pop')}
 function stepRun(s,n){return new Promise(res=>{MG.st=s;s.fin=0;s.done=r=>{if(s.fin)return;s.fin=1;s.live=0;MG.hold=0;res(r)};
-  header(s,n);MG.el.svg.innerHTML=s.scene();if(s.init)s.init();setBtn(s.btn,s.bc,s.boff);s.live=1;if(s.upd)s.upd(0)})}
+  header(s,n);MG.el.svg.innerHTML=s.scene();if(typeof mgPreInit==='function')try{mgPreInit(MG.el.svg,MG.el.ov)}catch(e){}if(s.init)s.init();setBtn(s.btn,s.bc,s.boff);s.live=1;if(s.upd)s.upd(0)})}
 
 /* ---------- the run: the steps of each craft, then the score ---------- */
 function ctx(kind,h,o,practice){const lk=kind==='bread'?'cook':kind,lv=Math.max(1,Math.min(10,(h.life&&h.life[lk]&&h.life[lk].lvl)||1));
@@ -23393,6 +23395,66 @@ function N_storyDie(){const N=S.night;RES=null;if(N)N.dead=0;if(S.run)S.run.fall
 /* 5.51: not on the river and the mine (the river redraws every frame and the filter froze the page) and not on cooking (its own pixel art) */
 .mg-ov:not(.k-cook):not(.k-bread) .mg-box>svg{filter:url(#pxF3)}
 .mg-ic svg,.mg-card .ic svg,.mg-card svg{filter:url(#pxF2)}`;document.head.appendChild(st)})();
+
+/* ---------- 5.52: real pixel shapes, no filter ----------
+   pxize(svg,P) turns every drawn shape into square cells of P units: the inside is sampled at each cell's middle
+   (isPointInFill), and a stroke becomes a one-cell outline traced along the shape. Done once when a picture is built,
+   so nothing runs per frame. Used for the cooking and bread scenes and the reel; the river's line, rod and float
+   are drawn as cells every frame from the same curves the old code makes. */
+function pxRuns(on,x0,y0,W,H,P){let d='';for(let j=0;j<H;j++){let i=0;while(i<W){if(!on[j*W+i]){i++;continue}let k=i;while(k<W&&on[j*W+k])k++;d+=`M${(x0+i)*P} ${(y0+j)*P}h${(k-i)*P}v${P}h${-(k-i)*P}z`;i=k}}return d}
+const PX_KEEP=['id','class','opacity','fill','fill-opacity','transform','clip-path','style'];
+function pxize(root,P,skip){const NS='http://www.w3.org/2000/svg';
+  const els=[...root.querySelectorAll('path,circle,ellipse,rect,polygon,polyline,line')].filter(el=>!el.closest('defs,clipPath,pattern,mask,filter,marker')&&!(skip&&skip(el)));
+  for(const el of els){try{
+    const own=el.ownerSVGElement;if(!own||typeof el.isPointInFill!=='function')continue;const cs=getComputedStyle(el);
+    const fa=el.getAttribute('fill'),hasF=cs.fill&&cs.fill!=='none',sw=parseFloat(cs.strokeWidth)||0,hasS=cs.stroke&&cs.stroke!=='none'&&sw>0;if(!hasF&&!hasS)continue;
+    const bb=el.getBBox();if(bb.width<=0&&bb.height<=0)continue;const pad=(hasS?sw/2:0)+P;
+    const x0=Math.floor((bb.x-pad)/P),y0=Math.floor((bb.y-pad)/P),W=Math.ceil((bb.x+bb.width+pad)/P)-x0,H=Math.ceil((bb.y+bb.height+pad)/P)-y0;if(W*H>60000)continue;
+    const F=new Uint8Array(W*H),S=new Uint8Array(W*H),pt=own.createSVGPoint();
+    if(hasF)for(let j=0;j<H;j++)for(let i=0;i<W;i++){pt.x=(x0+i+.5)*P;pt.y=(y0+j+.5)*P;if(el.isPointInFill(pt))F[j*W+i]=1}
+    if(hasS&&typeof el.getTotalLength==='function'){const L=el.getTotalLength(),r=Math.max(0,sw/2-P/2),n=Math.max(2,Math.ceil(L/(P/2)));
+      for(let s=0;s<=n;s++){const p=el.getPointAtLength(L*s/n),ci=Math.floor(p.x/P)-x0,cj=Math.floor(p.y/P)-y0,rc=Math.ceil(r/P);
+        for(let dj=-rc;dj<=rc;dj++)for(let di=-rc;di<=rc;di++){if(rc&&(di*di+dj*dj)*P*P>(r+P*.5)*(r+P*.5))continue;const i=ci+di,j=cj+dj;if(i>=0&&j>=0&&i<W&&j<H)S[j*W+i]=1}}
+      for(let k=0;k<S.length;k++)if(S[k])F[k]=0}
+    const mk=(d,fillOver)=>{const p=document.createElementNS(NS,'path');PX_KEEP.forEach(a=>{const v=el.getAttribute(a);if(v!=null)p.setAttribute(a,v)});p.setAttribute('d',d);p.setAttribute('stroke','none');
+      if(fillOver){p.removeAttribute('id');p.removeAttribute('class');p.setAttribute('fill',el.getAttribute('stroke')||cs.stroke);const so=el.getAttribute('stroke-opacity');p.removeAttribute('fill-opacity');if(so!=null)p.setAttribute('fill-opacity',so)}
+      p.setAttribute('shape-rendering','crispEdges');return p};
+    const dF=hasF?pxRuns(F,x0,y0,W,H,P):'',dS=hasS?pxRuns(S,x0,y0,W,H,P):'',out=[];
+    if(hasF)out.push(mk(dF,0));if(dS)out.push(mk(dS,1));if(!hasF&&out.length&&el.id)out[0].id=el.id;
+    if(out.length)el.replaceWith(...out)}catch(e){}}}
+
+/* the cooking and bread scenes: shapes become cells before the step starts (the parts the step moves or reshapes stay as they are) */
+const PX_CK_SKIP='#mgLq,#mgRg,#mgDb,#mgTm,#mgLv,#mgSm,#mgOil,#mgSd,#mgDo,[clip-path]';
+/* the parts that move or change shape (the dough, the loaves, the juice, the oil) get a small cell filter of their own,
+   on the same 3-unit grid as the cells around them, sized to the part so it stays cheap */
+function pxFlt(svg,el,P){try{const NS='http://www.w3.org/2000/svg';let b=el.getBBox();if(!(b.width>0&&b.height>0)&&el.parentNode.getBBox)b=el.parentNode.getBBox();if(!(b.width>0&&b.height>0))return;const p=Math.max(12,.3*Math.max(b.width,b.height));
+  const x=Math.floor((b.x-p)/P)*P,y=Math.floor((b.y-p)/P)*P,w=Math.ceil((b.width+2*p)/P)*P+P,h=Math.ceil((b.height+2*p)/P)*P+P,id='pxE'+(pxFlt.n=(pxFlt.n||0)+1);
+  let d=svg.querySelector('defs');if(!d){d=document.createElementNS(NS,'defs');svg.insertBefore(d,svg.firstChild)}
+  d.insertAdjacentHTML('beforeend',`<filter id="${id}" filterUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}" color-interpolation-filters="sRGB"><feFlood x="${x+(P>>1)}" y="${y+(P>>1)}" width="1" height="1" flood-color="#fff" result="d"/><feComposite in="d" x="${x}" y="${y}" width="${P}" height="${P}" result="c"/><feTile in="c" result="t"/><feComposite in="SourceGraphic" in2="t" operator="in" result="s"/><feMorphology in="s" operator="dilate" radius="${P>>1}" result="m"/><feComponentTransfer in="m"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter>`);
+  el.style.filter=`url(#${id})`}catch(e){}}
+function mgPreInit(svg,ov){if(!ov||!/\bk-(cook|bread)\b/.test(ov.className))return;
+  pxize(svg,3,el=>el.getAttribute('opacity')==='0'||!!el.closest(PX_CK_SKIP));
+  svg.querySelectorAll('#mgDo,[id^="mgL"][opacity],[id^="mgFo"],[id^="mgDr"],#mgLq,#mgOil,#mgSd').forEach(el=>pxFlt(svg,el,3))}
+
+/* ---------- the river: the float as a sprite, the line and the rod as cells ---------- */
+bobberArt=function(w){w=w||26;const c=3.6,R=['..RR..','..WW..','..WW..','.KRRK.','KRrRRK','KRRRRK','KRRRRK','KKKKKK','KWWWWK','KcWWWK','.KWWK.','..KK..','..gg..'],col={R:'#e04b3e',r:'#ff8f73',W:'#fffaf0',c:'#cfc6b8',K:'#1f1420',g:'#8f877b'};let s='';
+  R.forEach((row,j)=>[...row].forEach((ch,i)=>{if(col[ch])s+=`<rect x="${(1.2+i*c).toFixed(1)}" y="${(j*c).toFixed(1)}" width="${c+.05}" height="${c+.05}" fill="${col[ch]}"/>`}));
+  return `<svg viewBox="0 0 24 48"${a4wh(w,24,48)} shape-rendering="crispEdges">${s}</svg>`};
+function fsOvPx(s){s=s.replace('<path id="fshLine"','<path id="fshLineP" fill="#f4ead8" fill-opacity=".85" shape-rendering="crispEdges"/><path id="fshLine" style="opacity:0"');
+  const px=(rows,col,c)=>{let o='';const w=rows[0].length,h=rows.length;rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(col[ch])o+=`<rect x="${(i-w/2)*c}" y="${(j-h/2)*c}" width="${c+.05}" height="${c+.05}" fill="${col[ch]}"/>`}));return o};
+  s=s.replace(/<circle r="9"[^>]*\/>/,`<g shape-rendering="crispEdges">${px(['..ggg..','.gKKKg.','gKKcKKg','gKcWcKg','gKKcKKg','.gKKKg.','..ggg..'],{g:'#8a8a90',K:'#2a2a2e',c:'#5a5a60',W:'#c8c8cc'},3)}</g>`)
+    .replace(/<path d="M0 0 L0 -12"[^>]*\/><circle cx="0" cy="-12"[^>]*\/>/,'<g shape-rendering="crispEdges"><rect x="-1.5" y="-12" width="3" height="12" fill="#c8c8cc"/><rect x="-3" y="-15" width="6" height="4.5" fill="#e8e8ec"/><rect x="-3" y="-15" width="1.5" height="1.5" fill="#8a8a90"/></g>');
+  return s.replace('<path id="fshRod" ','<path id="fshRodO" fill="#2e1c0e" shape-rendering="crispEdges"/><path id="fshRodI" fill="#9a6a3a" shape-rendering="crispEdges"/><path id="fshRod" style="opacity:0" ').replace('<path id="fshRod2" ','<path id="fshRod2" style="opacity:0" ')}
+function pxQ(d){const m=String(d||'').match(/-?[\d.]+/g);return m&&m.length>=6?m.slice(0,6).map(Number):null}
+function pxCurve(q,P,rad){const [ax,ay,bx,by,cx,cy]=q,L=Math.hypot(bx-ax,by-ay)+Math.hypot(cx-bx,cy-by),n=Math.max(4,Math.ceil(L/(P*.5))),cells=new Set();
+  for(let s=0;s<=n;s++){const t=s/n,u=1-t,x=u*u*ax+2*u*t*bx+t*t*cx,y=u*u*ay+2*u*t*by+t*t*cy,r=typeof rad==='function'?rad(t):rad,rc=Math.ceil(r/P);
+    const ci=Math.floor(x/P),cj=Math.floor(y/P);for(let dj=-rc;dj<=rc;dj++)for(let di=-rc;di<=rc;di++){if(rc&&Math.hypot((ci+di+.5)*P-x,(cj+dj+.5)*P-y)>r+P*.5)continue;cells.add((ci+di)+','+(cj+dj))}}
+  let d='';cells.forEach(k=>{const [i,j]=k.split(',').map(Number);d+=`M${i*P} ${j*P}h${P}v${P}h${-P}z`});return d}
+function fsPxFrame(E,ov){const P=3;
+  const lp=ov.querySelector('#fshLineP'),q=pxQ(E.line&&E.line.getAttribute('d'));if(lp&&q)lp.setAttribute('d',pxCurve(q,P,0));
+  if(E.rod){const rq=pxQ(E.rod.getAttribute('d')),o=ov.querySelector('#fshRodO'),i=ov.querySelector('#fshRodI');
+    if(rq&&o&&i){o.setAttribute('d',pxCurve(rq,P,t=>4.5-2.5*t));i.setAttribute('d',pxCurve(rq,P,t=>t<.85?1.2:0))}}
+  if(E.bob){const m=(E.bob.getAttribute('transform')||'').match(/-?[\d.]+/g);if(m&&m.length>=2)E.bob.setAttribute('transform',`translate(${Math.round(+m[0]/P)*P} ${Math.round(+m[1]/P)*P})`)}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
