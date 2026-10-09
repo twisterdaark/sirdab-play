@@ -4357,6 +4357,11 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.43',d:'9 أكتوبر',add:[
+    'في الغيط بقى فيه حيوانات: {اشتري|اشتري} فراخ من عم عبده وكل فرخة بتبيض بيضة كل حوالي 20 دقيقة، حتى {وانت|وانتي} بره.',
+    'من زراعة 3 {تقدر تشتري|تقدري تشتري} جاموسة: {أكّلها|أكّليها} برسيم {وتحلبها|وتحلبيها} لبن. البرسيم زرعة جديدة في الغيط من زراعة 2.',
+    'أكلات جديدة عند أم سيد بالبيض واللبن: عجة بالبصل، جبنة قريش، رز باللبن، وبسبوسة.'
+  ],fix:[]},
   {v:'5.42',d:'9 أكتوبر',add:[],fix:[
     'الزرع بقى بيكسب: السوق بيشتري اللي {بتزرعه|بتزرعيه} بسعر أحسن بكتير. بذرة الفول والطماطم غليت شوية، والبصل والملوخية رخصوا.',
     'فلوس مهمات دوار العمدة بقت أقل شوية عشان كانت بتدّي أكتر من اللازم، ماعدا مهمات «اعمل حتة عند الحداد أو الخياط» اللي بقت تدفع أكتر لأنها أتعب.'
@@ -23074,6 +23079,105 @@ Object.assign(H_PK_IC,{
   if(h&&S.screen==='town'&&h.hkBack){const n=h.hkBack;delete h.hkBack;saveHero();
     setTimeout(()=>band('عم شاكر رجّعلك حواديتك',H_hwN(n),'الحكايات كلها بقت في المغامرات ببلاش',{dur:3200,sound:SFX.coin}),600)}
   return r}}
+/* ---------- 5.43: animals in الغيط (chickens and a buffalo), eggs and milk, برسيم to feed her, four new dishes ----------
+   h.farm.ch = [{t0}]  one entry per chicken: an egg every FA_EGG minutes, up to 3 waiting each
+   h.farm.buf = {t0,d} the buffalo: fed (2 برسيم) starts a milk wait of d ms; ready when it ends; milking empties it
+   Everything runs on real time, like the crops. */
+const FA_CH_P=70,FA_BUF_P=450,FA_BUF_L=3,FA_EGG_MAX=3,FA_FEED=2;
+const faChMax=h=>{const L=farmL(h);return 2+(L>=4?1:0)+(L>=7?1:0)};
+const faEggMs=h=>Math.round(20*60000*Math.max(.6,1-.03*(farmL(h)-1)));
+const faMilkMs=h=>Math.round(30*60000*Math.max(.6,1-.03*(farmL(h)-1)));
+const faMilkN=h=>2+(farmL(h)>=6?1:0);
+function FA_FIX(h){FARM_FIX(h);const f=h.farm;if(!Array.isArray(f.ch))f.ch=[];if(f.buf&&typeof f.buf!=='object')f.buf=null;return h}
+const faEggs=(h,c)=>Math.min(FA_EGG_MAX,Math.floor(Math.max(0,Date.now()-c.t0)/faEggMs(h)));
+const faEggsAll=h=>(h.farm.ch||[]).reduce((a,c)=>a+faEggs(h,c),0);
+const faBufReady=h=>{const b=h.farm.buf;return !!(b&&b.t0&&Date.now()>=b.t0+b.d)};
+const faBufLeft=h=>{const b=h.farm.buf;return b&&b.t0?Math.max(0,b.t0+b.d-Date.now()):0};
+const faEggLeft=(h,c)=>faEggs(h,c)>=FA_EGG_MAX?0:faEggMs(h)-((Date.now()-c.t0)%faEggMs(h));
+
+/* the new materials and the feed crop */
+Object.assign(MAT,{egg:{n:'بيض',c:'#ebe1cc',p:6},milk:{n:'لبن',c:'#fffaf0',p:12},barsim:{n:'برسيم',c:'#7fe07a',p:2}});
+Object.assign(CROPS,{barsim:{seed:2,min:3,y:[3,5],xp:1,lv:2}});
+Object.assign(QB_NOUN,{egg:['بيضة','بيضتين','بيضات',1],milk:['كوباية لبن','كوبايتين لبن','كوبايات لبن',1],barsim:['حزمة برسيم','حزمتين برسيم','حزم برسيم',1]});
+Object.assign(TW_SRC,{egg:'فراخك في الغيط',milk:'جاموستك في الغيط',barsim:'الغيط من زراعة 2'});
+Object.assign(PXI_D,{
+  egg:'16x16://.6K4/.5KCW3K/.4KCW5K/.4KCW5K/.3KCW7K/.3KCW7K/.3KC2W6K/.3KcC2W4CK/.4KcC5K/.5K6',
+  milk:'16x16:/.4K8/.4KW6K/.4KW6K/.4KCW5K/.4KCW5K/.4KCW5K/.4KCW5K/.4KcCW3CK/.4KcC5K/.5K6',
+  barsim:'16x16:/.4K2.3K2/.3KG2K.KG2K/.3KGqGKGqGK/.4KG2qG2K/.2K2.Kq3K.K2/.KG2K2qzqK2G2K/.KGqG2qzqG2qGK/.2KG2K2zK2G2K/.3K2.KzK.K2/.6KzK/.6KzK/.7K'});
+const FA_PX={chick:'16x16:/.4Kr/.3Kr2K/.2KW3K/.KWKW2K/yKW4K.6K2/.KW5K.4KWK/.2KW5K4W2K/.2KW11K/.2KW2CW7CK/.3KW2C7K/.4KW7K/.5K7/.7o.2o/.6o2.o2',
+  buf:'24x16:/.c.5c/.cK.3Kc/.2cK3c/.2Kv3K/.KvWvWvK13/.Kv18K/.Kgv18K/.2Kg2v17K/.3K2v16K.v/.4Kv16K/.4Kv2Kv2K.4Kv2Kv2K/.4Kv2Kv2K.4Kv2Kv2K/.4Kb2Kb2K.4Kb2Kb2K/.5K2.K2.6K2.K2'};
+function faPx(k,w){const d=FA_PX[k],[W,H]=d.split(':')[0].split('x').map(Number),rows=d.split(':')[1].split('/');let s='';
+  rows.forEach((r,y)=>{let x=0;r.replace(/([A-Za-z.])(\d*)/g,(m,c,n)=>{n=+n||1;if(c!=='.')s+=`<rect x="${x}" y="${y}" width="${n}" height="1" fill="${PXF_C[c]||c}"/>`;x+=n;return ''})});
+  return `<svg viewBox="0 0 ${W} ${H}" width="${w}" height="${Math.round(w*H/W)}" shape-rendering="crispEdges" aria-hidden="true">${s}</svg>`}
+
+/* the dishes */
+Object.assign(FOOD_HEAL,{ojja:8,gebna:6,rozlaban:10,basbousa:15});
+Object.assign(ITEMS,{
+  ojja:{name:'عجة بالبصل',price:0,info:()=>foodInfo('ojja'),use:'heal',kind:'food',heal:()=>foodHeal('ojja')},
+  gebna:{name:'جبنة قريش',price:0,info:()=>foodInfo('gebna'),use:'heal',kind:'food',heal:()=>foodHeal('gebna')},
+  rozlaban:{name:'رز باللبن',price:0,info:()=>foodInfo('rozlaban'),use:'heal',kind:'food',heal:()=>foodHeal('rozlaban')},
+  basbousa:{name:'بسبوسة',price:0,info:()=>foodInfo('basbousa'),use:'heal',kind:'food',heal:()=>foodHeal('basbousa')}});
+['ojja','gebna','rozlaban','basbousa'].forEach(k=>{if(!FOODS.includes(k))FOODS.push(k);if(!FQ_COOK.includes(k))FQ_COOK.push(k)});
+Object.assign(FQ_FEM,{ojja:1,gebna:1,basbousa:1});
+Object.assign(TW_REC,{
+  ojja:{need:{egg:2,basal:1},lv:2,tier:0},
+  gebna:{need:{milk:2},lv:2,tier:0},
+  rozlaban:{need:{roz:1,milk:1},lv:3,tier:1},
+  basbousa:{need:{flour:1,milk:1,asab:1},lv:5,tier:2}});
+Object.assign(CK_DISH,{ojja:'onion',gebna:'grain',rozlaban:'grain',basbousa:'grain'});
+Object.assign(PXI_D,{
+  ojja:P20_rc(PXI_D.foul,{T:'o',t:'y',b:'G',q:'Y',G:'y',y:'Y'}),
+  gebna:P20_rc(PXI_D.foul,{T:'c',t:'C',b:'W',q:'W',G:'C',y:'W'}),
+  rozlaban:P20_rc(PXI_D.foul,{T:'B',t:'C',b:'W',q:'C',G:'W',y:'Y'}),
+  basbousa:P20_rc(PXI_D.foul,{T:'b',t:'o',b:'y',q:'o',G:'y',y:'Y'})});
+(HEROES||[]).forEach(h=>{if(h&&h.bag)['ojja','gebna','rozlaban','basbousa'].forEach(k=>h.bag[k]=h.bag[k]||0)});
+
+/* ---------- the animals' corner on the farm screen ---------- */
+const FA={tm:0,sig:''};
+function faSig(h){return faEggsAll(h)+'|'+(faBufReady(h)?1:0)+'|'+(h.farm.ch||[]).length+'|'+(h.farm.buf?1:0)}
+function faHTML(h){const L=farmL(h),C=h.farm.ch,mx=faChMax(h),eggs=faEggsAll(h),b=h.farm.buf,price=twGP(h,FA_CH_P),bp=twGP(h,FA_BUF_P),feed=h.res.barsim||0;
+  const hens=C.map((c,i)=>{const n=faEggs(h,c);return `<div class="fa-hen"><span class="pic">${faPx('chick',44)}</span><span class="eg">${n?`${'<i></i>'.repeat(n)}`:`<small data-fa-t="e${i}">${farmT(faEggLeft(h,c))}</small>`}</span></div>`}).join('');
+  let buf='';
+  if(!b)buf=L>=FA_BUF_L?`<div class="fa-buf none"><span class="pic">${faPx('buf',72)}</span><div class="tx"><b>جاموسة</b><small>بتدّي لبن لو ${G('أكّلتها','أكّلتيها')} ${FA_FEED} برسيم</small></div><button class="tw-buy" id="faBuyB" ${h.money>=bp?'':'disabled'}>${bp}<small>جنيه</small></button></div>`
+    :`<div class="fa-buf none lock"><span class="pic">${faPx('buf',72)}</span><div class="tx"><b>جاموسة</b><small>عم عبده بيبيعها من زراعة ${FA_BUF_L}</small></div></div>`;
+  else{const rd=faBufReady(h),on=b.t0&&!rd;
+    buf=`<div class="fa-buf${rd?' rd':''}"><span class="pic">${faPx('buf',72)}</span><div class="tx"><b>جاموستك</b><small>${rd?`جاهزة ${G('تحلبها','تحلبيها')}: ${faMilkN(h)} لبن`:on?`اللبن بعد <span data-fa-t="b">${farmT(faBufLeft(h))}</span>`:`جعانة. ${FA_FEED} برسيم وتبدأ تعمل لبن`}</small>
+      ${!rd&&!on?`<small class="fd">${G('معاك','معاكي')} ${feed} برسيم</small>`:''}</div>
+      ${rd?`<button class="btn small" id="faMilk">${G('احلبها','احلبيها')}</button>`:on?'':`<button class="btn small" id="faFeed" ${feed>=FA_FEED?'':'disabled'}>${G('أكّلها','أكّليها')}</button>`}</div>`}
+  return `<div class="tw-lbl fa-lbl">الحيوانات <small>بيشتغلوا ${G('وانت','وانتي')} بره</small></div>
+    <div class="card fa"><div class="fa-hens">${hens||`<small class="fa-no">مفيش فراخ لسه</small>`}</div>
+      <div class="fa-row">${eggs?`<button class="btn small" id="faEggs">${G('لم','لمي')} البيض (${eggs})</button>`:''}
+      ${C.length<mx?`<button class="btn small ghost" id="faBuyC" ${h.money>=price?'':'disabled'}>${G('اشتري','اشتري')} فرخة · ${price} جنيه</button>`:`<small class="fa-no">${C.length} من ${mx} فراخ${mx<4?` (أكتر في زراعة ${mx<3?4:7})`:''}</small>`}</div>
+      <small class="fa-no">كل فرخة بتبيض بيضة كل ${Math.round(faEggMs(h)/60000)} دقيقة، ولحد 3 بيضات مستنيين.</small>
+      ${buf}</div>`}
+function faBind(h){
+  const c=$('#faBuyC');if(c)c.onclick=()=>{const p=twGP(h,FA_CH_P);if(h.money<p||h.farm.ch.length>=faChMax(h))return;h.money-=p;h.farm.ch.push({t0:Date.now()});saveHero();SFX.reg&&SFX.reg();toast(`${G('اشتريت','اشتريتي')} فرخة. أول بيضة بعد ${Math.round(faEggMs(h)/60000)} دقيقة.`);farmRe()};
+  const bb=$('#faBuyB');if(bb)bb.onclick=()=>{const p=twGP(h,FA_BUF_P);if(h.money<p||h.farm.buf)return;h.money-=p;h.farm.buf={t0:0,d:0};saveHero();SFX.reg&&SFX.reg();band('جاموسة',G('بقت بتاعتك','بقت بتاعتك'),`${G('أكّلها','أكّليها')} ${FA_FEED} برسيم ${G('وهتدّيك','وهتدّيكي')} لبن`,{dur:2200,sound:SFX.fanfare});farmRe()};
+  const e=$('#faEggs');if(e)e.onclick=()=>{let n=0;const ms=faEggMs(h),now=Date.now();h.farm.ch.forEach(c=>{const k=faEggs(h,c);if(!k)return;n+=k;c.t0=k>=FA_EGG_MAX?now:c.t0+k*ms});
+    if(!n)return;addRes(h,'egg',n);lifeXP(h,'farm',Math.max(1,Math.floor(n/2)));saveHero();SFX.pickup&&SFX.pickup();floatAt(e,`+${n} بيض`,'#fff0b0','',20);setTimeout(farmRe,250)};
+  const f=$('#faFeed');if(f)f.onclick=()=>{const b=h.farm.buf;if(!b||(h.res.barsim||0)<FA_FEED)return;h.res.barsim-=FA_FEED;b.t0=Date.now();b.d=faMilkMs(h);saveHero();SFX.pickup&&SFX.pickup();toast(`الجاموسة ${pick(['أكلت وانبسطت','بتمضغ على راحتها','شكرتك بعينها'])}. اللبن بعد ${Math.round(b.d/60000)} دقيقة.`);farmRe()};
+  const m=$('#faMilk');if(m)m.onclick=()=>{const b=h.farm.buf;if(!faBufReady(h))return;const n=faMilkN(h);b.t0=0;b.d=0;addRes(h,'milk',n);lifeXP(h,'farm',2);saveHero();SFX.pickup&&SFX.pickup();floatAt(m,`+${n} لبن`,'#fffaf0','',20);setTimeout(farmRe,250)}}
+function faTick(){const h=S.hero;if(S.screen!=='farm'||!h||!$('.fa')){clearInterval(FA.tm);FA.tm=0;return}
+  if(faSig(h)!==FA.sig)return farmRe();
+  view.querySelectorAll('[data-fa-t]').forEach(el=>{const k=el.dataset.faT;el.textContent=farmT(k==='b'?faBufLeft(h):faEggLeft(h,h.farm.ch[+k.slice(1)]||{t0:Date.now()}))})}
+{const f0=SCREENS.farm;SCREENS.farm=function(){const r=f0.apply(this,arguments),h=S.hero;if(!h||S.screen!=='farm')return r;FA_FIX(h);
+  const at=view.querySelector('.tw.fm > .tw-sm');const html=faHTML(h);if(at)at.insertAdjacentHTML('beforebegin',html);else{const w=view.querySelector('.tw.fm');if(w)w.insertAdjacentHTML('beforeend',html)}
+  faBind(h);FA.sig=faSig(h);clearInterval(FA.tm);FA.tm=setInterval(faTick,1000);return r}}
+/* the town tile says when eggs or milk are waiting */
+TW_EXTRA.forEach((f0,i)=>{TW_EXTRA[i]=function(h){const t=f0.apply(this,arguments);if(!t||t.id!=='farm')return t;try{FA_FIX(h);if(t.b)return t;const e=faEggsAll(h),m=faBufReady(h);
+    if(e||m){t.s=`<span class="ok">${[e?`${e===1?'بيضة':e===2?'بيضتين':e+' بيض'} مستنيين`:'',m?'الجاموسة جاهزة تتحلب':''].filter(Boolean).join(' و')}</span>`;t.b='جاهز'}}catch(e){}return t}});
+{const st=document.createElement('style');st.textContent=`
+.fa{display:flex;flex-direction:column;gap:10px}.fa-lbl{margin-top:6px}
+.fa-hens{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start}
+.fa-hen{display:flex;flex-direction:column;align-items:center;gap:2px;width:64px}.fa-hen .pic{animation:faPeck 2.6s steps(2) infinite}.fa-hen:nth-child(2n) .pic{animation-delay:-1.3s}
+.fa-hen .eg{display:flex;gap:3px;min-height:16px;align-items:center}.fa-hen .eg i{width:9px;height:12px;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;background:#ebe1cc;border:1px solid #8f877b}
+.fa-hen small{font-size:11px;color:var(--dim)}
+@keyframes faPeck{50%{transform:translateY(2px) rotate(-6deg)}}
+.fa-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.fa-row .btn{min-height:44px}
+.fa-no{color:var(--dim);font-size:12px}
+.fa-buf{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:#0002;border:1px solid #fff1}.fa-buf.rd{border-color:#7fe07a;box-shadow:0 0 12px #7fe07a33}
+.fa-buf.lock{opacity:.55}.fa-buf .tx{flex:1;display:flex;flex-direction:column;gap:2px}.fa-buf .tx small{color:var(--dim);font-size:12px}.fa-buf .tx .fd{color:var(--gold2)}
+.fa-buf .btn{min-height:44px;flex:none;width:auto;min-width:96px;padding:0 16px;margin:0}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
