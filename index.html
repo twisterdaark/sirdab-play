@@ -4352,6 +4352,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.17',d:'9 أكتوبر',add:[
+    'ليلة مع صاحب لايف: {افتح|افتحي} ليلة من «ليلة مع صاحب» (في البلد أو قبل المغامرة) {وابعت|وابعتي} الكود لصاحبك. صاحبك يدخل بالكود من موبايله، وبطله يبقى رفيقك. في كل قتال، صاحبك هو اللي بيختار حركة الرفيق من موبايله (يضرب مين أو يعالج مين)، ولو اتأخر بيلعب لوحده. موبايل صاحبك بيشوف الليلة والقتال، وفي الآخر بياخد خبرة وفلوس.'
+  ],fix:[]},
   {v:'5.16',d:'9 أكتوبر',add:[
     'كود الصحاب بقى في البروفايل كمان، فوق الصفات، {وتقدر|وتقدري} {تنسخه|تنسخيه} أو {تضيف|تضيفي} صاحب من هناك.'
   ],fix:[]},
@@ -19085,6 +19088,132 @@ function frAddCode(v){const c=String(v||'').replace(/[^a-z0-9]/gi,'').toUpperCas
   const cp=$('#pfFrCp'),go=$('#pfFrGo'),inp=$('#pfFrIn');
   if(cp)cp.onclick=()=>{try{navigator.clipboard.writeText(mine).then(()=>toast('الكود اتنسخ'),()=>toast(mine))}catch(e){toast(mine)}};
   if(go)go.onclick=()=>{const m=frAddCode(inp.value);if(m){$('#pfFrM').textContent=m;return}toast('صاحبك اتضاف. أبطاله هيظهروا في «رفيق الليلة».');render()}}}
+/* ---------- co-op night, live (online stage 4) ----------
+   the host opens a room (a 4-letter code) from the setup screen; a friend joins from their own phone with their hero.
+   the friend's hero becomes the companion; in every fight the friend picks the companion's move on their phone
+   (25 seconds, then it plays by itself). the friend's phone mirrors the night, and gets XP and money when it ends.
+   room/{code}: {h,hn,st:'wait'|'on'|'end',g,gn,gp,vw,ask,ans,rw,t} */
+const CO_WAIT=25000,CO_ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CO={code:'',role:'',room:null,unsub:null,pub:0,last:'',ans:{},askId:0,waiter:null,err:'',busy:0,done:{}};
+const coRef=c=>FB.db.collection('room').doc(c);
+const coNet=e=>e&&e.code==='permission-denied'?'اللعب مع صاحب لسه بيتجهز.':'مش قادر أوصل دلوقتي. اتأكد إن فيه نت.';
+const coJ=s=>{try{return s?JSON.parse(s):null}catch(e){return null}};
+function coStop(){if(CO.unsub){try{CO.unsub()}catch(e){}}CO.unsub=null;clearInterval(CO.pub);CO.pub=0;CO.room=null;CO.code='';CO.role='';CO.last='';if(CO.waiter){CO.waiter(null);CO.waiter=null}}
+function coWatch(code,on){if(CO.unsub)try{CO.unsub()}catch(e){}CO.unsub=coRef(code).onSnapshot(s=>{CO.room=s.exists?s.data():null;on&&on(CO.room)},e=>{CO.err=coNet(e);on&&on(null)})}
+
+/* ===== host ===== */
+async function coHost(){const h=S.hero;if(CO.busy)return;CO.busy=1;CO.err='';
+  try{await fbLoad();if(!FB.user){CO.busy=0;return render()}
+    let code='',ok=0;for(let i=0;i<6&&!ok;i++){code=Array.from({length:4},()=>CO_ABC[rnd(CO_ABC.length)-1]).join('');
+      try{await coRef(code).set({h:FB.user.uid,hn:String(h.name||'').slice(0,20),st:'wait',g:'',gn:'',gp:'',vw:'',ask:'',ans:'',rw:'',t:window.firebase.firestore.FieldValue.serverTimestamp()});ok=1}catch(e){if(i===5)throw e}}
+    CO.code=code;CO.role='host';coWatch(code,()=>{if(S.screen==='coop')render();if(CO.chk)CO.chk()})}
+  catch(e){CO.err=coNet(e)}CO.busy=0;render()}
+function coGuestSnap(){const R=CO.room;if(!R||!R.g)return null;const p=coJ(R.gp);return p&&p.n?p:null}
+/* start the night with the friend as the companion */
+function coBegin(){const h=S.hero,p=coGuestSnap();if(!p)return;
+  h.palPrev=h.pal===undefined?null:h.pal;h.pal={_id:'live',n:p.n,g:p.g,c:p.c,l:p.l|0,hp:p.hp|0,lk:p.lk||'{}',live:CO.code};saveHero();
+  coRef(CO.code).update({st:'on'}).catch(()=>{});CO.pub=setInterval(coPublish,1500);
+  S.screen='setup';render();toast(G('صاحبك جاهز. ابدأ الليلة لما تحب.','صاحبك جاهز. ابدأي الليلة لما تحبي.'))}
+function coEnd(won){if(CO.role!=='host'||!CO.code)return;const h=S.hero,N=S.night||{},st=N.stops||0;
+  const rw={hg:h&&h.g==='f'?'f':'m',won:won?1:0,xp:won?25+st*4:8+st*2,m:won?40+st*5:0};
+  coRef(CO.code).update({st:'end',rw:JSON.stringify(rw)}).catch(()=>{});
+  if(h&&h.pal&&h.pal.live){h.pal=h.palPrev||null;delete h.palPrev;saveHero()}
+  const code=CO.code;clearInterval(CO.pub);CO.pub=0;if(CO.unsub)try{CO.unsub()}catch(e){}CO.unsub=null;CO.code='';CO.role='';
+  setTimeout(()=>{try{coRef(code).delete()}catch(e){}},120000)}
+/* what the friend's phone shows */
+function coView(){const h=S.hero,c=S.comp,C=S.combat;const o={s:S.screen,w:S.night?N_where(S.night):''};
+  o.me={n:h.name,g:h.g,hp:h.hp,mx:MXH(h)};if(c)o.cp={hp:c.hp,mx:c.max};
+  if(C&&S.screen==='combat'){o.f=C.foes.filter(f=>!f.fled).map(f=>({n:f.name,hp:Math.max(0,f.hp),mx:f.max||f.hp}));o.l=(C.log||[]).filter(x=>!/اختار|دورك/.test(String(x.t||''))).slice(-4).map(x=>String(x.t||'').replace(/<[^>]+>/g,'').slice(0,160))}
+  else{const st=view.querySelector('.story');o.x=st?st.innerText.slice(0,500):'';const hd=view.querySelector('h2');o.hd=hd?hd.innerText.slice(0,60):''}
+  return o}
+function coPublish(){if(CO.role!=='host'||!CO.code||!FB.user)return;let s='';try{s=JSON.stringify(coView()).slice(0,6000)}catch(e){return}
+  if(s===CO.last)return;CO.last=s;coRef(CO.code).update({vw:s}).catch(()=>{})}
+/* the friend picks the companion's move */
+function coAsk(opts){return new Promise(res=>{const id=++CO.askId+'-'+Date.now().toString(36);
+  coRef(CO.code).update({ask:JSON.stringify({id,o:opts})}).catch(()=>res(null));
+  let done=0;const fin=v=>{if(done)return;done=1;clearTimeout(tm);CO.waiter=null;CO.chk=null;res(v)};const tm=setTimeout(()=>fin(null),CO_WAIT);CO.waiter=fin;
+  const chk=()=>{const a=coJ(CO.room&&CO.room.ans);if(a&&a.id===id)fin(a.a)};
+  CO.chk=chk;chk()})}
+{const ct=compTurn;compTurn=async function(){const C=S.combat,c=S.comp,h=S.hero;
+  if(!(CO.role==='host'&&CO.code&&c&&c.friend&&h.pal&&h.pal.live&&C&&!C.tutorial)||!(CO.room&&CO.room.g))return ct.apply(this,arguments);
+  const X=C.X;if(X&&(X.snatch||X.cpRest))return ct.apply(this,arguments);
+  const fs=C.foes.map((f,i)=>({f,i})).filter(x=>x.f.hp>0&&!x.f.fled&&!(typeof X_gone==='function'&&X&&X_gone(x.f)));
+  const opts=fs.map(x=>({k:'hit',i:x.i,t:`${CG('اضرب','اضربي')} ${x.f.name}`}));
+  if(c.cls==='معالج'){if(h.hp<MXH(h))opts.unshift({k:'hm',t:`${CG('عالج','عالجي')} ${h.name}`});if(c.hp<c.max)opts.splice(h.hp<MXH(h)?1:0,0,{k:'hs',t:CG('عالج نفسك','عالجي نفسك')})}
+  if(!opts.length)return ct.apply(this,arguments);
+  C.log.push({t:`${c.name} ${CG('بيفكر','بتفكر')}..`});combat();coPublish();
+  const a=await coAsk(opts);const o=a!=null?opts[+a]:null;
+  if(!S.combat)return;
+  if(!o){C.log.push({t:`${c.name} ${CG('اتصرف لوحده','اتصرفت لوحدها')}.`});return ct.apply(this,arguments)}
+  if(o.k==='hm'||o.k==='hs'){const amt=rnd(6)+1+Math.floor(h.lvl/2);
+    if(o.k==='hm'){const v=Math.min(amt,MXH(h)-h.hp);h.hp+=v;combat();burst($('#compCard'),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),v);return say(`${c.name} ${CG('عالجك','عالجتك')}: ⁦+${v}⁩ صحة.`,'good')}
+    const v=Math.min(amt,c.max-c.hp);c.hp+=v;combat();healFx($('#compCard'),v);return say(`${c.name} ${CG('عالج نفسه','عالجت نفسها')}: ⁦+${v}⁩ صحة.`,'good')}
+  const t0=C.tgt,cl=c.cls;C.tgt=o.i;if(cl==='معالج')c.cls='_';
+  try{return await ct.apply(this,arguments)}finally{c.cls=cl;if(S.combat)S.combat.tgt=C.foes[t0]&&C.foes[t0].hp>0?t0:C.tgt}}}
+/* the night ends */
+{const e0=SCREENS.end;SCREENS.end=function(){const r=e0.apply(this,arguments);if(CO.role==='host'&&CO.code)coEnd(!S.lost);return r}}
+{const l0=N_lossScreen;N_lossScreen=function(){const r=l0.apply(this,arguments);if(CO.role==='host'&&CO.code)coEnd(false);return r}}
+
+/* ===== guest ===== */
+async function coJoin(v){const h=S.hero,code=String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(CO.busy)return;
+  if(code.length!==4){CO.err='الكود 4 حروف.';return render()}CO.busy=1;CO.err='';
+  try{await fbLoad();if(!FB.user){CO.busy=0;return render()}const d=await coRef(code).get();
+    if(!d.exists){CO.err='مفيش ليلة بالكود ده.'}else{const R=d.data();
+      if(R.h===FB.user.uid)CO.err='دي ليلتك انت!';else if(R.g&&R.g!==FB.user.uid||R.st==='end')CO.err='الليلة دي فيها حد أو خلصت.';
+      else{if(!R.g)await coRef(code).update({g:FB.user.uid,gn:String(h.name||'').slice(0,20),gp:JSON.stringify(palSnap(h)).slice(0,2000)});
+        CO.code=code;CO.role='guest';coWatch(code,R2=>{if(S.screen==='coopg')render();if(R2&&R2.st==='end')coReward()});S.screen='coopg'}}}
+  catch(e){CO.err=coNet(e)}CO.busy=0;render()}
+function coReward(){const R=CO.room,h=S.hero,rw=R&&coJ(R.rw);if(!rw||!h)return;h.coopDone=h.coopDone||[];if(h.coopDone.includes(CO.code))return;
+  h.coopDone=h.coopDone.slice(-20).concat([CO.code]);h.money+=rw.m|0;CO.ups=gainXP(rw.xp|0);saveHero();if(typeof fbSoon==='function')fbSoon()}
+async function coAnswer(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!=null)return;CO.ans[a.id]=i;SFX.page&&SFX.page();render();
+  try{await coRef(CO.code).update({ans:JSON.stringify({id:a.id,a:i})})}catch(e){CO.err=coNet(e);render()}}
+const coBar=(hp,mx,c)=>`<div class="co-bar"><i style="width:${Math.max(0,Math.min(100,Math.round(100*hp/Math.max(1,mx))))}%;background:${c}"></i></div><small>${Math.max(0,hp)}/${mx}</small>`;
+SCREENS.coopg=function(){const h=S.hero,R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask),mine=a&&CO.ans[a.id]==null&&R&&R.st==='on';
+  let body='';
+  if(!R)body=`<div class="nnote">${CO.err||'بيحمّل…'}</div>`;
+  else if(R.st==='end'){const rw=coJ(R.rw)||{};body=`<div class="card co-end"><b>${rw.won?'الليلة خلصت بالفوز!':'الليلة خلصت'}</b><small>${esc(R.hn)} ${rw.won?(rw.hg==='f'?'كسبت':'كسب')+' الليلة':(rw.hg==='f'?'وقعت':'وقع')} ${G('وانت كنت','وانتي كنتي')} ${rw.hg==='f'?'معاها':'معاه'}.</small>
+    <div class="nrow"><span>الخبرة</span><b style="color:#a6e3a0">+${rw.xp|0}</b></div><div class="nrow"><span>الفلوس</span><b style="color:var(--gold2)">+${rw.m|0} جنيه</b></div></div>`}
+  else if(R.st==='wait')body=`<div class="card tw-empty">${G('دخلت','دخلتي')} ليلة ${esc(R.hn)}. ${G('استنى','استني')} لما الليلة تبدأ..</div>`;
+  else if(V){body=`<div class="co-top"><b>${esc(V.w||V.hd||'')}</b></div>
+    <div class="card co-who"><div><b>${esc(V.me.n)}</b>${coBar(V.me.hp,V.me.mx,'#d0533f')}</div>${V.cp?`<div><b>${esc(h.name)} (${G('انت','انتي')})</b>${coBar(V.cp.hp,V.cp.mx,'#6fbf73')}</div>`:''}</div>
+    ${V.f?`<div class="col">${V.f.map(f=>`<div class="card co-foe"><b>${esc(f.n)}</b>${coBar(f.hp,f.mx,'#c0392b')}</div>`).join('')}</div>
+      <div class="card co-log">${(V.l||[]).map(t=>`<div>${esc(t)}</div>`).join('')}</div>`:`<div class="story co-story">${esc(V.x||'')}</div>`}
+    ${mine?`<div class="tw-lbl">${G('دورك! اختار','دورك! اختاري')} ${G('هتعمل','هتعملي')} إيه</div><div class="col">${a.o.map((o,i)=>`<button class="btn co-o" data-co="${i}">${esc(o.t)}</button>`).join('')}</div>`
+      :a&&CO.ans[a.id]!=null&&R.st==='on'?'<div class="nnote">اتبعت.. مستني الدور الجاي.</div>':''}`}
+  else body='<div class="nnote">بيحمّل…</div>';
+  view.innerHTML=`<div class="top"><button class="ib" id="back">${R&&R.st==='end'?'البلد':'اخرج'}</button><h2>ليلة مع صاحب</h2><span class="tag">${CO.code}</span></div><div class="col">${body}</div>`;
+  $('#back').onclick=()=>{coStop();S.screen=typeof twGo==='function'?'town':'title';render()};
+  view.querySelectorAll('[data-co]').forEach(b=>b.onclick=()=>coAnswer(+b.dataset.co));
+  if(mine&&!CO.buzz){CO.buzz=a.id;vib&&vib([60,40,60]);SFX.page&&SFX.page()}};
+
+/* ===== the room screen (host or join) ===== */
+SCREENS.coop=function(){const h=S.hero,R=CO.room,gp=coGuestSnap();
+  let body='';
+  if(!FB.user)body=`<div class="card tw-empty">${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات (من لينك اللعب) عشان ${G('تلعب','تلعبي')} مع صحابك.</div>`;
+  else if(CO.role==='host'&&CO.code){body=`<div class="card co-code"><small>${G('ابعت','ابعتي')} الكود ده لصاحبك</small><b>${CO.code}</b><small>صاحبك يدخل من «ليلة مع صاحب» ويكتبه.</small></div>
+    ${gp?`<div class="card co-who"><div><b>${esc(gp.n)}</b><small>${gp.g==='f'?(CLS_F[gp.c]||gp.c):gp.c} · مستوى ${gp.l|0} · ${gp.g==='f'?'دخلت':'دخل'}!</small></div></div>
+      <button class="btn" id="coGo">${G('ابدأ','ابدأي')} الليلة سوا</button>`:'<div class="nnote">مستني صاحبك يدخل..</div>'}
+    <button class="btn ghost" id="coX" style="margin-top:8px">${G('الغي','الغي')}</button>`}
+  else body=`<div class="card"><b>${G('افتح','افتحي')} ليلة ${G('وادعي','وادعي')} صاحب</b><small class="co-s">صاحبك بيبقى الرفيق، وفي القتال هو اللي بيختار حركته من موبايله. لو اتأخر، بيلعب لوحده.</small>
+      <button class="btn" id="coNew" ${CO.busy?'disabled':''}>${G('افتح','افتحي')} ليلة جديدة</button></div>
+    <div class="card"><b>${G('ادخل','ادخلي')} ليلة صاحبك</b><small class="co-s">${G('اكتب','اكتبي')} الكود اللي صاحبك بعته. ${G('هتلعب','هتلعبي')} بـ${esc(h.name)} وتاخد خبرة وفلوس في الآخر.</small>
+      <div class="fr-add"><input id="coIn" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="الكود"><button class="tw-buy" id="coJn" ${CO.busy?'disabled':''}>ادخل</button></div></div>`;
+  view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>ليلة مع صاحب</h2><span style="width:40px"></span></div><div class="col">${CO.err?`<div class="nnote">${CO.err}</div>`:''}${body}</div>`;
+  $('#back').onclick=()=>{if(CO.role==='host'&&CO.code&&!(h.pal&&h.pal.live)){const c=CO.code;coStop();coRef(c).delete().catch(()=>{})}CO.err='';S.screen=CO.from||'setup';render()};
+  const nw=$('#coNew'),jn=$('#coJn'),gb=$('#coGo'),x=$('#coX');if(nw)nw.onclick=coHost;if(jn)jn.onclick=()=>coJoin($('#coIn').value);if(gb)gb.onclick=coBegin;
+  if(x)x.onclick=()=>{const c=CO.code;coStop();coRef(c).delete().catch(()=>{});render()}};
+{const s0=SCREENS.setup;SCREENS.setup=function(){s0.apply(this,arguments);const h=S.hero,pc=$('#palCard');if(!h||S.screen!=='setup'||!pc||$('#coCard'))return;
+  if(h.pal&&h.pal.live){const s=pc.querySelector('.tx small:last-child');if(s)s.textContent='بيلعب معاك لايف من موبايله';pc.onclick=null;return}
+  const el=document.createElement('button');el.id='coCard';el.className='card pal-card';el.innerHTML=`<div class="tx"><b>ليلة مع صاحب</b><small>صاحبك يلعب الرفيق لايف من موبايله</small></div><span class="pal-ch">›</span>`;
+  pc.insertAdjacentElement('afterend',el);el.onclick=()=>{CO.err='';CO.from='setup';S.screen='coop';render()}}}
+TW_EXTRA.push(h=>({id:'adv',go:'coop',n:'ليلة مع صاحب',w:'العبوا سوا لايف',s:FB.user?`${G('افتح','افتحي')} ليلة أو ${G('ادخل','ادخلي')} بكود`:'محتاج حساب جوجل'}));
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);const b=view.querySelector('[data-go="coop"]');if(b)b.addEventListener('click',()=>{CO.from='town'},true);return r}}
+{const st=document.createElement('style');st.textContent=`
+.co-code{text-align:center}.co-code b{display:block;font-size:44px;letter-spacing:8px;color:var(--gold2);direction:ltr;margin:6px 0}.co-code small,.co-s{display:block;color:var(--mute);font-size:13px;margin:4px 0 10px}
+.co-who{display:flex;flex-direction:column;gap:8px}.co-who small{display:block;color:var(--mute);font-size:12px}
+.co-bar{height:10px;border-radius:6px;background:#0007;overflow:hidden;margin:4px 0 2px}.co-bar i{display:block;height:100%;transition:width .3s}
+.co-foe small,.co-who small{color:var(--mute);font-size:12px}.co-log{font-size:14px;line-height:1.7;color:#e8d9bd}.co-story{white-space:pre-wrap}
+.co-top{text-align:center;color:var(--gold2)}.co-o{margin:0}.co-end b{display:block;font-size:22px;color:var(--gold2);margin-bottom:4px}.co-end small{display:block;color:var(--mute);margin-bottom:8px}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
