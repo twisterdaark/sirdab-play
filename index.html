@@ -835,8 +835,10 @@ const lootMul=h=>titlesOn(h).reduce((a,t)=>a*(t.loot||1),1);
 const titlePrice=h=>titlesOn(h).reduce((a,t)=>a*(t.price||1),1);
 
 /* effort (مجهود): mining and fishing cost it; it comes back with time or food */
-const EFF_MAX=20;
-function effNow(h){const per=h.hidden.sabr?40000:60000,now=Date.now();if(h.eff.v>=EFF_MAX){h.eff.t=now;return h.eff.v}
+let EFF_MAX=20;
+/* max effort is 20, plus 2 for every «حلبة عم صابر» bought at the café (h.effUp, up to 10 → 40); effNow keeps EFF_MAX on the active hero's value */
+const effMaxOf=h=>20+2*Math.min(10,(h&&h.effUp)||0);
+function effNow(h){EFF_MAX=effMaxOf(h);const per=h.hidden.sabr?40000:60000,now=Date.now();if(h.eff.v>=EFF_MAX){h.eff.t=now;return h.eff.v}
   const g=Math.floor((now-h.eff.t)/per);if(g>0){h.eff.v=Math.min(EFF_MAX,h.eff.v+g);h.eff.t+=g*per;if(h.eff.v>=EFF_MAX)h.eff.t=now}return h.eff.v}
 function useEff(h){if(effNow(h)<1)return false;if(h.eff.v>=EFF_MAX)h.eff.t=Date.now();h.eff.v--;return true}
 
@@ -1518,7 +1520,7 @@ const HELP=[
   {g:'القتال',h:'الرفيق',b:()=>`${G('معاك','معاكي')} رفيق بيلعب لوحده: ست زينب بتعالج، وحسونة بيضرب. لو وقع، ${G('تقدر','تقدري')} ${G('تصحيه','تصحيه')} بقزازة صحيان. ولو فضل واقع لآخر القتال بيقوم لوحده بعده.`},
   {g:'القتال',h:'الشنطة',p:()=>['potion','bigpotion','revive','salt','wax','foul','grilled'].map(k=>itemIcon(k,28)).join(''),b:()=>Object.keys(ITEMS).filter(k=>k!=='amulet').map(k=>`<b>${ITEMS[k].name}:</b> ${pfTx(ITEMS[k].info())}`).join('<br>')+`<br>في القتال ${G('دوس','دوسي')} «الشنطة»، ${G('اختار','اختاري')} الحاجة، وبعدين على مين: ${G('انت','انتي')} ولا رفيقك. الشنطة بتشيل ${BAG_MAX.pot} جرعات و${BAG_MAX.food||5} أكلات بالكتير.`},
   {g:'البلد',h:'البلد',p:()=>PF_HPIC.town(),b:()=>`بين المغامرات ${G('بترجع','بترجعي')} <b>البلد</b>، وفيها ناس ${G('هتحتاجهم','هتحتاجيهم')}:<br><b>عم حسن الحداد:</b> سلاح ودروع وخواتم وقلايد.<br><b>عم فتحي الخياط:</b> لبس من القماش والجلد.<br><b>أم سيد الطباخة:</b> أكل يرجّعلك صحتك ومجهودك.<br><b>عم رمضان البياع:</b> بيع وشرا.<br>ومن البلد ${G('تطلع','تطلعي')} <b>الجبل</b> ${G('تنقّب','تنقّبي')}، أو ${G('تنزل','تنزلي')} <b>الترعة</b> ${G('تصطاد','تصطادي')}.`},
-  {g:'البلد',h:'المجهود',p:()=>PF_HPIC.eff(),b:()=>`التنقيب والصيد بيتعبوا: كل مرة ${G('بتنقّب','بتنقّبي')} أو ${G('بتصطاد','بتصطادي')} بتاخد من <b>مجهودك</b>. المجهود ${EFF_MAX} نقطة بالكتير.<br>لما يخلص ${G('استنى','استني')} شوية، بيرجع لوحده نقطة كل دقيقة. ولو ${G('كلت','كلتي')} أكلة في البلد بيرجع أسرع.`},
+  {g:'البلد',h:'المجهود',p:()=>PF_HPIC.eff(),b:()=>`التنقيب والصيد بيتعبوا: كل مرة ${G('بتنقّب','بتنقّبي')} أو ${G('بتصطاد','بتصطادي')} بتاخد من <b>مجهودك</b>. المجهود ${EFF_MAX} نقطة بالكتير.<br>لما يخلص ${G('استنى','استني')} شوية، بيرجع لوحده نقطة كل دقيقة. ولو ${G('كلت','كلتي')} أكلة بيرجع على طول، في البلد أو جوه الجبل والترعة.<br>وعند عم صابر في القهوة في «حلبة عم صابر»: كل كوباية بتكبّر مجهودك 2 على طول، لحد 40.`},
   {g:'البلد',h:'الشغلانات',p:()=>PF_HPIC.life(),b:()=>`عندك 5 <b>شغلانات</b>. كل ما ${G('تشتغل','تشتغلي')} في واحدة بتكبر وتطلع مستوى (لحد 10)، وكل مستوى بيفرق:<br>${Object.keys(LIFE).map(k=>`<b>${LIFE[k].n}:</b> ${pfTx(LIFE[k].d)}`).join('<br>')}<br>مستوى كل شغلانة مكتوب في صفحة ${G('بطلك','بطلتك')} تحت «شغلانات».`},
   {g:'البلد',h:'العدّة (6 خانات)',p:()=>PF_HPIC.gear(),b:()=>`${G('تقدر','تقدري')} ${G('تلبس','تلبسي')} حاجة واحدة في كل خانة من الـ6: ${Object.values(SLOTS).join('، ')}.<br>العدّة بتزوّد ضربك، أو بتخلّي الضربة اللي بتجيلك تقل، أو بتزوّد صحتك وصفاتك. وفي سلاح ليه حركة خاصة زي «ضربتين».<br>${G('اشتريها','اشتريها')} أو ${G('اعملها','اعمليها')} بإيدك من الخامات عند الحداد والخياط. واللون بيقولك هي نادرة قد إيه.`},
   {g:'البلد',h:'السوق والسمعة',b:()=>`السوق بيعرض حاجات مختلفة كل مغامرة، وبكمية محدودة («فاضل 2»). ساعات فيه عرض بخصم.<br><b>السمعة:</b> لو ${G('ساعدت','ساعدتي')} الناس سمعتك بتتحسن والأسعار بتقل. لو ${G('سرقت','سرقتي')} أو ${G('كدبت','كدبتي')} أو ${G('أذيت','أذيتي')} حد سمعتك بتوحش، والأسعار بتغلى، وفي ناس ممكن ترفض تتعامل ${G('معاك','معاكي')}.`},
@@ -3367,8 +3369,8 @@ const gxNpcHTML=k=>{const N=NPC[k];return `<div class="gx-npc" id="gxNpc"><div c
 function gxVisit(k){const h=S.hero;let V=GX.vis[k];if(!V||V.hid!==h.id||GX.left[k]){GX.left[k]=0;V=GX.vis[k]={hid:h.id,n:{},rocks:0,floor:1,hole:0,deep:1}}return V}
 const gxTop=t=>`<div class="top"><button class="ib" id="back">${SCREENS.town?'البلد':'رجوع'}</button><h2>${t}</h2>${qBtn()}</div>`;
 function gxStats(k){const h=S.hero,v=effNow(h),L=h.life[k];
-  return `<div class="gx-stats"><div class="gx-row"><span class="lb">${ICO.drop}المجهود</span><span class="gx-eff" id="gxEff">${Array.from({length:EFF_MAX},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</span><b class="nm" id="gxEffN">${v}/${EFF_MAX}</b></div><div class="gx-sub" id="gxEffT">${effTxt(h,k)}</div>
-  <div class="gx-row" id="gxLvRow"><span class="lb">${ICO[k]}${LIFE[k].n} <small>مستوى</small> <b id="gxLv">${L.lvl}</b></span><span class="xpbar gx-xp"><i id="gxXp" style="width:${xpPct(L)}%"></i></span><b class="nm" id="gxXpN">${xpN(L)}</b></div><div class="gx-sub" id="gxXpT">${xpTxt(h,k)}</div></div>`}
+  return `<div class="gx-stats"><div class="gx-row"><span class="lb">${ICO.drop}المجهود</span><span class="gx-eff${EFF_MAX>24?' many':''}" id="gxEff">${Array.from({length:EFF_MAX},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</span><b class="nm" id="gxEffN">${v}/${EFF_MAX}</b></div><div class="gx-sub gx-subE"><span id="gxEffT">${effTxt(h,k)}</span>${eatBtnHTML(h)}</div>
+  <div class="gx-row" id="gxLvRow"><span class="lb">${ICO[k]}${LIFE[k].n} <small>مستوى</small> <b id="gxLv">${L.lvl}</b></span><span class="xpbar gx-xp"><i id="gxXp" style="width:${xpPct(L)}%"></i></span><b class="nm" id="gxXpN">${xpN(L)}</b></div><div class="gx-sub" id="gxXpT">${xpTxt(h,k)}</div></div>${eatStripHTML(h)}`}
 const gxChips=(ks,V)=>`<div class="gx-chips">${ks.map(k=>{const n=V.n[k]||0,t=tierOf(k);return `<div class="gx-chip ${n?'':'z'}" data-r="${k}" style="--cc:${MAT[k].c}${t?`;border-color:${RARE[t].c}88`:''}"><span class="ic">${AR.mat(k,26)}</span><b>${n}</b><small>${MAT[k].n}</small></div>`}).join('')}</div>`;
 function effUI(){const h=S.hero,e=$('#gxEff');if(!e)return;const v=effNow(h),l=mmss(effLeft(h));[...e.children].forEach((x,i)=>x.classList.toggle('on',i<v));
   $('#gxEffN').textContent=`${v}/${EFF_MAX}`;$('#gxEffT').textContent=effTxt(h,S.screen);document.querySelectorAll('.gx-cd').forEach(x=>x.textContent=l)}
@@ -3378,7 +3380,7 @@ function xpUI(k,up){const h=S.hero,L=h.life[k],i=$('#gxXp');if(!i)return;
   if(!up)return fin();i.style.width='100%';setTimeout(()=>{if(!i.isConnected)return;i.style.transition='none';i.style.width='0%';void i.offsetWidth;i.style.transition='';fin();cls($('#gxLvRow'),'lvup')},900)}
 function gxTired(){const h=S.hero,m=$('#gxMsg');SFX.tired();vib([30,40,30]);cls($('#gxEff'),'nope');if(!m)return;
   m.innerHTML=`<div class="t">${G('تعبت','تعبتي')}..</div><div>${G('ارتاح','ارتاحي')} شوية. المجهود بيرجع لوحده واحدة كل ${h.hidden.sabr?'40 ثانية':'دقيقة'}</div><div class="cd">اللي جاي بعد <span class="gx-cd">${mmss(effLeft(h))}</span></div>${SCREENS.town?`<small>أو ${G('كُل','كُلي')} حاجة في البلد ترجّعلك مجهودك</small>`:''}`;
-  m.classList.add('on');clearTimeout(GX.mt);GX.mt=setTimeout(()=>m.classList.remove('on'),4500)}
+  m.classList.add('on');clearTimeout(GX.mt);GX.mt=setTimeout(()=>m.classList.remove('on'),4500);eatTired()}
 function gxMsgOff(){const m=$('#gxMsg');if(m&&m.classList.contains('on')){m.classList.remove('on');return true}return false}
 /* a floating word on its own row of the stage, so several drops never pile on each other */
 function gxFloatRow(j,t,c){const st=$('#gxStage');if(!st)return;const a=document.createElement('i');a.style.cssText=`position:absolute;left:50%;top:${46-j*13}%;width:2px;height:2px;pointer-events:none`;st.appendChild(a);floatAt(a,t,c,'',24);setTimeout(()=>a.remove(),50)}
@@ -3394,7 +3396,7 @@ function gxTick(){const s=S.screen,h=S.hero;if((s!=='mine'&&s!=='fish')||!h||!$(
     if(v0<1){if(s==='mine'){if(!GX.rock)mnSlot();mnBtn()}else fsBtn();cls($('#gxGo'),'ready');gxMsgOff()}}
   effUI()}
 function gxBind(k){$('#back').onclick=()=>{GX.left[k]=1;fsAbort();S.screen=SCREENS.town?'town':'title';render()};bindQ();
-  GX.v=effNow(S.hero);if(!GX.tm)GX.tm=setInterval(gxTick,500)}
+  GX.v=effNow(S.hero);if(!GX.tm)GX.tm=setInterval(gxTick,500);eatBind()}
 
 /* ---------- الجبل ---------- */
 /* floors: every visit starts at floor 1, and a broken rock sometimes opens a way down («نزلة»), down to floor 10.
@@ -3747,7 +3749,7 @@ SCREENS.fish=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 };
 /* a finger lifted anywhere, or the page losing focus, lets go of the reel */
 ['pointerup','blur'].forEach(ev=>addEventListener(ev,()=>{if(FS.hold){FS.hold=0;const g=document.getElementById('gxGo');if(g)g.classList.remove('on')}}));
-gxDev={GX,FS,REEL,reelNew,reelStep,reelZone,rollFish,rollRock,critOf,downOf,hpOf,gxVisit,mnSpawn,mnHit,mnDown};
+gxDev={effUI,mnSlot,mnBtn,fsBtn,gxMsgOff,GX,FS,REEL,reelNew,reelStep,reelZone,rollFish,rollRock,critOf,downOf,hpOf,gxVisit,mnSpawn,mnHit,mnDown};
 }
 
 /* ---------- v4 combat: class skills («قدرات»), status effects, weapon skills, drops ---------- */
@@ -4303,6 +4305,14 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.2',d:'9 أكتوبر',add:[
+    'كل الرسم بقى بكسل زي الأبطال: الوحوش في المغامرات الأربعة، وناس البلد، والحاجات، والأماكن. والوحوش الكبار بقوا أكبر في القتال.',
+    'شجرة الشغلانات كبرت: 4 فروع بدل 3، وكل فرع 5 درجات. كل مستوى بيديك 3 نقط، وكل درجة أغلى من اللي قبلها: الأولى بنقطة، والخامسة بـ5.',
+    'الدرجة الخامسة في كل فرع ميزة قوية. والفرع الجديد بيزوّد خبرة الشغلانة، ودرجته الخامسة بتديك نقطة زيادة مع كل مستوى.',
+    'جوه الجبل والترعة بقى في زرار «{كُل|كُلي}»: {تاكل|تاكلي} من أكل شنطتك {وتكمّل|وتكمّلي} في نفس الدور من غير ما {تطلع|تطلعي} البلد.',
+    'عند عم صابر في القهوة بقى في «حلبة عم صابر»: كل كوباية بتكبّر أقصى مجهود 2 على طول، من 20 لحد 40.',
+    'بعد كل وحش كبير {تقدر|تقدري} {ترجع|ترجعي} البلد بكل الغنايم بدل ما {تكمّل|تكمّلي}. وفي أي محطة فيه زرار «البلد»، بس لو وحش المكان لسه صاحي {هتخسر|هتخسري} أغلب الفلوس والغنايم اللي {كسبتها|كسبتيها} من آخر استراحة.'],
+   fix:['الشجر القديم اتلغى ونقطك رجعتلك كلها ببلاش، {وزّعها|وزّعيها} من الأول.']},
   {v:'5.1',d:'9 أكتوبر',add:[
     'مغامرة جديدة: «سوق العفاريت» من المستوى 7. مصطفى ابن عم صابر باع اسمه وصوته وضله في سوق بيفتح ليلة واحدة في السنة، وبيقفل مع صياح الديك.',
     '3 أماكن جديدة: البلد القديمة، والسوق، والدهاليز. وأكتر من 70 كارت جديد: رهان على النرد، ومزادات، ونشالين، وفرح جن، وأكل الأحسن ما يتاكلش.',
@@ -4653,7 +4663,7 @@ function stepRun(s,n){return new Promise(res=>{MG.st=s;s.fin=0;s.done=r=>{if(s.f
 function ctx(kind,h,o,practice){const lv=Math.max(1,Math.min(10,(h.life&&h.life[kind]&&h.life[kind].lvl)||1));
   const C={kind,h,o,practice,lv,sp:1+.07*clamp(o.tier|0,0,4),wl:1+.05*(lv-1),allP:1,bonus:0,brk:[],g:(m,f)=>h.g==='f'?f:m};
   C.ev=p=>{if(!p)C.allP=0};
-  C.bon=(br,eff)=>{const r=br?TR(h,kind,br):0,p=[];if(lv>1)p.push(`${LIFE[kind].n} مستوى ${lv}`);if(r)p.push(`${BRN[kind+'.'+br]} ${r}`);return p.length?`${p.join(' + ')}: ${eff}`:''};
+  C.bon=(br,eff)=>{const r=br?TR(h,kind,br):0,p=[];if(lv>1)p.push(`${LIFE[kind].n} مستوى ${lv}`);if(r)p.push(`${BRN[kind+'.'+br]} ${typeof treeRank==='function'?treeRank(h,kind,br):r}`);return p.length?`${p.join(' + ')}: ${eff}`:''};
   return C}
 async function runGame(C){const k=C.kind;MG.C=C;let score=0;
   if(k==='smith'){const heat=[];heat.push(await stepRun(sHeat(C,0),0));let r=await stepRun(sHammer(C),1);
@@ -5375,30 +5385,38 @@ Object.assign(SFX,{
 .q-enh .bts{width:min(300px,84vw)}.q-enh .bts .btn[disabled]{opacity:.35}
 @media (prefers-reduced-motion:reduce){.q-glow svg,.q-enh .it,.q-enh .rays{animation:none!important}}
 `;document.head.appendChild(st)}
-/* ---------- v4.2 الشجرة: one skill tree per life skill, 3 branches × 4 nodes ---------- */
-/* h.tree = {mine:{heavy:0,eye:0,breath:0}, ...} (created lazily). 1 point per skill level: a level-4 skill has 4 points to spend.
-   Nodes 1-3 of a branch are ranks of one small bonus; node 4 is a special and needs nodes 1-3. treeR(h,skill,branch) gives the rank 0..4 */
+/* ---------- v4.2 الشجرة: one skill tree per life skill, 4 branches × 5 ranks (v5.2) ---------- */
+/* h.tree = {mine:{heavy:0,...,xp:0}, ...} (created lazily), h.treeV=2. 3 points per skill level. Rank n of a branch costs n points.
+   Ranks 1-4 grow one small bonus; rank 5 is a strong passive. treeRank() gives the rank 0..5.
+   treeR() keeps the old contract the crafts read (0..3 for the small bonus, 4 = the special): ranks 1-4 give 0.75 each, rank 5 gives 4.
+   Trees saved before v5.2 (ranks 0..4) are refunded once, for free. */
+const TREE_U=(per,n)=>Math.round(per*.75*n);
 const TREE={
   mine:{c:'#9fc6ee',who:null,br:[
-    {id:'heavy',n:'إيد تقيلة',r:'الضربة القوية بتيجي أكتر: +3%',x:'«تكسيرة»: الضربة القوية ممكن تكسر الصخرة مرة واحدة (25%)',v:n=>`+${3*n}%`},
-    {id:'eye',n:'عين الجبل',r:'الخامات الأحسن بتطلع أكتر: +4%',x:'النزلات لتحت بتظهر الضعف',v:n=>`+${4*n}%`},
-    {id:'breath',n:'نفَس طويل',r:'5% إن الصخرة ما تاخدش مجهود',x:'الأكل في البلد بيرجّع {ليك|ليكي} 2 مجهود زيادة',v:n=>`${5*n}%`}]},
+    {id:'heavy',n:'إيد تقيلة',r:'الضربة القوية بتيجي أكتر',x:'«تكسيرة»: الضربة القوية ممكن تكسر الصخرة مرة واحدة (25%)',v:n=>`+${TREE_U(3,n)}%`},
+    {id:'eye',n:'عين الجبل',r:'الخامات الأحسن بتطلع أكتر',x:'النزلات لتحت بتظهر الضعف',v:n=>`+${TREE_U(4,n)}%`},
+    {id:'breath',n:'نفَس طويل',r:'الصخرة ممكن ما تاخدش مجهود',x:'الأكل في البلد بيرجّع {ليك|ليكي} 2 مجهود زيادة',v:n=>`${TREE_U(5,n)}%`},
+    {id:'xp',n:'عِشرة الجبل',r:'خبرة التعدين أكتر',x:'مع كل مستوى في التعدين {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]},
   fish:{c:'#7fd0e0',who:null,br:[
-    {id:'steady',n:'إيد ثابتة',r:'المنطقة الخضرا أكبر: +8%',x:'لو السمكة فضلت جوه المنطقة طول الوقت، ممكن تطلع سمكة تانية (30%)',v:n=>`+${8*n}%`},
-    {id:'bait',n:'طُعم حلو',r:'السمك الغالي بيطلع أكتر: +3%',x:'سمكة الدهب بتطلع الضعف',v:n=>`+${3*n}%`},
-    {id:'patience',n:'بال طويل',r:'العداد بيفضى أبطأ: 10%',x:'الكنز بيظهر الضعف',v:n=>`${10*n}%`}]},
+    {id:'steady',n:'إيد ثابتة',r:'المنطقة الخضرا أكبر',x:'لو السمكة فضلت جوه المنطقة طول الوقت، ممكن تطلع سمكة تانية (30%)',v:n=>`+${TREE_U(8,n)}%`},
+    {id:'bait',n:'طُعم حلو',r:'السمك الغالي بيطلع أكتر',x:'سمكة الدهب بتطلع الضعف',v:n=>`+${TREE_U(3,n)}%`},
+    {id:'patience',n:'بال طويل',r:'العداد بيفضى أبطأ',x:'الكنز بيظهر الضعف',v:n=>`${TREE_U(10,n)}%`},
+    {id:'xp',n:'ابن الشط',r:'خبرة الصيد أكتر',x:'مع كل مستوى في الصيد {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]},
   smith:{c:'#ffb07a',who:'hassan',br:[
-    {id:'fire',n:'عين على النار',r:'الحتة البرتقاني في النار أعرض: +10%',x:'أول غلطة في كل شغلانة {بتتسامح|بتتسامحي} فيها',v:n=>`+${10*n}%`},
-    {id:'hand',n:'إيد خفيفة',r:'وقت الخبطة أطول: +10%',x:'3 خبطات ممتازة ورا بعض بيدوا نقط زيادة',v:n=>`+${10*n}%`},
-    {id:'luck',n:'بركة',r:'الحظ {بيقف معاك|بيقف معاكي} أكتر: +4%، و4% إن خامة ترجع',x:'الصفة ممكن تطلع على «كويس» كمان',v:n=>`+${4*n}%`}]},
+    {id:'fire',n:'عين على النار',r:'الحتة البرتقاني في النار أعرض',x:'أول غلطة في كل شغلانة {بتتسامح|بتتسامحي} فيها',v:n=>`+${TREE_U(10,n)}%`},
+    {id:'hand',n:'إيد خفيفة',r:'وقت الخبطة أطول',x:'3 خبطات ممتازة ورا بعض بيدوا نقط زيادة',v:n=>`+${TREE_U(10,n)}%`},
+    {id:'luck',n:'بركة',r:'الحظ {بيقف معاك|بيقف معاكي} أكتر، وممكن خامة ترجع',x:'الصفة ممكن تطلع على «كويس» كمان',v:n=>`+${TREE_U(4,n)}%`},
+    {id:'xp',n:'صنعة قديمة',r:'خبرة الحدادة أكتر',x:'مع كل مستوى في الحدادة {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]},
   tailor:{c:'#a6e3a0',who:'fathy',br:[
-    {id:'cut',n:'مقص مظبوط',r:'خط القص أعرض: +12%',x:'كل تالت قصة بتطلع مظبوطة لوحدها',v:n=>`+${12*n}%`},
-    {id:'stitch',n:'غرزة سريعة',r:'وقت الغرزة أطول: +10%',x:'الهدوم الممتازة والتحفة بتستحمل الضعف',v:n=>`+${10*n}%`},
-    {id:'luck',n:'بركة',r:'الحظ {بيقف معاك|بيقف معاكي} أكتر: +4%، و4% إن خامة ترجع',x:'الصفة ممكن تطلع على «كويس» كمان',v:n=>`+${4*n}%`}]},
+    {id:'cut',n:'مقص مظبوط',r:'خط القص أعرض',x:'كل تالت قصة بتطلع مظبوطة لوحدها',v:n=>`+${TREE_U(12,n)}%`},
+    {id:'stitch',n:'غرزة سريعة',r:'وقت الغرزة أطول',x:'الهدوم الممتازة والتحفة بتستحمل الضعف',v:n=>`+${TREE_U(10,n)}%`},
+    {id:'luck',n:'بركة',r:'الحظ {بيقف معاك|بيقف معاكي} أكتر، وممكن خامة ترجع',x:'الصفة ممكن تطلع على «كويس» كمان',v:n=>`+${TREE_U(4,n)}%`},
+    {id:'xp',n:'إيد الأسطى',r:'خبرة الخياطة أكتر',x:'مع كل مستوى في الخياطة {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]},
   cook:{c:'#f0a0b8',who:'umsayed',br:[
-    {id:'steady',n:'إيد ثابتة',r:'الحتة الدهبي أعرض: +10%',x:'الحرق بيبدأ متأخر 30%',v:n=>`+${10*n}%`},
-    {id:'flavor',n:'نفَس حلو',r:'الأكل بيرجّع أكتر: +8%',x:'الأكل الممتاز والتحفة بيرجّع ×1.5 كمان',v:n=>`+${8*n}%`},
-    {id:'thrift',n:'توفير',r:'5% إن حاجة من المكونات ترجعلك',x:'20% إن الطبخة تطلع أكلتين',v:n=>`${5*n}%`}]}};
+    {id:'steady',n:'إيد ثابتة',r:'الحتة الدهبي أعرض',x:'الحرق بيبدأ متأخر 30%',v:n=>`+${TREE_U(10,n)}%`},
+    {id:'flavor',n:'نفَس حلو',r:'الأكل بيرجّع أكتر',x:'الأكل الممتاز والتحفة بيرجّع ×1.5 كمان',v:n=>`+${TREE_U(8,n)}%`},
+    {id:'thrift',n:'توفير',r:'ممكن حاجة من المكونات ترجعلك',x:'20% إن الطبخة تطلع أكلتين',v:n=>`${TREE_U(5,n)}%`},
+    {id:'xp',n:'نفَس الكبار',r:'خبرة الطبخ أكتر',x:'مع كل مستوى في الطبخ {بتاخد|بتاخدي} نقطة زيادة في الشجرة',v:n=>`+${10*n}%`}]}};
 const TREE_IC={
   mine:'<path d="M5 19 L14 10" stroke="#8a5a2a" stroke-width="2.6" stroke-linecap="round"/><path d="M8 7 Q14 3 20 8 Q15 7 12 10Z" fill="#cfd6dc" stroke="#3a4048" stroke-width="1"/>',
   fish:'<path d="M3 12 Q9 5 16 10 L21 6 L20 12 L21 18 L16 14 Q9 19 3 12Z" fill="#7fd0e0" stroke="#1d4050" stroke-width="1"/><circle cx="7" cy="11" r="1" fill="#111"/>',
@@ -5406,13 +5424,15 @@ const TREE_IC={
   tailor:'<path d="M4 20 L19 5" stroke="#e8edf2" stroke-width="2" stroke-linecap="round"/><ellipse cx="18" cy="6" rx="2.4" ry="1.2" transform="rotate(-45 18 6)" fill="none" stroke="#9aa4ad" stroke-width="1.2"/><path d="M18 6 Q23 14 14 16 T6 21" stroke="#c0453a" stroke-width="1.4" fill="none"/>',
   cook:'<path d="M4 10 H20 L18 19 Q12 21 6 19Z" fill="#2a2420" stroke="#111" stroke-width="1"/><rect x="3" y="8" width="18" height="3" rx="1.5" fill="#4a4340"/><path d="M9 6 q-2-2 0-4 M14 6 q-2-2 0-4" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" fill="none"/>'};
 const treeIco=(k,w)=>`<svg viewBox="0 0 24 24" width="${w||22}" height="${w||22}" aria-hidden="true">${TREE_IC[k]||''}</svg>`;
-function treeOf(h,k){if(!h)return null;h.tree=h.tree||{};const T0=TREE[k];if(!T0)return null;const t=h.tree[k]=h.tree[k]||{};T0.br.forEach(b=>{if(!(t[b.id]>=0))t[b.id]=0});return t}
-/* the rank of a branch, 0..4 (0 when there is no tree yet) */
-function treeR(h,skill,branch){if(!h||!h.tree||!h.tree[skill])return 0;const v=+h.tree[skill][branch]||0;return Math.max(0,Math.min(4,v))}
-const treeSpent=(h,k)=>{const t=h&&h.tree&&h.tree[k];return t?Object.values(t).reduce((a,v)=>a+(+v||0),0):0};
+function treeMig(h){if(!h||h.treeV===2)return;const had=h.tree&&Object.values(h.tree).some(t=>t&&Object.values(t).some(v=>+v>0));h.tree={};h.treeV=2;if(had)h.treeReset=1}
+function treeOf(h,k){if(!h)return null;treeMig(h);h.tree=h.tree||{};const T0=TREE[k];if(!T0)return null;const t=h.tree[k]=h.tree[k]||{};T0.br.forEach(b=>{if(!(t[b.id]>=0))t[b.id]=0});return t}
+function treeRank(h,skill,branch){if(!h)return 0;treeMig(h);if(!h.tree||!h.tree[skill])return 0;return Math.max(0,Math.min(5,+h.tree[skill][branch]||0))}
+function treeR(h,skill,branch){const r=treeRank(h,skill,branch);return r>=5?4:r*.75}
+const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0};
 const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
-function treePts(h,k){return Math.max(0,treeLvl(h,k)-treeSpent(h,k))}
-const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*25);
+function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,3*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
+const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
+const treeNum=n=>n===1?'نقطة واحدة':n===2?'نقطتين':n+' نقط';
 const TS={k:'smith',from:'smith',sel:null,conf:0};
 /* the button in a skill box (at the smith, the tailor, the cook) */
 function treeBtnHTML(h,k){if(!TREE[k])return '';const p=treePts(h,k);
@@ -5421,16 +5441,16 @@ function treeBind(){view.querySelectorAll('[data-tree]').forEach(b=>b.onclick=()
 function treeOpen(k){TS.k=k;TS.from=S.screen;TS.sel=null;TS.conf=0;SFX.page();S.screen='tree';render();view.scrollTop=0}
 SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}const k=TREE[TS.k]?TS.k:'smith',T0=TREE[k],t=treeOf(h,k),p=treePts(h,k),c=T0.c;
   const who=T0.who&&TW_NPC[T0.who]?TW_NPC[T0.who][0]:null,cost=treeCost(h,k),spent=treeSpent(h,k);
-  const node=(b,i)=>{const r=t[b.id],got=r>i,next=r===i,open=next&&p>0&&(i<3||r>=3),sp=i===3;
+  const node=(b,i)=>{const r=t[b.id],got=r>i,next=r===i,open=next&&p>=i+1,sp=i===4;
     return `<button class="tr-n${got?' got':''}${open?' open':''}${sp?' sp':''}${TS.sel===b.id+i?' sel':''}" data-n="${b.id}" data-i="${i}" aria-label="${b.n} ${i+1}">
       ${sp?`<svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2.5l2.6 6.2 6.7.5-5.1 4.3 1.6 6.5L12 16.6 6.2 20l1.6-6.5L2.7 9.2l6.7-.5z" fill="${got?'#fff3b0':'none'}" stroke="${got?'#fff':'currentColor'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`:`<b>${i+1}</b>`}</button>`};
-  const col=b=>{const r=t[b.id];return `<div class="tr-col"><div class="tr-h"><b>${b.n}</b><small>${r?`${r>=4?'كاملة ✦':`${b.v(Math.min(3,r))}`}`:'لسه'}</small></div>
-    <div class="tr-nodes">${[0,1,2,3].map(i=>node(b,i)).join('<i class="tr-ln"></i>')}</div></div>`};
+  const col=b=>{const r=t[b.id];return `<div class="tr-col"><div class="tr-h"><b>${b.n}</b><small>${r?`${r>=5?'كاملة ✦':`${b.v(Math.min(4,r))}`}`:'لسه'}</small></div>
+    <div class="tr-nodes">${[0,1,2,3,4].map(i=>node(b,i)).join('<i class="tr-ln"></i>')}</div></div>`};
   const sel=TS.sel&&T0.br.find(b=>TS.sel.indexOf(b.id)===0),si=sel?+TS.sel.slice(sel.id.length):-1;
   view.innerHTML=`<div class="top twtop"><button class="ib" id="back">رجوع</button><h2>شجرة ${LIFE[k].n}</h2><span style="width:44px"></span></div>
   <div class="tw tr" style="--tc:${c}">
-    <div class="card tr-top"><span class="ic">${treeIco(k,40)}</span><div class="tx"><div class="r1"><b>${LIFE[k].n} مستوى ${treeLvl(h,k)}</b><span class="tr-pts${p?' on':''}">${p===0?'مفيش نقط':p===1?'نقطة واحدة':p===2?'نقطتين':p+' نقط'}</span></div>
-      <div class="tw-sm">كل مستوى ${G('بيديك','بيديكي')} نقطة. ${G('حط','حطي')} النقط في الفرع اللي يعجبك. الدرجة الرابعة في كل فرع حاجة مميزة، وبتتفتح بعد التلاتة اللي قبلها.</div></div></div>
+    <div class="card tr-top"><span class="ic">${treeIco(k,40)}</span><div class="tx"><div class="r1"><b>${LIFE[k].n} مستوى ${treeLvl(h,k)}</b><span class="tr-pts${p?' on':''}">${p===0?'مفيش نقط':treeNum(p)}</span></div>
+      <div class="tw-sm">كل مستوى ${G('بيديك','بيديكي')} 3 نقط. كل درجة أغلى من اللي قبلها: الأولى بنقطة، والتانية بنقطتين، لحد الخامسة بـ5 نقط. والدرجة الخامسة في كل فرع ميزة قوية.</div></div></div>
     <div class="tr-grid">${T0.br.map(col).join('')}</div>
     <div class="card tr-info" id="trInfo">${sel?treeInfo(h,k,sel,si,p):`<div class="tw-sm" style="text-align:center">${G('دوس','دوسي')} على أي دايرة ${G('عشان تشوف','عشان تشوفي')} بتعمل إيه.</div>`}</div>
     <div class="tw-lbl">${G('عايز','عايزة')} ${G('توزّع','توزّعي')} من الأول؟</div>
@@ -5441,17 +5461,17 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   view.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{TS.sel=b.dataset.n+b.dataset.i;TS.conf=0;SFX.tick(800+(+b.dataset.i)*120);twRender()});
   const bb=$('#trBuy');if(bb)bb.onclick=()=>treeBuy(k,bb.dataset.b);
   $('#trRe').onclick=()=>treeRespec(k)};
-function treeInfo(h,k,b,i,p){const r=treeR(h,k,b.id),got=r>i,sp=i===3,need=!sp?r===i:r===3;
-  const what=sp?T(b.x):`${T(b.r)}${i>0?` (كده ${b.v(i+1)})`:''}`;
+function treeInfo(h,k,b,i,p){const r=treeRank(h,k,b.id),got=r>i,sp=i===4,need=r===i,cost=i+1;
+  const what=sp?T(b.x):`${T(b.r)}: ${b.v(i+1)}`;
   let act='';if(got)act=`<div class="tw-miss ok">${G('اتعلمتها','اتعلمتيها')} ✓</div>`;
-  else if(!need)act=`<div class="tw-miss">${sp?`لازم الدرجات التلاتة اللي قبلها الأول`:`لازم الدرجة اللي قبلها الأول`}</div>`;
-  else if(!p)act=`<div class="tw-miss">مفيش نقط. ${G('اشتغل','اشتغلي')} وعلّي مستوى ${LIFE[k].n} ${G('وتاخد','وتاخدي')} نقطة.</div>`;
-  else act=`<button class="btn" id="trBuy" data-b="${b.id}">${G('اتعلّمها','اتعلّميها')} · نقطة واحدة</button>`;
-  return `<div class="tr-ih"><b>${b.n}</b><span>${sp?'الدرجة المميزة':`درجة ${i+1} من 3`}</span></div><div class="tr-iw">${what}</div>${act}`}
-function treeBuy(k,bid){const h=S.hero,t=treeOf(h,k),b=TREE[k].br.find(x=>x.id===bid);if(!b||treePts(h,k)<1)return;const r=t[bid];if(r>=4)return;
-  t[bid]=r+1;saveHero();TS.sel=bid+(r+1<4?r+1:3);if(r+1===4){SFX.fanfare();flash(TREE[k].c)}else SFX.treeUp();vib([20,20,40]);twRender();
-  const n=view.querySelector(`[data-n="${bid}"][data-i="${r}"]`);if(n){pop(n,[TREE[k].c,'#ffffff','#fff3b0'],r===3?40:20);cls(n,'pp')}
-  if(r+1===4)band(LIFE[k].n,b.n,T(b.x),{dur:2400})}
+  else if(!need)act=`<div class="tw-miss">${sp?`لازم الدرجات الأربعة اللي قبلها الأول`:`لازم الدرجة اللي قبلها الأول`}</div>`;
+  else if(p<cost)act=`<div class="tw-miss">محتاجة ${treeNum(cost)}، ومعاك ${p?treeNum(p):'ولا نقطة'}. ${G('اشتغل','اشتغلي')} وعلّي مستوى ${LIFE[k].n}.</div>`;
+  else act=`<button class="btn" id="trBuy" data-b="${b.id}">${G('اتعلّمها','اتعلّميها')} · ${treeNum(cost)}</button>`;
+  return `<div class="tr-ih"><b>${b.n}</b><span>${sp?'الدرجة الخامسة · ميزة قوية':`درجة ${i+1} من 4 · ب${treeNum(cost)}`}</span></div><div class="tr-iw">${what}</div>${act}`}
+function treeBuy(k,bid){const h=S.hero,t=treeOf(h,k),b=TREE[k].br.find(x=>x.id===bid);if(!b)return;const r=t[bid];if(r>=5||treePts(h,k)<r+1)return;
+  t[bid]=r+1;saveHero();TS.sel=bid+(r+1<5?r+1:4);if(r+1===5){SFX.fanfare();flash(TREE[k].c)}else SFX.treeUp();vib([20,20,40]);twRender();
+  const n=view.querySelector(`[data-n="${bid}"][data-i="${r}"]`);if(n){pop(n,[TREE[k].c,'#ffffff','#fff3b0'],r===4?40:20);cls(n,'pp')}
+  if(r+1===5)band(LIFE[k].n,b.n,T(b.x),{dur:2400})}
 function treeRespec(k){const h=S.hero,c=treeCost(h,k);if(!treeSpent(h,k)||h.money<c)return;if(!TS.conf){TS.conf=1;SFX.meh();return twRender()}
   TS.conf=0;h.money-=c;const t=treeOf(h,k);Object.keys(t).forEach(x=>t[x]=0);saveHero();SFX.whoosh();SFX.reg();TS.sel=null;twRender();toast(`النقط رجعت كلها · ${G('دفعت','دفعتي')} ${c} جنيه`)}
 /* a new skill level = a new point */
@@ -5473,13 +5493,13 @@ Object.assign(SFX,{treeUp:W(t=>{[0,7,12].forEach((n,i)=>{const g=eg(t+i*.07,.004
 .tr .tr-top .tx{flex:1;min-width:0}.tr .tr-top .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.tr .tr-top .r1 b{font-size:16px}
 .tr-pts{flex:none;font-weight:800;font-size:13px;padding:2px 10px;border-radius:12px;background:#0006;color:var(--mute)}
 .tr-pts.on{background:var(--tc);color:#1a1030;animation:giftPulse 1.6s infinite}
-.tr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
 .tr-col{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 .tr-h{text-align:center;min-height:44px;display:flex;flex-direction:column;justify-content:center;padding:0 2px}
 .tr-h b{font-size:13.5px;line-height:1.3;color:var(--tc)}.tr-h small{font-size:11.5px;color:var(--mute);font-weight:700}
 .tr-nodes{display:flex;flex-direction:column;align-items:center}
 .tr-ln{display:block;width:3px;height:12px;background:#ffffff1a;border-radius:2px}
-.tr-n{width:50px;height:50px;border-radius:50%;border:2px solid #ffffff26;background:#0006;color:var(--dim);display:grid;place-items:center;cursor:pointer;font:inherit;padding:0;position:relative}
+.tr-n{width:46px;height:46px;border-radius:50%;border:2px solid #ffffff26;background:#0006;color:var(--dim);display:grid;place-items:center;cursor:pointer;font:inherit;padding:0;position:relative}
 .tr-n b{font-size:18px;font-weight:800}
 .tr-n.sp{width:58px;height:58px;border-radius:18px;transform:rotate(45deg)}.tr-n.sp svg{transform:rotate(-45deg)}
 .tr-n.got{background:radial-gradient(circle at 40% 35%,#fff8,var(--tc) 55%);border-color:#fff;color:#1a1030;box-shadow:0 0 14px var(--tc)}
@@ -5496,6 +5516,10 @@ Object.assign(SFX,{treeUp:W(t=>{[0,7,12].forEach((n,i)=>{const g=eg(t+i*.07,.004
 .tr-mini{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;border-radius:12px;border:1px solid #7a5ac0;background:#251d36;color:#d9cbff;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;flex:none}
 .tr-mini i{font-style:normal;background:#b9a0ff;color:#1a1030;border-radius:9px;min-width:18px;height:18px;line-height:18px;text-align:center;font-size:11px}
 `;document.head.appendChild(st)}
+/* v5.2: the «xp» branch: more skill xp (+10% a rank, rounded by chance) */
+{const lx2=lifeXP;lifeXP=function(h,k,n){let m=n||1;const r=TREE[k]&&h?Math.min(4,treeRank(h,k,'xp')):0;if(r){const v=m*(1+.1*r);m=Math.floor(v)+(Math.random()<v-Math.floor(v)?1:0)}return lx2.call(this,h,k,m)}}
+/* v5.2: tell once that old trees were refunded */
+{const t0=SCREENS.tree;SCREENS.tree=function(){const r=t0.apply(this,arguments);const h=S.hero;if(h&&h.treeReset){delete h.treeReset;saveHero();setTimeout(()=>toast(T('الشجرة اتجددت: 4 فروع و5 درجات. نقطك رجعتلك كلها {وزّعها|وزّعيها} من الأول ببلاش.')),300)}return r}}
 /* ---------- v4.2 «قهوة عم صابر»: a bench where effort comes back 3× faster while you sit, tea, and people talking ---------- */
 /* h.tea = {t0, n}: cups drunk since t0; a new hour (from the first cup) starts again at 10 */
 const KF={tm:0,last:0,say:-1,sayT:0,saved:0};
@@ -16623,6 +16647,706 @@ SCENERY_X.uc_jars=()=>{const C=['#ff8a3a','#58d0a8','#ffd34a','#d06aff','#7fb8ff
 SCENERY_X.uc_vault=()=>`<svg viewBox="0 0 480 200" preserveAspectRatio="xMidYMid slice">${UC_bg('ucg3','#160e12','#2c1c16')}${UC_bricks(0,480)}<rect width="480" height="200" fill="#1a1012" opacity=".5"/><g fill="#6a4426" stroke="#3a2412" stroke-width="2"><rect x="20" y="120" width="70" height="60"/><rect x="40" y="70" width="60" height="50"/><rect x="390" y="110" width="74" height="70"/><rect x="404" y="70" width="50" height="40"/></g><path d="M20 150 H90 M390 145 H464 M40 95 H100" stroke="#3a2412" stroke-width="2"/><rect x="180" y="128" width="120" height="10" fill="#4a2e1e"/><path d="M190 138 V176 M290 138 V176" stroke="#4a2e1e" stroke-width="6"/><path d="M206 128 l4 -10 h30 l4 10Z" fill="#6a2a1a"/><path d="M222 120 v8" stroke="#e8d8b0" stroke-width="1"/><path d="M262 118 v-12" stroke="#e8e2c8" stroke-width="3"/><circle cx="262" cy="103" r="3" fill="#ffd36a"/><circle cx="262" cy="104" r="22" fill="#ffd36a" opacity=".12"/><g fill="#f3c14d"><ellipse cx="160" cy="180" rx="14" ry="5"/><ellipse cx="160" cy="175" rx="11" ry="4"/><ellipse cx="330" cy="182" rx="12" ry="4"/></g><path d="M140 40 v18" stroke="#5a5058" stroke-width="2"/><circle cx="140" cy="64" r="6" fill="none" stroke="#c8a040" stroke-width="2"/><path d="M137 70 v8 h3 M142 70 v9 h3" stroke="#c8a040" stroke-width="1.6" fill="none"/><path d="M0 184 Q240 174 480 184 V200 H0Z" fill="#0c0709"/></svg>`;
 SCENERY_X.uc_door=()=>`<svg viewBox="0 0 480 200" preserveAspectRatio="xMidYMid slice">${UC_bg('ucg4','#120a12','#261818')}${UC_bricks(0,480)}<rect width="480" height="200" fill="#160c12" opacity=".5"/><path d="M170 186 V60 Q240 10 310 60 V186Z" fill="#4a2a18"/><path d="M178 186 V64 Q240 22 302 64 V186" stroke="#d8a840" stroke-width="3" fill="none"/><path d="M240 30 V186" stroke="#2a160c" stroke-width="3"/><g fill="#d8a840">${[80,110,140,170].map(y=>`<circle cx="194" cy="${y}" r="3"/><circle cx="226" cy="${y}" r="3"/><circle cx="254" cy="${y}" r="3"/><circle cx="286" cy="${y}" r="3"/>`).join('')}</g><g stroke="#f3c14d" stroke-width="2" fill="none"><path d="M240 56 V78 M222 62 H258 M222 62 l-6 12 h12Z M258 62 l-6 12 h12Z"/></g><path d="M176 186 H304" stroke="#ffd36a" stroke-width="2" opacity=".6"/><ellipse cx="240" cy="190" rx="70" ry="5" fill="#ffd36a" opacity=".12"/>${UC_lamp(132,84,'#ff8a3a')}${UC_lamp(348,84,'#58d0a8')}<path d="M0 186 Q240 178 480 186 V200 H0Z" fill="#0c0709"/></svg>`;
 SCENERY_X.uc_hall=()=>`<svg viewBox="0 0 480 200" preserveAspectRatio="xMidYMid slice">${UC_bg('ucg5','#160a1c','#2e1a20')}<path d="M0 26 H480" stroke="#4a4048" stroke-width="4"/>${UC_hang(40,60,1)}${UC_hang(96,74,0)}${UC_hang(384,66,1)}${UC_hang(440,80,0)}${UC_lamp(150,46,'#ffd34a')}${UC_lamp(330,46,'#d06aff')}<g fill="#5a2e1e" stroke="#2a140c" stroke-width="1.5"><rect x="196" y="150" width="88" height="14"/><rect x="202" y="136" width="76" height="14"/><rect x="208" y="122" width="64" height="14"/><rect x="214" y="80" width="52" height="42"/></g><g fill="#c8b890"><rect x="196" y="155" width="88" height="3"/><rect x="202" y="141" width="76" height="3"/><rect x="208" y="127" width="64" height="3"/></g><g fill="#ffd34a"><circle cx="232" cy="100" r="2.2"/><circle cx="248" cy="100" r="2.2"/></g><path d="M240 0 V40" stroke="#6a5a4a" stroke-width="2"/><path d="M196 44 H284" stroke="#c89040" stroke-width="3"/><path d="M200 44 l-10 22 h20Z M280 44 l-10 22 h20Z" fill="none" stroke="#c89040" stroke-width="1.5"/><path d="M190 66 h20 q-10 6 -20 0Z M270 66 h20 q-10 6 -20 0Z" fill="#c89040"/><g fill="#f3c14d"><ellipse cx="150" cy="182" rx="16" ry="5"/><ellipse cx="320" cy="184" rx="14" ry="4"/></g><g fill="#8a4a2a"><path d="M120 184 q-10 -14 0 -28 h12 q10 14 0 28Z"/><path d="M356 186 q-9 -13 0 -26 h11 q9 13 0 26Z"/></g><path d="M0 186 Q240 176 480 186 V200 H0Z" fill="#0c0709"/></svg>`;
+/* ==========================================================================
+   سرداب: pixel monsters (p17.js): every monster (batches 1 and 2)
+   The monsters redrawn in the cute pixel style of the heroes (one 32-colour palette, 1-px dark outline,
+   light from the top left). Each sprite is rows of palette letters, run-length packed: "K5" = KKKKK,
+   rows split by "/", the digits of the night blues written h i j n u (1 2 3 4 5). A normal monster is
+   about 32x32 art pixels, a boss about 48x48.
+   PXF_svg() turns one into an <svg viewBox="0 0 100 100"> of crisp <rect>s (same-colour runs merged),
+   centred, feet on the ground line, with a soft shadow. Each FOE_ART_X entry is built once, on first use.
+   A boss sprite (48 px) carries class="pxf-boss" and gets a bigger box on the fight card (.foe is 128 px wide).
+   ========================================================================== */
+const PXF_C={K:'#1f1420',h:'#1b1d3b',i:'#29305f',j:'#3d4b88',n:'#5a72b4',u:'#93afe2',W:'#fffaf0',C:'#ebe1cc',c:'#cfc6b8',g:'#8f877b',S:'#fbd9b0',s:'#eaae7f',t:'#c47d4f',T:'#8e4f33',B:'#b06b3d',b:'#74412a',v:'#46271e',Y:'#fff0b0',y:'#f3c14d',o:'#c98326',R:'#ff8f73',r:'#e04b3e',m:'#962e3a',G:'#7fe07a',q:'#3a9e55',z:'#1f5a3f',L:'#6ab4ff',l:'#2f6fd0',Q:'#aaf6ff',O:'#45c8dc',P:'#a578d6',p:'#6b45a6'};
+function PXF_svg(d){
+  const i=d.indexOf(':'),wh=d.slice(0,i).split('x'),w=+wh[0],h=+wh[1];
+  const rows=d.slice(i+1).split('/').map(r=>r.replace(/(\D)(\d+)/g,(m,c,n)=>c.repeat(+n)));
+  const u=88/Math.max(w,h),x0=50-w*u/2,y0=96-h*u,all=[];let prev={},bot=-1;
+  for(let y=0;y<h;y++){const r=rows[y]||'',cur={};let x=0;
+    while(x<r.length){const c=r[x];let e=x;while(e<r.length&&r[e]===c)e++;
+      if(c!=='.'){const k=x+','+e+c,o=prev[k];if(o){o.h++;cur[k]=o}else{const n={x,y,w:e-x,h:1,c};all.push(n);cur[k]=n}bot=y}
+      x=e}
+    prev=cur}
+  let mn=w,mx=-1;for(let y=Math.max(0,bot-2);y<=bot;y++){const r=rows[y]||'';for(let x=0;x<r.length;x++)if(r[x]!=='.'){mn=Math.min(mn,x);mx=Math.max(mx,x)}}
+  const f=v=>Math.round(v*100)/100,fl=bot<h-4;
+  let rx=Math.max(8,(mx-mn+1)*u/2+(fl?-4:2));if(fl)rx=Math.max(8,rx*.55);
+  const by={};all.forEach(n=>(by[n.c]=by[n.c]||[]).push(`<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}"/>`));
+  return `<svg viewBox="0 0 100 100" shape-rendering="crispEdges"${Math.max(w,h)>=44?' class="pxf-boss"':''}><ellipse cx="${f(x0+(mn+mx+1)/2*u)}" cy="94" rx="${f(rx)}" ry="3.6" fill="#0006" shape-rendering="auto"/><g transform="translate(${f(x0)} ${f(y0)}) scale(${f(u)})">${Object.keys(by).map(c=>`<g fill="${PXF_C[c]}">${by[c].join('')}</g>`).join('')}</g></svg>`;
+}
+
+const PXF_D={
+ afreet:'32x32:.9KCK.8KCK/.8KCcK.8KcCK/.8KccK.K6.KccK/.9KcKKr6KKcK/.9Kr3m6r3K/.8Krm12rK/.7Krm14rK/..K.3Krm16rK.3K/.KrK4rmmvvm8vvmmvK4rK/..Kr3KrmmYyvm6vyYmmvKr3K/.3Krmrm3YyKKm4KKyym3rmvK/.3Krmvm4yym6yym4vmvK/.4KrKrm16vKrK/.5KKrm16vKK/.6KrmmKm10KmmvK/.7KrmmKWKWKWKWKKmmvK/.8KrmmK8mmvK/.9Krvvm6v3K.6K/.10K3rv5K3.6KyK/.11Krm6rKK.5KyYK/.9KKrm8rrK.3KyrK/.8Krrm9rmrK.KvmK/.7Krmvm9rmmrKvmK/.6Krmvrm10rmmrmK/.5KrmvKrm10vrmmrK/.6KrK.Krm8vKKrvK/.7K.3Krm6vK..KK/.11Krrv6K/.11KrmvKKrmvK/.10Kv4KKv4K/.11K4..K4',
+ sal:'40x30:///.12K.5K..K..K/.11KcK.K3vKKvKKvK/.10KcbKKvcKvKvKvKvKK.K/.9KKgmKKvmv10KvK/.6K3ccgmcv4gvgvgvgv4KK/.4KKc3g3cvvgvg10v4K/..KKccg7vg15vvcK/KKccg5vvg21cKK.KK/KKg7rRvg10bbg9ccKvvK/KKg28bbg3v4K/KKg17bbg5bbg7bv3K/.KWmWmWm3bbg21b3KvK/.Km8KKbg22bKK/.KbWmWmmgbK3g11bbg8bK/..Kbbg5c3g15bbg3bK/.3KKb5K3g20bK/.5K5..Kg4bg3b7g3bbK/.12KbggbKb3K7g3bbK/.13KggbKb3K.5Kggb3K/.13KggbKKbbK.5KgbKbbK/.13KggbKKbbK.4Kcggv4K/.13KggbKKbbK.3Kv8K/.12KKggbKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ dummy:'32x32:/.13K6/.11KKS3tSSKK/.10KSSs3tssSSK/.9KSs10SK/.9KSs10tK/.8KSs12SK/.8KSsKsKs4KsKstK/.8KStsKs6KsstK/.8KSsKsKs4KsKstK/.8KSs11ttK/.9KSssK5s3tK/.9KSs10tK/.4K7Sts6ttK7/..KKB9v6B9KK/.KB3b22vBBK/.KbbBb22vbbK/..KKBv4b14v5KK/..KyK5Bb12vK5yK/.KyoyK.KBb13vK..KyoyK/..K3..KBb14BK..K3/.7KBv15K/.7KBb14vK/.7KBb14vK/.7KBv15K/.8K6ybbKyK5/.9KyoyKKbbK3yoyK/.10K3.KbbK..K3/.14KbbK/.14KbbK/.14KbbK/.15KK',
+ nadaha:'48x48:.20K10/.19Ki10K/.19Kih8iK/.18Kjh9iK/.17Kjh11iK/.16Kjh13iK/.14KKjh14iK/.13Kiijh15iK/.12Kjhjh5W6h6iK/.11KKjh6W7uh5iK/.10Kjih6WuKKWWKKuuh5iK/.10Kjh5ihWK3WWK3uh5iK/.10Kih5ihWK3WWK3uh4iKiK/.9Kih5ihhWK3WWK3uh4iKiiK/.9Kjh5ihhW9uh5iKiK/.10Kjh4ih3W3KKWWuh6iKiiK/.9Kjh5ih3W3KKWWuh6iKihiK/.9Kjh5ih4W6h7iKihiK/.10Kjh3ih6u4h5ihhiKihiK/.9Kih4ih4W7uh3ih3iKihiK/.9Kih4ih4W7uh3ih3iKihiK/.9Kjh5ihW9uh3ih3iKiiK/.8KKjhih3W3uW7uh3ihhiKihiK/.7KjihhihhWWuuW9uhhihhiKiKiiK/.3K.3Kjh3ihWWuihW9uhhihhiKiKiK/..KWK.KKjh3W3uhihWWuuW5uhhihiKiiKiK/.3KWKiih3WWuuhhihWWuuW5uhhihiKihiKiK/.3KWWh3W3uh4ihWWuuW5uhhihiKihiKiK/..KWKW5uuih4ihWWuuW5uhhihiKihiKiK/.3KW4uuhih5ihWWuuW5uhihhiKihhiK3/.4KWuh5ih3ihhWWuuW3u3hihhiKih3iKiK/.5Kjh5ih3ihW3uuW3uuWuih3iKihhiKiK/.5Kjh5ih3ihW3uuW3uuWuih3iKihhiKiK/.6Kih5ihihhW3uuW3uuWuih4iKihiKiiK/.5Kih6ihihhW3uuW3uuWuih4iKihiKihiK/.5Kjh6ihihhW3uuW3uuWuih4iKihiKihiK/.5Kjh6iih3W3uuW3uuWuih5iKiiKihiK/.4KKjh6iih3W3uuW3uuWuhhih3iKiKihhiK/.3Kjih7iihhWuuWuuW3uuWWuhih3iKiKih3iK/.3Kjh8iihhWuuWuuW3uuWWuhih3iKiKihhiK/.3Kih8iihhWuuWuuW3uuWWuhhihhiKKih3iK/..Kih7ihhihhWuuWuuW3uuWWuhhihhiKKih3iK/.Kjh8ihhihhWuuWuuW3uuWWuhhihhiKiKihhiK/.Kjh8ihih3WuuWuuW3uuWWuhhih3iiKihhiK/.Kjh7ih6WuuWuuW3uuWWuhhih4iKihhiK/.KiKih4iKih5uKuuKuuKuuKuuKKih4iKih3iK/.KiKiKihiKKiiKihiKihiKiiKKi3KiKiKihiKKiiKihiK/..K.K.K3..KK.K3.K3.KK..K3.K.K.K3..KK.K3',
+ k_dog:'40x30:///.7K.4K/.6KsK..KsK/.6KBsK.KbK.23KK/.6KBmsKsbK.22KssK/.5KKBmBsBmK.22KbK/.4KssB5bK.21KsbK/.3KsvvB5bK3.18KsBbK/..KKBrRvB5s3K18sBbK/KKssB12s18BBbK/KKB33bK/KKB22bbB8bK/bWmWmWmbB27sK/KBWBWBKKB11bBbBbB11bK/KWKKWK3B11bBbBbB3bbB6bK/WKWKK..KbbB25bK/K.K.5KKB25bK/.9KbB11b5B7bK/.10KB8b3K5bbB4bK/.10KB6bbK3.5KKbBBbK/.10KB4bbKK.10KBBbK/.10KB4bK.12KB3bK/.9KsB3bbK.12KB3bK/.9KB4bbK.12KB3bK/.8Kv6bK.11Kv5K/.8Kv7K.11Kv6K/.9K7.13K6',
+ k_thief:'32x32:/.11K10/.10Kj10K/.9Kji10jK/.8Kji12jK/.9Kji10hK/.9Ksjh9TK/.8KstKt8KtsK/.8KsttKKt4KKttTK/.7Kst3Kt6Kt3sK/.7Kst3Kt6Kt3TK/.7Kj16K/.7Kji14hK/.8Kji12hK/.8Kji12hK/.8Kji12hK/.7Kjjh13jK/.7Kjhji10hjhKK/.6Kjihi11hjicWK/.6Kjihi12jicWK/.6Kjhji12hjcWK/.6Kjhji12hjcWK/.5Kjihji12hjcWK/.5Kjhhji12ho4K/.4KKyssji12hs3K/.3Kr5i13hsTTK/.3Km5i14jKK/.3KmRm3i14hK/.3Km5h15K/.4K6v5KKv5KK/.10K5..K5',
+ k_ghafir:'32x32:.11K10/.9KKW10KK..K3/.8KWWC10WWKKbBBK/.8KWC12cKKB3K/.7KWC3cC3cC3cCCWKKbvK/.8KWCcC3cC3cCCcK.KbvK/.8KWcC10ccK.KbvK/.8KstKc8KtsK.KbvK/.8KsttKKt4KKttTK.KbvK/.7Kst3Kt6Kt3sKKbvK/.7Kst3Kt6Kt3TKKbvK/.7KsTt12TTKKbvK/.8KKsttK6ttTKK.KbvK/.9KstKt6KtTK..KbvK/.10KsTt6TTK.3KbvK/.8KKB3sT5B3KK.KbvK/.7KB3b4CCb4vBBKbvK/.7KBvBb10vBvKbvK/.6KBbvb11vBbBbvK/.6KBbvb12BbvbvK/.6KBvBb12vBvbvK/.6KBvu14BvbvK/.5KBbvn14BbbvK/.5KBvvBb12vBvbvK/.5Ks3Bb12vssbvK/.5KsTTb13vsTbvK/.6KKBb14BKbvK/.7KBb14vKbvK/.7KBv15KbvK/.8KKv5KKv5K3bvK/.10K5..K5.3KK',
+ k_scare:'32x32:.11Ks8K/.10KsB8sK/.6K5m10K5/.5Ks5B10s5K/.5Ksb19K/.6K4Ss10tK4/.8KSs12SK/.8KSsK3s4K3stK/.8KStKyKs4KyKstK/.8KSsK3s4K3stK/.8KSs11ttK/.9KSsKsKsKsKsstK/.9KSssKsKsKs3tK/.4K7Sts6ttK7/..KKq9v6q9KK/.KBBqz22iBBK/.Kbbqz22ibbK/..KKqi4z14i5KK/..KyK5qz12iK5yK/.KyoyK.Kqz9CmmziK..KyoyK/..K3..Kqz9m3zzqK..K3/.7Kqv15K/.7Kqz14iK/.7Kqz14iK/.7Kqi15K/.8K6ybbKyK5/.9KyoyKKbbK3yoyK/.10K3.KbbK..K3/.14KbbK/.14KbbK/.14KbbK/.15KK',
+ k_ghoula:'48x48:.23KK/.15KK..K4iiK4..KK/.14KiiKKi4hhi4KKiiK/.13Kihhiih10iihhiK/.9KK.KKih19KK.KK/.8KiiKiih20iiKiiK/.7Kihhih24ihhiK/.8Kih29K/.8Kih29K/.8Kih29K/.4KK.Kih8cgghg6hggch8iK.KK/.3KiiKKih7cg14ch8KKiiK/..Kihhiih8cgjjg8jjgjh8iihhiK/.3K4ih7cggKKjKg4KjKKggch8K4/.6Kih7cggKYyKg4KYyKggjh8K/.6Kih7cggK4g4K4ggjh8K/.6Kih7cg8jg7jh8K/.6Kih7cg7jg8jh8K/.6Kih7cg16jh8K/.5Kih8cggK12ggjh8iK/.5Kih9cgKWKm6KWKgjh10K/.5Kih9cggKWgm4gWKggjh10K/.4Kih11cggK8ggjh11iK/.4Kih12cg10jh13K/.4Kih13cjg6jjh14K/.3Kih16cj5h16iK/.3Kih4Kih5r16h6Kih4K/.3KihhK3ihc4rm14vc4hhK3ihhK/..KihhK..Kicggjrm16rcggchK..KihiK/..KiKK.3Kicggjrm16vcggjhK.3KKiK/.3K.5KcggjKrm16vKcggcK.5K/.8KicggjKrm16vKcggjiK/.8KcggjKrm18rKcggcK/.8KcggjKrv19KcggjK/.8KcgjKKrm18vKKcgjK/.7KcggjKKrm18vKKcggcK/.7KcgjKKrm13vm6rKKcgjK/.6KcggjKKrm14vm5vKKcggcK/.6KcgjK.Krm6vm13vK.KcgjK/.5KcggjK.Krm7vm12vK.KcgjcK/.4Kc4K.Krm22rK.Kc4K/.3Kcg4cKKrm22vKKcg4cK/.4Kcj3K.Krm22vK.Kcj3K/.3KCKCKCK.Krm22vK.KCKCKCK/.3KCKCKCKKrm24rKKCKCKCK/.4K.K.K.KrvKv3Kv3Kv3Kv3Kv3Kv3K.K.K.K/.11KK.K3g4K4.Kg4KK.K3/.17K4.6K4',
+ k_weasel:'40x30:////////.39K/.38Kv/.7K.29Kvv/.6KsK.K.25KvvK/.4KKsBsKsK.24KBbK/.3KssB3sBsK.3K8.11KsBbK/..KsBvvB3bK5s8K5.6KBbK/KKsBBKrB4s5B8s5K.5KBbK/KsB27sKK..KsBbK/KB29ssKKsBbK/KWmWC3B25ssBBbK/.K3b4B27bK/.4K4CB25bK/.7KbCB4CCB17bK/.8KbB3CbbC11B3b3K/.9KBBCb14B3bbK/.9KBBbKbbK11B3bbK/.8Kv4KbbK.8Kv4bbK/.8Kv4K3.9Kv4KK/.9K4.13K4',
+ k_hyena:'40x30:///.11K3.K4..K..K/.10KC3KC3vKKvKKvK/.9KCcvcCvcgvKvKvKvKK.K/.9Kccvcgv12KvK/.6K3Cc3gv4cvcvcvcv4KK/.4KKC3c4vvcvc10v4K/..KKCCc7vCc6bbc6vvCK/KKCCc5vvc21CKK.KK/KKc7yYvc10bbc9CCKvvK/KKvvc26bbc3v4K/KKvvc15bbc5bbc7gvvK/.KWmmWmmWmggc21bbgvK/.Kmr4m3KKgc22gK/.KgWmmWmcgK3c11bbc8gK/..Kggc5C3c15bbc3gK/.3KKg5K3c20gK/.5K5..Kc4gc3g7c3ggK/.12KgccgKg3K7cbbggK/.13KccgKg3K.5Kccg3K/.13KccgKKggK.5KcgKggK/.13KcbbKKggK.4KCccv4K/.13KccgKKggK.3Kv8K/.12KKccgKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ k_qarina:'32x32:.14K4/.12KKi4KK/.11Kiih4iiK/.10Kih8iK/.9Kih10iK/.8Kih12iK/.8KihhCc3h7K/.7KihhCc4hih5iK/.7KihhCcKKcch7K/.7KihhCcQKcch7K/.7KihhCcKKccih6K/.7KihhCc5h7K/.7Kih3CcKKch7K/.7KihhWCgc4ih5K/.7KiWWC4g3h3WWhK/.7KWcWC7h3W3K/.7KWcWC10cWcK/.7KWcC11cWcK/.6KWcWC12W3K/.6KWcWC12cWcK/.5KWcWC13chWWK/.5KWcWC14WWcK/.5KWcWC14cWcK/.4KWcWC15cKWWK/.4K3WC16WK3/.3KcKcWC4cC5cC5cKKcK/.4KcKWCcCcKWCcCcKWCcCcKKcKcK/.5KKWcKWcKWcKWcKWcKWcKWK.K/.7KK.KK.KK.KK.KK.KK.K',
+ k_awad:'32x32:.27K/.11K10.4KKbKK/.10KW10K..Kb5K/.9KW12K.KbbBbbK/.8KW14KKbBb3K/.9KW11CK.Kb5K/.9KsWC9TK..KKbvK/.8KstKt8KtsK..KbvK/.8KsttKKt4KKttTK..KbvK/.7Kst3Kt6Kt3sKKbKvK/.7Kst3Kt6Kt3TKKbvK/.7KsTt12TTKKbvK/.8KKsttv6ttTKK.KbvK/.9Kstvt6vtTK..KbvK/.10KsTt6TTK.3KbvK/.8KKC3sT5C3KK.KbvK/.7KC3c4ttc4gCCKKbvK/.7KCgCc10gCgKKbvK/.6KCcgc11gCcCKbvK/.6KCcgc12CcgbvK/.6KCgCc12gCgbvK/.6KCgCc12gCgbvK/.5KCcgCc12gCcbvK/.5KCggCc12gCgbvK/.5Ks3Cc12gs3K/.5KsTTc13gsTTK/.6KKCc14CKK/.7KCc14gK/.7KCg15K/.8KKv5KKv5KK/.10K5..K5',
+ g_wolf:'40x30:///.7K.4K/.6KcK..KcK/.6KgcK.KjK/.6KgicKcjK/.5KKgigcgiK/.4Kccg5jK/.3KcKKg5jK3/..KKgyYKg5ccjK17/KKccg11j18KK/KKg7cggcg3j18cKK/KKg6cggcg21jgccK/jWmWmWmjggcg26cK/KgWgWgKKgcggcg24jK/.K7cggcg26cK/.7Kjjcg27jK/.8KKggcg22jggjK/.9Kjcg10j5g7jKggjK/.10Kg8j3K5jjg4jKKjgjK/.10Kg6jjK3.5KKjggjK..KgcK/.10Kg4jjKK.10KggjK..KccK/.10Kg4jK.12Kg3jK..KK/.9Kcg3jjK.12Kg3jK/.9Kg4jjK.12Kg3jK/.8K7jK.11K7/.8K9.11K8/.9K7.13K6',
+ g_scare:'32x32:/.13K6/.11KKS3tSSKK/.10KSSs3tssSSK/.9KSs10SK/.9KSs10tK/.8KSs12SK/.8KSsK3s4K3stK/.8KStKrKs4KrKstK/.8KSsK3s4K3stK/.8KSs11ttK/.9KSsKsKsKsKsstK/.9KSssKsKsKs3tK/.4K7Sts6ttK7/..KKB9v6B9KK/.KB3b22vBBK/.KbbBb22vbbK/..KKBv4b14v5KK/..KyK5Bb12vK5yK/.KyoyK.KBb9CjjbvK..KyoyK/..K3..KBb9j3bbBK..K3/.7KBv15K/.7KBb14vK/.7KBb14vK/.7KBv15K/.8K6ybbKyK5/.9KyoyKKbbK3yoyK/.10K3.KbbK..K3/.14KbbK/.14KbbK/.14KbbK/.15KK',
+ g_afreet:'32x32:.9KYK.8KYK/.8KYyK.8KyYK/.8KyyK.K6.KyyK/.9KyKKG6KKyK/.9KG3q6G3K/.8KGq12GK/.7KGq14GK/..K.3KGq16GK.3K/.KGK4Gqqzzq8zzqqzK4GK/..KG3KGqqYyzq6zyYqqzKG3K/.3KGqGq3YyKKq4KKyyq3GqzK/.3KGqzq4yyq6yyq4zqzK/.4KGKGq16zKGK/.5KKGq16zKK/.6KGqqKq10KqqzK/.7KGqqKWKWKWKWKKqqzK/.8KGqqK8qqzK/.9KGzzq6z3K.6K/.10K3Gz5K3.6KqK/.11KGq6GKK.5KqGK/.9KKGq8GGK.3KqrK/.8KGGq9GqGK.KssK/.7KGqzq9GqqGKzsbKK/.6KGqzGq10Gqqsv4sK/.5KGqzKGq10zGsB6sK/.6KGK.KGq8zKKsB6bK/.7K.3KGq6zK.KsB6bK/.11KGGz6K.KsB6bK/.11KGqzKKGqzK..KsbBBbbK/.10Kz4KKz4K..KKsbKK/.11K4..K4.5KK',
+ g_thief:'32x32:.12h8/.10hhj8hh/.9hjjh8jjh/.8hjh12jh/.7hjh14jh/.7hihK12hKh/.6hjh15ijh/.6hihhiT9vihhKh/.6hihhT11vh4/.6hihhT11vh4/.6hihhTTYyT4YyTvh4/.7KihTTyyT4yyTvhKh/.7hi15jh/.7hih14Kh/.8Kih12Kh/.8hih14/.7hjih13jh/.7hiiK12hKhh/.6hjhKi11hjicWh/.6hih13iihcWh/.6hiKjh12KicWh/.6hihih13icWh/.5hjhhih13icWh/.5hiKhih13o4h/.5ht3ih13t3K/.5htvvh14tvvh/.6KKih13iiKK/.7hih14Kh/.7hiK14hh/.8Khv5hhv5hh/.10K5..K5',
+ g_boar:'40x30:////.21K/.17K.KKvKK.K.3K/.11K3.KKvKvKvKvKvK3vK/.10KbbvKvKvBvBvBvBvKvKvKK.K/.10KbvvBvBvb7vBvBvBvKvK/.9Kb21vKvK/.8KvKvb20BvK/.5K3BvBb23BK/.3KKB3bvb25BKK/..KBBbvvb27vKvK/.KBb3Krb27vvK/KSb34BvK/SsSbbWb30vK/KstbWWb30vK/SstWCb31vK/KstCb4vb26vK/KSKv5KvB4b12B4b4vK/.K.K5.KBbbvb3vb8BbbvbbvvK/.9KBbbv4Kv8Bbbv3KK/.9KBbbv4K9Bbbv3K/.9KBbbv4K.7KBbbv3K/.9KBbbv4K.7KBbbv3K/.9KBbbv4K.7KBbbv3K/.8K9.7K8/.9K5.11K5',
+ g_abuRigl:'48x48:.15K.4KjjK..KKjK..K/.14KjKK.KjhhjKKjjhjKKjK/.14KijjKjh4jjh4jjhK/.14Kihhjh14K/.14Kih16K/.15Kihbv10ihhK/.15KiKbv10KihK/.16Kbv12biK/.16KbvK4v3K6/.16KbvKYrKv3KYrK3/.16KbvK4v3K6/.16Kbv12KK/.17KbvK8vKK/.17KbvvCKCKCKvvKK/.16KjjbKv6KKjjK/.16KjiijbK5jjihK/.15Kji5jjijji4jK/.14Kjhhi6hi5hhjK/.14KihhKi5hi5hhKK/.13KjhhKji5hi6hijK/.13KihKji6hi7hKK/.12KjhhKi7hi7hijK/.11KjhhKji7hi6hihhjK/.11KihhKi8hi6hihhKK/.10KjhhKji8hi7jihijK/.10KihKKji8hi7hKihKK/.9KjhhKKji8hi7hKihijK/.8KjhhK3ji8hi7hKKihhjK/.8KihKK.Kji8hi7hK.KihKK/.7KjhhKK.Kji8hi7hK.KihijK/.7KihKK.Kjiihi6hi5hiijK.KihKK/.6KjhhKK.KjhhKji4hhi4hKjhhK.KihijK/.4KKjhhKK..KjK3ijiihKKjiihmK3jK..KihKjKK/.3KCKCiKK.4K..KihjhK3RjhrrRK.K.4KiKCKCK/..KCKCKCK.7Kjh3KK.KRrRrrmK.7KCKCKCK/..KCK3CK.7Kih3KK..KRrrRmK.7KCK3CK/.3K.3K.8Kih3KK..KRrRrmK.8K.3K/.16Kih3KK..KRrRrRK/.16Kih3KK..KCr4RK/.16Kih3KK..KRrrRrmK/.16Kih3KK..KRCr3mK/.15Kjh3KK.3KRr3RmK/.15Kih3KK.4KRCrrmK/.15Kih3KK.4KRr4RK/.15KiK5.4KRm5K/.14K8.4Km7K/.14K8.4Km6rK/.15K6.6K7',
+ g_tafreet:'32x32:.3K.4Ky14K/..KyK..Kyo14yK/.KyYyKKyo16yK/..KyK..Kyo5b4o5bK.3K/.3K..KyY6bKbbY6yK.KYK/.6Kyo6bKbbo6bK..K/.6Kyo6b4o6bK/.6Kyo16bK/.6Kyb17K/..K.4KKCcK10cCKK/.KYK.4KccK.K6.KccK/..K.3KK.KcKKP6KKcK.KK.3K/.5KPPKKP3p6P3KKPPK.KYK/.6KP3p12PPiK.3K/.6KPPp14PiK/..K.3KPp16PK.3K/.KPK4Pppiip8iippiK4PK/..KP3KPppYyip6iyYppiKP3K/.3KPpPp3YyKKp4KKyyp3PpiK/.3KPpip4yyp6yyp4ipiK/.4KPKPp16iKPK/.5KKPp16iKK..K/.6KPppKp10KppiK..KyK/.7KPppKWKWKWKWKKppiK..KyYK/.8KPppK8ppiK..KyrK/.9KPiip6i3K..KipK/.9KPppPi5ppiK.KipK/.9KPp10iKKppK/.10KPp8iKKppK/.10KiPip4i3K.KK/.11K3Pi3K3/.14K4',
+ g_bats:'36x36:.5K.3K/.K..K7..K.13K.3K/KPK.KPmPmPK3PK.8K..K7..K/KpPKPpPpPpPPKpPK.6KPK.KPmPmPK3P/.KpPppryryppPppK.6KpPKPpPpPpPPKp/..Kp3P4ppK3.8KpPppryryppPp/.3KpKp3KpK.12Kp3P4ppKK/.4K.K3.K.14KpKp3KpK/.26K.K3.K/.14KK.5KK/.3K.9K4.3K4.9K/..K3.9KmK5mK.9K3/..KPPK.7KPmP5mPK.7KPPK/..KppPKK.4KPpPp5PpPK.4KKPppK/.3KppPPK4PpprKp3KrppPK4PPppK/.3Kp4P4p3PPpWpWPp3P4p3K/.4Kp5PPp6PpPp4PPp4K/.5Kp3K3p13K3p3K/.6KpK.3Kp11K.3KpK/.7K.5Kp3K3p3K.5K/.14K3.3K3/.4K.3K/K..K7..K/PK.KPmPmPK3PK.14K.3K/pPKPpPpPpPPKpPK.9K..K7/KpPppryryppPppK.8KPK.KPmPmPKK/.Kp3P4ppK3.9KpPKPpPpPpPPK/..KpKp3KpK.13KpPppryryppP/.3K.K3.K.15Kp3P4ppK/.26KpKp3KpK/.27K.K3.K',
+ g_hyena:'40x30:///.11K3.K4..K..K/.10KC3KC3vKKvKKvK/.9KCcvcCvcgvKvKvKvKK.K/.9Kccvcgv12KvK/.6K3Cc3gv4cvcvcvcv4KK/.4KKC3c4vvcvc10v4K/..KKCCc7vCc6bbc6vvCK/KKCCc5vvc21CKK.KK/KKc7rRvc10bbc9CCKvvK/KKvvc26bbc3v4K/KKvvc15bbc5bbc7gvvK/.KWmWmWm3ggc21bbgvK/.Km8KKgc22gK/.KgWmWmmcgK3c11bbc8gK/..Kggc5C3c15bbc3gK/.3KKg5K3c20gK/.5K5..Kc4gc3g7c3ggK/.12KgccgKg3K7cbbggK/.13KccgKg3K.5Kccg3K/.13KccgKKggK.5KcgKggK/.13KcbbKKggK.4KCccv4K/.13KccgKKggK.3Kv8K/.12KKccgKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ g_camel:'40x40:/.7K/.6KbK/.6KBK/.3K3s3K/..KvvsBBbK/.KsBrKB3sK/KsB7bK.8K6/Ksb4BBbK.8Ks6K/Wv3KKsBBsK.6KsB6sK/WKWK..KsBbK.5KsB8sK/KWK.3KsBbK.4KsB10sK/.K.4KsBBsK.3KsB10bK/.7KsBbK..KR14K/.7KsBBsK.KRr12mK/.8KsBBsKKRr12mKK/.9KsBBssRr12mssKK/.9KsB3Ry15BssK/.9KsB3Rr14RB3sKK/.8KsB4Rr14mB4sbK/.8KsB4Rr14mB4bKbK/.8KsB4Rm15B4bKbK/.8KsB5yBByBByBByBByB6b3K/.9KsB22bK3/.10KsbB20bK/.10KbbsbB12b4BBbK/.10Kb3KsBBb12KsBbK/.10Kb3KsBbK9b3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsBbK.7Kb3KsBbK/.10Kb3KsbbK.7Kb3KsbbK/.9Kv8K.6Kv8K/.10K8.8K8',
+ g_tar:'32x32:.11K10/.9KKW10KK/.8KWWC10WWK/.8KWC12cK/.7KWC3cC3cC3cCCWK.5K/.8KWCcC3cC3cCCcK.5KiK/.8KWcC10ccK.4KiKK/.8KstKc8KtsK.3KiKK/.8KsttKKt4KKttTK..KiKK/.7Kst3Kt6Kt3sKKiKK/.7Kst3Kt6Kt3TiiKK/.7KsTt12TivKK/.8KKsttK6ttTiK3/.9KstKt6KtiK3/.10KsTt6TiKK/.8KKn3sT5iKnKK/.7Kn3j4iijvKjinnK/.7Kninj6vKjjiniK/.6Knjij6vKj3injnK/.6Knjij5vKj5njiK/.6Kninj4vKj6iniK/.6Kninj3vKj7iniK/.5KnjinjjvKj8injnK/.5KniinvKKj9iniiK/.5Ks3vKj11is3K/.5KsTvKj12isTTK/.3K4vKj14nKK/..KBb3Knj14iK/..Kb4Kni15K/..Kb4K3v5KKv5KK/.3K4.3K5..K5',
+ g_tarm:'32x32:.11K10/.9KKW10KK/.8KWWC10WWK/.8KWC12cK/.7KWC3cC3cC3cCCWK.5K/.8KWCcC3cC3cCCcK.5KiK/.8KWcC10ccK.4KiKK/.8KstKc8KtsK.3KiKK/.8KsttKKt4KKttTK..KiKK/.7Kst3Kt6Kt3sKKiKK/.7Kst3Kt6Kt3TiiKK/.7Kg15ivKK/.7Kgv13iK3/.8Kgv11iK3/.8Kgv10iK3/.8Kgv9iKvKK/.7KngK8vK4nK/.7Kninj6vKjjiniK/.6Knjij6vKj3injnK/.6Knjij5vKj5njiK/.6Kninj4vKj6iniK/.6Kninj3vKj7iniK/.5KnjinjjvKj8injnK/.5KniinvKKj9iniiK/.5Ks3vKj11is3K/.5KsTvKj12isTTK/.3K4vKj14nKK/..KBb3Knj14iK/..Kb4Kni15K/..Kb4K3v5KKv5KK/.3K4.3K5..K5',
+ t_catfish:'40x30:////.18K/.17KvK/.16Kv3K/.15Kv5K.16K/.12K3v7KK.13KvK/.9K3ccv9cK3.9KvvK/.5K4c3ggc9gc3KK.6Kv3K/.4Kv3cg18ccKK.3Kv4K/K..KKC3vg8bg11ccK.Kv4K/vKKccCKCg4bg13bg4cKv5K/vKcggC3g14bg9cv5K/Kcg30bv5K/Kcg13bg16bv5K/K6g14bg11bv5K/.Kcg28bv6K/.Kvccgcg22ccKKv5K/KvKKvcKc3C10c9KK..Kv4K/KvKKvK.KKc4C6cv7KK.5Kv4K/vKKvK.4K3c9v5K.8Kv3K/K.KvK.7K10v4K.9KvvK/.3K.18Kv3K.10KvK/.23KvK.12K/.24K',
+ t_wafreet:'32x32:/.15K.K/.13KKqKqK/.10K3QqQqQqK3.8K/.K.7KQ3O6Q3K.6KQK/KQK.5KQO12QK.4KQlK/.KQK.3KQO14QK..KQlK/.KQQK.KQO16QKKQOlK/.KQOQKKQOOllO8llOOlKQOOlK/.KQOOQKQOOYGlO6lGYO3QO3lK/..KQOOQO3YGKKO4KKGGO6lK/..KQO7GGO6GGO7lK/.3KQlO20llK/.4KKQO18lKK/.6KQOOKO10KOOlK/.7KQOOKWKWKWKWKKOOlK/.8KQOOK8OOlK/.9KQllO6l3K/.10K3Ql5K3/.11KQO6QKK/.8K3QO8QQK/.7KQ3O9QOQKK/.7KQOlO9QOOQQK/.6KQOlQO10QOOQK/.5KQOlKQO10lQOOQK/.6KQK.KQO8lKKQlK/.7K.3KQO6lK..KK/.6K3..KQQl6K.3K3/.4KKL3K3L3KKQL3K3L3K/.3KLLn3L3n3L3n3L3n3LK/.3KnnK3n3K3n3K3n3K3nK/.4KK.3K3.3K3.3K3.3K',
+ t_snake:'32x32://.7K4/.6Kj4K/.4KKjihiijK/.3KjjiKyi3jK/K3ji3ji4hK/rrKKjhhi4hK/Kr3K3ji4jK/rK3..Kji5jKK/K.6Kji5jjK3/.8Kjhi5j3KK/.9KKji7jjK/.11Kjhi7jKK/.12KKjhhi5jjK/.14K3jhi5jK/.17KKji4hK/.19Kji4jK/.20Kji3hK/.18KKji3hK/.10K8jji4hK/.8KKj8i5hKK/.7Kjji14jjK/.6KjihiihiihiihiihiihijK/.5K3ji16hK3/.4Kj3i18j3K/.3Kji24jK/.3KjihiihiihiihiihiihiihiihihK/.4Kjhhi18h3K/.5K3jh5i6h6K3/.8K6jh5K6/.14K6',
+ t_drowned:'32x32:.11K10/.9KKq10KK/.8Kqqz10qqK/.8Kqz13K/.7Kqz14qK..K.K/.8Kqz13K..KgKgK/.7Kqz14qK..KuugK/.7Kqz15K..KujjK/.7Kqzggzg3zg3zgzzK.KqK3/.7KqzggWWg4WWggqzKKqzqK/.7KqzggWWg4WWggqzKqzhK/.7Kqzg12qzKqhK/.8KKug10jKKqhK/.9Kug3K4g3jKKqK/.10Kujg6jjKKqK/.8KKq3uj5q4K/.7Kq3z10hK/.7Kqhqz10hK/.6Kqzhz11hK/.6Kqzhz12qK/.6Kqhqz12hK/.6Kqhqz12hK/.5Kqzhqz12hK/.5Kqhhqz12hK/.5Ku3qz9uzzhK/.5Kujjz10uzzhK/.6KKqzzuz11qK/.7Kqzzuz11hK/.7Kqh6uh8K/.8KKv5KKv5KK/.10K5..K5',
+ t_redeye:'32x32:.3K.23KbK/..KbK.21KbKK/.3KbK.19KbKK/.3KbbKK.16KbvKK/.3KbvbbK.14KbvKK/.4KbvvbKK.10KKbvKK/.5KbvvbbK8.KbbvKK/.6Kbv3bj7KbvvKK/.7KbvvKh7jbvKK/.8KbKih8ibK/.8Ki5hyyhhi3K/.8Kihhy3rry3hhjK/.8KihyyYrrKrryyhKK/.8KihyrrRrKr3yhKK/.7Kjhhyr4Kr3yhKK/.7Kihhyyr3KrryyhijK/.7Kih3y3rry3h3KK/.7Kih6yyh6KK/.6Kjh15ijK/.5Kjh18jK/.4Kjh20jK/.3Kjih6Kh7Kh5ijK/..KjiKh6iKCK3CKih5iKjK/..Kihiih6iK5ih5ihiiK/.KjihhKh7i5h6ihhKjK/.Kih3Kh18ihhiiK/.Kih3Kh18ih3KK/.KihhKih19ihhKK/.KiihKh20ihK3/KjhiKKh20iKKijK/KiK30/.KCKCK22CKCK',
+ t_hyena:'40x30:///.11K3.K4..K..K/.10KC3KC3vKKvKKvK/.9KCcvcCvcgvKvKvKvKK.K/.9Kccvcgv12KvK/.6K3Cc3gv4cvcvcvcv4KK/.4KKC3c4vvcvc10v4K/..KKCCc7vCc6bbc6vvCK/KKCCc5vvc21CKK.KK/KKc7yYvc10bbc9CCKvvK/KKvvc26bbc3v4K/KKvvc15bbc5bbc7gvvK/.Kgc7ggc21bbgvK/..K4c3gKKgc22gK/.3KKgKKggCCKc11bbc8gK/.5K8c15bbc3gK/.12Kc20gK/.12Kc4gc3g7c3ggK/.12KgccgKg3K7cbbggK/.13KccgKg3K.5Kccg3K/.13KccgKKggK.5KcgKggK/.13KcbbKKggK.4KCccv4K/.13KccgKKggK.3Kv8K/.12KKccgKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ t_ox:'32x32:K.29K/WK3.23K3WK/KW3KK.19KKW3K/KWCCWWK3.5K4.4K3WWCcK/.KWC3W3K..KKB4KK.KW3C3cK/..KWC5WKKBBbvvbBBKWC4ccK/.3KWccCcKKBb3vbvbbBWCc3KK/.4K3WcKBb5vb4BWK3/.6KKBKBb11BKK/.5KBBR16BK/.4KBbbr16bBK/.5KBvrryrryrryrryrryrvK/.6KKm16K/.8KBb12vrK/.8KBb12vKrK/.8KBb12vKrK/.8KBb12vKKrK/.8KBb3t6b3vK.K/.6KKbBbbtT6tbbvbKK/.5KbbvvBtTKT4KTtv3bbKK/.4Kuv4BtT8v6buK/.3Kbvuv4BtTyTTyTv7ubK/..Kbv8Btvyyv11bK/..Kbv10Bv13KK/.Kbv25bbK/.Kbv26KK/..Kbv24KK/..Kbv24KK/.3Kbv22KK/.4Kbv20KK/.5KbKv16K3/.6KKbK17',
+ t_sunk:'32x32://.12K8/.11Kzc6zK/.10Kczg6czK/.9Kccgzg6zcK/.9Kcg10zK/.8Kcg12cK/.8KcgK3g4K3gjK/.7KcggKQKg4KQKggcK/.7KcggK3g4K3ggjK/.7KcjgK3g4K3gjjK/.8KKcg10jKK/.9Kcg4KKg4jK/.10Kcjg6jjK/.8KKc4j5c3KK/.7Kc3g10jccK/.6Kcgjcg10jcjK/.6Kcjczg10jKccK/.6Kcjczg11ccjK/.5Kcgjcg8ug3jcjK/.5Kcgjcg12jcgcK/.5Kcgjcg11zjcgjK/.4KcgjKcg11zjKcjK/.4KcjjKcg12jKcjcK/.4Kc4g13jKc3K/.4Kcjjcg4ug9ccjjK/.5K3cg4ug9jK3/.7Kcj15K/.8KKv5KKv5KK/.10K5..K5',
+ t_sunkf:'32x32:.11h10/.9hhi10hh/.8hiih10iih/.8hih14/.7hih14ih/.8Kih13K/.7hih14ih/.7hihuih9uh3/.7hihhK3u4K3hihh/.6hiihuhQhu4hQhuihih/.6hiihuhKhu4hKhuih3/.6hiihuh3u4h3uih3/.6hihhWu10nh4/.6hihhWu4KKu4nh4/.6hih3Wnu6nnh5/.6hihhi3Wn5uiih4/.6hi4h10Kiihh/.6hihKih11iKhh/.6hiKih13iih/.6hihih11i3Kh/.5hihhizh11Kihh/.5hihhizh12i3h/.5hihhih13ihKh/.4hihKhih13Kihh/.4hiKhhih11zhhihih/.4hW3ih12zhhW3h/.4hWnnih13iiWnnh/.5K3ih5zh8K4/.7hiK14hh/.8Khv5hhv5hh/.10K5..K5',
+ j_hound:'48x40://.10KK.3K/.9KjjK.KjK/.6K4hK3jhjK/.4KKj4hijjhhKK.27KK/.3Kjjh10KK.26KjjK/..KjhK3h8ijK.25KiKK/..KhhiYRrKh6KK.26KiKK/KKjh3r3ih6ijK.24KjKK/KKh15KK.23KjhKK/KKh15ijK21.KjhhKK/iih11ggh4j21Kjh3KK/KWKWKWKh6cgh25jh3KK/Km5Kh7ggh27KK/KKWKWKKh7cgh27KK/iWhihiih7ggh14mh11KK/KKWhWh10cgh9mh4mh10ijK/K6hhKh6ggh10mh15KK/..K7h6cgh11mh14KK/.6K4h6ggh25KK/.9KKh5cgh25KK/.10Kh6ggh24KK/.10KKh5cgh24KK/.11Kh4cgh24KK/.11Kh4gh24KK/.11Kh5ggh22KK/.11Kh5gh23KK/.11Kh4cgh9K8h6KK/.11Kh4gh7K11h6KK/.11KKh4ggK8.7Kh5K3/.12Kh4ghK6.9Kh4K5/.12Kh3cgK7.9Kh4K5/.12Kh3ghK7.9Kh4K5/.12Kh4ggK6.9Kh4K5/.12Kh4gK7.9Kh4iK4/.12K6cgK5.9K5hK4/.11K7gK6.8K12/.11K9ggKK.9K11/.12K8gK.12K7',
+ q_hanem:'48x48:.19KP8KKWWKK/.16K3Pp8PKKW3K/.15KP3h10P3WWK/.16Kih12iKKCWK/.16Kih13K.KCK/.17Kih11K.3K/.17Khih10K/.17Kh12K/.17KhW9ChK/.17KhW10hK/.17KWWK3WWK3WCK/.17KWWKmKWWKmKWCK/.17KWWK3WWK3WCK/.17KCRW8RCK/.18KW3m4WWCK/.18KCW3rrW3CK/.15K3.KCCW4CCK.K3/.14Ki3K.KKC4KK.Ki3K/.5K3.5Kih3iKC8Kih3iK/.3KKPPpKK.3Kih4iWh6Wih4KK/..KPPpPpPpK..Kih7WhWhWh6KK/.KPpPPppPppK.KWh16WWKK/.KpPpPpPp3KKWCWWKh12WCCWK/..KpPpPppPpKKWCcKKih10KKWCcK/.3Kp3Pp3KWCcK.Kih10KKWCcK/.4KKp5WCcK..Kiih8KiKWCCWK/.6Kp4WCcK..KPPiK7PPKKWCcK/.7KKp3cK.3Kihhi7hK3WCcWK/.9KppK.4Kih10KK.KWKK/.9KypK.3Kih11iiK.K/.10KyK.3KijhhjhhjhhjhhKK/.11K.3Kih13iiK/.15Kih14KK/.15Kih14KK/.14KihjhhjhhjhhjhhjhiiK/.14Kih16KK/.13Kih17iiK/.13Kih18KK/.12KihhjhhjhhjhhjhhjhhjhiiK/.12Kih20KK/.11Kih21iiK/.11Kih22KK/.11KihhjhhjhhjhhjhhjhhjhhjhKK/.10Kih23iiK/.10Kih24KK/.9KiK26iK/.10K28/.17K..K.6K..K',
+ d_rasad:'48x48:.6KWK.29KKWK/.7KWKK.26KWWK/.7KW3KK.22KKWCcK/.8KWCWWKK.17K3WWCcK/.8KWC3WWK3.12KKW3C3cK/.9KWC4W3K.K8.KWWC5cK/.10KWcC5WKb8KWC4c3K/.11KKWccCcbbv8bbWCccK3/.13K3Wbv12bWKK/.16Kbv12KK/.15KbvvK3v5K3bbK/.15KbvvYyyKv3Ky3vKK/.15Kbvvy4v3y4vKK/.15Kbv14KK/.15Kbv14KK/.15Kbv3K8v3KK/.16KbvvbCKbbKCbvvKK/.14K3bv4bvvbv4K4/.13Kb5Kv8KKb4K/.12Kbv5bbK7bbv3KK/.11KKbv7b7v5bbKK/.10KbKbv20KKbK/.9KbYov21KKoYK/.9KbybYov19oYbyK/.8KbvvbyvYov15oYvyvvbK/.8KbvvKvvyvYov11oYvyvbvvKK/.7Kbv3Kv4yvYovy5voYvyv3bvvbbK/.6Kbv4Kv6yvYo5Yvyv5bv3KK/.6Kbv4Kv8yooKooyv7bv3bbK/.5Kbv5Kv8YooKooYv7bv5bK/.5Kbv5Kv6Yoyo5yoYv5bv5KK/.5Kbv5Kv4Yoyv9yoYv3bv5KK/.6Kbv4KvvYoyv13yoYvbv4KK/.5Ky6bYoyv17yoYy6K/.5Ko7yv21yo6K/.6Kbv3yv24byvvKK/.7KbvvKv24bvvKK/.7KbK3v23KbK4/.8K4YoYoYoYoYoYoYoYoYoYoYoYoYK3/.7K4YyKyKyKyKyKyKyKyKyKyKyKyKyK4/.5KKY4y6oYy5oYy11Y4KK/.3KKYYy17oYy5oYy5oYyYYKK/..KYYy5oYy5oYy24YYK/.KYy14oYy5oYy5oYy5oYy5YK/KYYoYy5oYy26oYy6YK/KYy8oYy5oYy5oYy5oYy13oK/KYyoYy5oYy19oYy5oYy6oK/KYo45K',
+ ma_grey:'48x48:.11KcK.20KcK/.11KccK.18KcjK/.11KcgcK.15KKcgjK/.11KcggcKK.12KccggjK/.11KcgmgccK.10Kcg3mjK/.11Kcgmg3cK10cg4mK/.12Kcgmg3c10g4mjK/.12Kcgmg11Cg5mjK/.12Kcgj13Cj4gjK/.12Kcgj13mCj3gjK/.12Kcg15Cg4jK/.12KcgKKg13Cg3jK/.11KcggKyYKg9KKCKg3cK/.11Kcg3KKg12mCg3jK/.10Kcg9CjK3Cg4Cg4cK/.9Kcg8CCcK4cCCg3Cg4cK/.8Kcg9Cc8g10cK/.7Kcj3g6Cc10Cg6j3cK/.8K4cg5Cc10g6jK4/.10Kcg6CK10g7cK/.9Kcgj4g3KWm6WKg3j4gcK/.8KcjjKKcgcjgCK8ggjjgjKKcjcK/.9K3.KcggCcjjCg5j3CggjK.K3/.12Kcg3Cc12g4cK/.12Kcg4Cc10g5jK/.12Kcg4Cc10g5jK/.12Kcg4Cc10g5jK/.12Kcg4Cc3gc3gccg5jK/.12Kcg5Cc8g6jK/.11Kcg6Cc8g7cK/.11Kcg6Cgc7g7jK.8K/.11Kcg3c16g3jK.7KCK/.11Kcg3cg3jCc4gcg3jg3jK.6KcCK/.10KKcg3cg3jgCccggcg3jg3jKK.4KcjK/.9Kccgcggcg3jgCcg3cg3jggjgccK.3KcgcK/.8Kcg3cggcg3jggCg3cg3jggjg3cK.KcggjK/.7Kcg4cggcg3jggCg3cg3jggjg4cKcg3jK/.6Kcg5cggcg3jg6cg3jggjg5cg3jK/.6Kcg6cgcg3jg6cg3jgjg6jggjK/.6Kcg6cgcg3jg6cg3jgjg6jggjK/.6Kcg6cgcg3jg6cg3jgjg6jgjK/.7Kcg5cgcg3jg6cg3jgjg5j3K/.8Kcg5ccg3jg6cg3jjg5jjKK/.9Kcjg3ccg3j7cg3jjg3jjKK/.10KKcjgc7g4c7gjjKK/.12KKc8g4c7jKK/.14Kccjcjccj4ccjcjccK/.14K20',
+ mb_ghoul:'48x48://.21K6/.19KKC6KK/.18KCCc6CCK/.17KCc10mK/.16KCc12mK/.16KCc11mgmK/.14KKCcg12cCKK/.13KCCccg12ccCCK/.13KCc4KyKc4KyKc4gK/.13KCc4K3c4K3c4gK/.13KCgc8gc7ggK/.14KKCc6ggc6gKK/.16KCc12gK/.15KKCcCc8CcgKK/.13KKCCcCCK8CgcCCKK/.10K3CCc4CKCKCCKCKgc4CCK3/.9KC4c7Cg5c7C4K/.9KCccgc20CccgK/.8KCc3gc20CccgK/.8KCccgc22CccCK/.8KCccgc22CccgK/.8KCccgc22CccgK/.8KCccgc5gc11gc4CccgK/.7KCc3gc6gc9gc5CccgK/.7KCc3gc22Cc3CK/.7KCc3gc22Cc3gK/.7KCccgc12gc11CccgK/.7KCccgc12gc11CccgK/.6KCc3gc24CccgK/.6KCc3gc24Cc3CK/.6KCc3gc24Cc3gK/.6KCc3gCB22gCc3gK/.6KCc3gKBb20vKCc3gK/.5KCc3gK.KBb18vK.KCccgK/.5KCc3gK.KBb18vK.KCc3CK/.4KC5gK.KBb4vvb6vvb4vK.KC6K/.3KCc5CK..KBv3ggBb4vggBv3K..KCc5CK/..KCc7CK.KBg5jBbbvcg5BK.KCc7CK/..KCc7gK.Kcg5jKBvKcg5jK.KCc7gK/.3KCc5gK..Kcg5jK4cg5jK..KCc5gK/.3KKCg4K.3Kcg5jK..Kcg5jK.3KCg4KK/..K9.3Kcg5jK..Kcg5jK.3K9/..KCKCK3CK.3Kcg5jK..Kcg5jK.3KCK3CKCK/.3K.K.3K.3Kj9KKj9K.3K.3K.K/.13Kj9KKj9K/.14K9..K9',
+ mc_dabaa:'48x36:///.14KK/.13KCCK.K3.K..K.3K/.12KCccCKC3KvKKvK.KvK/.11KCcvccCvccCvKvKvKKvKK..K/.11Kgcvc3v3cv5Cv4KKvK/.9K4c4v4ccvcvccvcv3KvK/.7KKC4c3gKc15CCKK/.5KKCCc7vvcvc12vcv3K/.3KKCCc9vc3bc3bc3bccbc3vvCKK/K3CCc6vvc7bc3bc3bccbc3bccCCKK.KK/KKCc8yYvc6bc3bc3bccbc3bccbcCCKvvK/KKvcvc15bc3bc3bccbc3bccbc3v4K/KKc40gvvK/KKvcvc17bccbc3bccbc3bc3bcgvK/.KWmmWmWm4ggc8bccbc3bccbc3bc3bcgK/.Km10KKggc6bccbc3bccbc3bc3bcgK/..KcWmWm3gK5c6bccbc3bccbc3bc3bcgK/..Kgc7C3KKc7bccbc3bc3bccbc3bK/.3Kg4c3g3KKc24gK/.4K4g3K3.Kc7bccbc3bc3bccbcgK/.8K3.4Kc4ggc3g8c5ggK/.15Kc3gKKg3K8gc3g3K/.15Kc3gKKg3K.7Kc3g3K/.15KgccgKKg3K.6KCccg4K/.16KccgKKg3K.6KccgKg3K/.16KccgKKg3K.5KKc3v5K/.16KccgK.KggK.4Kv10K/.14K3ccgKKv4K..KKv6K4/.13Kv6KKv4K.3K7/.12KKv6K.K4/.13Kv6K/.14K6',
+ ua_kis:'48x48:.17K6/.15KKb6KK/.14Kbbv6bbK/.13Kbv10bK/.12Kbv12bK.K/.11Kbv14bKsK/.11Kbv4S6v4s4K/.10Kbv3SSs6SSvvsttTsK/.10Kbv3W3ssW4tvvsT3BsK3/.10KbvvSKyKstsKyKsSbvbv4bssKK/.10KbvvSKrKstsKrKstbvvbv4BBssKK/.10KbvvSs4tts4bvvKB9ssK/.11KbvC4v4C3bvvKB11sK/.11KbvCc10bvvKB12sK/.12KbCc9bvvKB8bB5sK/.13KCc9bK3B9bB4bK/.12KbbCc8gbbKbB14sK/.11KbKvCc8gvvKBbB13bK/.10KbvbbCcgc6gvvKB13sBbK/.6K4bv3KCc6gcgvvbbB11ssBBsK/.5KBb4v3KCc8gv3KB11ssBBbK/.5Kb5vvKbCc3gc4gv3KB12sbBbK/.6KKbbvvKbvCc7gv4KB15bK/.7KssbKbv3Cc6gv4KB15bK/.7KstTKbv3Cc6gv4KB15bK/.7KsTTKbv3Cc3gccgv4KB15bK/.7KbvKKbv3Cc6gv4KB4bB10bK/.7KbvKKbv4Cc4gv5KB5bB8bK/.6KbvK.Kbv5Cccgv6KB14bK/.6KbvKKbv6Cccgv6KB14bK/.6KbvKKbv7Cgv7bbB9bBBbK/.6KbvKKbv17KB12bK/.6KbvKKbv17KB11bK/.6KbvKKbv17KB10bK/.6KbvKKbv17KB8bbK/.6KbvKKbv17KB6bbKK/.6KbvKbv18Ksb5KK/.6KbvKbv18K7/.6KbvKbv18KK/.6KbvKbv18KK/.5KbvKKbv18bbK/.5KbvKKbv19KK/.5KbvKbv20KK/.5KbvKbv20KK/.5KbvKbK22/.5KbvK24/.6KK.K22',
+ ub_seller:'48x48:.42KbbK/.20K8.14KQQK/.19Kj8K.12KQLLQK/.18Kjh8jK.11KQLLlK/.17Kjh10jK.10KQLLlK/.17Kih10KK.10KQLLlK/.16Kjh11ijK.10KQlK/.16Kih12KK.9KSSsK/.15KjhhKKPK4PKKhijK.8KSSsK/.14Kjh3K10h3jK.7Ks3K/.14KihhccicciciccichhKK.6KjhiK/.14KihhcchcchchcchchhKK.5KjhKK/.14KihhcchcchchcchchhKK.4KjhKK/.13Kjh3ychcchrhcchchhijK..KjhhKK/.13Kih3yGhcchrhOchch3KK.KjhhKK/.13Kih4GhLch3Oyhch3K3jhhKK/.13Kih4rhLPh3yyhRh3KKjhhKK/.13Kih7Ph6Rh3Kjh3KK/.13Kih7yh6Lh3KiKhKK/.13Kih18K3iK/.12Kjh19ijKK/.12Kih20KK/.12Kih20KK/.12Kih20KK/.12Kih20KK/.12Kih20KK/.12Kih20KK/.11Kjh21ijK/.11Kih22KK/.11Kih22KK/.11Kih22KK/.11Kih22KK/.11Kih22KK/.11Kih22KK/.10Kjh23ijK/.10Kih24KK.K5/.4K5.Kih24K3v5K/.3Kv5KKih24K3L5K/.3Ks5KKih24KK.KLliK/.4KsBbK.Kih20v3hK3Ll3LK/.3KsB3sKKiv3h17G3hKKLl5LK/..KsB5sjhP3h18GhhijLl5iK/..KsB5bihhPh18GqGhhKLl5iK/..KsB5bihPpPh16Gq3GhKKLl3iK/.3KsB3bKiPp3PK15Gq3zK4LiiK/.4KsbbK.KPp3iK15Gq3zKK..K3/.5K3..KPp3iK.14KGqzK/.11KPiiK.16KGK',
+ uc_master:'48x48:.14K.17KYK/.13KYK.3K10..KYK/.14KYK.KW10KKYoK/.14KYYKWC10WYoK/.15KYYC6rC5YK/.16KYC12cK/.17KWC10cK/.12K.3Ky14K.3K/.11KGK3.KGq10GK.K3GK/.12KG3KKGq10zKKG3K/.13KGqGGqzzq6zzqGGqzK/.14KGq3yKyq4yKyq3zK/.15KGqqy3q4y3qqzK/.16KGq12zK/.16KGq12zK/.17KGqKq6KqzK/.17KGqqK3yKKqqzK/.16K3GzqqKKqqzzK3/.12K4P5GzKKzzP5K4/.11KP5p6yKp6iP4K/.9KKPppiKPp6yyp6iKPppPK/.K8YKPppiPp7yyp7PPp3PK/Ky17p5yyp7iKPppiK/.KgK6oPppiKPgp6yyp7iKKPppPK/.KgK.4KoPpiKKPgp6yyp7iKKPppiK/.KgK.4KoppiKKPgp6yyp7iK.KPppPK/.KgK.4KopiK.KPgp6yyp7iK.KPp3PK/.KgK.3KPopiK3rRp6yyp7iK..KPpiK3/.KgK.3KGoGGKY6p4yyp8PK..KG5K/KKgK3.KGoqzKYo5p4yyp8iK..KGq3zK/Y6KKGozzKKPpy16piK..KGq3zK/Yo5K.KoKK.KPpo16piK..KGz4CK/K6.3K.3KPp8yyp8iK..KCKCKCK/.13KPp8yyp8iK.3K.K.K/.13KPp8yyp8iK/.12KPp9yyp9PK/.12KPp9yyp9iK/.12KPp9yyp9iK/.12KPp9yyp9iK/.12KPp9yyp9iK/.12KPp9yyp9iK/.12KPp9yyp9iK/.11KPp10yyp10PK/.11KPp10yyp10iK/.11Ky25K/.12KKv7K6v7K3/.13Kv7K.4Kv7K/.14K7.6K7',
+ j_cur:'40x30:///.7K.4K/.6KcK..KcK/.6KgcK.KbK.23KK/.6KgmcKcbK.22KccK/.5KKgmgcgmK.22KbK/.4Kccg5bK.21KcbK/.3Kcvvg5bK3.18KcgbK/..KKgGYvg5c3K18cgbK/KKccg12c18ggbK/KKg20bbg11bK/KKg15bbg11bbggbK/bWmWmWmbg27cK/KgWgWgKKg11bgbgbggbbg7bK/.K7g11bgbgbg11bK/.7Kbbg25bK/.8KKg25bK/.9Kbg11b5g7bK/.10Kg8b3K5bbg4bK/.10Kg6bbK3.5KKbggbK/.10Kg4bbKK.10KggbK/.10Kg4bK.12Kg3bK/.9Kcg3bbK.12Kg3bK/.9Kg4bbK.12Kg3bK/.8Kv6bK.11Kv5K/.8Kv7K.11Kv6K/.9K7.13K6',
+ j_lion:'32x32://.6K8/.5Kc4jc3K/.4Kcjg7jK/.3Kcg10cK/..Kcg12cK/.Kcjg4C4g5jK/.Kcg3CCc4CCg3jK/.Kcg3Cc6g4jK/.KcggCyooccyooCggjK/.KjggCo3cco3g3jjK/.KcggCc8g3jK.11K/.Kcg3Cccjjccg4jK5.6KCK/.Kcg3CKc4Kg4jC5K3..KCgK/..Kjg4K4g4jjc5C3KKCcgK/.3Kcg10jc8gcCKCgK/.4Kcg8jc5gc6CcgK/.5Kj9c6gc6gK/.6KKCcjc17gK/.7KCc19gK/.7KCc19gK/.7KCc8gc10gK/.7KCc19gK/.7KCc4gc9ggc3gK/..K6Cg4KCg8KKCg3K/.KC28K/.Kcg26jK/.Kcg26jK/.Kcg26jK/.Kcj27K/..K28',
+ j_snake:'32x32://.7K4/.6Kq4K/.4KKqz4qK/.3KqqzKrz3qK/K3qz8hK/rrKKqhhzGzzhK/Kr3K3qz4qK/rK3..Kqz5qKK/K.6KqzzGzGqqK3/.8Kqhz5q3KK/.9KKqz7qqK/.11KqhzzGz4qKK/.12KKqhhz5qqK/.14K3qhz5qK/.17KKqzGzzhK/.19Kqz4qK/.20Kqz3hK/.18KKqz3hK/.10K8qqz4hK/.8KKq8GzGzzhKK/.7Kqqz14qqK/.6Kqz4Gz13qK/.5K3qz14GzhK3/.4Kq3z18q3K/.3Kqz10GzGz11qK/.3KqzhzzhzzhzzhzzhzzhzzhzzhGhK/.4KqhhzGz16h3K/.5K3qh5z6h6K3/.8K6qh5K6/.14K6',
+ j_crow:'32x32:///.14K4/.12KKi4KK/.11Kiih4iiK/.11Kih6KK/.K.9Kirh4rKK.8KK/KiK3.6Kih6KK.5K3iiK/Ki4K3.3Kih6KK..K3i3hKK/ih4i3K4ihcg3hK4i3h4ii/ih7i3Kihg4hi4h7KK/KiKh8ihhg4h11K3/.KKih11ggh11KK/.Kih25iiK/KiK3h22K3iK/.K4ih20K5/.3KihK5h10K5iiK/..KiK7ih8K6iKiK/.3K3.4Kih8KK.4K3/.11Kih6KK/.12Kih4KK/.12Kih4KK/.12Kih4KK/.11Kih5KK/.11Kih5iiK/.11KiK8/.12K8/.13KyK.KyK/.13KyK.KyK/.12KyKyKyKyK/.13K.K.K.K',
+ j_jinn:'32x32:.7K6G6K6/.5KKG6q6G6KK/.4KGGq18GGK/.3KGq11zq10GK/.3KGq15zq6zK/..KGq4zq19GK/..KGq23zzK/.KKvq24zvKK/KvKGqzq6zq15zKKv/.KBBGq19zqqzBBKK/..KBBq10zzq10BvK/.3KBBzq4B10q4zBvK/.4KB4zzBb8vzzB3vK/.5KKBvBBb4vb5BBvvKK/.7K3Bb10vK3/.10KBb8vK/.10KBbYGb3YGvK/.10KBbGGb3GGvK/.10KBb7vK/.11KBb6vK/.11KBK8/.11KBbKbKbKvK/.11KBb6vK/.11KBb6vK/.11KBb3vbbvK/.11KBb6vK/.11KBb4vbvK/.10KBb8BK/.9KBbvb7vBK/.8KBv12BK/.9K14',
+ j_digger:'32x32:/.11K10.4K3/.10KW10K..Kb3K/.9KWC10WK..KBK/.8KWC12WK.KbK/.9KWC10cK..KbK/.9KsWc9TK..KbK/.8KstKt8KtsK.KbK/.8KsttKKt4KKttTK.KbK/.7Kst3Kt6Kt3sKKbK/.7Kst3Kt6Kt3TKKbK/.7KsTt12TTKKbK/.8KKsttK6ttTKK.KbK/.9KstKt6KtTK..KbK/.10KsTt6TTK.3KbK/.8KKB3sT5B3KK.KbK/.7KB3b10vBBKKbK/.7KBvBb10vBvKKbK/.6KBbvb11vBbBKbK/.6KBbvb12BbvKbK/.6KBvBb12vBvKbK/.6KBvBb12vBvKbK/.5KBbvBb12vBbBbK/.5KBvvBb12vBvvbK/.4KKs3Bb12vs3bK/.3KYy3Tb13vsTW3K/.3Ky4Bb14BWc3WK/.3KyyoyBb14vWc3gK/.4K4Bv15Wc3gK/.8KKv5KKv5K3WggK/.10K5..K5.3K3',
+ j_chief:'32x32:.15K3/.11K10.4K3/.10KR10K..Kb3K/.9KRr10RK..KBK/.8KRr12RK.KbK/.9KRr10mK..KbK/.9KsRm9TK..KbK/.8KstKt8KtsK.KbK/.8KsttKKt4KKttTK.KbK/.7Kst3Kt6Kt3sKKbK/.7Kst3Kt6Kt3TKKbK/.7KsTt12TTKKbK/.8KKsttK6ttTKK.KbK/.9KstKt6KtTK..KbK/.10KsTt6TTK.3KbK/.8KKn3sT5n3KK.KbK/.7Kn3j10innKKbK/.7Kninj10iniKKbK/.6Knjij11injnKbK/.6Knjij12njiKbK/.6Kninj12iniKbK/.6KniB14niKbK/.5Knjib14njnbK/.5Kniinj12iniibK/.4KKs3nj12is3bK/.3KYy3Tj13isTW3K/.3Ky4nj14nWc3WK/.3Ky4nj14iWc3gK/.4K4ni15Wc3gK/.8KKv5KKv5K3WggK/.10K5..K5.3K3',
+ q_servant:'32x32:.15K3/.11K10/.10KR10K/.9KRr10RK/.8KRr12RK/.9KRr10mK/.9KWRm9cK/.8KWC12WK/.8KWCK3C4K3CcK/.7KWCCK3C4K3CCWK.3K/.7KWCCK3C4K3CCcK.KKcK/.7KWcCK3C4K3CccKKcKKcK/.8KKWC10cKK.KKcKK/.9KWCCKCKCKC3cK.KW4K/.10KWcCK4CccK.KWC4WK/.8KKW4c5W3KKWC4cK/.7KW3C10cWWKWc3KK/.7KWcWC10cKc8K/.6KWCcC11cg10/.6KWCcC12WKWCW3K3/.6KWcWC12cKKWWccK/.6KWcr14K.K4/.5KWCcm14K/.5KWccWC12cK/.5KW4C12cK/.5KWccC13cK/.6KKWC14WK/.7KWC14cK/.7KWc15K/.8KKv5KKv5KK/.10K5..K5',
+ q_doll:'32x32:.8KrK12rK/.8KRrB10RrK/.8KRRrb8RRrK/.8KRrrb8r3K/.7KBrb12rBK/.8KBb13K/.7KBb14BK/.7KBbSBb9SBbK/.6KKBbSK4S3K4BbKK/.5KB3bSKWKKS3KWKKBbBBK/.4KBbbBbSKKmKS3KKmKBBbbBK/.4KBbbvbSK4S3K4BBbbvK/.4KBbbvKWS10sKBbbvK/.4KBbbvKWS3K4S3sKBbbvK/.5KBvK.KWsSKSKSKssK.KBvK/.6K4W4s5W3K4/.7KW3C10cWWK/.7KWcWC10cWcK/.6KWCcC11cWCWK/.6KWCcC12WCcK/.6KWcWC6rC5cWcK/.6KWcR14WcK/.5KWCcr14WCWK/.5KWccWC6rC5cWccK/.5KW4C12cW3K/.5KWssC13cWssK/.6KKWC7rC6WKK/.7KWCCRCRC5RCRCcK/.7KWc15K/.8KKv5KKv5KK/.10K5..K5',
+ q_bat:'32x32:///.19K/.12K.5KPK/..KK.7KPK.3KPiK.7K/.KPPK.6KPPK3PpiK.5KKPK/KPpiPKK.4KPpP3ppiK.4KPPpiK/Pp3iiPKK..KPp6iK..KKPpiipPK/Pp5iiPK.KPp6iK3PPiip4P/Pp7iPKKPprpprpiKPPpip6i/Pp8iiPp8Ppiip7i/Pp10iipWppWppiip9i/Pp12ip5ip11i/Pp30i/Ppip10ip5ip9ipi/PiKPp3ip3iip7iip6iKPi/PK.KPpiKPiip11i3ppiK.KP/K..KPiKiiPpiip6ippiKiipiK..K/.4KiiKKPiKKPp4iKPpiK3iiK/.5KK..KK..KPi3K.KPK.3KK/.13KiKKiK..K/.13KiKKiK/.14K..K',
+ q_armor:'32x32:.14KrrK/.14KrrK.8KK/.12KKccrcKK.5KWcK/.11Kccg4ccK.4KWcK/.10Kcg8cK.3KWcK/.10Kcg8jK.3KWcK/.9Kcg10cK..KWcK/.9KcKKQK4QKKjK..KWcK/.9KcK10jK..KWcK/.9Kcg10jK..KWcK/.10KcgjggjggjjK.3KWcK/.6K5cgjggjggjjK5WcK/.5Kc4KKcjggjgjjKKc4WcK/.4Kcg4c5j3c4g4WcK/.4Kcg9ccg9WcK/.4Kcggjg6ccg6jggWcK/.4KcgjKcg5ccg5jKcgWcK/.4KcgjKcg5ccg5jKcgWcK/.4KcgjKcg5ccg5jKcgWcKK/.4KcgjKcg5ccg5jKo6K/.4KcgjKcg5ccg5jKcgbbKK/.4KcgjKj14KcgbbK/.4KcgjKKcg10jKKg4K/.4KcjjK.Kcg3jjg3jK.Kg4K/.5K3..KcggjKKcggjK..K4/.10KcggjKKcggjK/.10KcggjKKcggjK/.10KcggjKKcggjK/.9Kjcj3KKcj4K/.9Kj5KKj5K/.9Kj5KKj5K/.10K5..K5',
+ q_cook:'32x32:.22KW6K/.22KWc4gK/.13K6.3KWc4gK/.11KKY6KK.KWc4gK/.10KYYS6YYKKWg5K/.9KYYS9YK3YbYK/.9KYS10sK.KYbsK/.8KYSKS8KSYKKWKK/.8KYSSKKS4KKSSsKWCWK/.7KYS3YyS4YyS3YWcK/.7KYS3yyS4yyS3sWcK/.7KYsS12sscK/.8KKYS10sKWcK/.9KYS3K4S3sKWcK/.10KYsS6ssKWcK/.8KKW3Ys5W4K/.7KW3C10cK/.7KWcWc11K/.6KWCcC11cK/.6KWCcC8rC3WK/.6KWcWC3rC8cK/.6KWcWC4rC7cK/.5KWCcWC12cK/.5KWccWC12cK/.5KY3WC9rCCcK/.5KYssC13cK/.6KKWC3rC10WK/.7KWC14cK/.7KWc15K/.8KKv5KKv5KK/.10K5..K5',
+ q_hunter:'32x32:.30K/.11K10.7KKWK/.10Kc10K.5KWWgK/.9Kcg10cK.3KWccgK/.8Kcg12cK..KWccgK/.9Kcg10jK..KbWccgK/.9Kscj9TK..KbWccgK/.8KstKt8KtsK.KbWccgK/.8KsttKKt4KKttTK.KbKWggK/.7Kst3Kt6Kt3sKKbK3WK/.7Kst3Kt6Kt3TKKbK..K/.7KsTt12TTKKbK/.8KKsttv6ttTKK.KbK/.9Kstvt6vtTK..KbK/.10KsTt6TTK.3KbK/.8KKB3sT5B3KK.KbK/.7KB3b10vBBKbK/.6KKBvBb10vBvKbK/.5KcBbvb11vBbBbK/.5KcWbvb12BbvbK/.5KcWvBb12vBvbK/.5KcWv15BvbK/.5KcWvK14BbbK/.4Ko4Bb12vBvbK/.5Ks3Bb12vssbK/.5KsTTb13vsTbK/.6KKBb14BKbK/.7KBb14vKbK/.7KBv15KK/.8KKv5KKv5KK/.10K5..K5',
+ q_double:'32x32:.6KKY4KK/.5KYYy4YYK/.4KYy3iiy3YK/.3KYyyiijjiiyyYK/..KYyyij6iyyYK/..KYyijuj4i6K/.KYyyiuj5ih4KK/.KYyijuj4ih5iiK/.KYyij6ihWWhWWKK.11K/.KYyij6ih6KK.9KKi/.KYyij6ih6KK.7KKiKK/.KYyij7iWh3KWK.4K3iiK.K/.KYyij7ihW4K..K3i3hhiKi/.KYyij6ih6iKKi3h3K5/.KYyij6ih7iih4K5iK/.KYyij6ih7Kh3K4.3K/.KYyij6ih6KKiK4/.KYyij5ih7iiK3/.KYyij5ih8KK/.KYyij5ih8KK/.KYyij5ih8KK/.KYyij5ih8KK/.KYyij5ih8KK/.KYyij5ih8KK/.KYyyij4ih8KK/..KYyij3ih9iiK/..KYyyijjih10KK/.3KYyyi3h10KK/.4KYy3iK12/.5KYoy4ooK7/.6KKYo3KK/.8K4',
+ d_rat:'40x30://///////.10K4/.9Kc4K/.8KcgRRgcK.K8/.8KcR4jKKc3jc4K3/.8KcR4jcjg7jc3K/.8KcgRRgjg13jKK/.9Kcj3g4jg10ccK/.4K..K3cg19jK/..KKcKKjccg21cK/.KcKccKrg23jK.K4/KKccg27jKKR4K/KRg29jKRs4RK/RRcg27jKRsK4sR/K3cj9g17jRsK.4Ks/KcKWK9cg15jRsK.6K/.K.KWK.4Kccgj3g8jg3jsK/.4K.5KcgjK3cj7KcggjK/.9KKcgjK..K9cggjK/.8KR5K.9KR6K/.9K5.11K6',
+ d_scorp:'40x30:/.30KK/.24K.K4yyK/.23KmKy4ooyKK/.22KmmKyb3o3yyK/.23KmmK4ybo3yK/.24KK.4KKyoobK/.32KyooyK/.33KyooyK/K.32KyoobK/yK.KK.29KybK/KyKyyKK.26KyooyK/KyyooyyK.25KyoobK/KKo4bK.25KyoobK/KyKo4yK.23KKyobbK/KyboobooyKK.20KyyobKK/.KKybKyboyyK.4K10.5KyoobK/.3KK.KKyooyK4y10K6yoobK/.8KybKy4obooboobooy6oobbK/.9K4oboobooboobooboyo4bKK/.3KK..K4yooboobooboobooboyo4bK/.KKyyKKy3Kyoobooboobooboobooyb3K/KyyooyyobbyKyoboobooboobooboobK3/Kyo5bK3.Kybboboobooboob3K/KyboobbK.5KbKyb10KKbK/.KKybKK.6KbKKbbKKbbKKbbKKbK/.3KK.7KbK.KbbKKbbKKbbK.KbK/.12KbK.KbbKKbbKKbbK.KbK/.13K.3KK..KK..KK.3K',
+ d_statue:'32x32:.8KKcg10cK4WcKK/.7KKcg12cK3WcKK/.8KKcg10jK4WcKK/.8KKCgj9gK4WcKK/.7KKCcKc8KcCK3WcKK/.7KKCccKKc4KKccgK3WcKK/.6KKCc3Yyc4Yyc3CKKWcKK/.6KKCc3yyc4yyc3gKKWcKK/.6KKCgc12ggKKWcKK/.7K3Cccg6ccgK4WcKK/.8KKCcgc6gcgK4WcKK/.8K3Cgc6ggK5WcKK/.7K3C4g5C3K4WcKK/.6KKC3c10gCCKKWcKK/.6KKCgCc10gCgKKWcKK/.5KKCcgccgc8gCcCKWcKK/.5KKCcgc3gc8CcgKWcK3/.5KKCgCc12gCg6KK/.5KKCgCc12gCgKggK3/.4KKCcgCc9gccgCcCggKK/.4KKCggCc12gCggK3/.4KKC4c12gC3KK/.4KKCggc13gCggKK/.5K3Cc14CK3/.6KKCc14gKK/.6KKCg15KK/.5KC20K/.5Kcg18jK/.5Kcg18jK/.5Kcg18jK/.5Kcj19K/.6K20',
+ d_soldier:'32x32:.15K3.9KWK/.11K10.6KcK/.10KR10K.4KvbK/.9KRr10RK.3KvbK/.8KRr12RK..KvbK/.6K..KRr10mK.3KvbK/.5KuK.KWRm9nK.3KvbK/.6K.KWu12WK.KvbK/.8KWuK3u4K3unK.KvbK/.7KWuuKQKu4KQKuuWKKvbK/.7KWuuK3u4K3uunKKvbK/.4K..KWnuK3u4K3unnKKvbK/.3KuK..KKWu10nKK.KvbK/.4K.4KWu3K4u3nK..KvbK/.10KWnu6nnK.3KvbuK/.8KKn3Wn8KK.KvbK/.7KnnCj10CnnKvbK/.7KninCj8CiniKvbK/.6KnjijjCj6CjinjnvbK/.6Knjij3Cj4Cj3njivbK/.6Kninj4CjjCj4inivbK/.6Kninj5CCj5inivbK/.5Knjinj5CCj5injvbK/.5Kniinj4CjjCj4inivbK/.5KW3nj3Cj4Cj3iWWvbK/.5KWnnj3Cj6CjjiWvbK/.6KKnjjCj8Cjjb3K/.7KnjCj10Cjb3K/.7Kni14b3K/.8KKv5KKv5Kb3K/.10K5..K5.K3',
+ d_digger:'32x32:/.11K10/.10KG10K/.9KGq10GK.K5/.8KGq12GKc5K/.9KGq10zccK3bKcK/.9KsGz9cgK..KbKKcK/.8KstKt8KtsK..KbKKgc/.8KsttKKt4KKttTK..KbK.KK/.7Kst3Kt6Kt3sK.KbK/.7Kst3Kt6Kt3TK.KbK/.7KsTt12TTK.KbK/.8KKsttK6ttTKK..KbK/.9KstKt6KtTK.3KbK/.10KsTt6TTK.4KbK/.8KKB3sT5B3KK..KbK/.7KB3b10vBBK.KbK/.7KBvBb10vBvKKbK/.6KBbvb11vBbBKbK/.6KBbvb12BbvKbK/.6KBvBb12vBvKbK/.6KBvBb12vBvKbK/.5KBbvBb12vBbBbK/.5KBvvBb12vBvvbK/.5Ks3Bb12vs3bK/.5KsTTb13vsTTbK/.6KKBb14BKKbK/.7KBb14vKKbK/.7KBv15KKbK/.8KKv5KKv5KK.KbK/.10K5..K5.4K',
+ d_sorc:'32x32:.12h8/.10hhi8hh/.9hiih8iih/.8hih12ih/.7hih14ih/.7hihK12hKh/.6hih15iih/.6hihhit9TihhKh/.6hihht11Th4/.6hihht11Th4/.6hihhttYGt4YGtTh4/.7KihttGGt4GGtThKh/.7hihTt10Th3/.8Kiht9ThKh/.9KiTTC6TTKh/.8hhiiC8iihh/.7hi3C10Kiih/.7hiKihC8hhiKh/.6hih5C6h3i3h/.5hGih13iihKh/.4hGKiKih12Kihh/.3hGqGihih13ihh/..hGKGiGhih13i3h/.3KhGiKhih13iKKh/..hhGqGssih13s3h/.hy7h14sTTh/.ho7h13iiKK/..Kb5ih14Kh/.3K5iK14hh/.8Khv5hhv5hh/.10K5..K5',
+ d_ghost:'32x32:.4KcK.18KcK/.5KgK.6K4.8KgK/.4KcK.5KKW4KK.5KcK/.5KgK.3KWWC4WWK.5KgK/.4KcKK..KWC8WK..KKcK/.3Kg4KKWC10WKKg4K/.3Kg4KKWCK3C3K3cKKg4K/.4KKWWKWCCK3C3K3CWKWcKK/.5KWcKWCCK3C3K3CcKWcK/.6KWWC3K3C3K3CCWcK/.7KWC14cK/.7KWC6KKC6cK/.8KWC4K4C4cK/.7KWC5K4C5WK/.7KWC6KKC6cK/.7KWC14cK/.7KWC14cK/.7KWC14cK/.7KWC14cK/.6KWC16WK/.6KWC16cK/.6KWC16cK/.6KWC16cK/.6KWC16cK/.6KWC16cK/.5KWCCcC3cC3cC3cC3WK/.5KWccKWccKWccKWccKWccK/.5KWKWKWKWKWKWKWKWKWKWK/.6K.K.K.K.K.K.K.K.K.K',
+ d_ram:'32x32://.5K4.14K4/.3KKY4KK.10KKY4KK/..KYYy4YYK.8KYYy4YYK/..KYy6oK.3KK.3KYy6oK/.KYyyo4yyYK3jjK3Yyyo4yyYK/.KYyyo4yyoKjjhhjjKYyyo4yyoK/.KYyyooboyyojh6jYyyooboyyoK/.KYyyo4yyoih6KYyyo4yyoK/..KYy6oih7iiYy6oK/..KYoy4ooiYrrhhrrYKYoy4ooK/.3KKYo3KKir3hhr3K3Yo3KK/.5K4.Kih8KK.K4/.10Kih8KK/.10Kih8KK/.5K6jih6KjK6/.3KKj6iihKhhKhKij6KK/..Kjji9KhhKKji7jjK/..Kji10jiKjji9hK/.Kji13ji12jK/.Kji26hK/.Kji26hK/.Kji26hK/..Kji24hK/..Kjhi22hhK/.3KKji20hKK/.5Kji18hK/.5Kji8hhi8hK/.6KjiK3iihKKjiiK3ihK/.7KjK3hhK..KjhK3hK/.8K6.4K6',
+ ma_wolf:'40x30:///.7K.4K/.6KCK..KCK/.6KcCK.KgK/.6KcbCKCgK/.5KKcbcCcbK/.4KCCc5gK/.3KCvvc5gK3/..KKcyYvc5CCgK17/KKCCc11g18KK/KKc7CccCc3g18CKK/KKc6CccCc21gcCCK/gWmWmWmgccCc26CK/KcWcWcKKcCccCc24gK/.K7CccCc26CK/.7KggCc27gK/.8KKccCc22gccgK/.9KgCc10g5c7gKccgK/.10Kc8g3K5ggc4gKKgcgK/.10Kc6ggK3.5KKgccgK..KcCK/.10Kc4ggKK.10KccgK..KCCK/.10Kc4gK.12Kc3gK..KK/.9KCc3ggK.12Kc3gK/.9Kc4ggK.12Kc3gK/.8Kv6gK.11Kv5K/.8Kv7K.11Kv6K/.9K7.13K6',
+ ma_hyena:'40x30:///.11K3.K4..K..K/.10Ks3Ks3vKKvKKvK/.9KsBvBsvBbvKvKvKvKK.K/.9KBBvBbv12KvK/.6K3sB3bv4BvBvBvBv4KK/.4KKs3B4vvBvB10v4K/..KKssB7vsB6vvB6vvsK/KKssB5vvB21sKK.KK/KKB7yYvB10vvB9ssKvvK/KKvvB26vvB3v4K/KKvvB15vvB5vvB7bvvK/.KWmmWmmWmbbB21vvbvK/.Kmr4m3KKbB22bK/.KbWmmWmBbK3B11vvB8bK/..KbbB5s3B15vvB3bK/.3KKb5K3B20bK/.5K5..KB4bB3b7B3bbK/.12KbBBbKb3K7BvvbbK/.13KBBbKb3K.5KBBb3K/.13KBBbKKbbK.5KBbKbbK/.13KBvvKKbbK.4KsBBv4K/.13KBBbKKbbK.3Kv8K/.12KKBBbKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ ma_scorp:'40x30:/.30KK/.24K.K4iiK/.23KrKi4hhiKK/.22KrrKiK3h3iiK/.23KrrK4iKh3iK/.24KK.4KKihhKK/.32KihiiK/.33KihhiK/K.32KihhKK/iK.KK.29KiKK/KiKiiKK.26KihiiK/KiihhiiK.25KihhKK/KKh4KK.25KihhKK/KiKh3iiK.23KKihK3/KiKhhKhhiKK.20KiihK3/.KKiKKiKhiiK.4K10.5KihhKK/.3KK.KKihhiK4i10K6ihhKK/.8KiKKi4hKhhKhhKhhi6hhK3/.9KKrrhKhhKhhKhhKhhKhih4K3/.3KK..K4ihhKhhKhhKhhKhhKhih4KK/.KKiiKKi3KihhKhhKhhKhhKhhKhhiK4/KiihhiihKKiKihKhhKhhKhhKhhKhhK4/Kih5K4.KiKKhKhhKhhKhhK4/KiKhhK3.5K3iK14/.KKiK3.6K18/.3KK.7K3.K12.K3/.12K3.K12.K3/.13K.3KK..KK..KK.3K',
+ ma_dust:'32x32:.3K29/..Kts13t15/.3Kt28/.4KKttTTttT3ttT3ttT3ttT3tt/.6Kts11t8st3K/.7Kt21KK/.5KKttT3ttT3ttT3ttTTttK/.3KKts4ryrrssttryrrt6K/..Kt7r4t4r4t5K/..Kt3T3ttT3ttT3ttT3ttK/.Ksts10t11K/..K3t18KK/.5KttT3ttT3ttT3ttK/.6Kts7t9K.5K/.7Kt17KK..KsK/.7KttT3ttT3ttT3t4K..K/.8Kts8t10K/.9KKt16K/.11KttTttT3ttTTttK/.3K.8Kts4t6KK/..KsK.5KKt11K/.3K.4KKt4T3ttTTttK/.7Kts6t7K/.7Kt13K.7K/.7Kt3T3ttTTttK.7KsK/.8KKts3t4KK.9K/.6K.3Kt7K/.5KsK.3KttTTt3K/.6K.5Ktsst4KK/.12Kt9K/.13KttTTttTttK/.14K9',
+ ma_bandit:'32x32:.11K10.6K/.9KKW10KK..KKbKK/.8KWWC10WWKKb5K/.8KWC12cKKbbBbbK/.7KWC3cC3cC3cCCWKbBb3K/.8KWCcC3cC3cCCcKKb5K/.8KWcC10ccK.KKbvK/.8KstKc8KtsK..KbvK/.8KsttKKt4KKttTK..KbvK/.7Kst3Kt6Kt3sKKbKvK/.7Kst3Kt6Kt3TKKbvK/.7KR16KKbvK/.7KRr14mKKbvK/.8KRr12mK.KbvK/.8KRr12mK.KbvK/.8KRr12mK.KbvK/.7KBRm13BKKbvK/.7KBvBb10vBvKKbvK/.6KBbvb11vBbBKbvK/.6KBbvb12BbvbvK/.6KBvBb12vBvbvK/.6KBvBb12vBvbvK/.5KBbvBb12vBbbvK/.5KBvvBb12vBvbvK/.5Ks3Bb12vs3K/.5KsTTb13vsTTK/.6KKBb14BKK/.7KBb14vK/.7KBv15K/.8KKv5KKv5KK/.10K5..K5',
+ ma_viper:'32x32:.10K/.8KKgK/.7KggK/.6KC4K/.4KKCc4CK/.3KCCcKrc3CK/K3Cc8gK/rrKKCggcbccgK/Kr3K3Cc4CK/rK3..KCc5CKK/K.6KCccbcbCCK3/.8KCgc5C3KK/.9KKCc7CCK/.11KCgccbc4CKK/.12KKCggc5CCK/.14K3Cgc5CK/.17KKCcbccgK/.19KCc4CK/.20KCc3gK/.18KKCc3gK/.10K8CCc4gK/.8KKC8bcbccgKK/.7KCCc14CCK/.6KCc4bc13CK/.5K3Cc14bcgK3/.4KC3c18C3K/.3KCc10bcbc11CK/.3KCcgccgccgccgccgccgccgccgbgK/.4KCggcbc16g3K/.5K3Cg5c6g6K3/.8K6Cg5K6/.14K6',
+ mb_scorp:'40x30:/.30KK/.24K.K4YYK/.23KbKY4yyYKK/.22KbbKYo3y3YYK/.23KbbK4Yoy3YK/.24KK.4KKYyyoK/.32KYyyYK/.33KYyyYK/K.32KYyyoK/YK.KK.29KYoK/KYKYYKK.26KYyyYK/KYYyyYYK.25KYyyoK/KKy4oK.25KYyyoK/KYKy4YK.23KKYyooK/KYoyyoyyYKK.20KYYyoKK/.KKYoKYoyYYK.4K10.5KYyyoK/.3KK.KKYyyYK4Y10K6YyyoK/.8KYoKY4yoyyoyyoyyY6yyooK/.9K4yoyyoyyoyyoyyoyYy4oKK/.3KK..K4YyyoyyoyyoyyoyyoyYy4oK/.KKYYKKY3KYyyoyyoyyoyyoyyoyyYo3K/KYYyyYYyooYKYyoyyoyyoyyoyyoyyoK3/KYy5oK3.KYooyoyyoyyoyyo3K/KYoyyooK.5KoKYo10KKoK/.KKYoKK.6KoKKooKKooKKooKKoK/.3KK.7KoK.KooKKooKKooK.KoK/.12KoK.KooKKooKKooK.KoK/.13K.3KK..KK..KK.3K',
+ mb_bat:'32x32://.12K.6K/.11KBK.4KBK/.11KBK.3KBvK/..KK.7KBBK..KBvK.7K/.KBBK.6KBbBKKBbvK.5KKBK/KBbvBKK.4KBbbBBbbvK.4KBBbvK/Bb3vvBKK..KBb6vK..KKBbvvbBK/Bb5vvBK.KBb6vK3BBvvb4B/Bb7vBKKBbrbbrbvKBBbvb6v/Bb8vvBb8Bbvvb7v/Bb10vvbWbbWbbvvb9v/Bb12vb5vb11v/Bb30v/Bbvb10vb5vb9vbv/BvKBb3vb3vvb7vvb6vKBv/BK.KBbvKBvvb11v3bbvK.KB/K..KBvKvvBbvvb6vbbvKvvbvK..K/.4KvvKKBvKKBb4vKBbvK3vvK/.5KK..KK..KBv3K.KBK.3KK/.13KvKKvK..K/.13KvKKvK/.14K..K',
+ mb_nasnas:'32x32:.15KC3KK/.15KC5K.4K.K/.14KrC5K.3KtKtK/.14Krst3sK.4KsKtK/.13Kmrst4sK..KstsK/.13KmrsW4tsK.KstTK/.13KmrsWWKWtTK.KsTK/.13KmrsWWKWtTKKstTK/.13Kmrst5TKstTK/.13Kmrst5TstTK/.13KmrsK3ttTttTK/.13KmrstWttTstTK/.13KmrsT4sTTK/.13Kmrs6KK/.13KmrsB3bK/.13Kmrb6K/.13KmrsB3bK/.13KmrsB3bK/.13Kmrb6K/.13KmrsB4sK/.13KmrsB4bK/.13Kmrb6K/.13KmrsB4bK/.13KmrsB4bK/.13Kmrb6K/.13KmrKs3KK/.13KmrKstTK/.11K.KmrKstTK/.10KgKKmrKstTK/.8KKgKK.Krst3sK/.7KgK3gKKrsT4K/.8K.3K..K6',
+ mb_cutter:'32x32:.12K8.Kc7K/.10KKW8KKcg5jK/.9KWWC7cWWcj6K/.8KWC11cWKKbK3/.7KWC13cWKbKK/.7KWCK12ccKbWWK/.6KWCCK12CcWWccK/.6KWC15ccWKK/.6KWC15c3WK/.6KWC3K3C4K3CCc3K/.6KWcCCK3C4K3CCc3K/.7KWCCK3C4K3Cc3K/.7KWcCK3C4K3Cc3K/.8KWcC10ccWcK/.9KWccKCKCKCc3WcK/.8KKW3C5ccW3K/.7KW3C9ccK/.7KWcWC9ccK/.6KWccC10ccK/.6KWccC11cWK/.6KWcWC11ccK/.6KWcWC11ccK/.5KWccWC9rCccK/.5KWccWC11ccK/.5KW4C11ccK/.5KWccC12ccK/.6KKWC3rC9cWK/.7KWc15K/.7KWc15K/.8KKv5KKv5KK/.10K5..K5',
+ mb_smug:'32x32:/.11K10.4K3/.10Kr10K..KB3K/.9Krm10rK.KB3K/.8Krm12rK.KbvK/.9Krm10vK..KbvK/.9Ksrv9TK..KbvK/.8KstKt8KtsK.KbvK/.8KsttKKt4KKttTK.KbvK/.7Kst3Kt6Kt3sKKbvK/.7Kst3Kt6Kt3TKKbvK/.7KsTt12TTKKbvK/.8KKst10TKK.KbvK/.9Ksttb6ttTK..KbvK/.10Ksb8TK.3KbvK/.8KKqb10qKK.KbvK/.7Kq3zb8zhqqKbvK/.7Kqhqzzb6zzhqhKbvK/.6Kqzhz11hqzqbvK/.6Kqzhz12qzhbvK/.6Kqhqz12hqhbvK/.4K3qho14qhbvK/.3Ks5b14qzbvK/.3KB5qz12hqhbvK/.3KB5qz12hssbvK/.3KB5z13hsTbvK/.3KB5z14qKbvK/.3KB5z14hKbvK/.4K4qh15KbvK/.8KKv5KKv5K3bvK/.10K5..K5.3KK',
+ mb_viper:'32x32:.10K/.8KKtK/.7KttK/.6KS4K/.4KKSs4SK/.3KSSsKys3SK/K3Ss8tK/rrKm4sbsstK/Kr3WKKSs4SK/rK4.KSs5SKK/K.6KSssbsbSSK3/.8KSts5S3KK/.9KKSs7SSK/.11KStssbs4SKK/.12KKStts5SSK/.14K3Sts5SK/.17KKSsbsstK/.19KSs4SK/.20KSs3tK/.18KKSs3tK/.10K8SSs4tK/.8KKS8bsbsstKK/.7KSSs14SSK/.6KSs4bs13SK/.5K3Ss14bstK3/.4KS3s18S3K/.3KSs10bsbs11SK/.3KSstsstsstsstsstsstsstsstbtK/.4KSttsbs16t3K/.5K3St5s6t6K3/.8K6St5K6/.14K6',
+ mb_hama:'32x32:.6KjK.14KjK/.6KjjK.12KjK/.7KjjK.10KjhK/.7KjijK.K6.KjihK/.7KjihKKj6KKjhK/.8KjKjji6jjKjK/.9Kji10jK/.8Kjy4i4y4jK/.8KyyrryyiiyyrryyK/.7KjyrRrryiiyrRrryjK/.7KjyrrKryiiyrrKryhK/.8KyyrryyiiyyrryyK/.8Kjy4iyyiy4hK/.8Kji5oi6hK/.7Kji14jK/.7Kjhi12hhK/.7Kji14hK/.7Kjhi8hi3hhK/.7Kji5hi8hK/.7Kjhi12hhK/.8Kji7hi4hK/.8Khi12hK/.9Kji4hi5hK/.8Khjhi8h3K/.8K4ji6hK4/.6KKc5yyh3yyc4KK/.5Kccg16ccK/.5Kcg18jK/.5Kcg18jK/.5Kcjg16jjK/.6KKcj15KK/.8K16',
+ mb_hyena:'40x30:///.11K3.KK.K..K..K/.10Kc3KccKvKKvKKvK/.9KcgvgcvmKvKvKvKvKK.K/.9Kggvgbvvmv9KvK/.6K3cg3bv4gvgvgvgv4KK/.4KKc3g4vvgvg10v4K/..KKccg7vcg6vvg6vvcK/KKccg5vvg21cKK.KK/KKg7rRvg10vvg9ccKvvK/KKvvg26vvg3v4K/KKvvg15vvg5vvg7bvvK/KKbg7bbg21vvbvK/WC6WgbKKbg22bK/CK4bKCbbccKg11vvg8bK/WK.3KKWK5g15vvg3bK/K.6K.4Kg20bK/.12Kg4bg3b7g3bbK/.12KbggbKb3K7gvvbbK/.13KggbKb3K.5Kggb3K/.13KggbKKbbK.5KgbKbbK/.13KgvvKKbbK.4Kcggv4K/.13KggbKKbbK.3Kv8K/.12KKggbKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ mc_lame:'40x30:///.11K3.K4..K..K/.10KC3KC3vKKvKKvK/.9KCcvcCvcgvKvKvKvKK.K/.9Kccvcgv12KvK/.6K3Cc3gv4cvcvcvcv4KK/.4KKC3c4vvcvc10v4K/..KKCCmc6vCccbccbccbccbccvvCK/KKCCc3mcvvc6bccbccbccbccbccCKK.KK/KKc6myYvc5bccbccbccbccbccbCCKvvK/KKvvc4mc8bccbccbccbccbccbccv4K/KKvvc14bccbccbccbccbccbcgvvK/.KWmWmWm3ggc6bccbccbccbccbccbcgvK/.Km8KKgc5bccbccbccCCcbccbcgK/.KgWmWmmcgK3c5bccbccbccCcC3cbgK/..Kggc5C3c6bccbccbcCc3gcgK/.3KKg5K3c6bccbccbcCc3gcgK/.5K5..Kc4gc3g6CcCWCCK/.12KgccgKg3K7C3rCK/.13KccgKg3K.6KCg3K/.13KccgKKggK.6KgKggK/.13KccgKKggK.7Kv4K/.13KccgKKggK.7Kv4K/.12KKccgKv4K.6KvK3/.11Kv5Kv4K.7K/.10KKv5K5/.11K6',
+ mc_white:'40x30://.26K/.11K3.K4.KK..KKQK/.10KW3KW3nKQnKKnKK/.9KWWnWWnWunKnKnKnKK.K..K/.9KWWnWun12KnKKQK/.6K3W4un4WnWnWnWn4K3/.4KKW7nnWnW10n4K/..KKW9nW3uWWuWWuWWuWWnnWK/KKW7nnW6uWWuWWuWWuWWuWWuKK.KK/KKW7QWnW5uWWuWWuWWuWWuWWuWWKnnK/KKnnW13uWWuWWuWWuWWuWWuWWn4K/KKnnW14uWWuWWuWWuWWuWWuWunnK/.KWmWmWm3uuW6uWWuWWuWWuWWuWWuWunK/.Km8KKuW5uWWuWWuWWuWWuWWuWuKQK/.KuWmWmmWuK3W5uWWuWWuWWuWWuWWuuK3QK/..KuuW14uWWuWWuWWuWWuWuKKQKKQ/.3KKu5K3W6uWWuWWuWWuWWuWuK.K.KK/.5K5..KW4uW3u7W3uuK.3KQK/.12KuWWuKu3K7W3uuK.4K/.13KWWuKu3K.5KWWu3K/.13KWWuKKuuK.5KWuKuuK/.13KWWuKKuuK.4KW3n4K/.13KWWuKKuuK.3Kn8K/.12KKWWuKn4K.KKn5K3/.11Kn5Kn4K..K6/.10KKn5K5/.11K6',
+ mc_cub:'40x30:////////.8K4..K4/.7Ks4KKs4K/.7KsBBbKKsBBbK/.7KsBvbKKsBvbK/.7KsBvBssBBvbK/.7KsB8bK/.6KsB10sK/.6KsB10bK6/.6KsBWKB3WKB3s6K3..KK/.5KKsBKKB3KKB9s3KKvvK/.4KssB13vB7svvK/.3K3B18vB4vK/.3K3B23bK/.4Ksb8B4vB8vBbK/.5K9sB7vB6bK/.6KRK.5KsB12bK/.7K.5K3sB8bBBbK/.12Kv3sBBb5v3BbK/.12Kv3sBv3K3v6K/.13K3sbv3K..KKsv3K/.16K5.5K4',
+ mc_qutrub:'32x32:.11K.7K/.10KcK.5KcK/.10KcmK.3KcmK/.10KcjcK3cgjK/.10KcKc4ggjK/.10Kccg6jK/.9Kcg9cK/.7K5g8jK/.4K3c3yyg9cK/.3Kc3g14jK/..K3g16jK/..K3g15jK/..Kcj7g9jK/..KKWKWKWKKcg8jK/.3K7cg10cK.5K/.8Kcg3C6g3cK.3KWK/.8Kcg3Cc4g4jK.3KCWK/.8Kcg4Cccg6cK.KCKK/.7Kcg5Cccg7cKCK/.7Kcg5Cccg8CK/.6Kcg7Cg6jgCK/.6Kcgjjg4Cg5jKCK/.5KcgjKKcg8jKWWK/.6KcK.Kcg8jK3/.5KCK..Kcg3jjg3jK/.4KCKCK.KcggjKKcggjK/.5K.K..KcggjKKcggjK/.10KcggjKKcggjK/.9KKcj3KKcj3KK/.8Kj6KKj6K/.8Kj6KKj6K/.9K6..K6',
+ mc_madbu:'40x30://.6K8/.5KW7cK4/.4KW9c4K/.3KW11cgjK8/.3KcW14c7KK/.3KKcW14cg5ccKK/..KS3c4W11cg6ccKK/.KggS3ggSW11cg8ccK/.KSyKSSyKSW3ccW7cg9cKK.KK/.KSKKSSKKSWWcKgc9g9ccKvvK/.KS8WWcKg21v4K/.KsS7WWcKg21jvvK/..KKW3KSSc3Kg21jvK/..KssS4ssK3g21jK/.3KKs4KK..Kg20jK/.5K4.4Kg19jK/.13Kg19jK/.13Kg3jg3j7g3jjK/.12KjggjKj3K7g3jjK/.13KggjKj3K.5Kggj3K/.13KggjKKjjK.5KgjKjjK/.13KggjKKjjK.4Kcggv4K/.13KggjKKjjK.3Kv8K/.12KKggjKv4K.KKv5K3/.11Kv5Kv4K..K6/.10KKv5K5/.11K6',
+ mc_beetle:'32x32:.9K.5KK.5K/.8KCK.3KcgK.3KCK/.8KCCK..KggK..KCCK/.9KCCK.KggK.KCCK/.10KCCKKggKKCCK/.11KCKKggKKCK/.11KKjjiijjKK/.10Kjjh6jjK/.10Kih8KK/.9KjhRrh4RrijK/.10Kirrh4rrKK/.10KiKh6K3/..KK.6KjjiK5jjK.6KK/.KiiKK.3Kji3jjijjiijK.3KKiiK/..KKiiK3ji6hi5jK3iiKK/.4KKiiji4niihi3niijiiKK/.6KKji3ni3hiini3hKK/.6Kji8hi7jK/.6Kji8hi7hK/..K5ji8hi7hK5/.Ki5ji8hi7hi5K/..K5ji8hi7hK5/.6Kji8hi7hK/.7Kji7hi6hK/.6KKji7hi6hKK/.4KKiiKji6hi5hKiiKK/..KKiiKK.Kji5hi4hK.KKiiKK/.KiiKK.4Kjhi3hiihhK.4KKiiK/..KK.7KKjh5KK.7KK/.13K3hKK/.16K',
+ mc_vulture:'32x32:.14K4/.13KS4K/.12KSsrssSK/.11KyysKsstK/.11Kyys4tK/K.10KyKSsstK.12K/BKK.9K.KSstK.10KKB/B3KK.9KSstK.8KKBBv/BbbBBKK.5K3SstKK.5KKBBbbv/KBb3BBKK..KW3SstWWK..KKBBb3vK/KBb5BBKKWC3SttCCWKKBBb5vK/KBb7BBWC8cBBb7vK/KBb9BWc7Bb9vK/Bbbvb5vb11vb5vbbvK/Bvvb4vb17vb3vvB/K3Bbvb5vb11vb4vvKK/..KBb24vK/.KBbvvb20vvbBK/.KBvKKBb18vKKBvK/..KK.KBb18vK.KK/.5KBv4b10v3bvK/.5KBK4Bb8vK3BvK/.6K.3KBb8vK..KK/.11KBb6vK/.12KBb4vK/.13KBv3KK/.12KgK5gK/.12KgK.3KgK/.11KgKgK.KgKgK/.12K.K.3K.K',
+ mc_echo:'32x32:/.14K4/.12KKc4KK/.11Kccg4ccK/.10Kcg8cK/.9Kcg3C4g3cK/.9KcgC8gjK/..K.5KcggC8ggcK.5K/.KuK.4KcgCK3CCK3CgjK.4KuK/.KK.K.3KcgCK3CCK3CgjK.3K.KK/KuKKuK..KcgC10gjK..KuKKuK/.K..K.3KcgC4KKC4gjK.3K..K/KuKKuK..KcggCCK4CCggjK..KuKKuK/.KK.K..Kcg3C3KKC3g3cK..K.KK/.KuK.3Kcg5C4g5jK.3KuK/..K.4Kcg14jK.4K/.6Kcg16cK/.5Kcg17jK/.5Kcg18cK/.4Kcg20cK/.4Kcg20jK/.3Kcgjg18jgcK/.4KcKcg16jKcK/.5KKcg16jKK/.6Kcg16jK/.5Kcggjg3jg3jg3jg3cK/.5KcjjKcjjKcjjKcjjKcjjK/.5KcKcKcKcKcKcKcKcKcKcK/.6K.K.K.K.K.K.K.K.K.K',
+ mc_hunter:'32x32:.11K10/.9KKY10KK/.8KYYy10YYK/.8KYy13K/.7KYy14YK/.8KYy13K/.7KYy14YK/.7KYyyKy8Ky3K/.7KYyssKKssysKKysyyK/.7KYyssKs6KssYyK/.7KYyssKs6KssYyK/.7KYys12YyK/.8KKSs10tKK/.4KK.3KSs10tK/.3KvvK..KKSts6ttKK/.3KvvK.Kb14K/.3KvvKKqb14qK/.3KvvKKqhqz10hqhK/.3KvvKqzhz11hqzcK/.3KvvKqzhz12qzcWK/.3KvvKqhqz12hqcWK/.3KvvKqhqz12hqcWK/.3Kvvqzhqz12hqcWK/.3Kvvqhhqz12ho4K/.3KvvS3qz12hS3K/.3KvvSttz13hSttK/.4K4qz14qKK/.7Kqz14hK/.7Kqh15K/.8KKv5KKv5KK/.10K5..K5',
+ ua_oven:'32x32:.9K.3KyyK.KyK/.8KyK..KymKKyoyK/.8KyyK.KyYyyoomK.4K/.9KyyKyo5YoyK..KyK/.9KyoYo8mK.KyYK/.9Kyo3Yo6myKyYyoK/.10Kyo8mKK.KooK/.10Kyo8mK..KbbK/.9KyoK3ooK3oyK..KK/.9KyoK3ooK3omK..KbK/.10Kyo8mK.3KbK/.10KyoKo4KomK.3KbK/.11KymK4mmK.4KbK/.11KKiym3iKK.3KbK/.10Kiih6iiK..KbK/.8KKih7ohhiK3bK/.7Kiihhoh5yh3iiKbK/.7Kih4yh5oh3KKbK/.6Kih5oh9iibK/.5Kih7oh9biK/.5KihKh14KbK/.4KihKKih6oh5KKbK/.5KiK.Kih6oh3K3bK/.6K..Kih10KK.K/.10Kih8KK/.9Kih3K4hhiiK/.9KihhK5ihhKK/.9KiohKK..KiohKK/.9KihhKK..KihhKK/.9KiK4..KiK4/.10K4.4K4',
+ ua_brick:'32x32:.11K.3KgK..K/.10KgK..KgK.KgK/.10KKgK6gKK/.9Ks12K/.9KsB10bK/.9KsBy3BBy3BbK/.9KsBy3BBy3BbK/.9Kv12K/.9KsB10bK/.9KsBBK6BBbK/.9KsBBK6BBbK/.9KsB10bK/.3K7sb11K7/..Ks26K/..KsB3bsB14bsB3bK/..KsB3bv16sB3bK/..KsB3bsB4vB5vB3bsB3bK/..KsB3bsB14bsB3bK/..Ksb4v16sb4K/.Ks5KsBvB5vB5vbKs5K/.KsB3bKsB14bKsB3bK/.KsB3bKv16KsB3bK/.KsB3bKsB4vB5vB3bKsB3bK/.KsB3bKsB14bKsB3bK/.Ksb4Kv16Ksb4K/..K6sbvb5vb5vbK6/.8KKs5KKs5KK/.9KsB3bKKsB3bK/.9KsB3bKKsB3bK/.9KsB3bKKsB3bK/.9Ksb4KKsb4K/.10K5..K5',
+ ua_ridden:'32x32:.9KpKP8KpK/.9KKPp8PKK/.8KbbPppyp3ypibbK/.8KbbPp8ibbK/.7Kb4PiiK3iib4K/.8Kb14K/.7Kb16K/.7Kbbsb10sbbK/.7Kbbs12bbK/.7Kbbs12bbK/.7KbbssWPs4WPssbbK/.7KbbssrPs4PrssbbK/.8KKSssrs6rtKK/.9KSs10tK/.10KStsKssKsttK/.8KKc3St5c3KK/.7Kc3g10jccK/.7Kcjcg10jcjK/.6Kcgjg11jcgcK/.6Kcgjg12cgjK/.6Kcjcg12jcjK/.6Kcjcg12jcjK/.5Kcgjcg12jcgcK/.5Kcjjcg12jcjjK/.5KS3cg12jS3K/.5KSttg13jSttK/.6KKcg14cKK/.7Kcg14jK/.7Kcj15K/.8KKv5KKv5KK/.10K5..K5',
+ ua_fox:'40x30:///.7K.4K/.6Kvv..KvK/.6KoyK.KbK/.6KovyKybK/.5KKovoyovK/.4Kyyo5bK/.3Kyvvo5bK3/..KKoKyvo5y3K17/KKyyo12y17KK/KKo31yyKK/KKo33yyK/bC5bbo29yK/K7Co29bK/.7KCo29yK/.7KbCo28bK/.8KCo25boobK/.9KCo11b5o7bKoobK/.10Ko8b3K5bbo4bKKboWK/.10Ko6bbK3.5KKboobK..KoWK/.10Ko4bbKK.10KoobK..KWWK/.10Ko4bK.12Ko3bK..WK/.9Kv4bbK.12Kv3bK/.9Kv4bbK.12Kv3bK/.8Kv6bK.11Kv5K/.8Kv7K.11Kv6K/.9K7.13K6',
+ ua_well:'32x32:.8KqK.10KqK/.9KqK.8KqK/.10KqK.6KqK/.11KqK.4KqK/.12KqK..KqK/.12KqK4qK/.12KKG4KK/.K.9KGGq4GGK.8KK/KGK3.5KGq8GK.5KKGGK/KG4K.3KGq10GK.3KGGqzK/.KGqqGK.KGqC3q4C3qGK.KGqqzK/.KGq3GKKGC5qqC5zKKGq3zK/..KGq3GGqC3KCqqC3KCqGGq3zK/.3KGzq5C3q4C3q5zzK/.4KKGq18zKK/.6KGq16zK/.7KGq14zK/.7KGq3Kq6Kq3zK/.8KGq3KWKKWKq3zK/.8KGq12zK/.K9Gq10zK9/KC30K/Kcg5jg6jg6jg6jgjK/Kj30K/Kcg28jK/Kcgjg6jg6jg6jg5jK/Kj30K/Kcg28jK/Kcg5jg6jg6jg6jgjK/Kj30K/Kcj29K/.K30',
+ ua_dog:'40x30:///.7K.4K/.6KBK..KBK/.6KbBK.KvK.23KK/.6KbvBKBvK.22KBBK/.5KKbvbBbvK.22KvK/.4KBBb5vK.21KBvK/.3KBKKb5vK3.18KBbvK/..KKbyYKb5B3K18BbvK/KKBBb12B18bbvK/KKb8rrb23vK/KKb8rrb22vK/vvK4vvb3rrb22BK/K8b3rrb22vK/.7Kb3rrb22vK/.7Kvvbbrrb21vK/.8KKbbyrb21vK/.9Kvb11v5b7vK/.10Kb8v3K5vvb4vK/.10Kb6vvK3.5KKvbbvK/.10Kb4vvKK.10KbbvK/.10Kb4vK.12Kb3vK/.9KBb3vvK.12Kb3vK/.9Kb4vvK.12Kb3vK/.8K7vK.11K7/.8K9.11K8/.9K7.13K6',
+ ua_ghafir:'32x32:/.11K10.4K3/.10Kj10K..KB3K/.9Kji10jK.KB3K/.8Kji12jK.KbvK/.9Kji10hK..KbvK/.9KWjh9nK..KbvK/.8KWu12WK.KbvK/.8KWuK3u4K3unK.KbvK/.7KWuuKQKu4KQKuuWKKbvK/.7KWuuK3u4K3uunKKbvK/.7KWnuK3u4K3unnKKbvK/.8KKWuuj6uunKK.KbvK/.9KWuju6junK..KbvK/.10KWnu6nnK.3KbvK/.8KKu3Wn5u3KK.KbvK/.7Ku3n10juuKbvK/.7Kujun10jujKbvK/.6Kunjn11junubvK/.6Kunjn12unjbvK/.6Kujun12jujbvK/.6Kujun12jujbvK/.5Kunjun12junbvK/.5Kujjun12jujbvK/.4KKvWWun12jWWbvK/.3Kv5n13jWnbvK/.3Ky5n14uKbvK/.3KyY3yn14jKbvK/.3KyY3yj15KbvK/.3KyY3yKv5KKv5K3bvK/.3Ky5K6..K5.3KK/.4KKoKK',
+ ua_broker:'32x32:.15K3/.11K10/.10KR10K/.9KRr10RK/.8KRr12RK/.9KRr10mK/.9KsRm9TK/.8Kst12sK/.8Kst12TK/.7Kst3Kt6Kt3sK/.7Kst3Kt6Kt3TK/.7KsTtRt8RtTTK/.8KKsttK6ttTKK/.9KstKt6KtTK/.10KsTt6TTK/.8KKP3sT5P3KK/.7KP3ppyp4yppiPPK/.7KPiPppyp4yppiPiK/.6KPpip3yp4yppiPpPK/.6KPpip3yp4yp3PpiK/.6KPiPp3yp4yp3iPiK4/.6KPiy14B6K/.5KPpio4yo4yo4By4vK/.5KPiiPp3yp4yp3iBb4vK/.5Ks3Pp3yp4yp3iBb4vK/.4KKsTTp4yp4yp3iBb4vK/.3Ky3KPp4yp4yp4Bb4vK/.3Ky3KPp4yp4yp4Bv5K/.4K4Pi4yi4yi5K5/.8KKv5KKv5KK/.10K5..K5',
+ ua_boy:'32x32:////.11K10.6K/.9KKh10KK..KKbKK/.8Kh14KKb5K/.8Kh14KKbbBbbK/.7Kh16KbBb3K/.8Kh14KKb5K/.7Kh16K3bvK/.7KhhtKh8KthhK.KbvK/.7KhhttKKt4KKtthhK.KbvK/.7KhhttKt6KtthhKKbKvK/.7KhhttKt6KtthhKKbvK/.7KhhtRt8RthhKKbvK/.8KKst10TKK.KbvK/.9Kst4KKt4TK..KbvK/.10KsTt6TTK.3KbvK/.8KKG3sT5G3KK.KbvK/.7KG3q10zGGKKbvK/.7KGzGq10zGzKKbvK/.5KGqzGq12zGqbvK/.5KGzzGq12zGzbvK/.5Ks3Gq12zs3K/.5KsTTq13zsTTK/.6KKGq14GKK/.7KGq14zK/.7KGz15K/.8KKv5KKv5KK/.10K5..K5',
+ ub_pick:'32x32:.8KCK.14KCK/.8KCcK.12KcCK/.9KcK.K6.5KcK/.10K3s6KK.4K/.10Ksst6ssK/.9Ksst9sK/.9Kst10TK/.8KstKt8KtsK/.8KsttKKt4KKttTK/.7Kst3Yyt4Yyt3sK/.7Kst3yyt4yyt3TK/.7KsTt12TTK/.8KKst10TKK/.9KsttKW4KttTK/.10KsTtK4tTTK/.8KKP3sT5P3KK/.7KP3p10iPPK/.7KPiC11iCiK/.6KPpip11iPpPK/.6KPpip12PpiK/.6KPiC13iCiKK/.6KPiPp12iPiyyK/.5KPpiPp12iPRyyRK/.5KPiiC13iRr4RK/.5Ks3Pp12iRr4mK/.5KsTTp13iRr4mK/.6KKPC14Rr4mK/.7KPp14iRm3K/.7KPib5iib5iiK4/.8K3b3K4b3K3/.10K5..K5',
+ ub_lamp:'32x32:.12K3bbK3.5KcK/.11Ky8K.3KcWcK/.10Kyo8yK.3KKbK/.9Kyooz6ooyK.3KbK/.9Kyozzq4zzobK.3KbK/.9KyozzqYGqzzobK.3KbK/.9KyozzqGGqzzobK.3KbK/.9KyozzqGGqzzobK.3KbK/.9Kyozzq4zzobK.3KbK/.9Kyooz6oobK..KbK/.10Kyo8bK.3KbK/.11Kyb7K.4KbK/.10Kj10K.3KbK/.10Kji8hK.3KbK/.9Kji10jK..KbK/.9Kji10hK..KbK/.8Kji12jK.KbK/.7Kji14jKKbK/.7Kji14hKKbK/.6Kji14hijKbK/.6Kjiio12Ks3bK/.5Kjihio12js3bK/.6KjKji12hK3bK/.7KKji12hKKbK/.8Kji12hKKbK/.8Kji12hKKbK/.8Kji12hKKbK/.7Kji14jKbK/.7Kji14hKbK/.7Kjh15KbK/.8K17bK/.25K',
+ ub_mirror:'32x32://.13K6/.11KKc6KK/.10Kccg6ccK/.3K3.3Kccg9cK/.KKY3KK.Kcg10jK/KYYu3YYKcg12cK/KYuunuuoKcgK3g4K3gjK/YuuWnnuuYggK3g4K3ggcK/YuWn4uoggK3g4K3ggjK/Yun5uojgK3g4K3gjjK/Yun5uoKcg10jKK/Yun3WnuoKcg3K4g3jK/YunnWnnuoKKcjg6jjK/YunWn3uoKg3cj5g3KK/Yun5uoggj10iggK/Yun3WnuoKgj10igiK/Yun5uogj11igjgK/Yuun3uuogj12gjiK/KYuunuuoKgj12igiK/KYou3ooKgj12igiK/.KKYoojKKgj12igjgK/.3K4.Kgj12igiiK/.8Kgj12ic3K/.7Kgj13icjjK/.7Kgj14gKK/.7Kgj14iK/.7Kgi15K/.8KKv5KKv5KK/.10K5..K5',
+ ub_scale:'32x32:.4KCK.8KCK/.4KCcK.6KcCK/.5KcK.6KcK/.6K.3K6/.8KKs6KK/.7KssB6ssK/.6KsB10sK/.6KsB10bK13/.5KsBByKyBByKyBBsy12/.5KsBBy3BBy3BBbKgK4oK4g/.5KsB12bKgK..KoK..Kg/.6KsBK8BbKKgK..KoK..Kg/.6KsBBKWKKWKBBbKKgK..KoK.KKg/.7KsB10sKgK..KoKKY3/.6KsB12sgKK.KoKKYoo/.5KsB12Ys4KKoK.K3/.4KsB13sB4sKoK/.4KsB13sB4bKoK/.3Ksr15sb3KKoK/.3Ksm18bKKoK/.3KsB18bKKoK/.3KsB18bKKoK/.4KsB16bK.KoK/.4KsB16bK.KoK/.5KsB14bK..KoK/.6KsB12bK.3KoK/.7KsB10bK.4KoK/.7KsB3b4B3bK.4KoK/.7KsBBbK4sBBbK.K4oK4/.6Kv5K.Kv5KKo9K/.7K5.3K5.Ko9K/.22K9',
+ ub_shadow:'32x32:.14KggK/.14Kg3K/.12KKi4KK/.11Kiih4iiK/.10Kih8iK/.9Kih10iK/.9Kih10KK/.8Kihhj3hhj3hiiK/.8KihhjKjhhjKjhhKK/.8Kihhj3hhj3hhKK/.8Kih12KK/.8Kih12KK/.8Kih12KK/.7Kih13iiK/.7Kih14KK/.7Kih14KK/.6Kih15iiK/.5Kih17KK/.5Kih17iiK/.4Kih20iK/.4Kih20KK/.3KihKh18KiiK/.4KiKih16KKiK/.5KKih16K3/.6Kih16KK/.5KihhKh3Kh3Kh3KhhiiK/.5KiK3iK3iK3iK3iK3/.5KiKiKiKiKiKiKiKiKiKiK/.6K.K.K.K.K.K.K.K.K.K',
+ ub_scream:'32x32:.10K.10K/.9KPK.K6.KPK/.9KPPKW6KPPK/.9KW3C6W3K/.8KWC12WK/.K.5KWC3KKC4KKC3WK.5K/KWK.3KWC4KKC4KKC4WK.3KWK/.KWK..KWC16cK..KWK/.KWWKKWC18WKKWcK/..KWWKWC4WCWKWKWKWC5cKWcK/..KWcKWC4K10C5WCcK/.3K3WC4K3m4K3C4cKWK/.5KWC3K3m6K3C3cKK/.5KWC3KKm8KKC3cK/.6KWCCK3m6K3CCcK/.6KWC3K3m4K3C3cK/.7KWCCK10CCcK/.8KWCCWKWKWKWC3cK/.9KWccC6c3K/.10K3WC4cK3/.12KWC4cK/.13KWCCcK/.12KKWCCcKK/.11Kv3Wcv3K/.11Ks8K/.12KsB4bK/.11KsB6sK/.10KsB8sK/.10KsB8bK/.11KsB6bK/.12Ksb5K/.13K6',
+ ub_broker:'32x32:/.25K3/.13K6.5KB3K/.11KKs6KK.3KB3K/.10Ksst6ssK.3KbvK/.9Ksst9sK..KbvK/.9Kst10TK..KbvK/.8KstKt8KtsK.KbvK/.8KsttKKt4KKttTK.KbvK/.7Kst3Kt6Kt3sKKbvK/.7Kst3Kt6Kt3TKKbvK/.7KsTt12TTKKbvK/.8KKsttK6ttTKK.KbvK/.9KstKttyt3KtTK..KbvK/.10KsTt6TTK.3KbvK/.8KKW3sT5W3KK.KbvK/.7KW3C10cWWKbvK/.7KWcWC10cWcKbvK/.6KWCcC11cWCWbvK/.6KWCcC12WCcbvK/.6KWcWC12cWcbvK/.6KWcWC12cWcbvK/.5KWCcWC12cWCbvK/.5KWccWC12cWcbvK/.5Ks3WC12cssbvK/.5KsTTC13csTbvK/.6KKWC14WKbvK/.7KWC14cKbvK/.7KWc15KbvK/.8KKv5KKv5K3bvK/.10K5..K5.3KK',
+ uc_servant:'32x32:.12h8/.10hhi8hh/.9hiih8iih/.8hih12ih/.7hih14ih/.7hihK12hKh/.6hih15iih/.6hihhiT9vihhKh/.6hihhT11vh4/.6hihhT11vh4/.6hihhTTYyT4YyTvh4/.7KihTTyyT4yyTvhKh/.7hihK12h3/.8Kih12Kh/.9Kh13/.8h16/.7hi13hiih/.7hiKih11iKh/.6hih14iich/.6hih13iihcWh/.6hiKih12KicWh/.6hihr14icWh/.5hihhm14icWh/.4hhiKhih12Ko4h/.3hg3ttih13t3K/.3hg3vvh14tvvh/.4K4ih13iiKK/.7hih14Kh/.7hiK14hh/.8Khv5hhv5hh/.10K5..K5',
+ uc_spider:'32x32:.15KcK/.15KcK/.15KcK/.15KcK/.15KcK/.15KcK/.15KcK/.13KKiiKK/.7K.4KiihhiiK.4K/.6KiK..Kih6iK..KiK/.5KiKiK3ihRhhRhK4iKiK/.4KiK.KiiKihhrrhhKKiiK.KiK/.4KhK..KKiih6KiKK..KhK/.3KiK3.3Khih4KiK.3K3iK/..KiKKiiK4ihChhCiiK4iiKKiK/.3KKiKKi4h8i4KKiKK/.4KhK.KKih10iKK.KhK/.3KiK..Kih12iK..KiK/..KiK.3Kih4r4h4KK.3KiK/..KhK..KKih5rrh5K3..KhK/.KiK..Ki3h4r4h4KiiK..KiK/..K..KiKKih12K3iK..K/.5KhKKih12K3hK/.4KiK..Kih10KK..KiK/.4KhK.KiKih8KKiK.KhK/.3KiK.KiK.Kih6KK.KiK.KiK/.3KhK.KhK..KiK6..KhK.KhK/..KiK.KiK.4K6.4KiK.KiK/.3K..KhK.14KhK..K/.5KiK.16KiK/.5KhK.16KhK/.6K.18K',
+ uc_jar:'32x32://.9K14/.8Kb14K/.8Kb14K/.9KsB10bK/.9KsB10bK/.9Kv12K/.8Ky14K/.7KsB13ysK/.6KsB15ysK/.6KsB14yBbK/.5KsB3KKB3K4B6sK/..K..KsB5KBKB4KB5bK.3K/.KCKKsB4LB10LB4sK.KCK/.KK.KsB4LB10LB4bK..KK/KCK.KsB9KKB9bK..KC/.KK.KsB4LB3K4B8bK..KK/.KCKKsB7K6B7bK.KCK/..K.KsB7Km4KB7bK..K/.4KsB7Km4KB7bK/.4KsB8m4B8bK/.5Kb9KKb9K/.5KsB18bK/.6KsB16bK/.6KsB16bK/.7KsB14bK/.8KsbB10bbK/.9KKsbB6bbKK/.11KKsb5KK/.13K6',
+ uc_shadow:'32x32:/.14K4/.12KKp4KK/.11Kppi4ppK/.10Kpi8pK/.9Kpi10pK/.9Kpi10hK/.8KpiiW3iiW3iipK/.8KpiiWKWiiWKWiihK/.8KpiiW3iiW3iihK/.8Kpi12hK/.8Kpi12hK/.8Kpi12hK/.7Kpi14pK/.7Kpi13chK/.7Kpi14cK/.6Kpi16cK/.5Kpi17hcK4/.5Kpi18W5K/.4Kpi19WK3cK/.4Kpi19WC3cK/.3Kpihi18WcrccK/.4KpKpi16hKpK3/.5KKpi16hKK/.6Kpi16hK/.5Kpiihi3hi3hi3hi3pK/.5KphhKphhKphhKphhKphhK/.5KpKpKpKpKpKpKpKpKpKpK/.6K.K.K.K.K.K.K.K.K.K',
+ uc_snake:'32x32://.7K4/.6KG4K.12K4/.4KKGq4GK.10KG4K/.3KGGqKyq3GK.8KGq4GK/K3Gq8zK.7KGqqyqyKGKK/rrKKGqyqyqqzK.8KGq7GG/Kr3KGq4zK.9KGq5zzrr/rK4Gq5GKK.7KGq4zr3K/K.4KGq4yGGK3.4KGq3zK4r/.6KGzq5G3KK..KGqyqzK.3K/.7KKGq7GGK.KGq3zK/.9KGzq4yqqGKKGqqzK/.10KKGzzq5GGq3zK/.12K3Gzq8zK/.15KKGq3yq3zK/.17KGq5zK/.18KGq4zK/.16KKGq4zK/.10K6GGq4zK/.8KKG6qqyqyqqGKK/.7KGGq14GGK/.6KGq4yq13GK/.5K3Gq14yqzK3/.4KG3q18G3K/.3KGq10yqyq11GK/.3KGqzqqzqqzqqzqqzqqzqqzqqzyzK/.4KGzzqyq16z3K/.5K3Gz5q6z6K3/.8K6Gz5K6/.14K6',
+ uc_keeper:'32x32:.5KCK.16KCK/.5KCcK.14KcCK/.6KccK.3K6.3KccK/.7KcK.KKP6KK.KcK/.8K.KPPp6PPK.K/.9KPPp9PK/.9KPp10iK/.8KPpKp8KpPK/.8KPppKKp4KKppiK/.7KPp3Yyp4Yyp3PK/.7KPp3yyp4yyp3iK/.7KPip12iiK/.8KKPp10iKK/.9KPppKWKKWKppiK/.10KPip6iiK/.8KKi3Pi8KK/.7Ki3h10KiiK/.7KiKih10KiKK/.6KihKh11KihiK/.K6ihKh12ihKK/Kr7Kih12KiKK/KrC5vKih12KiKK/Krm5vKih12KihiK/KrC5vKih12KiK3/Krm5vPih12KP3K/KrC5vih13KPiiK/Krm5vih14iyK.K/Krv6ih14KoyKyK/.K7iK17yK/.8KKv5KKv5K3yKyK/.10K5..K5.3K.K',
+ uc_thief:'32x32:/.11h10/.10hi10h/.9hih10ih/.8hih12ih/.9Kih10KK/.9hsiK9Th/.8hstKt8htsh/.8hsttKKt4KKttTh/.7hst3ht6ht3sh/.7hst3ht6ht3Th/.7hi16h/.7hih14Kh/.8Kih12Kh/.8hih14/.8hih14/.7hiiK12hih/.7hiKi11hiKh/.4h3ih14iich/.3hC3ih13iihcWh/..hhCsBiKih12KicWh/.hCb5hih13icWh/.hCs4Bhih13icWh/hCs6Cih13o4h/hCs4ysBih13s3K/hCs6Bh14sTTh/hCs6Bh13iiKK/.KCs4Bih14Kh/.hCB5iK14hh/..K7hv5hhv5hh/.10K5..K5',
+ uc_box:'32x32:/.6K20/.4KKBBooB12ooBBKK/.3KBBbboob12oobbBBK/..KBb4oob12oob4BK/..KBb4ooby3b4y3boob4vK/.KBb5oobyKyb4yKyboob5BK/.KBb5ooby3b4y3boob5vK/..KBb4oob12oob4vK/..KBb4oob12oob4vK/.Ky6ooy12ooy6K/.Ky6ooy12ooy6K/..KWKKWKKWKKWKKWKKWKKWKKWKKWKK/..K6m16K6/..K6m16K6/..KKWKKWKKWKR8KKWKKWKKWK/.Ky6ooyyRr6myyooy6K/.Ky6ooy3Rr5myyooy6K/.KBb5oob4Rr4mbboob5vK/.KBb5oob5Rr4Rboob5vK/.KBb5oob6Rr3mboob5vK/.KBb5oob6Rr3mboob5vK/.KBb5oob7Rmmbboob5vK/.KBb5oob7Rb4oob5vK/.KBb5oob12oob5vK/.KBb5oob12oob5vK/.KBb5oob12oob5vK/.KBb5oob12oob5vK/.KBb5oob12oob5vyK/KyBv5oov12oov6KK/yK30y/K.30K'
+};
+const PXF_K={};
+(function(){const st=document.createElement('style');st.textContent='.foe svg.pxf-boss{width:108px;height:108px;margin:-2px 0 -6px}';document.head.appendChild(st)})();
+Object.keys(PXF_D).forEach(k=>Object.defineProperty(FOE_ART_X,k,{configurable:true,enumerable:true,get:()=>PXF_K[k]||(PXF_K[k]=PXF_svg(PXF_D[k])),set:v=>{PXF_K[k]=v}}));
+/* ==========================================================================
+   سرداب: pixel town people (p17p.js)
+   The town people who still had flat vector faces (npcArt in p4c.js and the twNpcA fallback in p9.js):
+   عم حسن الحداد, عم فتحي الخياط, أم سيد الطباخة, عم رمضان البياع, عجوز الجبل and العمدة.
+   They are drawn with the hero paper doll (PD, PX in p9p.js) in the 32x32 card-face view, like the companions,
+   the café people, عم شاكر and أم عطية (those already go through portrait()). Each person gets a backdrop
+   in their own colours and a small touch of their trade (a hammer, glasses and a tape, a ladle, a fez).
+   ========================================================================== */
+const PXP_NPC={
+  hassan:{look:{name:'عم حسن',g:'m',cls:'محارب',skin:'#9a6440',hairColor:'#1b1412',hair:'أصلع',eyes:'#4a2a14',outfit:'#3a3a3a',age:'كبير',beard:'شنب ودقن قصيرة',mark:'ندبة على الحاجب'},bg:['m','v'],
+    fx:s=>{s(28,23,31,'b');[[24,18,7,1,'K'],[24,22,7,1,'K'],[24,19,1,3,'K'],[30,19,1,3,'K'],[25,19,5,1,'c'],[25,20,5,2,'g']].forEach(([x,y,w,h,c])=>s.r(x,y,w,h,c));[[3,6],[27,5],[4,13],[29,11],[6,3]].forEach(([x,y])=>s(x,y,y,'y'))}},
+  fathy:{look:{name:'عم فتحي',g:'m',cls:'ساحر',skin:'#e0b08a',hairColor:'#d9d4cc',hair:'قصير',eyes:'#4a2a14',outfit:'#2e4a7a',age:'عجوز',beard:'شنب'},bg:['3','2'],
+    fx:s=>{s.r(10,16,4,1,'g');s.r(10,20,4,1,'g');s.r(10,17,1,3,'g');s.r(13,17,1,3,'g');s.r(18,16,4,1,'g');s.r(18,20,4,1,'g');s.r(18,17,1,3,'g');s.r(21,17,1,3,'g');s.r(14,17,4,1,'g');
+      s.r(9,26,2,6,'y');s.r(21,26,2,6,'y');[[9,28],[22,27],[9,30],[22,30]].forEach(([x,y])=>s(x,y,y,'o'))}},
+  umsayed:{look:{name:'أم سيد',g:'f',cls:'معالج',skin:'#c68d62',hairColor:'#1b1412',hair:'غطا راس',eyes:'#4a2a14',outfit:'#3a3a3a',age:'كبير',mark:'كحل'},bg:['b','v'],
+    fx:s=>{s(28,17,31,'b');s.r(25,12,6,1,'K');s.r(25,13,6,3,'c');s.r(26,13,4,1,'W');s.r(26,16,4,1,'g');s.r(24,13,1,3,'K');s.r(31,13,1,3,'K');s.r(25,16,1,1,'K');s.r(30,16,1,1,'K')}},
+  ramadan:{look:{name:'عم رمضان',g:'m',cls:'حرامي',skin:'#9a6440',hairColor:'#1b1412',hair:'قصير',eyes:'#2a2a2a',outfit:'#8a6a2a',age:'كبير',beard:'شنب مبروم'},bg:['q','z'],
+    fx:s=>{s.r(11,0,10,1,'K');s.r(10,1,1,5,'K');s.r(21,1,1,5,'K');s.r(11,1,10,5,'r');s.r(11,1,1,5,'R');s.r(20,1,1,5,'m');s.r(11,5,10,1,'m');s.r(21,2,1,4,'K');s.r(22,3,1,3,'K')}},
+  oldman:{look:{name:'عجوز الجبل',g:'m',cls:'معالج',skin:'#9a6440',hairColor:'#d9d4cc',hair:'أصلع',eyes:'#4a2a14',outfit:'#5a4630',age:'عجوز',beard:'دقن طويلة',mark:'عين مربوطة'},bg:['g','3']},
+  omda:{look:{name:'العمدة',g:'m',cls:'ساحر',skin:'#c68d62',hairColor:'#d9d4cc',hair:'قصير',eyes:'#4a2a14',outfit:'#2e4a7a',age:'كبير',beard:'شنب مبروم',eq:{head:'turban'}},bg:['4','3']}};
+const PXP_C={};
+function PXP_svg(id){
+  if(PXP_C[id])return PXP_C[id];
+  const N=PXP_NPC[id],P=PD.PAL,h=N.look;
+  let img=PD.compose(PX.look(h),'face');
+  const b=PD.backdrop('face'),m={[P[3]]:P[N.bg[0]],[P[2]]:P[N.bg[1]]};
+  img=PD.over({w:b.w,h:b.h,px:b.px.map(c=>m[c]||c)},img);
+  const W=img.w,px=img.px.map((c,k)=>k<2*W?P[N.bg[0]]:img.px[k-2*W]);   /* 2 rows lower, as PX does for card faces */
+  const s=(x,y0,y1,c)=>{for(let y=y0;y<=y1;y++)if(x>=0&&x<W&&y>=0&&y<img.h)px[y*W+x]=P[c]};
+  s.r=(x,y,w,hh,c)=>{for(let i=0;i<w;i++)s(x+i,y,y+hh-1,c)};
+  if(N.fx)N.fx(s);
+  const nm=(h&&h.name)||'';
+  return PXP_C[id]=`<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(nm)}" viewBox="0 0 ${W} ${img.h}" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" style="display:block;width:100%;height:100%;image-rendering:pixelated">${PD.toSVG({w:W,h:img.h,px},0,0,1)}</svg>`}
+/* npcArt (p4c.js) serves the town screen, the shops (twNpcA in p9.js) and the mountain (AR.npc in p9b.js); the old drawing stays as the fallback */
+{const _na=npcArt;npcArt=function(id,w){if(PXP_NPC[id]){try{return PXP_svg(id)}catch(e){if(typeof PX!=='undefined')PX.err(e)}}return _na(id,w)}}
+/* ==========================================================================
+   سرداب: pixel items (p17i.js)
+   Every item picture redrawn in the pixel style (the 32-colour palette of p17.js, 1-px dark outline,
+   light from the top left): bag items and food, materials, fish, gear in every slot, the bags and the
+   loot chest. Sprites are 16x16 art pixels (the hair necklace 24x24, fish 24x14, the chest 24x20 closed and 24x22 open),
+   packed like the monsters in p17.js and drawn with PXF_C.
+   It wraps itemIcon2, matIcon, gearIcon and fishArt, so every screen that shows an item (bag, shop,
+   smith, loot, chest reveal, gear) gets the new art; a key without a sprite falls back to the old art.
+   Gear keeps its rarity cue: a small gem in the corner in the rarity colour (and sparkles
+   when legendary). chestArt is a const, so a MutationObserver swaps the old chest SVG for the pixel one.
+   ========================================================================== */
+const PXI_D={
+ potion:'16x16:.6K4/.5KB4K/.5Kb4K/.5Ku4K/.5KuWuuK/.5KuWuuK/.4KuuWu3K/.3KuWu6K/..KRWr7mK/..KRWr7mK/.Kmr9mmK/..KRr8mK/..Kmr7mmK/.3Kmr5mmK/.4Km6K/.5K6',
+ bigpotion:'16x16:.5KB4K/.5Kb4K/.4Kc6K/.5KuWuuK/.4KKu4KK/.3Ku8K/..KRWr7mK/.KRWr9mK/KRWr11mK/KYYy10ooK/KRr12mK/KmrRr10mK/.Kmr10mK/..Kmr8mK/.3Km3rrm3K/.4K3mmK3',
+ revive:'16x16:.5KB4K/.5Kb4K/.4Kc6K/.5KuWuuK/.4KKu4KK/.3Ku8K/..KWu9K/.KQWL9lK/.KQL4WWL4lK/.KQL4WWL4lK/.KQLLW6LLlK/.KQLLW6LLlK/.KlL4WWL4lK/..KlL3WWL3lK/.3Kl8K/.4K8',
+ salt:'16x16:.6KK.K/.5KWcKWK/.4KWC3ccK/.4KKWccKK/.3Kb7K/.4KKWCCcbK/.3KWC6bK/..KWC8cK/..KWcg3c5K/.KWC10cK/.KWC10cK/..KWC8cK/..KWC8cKW/.3KWC6cK/.4KKWCCcKK.W.W/.6K4',
+ wax:'16x16:////.3K5/..KY5K/.KYy5YK/KYyyWy4YK3/KYy6Y5K/KYy5YyWy3YK/.KYy3oy7YK/..KYooYy7oK/.3K4Yy3o3K/.7KYo4K/.8K5',
+ amulet:'16x16:..KbK.6KbK/.3KbK.4KbK/.4KbK..KbK/.5KbKKbK/.6KccK/.5KKccKK/.4KW6K/.3KWc6WK/..KWcWg4ccWK/..KWcgLQLLgcgK/..KWcgL4gcgK/..KWcgLLlLgcgK/..KWccg4ccgK/.3KWc6gK/.4KWg5K/.5K6',
+ foul:'16x16:/.6c.3c/.5c.3c/.6c.3c/.7c.3c/.3K10/.KKT3qTtTGTTKK/KT3btTbyybtT3K/.KBT3bTTbTTbbK/.KB11bK/.KbybbybbybbybK/..KB9bK/..Kb10K/.3KKb6KK/.4Kb6K/.5K6',
+ grilled:'16x16://///.4K6.4K/..KKy6K4yK/.Kyyobooboy4TK/.KyKooboobo4TK/.KTTo3boobT4K/KWCCyT5C4yK/WcyYC10cW/KyyoC8ccgK/.Kg12K/..K12',
+ qdish:'16x16:/.5c.5c/.4c.5c/.5c.5c/.6c.5c/.3K10/.KKr3ccCrqrrKK/KBrRGgc3rrRrrBK/bbBrmr5mrRBbb/b13vbb/KKb11vKK/Kv14K/.Kvb9vKK/..Kv10K/.3K10',
+ seniya:'16x16:///.4K6/.3KcC3cgKK/..KcKKC3cgcK/..KKc4gccgKK/.Kc3B6c3K/KcgBo8BgcK/KgBorRYo4rRBjK/cgBo6Yo3Bgc/KggBo3rRoYoBgjK/KjggB3ooB3ggjK/.Kj3g6j3K/..K3j6K3/.5K6',
+ torch:'16x16:.6KrK/.5KrrK.K/.4KryrKKrK/.4KryyrKrrK/.3KrryYyrroK/.3KroyYYyorK/.3KroyYYyorK/.4KroyyorK/.5Kbv3K/.5KvBvvK/.6KBbK/.6KBbK/.6KBbK/.6KBbK/.6KBbK/.7KK',
+ incense:'16x16:/.9c/.9c/.5P..P..P/.4P..P.4P/.5P.P.3P/.5K3PKK/..K3rrRr3K3/.KY12K/..Ky9oK/..Ko10K/.3Ko8K/.3KoKKooKKoK/.3KoKKooKKoK/.3KoK.KK.KoK/.4K.6K',
+ money:'16x16://.11K/..K9YKK/.Ky7YYyYYK/KyyY6yWoyyYK/.Ky6YyoyoyoK/Koy6YyoyoyoK/.Ko6YyoyoyoK/Koy6YyoyoyoK/.Ko6YyyoyyoK/Koy7YoyooK/.Ko8KYKK/Koy8oK/.Ko8K/..K8',
+ trophy:'16x16:..Kr3K..Km3K/.3Kr3KKm3K/.3Kr3KKm3K/.4KrrKm3K/.5KrrmmK/.5KrrmmK/.5KY4K/.4KYWy3YK/.3KYyo4yYK/.3KYooYyo3K/..KYyoy4oyYK/.3KYooyyo3K/.3KYyo4yoK/.4KYy4oK/.5KYo3K/.6K4',
+ stone:'16x16:///.8K3/.5K3c3K/.4Kc3g3cK/.3Kcggjg4cK/..KcgCggjg4cK/.KcgCg3jg5cK/.Kcg6jg4jK/.Kcg6jjg3jK/Kcg7jg4jK/Kcg6jg5jK/Kcj13K/.K14',
+ copper:'16x16:////.3K6/..Ks6K/.KstSSt3sK/.Kst6TKK/Kst8ssKK/.Kst5ssttssK/.Kst4TsSt3TK/..KsTTqst6sK/.3K5st4TK/.7KsTttqTK/.8KKsTKK/.10KK',
+ iron:'16x16:/.6KK/.5KuuK3/.4Ku6KK/.3KuuWu5iK/..Ku7i3K/.Ku7i5K/.Kn7i5K/.Kj6ni5K/.Kj7ni5K/..Kjjnj3ni5K/..Kjcj5ni3K/..Kj7niiK/.3KKj5inK/.5K4jjnK/.9K3',
+ silver:'16x16://.12W/.11W3/.12W/.4K6/.3KW6K/..KWc6WK/.KWccWWc4WK/.KWc8gKK/.KWc9WWK/.KWc7gccgK/..KWc5gc3gK/.3KWg5ccggK/.4K6WgKK/.10KK',
+ turq:'16x16://.13W/.12W3/.4K8.W/.3KQ8K/..KQOWWO5QK/..KQO4lO3lK/.KQO10QK/.KQOlO5lOOlK/.KQOOllOllOlOlK/..KQO3lO4lK/..KQO8lK/.3KQl7K/.4K8',
+ salskin:'16x16:.6K4/..K..KsvbbK..K/.KsKKsBvbBbKKsK/.KsB4vbB4bK/..KsBbBvbB3bK/..KsB3vbBbBbK/.3KsBBvbBBbK/.3KsBBvbBBbK/.3KsbBvbBBbK/..KsB3vbBbBbK/.KsBbBBvbB4bK/KsbKsBBvbBBbKsbK/KsK.KsbvbBbK.KsK/.K.3KKvbKK.3K/.6KsK/.7K',
+ salfang:'16x16:.7KWCCcK/.7KgcggK/.7Kg4K/.7KWCCcK/.7KWCCcK/.7KWCCcK/.7KWCcK/.7KWCcK/.6KWCcK/.6KWCcK/.5KWCcK/.4KWCcK/.3KWcKK/..KWcK/.3KK',
+ horn:'16x16:/.8K5/.6KKRr3mK/.5KRm4KK/.4KRrmmKK/.3KRrmmK/..Km4K/..KRrrmK/.KRrrmK/.Km4K/.KRrrmK/KRr3mK/KRC5K/KRc5K/.KRrrmK/..KRmK',
+ hair:'16x16:.5KihjiK/.5KWc3K/.4Khc4K/.4KjiihjiK/.3KjiihjiiK/.3KiihjiihK/.3KihjiKhjK/.3KhQiKKjiK/.3KjiiKjiK/.3KiihjiiO/.4KhjiiK/.4KjiiK/.5KihjK/.6KjiiK/.7KihK/.8KK',
+ cloth:'16x16://.3K11/..KccW9K/.Kc4C8K/.Kc4r8K/.KcCccm8K/.KccgcC8K/.KccgcC8K/.Kc4r8K/.Kc4C8K/..Kc11K/.3K5C6K/.8KCr4K/.9KCCccK/.10K4',
+ bread:'16x16:///.7K6/.6KS6K/.5KSs3CssSK/.3KKSSs4TssSK/..KS3sS3s4tK/.KSsCs5SsTstK/KSs3Ts5SstK/Ks7TssttK/KtsTs5CstK/.Kts3Ts3tK/..Kt3st3K/.3K3tK3/.6K',
+ shoe:'16x16://///.5K6/.3KKb6K/..KbbB6bK/.KbBBCssB4bKK/KbB3sTsB3vBbbK/Kb14K/Kv11KvvK/.K14',
+ stone1:'16x16:.6K4/.4KKW4KK/.3KW8K/.KKW10K/KcW12K/Kc3W3iiW3ggK/Kc4WWiiWWg3K/Kc4i6g3K/Kc4i6g3K/Kc6iig5K/Kc6iig5K/Kc6iig5K/.KKc5g5K/.3Kc4g4K/.4KKccggKK/.6K4',
+ stone2:'16x16:.6K4/.4KKu4KK.W/.3Ku8W3/.KKu10W/KLu12K/KL3u3WWu3llK/KL4uuWWuul3K/KL4W6l3K/KL4W6l3K/KL6WWl5K/KL6WWl5K/KL6WWl5K/.KKL5l5K/.3KL4l4K/.4KKLLllKK/.6K4',
+ stone3:'16x16:.6K4/.4KKY4KK.Y/.3KY11/.KKY11/KyY12K/Ky3Y3WWY3ooK/Ky4YYWWYYo3K/Ky4W6o3K/Ky4W6o3K/Ky6WWo5K/Ky6WWo5K/Ky6WWo5K/.KKy5o5K/.3Ky4o4K/.4KKyyooKK/.6K4',
+ bolti:'24x14:.9KK/.7KKqqKK/.6Kq6K/.4KKz8KK.4KK/.3Kz12K.KKqqK/..Kz14Kq4K/.KggWgzg8zggq4K/.KgKKgzg11q4K/.Kg4zggcggcg5q4K/..Kg14K3qqK/.3KC12K.3KK/.4KKC8KK/.6K5qKK/.11K',
+ qarmout:'24x14://.8K4/.c.5Ki4KK.6KK/..cK4i7K3.KKiiK/..Ki14Ki4K/.KjjWjijnjjnj6i4K/KjjKKjij12i3K/.Kj4ij11i4K/..cg14K3iiK/.c.cK6iiK5.3KK/c.9KK',
+ bouri:'24x14://.8K4.9K/.7Kn4KK.6KnK/.4K3n7KK.3KnnK/..KKn12K3nnK/.KccWcgcgcgcgcgc3n3K/KccKKcgc12nnK/.Kc4gc11KnnK/..KKW12KK.KnnK/.4K6nnK4.4KnK/.10KK.9K',
+ goldfish:'24x14:.9KK.KK/.8KooKooK.5W/.Y.4KKo6K.6K/.4KKo9K.4KoK/.3Ko12K..KooK/..Ko6Yo7KKooK/.KyyWyoy11o3K/.KyKKyoy11o3K/.Ky4oy11KooK/..KY8oY5K.KooK/.3KY12K.3KoK/.4K3Y6K3.5K/.7K6'
+};
+const PXI_G={
+ shuma:'16x16:.10K4/.9KsBBbK/.8KsB3bK/.8KsB3bK/.7KsBBvBbK/.6KsB4bK/.5KsB3vKK/.5KsBvbK/.4KsBBbK/.3KsBBbK/.3KsBbK/..KvBbK/.KvBvK/.KsvKvK/..KKvK/.4K',
+ copsword:'16x16:.14KK/.13KWt/.12KstT/.11KstTK/.10KstTK/.9KstTK/.4K.3KsttTK/.3KYK.KsttTK/.3KToKsttTK/.4KToKtTK/.5KbvKK/.4KbvToK/.K3bvKKToK/KYobvK..KK/KooKK/.KK',
+ dagger:'16x16:.14K/.13KWK/.12KWcK/.11KWcGK/.10KWcqK/.5K.3KWcGK/.4KYK.KWcqK/.4KoYKWcGK/.5KoyK3/.5KboyK..G/.4KBvKoyK.q/..KKbvK.KK/.KYyvK/.KyoK/..KK',
+ ironsword:'16x16:.14KK/.13KWc/.12KWcg/.11KWcgK/.10KWcgK/.9KWcgK/.4K.3KWccgK/.3KYK.KWccgK/.3KoyKWccgK/.4KoyKcgK/.5KvbKK/.4KvboyK/.K3vbKKoyK/KYyvbK..KK/KyyKK/.KK',
+ turqstaff:'16x16:.10K4/.9KO4K/.8KO6K/.8KOWQO3K/.8KoO4lK/.7KyO4lOK/.8KyO4K/.8KByKoK/.7KBbK.K/.6KBbK.4Q/.5KBbK.4Q3/.4KBbK.6Q/.3KBbK/..KBbK/.KBvK/.KvK',
+ vest:'16x16:.4KK.4KK/.3KbbK..KbbK/..KBbbK..KbbvK/.KBBb3KKb3vvK/.KBb5Kb4vK/.KBb5Kb4vK/.KBb4yKyb3vK/.KBb5Kb4vK/.KBb4yKyb3vK/.KBb5Kb4vK/.KBb5Kb4vK/.Kv6Kv5K/..K6.K5',
+ ironarmor:'16x16:/.3K3.4K3/..Kc3K..Kc3K/.KWc4KKc4gK/KWWc4Wgccg4K/KWcgc3WgccggcgK/KggKWccWgccgKggK/.K3WccWgccgK3/.3KWjcWgcjgK/.3KWccWgccgK/.3Kg8K/.3KWccWgccgK/.3KWjcWgcjgK/.4Kg6K/.5K6',
+ turban:'16x16:/.5K5/.3KKW3CCKK/..KWWC6cK/.KWC9cK/.KWggC6ggcK/KWCWWggCCggCCcK/KWC3WWggC4ccK/KWC11ccK/KWggC7ggCcK/KCWWggC3ggCCccK/KcCCWWg3C4ccK/.Kc11CcK/..Kh10CcK/.3K10cgK/.13KK',
+ helmet:'16x16:.7KK/.6KRrK/.5KKrrKK/.4KW6K/.3KWWc5WK/..KWWc7WK/.KWc10WK/.KWc10gK/.KWc10gK/.KgcggcggcggcgK/.Kg12K/.KccK3cgK3ggK/.KccK.KcgK.KggK/.KcgK.KcgK.KggK/..KK..KcgK..KK/.7KK',
+ copring:'16x16:.6K4/.5Ky4K/.4KysrrmoK/.4Kyr3moK/.5Ko4K/.4Kst4TK/.3Kst6TK/..KstTK4stTK/..KsTK.4KsTK/.KTtTK.4KsTTK/..KsTK.4KsTK/..KTTK.4KTTK/.3KTTK4TTK/.4KT6K/.5K6',
+ silring:'16x16:.6K4/.5Ky4K/.4KyWrrmoK/.4Kyr3moK/.5Ko4K/.4KWc4gK/.3KWc6gK/..KWcgK4WcgK/..KWgK.4KWgK/.KgcgK.4KWggK/..KWgK.4KWgK/..KggK.4KggK/.3KggK4ggK/.4Kg6K/.5K6',
+ hornneck:'16x16:..K.10K/.KbK.8KbK/..KbK.6KbK/..KbK.6KbK/.3KbK.4KbK/.4KbK4bK/.4KbKlLKbK/.5KluLlK/.6KllK/.5KWCCK/.5KWCcK/.6KWCcK/.7KCcK/.8KcvK/.9KvK/.10K',
+ hairneck:'24x24:KiihjK.12KijhiK/KihjK.14KijhK/KhjiK.14KiijK/KjiiK.14KhiiK/KiihK.14KjhiK/KihjK.14KijhK/KhjiiK.12KhiijK/.KiihK.12KjhiK/.KihjK.12KijhK/.KhjiiK.10KhiijK/..KiihK.10KjhiK/..KihjiK.8KiijhK/.3KjiihK.6KjhiiK/.3KiihjiK6iijhiK/.4KhjiihgccgjhiijK/.5KiihcW3cgjhiK/.6KKcWOQQOcgKK/.7KccQWWQggK/.7KccOQQOggK/.8KcgOOggK/.9Kcg3K/.10KcgK/.11KK',
+ amulet:'16x16:..KbK.6KbK/.3KbK.4KbK/.4KbK..KbK/.5KbKKbK/.6KccK/.5KKccKK/.4KW6K/.3KWc6WK/..KWcWg4ccWK/..KWcgLQLLgcgK/..KWcgL4gcgK/..KWcgLLlLgcgK/..KWccg4ccgK/.3KWc6gK/.4KWg5K/.5K6',
+ bead:'16x16:..KbK.6KbK/.3KbK.4KbK/.4KbK..KbK/.5KbKKbK/.5KKccKK/.4KLl4iK/.3KLl6iK/..KLlW5lliK/..KLlWL4WliK/..KLlWLhhLWliK/..KLlWLhhLWliK/..KLlWL4WliK/..KLllW4lliK/.3KLl6iK/.4KLl4iK/.5K6',
+ bag1:'16x16:/.6K.K/.5KCKCKK/.4KCc4gK/.5KCcgKK/.4Kb6K/.4KKCccgKbK/.3KCc6gbK/..KCc8gK/..KCc4sBBcgK/.Kgc5B3ccgK/..KCc4BBbcgK/..Kgc8gK/.3Kggc4ggK/.4KKg4KK/.6K4',
+ bag2:'16x16:.6K4/.5KBbbvK/.4KBK4BK/.4KBK..KBK/.3KBK.4KBK/.3KBK6BK/..KB9vK/.KB11vK/.KB5yyB4vK/KBbv4yyv4bvK/KBb5yob5vK/KBb12vK/.KBb10vK/.KBb10vK/..KKBb6vKK/.4K8',
+ bag3:'16x16:.4K8/.3Kr8K/..KKy8KK/.Kr12K/KRr4K4Rr4K/y7KKy7/m7KKm7/rWrrWrrKKrWrrWrr/r7KKr7/y7KKy7/m7KKm7/Kr5K..Kr5K/.Kr3K.4Kr3K/KyKyKyK..KyKyKyK/KoKoKoK..KoKoKoK/.K.K.K.4K.K.K'
+};
+const PXI_CH={
+ closed:'24x20:.4K16/..KKByob10yovKK/.KB3yoB10yoBBvK/.KBbbyob10yobbvK/KBb3yob10yob3vK/KBb3yob10yob3vK/.KBbbyob10yobbvK/.KBbbyob3Yyyb4yobbvK/Ky5oy11oy4K/Ko4yo4yKyyo3yo5K/KBb3yob3yKyyb3yob3vK/KBb3yob4yyb4yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/Kv22K/.K22',
+ open:'24x22:bB4ooB10ooB4b/bbv3oov10oov3bb/bbv3oov10oov3bb/bbv3oov10oovvbbK/Kbbvvoov10oovvbbK/Kbbvvoov5Wv4oovvbbK/Kb4oWb10oWb4K/KLLW18LLK/KL22K/KL22K/Ky5oy11oy4K/Ko4yo4yooyo3yo5K/KBb3yob3yKyyb3yob3vK/KBb3yob4yyb4yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/KBb3yob10yob3vK/Kv22K/.K22'
+};
+const PXI_K={};
+/* one sprite -> {w,h,r}: same-colour runs merged into <rect>s, grouped by colour (L can be recoloured) */
+function PXI_rects(d,L){
+  const i=d.indexOf(':'),wh=d.slice(0,i).split('x'),w=+wh[0],h=+wh[1];
+  const rows=d.slice(i+1).split('/').map(r=>r.replace(/(\D)(\d+)/g,(m,c,n)=>c.repeat(+n)));
+  const all=[];let prev={};
+  for(let y=0;y<h;y++){const r=rows[y]||'',cur={};let x=0;
+    while(x<r.length){const c=r[x];let e=x;while(e<r.length&&r[e]===c)e++;
+      if(c!=='.'){const k=x+','+e+c,o=prev[k];if(o){o.h++;cur[k]=o}else{const n={x,y,w:e-x,h:1,c};all.push(n);cur[k]=n}}
+      x=e}
+    prev=cur}
+  const by={};all.forEach(n=>(by[n.c]=by[n.c]||[]).push(`<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}"/>`));
+  return {w,h,r:Object.keys(by).map(c=>`<g fill="${c==='L'&&L?L:PXF_C[c]}">${by[c].join('')}</g>`).join('')};
+}
+function PXI_get(k,d){return PXI_K[k]||(PXI_K[k]=PXI_rects(d))}
+/* a square icon, the sprite centred with a margin of 1.5 art pixels (of a 16 px sprite) */
+function PXI_box(R){const S=Math.max(R.w,R.h),m=S*1.5/16;return {S,m,x:(R.w-S)/2-m,y:(R.h-S)/2-m,z:S+2*m}}
+function PXI_svg(R,w,under,over){const b=PXI_box(R),f=v=>Math.round(v*100)/100;
+  return `<svg class="pxi" viewBox="${f(b.x)} ${f(b.y)} ${f(b.z)} ${f(b.z)}" width="${w}" height="${w}" shape-rendering="crispEdges">${under||''}${R.r}${over||''}</svg>`}
+/* the rarity cue for gear: a gem in the corner, sparkles when legendary */
+function PXI_rare(R,t){
+  const b=PXI_box(R),u=b.S/16,c=RARE[t].c,f=v=>Math.round(v*100)/100;
+  const under='';
+  const X=b.x,Y=b.y,p=(x,y,col)=>`<rect x="${f(X+x*u)}" y="${f(Y+y*u)}" width="${f(u)}" height="${f(u)}" fill="${col}"/>`;
+  let over='';[[1,0],[2,0],[3,0],[0,1],[4,1],[0,2],[4,2],[1,3],[3,3],[2,4]].forEach(([x,y])=>over+=p(x,y,PXF_C.K));
+  over+=p(1,1,'#fffaf0')+p(2,1,c)+p(3,1,c)+p(1,2,c)+p(2,2,c)+p(3,2,c)+p(2,3,c);
+  if(t>2){const sp=(x,y,d)=>`<g fill="#fff0b0">${p(x,y-1,'')}${p(x-1,y,'')}${p(x,y,'')}${p(x+1,y,'')}${p(x,y+1,'')}<animate attributeName="opacity" values="1;.15;1" dur="1.8s" begin="${d}s" repeatCount="indefinite"/></g>`;
+    over+=sp(b.z/u-2.5,1.5,0)+sp(1.5,b.z/u-2.5,.9)}
+  return [under,over.replace(/ fill=""/g,'')];
+}
+function PXI_item(k,w){const d=PXI_D[k];return d?PXI_svg(PXI_get(k,d),w):''}
+function PXI_gear(id,w){const d=PXI_G[id];if(!d)return '';const g=GEAR[id],t=g?g.tier||0:(BAGTIER4[id]||0),R=PXI_get('g:'+id,d);
+  if(!(t>0&&RARE[t]))return PXI_svg(R,w);const [a,b]=PXI_rare(R,t);return PXI_svg(R,w,a,b)}
+const PXI_FISH={bolti:1,qarmout:1,bouri:1,goldfish:1};
+{const i0=itemIcon2;itemIcon2=function(k,w){w=w||30;const b=typeof fqParse==='function'?fqParse(k).b:k;
+  if(PXI_D[b]&&!PXI_FISH[b])return PXI_item(b,w);if(PXI_G[b])return PXI_gear(b,w);return i0.call(this,k,w)}}
+{const m0=matIcon;matIcon=function(k,w){w=w||30;if(PXI_D[k])return PXI_item(k,w);return m0.apply(this,arguments)}}
+{const g0=gearIcon;gearIcon=function(id,w){w=w||30;if(PXI_G[id])return PXI_gear(id,w);return g0.apply(this,arguments)}}
+{const f0=fishArt;fishArt=function(k,w){if(!PXF_D_fish(k))return f0.apply(this,arguments);w=w===undefined?120:w;const R=PXI_get(k,PXI_D[k]),vw=R.w+2,vh=vw*.6;
+  return `<svg class="pxi" viewBox="-1 ${Math.round((R.h-vh)/2*100)/100} ${vw} ${Math.round(vh*100)/100}"${w?` width="${w}" height="${Math.round(w*6)/10}"`:''} shape-rendering="crispEdges">${R.r}</svg>`}}
+function PXF_D_fish(k){return !!(PXI_FISH[k]&&PXI_D[k])}
+/* chests: chestArt (a const) draws <svg viewBox="0 0 80 64">; an open one holds an ellipse in the rarity colour */
+function PXI_chest(open,c){const R=open?PXI_rects(PXI_CH.open,c||'#fffaf0'):(PXI_K.chest||(PXI_K.chest=PXI_rects(PXI_CH.closed)));
+  return `<svg class="pxi pxi-chest" viewBox="-1 -1 ${R.w+2} ${R.h+2}" width="76" shape-rendering="crispEdges">${R.r}</svg>`}
+(function(){
+  const fix=()=>{document.querySelectorAll('svg[viewBox="0 0 80 64"]').forEach(s=>{const e=s.querySelector('ellipse');s.outerHTML=PXI_chest(!!e,e&&e.getAttribute('fill'))})};
+  new MutationObserver(ms=>{if(ms.some(m=>m.addedNodes.length))fix()}).observe(document.body,{childList:true,subtree:true});
+  fix();
+})();
+/* ==========================================================================
+   سرداب: pixel scenes (p17s.js)
+   Every backdrop and place picture redrawn as low-resolution pixel art in the shared 32-colour palette:
+   one art pixel is 4 units of the old 480x200 viewBox (about 3 CSS px on a phone). Backgrounds stay
+   darker and calmer than the sprites: dark ramps, a dithered sky, flat silhouettes, few lights.
+   Each scene is a short recipe drawn with the small kit below on a grid of palette letters, then turned
+   into one <path> per colour (runs merged across rows) inside the scene's old viewBox, so anything a
+   caller appends to the SVG still lines up. Scenes are built on first use and cached.
+   ========================================================================== */
+const PXS=(()=>{
+const PXS_DG={1:"h",2:"i",3:"j",4:"n",5:"u"};
+const PXS_B4=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+const PXS_by=(x,y)=>(PXS_B4[(y&3)*4+(x&3)]+.5)/16;
+function PXS_rng(s){let a=0;for(let i=0;i<s.length;i++)a=(a*31+s.charCodeAt(i))|0;return ()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function PXS_new(w,h,k){return {w,h,d:new Array(w*h).fill(k||'K')}}
+function sp(g,x,y,k){x=Math.round(x);y=Math.round(y);if(x>=0&&y>=0&&x<g.w&&y<g.h)g.d[y*g.w+x]=k}
+function gp(g,x,y){x=Math.round(x);y=Math.round(y);return x>=0&&y>=0&&x<g.w&&y<g.h?g.d[y*g.w+x]:null}
+function rc(g,x,y,w,h,k){for(let j=Math.round(y);j<Math.round(y+h);j++)for(let i=Math.round(x);i<Math.round(x+w);i++)sp(g,i,j,k)}
+function el(g,cx,cy,rx,ry,k,y1){for(let y=Math.floor(cy-ry);y<=Math.ceil(cy+ry);y++){if(y1!=null&&y>y1)break;for(let x=Math.floor(cx-rx);x<=Math.ceil(cx+rx);x++){const dx=(x+.5-cx)/rx,dy=(y+.5-cy)/ry;if(dx*dx+dy*dy<=1)sp(g,x,y,k)}}}
+function pl(g,pts,k){const ys=pts.map(p=>p[1]);for(let y=Math.floor(Math.min(...ys));y<=Math.ceil(Math.max(...ys));y++){const xs=[];for(let i=0,j=pts.length-1;i<pts.length;j=i++){const [x1,y1]=pts[i],[x2,y2]=pts[j];if((y1>y+.5)!==(y2>y+.5))xs.push(x1+(y+.5-y1)*(x2-x1)/(y2-y1))}xs.sort((a,b)=>a-b);for(let i=0;i+1<xs.length;i+=2)for(let x=Math.round(xs[i]);x<Math.round(xs[i+1]);x++)sp(g,x,y,k)}}
+function ln(g,x0,y0,x1,y1,k){x0=Math.round(x0);y0=Math.round(y0);x1=Math.round(x1);y1=Math.round(y1);const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy;for(;;){sp(g,x0,y0,k);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}}
+/* vertical ramp of palette keys with a short ordered dither at each step */
+function sky(g,ramp,y0,y1,x0,x1){y0=y0||0;y1=y1==null?g.h:y1;x0=x0||0;x1=x1==null?g.w:x1;const n=ramp.length-1;
+  for(let y=y0;y<y1;y++){const t=n?(y-y0)/Math.max(1,y1-y0-1)*n:0,i=Math.min(n,Math.floor(t)),f=t-i,lv=f<.55?0:f<.7?.25:f<.85?.5:.75;
+    for(let x=x0;x<x1;x++)sp(g,x,y,i<n&&PXS_by(x,y)<lv?ramp[i+1]:ramp[i])}}
+function stars(g,r,n,ymax,on,k){on=on||'12';for(let i=0;i<n;i++){const x=Math.floor(r()*g.w),y=Math.floor(r()*ymax);if(on.includes(gp(g,x,y)))sp(g,x,y,k||(r()<.12?'5':r()<.4?'4':'3'))}}
+function moon(g,x,y,rad,cres){const bg=gp(g,x+rad*2,y);el(g,x,y,rad,rad,'C');
+  for(let j=-rad;j<=rad;j++)for(let i=-rad;i<=rad;i++){if(gp(g,x+i,y+j)!=='C')continue;if(i+j>rad*.55)sp(g,x+i,y+j,'c')}
+  if(cres)el(g,x+rad*.55,y-rad*.25,rad*.85,rad*.85,bg);else{sp(g,x-rad*.3,y+rad*.2,'c');sp(g,x+rad*.2,y-rad*.35,'c')}}
+const PXS_UP={K:'v',v:'b',b:'T',1:'2',2:'3',3:'4',p:'P',z:'q',T:'B',m:'r',g:'c'};
+/* a soft light: nearby pixels go one step lighter, the rim dithered */
+function halo(g,x,y,rad,map,ry){map=map||PXS_UP;ry=ry||rad;const o=g.d.slice();for(let j=Math.floor(y-ry);j<=y+ry;j++)for(let i=Math.floor(x-rad);i<=x+rad;i++){const d=Math.hypot((i+.5-x)/rad,(j+.5-y)/ry);if(d>1)continue;const v=o[j*g.w+i];if(j<0||i<0||i>=g.w||j>=g.h||!map[v])continue;if(d<.55||PXS_by(i,j)<(1-d)/.45*.6)sp(g,i,j,map[v])}}
+function palm(g,x,yb,h,k,lean){lean=lean==null?.25:lean;let tx=x,ty=yb;for(let t=0;t<=1;t+=1/(h*1.5)){tx=x+lean*h*t*t;ty=yb-t*h;sp(g,tx,ty,k);if(t<.3)sp(g,tx+1,ty,k)}
+  const F=[[-1,-.1],[-.75,-.6],[-.2,-1],[.35,-.85],[.85,-.4],[1,.05]];F.forEach(([dx,dy],i)=>{const L=h*(.38+.1*(i%2));for(let s=0;s<L;s+=.6){const fx=tx+dx*s,fy=ty+dy*s+.07*s*s;sp(g,fx,fy,k);if(s>1.5&&Math.round(s*1.67)%3===0)sp(g,fx+(dx>0?-1:1)*0,fy+1,k)}});sp(g,tx,ty,k);sp(g,tx+1,ty,k);sp(g,tx,ty+1,k)}
+function house(g,x,yb,w,h,k,wins,lit){rc(g,x,yb-h,w,h,k);for(let i=0;i<w;i+=3)sp(g,x+i,yb-h-1,k);(wins||[]).forEach(([dx,dy])=>{rc(g,x+dx,yb-h+dy,2,2,lit||'y');sp(g,x+dx+1,yb-h+dy+1,'o')})}
+function dome(g,cx,yb,rad,k){el(g,cx,yb,rad,rad,k,yb);sp(g,cx,yb-rad-1,k);sp(g,cx,yb-rad-2,k)}
+function minaret(g,x,yb,h,k){rc(g,x,yb-h,3,h,k);rc(g,x-1,Math.round(yb-h*.7),5,1,k);pl(g,[[x,yb-h],[x+3,yb-h],[x+1.5,yb-h-4]],k);sp(g,x+1,yb-h-5,k)}
+function hills(g,base,amp,k,r,f){const ph=r()*9,ph2=r()*9;for(let x=0;x<g.w;x++){const y=Math.round(base-amp*(.5+.5*Math.sin(x*f+ph)+.35*Math.sin(x*f*2.7+ph2))/1.35);rc(g,x,y,1,g.h-y,k)}}
+function ground(g,y,k,r,amp){const ph=r?r()*9:0;for(let x=0;x<g.w;x++){const yy=Math.round(y+(amp||0)*Math.sin(x*.07+ph));rc(g,x,yy,1,g.h-yy,k)}}
+function water(g,y0,k,kr,r,n){rc(g,0,y0,g.w,g.h-y0,k);for(let i=0;i<(n||9);i++){const y=y0+2+Math.floor(r()*(g.h-y0-3)),x=Math.floor(r()*g.w),L=3+Math.floor(r()*8);rc(g,x,y,L,1,kr)}}
+function reeds(g,x0,x1,yb,k,r,hm){for(let x=x0;x<x1;x+=1+Math.floor(r()*3)){const h=2+Math.floor(r()*hm);rc(g,x,yb-h,1,h,k);if(r()<.5)sp(g,x+1,yb-h+1,k);if(r()<.3)sp(g,x-1,yb-h+2,k)}}
+function bricks(g,x,y,w,h,k,m,bh){bh=bh||4;rc(g,x,y,w,h,k);for(let j=0;j<h;j++){const row=Math.floor(j/(bh+1));if(j%(bh+1)===bh){rc(g,x,y+j,w,1,m);continue}for(let i=(row%2)*6;i<w;i+=12)sp(g,x+i,y+j,m)}}
+function arch(g,x,yb,w,h,k){const r=w/2;rc(g,x,yb-h+r,w,h-r,k);el(g,x+r,yb-h+r,r,r,k,yb-h+r)}
+function lights(g,x0,x1,y,sag,cols,wk){for(let x=x0;x<=x1;x++){const u=(x-x0)/(x1-x0)*2-1,yy=Math.round(y+sag*(1-u*u));sp(g,x,yy,wk||'v');if((x-x0)%6===3){sp(g,x,yy+1,cols[((x-x0)/6|0)%cols.length])}}}
+function lamp(g,x,y,k,rad){halo(g,x,y,rad||6);rc(g,x,y,2,2,k||'y');sp(g,x+1,y+1,'o')}
+function fire(g,x,yb,s){s=s||1;halo(g,x,yb-3*s,9*s,null,6*s);
+  const F=s>1?['..r...','.rro..','.royr.','rroYyr','royYyo','.oyyo.']:['.r..','.rr.','roy.','rYyr','.yo.'];F.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!=='.')sp(g,x-(row.length>>1)+i,yb-F.length+j,row[i])});rc(g,x-3*s,yb,6*s+1,1,'v')}
+function man(g,x,yb,k,sit){el(g,x,yb-(sit?6:8),1.6,1.6,k);if(sit){pl(g,[[x-2.5,yb],[x-1.5,yb-5],[x+1.5,yb-5],[x+2.5,yb]],k)}else{rc(g,x-1.5,yb-7,3,5,k);rc(g,x-1,yb-2,1,2,k);rc(g,x+.5,yb-2,1,2,k)}}
+function eyes(g,x,y,k){sp(g,x,y,k||'r');sp(g,x+2,y,k||'r')}
+function stripe(g,x,y,w,h,a,b,sw){for(let i=0;i<w;i++)rc(g,x+i,y,1,h,Math.floor(i/(sw||2))%2?b:a)}
+/* grid -> svg: runs merged down the rows, one path per colour, scaled into the old viewBox */
+function PXS_svg(g,vw,vh,extra,noPar){const by={};let open={};
+  for(let y=0;y<g.h;y++){const cur={};let x=0;while(x<g.w){const k=g.d[y*g.w+x];let e=x;while(e<g.w&&g.d[y*g.w+e]===k)e++;const id=x+','+e+k,o=open[id];if(o){o.h++;cur[id]=o}else{const n={x,y,w:e-x,h:1};(by[k]=by[k]||[]).push(n);cur[id]=n}x=e}open=cur}
+  let p='';for(const k in by)p+=`<path fill="${PXF_C[PXS_DG[k]||k]}" d="${by[k].map(n=>`M${n.x} ${n.y}h${n.w}v${n.h}h-${n.w}z`).join('')}"/>`;
+  return `<svg viewBox="0 0 ${vw} ${vh}"${noPar?'':' preserveAspectRatio="xMidYMid slice"'} shape-rendering="crispEdges"><g transform="scale(${+(vw/g.w).toFixed(4)} ${+(vh/g.h).toFixed(4)})">${p}</g>${extra||''}</svg>`}
+/* shared backdrops */
+function nightSky(g,r,y1,moonX,moonY,top){sky(g,top||['K','1','1','2'],0,y1);stars(g,r,14,y1-8);if(moonX!=null)moon(g,moonX,moonY||10,4)}
+function canalBg(g,r,mx){nightSky(g,r,38,mx==null?75:mx,11);ground(g,36,'K',r,.6);water(g,38,'1','2',r,8);palm(g,10,37,17,'K',.35);palm(g,106,37,19,'K',-.3)}
+function roomBg(g,r,win){rc(g,0,0,120,38,'K');for(let x=2;x<120;x+=5)rc(g,x,0,1,38,'v');rc(g,0,0,120,2,'K');rc(g,0,38,120,12,'K');rc(g,0,38,120,1,'v');el(g,60,45,34,3,'m');el(g,60,45,30,2,'K');
+  if(win!==false){const x=win==null?52:win;arch(g,x,24,16,20,'K');arch(g,x+2,23,12,18,'1');sp(g,x+9,9,'C');sp(g,x+10,9,'C');sp(g,x+9,10,'c');rc(g,x+7,6,1,17,'K');rc(g,x+2,15,12,1,'K');pl(g,[[x-3,2],[x+2,2],[x+1,26],[x-2,26]],'m');pl(g,[[x+14,2],[x+19,2],[x+18,26],[x+15,26]],'m');rc(g,x-4,2,24,1,'b')}}
+function stoneBg(g,r,base,mort,fl){bricks(g,0,0,120,40,base||'K',mort||'v');rc(g,0,40,120,10,fl||'K');rc(g,0,40,120,1,mort||'v')}
+function caveBg(g,r,k1,k2){rc(g,0,0,120,50,k1||'K');for(let i=0;i<40;i++){const x=Math.floor(r()*120),y=Math.floor(r()*44);rc(g,x,y,2+Math.floor(r()*4),1,k2||'v')}
+  for(let x=0;x<120;x+=3+Math.floor(r()*5)){const h=2+Math.floor(r()*6);pl(g,[[x,0],[x+3,0],[x+1.5,h]],k2||'v')}ground(g,44,'K',r,.8);rc(g,0,44,120,1,k2||'v')}
+function shelf(g,x,y,w,k){rc(g,x,y,w,1,k||'b');rc(g,x,y+1,w,1,'v')}
+function jar(g,x,yb,c,s){s=s||1;el(g,x,yb-2*s,2*s,2*s,c);rc(g,x-s,yb-4*s-1,2*s,1,c);sp(g,x-s,yb-3*s,'W')}
+function chand(g,x,y,w){ln(g,x,0,x,y-2,'v');rc(g,x-w/2,y,w,1,'o');for(let i=0;i<=w;i+=3)sp(g,x-w/2+i,y-1,'Y');halo(g,x,y,w+4,null,6)}
+function bed(g,x,yb){rc(g,x,yb-5,22,5,'c');rc(g,x,yb-6,22,1,'W');rc(g,x,yb-10,2,10,'b');rc(g,x+20,yb-8,2,8,'b');rc(g,x+2,yb-7,5,2,'W');rc(g,x,yb-14,22,2,'m')}
+function fireplace(g,x,yb){rc(g,x,yb-14,20,14,'g');rc(g,x-1,yb-15,22,2,'c');rc(g,x+4,yb-10,12,10,'K');fire(g,x+10,yb-1,1)}
+function shadeHay(g){for(let i=g.w;i<g.d.length;i++)if(g.d[i]==='T'&&g.d[i-g.w]!=='T')g.d[i]='o'}
+function duskSky(g,r,y1,mx,my,rad){sky(g,['K','1','1','2','p'],0,y1);stars(g,r,8,Math.max(4,y1-22));if(mx!=null)moon(g,mx,my||12,rad||4)}
+function desert(g,r,y,k,k2){ground(g,y,k||'v',r,1.2);for(let i=0;i<10;i++)rc(g,Math.floor(r()*118),y+3+Math.floor(r()*(g.h-y-4)),2,1,k2||'b')}
+function quarryWall(g,y0,y1){rc(g,0,y0,120,y1-y0,'3');for(let y=y0+3;y<y1;y+=4)rc(g,0,y,120,1,'2');for(let y=y0;y<y1;y+=4)for(let x=((y/4|0)%2)*6;x<120;x+=12)rc(g,x,y,1,4,'2');rc(g,0,y0,120,1,'4')}
+function bones(g,r,y0,n){for(let i=0;i<n;i++){const x=Math.floor(r()*116),y=y0+Math.floor(r()*(g.h-y0-1));rc(g,x,y,3,1,'C');sp(g,x,y-1,'C')}}
+function stall(g,x,yb,w,a,b){pl(g,[[x,yb-14],[x+w,yb-14],[x+w-2,yb-10],[x+2,yb-10]],a);for(let i=x+1;i<x+w;i+=3)rc(g,i,yb-14,1,4,b);rc(g,x+1,yb-10,1,10,'v');rc(g,x+w-2,yb-10,1,10,'v');rc(g,x+2,yb-4,w-4,4,'v')}
+function wallLamps(g,xs,y,cols){xs.forEach((x,i)=>{halo(g,x,y,6);el(g,x,y,1.5,1.5,cols[i%cols.length]);sp(g,x,y-2,'v')})}
+function figure(g,x,yb,k,hat){el(g,x,yb-9,2,2,k);pl(g,[[x-3,yb],[x-2,yb-7],[x+2,yb-7],[x+3,yb]],k);if(hat)rc(g,x-1,yb-12,2,1,k)}
+function caveFloor(g,r,base,dark,mid,glint){rc(g,0,0,g.w,g.h,dark);for(let i=0;i<120;i++){const x=Math.floor(r()*g.w),y=Math.floor(r()*g.h);rc(g,x,y,3+Math.floor(r()*6),1,base)}
+  for(let x=0;x<g.w;x+=4+Math.floor(r()*5)){const h=3+Math.floor(r()*10);pl(g,[[x,0],[x+4,0],[x+2,h]],base)}rc(g,10,0,3,100,'b');rc(g,116,0,3,100,'b');rc(g,10,30,109,3,'b');lamp(g,26,36,'y',10);
+  for(let i=0;i<9;i++){const x=8+Math.floor(r()*114),y=20+Math.floor(r()*70);sp(g,x,y,glint);sp(g,x-1,y,mid);sp(g,x+1,y,mid);sp(g,x,y-1,mid);sp(g,x,y+1,mid)}rc(g,0,92,g.w,8,dark);rc(g,0,92,g.w,1,base)}
+
+const SZ={S:[120,50,480,200],T:[130,53,390,160],P:[100,56,160,90],M:[130,100,390,300]};
+const D={
+_sky:['S',(g,r)=>{sky(g,['K','1','1','2','v'],0,50);stars(g,r,12,26)}],
+/* ---------- the first adventure's places (the built-in backdrops) ---------- */
+village:['S',(g,r)=>{sky(g,['K','1','1','2','v'],0,44);stars(g,r,14,22);moon(g,75,10,4);
+  palm(g,32,34,13,'K',.3);house(g,4,46,15,14,'K',[[5,5]]);house(g,20,46,10,11,'K');rc(g,34,26,7,20,'K');rc(g,36,23,3,3,'K');rc(g,37,30,2,2,'y');house(g,51,46,17,16,'K',[[6,5]]);house(g,72,46,12,9,'K',[[4,3]]);house(g,95,46,22,12,'K',[[7,4]]);ground(g,45,'K')}],
+canal:['S',(g,r)=>{sky(g,['K','1','1','2'],0,38);stars(g,r,16,24);moon(g,75,11,4);ground(g,36,'K',r,.6);water(g,38,'1','2',r,8);palm(g,14,37,18,'K',.35);palm(g,104,37,20,'K',-.3);palm(g,112,38,14,'K',-.2);reeds(g,0,12,38,'K',r,3)}],
+market:['S',(g,r)=>{sky(g,['K','v','v','b'],0,16);rc(g,0,16,120,34,'K');
+  [['r','C'],['z','C'],['y','o'],['l','C']].forEach(([a,b],i)=>{const x=6+i*29;pl(g,[[x,12],[x+24,12],[x+20,18],[x+4,18]],a);for(let j=x+2;j<x+24;j+=4)ln(g,j,12,j+(j<x+12?1:-1),17,b);rc(g,x+4,18,1,22,'v');rc(g,x+19,18,1,22,'v');lamp(g,x+11,21,'y',5)});
+  rc(g,0,40,120,10,'K');rc(g,0,39,120,1,'v')}],
+fields:['S',(g,r)=>{sky(g,['K','1','1','z'],0,34);stars(g,r,12,20);moon(g,96,10,4);rc(g,0,34,120,16,'K');
+  for(let y=39;y<50;y+=4)for(let x=(y%8)?0:3;x<120;x+=6)rc(g,x,y,3,1,'z');reeds(g,0,120,36,'z',r,4);eyes(g,63,38,'r')}],
+saqia:['S',(g,r)=>{sky(g,['K','1','1','2','v'],0,40);stars(g,r,12,22);moon(g,75,11,4);ground(g,40,'K');
+  for(let a=0;a<6.28;a+=.08)sp(g,30+Math.cos(a)*7,33+Math.sin(a)*7,'v');for(let a=0;a<6.28;a+=.785)ln(g,30,33,30+Math.cos(a)*7,33+Math.sin(a)*7,'v');el(g,30,33,1.5,1.5,'b');
+  house(g,82,40,9,14,'K',[[3,4]])}],
+dawar:['S',(g,r)=>{sky(g,['K','K','v','v','b'],0,44);house(g,4,46,14,13,'K',[[4,4]]);house(g,19,46,9,9,'K');palm(g,33,36,12,'K',.3);
+  rc(g,44,24,6,22,'K');rc(g,46,20,2,4,'K');rc(g,46,28,2,2,'y');house(g,56,46,16,15,'K',[[6,5]]);house(g,80,46,11,8,'K',[[4,3]]);house(g,98,46,20,12,'K',[[8,4]]);ground(g,45,'K')}],
+yard:['S',(g,r)=>{sky(g,['K','v','v','b'],0,24);rc(g,0,24,120,14,'K');rc(g,0,24,120,1,'v');rc(g,30,22,2,16,'v');rc(g,88,22,2,16,'v');rc(g,0,38,120,12,'v');for(let i=0;i<14;i++)rc(g,Math.floor(r()*118),40+Math.floor(r()*9),2,1,'b')}],
+night:['S',(g,r)=>{sky(g,['K','1','1','2'],0,36);stars(g,r,18,26);moon(g,75,12,4);ground(g,35,'K',r,.6);water(g,37,'1','2',r,6);el(g,60,40,10,1.5,'3');el(g,60,40,6,1,'4');palm(g,16,36,19,'K',.35);palm(g,98,36,21,'K',-.3);palm(g,107,37,14,'K',-.2)}],
+n_camp:['S',(g,r)=>{sky(g,['K','1','1','2'],0,40);stars(g,r,16,26);moon(g,94,9,4);palm(g,8,41,14,'K',.3);palm(g,105,40,16,'K',-.3);ground(g,40,'K',r,.4);fire(g,60,43,1.5);man(g,50,44,'K',1);man(g,71,44,'K',1)}],
+/* ---------- the adventure picker's gates ---------- */
+p_gate:['S',(g,r)=>{sky(g,['K','1','1','2','p'],0,42);stars(g,r,14,18);moon(g,19,9,3.5);
+  pl(g,[[27,22],[60,12],[93,22]],'K');rc(g,30,22,60,20,'K');rc(g,34,24,52,1,'1');[[37,26],[52,25],[66,26]].forEach(([x,y],i)=>{el(g,x+2,y+3,2,3,i===1?'Y':'y');el(g,x+2,y+9,2,2,'v')});arch(g,57,42,6,8,'K');
+  for(let x=4;x<116;x++){if(x>=30&&x<90)continue;if(x%3===0)rc(g,x,33,1,9,'2');}rc(g,4,34,26,1,'2');rc(g,90,34,26,1,'2');palm(g,13,42,16,'K',.3);palm(g,108,42,14,'K',-.3);rc(g,0,42,120,8,'K')}],
+m_gate:['S',(g,r)=>{sky(g,['K','1','2','p','m'],0,40);stars(g,r,10,14);moon(g,94,12,4.5);hills(g,32,16,'v',r,.06);pl(g,[[10,40],[38,14],[46,18],[70,40]],'K');pl(g,[[50,40],[82,22],[118,40]],'K');pl(g,[[35,15],[38,13],[41,16]],'b');ground(g,39,'K',r,.4);eyes(g,45,36,'y');sp(g,9,37,'K');sp(g,9,38,'K');rc(g,80,37,1,3,'K')}],
+u_gate:['S',(g,r)=>{sky(g,['K','1','1','2','p'],0,44);stars(g,r,12,16);moon(g,18,9,3.5);
+  rc(g,12,22,9,24,'K');rc(g,10,24,3,22,'K');rc(g,99,22,10,24,'K');rc(g,107,25,3,21,'K');
+  pl(g,[[29,46],[29,22],[36,16],[84,16],[91,22],[91,46]],'K');arch(g,38,46,44,20,'v');halo(g,60,36,16,{v:'b',K:'v'});arch(g,40,46,40,18,'b');rc(g,40,40,40,6,'v');
+  lights(g,30,90,13,4,['r','q','y','P','r']);man(g,48,46,'K');man(g,58,46,'K');rc(g,0,45,120,5,'K')}],
+
+/* ---------- النداهة: the hamlet, the fields, the canal ---------- */
+k_mill:['S',(g,r)=>{nightSky(g,r,42,23,10);halo(g,23,10,7);moon(g,23,10,4);palm(g,12,42,14,'K',.3);palm(g,100,42,15,'K',-.3);
+  rc(g,44,28,13,14,'K');rc(g,52,20,4,8,'K');pl(g,[[42,28],[50,22],[59,28]],'K');rc(g,47,34,3,5,'v');eyes(g,47,36,'y');for(let a=0;a<3.2;a+=.15)sp(g,36+Math.cos(a)*7,40-Math.sin(a)*7,'K');ln(g,50,8,53,7,'2');ln(g,53,7,56,8,'2');ln(g,66,6,68,5,'2');ln(g,68,5,70,6,'2');ground(g,42,'K',r,.4)}],
+k_room:['S',(g,r)=>{rc(g,0,0,120,50,'K');bricks(g,0,0,120,38,'K','v');rc(g,0,38,120,12,'K');pl(g,[[60,38],[72,26],[90,26],[78,38]],'v');rc(g,74,12,10,10,'1');rc(g,78,12,1,10,'K');rc(g,74,16,10,1,'K');sp(g,76,13,'4');rc(g,32,30,12,8,'b');rc(g,32,30,12,1,'B');sp(g,37,33,'o');eyes(g,86,34,'y');rc(g,58,26,2,2,'r')}],
+k_tower:['S',(g,r)=>{sky(g,['K','1','1','2','p'],0,42);[[30,8],[36,9],[88,10],[94,9]].forEach(([x,y])=>{sp(g,x,y,'K');sp(g,x+1,y-1,'K');sp(g,x+2,y,'K')});
+  rc(g,6,32,12,10,'K');rc(g,10,35,2,2,'y');pl(g,[[60,42],[64,18],[66,16],[70,16],[72,18],[76,42]],'K');for(let y=20;y<40;y+=3)for(let x=64+(y%2);x<74;x+=3)sp(g,x,y,'v');palm(g,100,42,14,'K',-.3);ground(g,42,'K')}],
+k_roof:['S',(g,r)=>{nightSky(g,r,38,97,10);rc(g,0,38,120,12,'K');rc(g,0,36,33,14,'K');rc(g,35,33,32,17,'K');rc(g,72,36,48,2,'g');rc(g,5,39,2,2,'y');rc(g,49,37,2,2,'y');rc(g,82,42,2,2,'y');man(g,56,33,'K');rc(g,57,27,4,1,'C')}],
+k_graves:['S',(g,r)=>{nightSky(g,r,38,74,10);ground(g,38,'K');[[8,34,14],[28,33,12],[66,35,14],[100,34,12]].forEach(([x,y,w])=>{rc(g,x,y,w,4,'v');rc(g,x,y,w,1,'b')});lamp(g,86,36,'y',5);rc(g,92,34,1,6,'v');
+  ln(g,114,40,114,26,'K');ln(g,114,30,110,26,'K');ln(g,114,32,118,28,'K');rc(g,58,40,12,1,'v')}],
+g_fire:['S',(g,r)=>{nightSky(g,r,40,85,9);ground(g,40,'K',r,.3);pl(g,[[2,42],[14,34],[28,42]],'T');pl(g,[[92,42],[104,34],[118,42]],'T');shadeHay(g);fire(g,64,43,1.4);man(g,50,44,'K',1);man(g,78,44,'K',1)}],
+g_tree:['S',(g,r)=>{nightSky(g,r,40,48,10,['K','1','1','z']);rc(g,0,40,120,10,'K');el(g,70,24,16,10,'K');el(g,58,28,10,7,'K');el(g,84,28,10,7,'K');rc(g,68,30,5,12,'K');halo(g,71,40,10,{K:'z',z:'q'},4);sp(g,70,40,'G');sp(g,72,39,'G')}],
+g_well:['S',(g,r)=>{nightSky(g,r,40,40,10,['K','1','1','z']);rc(g,0,40,120,10,'K');reeds(g,0,40,40,'z',r,6);reeds(g,80,120,40,'z',r,6);
+  rc(g,49,32,22,8,'g');for(let x=49;x<71;x+=4)rc(g,x,32,1,8,'3');rc(g,49,36,22,1,'3');rc(g,49,31,22,1,'c');rc(g,51,20,1,11,'b');rc(g,68,20,1,11,'b');rc(g,50,20,20,1,'b');ln(g,60,21,60,29,'v')}],
+g_tower:['S',(g,r)=>{nightSky(g,r,40,38,9,['K','1','1','z']);rc(g,0,40,120,10,'K');reeds(g,0,30,40,'z',r,7);reeds(g,98,120,40,'z',r,7);
+  pl(g,[[50,40],[53,20],[57,15],[63,15],[67,20],[70,40]],'K');for(let y=19;y<38;y+=3)for(let x=53+(y%2)*2;x<68;x+=3)sp(g,x,y,'v');rc(g,58,34,4,6,'v');[[75,8],[80,10],[86,9]].forEach(([x,y])=>{sp(g,x,y,'K');sp(g,x+1,y-1,'K');sp(g,x+2,y,'K')})}],
+g_tan:['S',(g,r)=>{nightSky(g,r,40,86,10);ground(g,40,'K');rc(g,10,14,1,28,'v');rc(g,104,14,1,28,'v');ln(g,10,15,104,14,'v');
+  for(let i=0;i<5;i++){const x=22+i*15;pl(g,[[x,15],[x+10,15],[x+11,26],[x+7,24],[x+5,28],[x+2,24],[x-1,26]],'T');rc(g,x,15,10,1,'b')}lamp(g,10,22,'y',5);rc(g,108,38,8,4,'v')}],
+t_boat:['S',(g,r)=>{canalBg(g,r);pl(g,[[42,38],[72,38],[68,41],[46,41]],'K');rc(g,58,30,1,8,'K');lamp(g,65,36,'y',5)}],
+t_bridge:['S',(g,r)=>{canalBg(g,r);rc(g,12,32,30,2,'K');rc(g,46,34,22,2,'K');[[14,32],[30,32],[40,32],[48,34],[64,34]].forEach(([x,y])=>rc(g,x,y,1,10,'K'));ln(g,42,33,46,38,'K')}],
+t_pump:['S',(g,r)=>{canalBg(g,r);rc(g,32,30,18,8,'K');pl(g,[[30,30],[41,25],[52,30]],'K');rc(g,40,20,2,6,'K');rc(g,36,31,4,3,'y');sp(g,41,17,'g');sp(g,42,15,'g');sp(g,44,14,'c');ln(g,50,36,56,38,'K')}],
+t_ferry:['S',(g,r)=>{canalBg(g,r);ln(g,0,32,120,31,'v');pl(g,[[44,38],[76,38],[74,41],[46,41]],'K');man(g,62,38,'K');rc(g,63,30,1,4,'b');lamp(g,50,36,'y',5)}],
+/* ---------- سرداب الباشا: the garden, the house, the cellars ---------- */
+p_garden:['S',(g,r)=>{sky(g,['K','1','1','2','p'],0,42);moon(g,95,13,5);palm(g,8,40,15,'K',.3);palm(g,22,42,12,'K',.2);palm(g,108,42,15,'K',-.3);
+  pl(g,[[50,24],[72,17],[94,24]],'K');rc(g,52,24,40,14,'K');[[60,27],[70,27],[80,27]].forEach(([x,y])=>rc(g,x,y,2,3,'y'));rc(g,22,30,14,1,'v');rc(g,23,30,1,10,'v');rc(g,34,30,1,10,'v');rc(g,62,42,10,2,'g');reeds(g,0,120,44,'K',r,3);rc(g,0,44,120,6,'K')}],
+j_fountain:['S',(g,r)=>{sky(g,['K','1','1','2','p'],0,40);moon(g,72,10,4);palm(g,10,40,16,'K',.3);palm(g,112,40,15,'K',-.3);rc(g,0,40,120,10,'K');
+  el(g,60,44,28,4,'g');el(g,60,44,26,3,'1');[[40,44],[52,46],[70,46],[80,44]].forEach(([x,y])=>sp(g,x,y,'y'));rc(g,58,26,5,16,'c');rc(g,57,25,7,2,'C');el(g,60,22,2.5,2.5,'C');rc(g,58,24,5,1,'g')}],
+j_glass:['S',(g,r)=>{sky(g,['K','1','2','p'],0,44);rc(g,0,40,120,10,'K');pl(g,[[24,40],[24,24],[60,8],[96,24],[96,40]],'2');pl(g,[[26,40],[26,25],[60,10],[94,25],[94,40]],'1');
+  for(let x=34;x<90;x+=12)ln(g,x,40,60,10,'2');rc(g,26,30,68,1,'2');[[36,34,5],[50,30,6],[72,32,5],[84,35,4]].forEach(([x,y,s])=>{el(g,x,y,s,s,'z');rc(g,x,y,1,40-y,'z')})}],
+j_court:['S',(g,r)=>{rc(g,0,0,120,50,'K');rc(g,30,8,60,22,'1');arch(g,52,30,16,16,'K');eyes(g,58,22,'r');rc(g,40,30,40,3,'v');rc(g,36,33,48,3,'v');rc(g,0,40,120,10,'1');
+  [[18,14],[100,14]].forEach(([x,y])=>{rc(g,x,y,1,26,'v');lamp(g,x-1,y-2,'y',5)});man(g,34,40,'K');man(g,90,40,'K');ln(g,50,44,58,43,'3');ln(g,64,44,70,44,'3')}],
+p_hall:['S',(g,r)=>{rc(g,0,0,120,50,'K');stripe(g,0,0,120,36,'K','1',4);[[6,10],[100,10]].forEach(([x,y])=>{arch(g,x,34,12,24,'2');rc(g,x+5,12,1,22,'K');rc(g,x,22,12,1,'K')});
+  rc(g,14,14,5,6,'b');rc(g,15,15,3,4,'v');rc(g,100,14,5,6,'b');chand(g,60,10,12);for(let i=0;i<8;i++)rc(g,38-i*2,26+i*2,44+i*4,2,i%2?'v':'b');rc(g,0,42,120,8,'K')}],
+q_corr:['S',(g,r)=>{rc(g,0,0,120,50,'K');pl(g,[[0,0],[46,16],[46,34],[0,50]],'v');pl(g,[[120,0],[74,16],[74,34],[120,50]],'v');for(let x=0;x<46;x+=6)ln(g,x,x*16/46,x,50-x*16/46,'K');for(let x=74;x<=120;x+=6)ln(g,x,(120-x)*16/46,x,50-(120-x)*16/46,'K');rc(g,46,16,28,18,'1');arch(g,55,34,10,12,'K');
+  pl(g,[[50,34],[70,34],[90,50],[30,50]],'m');[[14,20],[100,22]].forEach(([x,y])=>{rc(g,x,y,10,20,'K');rc(g,x+1,y+1,8,18,'b')});lamp(g,36,20,'y',6);lamp(g,84,22,'y',6)}],
+q_kitchen:['S',(g,r)=>{stoneBg(g,r);pl(g,[[36,40],[36,22],[60,14],[84,22],[84,40]],'K');arch(g,42,40,36,20,'v');fire(g,60,40,1.6);el(g,60,32,9,4,'T');el(g,60,30,9,2,'o');rc(g,10,10,24,1,'b');[[13,13],[19,13],[25,13]].forEach(([x,y])=>el(g,x,y,2.5,2.5,'B'));shelf(g,90,14,24);rc(g,92,10,3,4,'z');rc(g,98,10,3,4,'C');rc(g,92,32,14,8,'B');rc(g,94,30,4,2,'r')}],
+q_ball:['S',(g,r)=>{rc(g,0,0,120,50,'K');[[4,10],[34,10],[74,10],[104,10]].forEach(([x,y])=>{arch(g,x,34,12,24,'1')});chand(g,60,8,12);rc(g,0,34,120,16,'K');el(g,60,44,40,4,'v');
+  pl(g,[[10,34],[16,26],[30,28],[32,34]],'K');rc(g,20,30,6,1,'W');[[72,34],[76,34],[94,34],[98,34]].forEach(([x,y])=>{el(g,x,y-8,1.5,1.5,'g');rc(g,x-1,y-6,3,6,'g')})}],
+q_dine:['S',(g,r)=>{rc(g,0,0,120,50,'K');[[2,10],[24,10],[86,10],[108,10]].forEach(([x,y])=>arch(g,x,34,10,24,'1'));chand(g,60,8,14);rc(g,10,32,100,3,'v');rc(g,10,31,100,1,'b');rc(g,14,35,2,6,'v');rc(g,104,35,2,6,'v');
+  [[30,30],[48,30],[72,30],[90,30]].forEach(([x,y])=>{el(g,x,y,2.5,1,'c');rc(g,x,y-3,1,2,'y')});rc(g,4,28,4,13,'K');rc(g,112,28,4,13,'K');rc(g,0,41,120,9,'K')}],
+q_room:['S',(g,r)=>{roomBg(g,r);bed(g,8,38);el(g,96,28,6,9,'y');el(g,96,28,4.5,7.5,'2');rc(g,90,38,12,1,'b');el(g,96,30,1.5,3,'c')}],
+q_broken:['S',(g,r)=>{roomBg(g,r);bed(g,8,38);el(g,96,28,6,9,'y');el(g,96,28,4.5,7.5,'2');ln(g,93,22,98,30,'c');ln(g,98,30,95,35,'c');rc(g,90,38,12,1,'b');[[80,42],[86,44],[102,43]].forEach(([x,y])=>sp(g,x,y,'c'))}],
+q_nursery:['S',(g,r)=>{roomBg(g,r);pl(g,[[16,36],[20,32],[30,32],[34,36]],'B');rc(g,20,28,1,4,'b');ln(g,20,28,26,30,'b');el(g,98,34,10,3,'B');rc(g,90,34,16,1,'b');el(g,66,30,1.5,1.5,'W');rc(g,65,32,3,3,'W');sp(g,72,44,'r')}],
+q_guest:['S',(g,r)=>{roomBg(g,r,52);bed(g,4,38);fireplace(g,88,38)}],
+q_office:['S',(g,r)=>{roomBg(g,r,62);ln(g,16,6,24,14,'c');ln(g,24,6,16,14,'c');el(g,20,10,1.5,1.5,'o');rc(g,22,30,26,2,'b');rc(g,24,32,1,6,'b');rc(g,45,32,1,6,'b');rc(g,32,29,6,1,'W');rc(g,92,26,12,12,'g');rc(g,93,27,10,10,'3');el(g,98,32,2,2,'c')}],
+p_cellar:['S',(g,r)=>{stoneBg(g,r);[[8,40],[48,40],[88,40]].forEach(([x,y])=>{arch(g,x,y,26,30,'K');rc(g,x,y-14,1,14,'v');rc(g,x+25,y-14,1,14,'v')});lamp(g,46,10,'y',8);ln(g,47,0,47,9,'v');eyes(g,59,32,'y');rc(g,106,38,8,4,'b');rc(g,96,40,8,3,'b');el(g,60,46,8,1,'2')}],
+d_cells:['S',(g,r)=>{stoneBg(g,r);[[6,14],[84,14]].forEach(([x,y])=>{rc(g,x,y,30,26,'K');for(let i=0;i<30;i+=3)rc(g,x+i,y,1,26,'g');rc(g,x,y,30,1,'g');rc(g,x,y+12,30,1,'g')});pl(g,[[40,40],[40,16],[46,14],[46,40]],'g');lamp(g,2,12,'y',6);el(g,60,44,2,1,'C');sp(g,58,45,'C');sp(g,62,45,'C')}],
+
+d_door:['S',(g,r)=>{stoneBg(g,r);arch(g,44,40,32,32,'v');arch(g,46,40,28,30,'b');rc(g,59,10,1,30,'v');for(let y=14;y<40;y+=5)for(let x=48;x<74;x+=5)sp(g,x,y,'o');el(g,60,26,3,3,'y');sp(g,60,26,'o');rc(g,46,39,28,1,'y');
+  [[16,40],[104,40]].forEach(([x,y])=>{figure(g,x,y-4,'g');rc(g,x-4,y-4,8,4,'g');rc(g,x+4,y-18,1,14,'c')})}],
+d_hoard:['S',(g,r)=>{stoneBg(g,r);arch(g,14,30,18,24,'1');arch(g,88,30,18,24,'1');el(g,60,48,52,12,'o');el(g,60,48,46,9,'y');for(let i=0;i<30;i++)sp(g,14+Math.floor(r()*92),40+Math.floor(r()*9),r()<.5?'Y':'o');rc(g,22,38,8,6,'b');rc(g,22,38,8,2,'B');rc(g,86,36,10,7,'b');rc(g,86,36,10,2,'y');ln(g,40,0,40,8,'o');ln(g,80,0,80,8,'o')}],
+m_road:['S',(g,r)=>{duskSky(g,r,30,100,14,5);hills(g,30,6,'v',r,.08);desert(g,r,32,'v','b');pl(g,[[40,50],[60,32],[63,32],[56,50]],'T');[[10,40],[70,44],[92,38]].forEach(([x,y])=>el(g,x,y,3,1.5,'K'));ln(g,104,38,104,28,'K');ln(g,104,31,100,27,'K');ln(g,104,33,108,29,'K')}],
+ma_camp:['S',(g,r)=>{nightSky(g,r,40,96,9);hills(g,40,8,'K',r,.05);fire(g,58,43,1.5);man(g,44,44,'K',1);figure(g,30,44,'K');rc(g,33,30,1,14,'K');el(g,72,40,3,2,'C');el(g,78,40,3,2,'C');el(g,84,40,3,2,'C');rc(g,0,44,120,6,'K')}],
+ma_pass:['S',(g,r)=>{rc(g,0,0,120,50,'K');pl(g,[[40,0],[80,0],[70,30],[66,50],[54,50],[50,30]],'1');stars(g,r,8,26,'1');moon(g,60,10,3);pl(g,[[0,0],[44,0],[52,30],[50,50],[0,50]],'v');pl(g,[[120,0],[76,0],[68,30],[70,50],[120,50]],'v');
+  for(let i=0;i<14;i++){const y=Math.floor(r()*48);rc(g,r()<.5?Math.floor(r()*40):80+Math.floor(r()*38),y,6,1,'K')}pl(g,[[54,50],[58,36],[62,36],[66,50]],'T');for(let y=38;y<50;y+=3)sp(g,60,y,'o');eyes(g,32,20,'y');eyes(g,80,22,'y')}],
+ma_ruin:['S',(g,r)=>{nightSky(g,r,40,22,9);rc(g,0,40,120,10,'K');rc(g,48,26,22,14,'3');pl(g,[[46,26],[59,20],[72,26]],'b');for(let x=50;x<70;x+=3)rc(g,x,27,1,13,'2');rc(g,56,30,5,10,'K');eyes(g,57,33,'y');rc(g,52,28,3,2,'K');ln(g,92,40,92,30,'K');ln(g,92,33,96,29,'K')}],
+ma_howl:['S',(g,r)=>{nightSky(g,r,40);halo(g,62,22,14);el(g,62,22,8,8,'C');el(g,64,24,4,4,'c');pl(g,[[40,50],[54,32],[72,30],[86,50]],'K');pl(g,[[50,30],[56,18],[60,16],[64,20],[66,30]],'K');pl(g,[[60,17],[64,12],[63,18]],'K');
+  rc(g,0,44,120,6,'K');[[16,40],[36,42],[90,42],[106,40]].forEach(([x,y])=>eyes(g,x,y,'y'))}],
+ma_night:['S',(g,r)=>{nightSky(g,r,34,null);moon(g,96,12,4,1);hills(g,36,4,'2',r,.05);desert(g,r,38,'1','2');[[18,30],[26,30],[34,29],[42,28],[50,28]].forEach(([x,y])=>{rc(g,x,y,5,2,'3');rc(g,x+4,y-2,1,2,'3');sp(g,x+5,y-3,'3');rc(g,x,y+2,1,2,'3');rc(g,x+3,y+2,1,2,'3')});ln(g,40,44,70,38,'2')}],
+m_quarry:['S',(g,r)=>{nightSky(g,r,24,107,6);rc(g,0,18,120,32,'K');pl(g,[[0,22],[30,22],[30,26],[38,26],[38,32],[44,32],[44,50],[0,50]],'3');pl(g,[[120,22],[92,22],[92,26],[84,26],[84,32],[76,32],[76,50],[120,50]],'3');
+  for(let y=24;y<50;y+=4){rc(g,0,y,44,1,'2');rc(g,76,y,44,1,'2')}rc(g,58,36,2,12,'b');for(let y=38;y<48;y+=2)rc(g,56,y,6,1,'b');rc(g,8,18,4,3,'K');rc(g,10,19,1,1,'y');rc(g,92,40,4,3,'c')}],
+mb_kiln:['S',(g,r)=>{nightSky(g,r,40,22,10);rc(g,0,40,120,10,'K');pl(g,[[46,40],[50,18],[70,18],[74,40]],'T');rc(g,46,16,28,3,'b');for(let y=21;y<40;y+=3)rc(g,49,y,22,1,'b');arch(g,54,40,12,12,'K');halo(g,60,36,14,{T:'B',K:'v',b:'T'});fire(g,60,40,1);rc(g,58,6,2,10,'2');[[36,40],[86,40]].forEach(([x,y])=>el(g,x,y,3,1,'C'))}],
+mb_pit:['S',(g,r)=>{nightSky(g,r,30,24,8);rc(g,0,28,120,22,'3');rc(g,0,28,120,1,'4');el(g,60,40,30,7,'K');el(g,60,40,28,6,'1');ln(g,48,40,54,38,'C');ln(g,62,42,68,40,'C');rc(g,72,24,1,16,'b');rc(g,80,24,1,16,'b');rc(g,71,24,11,1,'b');rc(g,14,32,6,3,'3');rc(g,98,30,6,3,'3')}],
+mb_hut:['S',(g,r)=>{nightSky(g,r,36,96,10);quarryWall(g,22,50);rc(g,0,36,120,14,'K');rc(g,0,36,120,1,'3');pl(g,[[18,28],[34,22],[50,28]],'v');rc(g,20,28,28,10,'2');for(let x=21;x<48;x+=3)rc(g,x,28,1,10,'1');rc(g,26,31,5,7,'y');halo(g,28,36,10);rc(g,36,30,4,3,'y');fire(g,58,38,.8);rc(g,10,34,6,2,'g');rc(g,100,34,6,2,'g')}],
+mb_lair:['S',(g,r)=>{rc(g,0,0,120,10,'K');quarryWall(g,4,50);el(g,60,4,70,6,'K');rc(g,0,38,120,12,'K');bones(g,r,40,10);pl(g,[[46,38],[48,24],[54,18],[66,18],[72,24],[74,38],[68,38],[66,28],[54,28],[52,38]],'K');eyes(g,57,22,'y')}],
+mb_lairdn:['S',(g,r)=>{rc(g,0,0,120,10,'K');quarryWall(g,4,50);el(g,60,4,70,6,'K');rc(g,0,38,120,12,'K');bones(g,r,40,10);el(g,64,40,22,3,'K');el(g,46,38,4,3,'K');eyes(g,44,38,'y')}],
+m_cave:['S',(g,r)=>{caveBg(g,r,'K','v');el(g,86,24,12,9,'K');el(g,86,25,9,6,'1');eyes(g,84,24,'y');halo(g,32,26,10);rc(g,31,25,2,3,'y');ln(g,40,44,44,42,'C')}],
+mc_bones:['S',(g,r)=>{caveBg(g,r,'K','v');el(g,60,50,26,12,'C');el(g,60,50,22,9,'c');[[50,42],[60,40],[68,43],[56,46]].forEach(([x,y])=>{el(g,x,y,2,2,'W');sp(g,x-1,y,'K');sp(g,x+1,y,'K')});ln(g,44,44,54,40,'W');ln(g,62,38,74,42,'W')}],
+mc_pool:['S',(g,r)=>{caveBg(g,r,'K','1');pl(g,[[74,0],[84,0],[74,36],[60,36]],'1');el(g,60,40,28,5,'2');el(g,60,40,24,3.5,'l');el(g,60,39,14,1.5,'O');rc(g,59,0,1,22,'2')}],
+mc_tunnel:['S',(g,r)=>{rc(g,0,0,120,50,'K');pl(g,[[0,0],[48,16],[48,36],[0,50]],'v');pl(g,[[120,0],[72,16],[72,36],[120,50]],'v');rc(g,48,16,24,20,'K');eyes(g,58,26,'y');
+  rc(g,14,4,1,40,'b');rc(g,14,4,14,1,'b');rc(g,104,4,1,40,'b');rc(g,92,4,13,1,'b');lamp(g,18,10,'y',6);for(let i=0;i<6;i++){const y=38+i*2;rc(g,52-i*5,y,16+i*10,1,'b')}ln(g,52,36,30,50,'g');ln(g,68,36,90,50,'g')}],
+mc_camp:['S',(g,r)=>{caveBg(g,r,'K','v');fire(g,64,44,1.4);man(g,52,45,'K',1);el(g,38,44,6,2,'T');el(g,90,44,6,2,'3');rc(g,74,41,3,3,'g')}],
+mc_mouth:['S',(g,r)=>{caveBg(g,r,'K','v');el(g,58,50,32,30,'K');el(g,58,50,28,26,'1');el(g,58,50,24,22,'K');eyes(g,56,34,'y');bones(g,r,46,8)}],
+mc_den:['S',(g,r)=>{caveBg(g,r,'K','v');el(g,60,52,40,12,'o');el(g,60,52,34,9,'y');for(let i=0;i<18;i++)sp(g,26+Math.floor(r()*68),43+Math.floor(r()*7),r()<.5?'Y':'o');
+  rc(g,48,36,24,6,'K');for(let x=50;x<70;x+=2)rc(g,x,35,1,3,'K');rc(g,48,42,2,4,'K');rc(g,70,42,2,4,'K');el(g,74,34,4,3,'K');eyes(g,74,33,'y')}],
+/* ---------- سوق العفاريت: the old town, the market, the deep ---------- */
+u_old:['S',(g,r)=>{duskSky(g,r,38,108,34,5);[[0,30,16],[18,32,10],[86,30,14],[102,32,18]].forEach(([x,y,w])=>{rc(g,x,y,w,10,'K');for(let i=0;i<w;i+=3)sp(g,x+i,y-1,'K');rc(g,x+4,y+4,2,2,'y')});
+  pl(g,[[50,40],[51,22],[55,18],[59,22],[60,40]],'K');for(let y=24;y<38;y+=3)sp(g,55,y,'v');ln(g,72,40,72,30,'K');ln(g,72,33,68,28,'K');ln(g,72,34,76,30,'K');desert(g,r,40,'v','b');pl(g,[[66,50],[72,40],[74,40],[72,50]],'T')}],
+ua_lane:['S',(g,r)=>{nightSky(g,r,30,null,null,['K','1','2']);moon(g,50,8,2.5);pl(g,[[0,0],[44,18],[44,36],[0,50]],'v');pl(g,[[120,0],[76,18],[76,36],[120,50]],'v');rc(g,44,18,32,18,'K');arch(g,56,36,8,10,'1');
+  pl(g,[[6,10],[18,14],[18,22],[6,20]],'K');pl(g,[[96,14],[108,10],[108,22],[96,24]],'y');rc(g,101,10,1,14,'o');rc(g,96,17,12,1,'o');pl(g,[[44,36],[76,36],[110,50],[10,50]],'b');rc(g,22,30,6,12,'K');ln(g,96,6,100,2,'r')}],
+ua_coop:['S',(g,r)=>{duskSky(g,r,40,108,34,5);rc(g,22,26,22,16,'b');pl(g,[[60,42],[60,26],[66,20],[72,26],[72,42]],'v');for(let y=24;y<40;y+=4)for(let x=62;x<71;x+=4)sp(g,x,y,'K');arch(g,63,42,6,7,'K');pl(g,[[78,42],[80,30],[86,30],[88,42]],'v');
+  ln(g,32,26,30,22,'z');ln(g,32,26,34,21,'r');desert(g,r,42,'v','b');[[52,46],[60,46],[64,47]].forEach(([x,y])=>el(g,x,y,1.5,1,'C'))}],
+ua_well:['S',(g,r)=>{nightSky(g,r,36,90,9);[[0,26,22],[104,28,16]].forEach(([x,y,w])=>{rc(g,x,y,w,12,'K');rc(g,x+4,y+4,2,2,'y')});desert(g,r,38,'v','b');el(g,60,44,26,4,'K');
+  rc(g,49,34,22,8,'g');for(let x=49;x<71;x+=4)rc(g,x,34,1,8,'3');rc(g,49,33,22,1,'c');rc(g,51,22,1,11,'b');rc(g,68,22,1,11,'b');rc(g,50,22,20,1,'b')}],
+ua_tent:['S',(g,r)=>{nightSky(g,r,40);pl(g,[[10,40],[10,18],[60,10],[110,18],[110,40]],'m');stripe(g,12,20,96,20,'m','2',8);lights(g,10,110,16,3,['y','r','q','y','P']);
+  rc(g,46,26,28,6,'o');rc(g,48,27,24,4,'y');rc(g,40,32,40,8,'v');[[26,40],[36,40],[86,40],[96,40]].forEach(([x,y])=>man(g,x,y,'K'));rc(g,0,40,120,10,'K')}],
+ua_boss:['S',(g,r)=>{nightSky(g,r,36);halo(g,74,30,16,{1:'2',2:'3',K:'1'});el(g,74,30,9,9,'C');el(g,76,32,4,4,'c');rc(g,0,24,24,14,'K');arch(g,10,38,6,8,'1');desert(g,r,38,'K','v');
+  pl(g,[[42,40],[46,24],[52,18],[58,20],[62,40]],'K');el(g,52,20,5,5,'K');eyes(g,50,20,'y');[[84,34],[92,36]].forEach(([x,y])=>eyes(g,x,y,'y'))}],
+u_souq:['S',(g,r)=>{rc(g,0,0,120,50,'K');rc(g,0,0,120,14,'1');stars(g,r,8,12,'1');for(let x=6;x<120;x+=26)arch(g,x,40,18,24,'v');lights(g,0,120,8,3,['r','q','P','y','r','O']);
+  [[6,'r'],[64,'l'],[100,'q']].forEach(([x,c])=>{rc(g,x,30,18,3,c);[[3,28],[8,28],[13,28]].forEach(([dx,dy])=>jar(g,x+dx,30,dy%2?'y':'C',.8))});[[38,40],[46,40],[56,40],[86,40]].forEach(([x,y])=>figure(g,x,y,'K'));rc(g,0,40,120,10,'K');rc(g,0,40,120,1,'v')}],
+ub_jars:['S',(g,r)=>{rc(g,0,0,120,50,'K');rc(g,10,8,100,1,'v');lights(g,10,110,4,2,['y','r','q','P']);[14,26,38].forEach(y=>shelf(g,14,y,92));rc(g,14,8,1,32,'b');rc(g,105,8,1,32,'b');
+  const C=['T','o','q','P','z','y','m'];[14,26,38].forEach((y,j)=>{for(let x=18;x<104;x+=7)jar(g,x,y,C[(x+j*3)%C.length],1)});halo(g,60,36,10,{K:'2',v:'3'});jar(g,60,38,'l',1.4);rc(g,0,40,120,10,'K')}],
+ub_cafe:['S',(g,r)=>{rc(g,0,0,120,50,'K');rc(g,0,0,120,22,'1');wallLamps(g,[34,86],8,['y','O']);[[6,36],[86,36]].forEach(([x,y])=>{rc(g,x,y-2,28,2,'b');rc(g,x+2,y,1,6,'b');rc(g,x+25,y,1,6,'b')});
+  [[14,34],[24,34],[94,34],[104,34]].forEach(([x,y])=>figure(g,x,y,'2'));rc(g,48,24,24,14,'K');rc(g,52,28,2,6,'r');rc(g,58,28,2,6,'r');ln(g,60,24,56,14,'z');ln(g,56,14,58,10,'z');rc(g,0,40,120,10,'K')}],
+ub_dice:['S',(g,r)=>{rc(g,0,0,120,50,'K');rc(g,0,0,120,24,'1');wallLamps(g,[14,88],8,['r','y']);el(g,60,40,30,6,'b');el(g,60,39,28,4,'C');[[52,38],[62,40]].forEach(([x,y])=>{rc(g,x,y,3,3,'W');sp(g,x+1,y+1,'K')});rc(g,70,36,1,3,'y');
+  [[26,40],[94,40],[60,24]].forEach(([x,y])=>{figure(g,x,y,'K');eyes(g,x-1,y-9,'c')})}],
+ub_boss:['S',(g,r)=>{rc(g,0,0,120,50,'K');for(let x=4;x<120;x+=26)arch(g,x,40,18,24,'1');halo(g,60,24,22,{K:'1',1:'p',2:'p'});
+  const C=['T','o','q','P','z','y','m','r'];for(let j=0;j<5;j++)for(let i=0;i<=j;i++)jar(g,60-j*3.5+i*7,50-(4-j)*4.5,C[(i+j)%C.length],1);pl(g,[[52,26],[56,10],[60,6],[64,10],[68,26]],'K');eyes(g,58,12,'y');rc(g,0,46,120,4,'K')}],
+ub_bossdn:['S',(g,r)=>{rc(g,0,0,120,50,'K');for(let x=4;x<120;x+=26)arch(g,x,40,18,24,'1');halo(g,62,22,20,{K:'1',1:'2'});stars(g,r,10,30,'12','4');const C=['T','o','q','P','z','y'];for(let i=0;i<6;i++)jar(g,46+i*6,46,C[i],1);jar(g,62,40,'y',1);rc(g,0,46,120,4,'K')}],
+u_deep:['S',(g,r)=>{stoneBg(g,r,'K','1');lights(g,0,120,6,2,['r','q','y','P','r']);arch(g,44,44,32,30,'v');arch(g,48,44,24,26,'K');eyes(g,58,28,'y');jar(g,26,44,'T',1.5);jar(g,94,44,'T',1.5);rc(g,0,44,120,6,'K')}],
+uc_hooks:['S',(g,r)=>{stoneBg(g,r,'K','1');rc(g,0,4,120,1,'g');for(let x=8;x<120;x+=16){ln(g,x,4,x,8,'g');pl(g,[[x-3,10],[x+3,10],[x+3,30],[x-3,30]],'K');rc(g,x-1,12,2,1,'W');eyes(g,x-1,9,'c')}lamp(g,52,38,'y',5);el(g,60,46,14,1,'2')}],
+uc_jars:['S',(g,r)=>{stoneBg(g,r,'K','1');const C=['T','o','q','P','z','y','m','l'];[12,24,36].forEach((y,j)=>{shelf(g,0,y,120);for(let x=6;x<120;x+=8)jar(g,x,y,C[(x/8+j*3|0)%C.length],1)})}],
+uc_vault:['S',(g,r)=>{stoneBg(g,r,'K','1');[[6,24],[100,24]].forEach(([x,y])=>{rc(g,x,y,14,16,'b');rc(g,x,y+7,14,1,'v');rc(g,x+2,y-6,10,6,'b')});rc(g,40,32,30,2,'b');rc(g,42,34,1,6,'b');rc(g,67,34,1,6,'b');rc(g,48,30,6,2,'r');el(g,62,16,4,4,'v');ln(g,62,13,62,17,'c');ln(g,46,0,46,8,'v');el(g,46,9,1.5,1.5,'o');el(g,62,44,3,1,'y')}],
+uc_door:['S',(g,r)=>{stoneBg(g,r,'K','1');arch(g,40,44,40,36,'o');arch(g,42,44,36,34,'b');rc(g,59,10,2,34,'o');for(let y=16;y<44;y+=5)for(let x=45;x<76;x+=5)sp(g,x,y,'y');rc(g,52,12,16,2,'y');wallLamps(g,[22,98],22,['r','O'])}],
+uc_hall:['S',(g,r)=>{stoneBg(g,r,'K','1');rc(g,0,6,120,1,'g');[[10,'W'],[24,'W'],[96,'W'],[110,'W']].forEach(([x])=>{ln(g,x,6,x,9,'g');pl(g,[[x-3,11],[x+3,11],[x+3,30],[x-3,30]],'K');rc(g,x-1,13,2,1,'W')});
+  for(let i=0;i<5;i++)rc(g,46-i*2,30+i*3,28+i*4,3,i%2?'v':'b');rc(g,52,20,16,10,'b');eyes(g,58,24,'K');ln(g,46,10,74,10,'o');ln(g,60,4,60,10,'o');el(g,50,12,3,1,'o');el(g,70,12,3,1,'o');wallLamps(g,[36,84],10,['y','P'])}],
+
+/* ---------- the town (البلد): the header, the tiles, the café and the hall ---------- */
+'P:town':['T',(g,r)=>{sky(g,['K','1','1','2','p','m'],0,40);stars(g,r,18,22);moon(g,98,10,4,1);
+  [[0,30,40],[56,32,20],[100,30,30]].forEach(([x,y,w])=>rc(g,x,y,w,12,'1'));rc(g,64,34,24,6,'1');rc(g,78,26,6,8,'1');palm(g,36,38,15,'K',.3);palm(g,112,36,16,'K',-.3);
+  [[0,36,17,'v'],[19,32,21,'b'],[43,38,13,'v'],[88,34,19,'v'],[108,31,22,'b']].forEach(([x,y,w,k])=>{rc(g,x,y,w,53-y,k);rc(g,x,y,w,1,'T');for(let i=1;i<w-1;i+=5)rc(g,x+i,y+3,2,3,r()<.6?'y':'K')});
+  rc(g,22,38,8,6,'y');for(let i=22;i<30;i+=2)rc(g,i,38,1,6,'o');pl(g,[[20,37],[32,37],[31,35],[21,35]],'m');rc(g,61,30,1,20,'K');lamp(g,60,28,'Y',6);
+  [[10,53],[30,53],[96,53]].forEach(([x,y])=>arch(g,x,y,4,8,'K'));rc(g,0,50,130,3,'K')}],
+'P:adv':['P',(g,r)=>{sky(g,['K','1','1','2','p'],0,34);stars(g,r,10,16);halo(g,30,30,12,{p:'m',2:'p'});hills(g,36,4,'1',r,.09);rc(g,0,36,100,20,'K');
+  pl(g,[[22,56],[50,40],[56,38],[60,38],[46,46],[60,56]],'b');for(let i=0;i<5;i++)rc(g,46-i*4,41+i*3,3,1,'B');rc(g,22,24,2,32,'v');pl(g,[[24,25],[38,25],[41,27],[38,29],[24,29]],'B');pl(g,[[22,31],[10,31],[7,33],[10,35],[22,35]],'B');
+  palm(g,8,40,10,'K',.3);palm(g,90,38,11,'K',-.3);palm(g,82,40,7,'K',-.2);rc(g,1,40,6,6,'K');rc(g,3,42,2,2,'y')}],
+'P:market':['P',(g,r)=>{rc(g,0,0,100,56,'K');rc(g,0,0,100,10,'v');[[2,'r'],[35,'z'],[68,'y']].forEach(([x,c])=>{stripe(g,x,8,31,6,c,'C',3);rc(g,x,14,31,1,'K');rc(g,x+2,15,1,30,'v');rc(g,x+28,15,1,30,'v');
+  rc(g,x+2,36,27,12,'v');rc(g,x+2,36,27,1,'b');const F=['r','o','y','q'];for(let i=0;i<12;i++)el(g,x+5+(i%6)*4,33-(i/6|0)*3,1.6,1.6,F[(i+x)%4]);lamp(g,x+15,18,'Y',6)});rc(g,0,48,100,8,'K')}],
+'P:smith':['P',(g,r)=>{rc(g,0,0,100,56,'K');bricks(g,0,0,100,56,'K','v');rc(g,4,0,30,18,'v');pl(g,[[2,18],[36,18],[34,24],[4,24]],'g');rc(g,4,24,30,32,'v');for(let y=26;y<56;y+=5)rc(g,4,y,30,1,'K');arch(g,10,48,18,16,'K');halo(g,19,42,14,{K:'m',v:'T',m:'r'});el(g,19,42,7,4,'r');el(g,19,43,4,2,'y');
+  pl(g,[[50,36],[86,36],[90,34],[94,36],[84,40],[76,40],[78,50],[62,50],[64,40],[56,40]],'3');rc(g,52,36,40,1,'4');rc(g,60,50,22,6,'v');rc(g,60,34,18,2,'y');rc(g,60,34,12,1,'Y');
+  ln(g,82,14,74,30,'b');pl(g,[[78,10],[86,14],[84,18],[76,14]],'g');[[66,28],[70,26],[74,30],[64,31]].forEach(([x,y])=>sp(g,x,y,'Y'));rc(g,40,0,1,12,'g');rc(g,44,0,1,10,'g')}],
+'P:tailor':['P',(g,r)=>{rc(g,0,0,100,56,'K');for(let x=3;x<100;x+=6)rc(g,x,0,1,56,'v');[10,22,34].forEach(y=>shelf(g,0,y,60));const C=['y','P','o','r','z','C','l','m'];[10,22,34].forEach((y,j)=>{for(let x=4;x<58;x+=9){el(g,x+3,y-3,4,2.5,C[(x/9+j*2|0)%8]);el(g,x+7,y-3,1,2.5,'C')}});
+  rc(g,64,24,4,22,'K');rc(g,64,20,26,4,'K');rc(g,86,20,4,12,'K');el(g,90,30,3,3,'y');rc(g,60,46,36,3,'v');rc(g,70,44,6,2,'r');ln(g,8,44,14,50,'c');ln(g,14,44,8,50,'c');el(g,8,51,1.5,1.5,'c');el(g,14,51,1.5,1.5,'c');rc(g,22,44,3,6,'z');rc(g,30,46,3,4,'r');rc(g,0,52,100,4,'v')}],
+'P:cook':['P',(g,r)=>{rc(g,0,0,100,56,'K');bricks(g,0,0,100,56,'K','v');fire(g,50,54,2);el(g,50,34,26,14,'T');el(g,50,30,26,4,'B');el(g,50,30,23,3,'r');[[40,30],[52,29],[60,31],[46,31]].forEach(([x,y])=>sp(g,x,y,'o'));rc(g,26,28,2,4,'T');rc(g,72,28,2,4,'T');ln(g,62,30,74,10,'b');
+  [[42,4],[50,2],[58,4]].forEach(([x,y])=>{for(let j=0;j<20;j++)sp(g,x+Math.round(Math.sin(j*.6)*1.5),y+j,'c')});el(g,10,52,6,2,'s');el(g,90,50,2,2,'r');el(g,94,51,2,2,'q')}],
+'P:mountain':['P',(g,r)=>{sky(g,['K','1','1','2'],0,40);stars(g,r,12,22);hills(g,26,10,'1',r,.07);pl(g,[[6,56],[30,26],[44,22],[60,24],[82,36],[100,48],[100,56]],'2');pl(g,[[30,26],[44,22],[60,24],[50,30],[36,32]],'3');
+  for(let y=34;y<56;y+=4)rc(g,20+(y%8),y,60-(y-34),1,'1');[[44,34,'y'],[58,40,'o'],[70,44,'O'],[36,46,'y']].forEach(([x,y,c])=>{sp(g,x,y,c);sp(g,x+1,y,c)});halo(g,70,44,6,{2:'3',1:'2'});sp(g,70,44,'Q');ln(g,30,52,40,40,'b');pl(g,[[34,38],[44,40],[46,42],[36,40]],'g')}],
+'P:canal':['P',(g,r)=>{sky(g,['K','1','1','2','p'],0,32);moon(g,74,26,5);rc(g,0,32,100,24,'2');for(let y=34;y<56;y+=3)rc(g,64+(y%5),y,14-(y-34)/4,1,'p');palm(g,8,32,16,'K',.35);palm(g,94,32,18,'K',-.3);rc(g,0,30,30,2,'K');rc(g,6,26,6,4,'K');rc(g,8,27,2,2,'y');
+  pl(g,[[24,46],[50,46],[46,50],[28,50]],'b');rc(g,38,30,1,16,'v');pl(g,[[39,30],[39,44],[48,44]],'C');reeds(g,0,16,56,'K',r,8);reeds(g,82,100,56,'K',r,8)}],
+'P:gear':['P',(g,r)=>{rc(g,0,0,100,56,'K');for(let x=3;x<100;x+=8)rc(g,x,0,1,56,'v');rc(g,6,10,2,40,'b');rc(g,26,10,2,40,'b');rc(g,6,22,22,2,'b');rc(g,6,40,22,2,'b');rc(g,15,0,2,38,'c');rc(g,16,0,1,38,'W');rc(g,12,36,8,2,'y');rc(g,30,0,1,30,'g');
+  pl(g,[[50,14],[58,8],[66,8],[74,14],[72,40],[52,40]],'c');rc(g,62,8,1,32,'g');pl(g,[[44,14],[50,12],[52,22],[46,20]],'g');pl(g,[[80,14],[74,12],[72,22],[78,20]],'g');el(g,62,6,5,4,'c');rc(g,61,40,2,10,'b');
+  rc(g,78,40,16,10,'b');rc(g,78,40,16,3,'B');rc(g,78,44,16,1,'y');rc(g,85,43,2,3,'y');rc(g,0,50,100,6,'v')}],
+'P:hakawati':['P',(g,r)=>{rc(g,0,0,100,56,'1');for(let y=8;y<40;y+=8)rc(g,0,y,100,1,'2');rc(g,0,40,100,16,'K');halo(g,70,24,14);rc(g,69,20,4,6,'y');rc(g,70,21,2,4,'Y');rc(g,70,17,2,3,'v');
+  rc(g,30,36,40,2,'b');rc(g,32,38,1,6,'b');rc(g,67,38,1,6,'b');pl(g,[[42,46],[44,30],[56,30],[58,46]],'3');el(g,50,26,3.5,3.5,'s');rc(g,46,22,8,2,'C');el(g,50,22,4,1.5,'W');rc(g,47,28,6,2,'W');rc(g,45,32,10,4,'y');rc(g,49,32,2,4,'o');
+  figure(g,10,52,'K');figure(g,88,52,'K');figure(g,22,54,'K')}],
+'P:wada':['P',(g,r)=>{rc(g,0,0,100,56,'K');rc(g,0,0,100,30,'1');stars(g,r,10,24,'1');el(g,50,46,48,18,'m');el(g,48,38,22,8,'o');el(g,48,37,20,6.5,'y');[[38,36],[44,34],[50,36],[56,35],[46,39],[54,39],[42,38]].forEach(([x,y])=>{rc(g,x,y,3,2,'C');sp(g,x+1,y,'W')});halo(g,82,28,12);rc(g,81,24,2,8,'C');sp(g,81,22,'y');sp(g,82,21,'Y');sp(g,81,23,'o')}],
+cafe:['P',(g,r)=>{sky(g,['K','1','1','2'],0,56);stars(g,r,10,12);rc(g,8,14,84,36,'v');for(let y=16;y<50;y+=4)rc(g,8,y,84,1,'K');stripe(g,6,8,88,6,'z','C',4);rc(g,6,14,88,1,'K');lights(g,8,92,16,2,['r','y','l','q','y','r']);
+  [[14,24],[70,24]].forEach(([x,y])=>{rc(g,x,y,16,12,'y');rc(g,x+7,y,1,12,'o');rc(g,x,y+6,16,1,'o')});arch(g,38,50,24,30,'o');arch(g,40,50,20,28,'Y');rc(g,44,40,12,10,'y');el(g,50,30,4,4,'C');el(g,50,30,3,3,'y');halo(g,50,40,20,{v:'b',b:'T',K:'v'});
+  rc(g,2,46,18,2,'B');rc(g,4,48,1,6,'b');rc(g,17,48,1,6,'b');el(g,80,52,9,2,'b');rc(g,76,44,3,5,'r');rc(g,82,44,3,5,'r');rc(g,88,46,6,4,'y');rc(g,0,54,100,2,'K')}],
+/* ---------- the mine, the cave floors and the canal bank for fishing ---------- */
+mine:['M',(g,r)=>{sky(g,['K','1','1','2'],0,60);stars(g,r,20,40);moon(g,104,16,5);hills(g,52,12,'1',r,.05);pl(g,[[0,100],[0,60],[40,36],[70,40],[100,58],[130,64],[130,100]],'2');pl(g,[[40,36],[70,40],[60,48],[30,46]],'3');
+  for(let y=56;y<100;y+=6)rc(g,0,y,130,1,'1');arch(g,46,84,30,30,'K');rc(g,44,54,2,30,'b');rc(g,76,54,2,30,'b');rc(g,44,52,34,3,'b');lamp(g,48,58,'y',8);rc(g,0,90,130,10,'K')}],
+cave1:['M',(g,r)=>{caveFloor(g,r,'v','K','T','o')}],
+cave4:['M',(g,r)=>{caveFloor(g,r,'1','K','3','c')}],
+cave7:['M',(g,r)=>{caveFloor(g,r,'1','K','p','O')}],
+fishbank:['M',(g,r)=>{sky(g,['K','1','1','2','p'],0,52);stars(g,r,18,34);moon(g,92,22,6);palm(g,10,52,22,'K',.35);palm(g,118,52,24,'K',-.3);ground(g,50,'K',r,.6);water(g,54,'1','2',r,14);el(g,92,64,8,1.5,'3');el(g,92,72,5,1,'3');reeds(g,0,26,58,'K',r,10);reeds(g,104,130,58,'K',r,10);rc(g,0,92,130,8,'K');reeds(g,0,130,94,'z',r,4)}],
+
+};
+const C={};
+function get(k){if(C[k]!==undefined)return C[k];const e=D[k];if(!e)return C[k]='';const z=SZ[e[0]],g=PXS_new(z[0],z[1]);e[1](g,PXS_rng(k));return C[k]=PXS_svg(g,z[2],z[3],null,k.startsWith('P:'))}
+return {get,has:k=>!!D[k],keys:()=>Object.keys(D)};
+})();
+/* hooks: the new art wins wherever a scene exists; anything else keeps its old picture */
+/* a key with no scene of its own (the old code drew a bare sky for it) gets the plain pixel sky; a SCENERY_X added later keeps its own art */
+{const s0=scenery;scenery=function(k){return PXS.get(k)||(SCENERY_X[k]?s0.apply(this,arguments):PXS.get('_sky'))}}
+{const p0=placeArt;placeArt=function(id){return PXS.get('P:'+id)||p0.apply(this,arguments)}}
+if(typeof cafeArt==='function'){const c0=cafeArt;cafeArt=function(){return PXS.get('cafe')||c0.apply(this,arguments)}}
+if(typeof H_artHk==='function'){const h0=H_artHk;H_artHk=function(){return PXS.get('P:hakawati')||h0.apply(this,arguments)}}
+if(typeof H_artWd==='function'){const w0=H_artWd;H_artWd=function(){return PXS.get('P:wada')||w0.apply(this,arguments)}}
+/* the mine, cave and fishing backdrops live inside p9b's block, so the old SVG is swapped in the page when it appears
+   (the mine floor's colours tell which cave tier it is); fishing uses its plain bank backdrop under the game's own rod */
+if(typeof fishScene==='function')fishScene=function(){return ''};
+(function(){const pick=s=>{const a=s.querySelector('#g9mS');if(a)return 'mine';if(s.querySelector('#g9fS'))return 'fishbank';const c=s.querySelector('#g9cB stop');if(c){const v=(c.getAttribute('stop-color')||'').toLowerCase();return v==='#14131c'?'cave7':v==='#1c1714'?'cave4':'cave1'}return ''};
+  const fix=()=>{document.querySelectorAll('#g9mS,#g9fS,#g9cB').forEach(d=>{const s=d.closest('svg');if(!s||!s.isConnected)return;const k=pick(s),n=k&&PXS.get(k);if(n)s.outerHTML=n})};
+  new MutationObserver(ms=>{if(ms.some(m=>m.addedNodes.length))fix()}).observe(document.body,{childList:true,subtree:true});})();
+
+/* ---------- v5.2: eat from your bag inside the mine and at the canal without leaving the floor, and «حلبة عم صابر» at the café (+2 max effort each, up to 40) ---------- */
+(function(){const st=document.createElement('style');st.textContent=`
+.gx-subE{display:flex;align-items:center;gap:6px}
+.gx-subE #gxEffT{flex:1;min-width:0}
+.gx-eatb{flex:none;position:relative;display:flex;align-items:center;gap:4px;min-height:34px;margin:2px 0;padding:2px 10px;border-radius:10px;border:1px solid #7fe0a066;background:#1d3a2a;color:#c9f5d6;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.gx-eatb::before{content:'';position:absolute;inset:-5px -3px}
+.gx-eatb svg{width:20px;height:20px}
+.gx-eatb.on{background:#2c5a3e;border-color:#7fe0a0}
+.gx-eff.many{gap:1px}
+.gx-food{background:var(--card);border:1px solid #7fe0a044;border-radius:14px;padding:8px;margin-top:6px}
+.gx-food .hd{font-size:12px;font-weight:700;color:var(--mute);margin:0 4px 6px}
+.gx-food .gr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.gx-fd{min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font:inherit;font-size:11px;font-weight:700;line-height:1.25;cursor:pointer;padding:4px 2px}
+.gx-fd svg{width:26px;height:26px}
+.gx-fd .nm{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gx-fd small{color:#7fe0a0;font-weight:800}
+.gx-fd.full small{color:var(--dim)}
+.kf-hl .ic{filter:hue-rotate(18deg) saturate(.85) brightness(1.2)}
+`;document.head.appendChild(st)})();
+
+const EAT={open:0};
+const eatFoods=h=>FOODS.filter(k=>(h.bag[k]||0)>0&&ITEMS[k]);
+const eatCount=h=>eatFoods(h).reduce((a,k)=>a+h.bag[k],0);
+function eatBtnHTML(h){const n=eatCount(h);return n?`<button class="gx-eatb${EAT.open?' on':''}" id="gxEatB">${twFood(eatFoods(h)[0],20)}${G('كُل','كُلي')} <span>(${n})</span></button>`:''}
+function eatGridHTML(h){const e=effNow(h),full=e>=EFF_MAX;
+  return eatFoods(h).map(k=>`<button class="gx-fd${full?' full':''}" data-fd="${k}">${twFood(k,26)}<span class="nm">${ITEMS[k].name} ×${h.bag[k]}</span><small>${twN(full?fqEff(h,k):Math.min(fqEff(h,k),EFF_MAX-e))} مجهود</small></button>`).join('')}
+const eatStripHTML=h=>`<div class="gx-food" id="gxFood" ${EAT.open&&eatCount(h)?'':'hidden'}><div class="hd">${G('كُل','كُلي')} من شنطتك ${G('وكمّل','وكمّلي')} في نفس الدور</div><div class="gr" id="gxFoodG">${eatGridHTML(h)}</div></div>`;
+
+/* p9b.js (gxStats, gxBind, gxTired) calls eatBtnHTML, eatStripHTML, eatBind and eatTired; its block hands back what eating needs through gxDev */
+function eatUI(){const h=S.hero;if(!h)return;const b=$('#gxEatB'),f=$('#gxFood'),n=eatCount(h);
+  if(!n)EAT.open=0;
+  if(b){if(n)b.outerHTML=eatBtnHTML(h);else b.remove()}
+  else if(n){const t=$('#gxEffT');if(t)t.insertAdjacentHTML('afterend',eatBtnHTML(h))}
+  if(f){f.hidden=!(EAT.open&&n);const g=$('#gxFoodG');if(g)g.innerHTML=eatGridHTML(h)}
+  eatBind()}
+function eatBind(){const b=$('#gxEatB');if(b)b.onclick=()=>{EAT.open=EAT.open?0:1;SFX.page();eatUI()};
+  view.querySelectorAll('[data-fd]').forEach(x=>x.onclick=()=>gxEat(x.dataset.fd,x))}
+function gxEat(k,el){const h=S.hero;if(!h||!(h.bag[k]>0))return;const e0=effNow(h);
+  if(e0>=EFF_MAX){toast('مجهودك مليان. خلّي الأكل لبعدين');return}
+  h.bag[k]--;h.eff.v=Math.min(EFF_MAX,e0+fqEff(h,k));if(h.eff.v>=EFF_MAX)h.eff.t=Date.now();const got=h.eff.v-e0;saveHero();
+  SFX.munch();setTimeout(()=>SFX.gulp(),380);setTimeout(()=>SFX.heal(),650);vib([20,30,20]);
+  floatAt($('#gxEffN')||el,twI('+'+got)+' مجهود','#7fe0a0','',20);
+  const e=$('#gxEff');if(e)for(let i=e0;i<h.eff.v;i++)if(e.children[i])cls(e.children[i],'back');
+  const D=gxDev;D.GX.v=h.eff.v;D.effUI();
+  if(e0<1){if(S.screen==='mine'){if(!D.GX.rock)D.mnSlot();D.mnBtn()}else D.fsBtn();cls($('#gxGo'),'ready');D.gxMsgOff()}
+  if(h.eff.v>=EFF_MAX){EAT.open=0;setTimeout(()=>toast('مجهودك اتملى!'),500)}
+  eatUI()}
+/* tired with food in the bag: point at the bag and open it */
+function eatTired(){const h=S.hero;if(!h||!eatCount(h))return;
+  const m=$('#gxMsg small');if(m)m.textContent=`أو ${G('كُل','كُلي')} حاجة من شنطتك فوق، ${G('وكمّل','وكمّلي')} من غير ما ${G('تطلع','تطلعي')}`;
+  else{const g=$('#gxMsg');if(g)g.insertAdjacentHTML('beforeend',`<small>أو ${G('كُل','كُلي')} حاجة من شنطتك فوق</small>`)}
+  if(!EAT.open){EAT.open=1;eatUI()}}
+
+/* «حلبة عم صابر»: every cup is +2 max effort for good, 10 cups at most (40), each dearer than the last */
+const helbaPrice=h=>150*(((h&&h.effUp)||0)+1);
+function kfHelbaHTML(h){const n=h.effUp||0,done=n>=10,p=helbaPrice(h),m=effMaxOf(h);
+  return `<div class="card kf-tea kf-hl" id="kfHl"><span class="ic">${KF_TEA}</span><div class="tx"><b>حلبة عم صابر</b>
+    <small>${done?'نفَسك وصل لآخره: أقصى مجهود 40':`أقصى مجهود ${twI('+2')} على طول: من ${m} لـ ${m+2}`}</small>
+    <small>${n?`${G('شربت','شربتي')} ${n} من 10 · كل كوباية أغلى من اللي قبلها`:'وصفة قديمة بتطوّل النفَس، عشان تنقّب وتصطاد أكتر'}</small></div>
+    <button class="tw-buy" id="kfHlB" ${done||h.money<p?'disabled':''}>${done?'خلاص':`${G('اشرب','اشربي')}<small>${p} جنيه</small>`}</button></div>`}
+function kfHelba(){const h=S.hero,btn=$('#kfHlB');if(!h)return;const n=h.effUp||0,p=helbaPrice(h);if(n>=10||h.money<p)return;
+  effNow(h);h.money-=p;h.effUp=n+1;effNow(h);h.eff.v=Math.min(EFF_MAX,h.eff.v+2);if(h.eff.v>=EFF_MAX)h.eff.t=Date.now();saveHero();
+  SFX.pour();setTimeout(()=>SFX.gulp&&SFX.gulp(),700);setTimeout(()=>SFX.levelup&&SFX.levelup(),1100);vib([15,40,15]);twPay(btn,p);
+  const e=h.eff.v,B=$('#kfB');if(B)B.dataset.e=e;const v=$('#kfEv'),b=$('#kfEb i');
+  if(v){v.textContent=e+'/'+EFF_MAX;cls(v,'pop');floatAt(v,twI('+2'),'#7fe0a0','',20)}if(b)b.style.width=e/EFF_MAX*100+'%';
+  const t=$('#kfEt');if(t&&e>=EFF_MAX)t.textContent='مجهودك مليان';
+  const tea=$('#kfTea');if(tea){tea.outerHTML=kfTeaHTML(h);$('#kfDrink').onclick=()=>kfDrink()}
+  kfHelbaBind();toast(`نفَسك طوّل: أقصى مجهود بقى ${EFF_MAX}`)}
+function kfHelbaBind(){const c=$('#kfHl');if(c)c.outerHTML=kfHelbaHTML(S.hero);else{const t=$('#kfTea');if(t)t.insertAdjacentHTML('afterend',kfHelbaHTML(S.hero))}
+  const b=$('#kfHlB');if(b)b.onclick=()=>kfHelba()}
+{const o=SCREENS.cafe;SCREENS.cafe=function(){o.apply(this,arguments);if(S.screen==='cafe'&&$('#kfTea'))kfHelbaBind()}}
+{const o=kfDrink;kfDrink=function(){o.apply(this,arguments);if($('#kfHl'))kfHelbaBind()}}
+
+/* ---------- v5.2: going back to town in the middle of a night ----------
+   After an act's boss (the camp and the road to the next place) the hero may go home with everything.
+   At a stop, with the act's boss still standing, going home costs 3/4 of the money and loot won since the last checkpoint
+   (the night's start, or the last camp). The experience always stays. N.ck = {m, bag, res} is that checkpoint. */
+const N_HOME_LOSE=.75;
+const N_snap=h=>({m:h.money,bag:Object.assign({},h.bag),res:Object.assign({},h.res)});
+{const o=N_begin;N_begin=function(){const r=o.apply(this,arguments);if(S.night&&S.hero){S.night.ck=N_snap(S.hero);N_save()}return r}}
+{const sc=SC.n_camp,o=sc.onEnter;sc.onEnter=function(){const fresh=S.night&&!S.night.camp;o.apply(this,arguments);if(fresh&&S.night&&S.hero){S.night.ck=N_snap(S.hero);N_save()}}}
+/* what going home now would cost: money and every bag or material count that grew since the checkpoint */
+function N_homeCost(h,N){const ck=N.ck||{m:N.m0,bag:null,res:null},earned=Math.max(0,h.money-ck.m),L={m:Math.ceil(earned*N_HOME_LOSE),earned,it:[]};
+  [['bag',k=>ITEMS[k]&&ITEMS[k].name],['res',k=>MAT[k]&&resN(k)]].forEach(([w,nm])=>{const was=ck[w];if(!was)return;
+    Object.keys(h[w]||{}).forEach(k=>{const g=(h[w][k]||0)-(was[k]||0);if(g>0&&nm(k)){const n=Math.ceil(g*N_HOME_LOSE);if(n>0)L.it.push({w,k,n,g,name:nm(k)})}})});
+  return L}
+function N_home(safe){const h=S.hero,N=S.night;if(!h||!N)return;ac();
+  const L=safe?{m:0,earned:Math.max(0,h.money-N.m0),it:[]}:N_homeCost(h,N);
+  h.money-=L.m;L.it.forEach(x=>{h[x.w][x.k]=Math.max(0,(h[x.w][x.k]||0)-x.n)});
+  N_save();
+  const bn=N_act().bn;S.nhome={safe:!!safe,bn,fem:N_bnFem(bn),lost:L.m,earned:L.earned,it:L.it,where:N_where(N),cards:N.cards,xp:N.xp||0,min:N_mins(N.play),adv:N_adv().id};
+  h.hp=MXH(h);h.energy=MXE(h);h.night=null;S.night=null;S.combat=null;RES=null;saveHero();
+  S.screen='nhome';render();view.scrollTop=0}
+const N_bnFem=n=>['الغولة','النداهة','الهانم','الضبعة','بياعة الأصوات'].includes(n);
+const N_itTxt=a=>a.map(x=>`${x.name} ×${x.n}`).join('، ');
+SCREENS.nhome=function(){const h=S.hero,R=S.nhome;if(!h||!R){S.screen='title';return render()}const cp=S.comp,home=typeof twGo==='function';
+  view.innerHTML=`<div class="art" style="height:200px">${scenery(R.safe?'n_camp':'night')}<div class="fade"></div></div>
+  <h2 style="font-family:var(--display);color:${R.safe?'var(--gold2)':'#f0a090'};font-size:30px;margin:6px 0">${G('رجعت','رجعتي')} البلد</h2>
+  <div class="story">${T(R.safe?`${G('سبت','سبتي')} الباقي لليلة تانية، {ورجعت|ورجعتي} البلد {ومعاك|ومعاكي} كل اللي {كسبته|كسبتيه}. ${cp?cp.name+' '+CG('مشي','مشيت')+' جنبك لحد أول البلد.':''}`
+    :`{جريت|جريتي} من الليل قبل ما {تخلّص|تخلّصي} المكان، و${R.bn} لسه ${R.fem?'صاحية':'صاحي'}. في السكة وقعت منك حاجات كتير، ومحدش بيرجع يدوّر عليها بالليل.`)}</div>
+  <div class="card nsum"><div class="nrow"><span>${G('وصلت','وصلتي')} لحد</span><b>${R.where}</b></div><div class="nrow"><span>كروت ${G('لعبتها','لعبتيها')}</span><b>${R.cards}</b></div>
+    <div class="nrow"><span>الخبرة</span><b style="color:#a6e3a0">${R.xp?`${N_pl(R.xp)} (فضلت ${G('معاك','معاكي')})`:'—'}</b></div>
+    <div class="nrow"><span>الفلوس</span><b style="color:var(--gold2)">${R.earned-R.lost>0?`${N_pl(R.earned-R.lost)} جنيه`:'—'}</b></div>
+    ${R.safe?`<div class="nnote">مفيش حاجة ضاعت. ${G('تقدر','تقدري')} ${G('تبدأ','تبدأي')} الليلة من الأول وقت ما ${G('تحب','تحبي')}.</div>`
+      :`<div class="nnote">${R.lost?`راح ${R.lost} جنيه من ${R.earned}.`:'ما كانش في فلوس جديدة تضيع.'}${R.it.length?` ووقع منك: ${N_itTxt(R.it)}.`:''}</div>`}</div>
+  <div style="flex:1;min-height:14px"></div><button class="btn" id="home">${home?G('ادخل البلد','ادخلي البلد'):'القايمة'}</button>`;
+  if(!R.shown){R.shown=1;band('',G('رجعت البلد','رجعتي البلد'),R.safe?'بكل الغنايم':'من غير أغلب الغنايم',{color:R.safe?'gold':'red',dur:1500,sound:R.safe?SFX.good:SFX.meh})}
+  $('#home').onclick=()=>{if(typeof twRestock==='function')twRestock(h);S.nhome=null;saveHero();if(home)twGo('town');else{S.screen='title';render()}}};
+/* the safe way home: a choice by the camp fire and on the road to the next place */
+['n_camp','n_trans'].forEach(id=>{const sc=SC[id],o=sc.ch;sc.ch=function(){const a=o.apply(this,arguments)||[];
+  return a.concat([{t:'أرجع البلد بكل الغنايم',sub:'الليلة تخلص هنا، ومفيش حاجة تضيع',ghost:1,go:()=>N_home(1)}])}});
+/* the costly way home: a button at every stop */
+{const o=SCREENS.stop;SCREENS.stop=function(){o.apply(this,arguments);const f=view.querySelector('.nfoot'),h=S.hero,N=S.night;if(!f||!h||!N||S.screen!=='stop')return;
+  f.insertAdjacentHTML('beforeend',`<button class="btn ghost" id="nHome">البلد</button>`);
+  $('#nHome').onclick=()=>{if($('#nHomeW')){$('#nHomeW').remove();return}SFX.page();const L=N_homeCost(h,N),A=N_act();
+    f.insertAdjacentHTML('beforebegin',`<div class="card nhomew" id="nHomeW"><b>${A.bn} لسه ${N_bnFem(A.bn)?'صاحية':'صاحي'}</b>
+      <div>لو ${G('رجعت','رجعتي')} البلد دلوقتي ${G('هتخسر','هتخسري')} أغلب اللي ${G('كسبته','كسبتيه')} من ${N.camp?'آخر استراحة':'أول الليلة'}: ${L.m?`${L.m} جنيه من ${L.earned}`:'مفيش فلوس جديدة'}${L.it.length?`، و${N_itTxt(L.it)}`:''}. الخبرة بتفضل ${G('معاك','معاكي')}.</div>
+      <div class="row"><button class="btn ghost" id="nHomeNo">أكمّل</button><button class="btn warn" id="nHomeGo">أرجع برضه</button></div></div>`);
+    $('#nHomeNo').onclick=()=>$('#nHomeW').remove();$('#nHomeGo').onclick=()=>N_home(0);
+    $('#nHomeW').scrollIntoView({block:'nearest',behavior:'smooth'})}}}
+(function(){const st=document.createElement('style');st.textContent=`
+.nfoot #nHome{flex:.7}
+.nhomew{margin-top:10px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.6;border-color:#f0a09066}
+.nhomew b{color:#f0a090;font-size:15px}
+.nhomew .row{gap:8px}.nhomew .btn{flex:1;min-height:46px;font-size:15px}
+.nhomew .btn.warn{background:#5a2422;border-color:#f0a090;color:#ffd9cf}
+`;document.head.appendChild(st)})();
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
