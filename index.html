@@ -4352,6 +4352,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.22',d:'9 أكتوبر',add:[
+    'شكل جديد لو {فتحت|فتحتي} اللعبة من الكمبيوتر: اللعبة في النص، وصفحة بطلك جنبها (الصحة والفلوس والطباع واللبس)، وزراير الكيبورد على الناحية التانية.',
+    'على الكمبيوتر: الأرقام من 1 لـ 9 بتختار، والمسافة بترمي الزهر، وEsc بترجع.',
+    '{تقدر تلبس|تقدري تلبسي} {وتقلع|وتقلعي} من صفحة بطلك على طول: «شنطتي»، {ودوس|ودوسي} على أي خانة.'],fix:[]},
   {v:'5.21',d:'9 أكتوبر',add:[
     '8 طباع جديدة عند أم عطية، منهم «{إيده|إيدها} خفيفة»: في أي اختيار فيه سرقة {معاك|معاكي} ميزة، والفلوس أكتر 30%، والمطاردة أقل بالنص.',
     'درجة جديدة فوق الدهبي: الطبع الياقوتي (0.4%)، ومضمون في خلال 60 رمية. الطبع الياقوتي فيه 3 طباع مع بعض.',
@@ -20302,6 +20306,84 @@ const H_WD2={slot:0};
 .hs-s b{color:var(--rc);font-size:14px;line-height:1.3}.hs-s small{color:var(--mute);font-size:11px}.hs-s.off{opacity:.5;border-style:dashed;--rc:#777}.hs-s.pick{cursor:pointer}
 .hs-pk{display:flex;flex-direction:column;gap:6px;margin-top:10px}.hs-o{text-align:right;border-radius:12px;border:1.5px solid var(--rc);background:rgba(255,255,255,.04);padding:8px 10px;color:var(--ink);font:inherit;min-height:44px}
 .hs-o b{color:var(--rc);display:block}.hs-o small{color:var(--mute);font-size:12px}.hs-o.on{background:rgba(255,255,255,.1)}`;document.head.appendChild(st)}
+/* ---------- the computer layout ----------
+   On a wide screen with a mouse (not a phone or a tablet), the game sits in a framed column in the middle,
+   with the hero's sheet on one side and the keyboard keys on the other. The column and everything inside it
+   are the same as on a phone, so nothing in the game changes; the side panels only read the hero. */
+const DK={on:false,sig:'',tm:0};
+const dkWant=()=>window.innerWidth>=980&&window.innerHeight>=560&&!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&!matchMedia('(any-pointer:fine)').matches);
+{const st=document.createElement('style');st.textContent=`
+body.dk{background:radial-gradient(ellipse at 50% 0%,#2a1d12 0%,#0d0a08 60%,#070605 100%) fixed;overflow:hidden}
+body.dk::before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:linear-gradient(45deg,#e0b25a 25%,transparent 25%,transparent 75%,#e0b25a 75%),linear-gradient(45deg,#e0b25a 25%,transparent 25%,transparent 75%,#e0b25a 75%);background-size:12px 12px;background-position:0 0,6px 6px}
+body.dk #app{max-width:520px;height:calc(100% - 28px);margin:14px auto;border-radius:22px;border:1px solid #4a3620;box-shadow:0 0 0 6px #120d09,0 0 0 7px #3a2a1a,0 30px 80px #000c}
+body.dk .screen::-webkit-scrollbar{width:8px}body.dk .screen::-webkit-scrollbar-thumb{background:#4a3a28;border-radius:8px}body.dk .screen::-webkit-scrollbar-track{background:transparent}
+body.dk .screen{scrollbar-width:thin;scrollbar-color:#4a3a28 transparent}
+body.dk button{cursor:pointer}body.dk button:not(:disabled):hover{filter:brightness(1.12)}
+.dk-p{position:fixed;top:14px;bottom:14px;width:min(300px,calc(50vw - 300px));display:none;flex-direction:column;gap:12px;overflow-y:auto;direction:rtl;color:var(--ink);font-family:var(--body);scrollbar-width:none}
+.dk-p::-webkit-scrollbar{display:none}
+body.dk .dk-p{display:flex}
+#dkHero{left:calc(50% + 284px)}#dkKeys{right:calc(50% + 284px)}
+.dk-c{background:linear-gradient(180deg,#221912,#16110c);border:1px solid #3a2a1a;border-radius:16px;padding:14px}
+.dk-c h3{margin:0 0 8px;font-size:13px;color:var(--gold2);font-weight:800}
+.dk-me{display:flex;gap:12px;align-items:center}.dk-me .pic{width:72px;height:72px;flex:none;border-radius:14px;overflow:hidden;background:#0d0a08;border:1px solid #4a3620}
+.dk-me .pic svg{width:100%;height:100%}.dk-me b{font-size:18px;display:block}.dk-me small{color:var(--dim);font-size:12px}
+.dk-bar{height:10px;border-radius:6px;background:#0d0a08;overflow:hidden;margin:4px 0 8px}.dk-bar i{display:block;height:100%;border-radius:6px}
+.dk-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}.dk-row span:first-child{color:var(--dim)}
+.dk-tag{display:inline-block;font-size:12px;border:1px solid var(--rc,#555);color:var(--rc,#ccc);border-radius:10px;padding:2px 8px;margin:2px}
+.dk-k{display:flex;align-items:center;gap:10px;font-size:13px;padding:4px 0}.dk-k kbd{min-width:28px;text-align:center;font-family:inherit;font-size:12px;font-weight:800;background:#2c2118;border:1px solid #5a4430;border-bottom-width:3px;border-radius:7px;padding:3px 7px;color:var(--gold2)}
+.dk-logo{font-size:30px;font-weight:900;color:var(--gold2);text-align:center;letter-spacing:1px;padding:4px 0 0}
+.dk-sm{font-size:12px;color:var(--dim);line-height:1.6}
+@media (max-width:1240px){#dkKeys{display:none!important}#dkHero{left:calc(50vw + 128px);right:auto;width:280px}body.dk #app{margin-left:calc(50vw - 408px);margin-right:0}}
+`;document.head.appendChild(st)}
+const dkPanels=()=>{if($('#dkHero'))return;document.body.insertAdjacentHTML('beforeend',`<aside class="dk-p" id="dkHero"></aside><aside class="dk-p" id="dkKeys"></aside>`)};
+function dkHeroHTML(){const h=S.hero;
+  if(!h)return `<div class="dk-c"><div class="dk-logo">سرداب</div><div class="dk-sm" style="text-align:center">لسه مفيش بطل. ابدأ من الشاشة اللي في النص.</div></div>`;
+  const mh=typeof MXH==='function'?MXH(h):h.maxhp,hp=Math.max(0,Math.min(mh,h.hp||0)),[rn,rc]=REP(h.rep||0),C=S.combat;
+  const en=C&&typeof MXE==='function'?`<div class="dk-row"><span>الطاقة</span><span>${h.energy||0}/${MXE(h)}</span></div><div class="dk-bar"><i style="width:${(h.energy||0)/Math.max(1,MXE(h))*100}%;background:#6ab4ff"></i></div>`:'';
+  const tabs=typeof H_tabList==='function'?H_tabList(h).map(id=>H_TABS[id]).filter(Boolean):[];
+  const eq=(typeof TW_SLOTS!=='undefined'?TW_SLOTS:[]).map(s=>h.eq&&h.eq[s]&&GEAR[h.eq[s]]).filter(Boolean);
+  const life=h.life?Object.keys(LIFE).filter(k=>h.life[k]).map(k=>`<span class="dk-tag" style="--rc:#cfc6b8">${LIFE[k].n} ${h.life[k].lvl}</span>`).join(''):'';
+  const c=S.comp;
+  return `<div class="dk-c"><div class="dk-me"><div class="pic">${portrait(h,'dkP')}</div><div><b>${esc(h.name)}</b><small>${clsN(h)} · مستوى ${h.lvl}</small></div></div></div>
+  <div class="dk-c"><div class="dk-row"><span>الصحة</span><span>${hp}/${mh}</span></div><div class="dk-bar"><i style="width:${hp/Math.max(1,mh)*100}%;background:linear-gradient(90deg,#e04b3e,#ff8f73)"></i></div>${en}
+    <div class="dk-row"><span>الفلوس</span><span style="color:var(--gold2)">${h.money||0} جنيه</span></div>
+    <div class="dk-row"><span>السمعة</span><span style="color:${rc}">${rn}</span></div>
+    ${c&&c.name?`<div class="dk-row"><span>الرفيق</span><span>${esc(c.name)}${c.max?` · ${Math.max(0,c.hp)}/${c.max}`:''}</span></div>`:''}</div>
+  ${tabs.length?`<div class="dk-c"><h3>طباعك</h3>${tabs.map(t=>`<span class="dk-tag" style="--rc:${RARE[t.r].c}">${H_tabN(t,h)}</span>`).join('')}</div>`:''}
+  ${eq.length?`<div class="dk-c"><h3>${G('لابس','لابسة')}</h3>${eq.map(g=>`<span class="dk-tag" style="--rc:${RARE[g.tier||0].c}">${g.n}</span>`).join('')}</div>`:''}
+  ${life?`<div class="dk-c"><h3>الشغلانات</h3>${life}</div>`:''}`}
+function dkKeysHTML(){const k=(a,b)=>`<div class="dk-k"><kbd>${a}</kbd><span>${b}</span></div>`;
+  return `<div class="dk-c"><div class="dk-logo">سرداب</div><div class="dk-sm" style="text-align:center">حواديت، وزهر، و${G('انت','انتي')} البطل</div></div>
+  <div class="dk-c"><h3>الكيبورد</h3>${k('1 - 9',`${G('اختار','اختاري')} من الاختيارات بالترتيب`)}${k('مسافة',`${G('ارمي','ارمي')} الزهر، أو «${G('كمّل','كمّلي')}» لو مفيش غيره`)}${k('Enter','زي المسافة')}${k('Esc','رجوع')}${k('M','الصوت')}</div>
+  <div class="dk-c"><h3>الماوس</h3><div class="dk-sm">الماوس شغال زي صباعك بالظبط، والعجلة بتنزّل الصفحة.</div></div>`}
+function dkSync(){if(!DK.on)return;const h=S.hero,C=S.combat,c=S.comp;
+  const sig=JSON.stringify([S.screen,h&&[h.name,h.lvl,h.hp,h.money,h.rep,h.energy,h.tab,h.tabX,h.eq,h.g,h.life&&Object.keys(h.life).map(k=>h.life[k].lvl)],!!C,c&&[c.name,c.hp]]);
+  if(sig===DK.sig)return;DK.sig=sig;const a=$('#dkHero'),b=$('#dkKeys');if(a)a.innerHTML=dkHeroHTML();if(b&&!b.innerHTML)b.innerHTML=dkKeysHTML()}
+function dkCheck(){const w=dkWant();if(w===DK.on)return;DK.on=w;document.body.classList.toggle('dk',w);
+  if(w){dkPanels();DK.sig='';const b=$('#dkKeys');if(b)b.innerHTML='';dkSync();clearInterval(DK.tm);DK.tm=setInterval(dkSync,600)}else clearInterval(DK.tm)}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);if(DK.on){DK.sig='';setTimeout(dkSync,0)}return r}}
+window.addEventListener('resize',dkCheck);dkCheck();
+
+/* the keyboard (only in the computer layout) */
+const dkVis=el=>{if(!el||el.disabled)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden'};
+document.addEventListener('keydown',e=>{if(!DK.on||e.ctrlKey||e.metaKey||e.altKey)return;const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+  if(t&&t.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
+  const dice=$('#dice'),dOpen=dice&&!dice.classList.contains('hidden'),k=e.key;
+  if(k===' '||k==='Enter'){if(dOpen){const res=$('#dRes'),ok=$('#dOk');if(res&&!res.classList.contains('hidden')&&dkVis(ok))ok.click();else{const dz=$('#dz');if(dz&&t!==dz&&dz.onkeydown)dz.onkeydown({key:'Enter',preventDefault(){}})}e.preventDefault();return}
+    const rv=$('#reveal');if(rv&&!rv.classList.contains('hidden')){const b=rv.querySelector('button');if(b&&dkVis(b)){b.click();e.preventDefault()}return}
+    const P=[...document.querySelectorAll('#view .btn:not(.ghost):not(.small)')].filter(dkVis);if(P.length===1){P[0].click();e.preventDefault()}return}
+  if(k==='Escape'){if(dOpen){const c=$('#dCancel');if(dkVis(c))c.click();return}const b=$('#back');if(dkVis(b))b.click();return}
+  if(k==='m'||k==='M'||k==='ء'){const s=document.querySelector('#view [id^="snd"],#view .snd');if(dkVis(s))s.click();return}
+  if(/^[1-9]$/.test(k)&&!dOpen){const L=[...document.querySelectorAll('#view .ch,#view [data-i]')].filter(dkVis);const b=L[+k-1];if(b){b.click();e.preventDefault()}}});
+/* ---------- wear and take off gear straight from the hero page («شنطتي») ----------
+   every slot there opens the same picker as «عدّتي» in the town. During a night the picker has no «روح للحداد» buttons. */
+{const pt0=pfTab;pfTab=function(id){const r=pt0.apply(this,arguments);if(S.ptab!=='bag')return r;const p=$('#ppan'),h=S.hero;if(!p||!h)return r;
+  const ks=Object.keys(SLOTS),L=p.querySelectorAll('.pf-sl');
+  L.forEach((el,i)=>{const sl=ks[i];if(!sl)return;el.classList.add('pf-slb');el.setAttribute('role','button');el.tabIndex=0;
+    el.onclick=()=>{SFX.page&&SFX.page();twSlotSheet(sl);const d=$('#twSh');if(d&&typeof N_on==='function'&&N_on())d.querySelectorAll('[data-shop]').forEach(b=>b.remove())}});
+  const lb=L[0]&&L[0].parentElement;if(lb&&!p.querySelector('.pf-slhint'))lb.insertAdjacentHTML('afterend',`<div class="tw-sm pf-slhint" style="text-align:center;margin:-2px 0 8px">${G('دوس','دوسي')} على أي خانة عشان ${G('تلبس','تلبسي')} أو ${G('تقلع','تقلعي')}.</div>`);
+  return r}}
+{const st=document.createElement('style');st.textContent=`.pf-slb{cursor:pointer;transition:transform .12s}.pf-slb:active{transform:scale(.95)}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
