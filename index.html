@@ -782,7 +782,9 @@ const CSK={
     {id:'raise',lv:4,cost:2,n:'تصحية',d:'تصحّي رفيقك لو وقع، بنص صحته',roll:null},
     {id:'mass',lv:5,cost:2,n:'علاج للكل',d:'{انت|انتي} ورفيقك بترجعوا 3 صحة كل دور لمدة 3 أدوار',roll:null}]
 };
-const skillsOf=h=>CSK[h.cls].map(s=>s.id==='sp'?Object.assign({},s,{n:CLASSES[h.cls].sp.name,d:CLASSES[h.cls].sp.info,roll:CLASSES[h.cls].sp.stat}):s);
+const skillsOf=h=>{const base=CSK[h.cls].map(s=>s.id==='sp'?Object.assign({},s,{n:CLASSES[h.cls].sp.name,d:CLASSES[h.cls].sp.info,roll:CLASSES[h.cls].sp.stat}):s);
+  /* 5.56: a specialisation swaps most of the kit: the class's own move stays, the rest becomes the specialisation's three (p56/40_kits.js) */
+  const k=typeof spKit==='function'?spKit(h):null;return k&&k.length?base.filter(s=>s.id==='sp').concat(k):base};
 const hasSkill=(h,id)=>skillsOf(h).some(s=>s.id===id&&h.lvl>=s.lv);
 
 /* hidden stats: never shown until unlocked; hints come from people in town */
@@ -4367,6 +4369,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.56',d:'10 أكتوبر',add:['كل تخصص بقى بيغيّر أغلب قدراتك في القتال: القدرة الأساسية بتاعة نوعك بتفضل، والباقي بيتبدل بـ3 قدرات خاصة بالتخصص (بتتفتح في المستوى 1 و3 و5).','فيه قدرات ضرب، وقدرات سند للفريق: علاج، درع، دخان، تشجيع، وسلاح متسقي بيزوّد ضرباتك الجاية.','شاشة «التخصصات» وشاشة الاحتفال بيقولولك قدرات التخصص إيه.'],fix:['«سيد الظل»: لو مفيش ضلال، «جيش الضل» بيقوّم ضلّك {انت|انتي} يحارب {معاك|معاكي}.']},
   {v:'5.55',d:'10 أكتوبر',add:['لما {تاخد|تاخدي} تخصص، بتطلع شاشة احتفال كبيرة بلون ندرته، وبتقولك فرصته كانت قد إيه.'],fix:['التخصصات بقت أندر بكتير: النادر 8% في المحاولة، والملحمي 1.5%، والخفي نص في المية، والأسطوري 1 من 2000، والسري 1 من 10000.','مفيش فرصة لتخصص جديد {وانت معاك|وانتي معاكي} تخصص. لو {عايز|عايزة} {تدوّر|تدوّري} على غيره، {سيبه|سيبيه} الأول من شاشة «التخصصات».','«أسطى الحدادين» و«{وريث|وريثة} الحداد الأول» مبقوش محتاجين التخصص اللي قبلهم، ممكن يطلعوا لأي حد شروطه كاملة.']},
   {v:'5.54',d:'10 أكتوبر',add:[],fix:['فرصة التخصص مبقتش بتطلع لما {تفتح|تفتحي} اللعبة. بتطلع بنسبة صغيرة {وانت شغال|وانتي شغالة} في الحرفة (الحدادة والخياطة والطبخ والزرع) أو بعد قتال صعب {تكسبه|تكسبيه}، وبتظهر في مكانك من غير ما تقطع اللي {بتعمله|بتعمليه}.']},
   {v:'5.53',d:'10 أكتوبر',add:['التخصصات: الحرفة والقتال بيفتحوا تخصصات ليها ندرة (نادر، ملحمي، خفي، أسطوري، سري). تخصص واحد في المرة، ولما الفرصة تيجي {تقبل|تقبلي} أو {ترفض|ترفضي}.','طريق الحداد: «{الحداد|الحدادة}» وبعده «أسطى الحدادين» وبعده «{وريث|وريثة} الحداد الأول». كل خطوة الشغل بيطلع أجود، والسلاح اللي {عملته|عملتيه} بإيدك بيضرب أجمد.','تخصصات تانية: {الخياط|الخياطة}، {الطباخ|الطباخة}، {الفلاح الأسطوري|الفلاحة الأسطورية}، وواحد سري لأصحاب الحرف التلاتة. وكل نوع شخصية ليه تخصص خفي في القتال، محدش هيقولك عليه.','الفولاذ: {اسبكه|اسبكيه} عند الحداد من حديد وفحم (من حدادة مستوى 5).','شغل جديد عند الحداد من مستوى 7 لـ10: سيف فولاذ، بلطة، درع زرد، خوذة فولاذ، خاتم فولاذ، وسيف المعلّم.','الورشة: 3 حاجات {تركّبها|تركّبيها} عند الحداد، الشغل بيطلع أجود وأرخص، وآخرها بيسبك فولاذتين.'],fix:[]},
@@ -23648,7 +23651,7 @@ SP_ADD({id:'zell',ev:'fight',r:'hidden',cls:'حرامي',m:'سيد الظل',f:'
   st:{'خفة':1},
   kill:(h,f)=>{if(SPS.list.length>=spShMax(h))return;if(Math.random()>=(f.boss?.15:.35))return;
     const d=Math.max(2,Math.min(3+Math.floor(h.lvl/2),Math.round((f.max||10)/8)));SPS.list.push({n:f.name,d,g:f.g||''});
-    setTimeout(()=>{const el=$('#meCard');if(el){floatAt(el,FF(f,'قام ضلّك!','قامت ضلّك!'),'#c3a2ff','',20);pop(el,['#6b45a6','#a578d6','#1f1420'],18)}},520);
+    setTimeout(()=>{const el=$('#meCard');if(el){floatAt(el,'ضلّه قام!','#c3a2ff','',20);pop(el,['#6b45a6','#a578d6','#1f1420'],18)}},520);
     setTimeout(()=>{if(S.combat)say(`ضلّ ${f.name} ${FF(f,'قام','قامت')} وبقى ${G('ماشي وراك','ماشي وراكي')}.`,'good',900)},640)},
   after:async(h,C)=>{for(const s of SPS.list){const t=C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(f=>f.hp>0);if(!t)return;
     hurtFoe(t,Math.min(t.hp,s.d),{fx:'magic'});await sleep(560);await say(`ضلّ ${s.n} ضرب ${t.name}: -${s.d}${t.hp<=0?` · ${t.name} ${FF(t,'وقع','وقعت')}`:''}`,'good',700)}},
@@ -23685,6 +23688,95 @@ SP_ADD({id:'tariqa',ev:'fight',r:'hidden',cls:'معالج',m:'شيخ الطري�
   start:(h,C)=>{const m={a:2,n:3};fxOn(C.me,'regen',m);if(S.comp&&S.comp.hp>0&&C.cp)fxOn(C.cp,'regen',{a:2,n:3})},
   dmg:(h,f)=>f.spirit?3:0,
   d:['حكمة +1','كل قتال بيبدأ {وانت|وانتي} ورفيقك بترجعوا 2 صحة كل دور، 3 أدوار','ضرر +3 على العفاريت والأرواح']});
+/* ----- each specialisation's own fight kit (5.56) -----
+   Taking a specialisation swaps most of your «قدرات»: your class's own move stays, the other moves become the three below
+   (unlocked at hero levels 1, 3 and 5). Every move is data for one runner (spAct): x.dmg(h,foe) hits the target or, with
+   all, every foe; then what it leaves on them (burn, skip, weak, poison) and what it gives you and your team (heal, regen,
+   shield, smoke, cheer, sharp = your next hits hit harder, taunt). Icons reuse the class move icons (ico). */
+const SPK={},WD=h=>WDMG(h);
+function SPK_ADD(id,L){SPK[id]=L.map((x,i)=>Object.assign({id:'sp_'+id+i,lv:[1,3,5][i],cost:x.c,n:x.n,d:x.d,roll:x.roll,tgt:x.tgt?1:0,spx:x},{}))}
+function spKit(h){const o=h&&h.sp&&h.sp.on&&SP[h.sp.on];return o&&SPK[o.id]||null}
+SPK_ADD('hadad',[
+  {n:'ضربة السندان',c:2,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+WD(h)+2,skip:1,d:'ضربة تقيلة بالسلاح: ضرر عالي، والوحش بيفوّت دوره'},
+  {n:'سن السلاح',c:1,ico:'cheer',sharp:{a:2,n:3},cheer:1,d:'ضرباتك الـ3 الجاية +2، ورفيقك ضربته الجاية أكيد'},
+  {n:'درع على السريع',c:2,ico:'shield',shield:1,heal:3,d:'أول ضربة تيجي {فيك|فيكي} بتتمص، و{انت|انتي} ورفيقك بترجعوا 3 صحة'}]);
+SPK_ADD('ostaz',[
+  {n:'ضربة الأسطى',c:2,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(6)+WD(h)+3,weak:1,d:'ضرر عالي، والوحش ضربته الجاية بتبقى نص'},
+  {n:'تسقية',c:2,ico:'cheer',sharp:{a:3,n:3},cheer:1,d:'ضرباتك الـ3 الجاية +3، ورفيقك ضربته الجاية أكيد'},
+  {n:'مطرقة على الكل',c:3,roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(4)+Math.ceil(WD(h)/2)+2,d:'بتضرب كل الوحوش مرة واحدة'}]);
+SPK_ADD('heir',[
+  {n:'نار الجد الأول',c:3,roll:'قوة',tgt:1,ico:'fire',dmg:h=>rnd(6)+WD(h)+h.lvl,burn:h=>3,d:'أقوى ضربة عندك، والوحش بيولّع دورين'},
+  {n:'علامة الجد',c:2,ico:'cheer',sharp:{a:4,n:4},shield:1,cheer:1,d:'ضرباتك الـ4 الجاية +4، وأول ضربة {عليك|عليكي} بتتمص، ورفيقك ضربته أكيد'},
+  {n:'السندان الأكبر',c:3,roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(6)+Math.ceil(WD(h)*.6)+2,skip:1,d:'بتضرب كل الوحوش، وكلهم بيفوّتوا دورهم'}]);
+SPK_ADD('khayat',[
+  {n:'إبرة في العين',c:1,roll:'خفة',tgt:1,ico:'venom',dmg:h=>rnd(3)+WD(h),weak:1,d:'ضربة سريعة، والوحش ضربته الجاية بتبقى نص'},
+  {n:'ترقيع سريع',c:2,ico:'shield',shield:1,heal:4,d:'أول ضربة {عليك|عليكي} بتتمص، و{انت|انتي} ورفيقك بترجعوا 4 صحة'},
+  {n:'خيط يربط',c:2,roll:'خفة',tgt:1,ico:'freeze',dmg:h=>2,skip:2,d:'بتربط الوحش: بيفوّت دورين'}]);
+SPK_ADD('tabbakh',[
+  {n:'لقمة سخنة',c:2,ico:'regen',heal:h=>4+Math.floor(h.lvl/2),d:'{انت|انتي} ورفيقك بترجعوا صحة على طول'},
+  {n:'زيت مغلي',c:2,roll:'خفة',tgt:1,ico:'fire',dmg:h=>rnd(4)+Math.ceil(h.lvl/2),burn:h=>2,d:'الوحش بيتحرق ضرر ودورين نار'},
+  {n:'سفرة للكل',c:3,ico:'mass',regen:{a:3,n:3},d:'الفريق كله بيرجع 3 صحة كل دور، 3 أدوار'}]);
+SPK_ADD('fallah',[
+  {n:'فاس في الأرض',c:2,roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(3)+Math.ceil(h.lvl/3)+1,steal:1,d:'الأرض بتتهز تحت كل الوحوش، وكل وحش بيرجّعلك 1 صحة'},
+  {n:'بركة الغيط',c:2,ico:'mass',regen:{a:3,n:3},d:'الفريق كله بيرجع 3 صحة كل دور، 3 أدوار'},
+  {n:'جذور',c:2,roll:'حكمة',tgt:1,ico:'venom',dmg:h=>2,skip:2,poison:h=>[2,3],d:'جذور بتمسك الوحش: بيفوّت دورين ويتسمم'}]);
+SPK_ADD('sanaa',[
+  {n:'إيد الصنايعي',c:2,ico:'cheer',sharp:{a:3,n:3},shield:1,d:'ضرباتك الـ3 الجاية +3، وأول ضربة {عليك|عليكي} بتتمص'},
+  {n:'طبق ورا طبق',c:2,ico:'regen',heal:h=>5+Math.floor(h.lvl/2),d:'{انت|انتي} ورفيقك بترجعوا صحة كتير'},
+  {n:'شغل المعلّمين',c:3,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(6)+WD(h)+5,burn:h=>2,weak:1,d:'ضربة كبيرة: نار، والوحش ضربته الجاية نص'}]);
+SPK_ADD('zell',[
+  {n:'طعنة من الضل',c:2,roll:'خفة',tgt:1,ico:'shadow',dmg:(h,f)=>Math.round((rnd(4)+WD(h))*(f.hp<f.max/2?2:1.5)),d:'ضرر ×1.5، و×2 على اللي صحته تحت النص'},
+  {n:'جيش الضل',c:2,ico:'shadow',shades:1,d:'ضلالك بيضربوا مرتين دلوقتي، ولو مفيش، ضلّك {انت|انتي} بيقوم يحارب {معاك|معاكي}'},
+  {n:'تغطية الضلمة',c:2,ico:'smoke',smoke:2,d:'أول ضربتين {عليك|عليكي} مش هييجوا'}]);
+SPK_ADD('dam',[
+  {n:'فوران الدم',c:1,roll:'قوة',tgt:1,ico:'rage',pay:.1,dmg:h=>rnd(4)+WD(h)+Math.floor((MXH(h)-h.hp)/3),d:'{بتدفع|بتدفعي} شوية صحة، والضرر بيكبر كل ما صحتك تقل'},
+  {n:'عطش',c:2,roll:'قوة',tgt:1,ico:'venom',dmg:h=>rnd(4)+WD(h),steal:'all',d:'الضرر اللي {بتعمله|بتعمليه} بيرجعلك صحة'},
+  {n:'صرخة الدم',c:2,ico:'warcry',taunt:1,sharp:{a:2,n:3},cheer:1,d:'الوحوش كلها {عليك|عليكي}، ضرباتك الـ3 الجاية +2، ورفيقك ضربته أكيد'}]);
+SPK_ADD('ramad',[
+  {n:'رماد ونار',c:2,roll:'ذكاء',all:1,ico:'storm',dmg:h=>2,burn:h=>2+Math.floor(h.lvl/4),d:'كل الوحوش بتولّع'},
+  {n:'نفخة لهب',c:2,roll:'ذكاء',tgt:1,ico:'fire',dmg:(h,f)=>rnd(6)+Math.ceil(h.lvl/2)+(f.fx&&f.fx.burn?4:0),d:'ضرر عالي، و+4 على اللي بيتحرق'},
+  {n:'حيطة نار',c:2,ico:'shield',shield:2,d:'أول ضربتين {عليك|عليكي} بيتمصوا'}]);
+SPK_ADD('tariqa',[
+  {n:'حضرة',c:2,ico:'mass',regen:{a:3,n:3},d:'الفريق كله بيرجع 3 صحة كل دور، 3 أدوار'},
+  {n:'طرد',c:2,roll:'حكمة',tgt:1,ico:'exorcise',dmg:(h,f)=>(rnd(4)+Math.ceil(h.lvl/2))*(f.spirit?2:1),skipSpirit:1,d:'ضرر، والضعف على العفاريت والأرواح، والعفريت بيفوّت دوره'},
+  {n:'دعوة صافية',c:3,ico:'raise',revive:1,heal:6,d:'لو رفيقك واقع بيقوم بنص صحته، ولو واقف {انت|انتي} وهو بترجعوا 6 صحة'}]);
+Object.values(SPK).forEach(L=>L.forEach(s=>{if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[s.spx.ico]||SKI.bash}));
+
+/* the runner */
+{const a0=skillAct;skillAct=async function(s,f,r){if(!s||!s.spx)return a0.apply(this,arguments);return spAct(S.hero,f,r,s)}}
+async function spAct(h,f,r,s){const C=S.combat,c=S.comp,x=s.spx,me=$('#meCard'),out=[];
+  if(x.pay){const p=Math.min(h.hp-1,Math.ceil(MXH(h)*x.pay));if(p>0){hurtMe(p);out.push(`${G('دفعت','دفعتي')} ${p} صحة`)}}
+  if(x.dmg){if(s.roll&&r.tier==='fail'){C.combo=0;SFX.miss();return say(`${s.n} ما جتش.`,'bad')}
+    const L=x.all?C.foes.filter(e=>e.hp>0):[f&&f.hp>0?f:C.foes.find(e=>e.hp>0)].filter(Boolean),hits=[];let tot=0;
+    if(x.all)burst(me,$('.foes'),'#ffb36a',40);
+    C.hh=1;try{for(const e of L){let d=Math.max(1,Math.round(x.dmg(h,e)));if(r.crit)d*=2;else if(r.tier==='part')d=Math.ceil(d*.6);
+      hurtFoe(e,d,{crit:r.crit});tot+=d;const el=$('#foe'+e.id);
+      if(e.hp>0){if(x.skip||(x.skipSpirit&&e.spirit)){fxOn(e.fx,'skip',{n:x.skip||1});el&&floatAt(el,FF(e,'اتلخبط!','اتلخبطت!'),'#ffd36a','',20)}
+        if(x.weak)fxOn(e.fx,'weak');if(x.burn)fxOn(e.fx,'burn',{d:x.burn(h),n:2});if(x.poison){const p=x.poison(h);poisonFoe(e,p[0],p[1])}}
+      hits.push(`${e.name} -${d}${e.hp<=0?' ('+FF(e,'وقع','وقعت')+')':''}`)}}finally{C.hh=0}
+    if(x.steal){const a=Math.min(MXH(h)-h.hp,x.steal==='all'?tot:L.length);if(a>0){h.hp+=a;healFx(me,a)}}
+    await sleep(560);out.unshift(`${r.crit?'ضربة حظ! ':''}${hits.join(' · ')}`)}
+  if(x.revive&&c&&c.hp<=0){c.hp=Math.ceil(c.max/2);SFX.revive&&SFX.revive();out.push(`${c.name} ${CG('قام','قامت')}`)}
+  else if(x.heal){const n=typeof x.heal==='function'?x.heal(h):x.heal,a=Math.min(n,MXH(h)-h.hp);if(a>0){h.hp+=a;healFx(me,a)}
+    if(c&&c.hp>0){const b=Math.min(n,c.max-c.hp);if(b>0){c.hp+=b;healFx($('#compCard'),b)}}out.push(`صحة +${n}`)}
+  if(x.regen){fxOn(C.me,'regen',x.regen);if(c&&c.hp>0)fxOn(C.cp,'regen',x.regen);if(typeof coAls==='function')coAls().forEach(a=>{if(a.hp>0)a.regen=Object.assign({},x.regen)});SFX.regen&&SFX.regen();out.push(`الفريق بيرجع ${x.regen.a} كل دور`)}
+  if(x.sharp){C.me.sharp=Object.assign({t:Date.now()},x.sharp);SFX.equipMetal&&SFX.equipMetal();out.push(`ضرباتك الجاية +${x.sharp.a}`)}
+  if(x.shield){fxOn(C.me,'shield',{n:x.shield});SFX.shieldUp&&SFX.shieldUp();glow(me);out.push(x.shield>1?'درع لضربتين':'درع لضربة')}
+  if(x.smoke){fxOn(C.me,'smoke',{n:x.smoke});SFX.smoke&&SFX.smoke();pop(me,['#bdb6ae','#8a847c'],26);out.push('دخان')}
+  if(x.cheer&&c&&c.hp>0){fxOn(C.cp,'cheer');out.push(`${c.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
+  if(x.taunt){fxOn(C.me,'taunt');shake();out.push(`كلهم ${G('عليك','عليكي')}`)}
+  if(x.shades)await spShades(h,C,out);
+  combat();return say(`${s.n}: ${out.join(' · ')}`,'good')}
+/* سيد الظل's army: each shadow strikes twice; with none, your own shadow stands up for this fight */
+async function spShades(h,C,out){if(!SPS.list.length){SPS.list.push({n:h.name,d:2+Math.floor(h.lvl/2)});out.push('ضلّك قام')}
+  for(let k=0;k<2;k++)for(const sh of SPS.list){const t=C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(e=>e.hp>0);if(!t)return;hurtFoe(t,Math.min(t.hp,sh.d),{fx:'magic'});await sleep(420)}
+  out.push(`الضلال ضربوا ${SPS.list.length*2} مرات`)}
+/* sharp: your next hits hit harder, one charge per hit you land */
+{const q0=qFoeDmg;qFoeDmg=function(h){let d=q0.apply(this,arguments);const C=S.combat;if(C&&C.me&&C.me.sharp)d+=C.me.sharp.a;return d}}
+{const hf=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;const r=hf.apply(this,arguments);try{if(C&&C.hh&&C.me&&C.me.sharp&&!(o&&o.fx==='poison')){if(--C.me.sharp.n<=0)delete C.me.sharp}}catch(e){}return r}}
+SP_CH.push((h,C)=>C&&C.me&&C.me.sharp?['cheer','سلاح متسقي +'+C.me.sharp.a,C.me.sharp.n,C.me.sharp.t]:null);
+/* the specialisation's description lines plus its fight moves, for the offer, the celebration and the list */
+function spDL(o){const k=SPK[o.id];return k?o.d.concat(['قدراتك في القتال بتتغير: '+k.map(s=>s.n).join('، ')+'، والقدرة الأساسية بتاعة نوعك بتفضل']):o.d}
 /* ----- the town: a tile for التخصصات, the offer when a chance comes, and the screen ----- */
 TW_EXTRA.push(h=>{const s=spFix(h),o=spOn(h),n=Object.keys(s.later).filter(id=>SP[id]&&!spHas(h,id)).length;
   return {id:'spec',go:'spec',n:'التخصصات',w:o?spName(o,h):G('لسه ما اتخصصتش','لسه ما اتخصصتيش'),s:o?`<span style="color:${SP_R[o.r].c}">${SP_R[o.r].n}</span>`:n?`<span class="ok">${n===1?'تخصص':n+' تخصصات'} ${G('تقدر تاخده','تقدري تاخديه')}</span>`:'الحرفة والقتال بيفتحوها',bell:1,b:n&&!o?'متاح':''}});
@@ -23705,7 +23797,7 @@ function spCelebrate(h,o){const R=SP_R[o.r],big=R.i,ov=document.createElement('d
     <div class="sp-ico-w"><div class="sp-burst">${parts}</div><div class="sp-halo"></div>${spIco(o,170)}</div>
     <div class="sp-rk">تخصص ${R.n}</div><div class="sp-nm">${spName(o,h)}</div>
     <div class="sp-odds">فرصته كانت 1 من ${oddsTx}</div>
-    <ul class="sp-dl">${o.d.map((x,i)=>`<li style="--i:${i}">${T(x)}</li>`).join('')}</ul>
+    <ul class="sp-dl">${spDL(o).map((x,i)=>`<li style="--i:${i}">${T(x)}</li>`).join('')}</ul>
     <button class="btn sp-go">${G('يلا بينا!','يلا بينا!')}</button></div>`;
   (document.getElementById('app')||document.body).appendChild(ov);
   try{flash(R.c);vib(big>=3?[80,40,80,40,200]:[60,30,120]);SFX.reveal&&SFX.reveal();setTimeout(()=>SFX.levelup&&SFX.levelup(),420);setTimeout(()=>SFX.fanfare&&SFX.fanfare(),900);if(big>=3)setTimeout(()=>{SFX.master&&SFX.master();flash('#fff3b0')},1500)}catch(e){}
@@ -23713,7 +23805,7 @@ function spCelebrate(h,o){const R=SP_R[o.r],big=R.i,ov=document.createElement('d
   setTimeout(()=>{const b=ov.querySelector('.sp-go');if(b){b.classList.add('on');b.onclick=close}},1400+big*250)}
 
 function spCard(h,o,big){const R=SP_R[o.r];return `<div class="card sp-card${big?' big':''}" style="--rc:${R.c}"><div class="sp-hd">${spIco(o,big?96:56)}<div class="tx"><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
-  <ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul></div>`}
+  <ul class="sp-d">${spDL(o).map(x=>`<li>${T(x)}</li>`).join('')}</ul></div>`}
 function spShowSoon(){clearTimeout(SPV.t);SPV.t=setTimeout(spShow,1300)}
 function spShow(){const h=S.hero;if(!h||document.getElementById('spOv'))return;if(S.combat){spShowSoon();return}const s=spFix(h),o=SP[s.offer];if(!o)return;
   const R=SP_R[o.r],cur=spOn(h),keep=SP_KEEP(o),curKeep=cur&&SP_KEEP(cur);
@@ -23721,7 +23813,7 @@ function spShow(){const h=S.hero;if(!h||document.getElementById('spOv'))return;i
   const ov=document.createElement('div');ov.id='spOv';ov.className='sp-ov';
   ov.innerHTML=`<div class="sp-off" style="--rc:${R.c}"><div class="sp-glow"></div><small class="sp-who">${who}</small><div class="sp-big">${spIco(o,150)}</div>
     <div class="sp-r" style="color:${R.c}">تخصص ${R.n}</div><h2>${spName(o,h)}</h2>${o.hint?`<div class="sp-hint">${T(o.hint)}</div>`:''}
-    <ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul>
+    <ul class="sp-d">${spDL(o).map(x=>`<li>${T(x)}</li>`).join('')}</ul>
     ${cur?`<div class="sp-warn">${G('هتسيب','هتسيبي')} «${spName(cur,h)}»${curKeep?` (${G('تقدر ترجعله','تقدري ترجعيله')} بعدين)`:'، ومش هيرجع تاني'}.</div>`:''}
     <div class="sp-btns"><button class="btn" id="spYes">${G('أقبل','أقبلي')}</button><button class="btn ghost" id="spNo">${G('أرفض','أرفضي')}</button></div>
     <div class="sp-sm">${keep?`لو ${G('رفضت','رفضتي')}، ${G('هتلاقيه','هتلاقيه')} في «التخصصات» ${G('تاخده','تاخديه')} وقت ما ${G('تحب','تحبي')}.`:`لو ${G('رفضت','رفضتي')}، الفرصة دي مش هترجع تاني.`}</div></div>`;
