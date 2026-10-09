@@ -4352,6 +4352,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.16',d:'9 أكتوبر',add:[
+    'كود الصحاب بقى في البروفايل كمان، فوق الصفات، {وتقدر|وتقدري} {تنسخه|تنسخيه} أو {تضيف|تضيفي} صاحب من هناك.'
+  ],fix:[]},
   {v:'5.15',d:'9 أكتوبر',add:[
     'كود الصحاب: في شاشة «رفيق الليلة» ليك كود من 6 حروف. {ابعته|ابعتيه} لصاحبك، {وضيف|وضيفي} كوده، وأبطاله هيظهروا عندك {تختار|تختاري} منهم. القايمة بقت فيها صحابك بس.'
   ],fix:[]},
@@ -19065,9 +19068,23 @@ SCREENS.pals=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 .pal-card .tx{flex:1}.pal-card .tx b{display:block;font-size:17px}.pal-card small{color:var(--mute);font-size:12px}.pal-ch{color:var(--gold2);font-size:14px}
 .pal-p{width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none;background:#0006}.pal-p svg{width:100%;height:100%}
 .fr-box small{display:block;color:var(--mute);font-size:12px;margin:6px 0}.fr-me{display:flex;align-items:center;gap:10px}.fr-me b{flex:1;font-size:24px;letter-spacing:3px;color:var(--gold2);direction:ltr;text-align:center}
-.fr-add{display:flex;gap:8px}.fr-add input{flex:1;min-width:0;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#120d08;color:var(--ink);font:inherit;font-size:18px;text-align:center;letter-spacing:2px;text-transform:uppercase}
+.fr-add{display:flex;gap:8px;margin-top:8px}.fr-add input{flex:1;min-width:0;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#120d08;color:var(--ink);font:inherit;font-size:18px;text-align:center;letter-spacing:2px;text-transform:uppercase}
 .fr-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.fr-c{display:inline-flex;align-items:center;gap:4px;padding:2px 4px 2px 10px;border-radius:99px;background:rgba(255,255,255,.06);direction:ltr;letter-spacing:1px}.fr-c button{min-width:36px;min-height:36px;border:0;background:none;color:var(--mute);font-size:18px}
 .pal-r{width:100%;text-align:right;font:inherit;color:var(--ink);cursor:pointer;align-items:center}.pal-r.on{border-color:var(--gold2)}.pal-r .tx small{display:block;color:var(--mute)}`;document.head.appendChild(st)}
+/* the friend code on the profile too */
+function frAddCode(v){const c=String(v||'').replace(/[^a-z0-9]/gi,'').toUpperCase(),mine=FB.user?frCode(FB.user.uid):'';
+  if(c.length!==6)return 'الكود 6 حروف وأرقام.';if(c===mine)return G('ده كودك انت!','ده كودك انتي!');
+  const L=frList();if(L.includes(c))return 'ده موجود عندك.';L.push(c);frSet(L);SFX.reg&&SFX.reg();return ''}
+{const p0=SCREENS.profile;SCREENS.profile=function(){p0.apply(this,arguments);const hd=view.querySelector('.pf-head');if(!hd||$('#pfFr'))return;
+  const n=frList().length,mine=FB.user?frCode(FB.user.uid):'';const el=document.createElement('div');el.className='card fr-box';el.id='pfFr';
+  el.innerHTML=mine?`<div class="fr-me"><span>كود الصحاب</span><b>${mine}</b><button class="tw-buy" id="pfFrCp">انسخه</button></div>
+    <div class="fr-add"><input id="pfFrIn" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="كود صاحبك"><button class="tw-buy" id="pfFrGo">ضيف</button></div>
+    <small id="pfFrM">${n?`${G('ضفت','ضفتي')} ${n===1?'صاحب واحد':n===2?'صاحبين':n+' صحاب'}. أبطالهم بيظهروا في «رفيق الليلة».`:`${G('ابعت','ابعتي')} الكود لصاحبك، ${G('وضيف','وضيفي')} كوده هنا.`}</small>`
+    :`<small>${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات عشان يبقى ${G('ليك','ليكي')} كود صحاب.</small>`;
+  hd.insertAdjacentElement('afterend',el);
+  const cp=$('#pfFrCp'),go=$('#pfFrGo'),inp=$('#pfFrIn');
+  if(cp)cp.onclick=()=>{try{navigator.clipboard.writeText(mine).then(()=>toast('الكود اتنسخ'),()=>toast(mine))}catch(e){toast(mine)}};
+  if(go)go.onclick=()=>{const m=frAddCode(inp.value);if(m){$('#pfFrM').textContent=m;return}toast('صاحبك اتضاف. أبطاله هيظهروا في «رفيق الليلة».');render()}}}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
