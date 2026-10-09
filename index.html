@@ -4351,6 +4351,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.9',d:'9 أكتوبر',add:[
+    '«حسابي» في الإعدادات: {ادخل|ادخلي} بحساب جوجل وأبطالك هيتحفظوا في السحابة لوحدهم. لو الموبايل ضاع أو {غيّرته|غيّرتيه}، {تدخل|تدخلي} تاني وكل حاجة ترجع. بيشتغل من لينك اللعب.'
+  ],fix:[]},
   {v:'5.8',d:'9 أكتوبر',add:[],fix:[
     'الفطير المشلتت بقى بيتعمل بميني جيم العيش: {تعجن|تعجني} وبعدين {تخبز|تخبزي} في الفرن.'
   ]},
@@ -18634,7 +18637,7 @@ function tsLineup(){const r=Math.random(),P=tsPool();
    Offline play is untouched. Signed in, the whole save (the same code the backup uses) goes to Firestore
    at users/{uid} a little after every save and when the app is hidden. FB_CFG is the public web config
    of the Firebase project (not a secret: the Firestore rules let each account touch only its own document). */
-const FB_CFG=null;
+const FB_CFG={"apiKey":"AIzaSyDIy89OJP1LKKbsK3z-us6v7RkvrA4nDaU","authDomain":"sirdab-soc5w7.firebaseapp.com","projectId":"sirdab-soc5w7","storageBucket":"sirdab-soc5w7.firebasestorage.app","messagingSenderId":"652350763208","appId":"1:652350763208:web:d00768937f8d4e5a7e75fd"};
 const FB_V='10.12.2',FB_FLAG='srdb.fb';
 const FB={app:null,auth:null,db:null,user:null,busy:0,last:0,timer:0,err:''};
 const fbOn=()=>!!FB_CFG;
@@ -18648,12 +18651,16 @@ function fbLoad(){if(!fbOn())return Promise.reject(new Error('nocfg'));if(FB_REA
   .catch(e=>{FB_READY=null;throw e});return FB_READY}
 const fbDoc=()=>FB.db.collection('users').doc(FB.user.uid);
 const fbSum=()=>HEROES.filter(Boolean).map(h=>({n:String(h.name||'').slice(0,24),l:h.lvl||1}));
-async function fbUp(force){if(!FB.user||FB.busy)return;FB.busy=1;try{const ref=fbDoc(),code=bkCode();
-    let prev='';if(force!=='first'){try{const s=await ref.get();const c=s.exists&&s.data().code;if(c&&c!==code&&c.length<350000)prev=c}catch(e){}}
-    await ref.set({code,t:Date.now(),sum:fbSum(),prev},{merge:false});FB.last=Date.now();FB.err=''}
-  catch(e){FB.err=e&&e.code||'up';console.error('cloud up: '+(e&&e.message))}finally{FB.busy=0;fbPaint()}}
+/* the rules accept exactly {data: string under 900000 chars, updatedAt: timestamp, v: int} */
+function fbPut(o){let D={code:o.code,t:o.t||Date.now(),sum:o.sum||fbSum(),prev:o.prev||''};let s=JSON.stringify(D);
+  if(s.length>880000){D.prev='';s=JSON.stringify(D)}if(s.length>880000)throw {code:'too-big'};
+  return fbDoc().set({data:s,updatedAt:window.firebase.firestore.FieldValue.serverTimestamp(),v:1})}
+async function fbUp(force){if(!FB.user||FB.busy)return;FB.busy=1;try{const code=bkCode();
+    let prev='';if(force!=='first'){try{const C=await fbGet();if(C&&C.code&&C.code!==code)prev=C.code}catch(e){}}
+    await fbPut({code,prev});FB.last=Date.now();FB.err=''}
+  catch(e){FB.err=e&&e.code||'up';console.error('cloud up: '+(e&&e.message||e&&e.code))}finally{FB.busy=0;fbPaint()}}
 function fbSoon(){if(!FB.user)return;clearTimeout(FB.timer);FB.timer=setTimeout(()=>fbUp(),20000)}
-async function fbGet(){const s=await fbDoc().get();return s.exists?s.data():null}
+async function fbGet(){const s=await fbDoc().get();if(!s.exists)return null;try{return JSON.parse(s.data().data||'null')}catch(e){return null}}
 
 /* sign in, then decide which save wins */
 async function fbSignIn(){try{await fbLoad()}catch(e){return fbMsg('مش قادر أوصل لجوجل دلوقتي. الحساب بيشتغل من لينك اللعب وفيه نت.')}
@@ -18675,7 +18682,7 @@ function fbChoice(C,P){const box=$('#fbBox');if(!box)return;const d=t=>{const x=
     <button class="btn" id="fbUseC"><span>اللي في السحابة<small>${row(C.sum||[])} · ${d(C.t)}</small></span></button>
     <button class="btn ghost" id="fbUseL"><span>اللي على الموبايل ده<small>${row(fbSum())}</small></span></button>
     <small>اللي مش ${G('هتختاره','هتختاريه')} بيفضل محفوظ في السحابة كنسخة قديمة.</small>`;
-  m.querySelector('#fbUseC').onclick=async()=>{try{await fbDoc().set({prev:bkCode()},{merge:true})}catch(e){}fbMsg('بنزّل أبطالك من السحابة..',1);bkApply(P)};
+  m.querySelector('#fbUseC').onclick=async()=>{try{await fbPut({code:C.code,t:C.t,sum:C.sum,prev:bkCode()})}catch(e){}fbMsg('بنزّل أبطالك من السحابة..',1);bkApply(P)};
   m.querySelector('#fbUseL').onclick=async()=>{await fbUp();fbMsg('خلاص، اللي على الموبايل ده بقى في السحابة.',1)}}
 
 /* the settings panel */
