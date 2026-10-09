@@ -2020,8 +2020,8 @@ async function compTurn(){
   const C=S.combat,h=S.hero,c=S.comp,MX=MXH(h);
   if(c.cls==='معالج'){const lm=h.hp/MX,lc=c.hp/c.max;
     if(Math.min(lm,lc)<.5){const amt=rnd(6)+1+Math.floor(h.lvl/2);
-      if(lm<=lc){const a=Math.min(amt,MX-h.hp);h.hp+=a;combat();burst($('#compCard'),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),a);return say(`${c.name} عالجتك: \u2066+${a}\u2069 صحة.`,'good')}
-      const a=Math.min(amt,c.max-c.hp);c.hp+=a;combat();healFx($('#compCard'),a);return say(`${c.name} عالجت نفسها: \u2066+${a}\u2069 صحة.`,'good')}}
+      if(lm<=lc){const a=Math.min(amt,MX-h.hp);h.hp+=a;combat();burst($('#compCard'),$('#meCard'),'#a6e3a0',24);healFx($('#meCard'),a);return say(`${c.name} ${CG('عالجك','عالجتك')}: \u2066+${a}\u2069 صحة.`,'good')}
+      const a=Math.min(amt,c.max-c.hp);c.hp+=a;combat();healFx($('#compCard'),a);return say(`${c.name} ${CG('عالج نفسه','عالجت نفسها')}: \u2066+${a}\u2069 صحة.`,'good')}}
   const t=C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(x=>x.hp>0);
   const ch=!!C.cp.cheer;delete C.cp.cheer;
   if(ch||rnd(6)+rnd(6)+2>=7){let d=C.tutorial?rnd(2):rnd(4)+1+Math.floor(h.lvl/2);if(ch){d+=skCheer(h);SFX.cheer();floatAt($('#compCard'),CG('متشجع!','متشجعة!'),'#f3d48f','',22)}hurtFoe(t,d);await sleep(520);
@@ -4352,6 +4352,11 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.14',d:'9 أكتوبر',add:[
+    'رفيق من صحابك: قبل الليلة {دوس|دوسي} على «رفيقك الليلة دي» {واختار|واختاري} بطل من أبطال صحابك. بيمشي {معاك|معاكي} الليلة كلها بشكله وصحته، ولو مستواه أعلى ضربته أتقل. أبطالك انت كمان بيظهروا لصحابك لوحدهم. محتاج حساب جوجل.'
+  ],fix:[
+    'الرفيق المعالج لو ولد بقى الكلام عنه صح («عالجك»).'
+  ]},
   {v:'5.13',d:'9 أكتوبر',add:[
     'الشبشب القديم بقى «شبشب طاير» في الشنطة: {ارميه|ارميه} على أي عدو في القتال، بيوجع وساعات بيدوّخ. والعفاريت والأرواح بتتجنن منه.',
     'سوق اللاعبين: الأكل اللي {بتطبخه|بتطبخيه} بقى ينفع يتعرض ويتباع هو كمان.'
@@ -18980,6 +18985,65 @@ function shoeMove(h){if(!h||!h.res||!(h.res.shoe>0))return;h.bag=h.bag||{};h.bag
   await say(line.join(' · '),'good');saveHero();return afterHero()}}
 /* a slipper sprite for the bag */
 if(PXI_D.shoe&&!PXI_D.shbshb)PXI_D.shbshb=PXI_D.shoe;
+/* ---------- a friend's hero as your companion (online stage 4, the light version) ----------
+   signed-in players publish their heroes to pal/{uid}_{heroId} (a look snapshot, class, level, health).
+   before a night the player can pick one of them; it walks with them as the companion and fights by itself.
+   the pick stays on the hero (h.pal) until changed. */
+const PAL_LOOK=['name','g','cls','skin','hairColor','hair','eyes','outfit','age','beard','mark'];
+const PAL={rows:null,err:'',sent:{}};
+const palCol=()=>FB.db.collection('pal');
+function palSnap(h){const lk={};PAL_LOOK.forEach(k=>{const v=h[k];if(typeof v==='string'&&v.length<=40||typeof v==='number')lk[k]=v});
+  if(h.eq){const e={};Object.keys(h.eq).forEach(s=>{if(typeof h.eq[s]==='string')e[s]=h.eq[s]});lk.eq=e}
+  return {n:String(h.name||'').slice(0,20),g:h.g==='f'?'f':'m',c:String(h.cls||'').slice(0,12),l:Math.max(1,Math.min(999,h.lvl|0)),hp:Math.max(1,Math.min(9999,MXH(h)|0)),lk:JSON.stringify(lk).slice(0,1800)}}
+async function palPush(){if(!FB.user||!FB.db)return;for(const h of HEROES.filter(Boolean)){const s=palSnap(h),key=JSON.stringify(s),id=FB.user.uid+'_'+lbId(h);
+  if(PAL.sent[id]===key)continue;try{await palCol().doc(id).set(Object.assign({o:FB.user.uid,t:window.firebase.firestore.FieldValue.serverTimestamp()},s));PAL.sent[id]=key;saveHero()}catch(e){console.warn('pal: '+(e&&e.code||e));return}}}
+{const u0=fbUp;fbUp=async function(){const r=await u0.apply(this,arguments);if(FB.user&&!FB.locked)palPush();return r}}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);palPush();return R}}
+
+/* the companion */
+function palComp(h,p){let lk={};try{lk=JSON.parse(p.lk||'{}')}catch(e){}const base=compFor0(h);
+  const c=Object.assign({},lk,{name:p.n,g:p.g,cls:p.c,friend:1,fl:p.l});
+  c.max=Math.max(base.max,Math.min(Math.round(p.hp*.8),Math.round(base.max*1.6)));c.hp=c.max;return c}
+const compFor0=compFor;
+compFor=function(h){const p=h&&h.pal;if(p&&p.n&&!S.training)return palComp(h,p);return compFor0(h)};
+/* a stronger friend hits a little harder */
+{const h0=hurtFoe;hurtFoe=function(f,d){const c=S.comp,C=S.combat;if(c&&c.friend&&C&&C.compHit&&typeof d==='number'){d+=Math.max(0,Math.floor(((c.fl||1)-(S.hero.lvl||1))/3));arguments[1]=d}return h0.apply(this,arguments)}}
+{const ct=compTurn;compTurn=async function(){const C=S.combat;if(C)C.compHit=1;try{return await ct.apply(this,arguments)}finally{if(S.combat)S.combat.compHit=0}}}
+
+async function palLoad(){PAL.err='';PAL.rows=null;
+  try{await fbLoad();if(!FB.user){PAL.rows=[];return}await palPush();const q=await palCol().limit(60).get();
+    PAL.rows=q.docs.map(d=>Object.assign({_id:d.id},d.data())).filter(x=>x.o!==FB.user.uid).sort((a,b)=>(b.l|0)-(a.l|0))}
+  catch(e){PAL.err=e&&e.code==='permission-denied'?'الرفقة لسه بتتجهز.':'مش قادر أوصل دلوقتي. اتأكد إن فيه نت.';PAL.rows=[]}
+  if(S.screen==='pals')render()}
+SCREENS.pals=function(){const h=S.hero;if(!h){S.screen='title';return render()}
+  if(FB.user&&PAL.rows==null&&!PAL.busy){PAL.busy=1;palLoad().finally(()=>PAL.busy=0)}
+  const d=compFor0(h),cur=h.pal&&h.pal._id;
+  const pic=c=>{try{return portrait(c,'pal'+Math.random().toString(36).slice(2,6))}catch(e){return ''}};
+  const card=(id,c,top,sub,on)=>`<button class="tw-row pal-r${on?' on':''}" data-pal="${id}"><div class="pal-p">${pic(c)}</div><div class="tx"><b>${esc(top)}</b><small>${sub}</small></div>${on?`<span class="tw-on">${G('معاك','معاكي')}</span>`:''}</button>`;
+  const fr=(PAL.rows||[]).map(x=>{let lk={};try{lk=JSON.parse(x.lk||'{}')}catch(e){}const c=Object.assign({},lk,{name:x.n,g:x.g,cls:x.c});
+    return card(x._id,c,x.n,`${x.g==='f'?(CLS_F[x.c]||x.c):x.c} · مستوى ${x.l|0}`,cur===x._id)}).join('');
+  view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>رفيق الليلة</h2><span style="width:40px"></span></div>
+  <div class="col"><div class="tw-sm">الرفيق بيمشي ${G('معاك','معاكي')} الليلة كلها وبيحارب لوحده. ${G('تقدر تاخد','تقدري تاخدي')} بطل من أبطال صحابك، بصحته ومستواه.</div>
+    ${card('def',d,d.name,`${d.g==='f'?(CLS_F[d.cls]||d.cls):d.cls} من البلد · الرفيق العادي`,!h.pal)}
+    <div class="tw-lbl">أبطال صحابك</div>
+    ${!FB.user?`<div class="card tw-empty">${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات (من لينك اللعب) عشان ${G('تشوف','تشوفي')} أبطال صحابك.</div>`
+      :PAL.err?`<div class="nnote">${PAL.err}</div>`:PAL.rows==null?'<div class="nnote">بيحمّل…</div>'
+      :!PAL.rows.length?`<div class="card tw-empty">لسه مفيش أبطال لصحابك هنا. لما صاحبك يدخل بحساب جوجل، أبطاله بيظهروا هنا لوحدهم.</div>`:`<div class="col">${fr}</div>`}
+  </div>`;
+  $('#back').onclick=()=>{S.screen='setup';render()};
+  view.querySelectorAll('[data-pal]').forEach(b=>b.onclick=()=>{const id=b.dataset.pal;
+    if(id==='def')h.pal=null;else{const x=(PAL.rows||[]).find(y=>y._id===id);if(!x)return;h.pal={_id:x._id,n:x.n,g:x.g,c:x.c,l:x.l|0,hp:x.hp|0,lk:x.lk||'{}'}}
+    saveHero();SFX.page&&SFX.page();S.screen='setup';render()})};
+/* the setup screen shows who comes along */
+{const s0=SCREENS.setup;SCREENS.setup=function(){s0.apply(this,arguments);const h=S.hero,go=$('#go');if(!h||S.screen!=='setup'||!go||$('#palCard'))return;
+  const c=compFor(h),el=document.createElement('button');el.id='palCard';el.className='card pal-card';
+  el.innerHTML=`<div class="pal-p">${(()=>{try{return portrait(c,'palc')}catch(e){return ''}})()}</div><div class="tx"><small>رفيقك الليلة دي</small><b>${esc(c.name)}</b><small>${c.friend?`بطل صاحبك · مستوى ${c.fl}`:'من البلد'}</small></div><span class="pal-ch">${G('غيّر','غيّري')} ›</span>`;
+  go.parentNode.insertBefore(el,go);el.onclick=()=>{PAL.rows=FB.user?null:[];S.screen='pals';render()}}}
+{const st=document.createElement('style');st.textContent=`
+.pal-card{display:flex;align-items:center;gap:12px;width:100%;margin-bottom:10px;text-align:right;color:var(--ink);font:inherit;cursor:pointer;min-height:44px}
+.pal-card .tx{flex:1}.pal-card .tx b{display:block;font-size:17px}.pal-card small{color:var(--mute);font-size:12px}.pal-ch{color:var(--gold2);font-size:14px}
+.pal-p{width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none;background:#0006}.pal-p svg{width:100%;height:100%}
+.pal-r{width:100%;text-align:right;font:inherit;color:var(--ink);cursor:pointer;align-items:center}.pal-r.on{border-color:var(--gold2)}.pal-r .tx small{display:block;color:var(--mute)}`;document.head.appendChild(st)}
 /* ---------- phase 4a: numbered nights (الليلة 1 لحد 10) per adventure, tonight's omen (طالع الليلة), and أم عطية الودعية who reads and changes it ---------- */
 const L_MAX=10,L_P1=20,L_P2=50;
 const L_WEAK=['salt','iron','fire','incense','bead'];
