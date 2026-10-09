@@ -4357,6 +4357,10 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.44',d:'9 أكتوبر',add:[
+    '«المولد» في البلد: دكاكين عم حمدي بتفتح الخميس والجمعة والسبت، وكل أسبوع بيبيع 3 حاجات حلوة مختلفة (حمص الشام، حلاوة المولد، ترمس، عسلية، سمسمية) وصندوق المولد.',
+    'مسابقة الصيد كل أسبوع: كل سمكة {بتصطادها|بتصطاديها} من الترعة ليها نقط، والنادرة أكتر. عند 20 و50 و100 نقطة فيه جوايز، وفيه ترتيب للصيادين في المولد.'
+  ],fix:[]},
   {v:'5.43',d:'9 أكتوبر',add:[
     'في الغيط بقى فيه حيوانات: {اشتري|اشتري} فراخ من عم عبده وكل فرخة بتبيض بيضة كل حوالي 20 دقيقة، حتى {وانت|وانتي} بره.',
     'من زراعة 3 {تقدر تشتري|تقدري تشتري} جاموسة: {أكّلها|أكّليها} برسيم {وتحلبها|وتحلبيها} لبن. البرسيم زرعة جديدة في الغيط من زراعة 2.',
@@ -23178,6 +23182,112 @@ TW_EXTRA.forEach((f0,i)=>{TW_EXTRA[i]=function(h){const t=f0.apply(this,argument
 .fa-buf{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:#0002;border:1px solid #fff1}.fa-buf.rd{border-color:#7fe07a;box-shadow:0 0 12px #7fe07a33}
 .fa-buf.lock{opacity:.55}.fa-buf .tx{flex:1;display:flex;flex-direction:column;gap:2px}.fa-buf .tx small{color:var(--dim);font-size:12px}.fa-buf .tx .fd{color:var(--gold2)}
 .fa-buf .btn{min-height:44px;flex:none;width:auto;min-width:96px;padding:0 16px;margin:0}`;document.head.appendChild(st)}
+/* ---------- 5.44: «المولد» (a weekly fair in the village) and «مسابقة الصيد» (a weekly fishing contest with its own board) ----------
+   The fair's stalls open Thursday, Friday and Saturday (the phone's own day). Each week (the same week as the leaderboard, from Saturday)
+   عم حمدي sells three of the fair sweets plus a «صندوق المولد». The contest runs all week: every fish landed at الترعة gives points
+   by how rare it is; 20, 50 and 100 points open prizes. Points go to the board lb/{FC week}/s/{uid}_{hero}, where the FC week is
+   'w9' + the week number (so it lives next to the night board and needs no new rules).
+   h.fc = {w, p (points), got{20:1,..}, sent}; h.mlBuy = {w, n{item:count}} (each sweet: up to 5 a week). */
+const ML_DAYS=[4,5,6],ML_MAX=5;
+const mlOpen=()=>ML_DAYS.includes(new Date().getDay());
+const mlWeekN=()=>Math.floor((Date.now()/86400000-2)/7);
+const fcWeek=()=>'w9'+String(mlWeekN()%10000).padStart(4,'0');
+const mlDaysTo=()=>{const d=new Date().getDay();return (4-d+7)%7};
+const ML_POOL=['hommos','halawa','termes','asaleya','fesdo'];
+function mlStock(){const n=mlWeekN();let x=n*9301+49297;const r=()=>{x=(x*9301+49297)%233280;return x/233280};const a=ML_POOL.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,3)}
+const ML_PRICE={hommos:30,halawa:50,termes:12,asaleya:25,fesdo:40,box:180};
+
+/* the sweets */
+Object.assign(FOOD_HEAL,{hommos:7,halawa:12,termes:4,asaleya:6,fesdo:9});
+Object.assign(ITEMS,{
+  hommos:{name:'حمص الشام',price:0,info:()=>foodInfo('hommos'),use:'heal',kind:'food',heal:()=>foodHeal('hommos')},
+  halawa:{name:'حلاوة المولد',price:0,info:()=>foodInfo('halawa'),use:'heal',kind:'food',heal:()=>foodHeal('halawa')},
+  termes:{name:'ترمس',price:0,info:()=>foodInfo('termes'),use:'heal',kind:'food',heal:()=>foodHeal('termes')},
+  asaleya:{name:'عسلية',price:0,info:()=>foodInfo('asaleya'),use:'heal',kind:'food',heal:()=>foodHeal('asaleya')},
+  fesdo:{name:'سمسمية بالفول السوداني',price:0,info:()=>foodInfo('fesdo'),use:'heal',kind:'food',heal:()=>foodHeal('fesdo')}});
+ML_POOL.forEach(k=>{if(!FOODS.includes(k))FOODS.push(k)});
+Object.assign(FQ_FEM,{halawa:1,asaleya:1,fesdo:1});
+Object.assign(PXI_D,{
+  hommos:P20_rc(PXI_D.foul,{T:'o',t:'y',b:'Y',q:'o',G:'y',y:'Y'}),
+  halawa:P20_rc(PXI_D.foul,{T:'r',t:'R',b:'y',q:'R',G:'Y',y:'W'}),
+  termes:P20_rc(PXI_D.foul,{T:'o',t:'y',b:'y',q:'y',G:'Y',y:'W'}),
+  asaleya:P20_rc(PXI_D.foul,{T:'b',t:'B',b:'o',q:'B',G:'y',y:'Y'}),
+  fesdo:P20_rc(PXI_D.foul,{T:'B',t:'o',b:'y',q:'o',G:'B',y:'Y'})});
+(HEROES||[]).forEach(h=>{if(h&&h.bag)ML_POOL.forEach(k=>h.bag[k]=h.bag[k]||0)});
+
+/* the fishing contest: points per fish */
+const fcPts=k=>{const M=MAT[k];if(!M||M.junk)return 0;if(k==='goldfish')return 15;return [1,2,4,8,12][Math.min(4,M.tier||0)]||1};
+function fcFix(h){const w=fcWeek();if(!h.fc||h.fc.w!==w)h.fc={w,p:0,got:{},sent:0};return h.fc}
+const FC_PRIZE=[{at:20,box:'w',n:'صندوق خشب'},{at:50,box:'c',n:'صندوق نحاس'},{at:100,box:'g',money:150,n:'صندوق دهب و150 جنيه'}];
+/* a fish landed on the fishing screen goes through addRes (fsLand lives in a closed scope) */
+{const f0=addRes;addRes=function(h,k,n){const r=f0.apply(this,arguments);try{const M=MAT[k],pt=S.screen==='fish'&&h===S.hero&&M&&(M.fish||k==='goldfish')?fcPts(k)*(n||1):0;if(h&&pt){const F=fcFix(h),p0=F.p;F.p+=pt;F.sent=0;saveHero();
+  const hit=FC_PRIZE.find(z=>p0<z.at&&F.p>=z.at);if(hit)setTimeout(()=>toast(`مسابقة الصيد: ${G('وصلت','وصلتي')} ${hit.at} نقطة. الجايزة مستنياك في المولد`),1800)}}catch(e){console.warn(e)}return r}}
+async function fcSend(h){const F=h&&h.fc;if(!F||F.sent||!F.p||F.w!==fcWeek())return;
+  if(!FB.user){let flag=0;try{flag=localStorage.getItem(FB_FLAG)==='1'}catch(e){}if(!flag)return;try{await fbLoad()}catch(e){return}if(!FB.user)return}
+  try{await FB.db.collection('lb').doc(F.w).collection('s').doc(FB.user.uid+'_'+lbId(h)).set({n:String(h.name||'').slice(0,20),c:String(h.cls||'').slice(0,12),g:h.g==='f'?'f':'m',l:Math.max(1,Math.min(999,h.lvl|0)),
+    s:Math.min(100000,F.p|0),a:'صيد',t:window.firebase.firestore.FieldValue.serverTimestamp()});F.sent=1;saveHero()}catch(e){console.warn('fc send: '+(e&&e.code||e))}}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);HEROES.filter(Boolean).forEach(h=>{fcFix(h);fcSend(h)});return R}}
+const FC={rows:null,err:'',w:'',busy:0};
+async function fcFetch(){const w=fcWeek();FC.w=w;FC.err='';FC.rows=null;
+  try{await fbLoad();const q=await FB.db.collection('lb').doc(w).collection('s').orderBy('s','desc').limit(10).get();FC.rows=q.docs.map(d=>Object.assign({id:d.id},d.data()))}
+  catch(e){FC.err='مش قادر أوصل للترتيب دلوقتي.';FC.rows=[]}
+  if(S.screen==='mouled')mlRe()}
+
+/* the seller */
+TW_NPC.hamdy=['عم حمدي بتاع الحلاوة','#c98326'];TW_WHO['عم حمدي']='hamdy';
+if(typeof PXP_NPC!=='undefined')PXP_NPC.hamdy={look:{name:'عم حمدي',g:'m',cls:'حرامي',skin:'#b07a50',hairColor:'#2a1a12',hair:'قصير',eyes:'#4a2a14',outfit:'#a33a2a',age:'كبير',beard:'شنب'},bg:['y','o']};
+function mlLines(h){const L=['«المولد من غير حلاوة زي الفرح من غير زغروطة.»','«{قرّب|قرّبي} {يا بيه|يا هانم}، الحمص لسه سخن.»','«الصيادين بيتسابقوا الأسبوع ده. اللي يجيب أكتر سمك ياخد اسمه على اللوحة.»',
+  '«الزحمة دي كلها عشان الليلة الكبيرة. {خليك|خليكي} جنبي، الحرامية كتير.»','«المرجيحة دي من أيام جدي، ولسه بتطيّر.»','«الحاجة دي مش بتلاقيها غير في المولد. الأسبوع الجاي حاجات تانية.»'];
+  if(!mlOpen())L.push('«الدكاكين قافلة دلوقتي. {تعالى|تعالي} الخميس، المولد بيقوم من العصر.»');return T(pick(L))}
+function mlArt(){const lights=[...Array(15)].map((_,i)=>`<rect x="${6+i*10}" y="${14+Math.round(Math.sin(i*.8)*3)}" width="3" height="3" fill="${['#f3c14d','#e04b3e','#7fe07a','#6ab4ff','#ff8f73'][i%5]}"/>`).join('');
+  return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#1b1d3b"/><rect y="62" width="160" height="28" fill="#2a1d12"/>
+  <path d="M0 14Q40 22 80 14T160 14" stroke="#5a4a36" fill="none"/>${lights}
+  <rect x="18" y="34" width="54" height="30" fill="#ebe1cc"/>${[0,1,2,3,4,5].map(i=>`<rect x="${18+i*9}" y="34" width="5" height="30" fill="#e04b3e"/>`).join('')}<path d="M14 34L45 20L76 34Z" fill="#a33a2a"/><rect x="38" y="46" width="14" height="18" fill="#3a2210"/>
+  <rect x="100" y="22" width="3" height="42" fill="#74412a"/><rect x="140" y="22" width="3" height="42" fill="#74412a"/><rect x="100" y="22" width="43" height="3" fill="#8e4f33"/>
+  <rect x="112" y="25" width="1" height="22" fill="#cfc6b8"/><rect x="128" y="25" width="1" height="22" fill="#cfc6b8"/><rect x="110" y="47" width="21" height="3" fill="#c98326"/>
+  <rect x="84" y="56" width="10" height="8" fill="#c98326"/><rect x="82" y="54" width="14" height="3" fill="#f3c14d"/><rect x="148" y="8" width="6" height="6" fill="#fff0b0"/></svg>`}
+{const pa=placeArt;placeArt=function(id){if(id==='mouled')return mlArt();return pa.apply(this,arguments)}}
+TW_EXTRA.push(h=>{const F=fcFix(h),rd=FC_PRIZE.some(z=>F.p>=z.at&&!F.got[z.at]),o=mlOpen(),d=mlDaysTo();
+  return {id:'mouled',go:'mouled',n:'المولد',w:'عم حمدي ومسابقة الصيد',s:rd?`<span class="ok">جايزة الصيد مستنياك</span>`:o?'<span class="new">الدكاكين فاتحة</span>':`الدكاكين بتفتح ${d===1?'بكرة':`بعد ${d} أيام`} · صيدك ${F.p} نقطة`,bell:1,b:rd?'جايزة':o?'فاتح':''}});
+{const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('mouled'))g.go.push('mouled')}
+
+function mlRe(){if(S.screen==='mouled'){const y=view.scrollTop;render();view.scrollTop=y}}
+SCREENS.mouled=function(){const h=S.hero;if(!h){S.screen='title';return render()}const F=fcFix(h),o=mlOpen(),wk=fcWeek();
+  if(!h.mlBuy||h.mlBuy.w!==wk)h.mlBuy={w:wk,n:{}};
+  if(FC.w!==wk||(!FC.rows&&!FC.busy)){FC.busy=1;fcSend(h).finally(()=>fcFetch().finally(()=>FC.busy=0))}
+  const st=mlStock(),mine=FB.user?FB.user.uid+'_':'#';
+  const row=k=>{const I=ITEMS[k],p=twGP(h,ML_PRICE[k]),got=h.mlBuy.n[k]||0,left=ML_MAX-got;
+    return `<div class="tw-row"><div class="ic">${itemIcon2(k,40)}</div><div class="tx"><b>${I.name}</b><small>بترجّع ${FOOD_HEAL[k]} صحة · ${G('معاك','معاكي')} ${h.bag[k]||0}</small><small>${left?`فاضل ${left} الأسبوع ده`:'خلصت الأسبوع ده'}</small></div>
+      <button class="tw-buy" data-ml="${k}" ${o&&left&&h.money>=p&&!bagFull(h,k)?'':'disabled'}>${p}<small>جنيه</small></button></div>`};
+  const bp=twGP(h,ML_PRICE.box),bGot=h.mlBuy.n.box||0;
+  const shop=`${st.map(row).join('')}<div class="tw-row"><div class="ic"><span class="qb-bi bxc"></span></div><div class="tx"><b>صندوق المولد</b><small>صندوق نحاس مقفول، ${G('افتحه','افتحيه')} في دوار العمدة</small><small>${bGot<2?`فاضل ${2-bGot} الأسبوع ده`:'خلص الأسبوع ده'}</small></div>
+      <button class="tw-buy" data-ml="box" ${o&&bGot<2&&h.money>=bp?'':'disabled'}>${bp}<small>جنيه</small></button></div>`;
+  const prizes=FC_PRIZE.map(z=>{const ok=F.p>=z.at,got=F.got[z.at];return `<div class="fc-pz${ok?' ok':''}${got?' got':''}"><b>${z.at}</b><small>${z.n}</small>${got?'<i>اتاخدت</i>':ok?`<button class="btn small" data-fc="${z.at}">${G('خدها','خديها')}</button>`:''}</div>`}).join('');
+  const board=FC.err?`<div class="nnote">${FC.err}</div>`:!FC.rows?'<div class="nnote">بيحمّل…</div>':!FC.rows.length?`<div class="nnote">لسه محدش اصطاد الأسبوع ده. ${G('ابقى','ابقي')} أول اسم.</div>`
+    :FC.rows.map((r,i)=>`<div class="lb-r${r.id.indexOf(mine)===0?' me':''}"><span class="lb-n"${i<3?` style="background:${['#f3c14d','#d8dde4','#d08a4e'][i]};color:#1a1208"`:''}>${i+1}</span><span class="lb-w"><b>${esc(r.n||'—')}</b><small>مستوى ${r.l|0}</small></span><b class="lb-s">${r.s|0}</b></div>`).join('');
+  view.innerHTML=`${twTop('المولد')}<div class="tw ml">
+    <div class="ml-art">${mlArt()}</div>
+    ${twNpcHTML('hamdy',mlLines(h))}
+    <div class="tw-lbl">دكاكين المولد <small>${o?'فاتحة لحد آخر السبت':`قافلة، بتفتح ${mlDaysTo()===1?'بكرة':`بعد ${mlDaysTo()} أيام`} (الخميس)`}</small></div>
+    <div class="col">${shop}</div>
+    <div class="tw-lbl">مسابقة الصيد <small>كل سمكة من الترعة بنقط، والنادرة أكتر</small></div>
+    <div class="card fc-me"><span>نقطك الأسبوع ده</span><b>${F.p}</b>${FB.user?'':`<small>${G('ادخل','ادخلي')} بحساب جوجل من الإعدادات عشان اسمك يظهر في الترتيب.</small>`}</div>
+    <div class="fc-pzs">${prizes}</div>
+    <div class="card lb-list">${board}</div>
+    <div class="tw-sm">البلطي بنقطة، والسمك الأندر بنقط أكتر، وسمكة الدهب بـ15. المسابقة بتبدأ من أول كل سبت.</div></div>`;
+  twBack();
+  view.querySelectorAll('[data-ml]').forEach(b=>b.onclick=()=>{const k=b.dataset.ml,p=twGP(h,ML_PRICE[k]);if(!mlOpen()||h.money<p)return;
+    if(k==='box'){if((h.mlBuy.n.box||0)>=2)return;h.money-=p;h.mlBuy.n.box=(h.mlBuy.n.box||0)+1;qbFix(h);h.mbox.c=(h.mbox.c||0)+1;saveHero();SFX.reg&&SFX.reg();toast(`${G('اشتريت','اشتريتي')} صندوق المولد. ${G('افتحه','افتحيه')} في دوار العمدة.`);return mlRe()}
+    if((h.mlBuy.n[k]||0)>=ML_MAX||bagFull(h,k))return;h.money-=p;h.mlBuy.n[k]=(h.mlBuy.n[k]||0)+1;h.bag[k]=(h.bag[k]||0)+1;saveHero();SFX.reg&&SFX.reg();floatAt(b,'+1 '+ITEMS[k].name,'#fff0b0','',16);mlRe()});
+  view.querySelectorAll('[data-fc]').forEach(b=>b.onclick=()=>{const at=+b.dataset.fc,z=FC_PRIZE.find(x=>x.at===at);if(!z||F.p<at||F.got[at])return;F.got[at]=1;qbFix(h);h.mbox[z.box]=(h.mbox[z.box]||0)+1;if(z.money)h.money+=z.money;saveHero();
+    band('مسابقة الصيد',z.n,`${G('افتحه','افتحيه')} في دوار العمدة`,{dur:2200,sound:SFX.fanfare});setTimeout(mlRe,300)})};
+{const st=document.createElement('style');st.textContent=`
+.ml-art{height:120px;border-radius:14px;overflow:hidden;border:1px solid #fff1}.ml-art svg{width:100%;height:100%;display:block}
+.fc-me{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px}.fc-me b{color:var(--gold2);font-size:22px}.fc-me small{width:100%;color:var(--mute);font-size:13px}
+.fc-pzs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fc-pz{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;background:#0002;border:1px solid #fff1;text-align:center}
+.fc-pz b{font-size:18px;color:var(--mute)}.fc-pz small{font-size:12px;color:var(--dim);line-height:1.4}.fc-pz.ok{border-color:#7fe07a}.fc-pz.ok b{color:#a6e3a0}.fc-pz.got{opacity:.6}
+.fc-pz i{font-style:normal;font-size:12px;color:#a6e3a0}.fc-pz .btn{min-height:44px;width:100%;margin:0}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.02*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
