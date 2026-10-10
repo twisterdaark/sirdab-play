@@ -604,11 +604,17 @@ const ITEMS={
   wax:{name:'شمع للودان',price:20,info:()=>'صوت النداهة يبقى أصعب يشدك',use:null},
   amulet:{name:'تميمة فضة',price:80,info:()=>'العفاريت والأرواح تعوّرك أقل. بتفضل {معاك|معاكي}',use:null}
 };
-const BAG_MAX={pot:5,revive:2,salt:4,wax:3,amulet:1};
-const bagCount=(h,k)=>{const kd=ITEMS[k].kind;if(kd==='pot')return (h.bag.potion||0)+(h.bag.bigpotion||0);if(kd==='food')return FOODS.reduce((a,f)=>a+(h.bag[f]||0),0);return h.bag[k]||0};
+const BAG_MAX={pot:5,revive:2,salt:4,wax:3,amulet:1,drink:4,attar:4};
+/* the bag is split in sections (5.67, Twister): things of one kind share one space, and «مليان» names the section.
+   Anything not listed here (and not food) is a section of its own with BAG_MAX[k]. */
+const BAG_SEC=[{id:'pot',n:'جرع الشفا',ks:['potion','bigpotion']},{id:'revive',n:'قزايز الصحيان',ks:['revive']},{id:'drink',n:'المشاريب',ks:['shai','ahwa','erqsous']},
+  {id:'attar',n:'جرع العطّار',ks:['antidote','firepot','shadowpot']},{id:'food',n:'الأكل',food:1},{id:'salt',n:'الملح',ks:['salt']}];
+function bagSec(k){const it=ITEMS[k];if(it&&it.kind==='food')return BAG_SEC.find(s=>s.food);return BAG_SEC.find(s=>s.ks&&s.ks.includes(k))||{id:k,n:it?it.name:k,ks:[k],own:1}}
+const bagCount=(h,k)=>{const s=bagSec(k);if(s.food)return FOODS.reduce((a,f)=>a+(h.bag[f]||0),0);return s.ks.reduce((a,x)=>a+(h.bag[x]||0),0)};
 /* bagExtra(h,k) comes from the bag upgrades in town */
-function bagCap(h,k){const kd=ITEMS[k].kind;const b=kd==='pot'?BAG_MAX.pot:kd==='food'?(BAG_MAX.food||5):(BAG_MAX[k]||0);return b+(typeof bagExtra==='function'?bagExtra(h,k):0)}
+function bagCap(h,k){const s=bagSec(k);const b=s.food?(BAG_MAX.food||5):(BAG_MAX[s.id]||0);return b+(typeof bagExtra==='function'?bagExtra(h,k):0)}
 const bagFull=(h,k)=>bagCount(h,k)>=bagCap(h,k);
+const bagFullTxt=(h,k)=>`قسم «${bagSec(k).n}» في الشنطة مليان (${bagCount(h,k)} من ${bagCap(h,k)})`;
 const RARE=[{n:'عادي',c:'#cfc6b8'},{n:'كويس',c:'#7fe07a'},{n:'نادر',c:'#6ab4ff'},{n:'أسطوري',c:'#f3c14d'}];
 const LOOT={dummy:{xp:0,m:[0,0],chest:0},sal:{xp:3,m:[15,30],chest:.35},afreet:{xp:2,m:[8,18],chest:.2},nadaha:{xp:6,m:[50,70],chest:1}};
 const ACH=[
@@ -1715,7 +1721,7 @@ function shopItem(e0,i){const h=S.hero;const e=Object.assign({},e0,priceOf(e0));
   const have=gr?(h.gear.amulet||0):h.bag[e.k]||0;const full=gr?have>0:bagFull(h,e.k),poor=h.money<e.price,out=e.refused||e.stock<1;
   const dis=out||poor||full;
   const st=e.refused?'<span class="bad">«مش هبيعهالك.»</span>':e.stock<1?'<span class="bad">خلصت</span>':e.stock===1?'<span class="last">فاضل 1 بس!</span>':`فاضل ${e.stock}`;
-  const why=e.refused?'عشان سمعتك وحشة أوي':e.stock<1?'':full?(gr?'':'الشنطة مليانة'):poor?`ناقصك ${e.price-h.money} جنيه`:'';
+  const why=e.refused?'عشان سمعتك وحشة أوي':e.stock<1?'':full?(gr?'':bagFullTxt(h,e.k)):poor?`ناقصك ${e.price-h.money} جنيه`:'';
   const ic=(gr&&typeof gearIcon==='function'&&gearIcon(e.k,46))||itemIcon(e.k,46);
   const mx=gr||dis?0:shopMax(h,e,e),q='s:'+i,n=mx?qtyN(q,mx):1,w=e.was&&!out?e.was:0;
   const btn=`<button class="buy price" data-buy="${i}" data-qb="${q}" data-p="${e.price}" data-w="${w}" ${dis?'disabled':''}>${qtyLbl(n,e.price,w)}</button>`;
@@ -1778,7 +1784,7 @@ function applyOutcome(o,tier,c){
   if(o.heal){h.hp=Math.min(MXH(h),h.hp+o.heal);h.energy=MXE(h);extra+=`<div class="note" style="color:#a6e3a0">{ارتحت|ارتحتي}: صحتك زادت ${o.heal} وطاقتك اتملت</div>`}
   if(o.energy){h.energy=Math.max(0,h.energy+o.energy);extra+=`<div class="note" style="color:var(--en)">${BOLT} طاقتك نقصت ${-o.energy}</div>`}
   if(o.money){const m=o.money<0?-Math.min(h.money,-o.money):o.money;h.money+=m;if(m>0)SFX.coin();extra+=`<div class="note" style="color:${m>0?'var(--gold2)':'#f0a090'}">${m>0?'+':''}${m} جنيه</div>`}
-  if(o.item){if(bagFull(h,o.item)){h.money+=Math.round(ITEMS[o.item].price/2);extra+=`<div class="note" style="color:var(--gold2)">الشنطة مليانة، {بعت|بعتي} ${ITEMS[o.item].name} بـ${Math.round(ITEMS[o.item].price/2)} جنيه</div>`}else{h.bag[o.item]=(h.bag[o.item]||0)+1;extra+=`<div class="note" style="color:#a6e3a0">${itemIcon(o.item,20)} +1 ${ITEMS[o.item].name}</div>`}}
+  if(o.item){if(bagFull(h,o.item)){h.money+=Math.round(ITEMS[o.item].price/2);extra+=`<div class="note" style="color:var(--gold2)">${bagFullTxt(h,o.item)}، {بعت|بعتي} ${ITEMS[o.item].name} بـ${Math.round(ITEMS[o.item].price/2)} جنيه</div>`}else{h.bag[o.item]=(h.bag[o.item]||0)+1;extra+=`<div class="note" style="color:#a6e3a0">${itemIcon(o.item,20)} +1 ${ITEMS[o.item].name}</div>`}}
   if(o.trophy){if(!h.trophies.includes(o.trophy))h.trophies.push(o.trophy);extra+=`<div class="note" style="color:var(--gold2)">${itemIcon('trophy',20)} {لقيت|لقيتي}: ${o.trophy}</div>`}
   if(o.rep){const b4=REP(h.rep)[0];addRep(o.rep[0],o.rep[1]);extra+=`<div class="note" style="color:${o.rep[0]>0?'#a6e3a0':'#f0a090'}">${repLine(o.rep[0],b4,REP(h.rep)[0])}</div>`}
   saveHero();if(h.money>=500)ach('rich');if(o.ach)ach(o.ach);if(o.ach==='thief')bump('steals');
@@ -2114,7 +2120,7 @@ function applyChest(c){const h=S.hero;c.sub='';let sm;
   if(c.r){addRes(h,c.r,c.n);c.icon=matIc(c.r,100);sm=matIc(c.r,34);c.title=`${c.n} ${resN(c.r)}`;c.sub='تنفع عند الحداد والخياط في البلد'}
   else if(c.gear){const g=GEAR[c.gear];h.gear[c.gear]=(h.gear[c.gear]||0)+1;if(!h.eq[g.slot]){h.eq[g.slot]=c.gear;c.sub=G('لبستها على طول','لبستيها على طول')}else c.sub='هتلاقيها مع حاجاتك';c.icon=(typeof gearIcon==='function'&&gearIcon(c.gear,100))||itemIcon(c.gear,100);sm=(typeof gearIcon==='function'&&gearIcon(c.gear,34))||itemIcon(c.gear,34);c.title=g.n}
   else if(c.k){c.icon=itemIcon(c.k,100);sm=itemIcon(c.k,34);c.title=ITEMS[c.k].name;
-    if(bagFull(h,c.k)){const p=Math.round(ITEMS[c.k].price/2);h.money+=p;c.sub=`الشنطة مليانة، اتباعت بـ${p} جنيه`}
+    if(bagFull(h,c.k)){const p=Math.round(ITEMS[c.k].price/2);h.money+=p;c.sub=`${bagFullTxt(h,c.k)}، اتباعت بـ${p} جنيه`}
     else h.bag[c.k]=(h.bag[c.k]||0)+1}
   else{h.money+=c.money;c.icon=itemIcon(c.trophy?'trophy':'money',100);sm=itemIcon(c.trophy?'trophy':'money',34);c.title=c.trophy||`${c.money} جنيه`;if(c.trophy){c.sub=`ومعاها ${c.money} جنيه`;if(!h.trophies.includes(c.trophy))h.trophies.push(c.trophy)}}
   c.label=`${sm}<div>${c.title}</div>${c.sub?`<small style="color:var(--dim)">${c.sub}</small>`:''}`;
@@ -2432,7 +2438,7 @@ function end(){
 .tw-miss.ok{color:#a6e3a0}
 .tw-life .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
 .tw-life .r1>b{font-size:15px}.tw-life .r1>b span{color:#d9cbff}
-.tw-caps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;text-align:center}
+.tw-caps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;text-align:center}
 .tw-cap{background:#0005;border-radius:12px;padding:6px 2px 4px;position:relative;display:flex;flex-direction:column;align-items:center}
 .tw-cap .ic{height:28px;display:grid;place-items:center}.tw-cap .ic svg{max-height:28px}
 .tw-cap b{display:block;font-size:20px;color:var(--gold2);line-height:1.15}
@@ -2530,11 +2536,14 @@ const TW_SLOTS=['weapon','armor','head','ring','neck','charm'];
 
 /* bag upgrades at the tailor: bought in order, each one adds to the last */
 const BAGUPS=[
-  {id:'bag1',n:'شنطة قماش كبيرة',tier:0,add:{pot:1,food:1},buy:150,craft:{cloth:4},cm:30,lv:1},
-  {id:'bag2',n:'شنطة جلد سلعوة',tier:1,add:{pot:2,food:2,salt:1},buy:350,craft:{salskin:3,cloth:2},cm:80,lv:2},
-  {id:'bag3',n:'خُرج كبير',tier:2,add:{pot:3,food:3,salt:2,revive:1},buy:700,craft:{salskin:5,cloth:4,silver:1},cm:150,lv:3}];
-function bagExtra(h,k){const it=ITEMS[k];if(!h||!it)return 0;const key=it.kind==='pot'?'pot':it.kind==='food'?'food':k;let n=0;for(let i=0;i<(h.bagLvl||0)&&i<BAGUPS.length;i++)n+=BAGUPS[i].add[key]||0;return n}
-const TW_BAGK={pot:['potion','جرعات'],food:['foul','أكل'],salt:['salt','ملح'],revive:['revive','قزازة صحيان']};
+  {id:'bag1',n:'شنطة قماش كبيرة',tier:0,add:{pot:1,food:1,drink:1},buy:150,craft:{cloth:4},cm:30,lv:1},
+  {id:'bag2',n:'شنطة جلد سلعوة',tier:1,add:{pot:2,food:2,salt:1,drink:1,attar:1},buy:350,craft:{salskin:3,cloth:2},cm:80,lv:2},
+  {id:'bag3',n:'خُرج كبير',tier:2,add:{pot:3,food:3,salt:2,revive:1,drink:2,attar:2},buy:700,craft:{salskin:5,cloth:4,silver:1},cm:150,lv:3},
+  /* 5.67 (Twister: bigger bags) */
+  {id:'bag4',n:'خُرج بجيوب',tier:3,add:{pot:3,food:3,salt:2,revive:1,drink:2,attar:2},buy:1500,craft:{salskin:7,cloth:6,silver:2,turq:1},cm:300,lv:5},
+  {id:'bag5',n:'خُرج العمدة',tier:3,add:{pot:4,food:4,salt:3,revive:2,drink:3,attar:3},buy:3000,craft:{salskin:10,cloth:8,horn:3,turq:2},cm:600,lv:7}];
+function bagExtra(h,k){const it=ITEMS[k];if(!h||!it)return 0;const key=bagSec(k).id;let n=0;for(let i=0;i<(h.bagLvl||0)&&i<BAGUPS.length;i++)n+=BAGUPS[i].add[key]||0;return n}
+const TW_BAGK={pot:['potion','جرع شفا'],food:['foul','أكل'],salt:['salt','ملح'],revive:['revive','قزازة صحيان'],drink:['shai','مشاريب'],attar:['antidote','جرع عطّار']};
 /* v4.1: metals at the smith, 3 times what عم رمضان pays for them (your reputation counts too), always in stock */
 const TW_SMAT=['copper','iron','silver'];
 /* cooking at أم سيد */
@@ -2924,7 +2933,7 @@ async function twCraft(id,btn){const h=S.hero,g=GEAR[id];if(TWN.busy||!g||!g.cra
 function twBagHTML(h){const L=h.bagLvl||0,nb=BAGUPS[L];
   const box=key=>{const [k,n]=TW_BAGK[key],add=nb&&nb.add[key];return `<div class="tw-cap"><span class="ic">${k==='foul'?twFood('foul',26):itemIcon(k,26)}</span><b>${bagCap(h,k)}</b><small>${n}</small>${add?`<i>${twN(add)}</i>`:''}</div>`};
   return `<div class="tw-lbl">الشنطة <small>${G('شايل','شايلة')} ${L?BAGUPS[L-1].n:'الشنطة العادية'}</small></div>
-  <div class="card"><div class="tw-caps">${['pot','food','salt','revive'].map(box).join('')}</div><div class="tw-sm" style="margin-top:6px">ده أكتر عدد ${G('تقدر تشيله','تقدري تشيليه')} من كل حاجة.${nb?` الأرقام الخضرا هي اللي هتزيد مع «${nb.n}».`:` دي أكبر شنطة عند عم فتحي.`}</div></div>
+  <div class="card"><div class="tw-caps">${['pot','revive','drink','attar','food','salt'].map(box).join('')}</div><div class="tw-sm" style="margin-top:6px">ده أكتر عدد ${G('تقدر تشيله','تقدري تشيليه')} في كل قسم من الشنطة.${nb?` الأرقام الخضرا هي اللي هتزيد مع «${nb.n}».`:` دي أكبر شنطة عند عم فتحي.`}</div></div>
   <div class="col">${BAGUPS.map((b,i)=>twBagCard(h,b,i)).join('')}</div>`}
 function twBagCard(h,b,i){const L=h.bagLvl||0,R=RARE[b.tier],chips=Object.keys(b.add).map(k=>`<span class="tw-ch up">${twN(b.add[k])} ${TW_BAGK[k][1]}</span>`).join('');
   const head=`<div class="hd"><div class="ic">${twGear(b.id,46)}</div><div class="tx"><div class="nmr"><b style="color:${R.c}">${b.n}</b><span class="tw-rn" style="color:${R.c}">${R.n}</span>${i<L?`<span class="tw-own">${G('معاك','معاكي')} ✓</span>`:''}</div><div class="tw-chs">${chips}</div></div></div>`;
@@ -2980,20 +2989,20 @@ SCREENS.cook=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   view.querySelectorAll('[data-fb]').forEach(b=>b.onclick=()=>twBuyFood(b.dataset.fb,b));qtyBind()};
 function twRecRow(h,k){const r=TW_REC[k],it=ITEMS[k],R=RARE[r.tier],lock=lifeLvl(h,'cook')<r.lv,miss=twMiss(h,r.need),full=bagFull(h,k);
   const nd=Object.keys(r.need).map(m=>`<span class="tw-nd ${(h.res[m]||0)>=r.need[m]?'ok':'no'}">${twMat(m,18)}${r.need[m]>1?r.need[m]+' ':''}${resN(m)}</span>`).join('');
-  const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:full?`<div class="tw-miss" style="color:#f0a090">الشنطة مليانة أكل. ${G('كُل','كُلي')} حاجة الأول أو ${G('كبّر','كبّري')} شنطتك عند عم فتحي</div>`:'';
+  const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:full?`<div class="tw-miss" style="color:#f0a090">${bagFullTxt(h,k)}. ${G('كُل','كُلي')} حاجة الأول أو ${G('كبّر','كبّري')} شنطتك عند عم فتحي</div>`:'';
   return `<div class="tw-row" style="--rc:${twRc(r.tier)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b style="color:${r.tier?R.c:'var(--ink)'}">${it.name}</b><small>${T(it.info())}</small><div class="tw-chs">${nd}</div></div>
     ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">طبخ مستوى ${r.lv}</small></button>`:`<button class="tw-buy" data-cook="${k}" ${miss.length||full?'disabled':''}>${G('اطبخ','اطبخي')}</button>`}
     ${note?`<div style="flex-basis:100%">${note}</div>`:''}</div>`}
 const twFoodMax=(h,k,p)=>qtyMax(h.money/p,bagCap(h,k)-bagCount(h,k));
 function twFoodRow(h,k){const it=ITEMS[k],p=twGP(h,it.price),full=bagFull(h,k),have=h.bag[k]||0;
-  return `<div class="tw-row" style="--rc:${twRc(0)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b>${it.name}</b><small>${T(it.info())}</small>${have||full?`<small>${have?`${G('معاك','معاكي')} ${have}`:''}${full?`${have?' · ':''}<span style="color:#f0a090">الشنطة مليانة أكل</span>`:''}</small>`:''}</div>
+  return `<div class="tw-row" style="--rc:${twRc(0)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b>${it.name}</b><small>${T(it.info())}</small>${have||full?`<small>${have?`${G('معاك','معاكي')} ${have}`:''}${full?`${have?' · ':''}<span style="color:#f0a090">${bagFullTxt(h,k)}</span>`:''}</small>`:''}</div>
     ${twQB('f:'+k,twFoodMax(h,k,p),p,0,`data-fb="${k}"`,`${p} جنيه${!full&&h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}
-function twBuyFood(k,btn){const h=S.hero,p=twGP(h,ITEMS[k].price);if(h.money<p)return;if(bagFull(h,k)){toast('الشنطة مليانة أكل');return}const n=qtyN('f:'+k,Math.max(1,twFoodMax(h,k,p)));
+function twBuyFood(k,btn){const h=S.hero,p=twGP(h,ITEMS[k].price);if(h.money<p)return;if(bagFull(h,k)){toast(bagFullTxt(h,k));return}const n=qtyN('f:'+k,Math.max(1,twFoodMax(h,k,p)));
   h.money-=p*n;h.bag[k]=(h.bag[k]||0)+n;saveHero();floatAt(btn,twI('+'+n)+' '+ITEMS[k].name,'#a6e3a0','',18);twPay(btn,p*n);twRender()}
 /* dishes that go in the oven play the bread game (knead, then bake) instead of the pot */
 const TW_BAKE=['fateer'];
 async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl(h,'cook')<r.lv||!hasRes(h,r.need))return;
-  if(bagFull(h,k)){toast(`الشنطة مليانة أكل (${bagCount(h,k)} من ${bagCap(h,k)})`);return}
+  if(bagFull(h,k)){toast(bagFullTxt(h,k));return}
   const pr=await qPrep({at:'cook',food:1,title:`${G('اطبخ','اطبخي')} ${ITEMS[k].name}`,costTxt:needTxt(r.need),icon:twFood(k,50),adds:qAdds(h,'food',r.need),made:qMade(h,k),
     playTxt:TW_BAKE.includes(k)?G('ابدأ العجن','ابدأي العجن'):G('ابدأ الطبخ','ابدأي الطبخ'),quickTxt:G('اطبخ بسرعة','اطبخي بسرعة')});
   if(!pr||TWN.busy||!hasRes(h,r.need)||bagFull(h,k))return;const add=pr.add&&pr.add.ok?pr.add:null;
@@ -4400,6 +4409,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.67',d:'10 أكتوبر',add:['الشنطة بقت متقسمة أقسام: جرع الشفا، وقزايز الصحيان، والمشاريب، وجرع العطّار، والأكل، والملح. كل قسم مكتوب جنبه فيه كام ومساحته كام وفاضل كام.','لما قسم يتملا، الكلام بيقول أنهي قسم بالظبط اللي مليان (زي «قسم جرع الشفا في الشنطة مليان (5 من 5)»).','شنطتين أكبر عند عم فتحي الخياط: «خُرج بجيوب» و«خُرج العمدة». والشنط القديمة بقت بتكبّر المشاريب وجرع العطّار كمان.','السوق بقى بيشتري جرع الشفا وقزايز الصحيان وجرع العطّار والمشاريب من شنطتك (من «بيع»).'],fix:['«الورشة» عند الحداد ما بقتش لازقة فوق {وانت بتنزل|وانتي بتنزلي}: بتتحرك مع الصفحة، والشاشة بقت مكشوفة أكتر.']},
   {v:'5.66',d:'10 أكتوبر',add:[],fix:['أزرار الشرا في العطارة والحداد والأسواق ما بقتش بتطلع برا الكارت لو الشاشة ضيقة أو الخط كبير: الزرار بينزل سطر لوحده.']},
   {v:'5.65',d:'10 أكتوبر',add:['«العطارة» في البلد: عم رجب العطّار. {بتدق|بتدقي} الأعشاب في الهون: إبرة بتجري على شريط و{بتدوس|بتدوسي} 3 مرات في الأخضر، وكل ما الدقة تبقى أحسن الجرع بتطلع أكتر (من 1 لـ3). «بسرعة» بتطلّع جرعة واحدة.','شغلانة جديدة: «عطارة». كل مستوى بيخلّي كل الجرع اللي {بتشربها|بتشربيها} {وبترميها|وبترميها} أقوى 5%، وبيفتح جرع جديدة.','6 أعشاب: نعناع وحلبة وحبة البركة من عند عم رجب، و{بتلاقي|بتلاقي} شيح الجبل في المنجم من الدور 5، وعشبة الترعة {وانت بتصطاد|وانتي بتصطادي}، وزهرة الغيطان في الغيط وبعد القتالات الصعبة. النعناع كمان بيطلع مع المحصول.','3 حاجات جديدة للشنطة: «ترياق» بيرجّع صحة كل دور 3 أدوار، و«جرعة نار» {بترميها|بترميها} على وحش فيولّع، و«جرعة ضل» بتخلّي أول ضربتين {عليك|عليكي} ما ييجوش. و{تقدر|تقدري} {تعمل|تعملي} جرعة الشفا والكبيرة وقزازة الصحيان بإيدك.','3 تخصصات جديدة للعطارة: العطّار (نادر)، الحكيم (ملحمي)، وطبيب السراية (خفي، بييجي باختبار)، ولقبين و3 إنجازات.'],fix:['«{غيّر|غيّري} نوعك» بقى اسمه «{غيّر|غيّري} تخصصك»، و«نوعك الأساسي» بقى «تخصصك الأساسي».']},
   {v:'5.64',d:'10 أكتوبر',add:[],fix:['«الورشة» بقت فوق في شاشة الحداد، وكل حاجة {ركّبتها|ركّبتيها} مكتوب جنبها بتديك إيه.','في «{اختار|اختاري} الدور» في المنجم بقى مكتوب إيه اللي بيطلع في كل دور: الفحم من 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.']},
@@ -4780,23 +4790,32 @@ const bagSum=a=>a.reduce((s,n)=>s+n,0);
 function bagLine(h){const f=bagSum(bagFoods(h).map(k=>h.bag[k])),r=bagSum(bagRes(h).map(k=>h.res[k])),p=[];
   if(f)p.push(f===1?'أكلة':f===2?'أكلتين':`${f} أكلات`);if(r)p.push(r===1?'خامة':r===2?'خامتين':`${r} خامات`);
   return p.length?p.join(' · '):'فاضية'}
+/* the sections (bagSec in p3.js): how full each one is, and what is in it */
+const bagSpace=(h,k)=>{const c=bagCount(h,k),m=bagCap(h,k);return `${c} من ${m} · ${c>=m?'<span style="color:#f0a090">مليان</span>':`فاضل ${m-c}`}`};
+const bagBar=(h,k)=>{const c=bagCount(h,k),m=Math.max(1,bagCap(h,k));return `<div class="bg-bar${c>=m?' full':''}"><i style="width:${Math.min(100,c/m*100)}%"></i></div>`};
+function bagSecsHTML(h,row,lbl){const seen={},out=[];
+  BAG_SEC.filter(x=>!x.food).concat(Object.keys(ITEMS).filter(k=>!FOODS.includes(k)&&ITEMS[k].kind!=='food'&&k!=='amulet'&&(h.bag[k]||0)>0&&bagSec(k).own).map(k=>bagSec(k))).forEach(sc=>{
+    if(seen[sc.id])return;seen[sc.id]=1;const k0=sc.ks[0];if(!ITEMS[k0])return;const ks=sc.ks.filter(k=>ITEMS[k]&&(h.bag[k]||0)>0);
+    out.push(lbl(sc.n,bagSpace(h,k0))+bagBar(h,k0)+(ks.length?ks.map(k=>row(itemIcon(k,34)||'',ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),'')).join(''):`<div class="card bg-none">فاضي</div>`))});
+  return out.join('')}
 SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const e=effNow(h),full=e>=EFF_MAX,add=Math.min(5,EFF_MAX-e),fs=bagFoods(h),its=bagItems(h),rs=bagRes(h),gs=bagGear(h);
   const worn=id=>Object.values(h.eq||{}).includes(id);
   const row=(ic,name,n,sub,act,c)=>`<div class="card bg-row"${c?` style="--rc:${c}"`:''}><span class="ic">${ic}</span><div class="tx"><b${c?` style="color:${c}"`:''}>${name}${n>1?` <span class="n">×${n}</span>`:''}</b>${sub?`<small>${sub}</small>`:''}</div>${act||''}</div>`;
   const food=fs.map(k=>row(twFood(k,34),ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),
     `<button class="bg-eat" data-beat="${k}" ${full?'disabled':''}>${G('كُل','كُلي')}${full?'':`<small>${twN(add)} مجهود</small>`}</button>`)).join('');
-  const items=its.map(k=>row(itemIcon(k,34)||'',ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),'')).join('');
+  
   const res=rs.map(k=>{const M=MAT[k];return `<div class="bg-mat"><span class="ic">${twMat(k,30)}</span><b>${M.n}</b><small>×${h.res[k]}${M.junk?'':` · ${M.p} جنيه`}</small></div>`}).join('');
   const gear=gs.map(id=>{const g=GEAR[id],R=RARE[g.tier]||RARE[0];return row(twGear(id,34),g.n,h.gear[id],`${SLOTS[g.slot]}${worn(id)?` · <span class="ok">${g.slot==='weapon'?G('ماسكه','ماسكاه'):G('لابسه','لابساه')}</span>`:''}`,'',R.c)}).join('');
   const lbl=(t,cap)=>`<div class="tw-lbl">${t}${cap?`<small>${cap}</small>`:''}</div>`;
   view.innerHTML=`${twTop('الشنطة')}<div class="tw">
     <div class="card">${twEffHTML(h,0)}</div>
-    ${lbl('أكل',`${bagCount(h,'foul')} من ${bagCap(h,'foul')}`)}
+    <div class="card bg-how">الشنطة متقسمة أقسام، وكل قسم ليه مساحة لوحده: لو قسم اتملا، التاني لسه فيه مكان. ${(h.bagLvl||0)<BAGUPS.length?`شنطة أكبر بتكبّر الأقسام كلها، عند عم فتحي الخياط. <button class="btn ghost small" data-bgo="tailor">روح لعم فتحي</button>`:G('معاك','معاكي')+' أكبر شنطة.'}</div>
+    ${lbl('أكل',bagSpace(h,'foul'))}${bagBar(h,'foul')}
     ${food||`<div class="card bg-none">مفيش أكل في الشنطة. أم سيد بتبيع أكل وبتطبخ. <button class="btn ghost small" data-bgo="cook">روح لأم سيد</button></div>`}
     ${full&&fs.length?`<div class="tw-sm" style="color:#a6e3a0">مجهودك مليان. خلّي الأكل للقتال.</div>`:''}
-    ${items?lbl('جرعات وحاجات للمغامرة')+items:''}
-    ${lbl('خامات',rs.length?'بتتباع في السوق، أو تتعمل بيها حاجات':'')}
+    ${bagSecsHTML(h,row,lbl)}
+    ${lbl('خامات',rs.length?'مالهاش حد · بتتباع في السوق، أو تتعمل بيها حاجات':'')}
     ${res?`<div class="bg-mats">${res}</div>`:`<div class="card bg-none">مفيش خامات. المنجم والترعة والمغامرات بيطلّعوا خامات.</div>`}
     ${gs.length?lbl('عدّة')+gear+`<button class="btn ghost" data-bgo="gear">${G('البس','البسي')} من عدّتي</button>`:''}
   </div>`;
@@ -4840,6 +4859,8 @@ function twMend(btn){const h=S.hero;if(!h||TWN.busy||(h.res.cloth||0)<MEND.cloth
 .bg-mat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
 .bg-mat b{font-size:14px}.bg-mat small{color:var(--mute);font-size:12px}
 .bg-none{margin-top:8px;color:var(--mute);font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.bg-bar{height:6px;border-radius:4px;background:#ffffff14;overflow:hidden;margin:-2px 0 8px}.bg-bar i{display:block;height:100%;background:#7fe07a;border-radius:4px}.bg-bar.full i{background:#f0a090}
+.bg-how{font-size:14px;line-height:1.7;color:var(--mute);display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .bg-job{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .bg-job .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.bg-job .r1 b{font-size:15px}
 .bg-job .btn small{display:block;font-size:12px;font-weight:700;opacity:.8}`;document.head.appendChild(st)}
@@ -11774,7 +11795,7 @@ const X_mktP=(h,k)=>Math.max(1,Math.round(ITEMS[k].price*(typeof twMul==='functi
 function X_mktFight(){const h=S.hero;if(!h||S.screen!=='market'||typeof TWN==='undefined'||TWN.tab!=='buy')return;const cols=view.querySelectorAll('.tw .col');const col=cols[cols.length-1];if(!col)return;
   const rows=['torch','incense'].map(k=>{const it=ITEMS[k],p=X_mktP(h,k),room=bagCap(h,k)-bagCount(h,k),mx=qtyMax(99,h.money/p,room),have=h.bag[k]||0;
     return `<div class="tw-row" style="flex-wrap:wrap"><div class="ic">${itemIcon(k,40)}</div><div class="tx"><b>${it.name}</b><small>${T(it.info())}</small><small>موجود على طول${have?` · ${G('معاك','معاكي')} ${have}`:''}</small></div>
-      ${twQB('x:'+k,mx,p,0,`data-xb="${k}"`,`${p}\u00a0جنيه${room<1?'<small>الشنطة مليانة</small>':h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}).join('');
+      ${twQB('x:'+k,mx,p,0,`data-xb="${k}"`,`${p}\u00a0جنيه${room<1?`<small>${bagSec(k).n}: مليان</small>`:h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}).join('');
   col.insertAdjacentHTML('afterend',`<div class="label" style="margin-top:12px">للقتال</div><div class="col">${rows}</div>`);
   view.querySelectorAll('[data-xb]').forEach(b=>b.onclick=()=>X_mktBuy(b.dataset.xb,b));qtyBind(()=>{TWN.conf=null})}
 function X_mktBuy(k,btn){const h=S.hero,p=X_mktP(h,k),mx=qtyMax(99,h.money/p,bagCap(h,k)-bagCount(h,k));if(mx<1)return;const n=qtyN('x:'+k,mx);
@@ -23671,7 +23692,7 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
     <button class="tw-act cr" data-ws="${n}" ${can?'':'disabled'}><b>${G('ركّب','ركّبي')}</b><small>${can?'للورشة':'ناقصك حاجة'}</small></button></div></div>`}
   else s+=`<div class="tw-sm">الورشة كاملة. مفيش أحسن منها في البلد.</div>`;s+='</div>'}catch(e){console.warn(e)}return s}}
 {const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;
-  {const b=view.querySelector('#wsBlk'),k=b&&b.closest('.tw-stk')||view.querySelector('.tw-stk');if(b&&k&&k.firstElementChild!==b)k.insertBefore(b,k.firstElementChild)}
+  {const b=view.querySelector('#wsBlk'),k=view.querySelector('.tw-stk');if(b&&k&&k.previousElementSibling!==b)k.parentNode.insertBefore(b,k)}
   view.querySelectorAll('[data-smelt]').forEach(b=>b.onclick=()=>{if(TWN.busy||spLv(h,'smith')<SM_STEEL.lv||!hasRes(h,SM_STEEL.need)||h.money<SM_STEEL.fee)return;
     takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);bump('smelt');S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();SFX.anvil?SFX.anvil():SFX.coin&&SFX.coin();
     toast(`${G('سبكت','سبكتي')} ${n===2?'فولاذتين':'فولاذ'} · ${G('عندك','عندك')} ${h.res.steel}`);twRender()});
@@ -24509,7 +24530,6 @@ Object.assign(ITEMS,{
   antidote:{name:'ترياق',price:60,use:'at',info:()=>`بيرجّع ${atRg(atHero())} صحة كل دور، 3 أدوار ({ليك|ليكي} أو لرفيقك)`},
   firepot:{name:'جرعة نار',price:70,use:'at',info:()=>`{بترميها|بترميها} على وحش: ${atFireD(atHero())} ضرر، وبيولّع دورين`},
   shadowpot:{name:'جرعة ضل',price:80,use:'at',info:()=>'دخان أسود حواليك: أول ضربتين {عليك|عليكي} مش هييجوا'}});
-Object.assign(BAG_MAX,{antidote:3,firepot:3,shadowpot:2});
 ['antidote','firepot','shadowpot'].forEach(k=>{if(!BAG_FIGHT.includes(k))BAG_FIGHT.push(k)});
 const AT_FIGHT={antidote:1,firepot:1,shadowpot:1};
 
@@ -24602,7 +24622,7 @@ function atLifeHTML(h){const L=h.life.attar,nd=L.lvl*4,mx=L.lvl>=10,pc=atPc(h);
     <div class="tw-sm">${mx?G('وصلت لآخر مستوى','وصلتي لآخر مستوى'):`فاضلك <b>${nd-L.xp}</b> خبرة ${G('وتطلع','وتطلعي')} عطارة مستوى ${L.lvl+1}`}. كل جرعة ${G('بتعملها','بتعمليها')} بتعلّمك، وكل مستوى بيخلّي الجرع اللي ${G('بتشربها','بتشربيها')} ${G('وبترميها','وبترميها')} أقوى 5%.</div></div>`}
 function atRecRow(h,k){const r=AT_REC[k],it=ITEMS[k],R=RARE[r.tier],lock=atLv(h)<r.lv,miss=twMiss(h,r.need),room=atRoom(h,k),have=h.bag[k]||0;
   const nd=Object.keys(r.need).map(m=>`<span class="tw-nd ${(h.res[m]||0)>=r.need[m]?'ok':'no'}">${twMat(m,18)}${r.need[m]>1?r.need[m]+' ':''}${resN(m)}</span>`).join('');
-  const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:room<1?`<div class="tw-miss" style="color:#f0a090">الشنطة شايلة آخرها من دي (${bagCount(h,k)} من ${bagCap(h,k)})</div>`:'';
+  const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:room<1?`<div class="tw-miss" style="color:#f0a090">${bagFullTxt(h,k)}</div>`:'';
   const off=miss.length||room<1?'disabled':'';
   return `<div class="tw-row at-row" style="--rc:${twRc(r.tier)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b style="color:${r.tier?R.c:'var(--ink)'}">${it.name}</b><small>${T(it.info())}${have?` · ${G('معاك','معاكي')} ${have}`:''}</small><div class="tw-chs">${nd}</div></div>
     ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">عطارة مستوى ${r.lv}</small></button>`
@@ -24631,7 +24651,7 @@ SCREENS.attar=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 function atBuy(k,btn){const h=S.hero,s=AT_SELL[k];if(!h||!s||atLv(h)<s.lv)return;const p=atHerbP(h,k),mx=qtyMax(99,h.money/p);if(mx<1)return;const n=qtyN('h:'+k,mx);
   h.money-=p*n;addRes(h,k,n);saveHero();floatAt(btn,twI('+'+n)+' '+resN(k),'#a6e3a0','',18);twPay(btn,p*n);twRender()}
 async function atBrew(k,quick,btn){const h=S.hero,r=AT_REC[k];if(!h||TWN.busy||!r||atLv(h)<r.lv||!hasRes(h,r.need))return;
-  const room=atRoom(h,k);if(room<1){toast('الشنطة شايلة آخرها من دي');return}
+  const room=atRoom(h,k);if(room<1){toast(bagFullTxt(h,k));return}
   TWN.busy=1;takeRes(h,r.need);saveHero();let sc=0,n=1,x=0;
   try{if(!quick){sc=await atGame(h,k,r);n=sc>=.8?3:sc>=.5?2:1;const o=spOn(h);if(o&&o.atX&&Math.random()<o.atX){n++;x=1}}}catch(e){console.warn(e)}finally{TWN.busy=0}
   const got=Math.min(n,room);h.bag[k]=(h.bag[k]||0)+got;bump('brewed');
@@ -24715,6 +24735,23 @@ ACH.push({id:'at_1',n:'أول جرعة',d:'{تعمل|تعملي} أول جرعة
 {const a0=achScan;achScan=function(h){a0.apply(this,arguments);if(!h||h!==S.hero)return;try{const c=h.cnt||{},got=[];const chk=(id,ok)=>{if(ok&&!(h.ach&&h.ach[id]))got.push(id)};
   chk('at_1',(c.brewed|0)>=1);chk('at_50',(c.brewed|0)>=50);chk('at_fire',(c.firepot|0)>=10);got.forEach((id,i)=>setTimeout(()=>ach(id),3500+i*2600))}catch(e){console.warn(e)}}}
 if(!ACH_SCR.includes('attar'))ACH_SCR.push('attar');
+/* ==========================================================================
+   سرداب: the two bigger bags of 5.67 (BAGUPS in p9.js) get their pixel pictures: recolours of the big خُرج.
+   ========================================================================== */
+Object.assign(PXI_G,{bag4:P20_rc(PXI_G.bag3,{r:"l",R:"L",m:"i",y:"Y"}),bag5:P20_rc(PXI_G.bag3,{r:"p",R:"P",m:"h",y:"o"})});
+
+/* the market buys potions too (5.67, Twister): the healing ones, the attar's and the drinks, at the market's usual cut */
+const POT_SELL=['potion','bigpotion','revive','antidote','firepot','shadowpot','shai','ahwa','erqsous'];
+const potSellP=k=>Math.max(2,Math.floor((ITEMS[k].price||10)*SELL_CUT));
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='market'||TWN.tab!=='sell')return r;
+  const ks=POT_SELL.filter(k=>ITEMS[k]&&(h.bag[k]||0)>0);if(!ks.length)return r;
+  const rows=ks.map(k=>{const n=h.bag[k],p=potSellP(k);
+    return `<div class="tw-row" style="flex-wrap:wrap"><div class="ic">${itemIcon(k,40)}</div><div class="tx"><b>${ITEMS[k].name}</b> <span class="tw-cnt">×${n}</span><small>بـ${p} جنيه الواحدة</small></div>${twSB('sp:'+k,n,p,`data-spot="${k}"`,'p:'+k+':')}</div>`}).join('');
+  const tw=view.querySelector('.tw');const emp=tw&&tw.querySelector('.tw-empty');if(emp)emp.remove();
+  tw.insertAdjacentHTML('beforeend',`<div class="tw-lbl">جرع ومشاريب <small>من شنطتك</small></div><div class="col">${rows}</div>`);
+  qtyBind(()=>{TWN.conf=null});
+  view.querySelectorAll('[data-spot]').forEach(b=>b.onclick=()=>{const k=b.dataset.spot,have=h.bag[k]||0;if(have<1)return;const n=qtyN('sp:'+k,have),v=potSellP(k)*n;
+    h.bag[k]-=n;h.money+=v;saveHero();SFX.reg&&SFX.reg();floatAt(b,twI('+'+v)+' جنيه','#f3d48f','',20);twMoneyFly(b,v);twRender();if(h.money>=500)ach('rich')})}catch(e){console.warn(e)}return r}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
