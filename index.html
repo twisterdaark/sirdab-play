@@ -1532,7 +1532,7 @@ const HELP=[
   {g:'البلد',h:'العدّة (6 خانات)',p:()=>PF_HPIC.gear(),b:()=>`${G('تقدر','تقدري')} ${G('تلبس','تلبسي')} حاجة واحدة في كل خانة من الـ6: ${Object.values(SLOTS).join('، ')}.<br>العدّة بتزوّد ضربك، أو بتخلّي الضربة اللي بتجيلك تقل، أو بتزوّد صحتك وصفاتك. وفي سلاح ليه حركة خاصة زي «ضربتين».<br>${G('اشتريها','اشتريها')} أو ${G('اعملها','اعمليها')} بإيدك من الخامات عند الحداد والخياط. واللون بيقولك هي نادرة قد إيه.`},
   {g:'البلد',h:'السوق والسمعة',b:()=>`السوق بيعرض حاجات مختلفة كل مغامرة، وبكمية محدودة («فاضل 2»). ساعات فيه عرض بخصم.<br><b>السمعة:</b> لو ${G('ساعدت','ساعدتي')} الناس سمعتك بتتحسن والأسعار بتقل. لو ${G('سرقت','سرقتي')} أو ${G('كدبت','كدبتي')} أو ${G('أذيت','أذيتي')} حد سمعتك بتوحش، والأسعار بتغلى، وفي ناس ممكن ترفض تتعامل ${G('معاك','معاكي')}.`},
   {g:'بطلك',h:'الخبرة والمستوى',b:()=>`كل وحش ${G('بتكسبه','بتكسبيه')} وكل مغامرة ${G('بتخلصها','بتخلصيها')} ${G('بيديك','بيديكي')} خبرة. لما الشريط يتملي ${G('بتطلع','بتطلعي')} مستوى: صحة أكتر، وصفة من صفات تخصصك بتزيد، و<b>نقطة قدرة</b> ${G('تعلّي','تعلّي')} بيها قدرة من صفحة بطلك. وكل مستويين بتتفتح <b>قدرة جديدة</b> (في 3 و5 و7 و9). وفي المستوى 2 طاقتك بتبقى 4. والأعداء بيكبروا ${G('معاك','معاكي')} عشان التحدي يفضل موجود.`},
-  {g:'بطلك',h:'المستوى والتخصص',b:()=>`كل مستوى جديد بيزوّد صحتك وصفة من صفات تخصصك:<br><b>محارب:</b> قوة وتحمّل، وصحته بتزيد 3.<br><b>حرامي:</b> خفة وحضور، وفرصة ضربة المعلّم بتزيد 2% كمان.<br><b>ساحر:</b> ذكاء وحكمة، وطاقته بتبقى 5 في المستوى 4.<br><b>معالج:</b> حكمة وتحمّل، وطاقته بتبقى 5 في المستوى 4.<br>النقط اللي ${G('خدتها','خدتيها')} من المستويات بتنوّر دهبي في صفحة ${G('بطلك','بطلتك')}.`},
+  {g:'بطلك',h:'المستوى والتخصص',b:()=>`كل مستوى جديد بيزوّد صحتك وصفة من صفات تخصصك:<br><b>محارب:</b> قوة وتحمّل، وصحته بتزيد 3.<br><b>حرامي:</b> خفة وحضور، وفرصة ضربة المعلّم بتزيد 2% كمان.<br><b>ساحر:</b> ذكاء وحكمة، وطاقته بتبقى 5 في المستوى 4.<br><b>معالج:</b> حكمة وتحمّل، وطاقته بتبقى 5 في المستوى 4.<br><b>مصارع:</b> قوة وخفة، وصحته بتزيد 3.<br><b>ابن البلد:</b> صفة مختلفة كل مستوى، بالدور على الست صفات.<br>النقط اللي ${G('خدتها','خدتيها')} من المستويات بتنوّر دهبي في صفحة ${G('بطلك','بطلتك')}.`},
   {g:'بطلك',h:'الألقاب',p:()=>PF_HPIC.titles(),b:()=>`لما ${G('تعمل','تعملي')} حاجة كتير، الناس ${G('بتديك','بتديكي')} <b>لقب</b>. مثلاً لو ${G('اصطدت','اصطدتي')} 30 سمكة ${G('هتبقى','هتبقي')} «${G('صياد الترعة','صيادة الترعة')}».<br>كل لقب ليه ميزة صغيرة، والمزايا كلها شغالة مع بعض وبتفضل ${G('معاك','معاكي')} على طول. ${G('واختار','واختاري')} لقب واحد يظهر تحت اسمك من صفحة ${G('بطلك','بطلتك')} تحت «ألقابي».`},
   {g:'بطلك',h:'صفات مخفية',p:()=>PF_HPIC.hidden(),b:()=>`${G('بطلك فيه','بطلتك فيها')} حاجات مش باينة: <b>صفات مخفية</b>. مش مكتوبة في أي حتة لحد ما تظهر.<br>بتظهر لوحدها لما ${G('تعمل','تعملي')} حاجات معينة، ومن ساعتها بتفضل ${G('معاك','معاكي')} وتساعدك.<br>والناس في البلد ساعات بيرمولك كلمة كده عنها.. ${G('اسمع','اسمعي')} كلامهم كويس.`},
   {g:'بطلك',h:'الصناديق والغنايم',p:()=>chestArt(false)+RARE.slice(0,4).map(r=>`<span class="chance" style="background:${r.c}22;color:${r.c}">${r.n}</span>`).join(''),b:()=>`الوحوش ساعات بتوقّع صندوق. ${G('دوس','دوسي')} عليه ${G('وافتحه','وافتحيه')}. اللون بيقولك الحاجة نادرة قد إيه: عادي، كويس، نادر، أسطوري.`},
@@ -4384,6 +4384,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.61',d:'10 أكتوبر',add:['نوعين جداد {تختار|تختاري} منهم {وانت|وانتي} {بتعمل|بتعملي} البطل:','«المُصارع»: بيحارب بإيده الفاضية. من غير سلاح ضربه +2، و«إيد حديد» بتزوّده لحد +6. قدراته: «مسكة وطرحة» و«اسند ضهرك» و«كوع» و«رمية على الكل». وتخصصات «فنون الإيد» بتيجيله بالضعف.','«ابن البلد»: مش متخصص في حاجة. كل مستوى بيكبّر صفة مختلفة بالدور. فرصته لأي تخصص بالضعف، {ووانت|ووانتي} {معاك|معاكي} تخصص الفرصة لتخصص من شغلانة تانية لسه بتيجي، فتغييره سهل. وكمان «من كل بيت حتة» بتزوّد خبرة الشغلانات كلها.','القدرات بتاعتهم بتكبر بنقط القدرة زي الباقيين، وليهم شكل ولبس بتوعهم.'],fix:[]},
   {v:'5.60',d:'10 أكتوبر',add:['«فنون الإيد»: سكة تخصصات جديدة لوحدها لأي نوع، للي بيحارب بإيده الفاضية من غير سلاح: «الفتوّة» (نادر)، و«صاحب القبضة» (ملحمي)، وتخصص خفي ليه اختبار.','فرصتها بتيجي بس بعد قتال {تكسبه|تكسبيه} وإيدك فاضية. {شيل|شيلي} السلاح من «عدّتي» {وحارب|وحاربي} بإيدك.','كل واحد فيهم بيقوّي ضرب الإيد الفاضية وليه 3 قدرات قتال جديدة بتكبر بنقط القدرة، و«صاحب القبضة» ضربته ممكن تلخبط الوحش فيفوّت دوره.','لقب جديد للتخصص الخفي، وإنجاز «إيد فاضية» لـ10 قتالات من غير سلاح.'],fix:[]},
   {v:'5.59',d:'10 أكتوبر',add:['قدرات التخصص بقت بتكبر بنقط القدرة من البروفايل زي قدرات نوعك: مستوى 2 و4 أقوى، و3 بيزوّد حاجة، و5 هي الكبيرة.','{دوس|دوسي} على أي تخصص في «التخصصات» وهتشوف كل اللي بيديهولك: مميزاته، وقدراته التلاتة في القتال وطاقتها، وبييجي إزاي.','17 لقب جديد: لقب لكل تخصص خفي وأسطوري وسري {بتاخده|بتاخديه}، وكل واحد ليه ميزة دايمة بتفضل {معاك|معاكي} حتى لو {سبت|سبتي} التخصص. وألقاب للشغل الكتير: 300 صخرة، 150 سمكة، 50 أكلة، 30 حاجة بإيدك، 200 حصاد، وغيرهم.','ألقاب التخصصات المستخبية مش بتبان في البروفايل غير لما {تاخدها|تاخديها}.','17 إنجاز جديد للتخصصات والألقاب والمنجم والصيد والطبخ والورشة.'],fix:['قدرة «جيش الضل» كان مستواها بيقول علاج وهي مش بتعالج. دلوقتي مستوى 3 بيخلي أول ضربة {عليك|عليكي} مش هتيجي.']},
   {v:'5.58',d:'10 أكتوبر',add:['«اختبار التحول»: التخصص الخفي والأسطوري والسري مبقاش بيتاخد بزرار. لما الفرصة تيجي {بتبدأ|بتبدأي} اختبار من 3 خطوات ليه مهلة بالأيام. لو {نجحت|نجحتي} التخصص ليك، ولو الوقت خلص الفرصة تروح للأبد ومش {بتخسر|بتخسري} حاجة تانية.','الاختبار الشغال بيظهر في «التخصصات» بخطواته والوقت الفاضل، وفي البلد على خانة «التخصصات».','«آثار القدامى»: 4 حاجات نادرة جدًا بتقع من الزعماء: «دفتر الحداد الأول» و«فانوس من غير نار» و«قبضة نحاس مكسورة» و«بذرة سودا». كل أثر بيفتح اختبار تخصص معين حتى لو شروطه ما كملتش.'],fix:['{وانت|وانتي} في اختبار، مفيش فرصة لتخصص تاني لحد ما الاختبار يخلص.']},
@@ -23524,12 +23525,14 @@ function spFor(h){return SP_ORDER.map(id=>SP[id]).filter(o=>!o.cls||o.cls===h.cl
 function spEvent(h,ev,mul){const s=spFix(h);if(!s)return '';
   /* no chance at all while you hold a specialisation: leave it first (Twister 5.55) */
   /* …except the ones above it in the same line of work: الحداد can still become الأسطى (Twister 5.57) */
-  const cur=s.on&&SP[s.on];if(s.on&&(!cur||![].concat(cur.ev).includes(ev))){s.offer='';return ''}
+  /* ابن البلد (5.61, Twister): no line rule, any other one can still come while you hold one, so changing is easy */
+  const cur=s.on&&SP[s.on],free=spFree(h);if(s.on&&!free&&(!cur||![].concat(cur.ev).includes(ev))){s.offer='';return ''}
   if(s.offer&&SP[s.offer]){spShowSoon();return s.offer}s.offer='';let got='';
-  spFor(h).filter(o=>[].concat(o.ev).includes(ev)).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(s.wait[o.id]>0){s.wait[o.id]--;if(!s.wait[o.id])delete s.wait[o.id];return}if(cur&&(SP_R[o.r].i<=SP_R[cur.r].i||o.id===cur.id))return;if(got||s.no[o.id]||!spOk(h,o))return;
+  spFor(h).filter(o=>[].concat(o.ev).includes(ev)).sort((a,b)=>SP_R[b.r].i-SP_R[a.r].i).forEach(o=>{if(s.wait[o.id]>0){s.wait[o.id]--;if(!s.wait[o.id])delete s.wait[o.id];return}if(cur&&(o.id===cur.id||(SP_R[o.r].i<=SP_R[cur.r].i&&(!free||spUp(o,cur)||[].concat(o.ev).some(e=>[].concat(cur.ev).includes(e))))))return;if(got||s.no[o.id]||!spOk(h,o))return;
     if(Math.random()<SP_P[o.r]*(mul||1))got=o.id});
   if(got){s.offer=got;saveHero();spShowSoon()}return got}
-function spDrop(h,id){const s=h.sp,o=SP[id];if(!o)return;if(SP_KEEP(o))s.wait[id]=SP_WAIT[o.r]||25;else s.no[id]=1}
+function spDrop(h,id){const s=h.sp,o=SP[id];if(!o)return;if(SP_KEEP(o))s.wait[id]=Math.ceil((SP_WAIT[o.r]||25)/(spFree(h)?2:1));else s.no[id]=1}
+function spFree(h){return !!h&&h.cls==='ابن البلد'}
 /* o is a step up from c: rarer, in the same line of work (taking it is growing, not leaving) */
 const spUp=(c,o)=>!!(c&&o&&SP_R[o.r].i>SP_R[c.r].i&&[].concat(c.ev).some(e=>[].concat(o.ev).includes(e)));
 function spTake(h,id){const s=spFix(h),o=SP[id];if(!o)return;if(s.on&&s.on!==id&&!spUp(SP[s.on],o))spDrop(h,s.on);s.on=id;s.had[id]=1;delete s.wait[id];if(s.offer===id)s.offer='';saveHero()}
@@ -24305,6 +24308,88 @@ function twQAdd(k){const st=$('#view .tw-stk');if(!st||$('#twQ'))return;
 .twq input::-webkit-search-cancel-button{display:none}.twq small{font-size:12px;white-space:nowrap}
 .twq-x{background:none;border:0;color:var(--mute);font-size:16px;min-width:36px;min-height:36px;cursor:pointer}
 .twq-off{display:none!important}`;document.head.appendChild(st)})();
+/* ==========================================================================
+   سرداب: two more classes to start with (5.61, Twister)
+   «مصارع»: fights with bare hands. With no weapon his hits get +2 (and more from «إيد حديد»); the «فنون الإيد» line
+   (p56/60_fist.js) comes to him twice as easily.
+   «ابن البلد»: a plain person, a little of everything. Each level grows a different stat in turn; any specialisation is
+   twice as likely, and while holding one, others from other lines can still come, so changing is easy (spFree in p56/00_core).
+   Their moves are data run by spAct (p56/40_kits.js), so they level up with skill points the same way (spkUp/spLvX).
+   ========================================================================== */
+const MU='مصارع',BL='ابن البلد';
+CLASSES[MU]={desc:'بيحارب بإيده الفاضية: بيمسك ويرمي ويكسر. من غير سلاح بيبقى أخطر.',good:'القوة والخفة',hp:13,
+  st:{'قوة':2,'خفة':1,'تحمّل':1,'ذكاء':-1,'حكمة':-1,'حضور':1},armor:0,color:'#b8642e',
+  atk:{name:'بوكس',stat:'قوة',info:'لكمة على عدو واحد',dmg:()=>rnd(6)+1},
+  sp:{name:'مسكة وطرحة',info:'{بتمسك|بتمسكي} الوحش و{ترميه|ترميه} في الأرض: ضرر، وبيفوّت دوره',stat:'قوة'}};
+CLASSES[BL]={desc:'مش متخصص في حاجة، بيعرف من كل حاجة شوية. أي تخصص بييجيله أسهل، وبيقدر يغيّره بسهولة.',good:'شوية من كل حاجة',hp:11,
+  st:{'قوة':1,'خفة':1,'تحمّل':0,'ذكاء':0,'حكمة':0,'حضور':1},armor:0,color:'#8a7a5a',
+  atk:{name:'ضربة عصاية',stat:'قوة',info:'ضربة على عدو واحد',dmg:()=>rnd(6)+1},
+  sp:{name:'حيلة',info:'{بترمي|بترمي} تراب في عين الوحش: ضرر، وضربته الجاية نص',stat:'حضور'}};
+CLS_F[MU]='مصارعة';CLS_F[BL]='بنت البلد';
+DESC_F[MU]='بتحارب بإيدها الفاضية: بتمسك وترمي وتكسر. من غير سلاح بتبقى أخطر.';
+DESC_F[BL]='مش متخصصة في حاجة، بتعرف من كل حاجة شوية. أي تخصص بييجيلها أسهل، وبتقدر تغيّره بسهولة.';
+GROW[MU]={hp:3,st:['قوة','خفة']};GROW[BL]={hp:2,st:['قوة','حضور']};
+SP_ICO[MU]='bash';SP_ICO[BL]='smoke';
+const muIron=h=>hasSkill(h,'mu_iron')?1+skL(h,'mu_iron'):0;
+const muBare=h=>!!h&&h.cls===MU&&!(h.eq&&h.eq.weapon)?2+muIron(h):0;
+const C58=(id,lv,cost,n,d,x)=>Object.assign({id,lv,cost,n,d},x?{roll:x.roll||null,tgt:x.tgt?1:0,spx:x}:{pass:1});
+CSK[MU]=[
+  Object.assign(C58('sp',1,1,'','',{roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+2+WDMG(h),skip:1})),
+  C58('mu_back',3,1,'اسند ضهرك','الوحوش كلها {عليك|عليكي} الدور ده، وأول ضربة بتتمص',{ico:'shield',taunt:1,shield:1}),
+  C58('mu_elbow',5,1,'كوع','ضربة سريعة بالكوع، والوحش ضربته الجاية نص',{roll:'خفة',tgt:1,ico:'rage',dmg:h=>rnd(4)+2+WDMG(h),weak:1}),
+  C58('mu_iron',7,0,'إيد حديد','من غير سلاح ضربك +2 كمان (فوق الـ+2 بتوع المصارع)'),
+  C58('mu_throw',9,2,'رمية على الكل','{بترمي|بترمي} وحش على التانيين: بتضرب كل الوحوش',{roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(4)+3+Math.ceil(WDMG(h)/2)})];
+CSK[BL]=[
+  Object.assign(C58('sp',1,1,'','',{roll:'حضور',tgt:1,ico:'smoke',dmg:h=>rnd(4)+1+WDMG(h),weak:1})),
+  C58('bl_food',3,1,'لقمة من الشنطة','{انت|انتي} ورفيقك بترجعوا صحة',{ico:'regen',heal:h=>3+Math.floor(h.lvl/2)}),
+  C58('bl_call',5,1,'فزعة','{بتنادي|بتنادي} على رفيقك: ضربته الجاية أكيد، وضرباتك الـ2 الجاية +2',{ico:'cheer',cheer:1,sharp:{a:2,n:2}}),
+  C58('bl_any',7,0,'من كل بيت حتة','خبرة الشغلانات كلها +25%'),
+  C58('bl_crowd',9,2,'لمّة الحارة','الحارة كلها بتيجي {معاك|معاكي}: بتضرب كل الوحوش',{roll:'حضور',all:1,ico:'mass',dmg:h=>rnd(4)+2+Math.ceil(WDMG(h)/2)})];
+[MU,BL].forEach(c=>CSK[c].forEach(s=>{if(!s.spx)return;if(s.id==='sp')SKD.sp[c]=spkUp(s.spx);else SKD[s.id]=spkUp(s.spx);
+  if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[s.spx.ico]||SKI.bash}));
+SKD.mu_iron=['+3 بدل +2','+4','+5','+6'];SKD.bl_any=['+35%','+45%','+55%','+70%'];
+if(typeof SKI!=='undefined'){SKI.mu_iron=SKI.mu_iron||SKI.rage||SKI.bash;SKI.bl_any=SKI.bl_any||SKI.cheer||SKI.bash}
+const blAny=h=>hasSkill(h,'bl_any')?[0,.25,.35,.45,.55,.7][skL(h,'bl_any')]:0;
+
+/* bare hands hit harder */
+{const q0=qFoeDmg;qFoeDmg=function(h){return q0.apply(this,arguments)+muBare(h)}}
+/* ابن البلد grows a different stat each level, in turn */
+{const g0=growStat;growStat=function(h,L){if(!h||h.cls!==BL)return g0.apply(this,arguments);
+  for(let i=0;i<6;i++){const k=STATS[(L+i)%6];if((h.st[k]||0)<4){h.st[k]=(h.st[k]||0)+1;h.grown=h.grown||{};h.grown[k]=(h.grown[k]||0)+1;return k}}return null}}
+/* the trade skills learn faster */
+{const l0=lifeXP;lifeXP=function(h,k,n){const m=blAny(h);if(m&&h===S.hero){const v=(n||1)*(1+m);n=Math.floor(v)+(Math.random()<v%1?1:0);return l0.call(this,h,k,n)}return l0.apply(this,arguments)}}
+/* the chances: ابن البلد twice for everything, the مصارع twice for the bare-hand line */
+{const e0=spEvent;spEvent=function(h,ev,mul){if(h&&(h.cls===BL||(h.cls===MU&&ev==='fist')))mul=(mul||1)*2;return e0.call(this,h,ev,mul)}}
+/* the note under a held specialisation */
+{const s0=SCREENS.spec;SCREENS.spec=function(){const r=s0.apply(this,arguments);try{const h=S.hero,n=view.querySelector('.sp-lvn');
+  if(h&&n&&h.cls===BL)n.textContent=`${G('انت','انتي')} ${G('ابن','بنت')} البلد: ${G('وانت معاك','وانتي معاكي')} تخصص، الفرصة لتخصص تاني من أي شغلانة لسه بتيجي، ولو ${G('خدته','خدتيه')} بيبقى مكانه.`}catch(e){}return r}}
+
+/* the look: the wrestler wears the warrior's tunic open at the neck with a red sash and holds nothing,
+   ابن البلد a plain galabeya and a stick */
+(function(){const P=PD,cl=o=>JSON.parse(JSON.stringify(o));
+  const map=(def,f)=>{Object.keys(def).forEach(v=>{const x=def[v];(Array.isArray(x)?x:[x]).forEach(pc=>{if(pc&&Array.isArray(pc.rows))pc.rows=pc.rows.map(f)})})};
+  ['m','f'].forEach(g=>{
+    const w=P.getPart('outfit','محارب',g);if(w){const d=cl(w.def);d.g=g;delete d.weapon;
+      map(d,r=>r.includes('B')?r.replace(/[Bby]/g,'r').replace(/[Yo]/g,'R').replace(/v/g,'m'):r.replace(/W/g,'F').replace(/C/g,'f').replace(/c/g,'x'));P.addPart('outfit',MU,d)}
+    const k=P.getPart('outfit','معالج',g);if(k){const d=cl(k.def);d.g=g;d.weapon='shuma';
+      map(d,r=>r.replace(/W/g,'U').replace(/C/g,'u').replace(/c/g,'n'));P.addPart('outfit',BL,d)}})})();
+
+/* a friend of these classes in a live night: a short runner for their moves */
+{const a0=coAlDo;coAlDo=async function(a,o,auto,h,C){
+  if(!a||![MU,BL].includes(a.cls)||!o||o.k!=='sk')return a0.apply(this,arguments);
+  const s=coSkOf(a).find(x=>x.id===o.id);if(!s||!s.spx)return a0.apply(this,arguments);
+  if((a.en|0)<(s.cost||1))return;a.en-=s.cost||1;const x=s.spx,g=coGx(a),lv=coLvOf(a),b=Math.floor(lv/3),me={lvl:lv,eq:{},st:{},cls:a.cls};
+  const f=o.i!=null?C.foes[o.i]:null;if(o.i!=null&&(!f||f.hp<=0))return;
+  const r=o._t?(o._t==='full'?11:o._t==='part'?8:5):rnd(6)+rnd(6)+(lv>=3?1:0)+(lv>=6?1:0);
+  if(x.roll&&r<7){SFX.miss&&SFX.miss();return say(`${s.n} من ${a.name} ما جتش.`)}
+  const out=[];
+  if(x.dmg){const L=x.all?C.foes.filter(e=>e.hp>0&&!e.fled):f?[f]:[];for(const e of L){let d=1;try{d=Math.max(1,Math.round(x.dmg(me,e)))+b}catch(er){d=2+b}
+    hurtFoe(e,d);if(e.hp>0&&x.skip)fxOn(e.fx,'skip',{n:x.skip});if(e.hp>0&&x.weak)fxOn(e.fx,'weak');out.push(`${e.name} -${d}${e.hp<=0?` · ${FF(e,'وقع','وقعت')}`:''}`)}
+    SFX.bash&&SFX.bash();await sleep(460)}
+  if(x.heal){const v=typeof x.heal==='function'?x.heal(me):x.heal;const hm=Math.min(v,MXH(h)-h.hp);h.hp+=hm;const ha=Math.min(v,a.max-a.hp);a.hp+=ha;combat();if(hm)healFx($('#meCard'),hm);out.push(`الصحة رجعت ⁦+${v}⁩`)}
+  if(x.taunt||x.shield){a.hide=1;if(x.taunt)a.taunt=1;combat();out.push(g('هيصد الضربة الجاية','هتصد الضربة الجاية'))}
+  if(x.cheer&&S.comp&&S.comp.hp>0&&C.cp){fxOn(C.cp,'cheer');out.push(`${S.comp.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
+  return say(`${a.name}: ${s.n}! ${out.join(' · ')}`,'good')}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
