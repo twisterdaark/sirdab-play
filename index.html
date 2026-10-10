@@ -792,8 +792,8 @@ const CSK={
     {id:'mass',lv:5,cost:2,n:'علاج للكل',d:'{انت|انتي} ورفيقك بترجعوا 3 صحة كل دور لمدة 3 أدوار',roll:null}]
 };
 const skillsOf=h=>{const base=CSK[h.cls].map(s=>s.id==='sp'?Object.assign({},s,{n:CLASSES[h.cls].sp.name,d:CLASSES[h.cls].sp.info,roll:CLASSES[h.cls].sp.stat}):s);
-  /* 5.56: a specialisation swaps most of the kit: the class's own move stays, the rest becomes the specialisation's three (p56/40_kits.js) */
-  const k=typeof spKit==='function'?spKit(h):null;return k&&k.length?base.filter(s=>s.id==='sp').concat(k):base};
+  /* 5.56: a specialisation swaps the kit for its own moves (p56/40_kits.js); since 5.69 the class's own first move goes too (p63.js) */
+  const k=typeof spKit==='function'?spKit(h):null;return k&&k.length?k:base};
 const hasSkill=(h,id)=>skillsOf(h).some(s=>s.id===id&&h.lvl>=s.lv);
 
 /* hidden stats: never shown until unlocked; hints come from people in town */
@@ -4412,6 +4412,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.69',d:'10 أكتوبر',add:['كل تخصص بقى ليه أول قدرة بتاعته مكان أول قدرة في نوعك القديم (يعني الحداد بقى أول ضربة عنده «خبطة شاكوش» مش «ضربة من الضلمة»). التخصصات اللي من نفس السكة بتشترك في نفس القدرة الأولى.'],fix:['نقط القدرة اللي {كنت صرفتها|كنتي صرفتيها} على أول قدرة في نوعك القديم بترجعلك كلها لوحدها أول ما {تفتح|تفتحي} اللعبة {وانت ماسك|وانتي ماسكة} تخصص.','الرفيق ما بقاش بيعلق على «بيلعب معاك لايف من موبايله» لو الليلة مع صاحبك اتقفلت من غير ما تبدأ. ولو الليلة لسه مفتوحة، {تقدر|تقدري} {تدوس|تدوسي} على الرفيق مرتين {وتلغيها|وتلغيها}.']},
   {v:'5.68',d:'10 أكتوبر',add:['«شجرة عطارة» عند عم رجب: «دقة موزونة» (الدايرة الخضرا أوسع)، و«جرعة تقيلة» (كل الجرع أقوى)، و«بركة» (حظ أحسن، وممكن عشبة ترجع)، و«عِشرة العطّارين» (خبرة أكتر)، وروابط وتاج «حكيم الكفر» وطريقين {تختار|تختاري} واحد منهم.','لعبة الهون اتعملت من الأول بنفس شكل الحداد والطبخ: الأول {بتدق|بتدقي} لما الدايرة تقفل على النقطة الخضرا (5 دقات)، وبعدين {بتصب|بتصبي} الجرعة في القزازة {وتسيب|وتسيبي} لما توصل الخط الدهبي قبل ما تفيض.','الجرع بقى ليها جودة زي السلاح والأكل: بايظة، عادية، كويسة، ممتازة، تحفة. التحفة أقوى 70% والبايظة أضعف. وممكن {تطلعلك|تطلعلك} «محظوظ!» أو «منحوس..».','الجرع الممتازة والتحفة بتطلع بصفة: «مركّزة» (مفعولها أقوى 25%) أو «منعشة» (بترجّع طاقة في القتال).','كل جودة ليها مكانها في الشنطة جنب الجرعة العادية، وبتتباع في السوق بسعر على قد جودتها.'],fix:['زرار واحد «{اعمل|اعملي}» لكل جرعة، و«{اعمل|اعملي} بسرعة» بيطلّع جرعة واحدة «عادية» من غير لعب.','قزازة الصحيان لسه من غير جودة: الدق المظبوط بيطلّع منها أكتر.']},
   {v:'5.67',d:'10 أكتوبر',add:['الشنطة بقت متقسمة أقسام: جرع الشفا، وقزايز الصحيان، والمشاريب، وجرع العطّار، والأكل، والملح. كل قسم مكتوب جنبه فيه كام ومساحته كام وفاضل كام.','لما قسم يتملا، الكلام بيقول أنهي قسم بالظبط اللي مليان (زي «قسم جرع الشفا في الشنطة مليان (5 من 5)»).','شنطتين أكبر عند عم فتحي الخياط: «خُرج بجيوب» و«خُرج العمدة». والشنط القديمة بقت بتكبّر المشاريب وجرع العطّار كمان.','السوق بقى بيشتري جرع الشفا وقزايز الصحيان وجرع العطّار والمشاريب من شنطتك (من «بيع»).'],fix:['«الورشة» عند الحداد ما بقتش لازقة فوق {وانت بتنزل|وانتي بتنزلي}: بتتحرك مع الصفحة، والشاشة بقت مكشوفة أكتر.']},
   {v:'5.66',d:'10 أكتوبر',add:[],fix:['أزرار الشرا في العطارة والحداد والأسواق ما بقتش بتطلع برا الكارت لو الشاشة ضيقة أو الخط كبير: الزرار بينزل سطر لوحده.']},
@@ -20267,7 +20268,11 @@ SCREENS.coop=function(){const h=S.hero,R=CO.room,gp=coGuestSnap();
   view.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const u=b.dataset.kick;if(CO.conf!=='k'+u){CO.conf='k'+u;return render()}CO.conf=null;coKick(u)});
   view.querySelectorAll('[data-own]').forEach(b=>b.onclick=()=>{const u=b.dataset.own;if(CO.conf!=='o'+u){CO.conf='o'+u;return render()}CO.conf=null;coGive(u)})};
 {const s0=SCREENS.setup;SCREENS.setup=function(){s0.apply(this,arguments);const h=S.hero,pc=$('#palCard');if(!h||S.screen!=='setup'||!pc||$('#coCard'))return;
-  if(h.pal&&h.pal.live){const s=pc.querySelector('.tx small:last-child');if(s)s.textContent='بيلعب معاك لايف من موبايله';pc.onclick=null;return}
+  /* 5.69: a live friend left over from a room that is gone (the page was closed, the night never started) blocked the companion: drop it */
+  if(h.pal&&h.pal.live&&!(CO.role==='host'&&CO.code===h.pal.live)){h.pal=h.palPrev||null;delete h.palPrev;saveHero();return render()}
+  if(h.pal&&h.pal.live){const s=pc.querySelector('.tx small:last-child');if(s)s.textContent=`بيلعب ${G('معاك','معاكي')} لايف من موبايله · ${G('دوس','دوسي')} لو ${G('عايز','عايزة')} تلغي`;
+    pc.onclick=()=>{if(CO.conf!=='palx'){CO.conf='palx';if(s)s.textContent=G('دوس تاني عشان تلغي الليلة مع صاحبك','دوسي تاني عشان تلغي الليلة مع صاحبك');return}CO.conf=null;
+      const c=CO.code;h.pal=h.palPrev||null;delete h.palPrev;saveHero();clearInterval(CO.pub);CO.pub=0;coStop();if(c)coRef(c).delete().catch(()=>{});render()};return}
   const el=document.createElement('button');el.id='coCard';el.className='card pal-card';el.innerHTML=`<div class="tx"><b>ليلة مع صاحب</b><small>صاحبك يلعب الرفيق لايف من موبايله</small></div><span class="pal-ch">›</span>`;
   pc.insertAdjacentElement('afterend',el);el.onclick=()=>{CO.err='';CO.from='setup';S.screen='coop';render()}}}
 TW_EXTRA.push(h=>({id:'adv',go:'coop',n:'ليلة مع صاحب',w:'العبوا سوا لايف',s:FB.user?`${G('افتح','افتحي')} ليلة أو ${G('ادخل','ادخلي')} بكود`:'محتاج حساب جوجل'}));
@@ -23968,7 +23973,7 @@ async function spShades(h,C,out){if(!SPS.list.length){SPS.list.push({n:h.name,d:
 {const hf=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;const r=hf.apply(this,arguments);try{if(C&&C.hh&&C.me&&C.me.sharp&&!(o&&o.fx==='poison')){if(--C.me.sharp.n<=0)delete C.me.sharp}}catch(e){}return r}}
 SP_CH.push((h,C)=>C&&C.me&&C.me.sharp?['cheer','سلاح متسقي +'+C.me.sharp.a,C.me.sharp.n,C.me.sharp.t]:null);
 /* the specialisation's description lines plus its fight moves, for the offer, the celebration and the list */
-function spDL(o){const k=SPK[o.id];return k?o.d.concat(['قدراتك في القتال بتتغير: '+k.map(s=>s.n).join('، ')+'، والقدرة الأساسية بتاعة تخصصك الأساسي بتفضل']):o.d}
+function spDL(o){const k=SPK[o.id];return k?o.d.concat(['قدراتك في القتال بتتغير: '+k.map(s=>s.n).join('، ')+' مكان كل قدرات تخصصك الأساسي']):o.d}
 /* ----- the trades (5.57): المنجم، الترعة، and one more step for الخياط، الطباخ and الفلاح -----
    Each comes only while you do that work by hand (a rock you break, a fish you pull, a dish you play). Their work effects are
    tree-style numbers (tf: the same keys the craft trees use, added on top), and each has its own three fight moves (SPK_ADD). */
@@ -24351,7 +24356,7 @@ function spInfo(h,id){const o=SP[id];if(!o)return;twSheetX();const R=SP_R[o.r],K
   d.innerHTML=`<div class="bk"></div><div class="pn spi">
     <div class="spi-hd">${spIco(o,64)}<div><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
     <div class="tw-lbl">${G('بيديك','بيديكي')} إيه</div><ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul>
-    ${mv?`<div class="tw-lbl">قدراتك في القتال</div><div class="tw-sm">بيبقوا مكان قدرات تخصصك الأساسي، ما عدا القدرة الأساسية. ${G('بتكبّرهم','بتكبّريهم')} بنقط القدرة من البروفايل.</div>${mv}`:''}
+    ${mv?`<div class="tw-lbl">قدراتك في القتال</div><div class="tw-sm">بيبقوا مكان كل قدرات تخصصك الأساسي، حتى الأولى. ${G('بتكبّرهم','بتكبّريهم')} بنقط القدرة من البروفايل.</div>${mv}`:''}
     ${on?`<div class="tw-sm spi-on">ده ${G('تخصصك','تخصصك')} دلوقتي.</div>`:`<div class="tw-lbl">بييجي إزاي</div>
       ${o.prog?`<div class="tw-sm">${o.prog(h)}</div>`:''}
       ${ev.length?`<div class="tw-sm">لما الشروط تكمل، الفرصة بتيجي ${T(ev.join(' أو '))}، ومش كل مرة.</div>`:''}
@@ -24892,6 +24897,35 @@ TW_HITW.attar=['دُق!','دُق دُق!','ريحتها حلوة!'];
 .tw-ov.k-attar .tool{transform:rotate(-20deg);right:18px;top:20px;width:90px;height:90px;transform-origin:30% 90%}
 .tw-ov.k-attar .tool.go{animation:atPound .45s}
 @keyframes atPound{0%{transform:rotate(-20deg) translate(0,0)}40%{transform:rotate(-12deg) translate(-8px,30px)}100%{transform:rotate(-20deg) translate(0,0)}}`;document.head.appendChild(st)})();
+/* ==========================================================================
+   سرداب 5.69 (Twister): a specialisation now swaps the class's own first move too («ازاي ابقى حداد وأول ضربة عندي ضربة
+   من الضلمة»). Every specialisation gets a first move of its own (lines share one), added at the front of its kit, and the
+   skill points spent on the old first move (h.skL.sp) come back once while a specialisation is held (spFirstBack).
+   skillsOf in p3b.js no longer keeps the 'sp' move when a kit is on.
+   ========================================================================== */
+const SPF={
+  smith:{n:'خبطة شاكوش',c:1,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+WD(h)+1,d:'خبطة تقيلة بالسلاح على وحش واحد'},
+  tailor:{n:'شكة دبوس',c:1,roll:'خفة',tgt:1,ico:'venom',dmg:h=>rnd(3)+WD(h),poison:h=>[1,2],d:'شكة سريعة، والوحش بينزف 1 كل دور، دورين'},
+  cook:{n:'رشة شطة',c:1,roll:'خفة',tgt:1,ico:'fire',dmg:h=>rnd(3)+Math.ceil(h.lvl/2)+1,burn:h=>1,d:'شطة في عين الوحش: ضرر، وبيولّع دور'},
+  sanaa:{n:'لمسة المعلّم',c:1,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+WD(h)+1,sharp:{a:1,n:2},d:'ضربة مظبوطة، وضربتينك الجايين +1'},
+  farm:{n:'ضربة منجل',c:1,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+WD(h),steal:1,d:'ضربة منجل، وبترجّعلك 1 صحة'},
+  mine:{n:'حتة صخر',c:1,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(4)+WD(h)+1,d:'حتة صخر تقيلة على وحش واحد'},
+  fish:{n:'رمية سنارة',c:1,roll:'خفة',tgt:1,ico:'venom',dmg:h=>rnd(3)+WD(h),weak:1,d:'السنارة بتشبك في الوحش: ضرر، وضربته الجاية نص'},
+  fist:{n:'لكمة سريعة',c:1,roll:'قوة',tgt:1,ico:'rage',dmg:h=>rnd(4)+Math.ceil(h.lvl/2)+2,d:'لكمة بإيدك الفاضية على وحش واحد'},
+  attar:{n:'حفنة عشب',c:1,roll:'حكمة',tgt:1,ico:'smoke',dmg:h=>rnd(3)+Math.ceil(h.lvl/2),weak:1,d:'عشب مطحون في وش الوحش: ضرر، وضربته الجاية نص'},
+  zell:{n:'خنجر في الضلمة',c:1,roll:'خفة',tgt:1,ico:'shadow',dmg:h=>rnd(4)+WD(h)+1,d:'طعنة من حيث ما يشوفش'},
+  dam:{n:'ضربة مجنونة',c:1,roll:'قوة',tgt:1,ico:'rage',dmg:h=>rnd(5)+WD(h)+(h.hp<MXH(h)/2?2:0),d:'ضربة تقيلة، وأقوى بـ2 لو صحتك تحت النص'},
+  ramad:{n:'شرارة',c:1,roll:'ذكاء',tgt:1,ico:'fire',dmg:h=>rnd(4)+Math.ceil(h.lvl/2),burn:h=>1,d:'شرارة على وحش: ضرر، وبيولّع دور'},
+  tariqa:{n:'لمسة نور',c:1,ico:'regen',heal:h=>3+Math.floor(h.lvl/3),d:'{انت|انتي} ورفيقك بترجعوا صحة'}};
+const spfOf=o=>SPF[o.id]||SPF[String(o.ev||'').split(',')[0]]||SPF.smith;
+Object.keys(SPK).forEach(id=>{const o=SP[id];if(!o||SPK[id].some(s=>s.first))return;const x=Object.assign({},spfOf(o)),s={id:'sp_'+id+'_f',lv:1,cost:x.c,n:x.n,d:x.d,roll:x.roll,tgt:x.tgt?1:0,spx:x,first:1};
+  SKD[s.id]=spkUp(x);if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[x.ico]||SKI.bash;SPK[id].unshift(s)});
+
+/* the points spent on the old first move come back, once, while a specialisation is held */
+function spFirstBack(h){if(!h||!h.sp||!h.sp.on||!SPK[h.sp.on]||!h.skL)return 0;const L=h.skL.sp||1;if(L<2)return 0;let n=0;for(let i=2;i<=L;i++)n+=SK_COST[i]||0;
+  h.skL.sp=1;h.skP=(h.skP||0)+n;saveHero();return n}
+{const r0=render;render=function(){let n=0;try{n=spFirstBack(S.hero)}catch(e){}const r=r0.apply(this,arguments);
+  if(n)setTimeout(()=>toast(`<b style="color:#a6e3a0">رجعتلك ${n===1?'نقطة قدرة':n===2?'نقطتين قدرة':n+' نقط قدرة'}</b><br><small>اللي ${G('صرفتها','صرفتيها')} على أول قدرة في تخصصك القديم. تخصصك دلوقتي ليه أول قدرة بتاعته.</small>`),600);return r}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
