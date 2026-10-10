@@ -2928,7 +2928,7 @@ async function twCraft(id,btn){const h=S.hero,g=GEAR[id];if(TWN.busy||!g||!g.cra
   giAdd(h,id,I);qMark(h,id);const ref=qRefund(h,at,g.craft);saveHero();const v=qView(id,I),fem=qFem(id);
   const r=await twCeremony({kind:at,hits:played?0:pr.go==='quick'?2:4,q:I.q,luck:Q.lucky?'up':Q.unlucky?'down':'',icon:twGear(id,124),title:v.n,
     sub:`${twDid('عملت',id)} بإيدك${I.q>=4?` ${G('وحفرت','وحفرتي')} اسمك ${fem?'عليها':'عليه'}`:''}!${I.s2?` ${fem?'هتستحمل':'هيستحمل'} الضعف.`:''}`,
-    chips:twChips(twGStats(v))+qTrChips(I.t),sub2:I.t.length?qTrLines(I.t):I.q===0?`الشغل باظ: ${fem?'هتستحمل':'هيستحمل'} أقل وتمن${fem?'ها':'ه'} أقل. ${G('تقدر','تقدري')} ${G('تفك','تفكي')}${fem?'ها':'ه'} من «حاجتك».`:'',acts:twEqActs(h,id,I.u),
+    chips:twChips(twGStats(v))+qTrChips(I.t)+(typeof spOwnChip==='function'?spOwnChip(h,id,I):''),sub2:I.t.length?qTrLines(I.t):I.q===0?`الشغل باظ: ${fem?'هتستحمل':'هيستحمل'} أقل وتمن${fem?'ها':'ه'} أقل. ${G('تقدر','تقدري')} ${G('تفك','تفكي')}${fem?'ها':'ه'} من «حاجتك».`:'',acts:twEqActs(h,id,I.u),
     msg:`${G('دوس','دوسي')} ${at==='smith'?G('واطرق','واطرقي'):G('وخيّط','وخيّطي')}!`});
   TWN.busy=0;S.spQuick=played?0:Date.now();lifeXP(h,at,1+g.tier+(I.q>=3?1:0));S.spQuick=0;bump('crafted');if(r==='eq')twEquip(id,true,I.u);saveHero();twRender();
   if(ref)setTimeout(()=>toast(`<span style="color:#a6e3a0">بركة!</span> ${resN(ref)} واحد${TW_FEM[ref]?'ة':''} ${TW_FEM[ref]?'رجعت':'رجع'} ${G('ليك','ليكي')}`),500)}
@@ -4419,6 +4419,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.72',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع حاجات {تحطها|تحطيها} مع حجر التعزيز: «برادة فضة» بتزوّد النسبة 10%، و«برادة دهب» بتزوّدها 20%','و«زيت التسقية»: من +8، لو التعزيز فشل الحتة ما تنزلش درجة','{اختار|اختاري} اللي {عايزه|عايزاه} من على الحتة نفسها قبل ما {تدوس|تدوسي} «عزّز»، والنسبة الجديدة بتبان على الزرار'],fix:['الزيادة اللي تخصصك (الحداد، الأسطى وغيرهم) بيحطها على الحاجة اللي {عملتها|عملتيها} بإيدك بقت مكتوبة على الحتة نفسها وفي لحظة الصنع','والخواتم والقلايد والتمايم اللي {بتعملها|بتعمليها} بإيدك بقت بتاخد زيادة صحة من تخصصك كمان']},
   {v:'5.71',d:'10 أكتوبر',add:['في «{اختار|اختاري} الدور» في المنجم كل دور بقى مكتوب جنبه الأحجار اللي بتطلع فيه بصورها، واللي بيبدأ يطلع من الدور ده مكتوب بالدهبي.'],fix:['اتأكدنا إن نقلك لدور تاني من القايمة ما بيرجّعش مجهود، حتى لو {معاك|معاكي} «رئة المغارة». المجهود بيرجع بس لما {تنزل|تنزلي} من الحفرة.']},
   {v:'5.70',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع فحم مع النحاس والحديد والفضة، عشان السبك والورشة من غير ما {تنزل|تنزلي} المنجم للدور 3.'],fix:[]},
   {v:'5.69',d:'10 أكتوبر',add:['كل تخصص بقى ليه أول قدرة بتاعته مكان أول قدرة في نوعك القديم (يعني الحداد بقى أول ضربة عنده «خبطة شاكوش» مش «ضربة من الضلمة»). التخصصات اللي من نفس السكة بتشترك في نفس القدرة الأولى.'],fix:['نقط القدرة اللي {كنت صرفتها|كنتي صرفتيها} على أول قدرة في نوعك القديم بترجعلك كلها لوحدها أول ما {تفتح|تفتحي} اللعبة {وانت ماسك|وانتي ماسكة} تخصص.','الرفيق ما بقاش بيعلق على «بيلعب معاك لايف من موبايله» لو الليلة مع صاحبك اتقفلت من غير ما تبدأ. ولو الليلة لسه مفتوحة، {تقدر|تقدري} {تدوس|تدوسي} على الرفيق مرتين {وتلغيها|وتلغيها}.']},
@@ -5744,7 +5745,7 @@ function qEnhFx(r,h){return new Promise(res=>{const g=GEAR[r.id],fem=qFem(r.id),
       const ext=r.to===4&&r.I.t.length?`<div class="sb">والصفة بقت أقوى: ${qTrLines(r.I.t.slice(0,1),1)}</div>`:r.note==='t2'?`<div class="sb">وصفة تانية اتفتحت: <b>${QT[r.I.t[r.I.t.length-1]].n}</b></div>`:r.to===10?`<div class="sb">${fem?'بقت':'بقى'} ${fem?'بتنوّر':'بينوّر'}!</div>`:'';
       rs.innerHTML=`<div class="big">${twI('+'+r.to)}</div><div class="nm">نجح! ${v0.n.replace(/ \+\d+$/,'')} ${twI('+'+r.to)}</div><div class="sb">${what}</div>${ext}`}
     else{SFX.enhFail();shake();vib([80,40,80]);
-      rs.innerHTML=`<div class="big bad">✕</div><div class="nm">ما نفعش..</div><div class="sb">${r.drop?`الحجر اتكسر، و${g.n} ${fem?'نزلت':'نزل'} لـ${twI('+'+r.to)}`:`الحجر اتكسر، و${g.n} ${fem?'فضلت':'فضل'} ${twI('+'+r.to)}`}</div>`}
+      rs.innerHTML=`<div class="big bad">✕</div><div class="nm">ما نفعش..</div><div class="sb">${r.drop?`الحجر اتكسر، و${g.n} ${fem?'نزلت':'نزل'} لـ${twI('+'+r.to)}`:`الحجر اتكسر، و${g.n} ${fem?'فضلت':'فضل'} ${twI('+'+r.to)}`}</div>${r.saved?`<div class="sb" style="color:#f3c14d">زيت التسقية ${fem?'حماها':'حماه'}: ما ${fem?'نزلتش':'نزلش'} درجة</div>`:''}`}
     setTimeout(()=>{bt.disabled=false},650)};
   bt.onclick=()=>{if(bt.disabled)return;ov.remove();res()}})}
 
@@ -23701,10 +23702,11 @@ function spCost(h,at){const o=spOn(h);let m=o&&o.cost&&o.cost[at]||1;if(at==='sm
   try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');hard=boss?1.5:(C.foes.length>=3||h.hp<MXH(h)/3)?1:0}}catch(e){}
   const r=e0.apply(this,arguments);try{if(hard)spEvent(h,'fight',hard)}catch(e){console.warn(e)}return r}}
 /* what you made with your own hands (I.by is your name) hits harder or guards better while you hold a craft class */
-{const v0=gView;gView=function(h,id){const v=v0.apply(this,arguments);try{const o=spOn(h),g=GEAR[id],I=giL(h,id)[0];
-  if(!v||!o||!o.own||!g||!I||I.by!==h.name)return v;const b=o.own[g.at]||o.own.all;if(!b)return v;
-  if(g.slot==='weapon'&&b.w)v.dmg=(v.dmg||0)+b.w;else if(g.slot==='armor'&&b.a)v.armor=(v.armor||0)+b.a;else if(g.slot==='head'&&b.a)v.hp=(v.hp||0)+2*b.a;
-  v.spBy=1}catch(e){}return v}}
+/* 5.72 (Twister): the bonus is shown wherever the piece is (spOwnChip), and rings, necklaces and charms get it too (health) */
+function spOwnB(h,id,I){const o=spOn(h),g=GEAR[id];if(!h||!o||!o.own||!g||!I||I.by!==h.name)return null;const b=o.own[g.at]||o.own.all;if(!b)return null;
+  if(g.slot==='weapon')return b.w?{k:'dmg',n:b.w,t:'ضرر'}:null;if(g.slot==='armor')return b.a?{k:'armor',n:b.a,t:'حماية'}:null;return b.a?{k:'hp',n:2*b.a,t:'صحة'}:null}
+const spOwnChip=(h,id,I)=>{const b=spOwnB(h,id,I);return b?`<span class="tw-ch up sp-own">✦ ${spName(spOn(h),h)}: ${b.t} ${twI('+'+b.n)}</span>`:''};
+{const v0=gView;gView=function(h,id){const v=v0.apply(this,arguments);try{const b=v&&spOwnB(h,id,giL(h,id)[0]);if(!b)return v;v[b.k]=(v[b.k]||0)+b.n;v.spBy=1}catch(e){}return v}}
 /* class-only gear: the smith shows and makes it only for the classes it names (GEAR[id].sp) */
 function spGearOk(h,id){const g=GEAR[id];return !g||!g.sp||!!(h&&h.sp&&g.sp.includes(h.sp.on))}
 
@@ -24937,6 +24939,77 @@ function spFirstBack(h){if(!h||!h.sp||!h.sp.on||!SPK[h.sp.on]||!h.skL)return 0;c
   h.skL.sp=1;h.skP=(h.skP||0)+n;saveHero();return n}
 {const r0=render;render=function(){let n=0;try{n=spFirstBack(S.hero)}catch(e){}const r=r0.apply(this,arguments);
   if(n)setTimeout(()=>toast(`<b style="color:#a6e3a0">رجعتلك ${n===1?'نقطة قدرة':n===2?'نقطتين قدرة':n+' نقط قدرة'}</b><br><small>اللي ${G('صرفتها','صرفتيها')} على أول قدرة في تخصصك القديم. تخصصك دلوقتي ليه أول قدرة بتاعته.</small>`),600);return r}}
+/* ==========================================================================
+   سرداب 5.72 (Twister): things عم حسن sells to put in with the stone when you enhance.
+   - «برادة فضة» and «برادة دهب» add to the chance (+10%, +20%) on a step that can fail.
+   - «زيت التسقية» keeps the piece from going down a step when it fails (from +8).
+   You pick them on the piece's card before «عزّز» (TWN.ea, one piece at a time); they are used up with the stone.
+   qEnhTry/qItemCard/qTabHTML/qBindTab are wrapped; the saved-from-dropping line is in qEnhFx (p9q.js).
+   The specialisation's own-made bonus (spOwnChip, p56/00_core.js) is shown on the piece's card here too.
+   ========================================================================== */
+Object.assign(MAT,{
+  brada1:{n:'برادة فضة',c:'#dfe6ec',p:60,tier:2,ea:1},
+  brada2:{n:'برادة دهب',c:'#f3c14d',p:160,tier:3,ea:1},
+  zeit:{n:'زيت التسقية',c:'#c98326',p:140,tier:3,ea:1}});
+Object.assign(STONE_P,{brada1:150,brada2:400,zeit:350});
+Object.assign(TW_SRC,{brada1:'عم حسن',brada2:'عم حسن',zeit:'عم حسن'});
+TW_FEM.brada1=1;TW_FEM.brada2=1;
+const EA_B={brada1:.1,brada2:.2};
+const EA_K=['brada1','brada2','zeit'];
+{const pile=P20_grid(16,['','','.........W','........WWW','.........W','','.......KKK','.....KKWccK','....KWcWcgcK','...KWcccgWcgK','..KWcWcgccgcgK','.KWccgcWcgcggK','.KcWcccgccWgcgK','KWccgWcccgcgcggK','.KKKKKKKKKKKKKK.','']);
+  Object.assign(PXI_D,{brada1:pile,brada2:P20_rc(pile,{c:'Y',g:'o'}),zeit:P20_rc(PXI_D.potion,{R:'y',r:'o',m:'b',u:'y'})})}
+
+/* what is picked for this piece, only what you still have and what this step can use */
+function eaPicked(h,I){const ea=TWN.ea;if(!ea||!I||String(ea.u)!==String(I.u))return {b:'',z:0};const nx=I.e+1,E=ENH[nx];if(!E)return {b:'',z:0};
+  return {b:ea.b&&E[1]<1&&h.res[ea.b]>0?ea.b:'',z:ea.z&&nx>=8&&h.res.zeit>0?1:0}}
+/* runs f with this step's chance raised by the picked filings */
+function eaWith(h,I,f){const nx=I.e+1,E=ENH[nx],p=eaPicked(h,I);if(!E||!p.b)return f(p);ENH[nx]=[E[0],Math.min(1,E[1]+EA_B[p.b])];try{return f(p)}finally{ENH[nx]=E}}
+
+{const t0=qEnhTry;qEnhTry=function(h,u){const f=qFind(h,u);if(!f)return t0.apply(this,arguments);const a=arguments;
+  return eaWith(h,f.I,p=>{const r=t0.apply(this,a);if(!r)return r;
+    if(p.b){h.res[p.b]--;r.ea=p.b}
+    if(p.z){h.res.zeit--;r.zeit=1;if(r.drop){f.I.e=r.from;r.to=r.from;r.drop=false;r.saved=1}}
+    if(p.b||p.z){TWN.ea=null;saveHero()}return r})}}
+
+/* the row of things to put in, on the piece's card */
+function eaRow(h,id,I){if(!qCanEnh(id)||I.e>=10)return '';const nx=I.e+1,[k,p]=ENH[nx];if(!(h.res[k]>0))return '';const pk=eaPicked(h,I),fem=qFem(id);
+  const bs=p<1?['brada1','brada2'].filter(b=>h.res[b]>0):[],z=nx>=8&&h.res.zeit>0;if(!bs.length&&!z)return '';
+  const btn=(on,attr,ic,n,what,have)=>`<button class="q-eab${on?' on':''}" ${attr} data-u="${I.u}">${twMat(ic,24)}<span><b>${n}</b><small>${what}</small></span><i>${have}</i></button>`;
+  return `<div class="q-ea"><span class="lb">${G('حط','حطي')} مع الحجر:</span>
+    ${bs.map(b=>btn(pk.b===b,`data-eab="${b}"`,b,MAT[b].n,`النسبة ${twI('+'+Math.round(EA_B[b]*100)+'%')}`,h.res[b])).join('')}
+    ${z?btn(pk.z,'data-eaz="1"','zeit',MAT.zeit.n,`لو فشل ${fem?'ما تنزلش':'ما ينزلش'}`,h.res.zeit):''}</div>`}
+
+{const c0=qItemCard;qItemCard=function(h,x,seen){const {id,I}=x,a=arguments;
+  let s=qCanEnh(id)&&I.e<10?eaWith(h,I,()=>c0.apply(this,a)):c0.apply(this,a);
+  try{const pk=eaPicked(h,I);
+    if(pk.z)s=s.replace('لو فشل، بينزل درجة',`لو فشل، الزيت ${qFem(id)?'هيحميها':'هيحميه'} من النزول`);
+    if(pk.b)s=s.replace(/(data-enh="[^"]*"[^>]*><b>[^<]*<\/b><small>)/,`$1${twMat(pk.b,14)} `);
+    const own=typeof spOwnChip==='function'?spOwnChip(h,id,I):'';if(own)s=s.replace('<div class="tw-chs">','<div class="tw-chs">'+own);
+    const row=eaRow(h,id,I);if(row){const i=s.indexOf('<div class="q-acts">');if(i>=0)s=s.slice(0,i)+row+s.slice(i)}}catch(e){}
+  return s}}
+
+/* عم حسن sells them under the stones; at عم فتحي just a word where to get them */
+{const q0=qTabHTML;qTabHTML=function(h,at){let s=q0.apply(this,arguments);try{
+  if(at==='smith'){const what={brada1:`بتزوّد النسبة ${twI('+10%')} في أي تعزيز ممكن يفشل`,brada2:`بتزوّد النسبة ${twI('+20%')} في أي تعزيز ممكن يفشل`,zeit:`من ${twI('+8')}: لو التعزيز فشل، الحتة ما تنزلش درجة`};
+    const row=k=>{const p=twGP(h,STONE_P[k]),have=h.res[k]||0,m=MAT[k];
+      return `<div class="tw-row" style="--rc:${RARE[m.tier].c};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${RARE[m.tier].c}">${m.n}</b><small>${what[k]}</small>${have?`<small>${G('معاك','معاكي')} ${have}</small>`:''}</div>
+        ${twQB('st:'+k,qtyMax(99,h.money/p),p,0,`data-stb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`};
+    s+=`<div class="tw-lbl">حاجات تتحط مع الحجر <small>${G('اختار','اختاري')}ها من على الحتة قبل ما ${G('تعزّز','تعزّزي')}، وبتروح مع الحجر</small></div><div class="col">${EA_K.map(row).join('')}</div>`}
+  else if(EA_K.some(k=>h.res[k]>0)||at==='tailor')s+=`<div class="tw-lbl"><small>برادة الفضة والدهب وزيت التسقية بتتباع عند عم حسن الحداد، وبتنفع هنا كمان</small></div>`}catch(e){}return s}}
+
+{const b0=qBindTab;qBindTab=function(at){const r=b0.apply(this,arguments);
+  view.querySelectorAll('[data-eab],[data-eaz]').forEach(b=>b.onclick=()=>{if(TWN.busy)return;const u=b.dataset.u,ea=TWN.ea&&TWN.ea.u===u?TWN.ea:{u,b:'',z:0};
+    if(b.dataset.eab)ea.b=ea.b===b.dataset.eab?'':b.dataset.eab;else ea.z=ea.z?0:1;TWN.ea=ea.b||ea.z?ea:null;SFX.stoneIn&&SFX.stoneIn();vib(12);twRender()});
+  return r}}
+
+(function(){const st=document.createElement('style');st.textContent=`
+.q-ea{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.q-ea .lb{width:100%;font-size:12px;color:#cfe8ff;font-weight:800}
+.q-eab{flex:1 1 140px;min-height:48px;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:12px;background:#ffffff0d;border:1.5px solid #ffffff22;color:inherit;font:inherit;text-align:start;cursor:pointer}
+.q-eab span{display:flex;flex-direction:column;line-height:1.3;flex:1}.q-eab b{font-size:12.5px}.q-eab small{font-size:11px;opacity:.85}
+.q-eab i{font-style:normal;font-size:11px;font-weight:800;background:#0005;border-radius:8px;padding:1px 6px}
+.q-eab.on{border-color:#f3c14d;background:#f3c14d22;box-shadow:0 0 0 2px #f3c14d44}
+.tw-ch.sp-own{background:#f3c14d22;color:#f3d27a}`;document.head.appendChild(st)})();
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
