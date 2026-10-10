@@ -2403,8 +2403,8 @@ function end(){
 .tw-buy.warn{border-color:var(--bad);color:#ffb3a3;background:#3a1c18}
 .tw-buy s{display:block;color:var(--dim);font-size:11px;font-weight:700}
 .tw-buy:active,.tw-act:active{transform:scale(.96)}
-.tw-qb{flex-basis:100%;display:flex;align-items:center;gap:8px;min-width:0}
-.tw-qb .tw-buy{margin-inline-start:auto;min-width:104px}
+.tw-qb{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;max-width:100%}
+.tw-qb .tw-buy{margin-inline-start:auto;min-width:104px;flex:0 0 auto;max-width:100%}.tw-qb .qty{flex-wrap:nowrap;max-width:100%}
 .tw-it{background:var(--card);border:1px solid var(--line);border-inline-start:4px solid var(--rc);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}
 .tw-it.got{background:linear-gradient(90deg,var(--card),#ffffff06)}
 .tw-it .hd{display:flex;gap:10px;align-items:flex-start}
@@ -4400,6 +4400,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.66',d:'10 أكتوبر',add:[],fix:['أزرار الشرا في العطارة والحداد والأسواق ما بقتش بتطلع برا الكارت لو الشاشة ضيقة أو الخط كبير: الزرار بينزل سطر لوحده.']},
   {v:'5.65',d:'10 أكتوبر',add:['«العطارة» في البلد: عم رجب العطّار. {بتدق|بتدقي} الأعشاب في الهون: إبرة بتجري على شريط و{بتدوس|بتدوسي} 3 مرات في الأخضر، وكل ما الدقة تبقى أحسن الجرع بتطلع أكتر (من 1 لـ3). «بسرعة» بتطلّع جرعة واحدة.','شغلانة جديدة: «عطارة». كل مستوى بيخلّي كل الجرع اللي {بتشربها|بتشربيها} {وبترميها|وبترميها} أقوى 5%، وبيفتح جرع جديدة.','6 أعشاب: نعناع وحلبة وحبة البركة من عند عم رجب، و{بتلاقي|بتلاقي} شيح الجبل في المنجم من الدور 5، وعشبة الترعة {وانت بتصطاد|وانتي بتصطادي}، وزهرة الغيطان في الغيط وبعد القتالات الصعبة. النعناع كمان بيطلع مع المحصول.','3 حاجات جديدة للشنطة: «ترياق» بيرجّع صحة كل دور 3 أدوار، و«جرعة نار» {بترميها|بترميها} على وحش فيولّع، و«جرعة ضل» بتخلّي أول ضربتين {عليك|عليكي} ما ييجوش. و{تقدر|تقدري} {تعمل|تعملي} جرعة الشفا والكبيرة وقزازة الصحيان بإيدك.','3 تخصصات جديدة للعطارة: العطّار (نادر)، الحكيم (ملحمي)، وطبيب السراية (خفي، بييجي باختبار)، ولقبين و3 إنجازات.'],fix:['«{غيّر|غيّري} نوعك» بقى اسمه «{غيّر|غيّري} تخصصك»، و«نوعك الأساسي» بقى «تخصصك الأساسي».']},
   {v:'5.64',d:'10 أكتوبر',add:[],fix:['«الورشة» بقت فوق في شاشة الحداد، وكل حاجة {ركّبتها|ركّبتيها} مكتوب جنبها بتديك إيه.','في «{اختار|اختاري} الدور» في المنجم بقى مكتوب إيه اللي بيطلع في كل دور: الفحم من 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.']},
   {v:'5.63',d:'10 أكتوبر',add:['المنجم بقى بيفتكر الدور اللي {كنت|كنتي} فيه: لما {ترجع|ترجعي} {بتكمّل|بتكمّلي} من نفس الدور بدل ما {تبدأ|تبدأي} من الأول.','زرار «{اختار|اختاري} الدور» تحت في المنجم: {تنزل|تنزلي} أو {تطلع|تطلعي} على طول لأي دور {وصلته|وصلتيه} قبل كده.'],fix:[]},
@@ -24479,7 +24480,7 @@ function ccSheet(h){twSheetX();const why=ccWhy(h),opts=Object.keys(CLASSES).filt
 const AT_HERB={mint:{n:'نعناع',c:'#5ad08a',p:6},helba:{n:'حلبة',c:'#e0b84a',p:8},blackseed:{n:'حبة البركة',c:'#3a3040',p:30,tier:1},
   shih:{n:'شيح الجبل',c:'#9aa890',p:35,tier:1},nileh:{n:'عشبة الترعة',c:'#45a8b4',p:30,tier:1},bloom:{n:'زهرة الغيطان',c:'#a578d6',p:90,tier:2}};
 Object.keys(AT_HERB).forEach(k=>MAT[k]=Object.assign({herb:1},AT_HERB[k]));
-Object.assign(TW_SRC,{mint:'عم رجب أو الغيط',helba:'عم رجب',blackseed:'عم رجب',shih:'المنجم من الدور 5 وتحت',nileh:'الترعة وانت بتصطاد',bloom:'الغيط والقتالات الصعبة'});
+Object.assign(TW_SRC,{mint:'عم رجب أو الغيط',helba:'عم رجب',blackseed:'عم رجب',shih:'المنجم من الدور 5 وتحت',nileh:'الترعة مع الصيد',bloom:'الغيط والقتالات الصعبة'});
 Object.assign(TW_FEM,{helba:1,blackseed:1,nileh:1,bloom:1});
 /* what عم رجب sells, and from which trade level */
 const AT_SELL={mint:{p:10,lv:1},helba:{p:12,lv:1},blackseed:{p:40,lv:3}};
@@ -24621,7 +24622,7 @@ SCREENS.attar=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     <div class="col">${Object.keys(AT_REC).map(k=>atRecRow(h,k)).join('')}</div>
     <div class="tw-lbl">أعشاب من عند عم رجب</div>
     <div class="col">${Object.keys(AT_SELL).map(k=>atHerbRow(h,k)).join('')}</div>
-    <div class="tw-lbl">أعشاب ما بتتباعش <small>${G('بتلاقيها','بتلاقيها')} وانت ${G('شغال','شغالة')} في حاجة تانية</small></div>
+    <div class="tw-lbl">أعشاب ما بتتباعش <small>${G('بتلاقيها وانت شغال','بتلاقيها وانتي شغالة')} في حاجة تانية</small></div>
     <div class="card at-wild">${wild.map(k=>`<div class="at-wl">${twMat(k,30)}<div><b>${resN(k)}</b> <span>× ${h.res[k]||0}</span><small>${TW_SRC[k]}</small></div></div>`).join('')}</div></div>`;
   twBack();
   view.querySelectorAll('[data-ath]').forEach(b=>b.onclick=()=>atBrew(b.dataset.ath,0,b));
