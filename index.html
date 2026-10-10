@@ -3222,6 +3222,7 @@ if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:
 .mn-word small{display:block;font-family:var(--body,inherit);font-size:17px;font-weight:800;color:#fff3b0;text-shadow:0 0 3px #000,0 2px 6px #000}
 .mn-word.fl{color:var(--gold2);font-size:44px}
 @keyframes mnWord{0%{transform:scale(2.2);opacity:0}16%{transform:scale(.94);opacity:1}28%{transform:scale(1.04)}75%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
+.mn-flb{min-height:44px}.mn-flb small{opacity:.7;font-weight:600}.mn-fls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.mn-fls .btn{min-height:44px;margin:0;padding:0}.mn-fls .btn.on{border-color:var(--gold);color:var(--gold2)}
 .mn-fl{position:absolute;top:10px;inset-inline-start:12px;z-index:4;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:800;line-height:1.5;color:var(--gold2);padding:3px 10px 3px 9px;border-radius:20px;background:#000b;border:1px solid #5a4630;pointer-events:none}
 .mn-fl svg{width:13px;height:13px;flex:none}
 .mn-fl.pp{animation:mnFlIn .6s both}
@@ -3407,7 +3408,10 @@ function gxSay(k,line,p){if(p!=null&&Math.random()>p)return;const s=$('#gxSay');
 const gxNpcHTML=k=>{const N=NPC[k];return `<div class="gx-npc" id="gxNpc"><div class="who">${(N.art&&AR.npc(N.art,42))||portrait(N.look,'np'+k)}</div><div><b>${N.n}:</b> <span id="gxSay">«${T(gxLine(k))}»</span></div></div>`};
 
 /* shared: visit counters, effort and skill bars, chips, flying resources */
-function gxVisit(k){const h=S.hero;let V=GX.vis[k];if(!V||V.hid!==h.id||GX.left[k]){GX.left[k]=0;V=GX.vis[k]={hid:h.id,n:{},rocks:0,floor:1,hole:0,deep:1}}return V}
+function gxVisit(k){const h=S.hero;let V=GX.vis[k];if(!V||V.hid!==h.id||GX.left[k]){GX.left[k]=0;V=GX.vis[k]={hid:h.id,n:{},rocks:0,floor:1,hole:0,deep:1};
+  /* 5.63 (Twister): the mine keeps the floor you were on, so you don't climb down again every visit */
+  if(k==='mine'&&h.mn&&h.mn.f>1){V.floor=Math.min(FLOOR_MAX,h.mn.f);V.deep=Math.max(V.floor,h.mn.deep||1)}}return V}
+function mnKeep(h,F){h.mn=h.mn||{f:1,deep:1};h.mn.f=F;h.mn.deep=Math.max(h.mn.deep||1,F);saveHero()}
 const gxTop=t=>`<div class="top"><button class="ib" id="back">${SCREENS.town?'البلد':'رجوع'}</button><h2>${t}</h2>${qBtn()}</div>`;
 function gxStats(k){const h=S.hero,v=effNow(h),L=h.life[k];
   return `<div class="gx-stats"><div class="gx-row"><span class="lb">${ICO.drop}المجهود</span><span class="gx-eff${EFF_MAX>24?' many':''}" id="gxEff">${Array.from({length:EFF_MAX},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</span><b class="nm" id="gxEffN">${v}/${EFF_MAX}</b></div><div class="gx-sub gx-subE"><span id="gxEffT">${effTxt(h,k)}</span>${eatBtnHTML(h)}</div>
@@ -3487,7 +3491,7 @@ function caveBG(F){const P=F>=15?['#0e1a16','#030806','#1e3a30','#5ef08a']:F>=11
 const mnBG=F=>F>1?caveBG(F):mineBG();
 const mnKs=V=>MINE_K.concat(MINE_X.filter(k=>MAT[k]&&(V.n[k]||(V.deep||1)>=MX_AT[k])),['stone1','stone2','stone3'].filter(k=>MAT[k]&&V.n[k]));
 function mnChips(){const w=$('#gxChipsW');if(w)w.innerHTML=gxChips(mnKs(gxVisit('mine')),gxVisit('mine'))}
-function mnFloorUI(pp){const V=gxVisit('mine'),f=$('#mnFl'),bg=$('#mnBg');if(f){f.innerHTML=`${LADDER}الدور ${V.floor}`;if(pp)cls(f,'pp')}if(bg&&bg.dataset.f!=String(V.floor)){bg.dataset.f=V.floor;bg.innerHTML=mnBG(V.floor)}}
+function mnFloorUI(pp){const V=gxVisit('mine'),f=$('#mnFl'),bg=$('#mnBg'),h=S.hero;if(f){f.innerHTML=`${LADDER}الدور ${V.floor}`;const fb=$('#mnFlB');if(fb){const D=h&&h.mn&&h.mn.deep||1;fb.classList.toggle('hidden',D<=1);fb.innerHTML=`${G('اختار','اختاري')} الدور <small>· أعمق دور ${D}</small>`;fb.onclick=mnPick}if(pp)cls(f,'pp')}if(bg&&bg.dataset.f!=String(V.floor)){bg.dataset.f=V.floor;bg.innerHTML=mnBG(V.floor)}}
 function mnWord(t,sub,c){const st=$('#gxStage');if(!st)return;const w=document.createElement('div');w.className='mn-word'+(c?' '+c:'');w.innerHTML=`${t}${sub?`<small>${sub}</small>`:''}`;st.appendChild(w);setTimeout(()=>w.remove(),1200)}
 function mnCrack(R,move){const c=$('#mnCrk');if(!R)return;
   if(move){const n=CRK_AT.length;R.ci=((R.ci|0)+1+Math.floor(Math.random()*(n-1)))%n}
@@ -3601,7 +3605,7 @@ function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxSt
     if(V.hole){sfx('mnHole');vib(20);setTimeout(()=>{const ho=$('#mnHole');if(ho)pop(ho,['#ffd36a','#3a2a1e','#8a5a2e'],14)},120)}
     if(R.k==='turq')gxSay('mine',SAYX.turq);else if(V.hole&&!V.saidHole){V.saidHole=1;gxSay('mine',SAYX.hole)}else if(c===1)gxSay('mine',SAYX.firstRock);else if(R.k==='silver')gxSay('mine',SAYX.silver,.6);else gxSay('mine',null,.2)},400)}
 /* the way down: free, a short black-out, a new floor */
-function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX.busy=1;V.hole=0;const F=V.floor=Math.min(FLOOR_MAX,(V.floor||1)+1);V.deep=Math.max(V.deep||1,F);
+function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX.busy=1;V.hole=0;const F=V.floor=Math.min(FLOOR_MAX,(V.floor||1)+1);V.deep=Math.max(V.deep||1,F);mnKeep(S.hero,F);
   /* رابط «رئة المغارة»: every floor down gives 2 effort */
   {const h=S.hero;if(h&&treeLink(h,'mine','l2')){const e0=effNow(h);h.eff.v=Math.min(EFF_MAX,e0+2);if(h.eff.v>=EFF_MAX)h.eff.t=Date.now();GX.v=h.eff.v;saveHero();
     if(h.eff.v>e0)setTimeout(()=>{effUI();floatAt($('#gxEffN'),num(h.eff.v-e0,'+'),'#b4f0c2','',18)},700)}}
@@ -3609,12 +3613,22 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
   setTimeout(()=>{GX.busy=0;GX.rubble=0;if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();const em=$('#mnSlot .mn-empty');if(em)em.classList.add('mn-later');
     mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع المنجم':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
+/* pick a floor you already reached: tap the floor tag («الدور N ▾») */
+function mnPick(){const h=S.hero,V=gxVisit('mine'),D=h.mn&&h.mn.deep||1;if(D<=1||GX.busy)return;twSheetX();
+  const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${G('اختار','اختاري')} الدور<small>أعمق دور ${G('وصلته','وصلتيه')}: ${D}</small></div>
+    <div class="tw-sm">المنجم بيفتكر الدور اللي ${G('كنت','كنتي')} فيه. ${G('اختار','اختاري')} أي دور ${G('وصلته','وصلتيه')} قبل كده${GX.rock?G('، والصخرة اللي قدامك هتسيبها','، والصخرة اللي قدامك هتسيبيها'):''}.</div>
+    <div class="mn-fls">${Array.from({length:D},(_,i)=>i+1).map(n=>`<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}">${n}</button>`).join('')}</div>
+    <button class="btn small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
+  d.querySelectorAll('[data-fl]').forEach(b=>b.onclick=()=>{const n=+b.dataset.fl;twSheetX();if(n===V.floor)return;V.floor=n;V.hole=0;V.deep=Math.max(V.deep||1,n);GX.rock=null;GX.rubble=0;mnKeep(h,n);
+    sfx('mnDown');const fd=$('#mnFade');if(fd)cls(fd,'go');setTimeout(()=>{if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();mnWord(`الدور ${n}`,'','fl')},480)})}
 function mnStay(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;mnSpawn()}
 SCREENS.mine=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const V=gxVisit('mine');if(GX.rock&&GX.rock.hid!==h.id)GX.rock=null;GX.busy=0;
   view.innerHTML=`${gxTop('المنجم')}${gxStats('mine')}
   <div class="gx-stage mn-stage" id="gxStage"><div class="bg" id="mnBg" data-f="${V.floor}">${mnBG(V.floor)}</div><div class="mn-fl" id="mnFl"></div><div class="gx-tag" id="gxTag"></div><div id="mnSlot"></div><div class="mn-pick" id="mnPick">${PICK}</div><i class="mn-imp" id="mnImp"></i><div class="mn-pips" id="mnPips"></div><div class="mn-tire hidden" id="mnTire"></div><div class="mn-fade" id="mnFade"></div><div class="gx-msg" id="gxMsg"></div></div>
-  <button class="btn gx-btn" id="gxGo"></button><button class="btn ghost gx-btn gx-btn2 hidden" id="gxGo2"></button>
+  <button class="btn gx-btn" id="gxGo"></button><button class="btn ghost gx-btn gx-btn2 hidden" id="gxGo2"></button><button class="btn ghost small gx-btn mn-flb hidden" id="mnFlB"></button>
   <div class="gx-lbl"><span>اللي طلع ${G('معاك','معاكي')} المرة دي</span><span id="gxRocks"></span></div><div id="gxChipsW">${gxChips(mnKs(V),V)}</div>
   <div class="gx-goal" id="gxGoal"></div>${gxNpcHTML('mine')}`;
   mnFloorUI();mnSlot();mnBtn();mnGoal();gxBind('mine');
@@ -4384,6 +4398,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.63',d:'10 أكتوبر',add:['المنجم بقى بيفتكر الدور اللي {كنت|كنتي} فيه: لما {ترجع|ترجعي} {بتكمّل|بتكمّلي} من نفس الدور بدل ما {تبدأ|تبدأي} من الأول.','زرار «{اختار|اختاري} الدور» تحت في المنجم: {تنزل|تنزلي} أو {تطلع|تطلعي} على طول لأي دور {وصلته|وصلتيه} قبل كده.'],fix:[]},
   {v:'5.62',d:'10 أكتوبر',add:['«{غيّر|غيّري} نوعك»: في آخر شاشة «التخصصات» بقى فيه طريق صعب {تغيّر|تغيّري} بيه نوعك الأساسي. محتاج المستوى 6، وبيتكلف 250 جنيه لكل مستوى، ومرة واحدة في الأسبوع.','صفات النوع القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، والصحة والطاقة بيمشوا معاه. المستوى والعدة والألقاب والشغلانات بيفضلوا زي ما هم.','نص نقط القدرة اللي {صرفتها|صرفتيها} على القدرات القديمة بس هو اللي بيرجع، والتخصص اللي بتاع نوعك القديم بس بيروح ومش بيرجع.'],fix:[]},
   {v:'5.61',d:'10 أكتوبر',add:['نوعين جداد {تختار|تختاري} منهم {وانت|وانتي} {بتعمل|بتعملي} البطل:','«المُصارع»: بيحارب بإيده الفاضية. من غير سلاح ضربه +2، و«إيد حديد» بتزوّده لحد +6. قدراته: «مسكة وطرحة» و«اسند ضهرك» و«كوع» و«رمية على الكل». وتخصصات «فنون الإيد» بتيجيله بالضعف.','«ابن البلد»: مش متخصص في حاجة. كل مستوى بيكبّر صفة مختلفة بالدور. فرصته لأي تخصص بالضعف، {ووانت|ووانتي} {معاك|معاكي} تخصص الفرصة لتخصص من شغلانة تانية لسه بتيجي، فتغييره سهل. وكمان «من كل بيت حتة» بتزوّد خبرة الشغلانات كلها.','القدرات بتاعتهم بتكبر بنقط القدرة زي الباقيين، وليهم شكل ولبس بتوعهم.'],fix:[]},
   {v:'5.60',d:'10 أكتوبر',add:['«فنون الإيد»: سكة تخصصات جديدة لوحدها لأي نوع، للي بيحارب بإيده الفاضية من غير سلاح: «الفتوّة» (نادر)، و«صاحب القبضة» (ملحمي)، وتخصص خفي ليه اختبار.','فرصتها بتيجي بس بعد قتال {تكسبه|تكسبيه} وإيدك فاضية. {شيل|شيلي} السلاح من «عدّتي» {وحارب|وحاربي} بإيدك.','كل واحد فيهم بيقوّي ضرب الإيد الفاضية وليه 3 قدرات قتال جديدة بتكبر بنقط القدرة، و«صاحب القبضة» ضربته ممكن تلخبط الوحش فيفوّت دوره.','لقب جديد للتخصص الخفي، وإنجاز «إيد فاضية» لـ10 قتالات من غير سلاح.'],fix:[]},
