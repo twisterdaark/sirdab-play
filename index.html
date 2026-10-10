@@ -4384,6 +4384,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.62',d:'10 أكتوبر',add:['«{غيّر|غيّري} نوعك»: في آخر شاشة «التخصصات» بقى فيه طريق صعب {تغيّر|تغيّري} بيه نوعك الأساسي. محتاج المستوى 6، وبيتكلف 250 جنيه لكل مستوى، ومرة واحدة في الأسبوع.','صفات النوع القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، والصحة والطاقة بيمشوا معاه. المستوى والعدة والألقاب والشغلانات بيفضلوا زي ما هم.','نص نقط القدرة اللي {صرفتها|صرفتيها} على القدرات القديمة بس هو اللي بيرجع، والتخصص اللي بتاع نوعك القديم بس بيروح ومش بيرجع.'],fix:[]},
   {v:'5.61',d:'10 أكتوبر',add:['نوعين جداد {تختار|تختاري} منهم {وانت|وانتي} {بتعمل|بتعملي} البطل:','«المُصارع»: بيحارب بإيده الفاضية. من غير سلاح ضربه +2، و«إيد حديد» بتزوّده لحد +6. قدراته: «مسكة وطرحة» و«اسند ضهرك» و«كوع» و«رمية على الكل». وتخصصات «فنون الإيد» بتيجيله بالضعف.','«ابن البلد»: مش متخصص في حاجة. كل مستوى بيكبّر صفة مختلفة بالدور. فرصته لأي تخصص بالضعف، {ووانت|ووانتي} {معاك|معاكي} تخصص الفرصة لتخصص من شغلانة تانية لسه بتيجي، فتغييره سهل. وكمان «من كل بيت حتة» بتزوّد خبرة الشغلانات كلها.','القدرات بتاعتهم بتكبر بنقط القدرة زي الباقيين، وليهم شكل ولبس بتوعهم.'],fix:[]},
   {v:'5.60',d:'10 أكتوبر',add:['«فنون الإيد»: سكة تخصصات جديدة لوحدها لأي نوع، للي بيحارب بإيده الفاضية من غير سلاح: «الفتوّة» (نادر)، و«صاحب القبضة» (ملحمي)، وتخصص خفي ليه اختبار.','فرصتها بتيجي بس بعد قتال {تكسبه|تكسبيه} وإيدك فاضية. {شيل|شيلي} السلاح من «عدّتي» {وحارب|وحاربي} بإيدك.','كل واحد فيهم بيقوّي ضرب الإيد الفاضية وليه 3 قدرات قتال جديدة بتكبر بنقط القدرة، و«صاحب القبضة» ضربته ممكن تلخبط الوحش فيفوّت دوره.','لقب جديد للتخصص الخفي، وإنجاز «إيد فاضية» لـ10 قتالات من غير سلاح.'],fix:[]},
   {v:'5.59',d:'10 أكتوبر',add:['قدرات التخصص بقت بتكبر بنقط القدرة من البروفايل زي قدرات نوعك: مستوى 2 و4 أقوى، و3 بيزوّد حاجة، و5 هي الكبيرة.','{دوس|دوسي} على أي تخصص في «التخصصات» وهتشوف كل اللي بيديهولك: مميزاته، وقدراته التلاتة في القتال وطاقتها، وبييجي إزاي.','17 لقب جديد: لقب لكل تخصص خفي وأسطوري وسري {بتاخده|بتاخديه}، وكل واحد ليه ميزة دايمة بتفضل {معاك|معاكي} حتى لو {سبت|سبتي} التخصص. وألقاب للشغل الكتير: 300 صخرة، 150 سمكة، 50 أكلة، 30 حاجة بإيدك، 200 حصاد، وغيرهم.','ألقاب التخصصات المستخبية مش بتبان في البروفايل غير لما {تاخدها|تاخديها}.','17 إنجاز جديد للتخصصات والألقاب والمنجم والصيد والطبخ والورشة.'],fix:['قدرة «جيش الضل» كان مستواها بيقول علاج وهي مش بتعالج. دلوقتي مستوى 3 بيخلي أول ضربة {عليك|عليكي} مش هتيجي.']},
@@ -24390,6 +24391,57 @@ const blAny=h=>hasSkill(h,'bl_any')?[0,.25,.35,.45,.55,.7][skL(h,'bl_any')]:0;
   if(x.taunt||x.shield){a.hide=1;if(x.taunt)a.taunt=1;combat();out.push(g('هيصد الضربة الجاية','هتصد الضربة الجاية'))}
   if(x.cheer&&S.comp&&S.comp.hp>0&&C.cp){fxOn(C.cp,'cheer');out.push(`${S.comp.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
   return say(`${a.name}: ${s.n}! ${out.join(' · ')}`,'good')}}
+/* ==========================================================================
+   سرداب: changing your class («{تغيّر|تغيّري} نوعك», 5.62, Twister: hard, but possible)
+   From the التخصصات screen. Needs level 6, costs 250 جنيه a level, once a week, never during a trial.
+   What changes: the class's base stats and level growth are swapped (other points you earned stay), health and energy
+   follow the new class, half the skill points spent on the old class moves come back, and a specialisation that only
+   the old class can hold is left for good. Level, gear, money left, titles and trades stay.
+   ========================================================================== */
+const CC_LVL=6,CC_WEEK=7*864e5;
+const ccCost=h=>250*h.lvl;
+const ccEnB=(c,L)=>(c==='ساحر'||c==='معالج')&&L>=4?2:0;
+function ccWhy(h){if(h.lvl<CC_LVL)return `لازم ${G('توصل','توصلي')} المستوى ${CC_LVL} (${G('انت','انتي')} دلوقتي ${h.lvl})`;
+  const s=h.sp||{};if(s.trial)return `${G('خلّص','خلّصي')} الاختبار اللي شغال الأول`;
+  const w=(h.clsChg||0)+CC_WEEK-Date.now();if(w>0)return `${G('غيّرت','غيّرتي')} نوعك قريب. تقدر تاني بعد ${spDays(w)}`;
+  if(h.money<ccCost(h))return `محتاج ${ccCost(h)} جنيه (معاك ${h.money})`;return ''}
+function ccRefund(h){const old=(CSK[h.cls]||[]).map(s=>s.id);let spent=0;h.skL=h.skL||{};
+  old.forEach(id=>{const L=h.skL[id]||1;for(let n=2;n<=L;n++)spent+=SK_COST[n]||0;delete h.skL[id]});return Math.floor(spent/2)}
+function ccDo(h,nc){if(!CLASSES[nc]||nc===h.cls||ccWhy(h))return false;const oc=h.cls,O=CLASSES[oc],N=CLASSES[nc],OG=GROW[oc]||{hp:2},L=h.lvl;
+  h.money-=ccCost(h);
+  /* stats: take the old base and growth out, put the new base in, then grow it level by level */
+  const gr=h.grown||{};STATS.forEach(k=>{h.st[k]=(h.st[k]||0)-(O.st[k]||0)-(gr[k]||0)+(N.st[k]||0)});
+  h.cls=nc;h.grown={};for(let l=2;l<=L;l++)growStat(h,l);
+  const NG=GROW[nc]||{hp:2};h.maxhp=Math.max(6,h.maxhp-O.hp-OG.hp*(L-1)+N.hp+NG.hp*(L-1));h.armor=N.armor||0;
+  h.maxen=Math.max(3,(h.maxen||3)-ccEnB(oc,L)+ccEnB(nc,L));
+  /* skill points: half of what went into the old moves */
+  h.cls=oc;const back=ccRefund(h);h.cls=nc;skInit(h);h.skP=(h.skP||0)+back;
+  /* a specialisation only the old class could hold goes */
+  let lost='';const s=h.sp&&spFix(h),o=s&&s.on&&SP[s.on];if(o&&o.cls&&o.cls!==nc){lost=spName(o,h);s.no[o.id]=1;s.on=''}
+  h.hp=Math.min(h.hp,MXH(h));h.clsChg=Date.now();h.cnt=h.cnt||{};h.cnt.clsChg=(h.cnt.clsChg||0)+1;saveHero();
+  return {back,lost}}
+function ccSheet(h){twSheetX();const why=ccWhy(h),opts=Object.keys(CLASSES).filter(c=>c!==h.cls),cur=SPV.cc||'';
+  const s=h.sp||{},o=s.on&&SP[s.on];
+  const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn">
+    <div class="h">${G('غيّر','غيّري')} نوعك<small>${G('انت','انتي')} دلوقتي ${clsF(h.cls,h.g==='f')}</small></div>
+    <div class="tw-sm">طريق صعب: ${ccCost(h)} جنيه، ومرة واحدة في الأسبوع. صفات نوعك القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، وكل اللي ${G('كسبته','كسبتيه')} غير كده بيفضل. نص نقط القدرة اللي ${G('صرفتها','صرفتيها')} على قدراتك القديمة بس هي اللي بترجع.</div>
+    ${o&&o.cls?`<div class="tw-sm" style="color:#f0a090">تخصصك «${spName(o,h)}» بتاع ${clsF(o.cls,h.g==='f')} بس: لو ${G('غيّرت','غيّرتي')} نوعك هيروح ومش هيرجع.</div>`:''}
+    ${why?`<div class="tw-sm" style="color:#f0a090">${why}.</div>`:''}
+    <div class="cc-ops">${opts.map(c=>`<button class="btn ghost small${cur===c?' on':''}" data-cc="${c}" ${why?'disabled':''}>${clsF(c,h.g==='f')}</button>`).join('')}</div>
+    ${cur&&!why?`<div class="tw-sm">${h.g==='f'&&DESC_F[cur]||CLASSES[cur].desc}</div><button class="btn small" id="ccGo">${SPV.ccAsk?G('متأكد؟ الفلوس مش هترجع','متأكدة؟ الفلوس مش هترجع'):`${G('هبقى','هبقى')} ${clsF(cur,h.g==='f')} · ${ccCost(h)} جنيه`}</button>`:''}
+    <button class="btn ghost small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
+  app.appendChild(d);const X=()=>{SPV.cc='';SPV.ccAsk=0;twSheetX()};d.querySelector('.bk').onclick=X;d.querySelector('[data-x]').onclick=X;
+  d.querySelectorAll('[data-cc]').forEach(b=>b.onclick=()=>{SPV.cc=b.dataset.cc;SPV.ccAsk=0;ccSheet(h)});
+  const go=d.querySelector('#ccGo');if(go)go.onclick=()=>{if(!SPV.ccAsk){SPV.ccAsk=1;return ccSheet(h)}const nc=SPV.cc,r=ccDo(h,nc);SPV.cc='';SPV.ccAsk=0;twSheetX();if(!r)return render();
+    render();SFX.levelup&&SFX.levelup();
+    band(G('بقيت','بقيتي')+' '+clsF(nc,h.g==='f'),G('نوعك اتغيّر','نوعك اتغيّر'),`${r.back?`رجعلك ${r.back} نقطة قدرة`:'قدراتك الجديدة مستنياك'}${r.lost?` · «${r.lost}» راح`:''}`,{dur:3200})}}
+{const s0=SCREENS.spec;SCREENS.spec=function(){const r=s0.apply(this,arguments);try{const h=S.hero,w=view.querySelector('.sp-scr');if(!h||!w)return r;const why=ccWhy(h);
+  w.insertAdjacentHTML('beforeend',`<div class="tw-lbl">نوعك الأساسي</div><div class="card cc-card" role="button" id="ccOpen"><b>${G('غيّر','غيّري')} نوعك</b><small>${why?why:`${ccCost(h)} جنيه · مرة في الأسبوع`}</small></div>`);
+  $('#ccOpen').onclick=()=>ccSheet(h)}catch(e){console.warn(e)}return r}}
+(function(){const st=document.createElement('style');st.textContent=`
+.cc-card{display:flex;flex-direction:column;gap:4px;cursor:pointer;min-height:44px}.cc-card small{opacity:.75;line-height:1.5}
+.cc-ops{display:flex;flex-wrap:wrap;gap:8px}.cc-ops .btn{flex:1 1 40%;min-height:44px;margin:0}.cc-ops .btn.on{border-color:var(--gold);color:var(--gold2)}`;document.head.appendChild(st)})();
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
