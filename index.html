@@ -3222,7 +3222,7 @@ if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:
 .mn-word small{display:block;font-family:var(--body,inherit);font-size:17px;font-weight:800;color:#fff3b0;text-shadow:0 0 3px #000,0 2px 6px #000}
 .mn-word.fl{color:var(--gold2);font-size:44px}
 @keyframes mnWord{0%{transform:scale(2.2);opacity:0}16%{transform:scale(.94);opacity:1}28%{transform:scale(1.04)}75%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
-.mn-flb{min-height:44px}.mn-flb small{opacity:.7;font-weight:600}.mn-fls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.mn-fls .btn{min-height:44px;margin:0;padding:0}.mn-fls .btn.on{border-color:var(--gold);color:var(--gold2)}
+.mn-flb{min-height:44px}.mn-flb small{opacity:.7;font-weight:600}.mn-fls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.mn-fls .btn{min-height:44px;margin:0;padding:2px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}.mn-fls .btn small{font-size:10px;opacity:.75;font-weight:600}.mn-fls .btn.on{border-color:var(--gold);color:var(--gold2)}
 .mn-fl{position:absolute;top:10px;inset-inline-start:12px;z-index:4;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:800;line-height:1.5;color:var(--gold2);padding:3px 10px 3px 9px;border-radius:20px;background:#000b;border:1px solid #5a4630;pointer-events:none}
 .mn-fl svg{width:13px;height:13px;flex:none}
 .mn-fl.pp{animation:mnFlIn .6s both}
@@ -3613,12 +3613,14 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
   setTimeout(()=>{GX.busy=0;GX.rubble=0;if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();const em=$('#mnSlot .mn-empty');if(em)em.classList.add('mn-later');
     mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع المنجم':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
+const MN_FLT={3:'فحم',4:'تعزيز',8:'دهب',14:'زمرد',20:'القاع'};
 /* pick a floor you already reached: tap the floor tag («الدور N ▾») */
 function mnPick(){const h=S.hero,V=gxVisit('mine'),D=h.mn&&h.mn.deep||1;if(D<=1||GX.busy)return;twSheetX();
   const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${G('اختار','اختاري')} الدور<small>أعمق دور ${G('وصلته','وصلتيه')}: ${D}</small></div>
     <div class="tw-sm">المنجم بيفتكر الدور اللي ${G('كنت','كنتي')} فيه. ${G('اختار','اختاري')} أي دور ${G('وصلته','وصلتيه')} قبل كده${GX.rock?G('، والصخرة اللي قدامك هتسيبها','، والصخرة اللي قدامك هتسيبيها'):''}.</div>
-    <div class="mn-fls">${Array.from({length:D},(_,i)=>i+1).map(n=>`<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}">${n}</button>`).join('')}</div>
+    <div class="mn-fls">${Array.from({length:D},(_,i)=>i+1).map(n=>`<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}">${n}${MN_FLT[n]?`<small>${MN_FLT[n]}</small>`:''}</button>`).join('')}</div>
+    <div class="tw-sm">كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أتقل والخام أغلى: الفحم من الدور 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.</div>
     <button class="btn small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
   app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
   d.querySelectorAll('[data-fl]').forEach(b=>b.onclick=()=>{const n=+b.dataset.fl;twSheetX();if(n===V.floor)return;V.floor=n;V.hole=0;V.deep=Math.max(V.deep||1,n);GX.rock=null;GX.rubble=0;mnKeep(h,n);
@@ -4398,6 +4400,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.64',d:'10 أكتوبر',add:[],fix:['«الورشة» بقت فوق في شاشة الحداد، وكل حاجة {ركّبتها|ركّبتيها} مكتوب جنبها بتديك إيه.','في «{اختار|اختاري} الدور» في المنجم بقى مكتوب إيه اللي بيطلع في كل دور: الفحم من 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.']},
   {v:'5.63',d:'10 أكتوبر',add:['المنجم بقى بيفتكر الدور اللي {كنت|كنتي} فيه: لما {ترجع|ترجعي} {بتكمّل|بتكمّلي} من نفس الدور بدل ما {تبدأ|تبدأي} من الأول.','زرار «{اختار|اختاري} الدور» تحت في المنجم: {تنزل|تنزلي} أو {تطلع|تطلعي} على طول لأي دور {وصلته|وصلتيه} قبل كده.'],fix:[]},
   {v:'5.62',d:'10 أكتوبر',add:['«{غيّر|غيّري} نوعك»: في آخر شاشة «التخصصات» بقى فيه طريق صعب {تغيّر|تغيّري} بيه نوعك الأساسي. محتاج المستوى 6، وبيتكلف 250 جنيه لكل مستوى، ومرة واحدة في الأسبوع.','صفات النوع القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، والصحة والطاقة بيمشوا معاه. المستوى والعدة والألقاب والشغلانات بيفضلوا زي ما هم.','نص نقط القدرة اللي {صرفتها|صرفتيها} على القدرات القديمة بس هو اللي بيرجع، والتخصص اللي بتاع نوعك القديم بس بيروح ومش بيرجع.'],fix:[]},
   {v:'5.61',d:'10 أكتوبر',add:['نوعين جداد {تختار|تختاري} منهم {وانت|وانتي} {بتعمل|بتعملي} البطل:','«المُصارع»: بيحارب بإيده الفاضية. من غير سلاح ضربه +2، و«إيد حديد» بتزوّده لحد +6. قدراته: «مسكة وطرحة» و«اسند ضهرك» و«كوع» و«رمية على الكل». وتخصصات «فنون الإيد» بتيجيله بالضعف.','«ابن البلد»: مش متخصص في حاجة. كل مستوى بيكبّر صفة مختلفة بالدور. فرصته لأي تخصص بالضعف، {ووانت|ووانتي} {معاك|معاكي} تخصص الفرصة لتخصص من شغلانة تانية لسه بتيجي، فتغييره سهل. وكمان «من كل بيت حتة» بتزوّد خبرة الشغلانات كلها.','القدرات بتاعتهم بتكبر بنقط القدرة زي الباقيين، وليهم شكل ولبس بتوعهم.'],fix:[]},
@@ -23659,16 +23662,21 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
     <small>${needTxt(SM_STEEL.need)} + ${SM_STEEL.fee} جنيه · ${G('عندك','عندك')} ${h.res.steel||0}</small></div>
     <button class="tw-act cr" data-smelt="1" ${ok?'':'disabled'}><b>${lk?TW_LOCK:''}${G('اسبك','اسبكي')}</b><small>${lk?`حدادة مستوى ${SM_STEEL.lv}`:ok?'دلوقتي':'ناقصك حاجة'}</small></button></div></div>`;
   const n=wsN(h),nx=WS[n];
-  s+=`<div class="tw-lbl">الورشة <small>${n?WS.slice(0,n).map(w=>w.n).join(' · '):'لسه على قدها'}</small></div>`;
+  /* 5.64 (Twister): the workshop sits at the top of the smith, and what you already put in says what it gives */
+  s+=`<div id="wsBlk"><div class="tw-lbl">الورشة <small>${n?`${n} من ${WS.length}`:'لسه على قدها'}</small></div>`;
+  if(n)s+=`<div class="ws-got">${WS.slice(0,n).map(w=>`<div><b>✓ ${w.n}</b><small>${w.d}</small></div>`).join('')}</div>`;
   if(nx){const can=hasRes(h,nx.need)&&h.money>=nx.p;s+=`<div class="col"><div class="tw-row ws-row" style="--rc:${twRc(Math.min(3,n+1))};flex-wrap:wrap"><div class="tx"><b>${nx.n}</b><small>${nx.d}</small><small>${needTxt(nx.need)} + ${nx.p} جنيه</small></div>
     <button class="tw-act cr" data-ws="${n}" ${can?'':'disabled'}><b>${G('ركّب','ركّبي')}</b><small>${can?'للورشة':'ناقصك حاجة'}</small></button></div></div>`}
-  else s+=`<div class="tw-sm">الورشة كاملة. مفيش أحسن منها في البلد.</div>`}catch(e){console.warn(e)}return s}}
+  else s+=`<div class="tw-sm">الورشة كاملة. مفيش أحسن منها في البلد.</div>`;s+='</div>'}catch(e){console.warn(e)}return s}}
 {const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;
+  {const b=view.querySelector('#wsBlk'),k=b&&b.closest('.tw-stk')||view.querySelector('.tw-stk');if(b&&k&&k.firstElementChild!==b)k.insertBefore(b,k.firstElementChild)}
   view.querySelectorAll('[data-smelt]').forEach(b=>b.onclick=()=>{if(TWN.busy||spLv(h,'smith')<SM_STEEL.lv||!hasRes(h,SM_STEEL.need)||h.money<SM_STEEL.fee)return;
     takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);bump('smelt');S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();SFX.anvil?SFX.anvil():SFX.coin&&SFX.coin();
     toast(`${G('سبكت','سبكتي')} ${n===2?'فولاذتين':'فولاذ'} · ${G('عندك','عندك')} ${h.res.steel}`);twRender()});
   view.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{const n=wsN(h),nx=WS[n];if(!nx||+b.dataset.ws!==n||!hasRes(h,nx.need)||h.money<nx.p)return;
     takeRes(h,nx.need);h.money-=nx.p;h.ws=n+1;saveHero();band('الورشة',nx.n,nx.d,{dur:2200,sound:SFX.fanfare});twRender()})}catch(e){console.warn(e)}return r}}
+(function(){const st=document.createElement('style');st.textContent=`.ws-got{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:#0003;border:1px solid #7fe07a33}
+.ws-got>div{display:flex;flex-direction:column;gap:1px}.ws-got b{color:#a6e3a0;font-size:14px}.ws-got small{opacity:.8;line-height:1.5}`;document.head.appendChild(st)})();
 /* ----- the other crafts: الخياط (rare), الطباخ (rare), الفلاح الأسطوري (legendary), and صاحب الصنعة (secret: three crafts at 8) ----- */
 SP_ADD({id:'khayat',ev:'tailor',r:'rare',m:'الخياط',f:'الخياطة',px:P20_grid(16,['','.........KK','........KWcK','.......KWcK','......KWcK','.....KWcK','....KWcK','...KWcK..KK','..KWcK..KrrK','..KcK..KrRrK','...K..KrRRrK','.....KrRrrK','.....KrrrK','......KKK','','']),
   need:h=>spLv(h,'tailor')>=4&&(spCnt(h,'made_tailor')>=6||spCnt(h,'crafted')>=10),
