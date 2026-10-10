@@ -4419,6 +4419,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.73',d:'10 أكتوبر',add:['البرادة والزيت بقوا بيتعملوا باليد عند عم حسن كمان، مش بس بيتشتروا: برادة الفضة من 2 فضة وفحمة (حدادة 3)، برادة الدهب من دهب وفضة وفحمة (حدادة 6)، وزيت التسقية من حبة البركة و2 فحم (حدادة 8)'],fix:['الضربة العادية بقى اسمها على السلاح اللي في إيدك: «خبطة مطرقة» بمطرقة الأسطى، «ضربة سيف» بالسيف، «طعنة خنجر» بالخنجر، و«بوكس» من غير سلاح. الساحر والمعالج فضلوا بسحرهم']},
 {v:'5.72',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع حاجات {تحطها|تحطيها} مع حجر التعزيز: «برادة فضة» بتزوّد النسبة 10%، و«برادة دهب» بتزوّدها 20%','و«زيت التسقية»: من +8، لو التعزيز فشل الحتة ما تنزلش درجة','{اختار|اختاري} اللي {عايزه|عايزاه} من على الحتة نفسها قبل ما {تدوس|تدوسي} «عزّز»، والنسبة الجديدة بتبان على الزرار'],fix:['الزيادة اللي تخصصك (الحداد، الأسطى وغيرهم) بيحطها على الحاجة اللي {عملتها|عملتيها} بإيدك بقت مكتوبة على الحتة نفسها وفي لحظة الصنع','والخواتم والقلايد والتمايم اللي {بتعملها|بتعمليها} بإيدك بقت بتاخد زيادة صحة من تخصصك كمان']},
   {v:'5.71',d:'10 أكتوبر',add:['في «{اختار|اختاري} الدور» في المنجم كل دور بقى مكتوب جنبه الأحجار اللي بتطلع فيه بصورها، واللي بيبدأ يطلع من الدور ده مكتوب بالدهبي.'],fix:['اتأكدنا إن نقلك لدور تاني من القايمة ما بيرجّعش مجهود، حتى لو {معاك|معاكي} «رئة المغارة». المجهود بيرجع بس لما {تنزل|تنزلي} من الحفرة.']},
   {v:'5.70',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع فحم مع النحاس والحديد والفضة، عشان السبك والورشة من غير ما {تنزل|تنزلي} المنجم للدور 3.'],fix:[]},
@@ -24988,16 +24989,25 @@ function eaRow(h,id,I){if(!qCanEnh(id)||I.e>=10)return '';const nx=I.e+1,[k,p]=E
     const row=eaRow(h,id,I);if(row){const i=s.indexOf('<div class="q-acts">');if(i>=0)s=s.slice(0,i)+row+s.slice(i)}}catch(e){}
   return s}}
 
+/* 5.73 (Twister): «مش لازم دايما تشتريها»: each one can be made by hand at عم حسن's, from what you mine and grow */
+const EA_MK={brada1:{need:{silver:2,coal:1},fee:20,lv:3},brada2:{need:{gold:1,silver:1,coal:1},fee:40,lv:6},zeit:{need:{blackseed:1,coal:2},fee:40,lv:8}};
+function eaMkRow(h,k){const r=EA_MK[k];if(!r)return '';const lk=spLv(h,'smith')<r.lv,ok=!lk&&hasRes(h,r.need)&&h.money>=r.fee;
+  return `<div class="ea-mk"><small>أو ${TW_FEM[k]?G('اعملها','اعمليها'):G('اعمله','اعمليه')} بإيدك: ${needTxt(r.need)} + ${r.fee} جنيه</small><button class="tw-act cr" data-eamk="${k}" ${ok?'':'disabled'}><b>${lk?TW_LOCK:''}${G('اعمل','اعملي')}</b><small>${lk?`حدادة مستوى ${r.lv}`:ok?'واحد':'ناقصك حاجة'}</small></button></div>`}
+function eaMake(k,btn){const h=S.hero,r=EA_MK[k];if(!h||!r||TWN.busy||spLv(h,'smith')<r.lv||!hasRes(h,r.need)||h.money<r.fee)return;
+  takeRes(h,r.need);h.money-=r.fee;addRes(h,k,1);S.spQuick=Date.now();try{lifeXP(h,'smith',1)}finally{S.spQuick=0}saveHero();SFX.anvil?SFX.anvil():SFX.coin&&SFX.coin();
+  floatAt(btn,twI('+1')+' '+resN(k),'#a6e3a0','',18);pop(btn,[RARE[MAT[k].tier].c,'#ffffff'],14);twRender()}
+
 /* عم حسن sells them under the stones; at عم فتحي just a word where to get them */
 {const q0=qTabHTML;qTabHTML=function(h,at){let s=q0.apply(this,arguments);try{
   if(at==='smith'){const what={brada1:`بتزوّد النسبة ${twI('+10%')} في أي تعزيز ممكن يفشل`,brada2:`بتزوّد النسبة ${twI('+20%')} في أي تعزيز ممكن يفشل`,zeit:`من ${twI('+8')}: لو التعزيز فشل، الحتة ما تنزلش درجة`};
     const row=k=>{const p=twGP(h,STONE_P[k]),have=h.res[k]||0,m=MAT[k];
       return `<div class="tw-row" style="--rc:${RARE[m.tier].c};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${RARE[m.tier].c}">${m.n}</b><small>${what[k]}</small>${have?`<small>${G('معاك','معاكي')} ${have}</small>`:''}</div>
-        ${twQB('st:'+k,qtyMax(99,h.money/p),p,0,`data-stb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`};
-    s+=`<div class="tw-lbl">حاجات تتحط مع الحجر <small>${G('اختار','اختاري')}ها من على الحتة قبل ما ${G('تعزّز','تعزّزي')}، وبتروح مع الحجر</small></div><div class="col">${EA_K.map(row).join('')}</div>`}
+        ${twQB('st:'+k,qtyMax(99,h.money/p),p,0,`data-stb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}${eaMkRow(h,k)}</div>`};
+    s+=`<div class="tw-lbl">حاجات تتحط مع الحجر <small>${G('اشتريها','اشتريها')} أو ${G('اعملها','اعمليها')} بإيدك، و${G('اختار','اختاري')}ها من على الحتة قبل ما ${G('تعزّز','تعزّزي')}. بتروح مع الحجر</small></div><div class="col">${EA_K.map(row).join('')}</div>`}
   else if(EA_K.some(k=>h.res[k]>0)||at==='tailor')s+=`<div class="tw-lbl"><small>برادة الفضة والدهب وزيت التسقية بتتباع عند عم حسن الحداد، وبتنفع هنا كمان</small></div>`}catch(e){}return s}}
 
 {const b0=qBindTab;qBindTab=function(at){const r=b0.apply(this,arguments);
+  view.querySelectorAll('[data-eamk]').forEach(b=>b.onclick=()=>eaMake(b.dataset.eamk,b));
   view.querySelectorAll('[data-eab],[data-eaz]').forEach(b=>b.onclick=()=>{if(TWN.busy)return;const u=b.dataset.u,ea=TWN.ea&&TWN.ea.u===u?TWN.ea:{u,b:'',z:0};
     if(b.dataset.eab)ea.b=ea.b===b.dataset.eab?'':b.dataset.eab;else ea.z=ea.z?0:1;TWN.ea=ea.b||ea.z?ea:null;SFX.stoneIn&&SFX.stoneIn();vib(12);twRender()});
   return r}}
@@ -25009,7 +25019,20 @@ function eaRow(h,id,I){if(!qCanEnh(id)||I.e>=10)return '';const nx=I.e+1,[k,p]=E
 .q-eab span{display:flex;flex-direction:column;line-height:1.3;flex:1}.q-eab b{font-size:12.5px}.q-eab small{font-size:11px;opacity:.85}
 .q-eab i{font-style:normal;font-size:11px;font-weight:800;background:#0005;border-radius:8px;padding:1px 6px}
 .q-eab.on{border-color:#f3c14d;background:#f3c14d22;box-shadow:0 0 0 2px #f3c14d44}
+.ea-mk{width:100%;display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px dashed #ffffff1f}.ea-mk>small{flex:1;font-size:11.5px;opacity:.85;line-height:1.5}.ea-mk .tw-act{min-height:46px;min-width:96px}
 .tw-ch.sp-own{background:#f3c14d22;color:#f3d27a}`;document.head.appendChild(st)})();
+/* ==========================================================================
+   سرداب 5.73 (Twister): the plain hit is named after the weapon in your hand, not the class
+   («الضربة العادية عندي طعنة خنجر مع إني حداد وسلاحي شاكوش الأسطى»).
+   CLASSES[c].atk.name becomes a getter: for the hero's own class it reads h.eq.weapon (ATK_V picks the verb,
+   GEAR[id].atkN can name it outright); no weapon is a punch. The magic classes keep their spell.
+   ========================================================================== */
+const ATK_MAGIC={'ساحر':1,'معالج':1};
+const ATK_V={'خنجر':'طعنة','مطرقة':'خبطة','شاكوش':'خبطة','بلطة':'ضربة','شومة':'ضربة','عصاية':'ضربة','سيف':'ضربة'};
+function atkNm(h,base){if(!h||ATK_MAGIC[h.cls])return base;const id=h.eq&&h.eq.weapon,g=id&&GEAR[id];if(!g)return 'بوكس';if(g.atkN)return g.atkN;
+  const n0=String(g.n).split(' ')[0];return `${ATK_V[n0]||'ضربة'} ${n0}`}
+Object.keys(CLASSES).forEach(c=>{const a=CLASSES[c].atk;if(!a)return;const base=a.name;
+  Object.defineProperty(a,'name',{configurable:true,enumerable:true,get(){const h=S.hero;try{return h&&h.cls===c?atkNm(h,base):base}catch(e){return base}}})});
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
