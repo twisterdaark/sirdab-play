@@ -3235,6 +3235,9 @@ if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:
 .mn-word.fl{color:var(--gold2);font-size:44px}
 @keyframes mnWord{0%{transform:scale(2.2);opacity:0}16%{transform:scale(.94);opacity:1}28%{transform:scale(1.04)}75%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
 .mn-flb{min-height:44px}.mn-flb small{opacity:.7;font-weight:600}.mn-fls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.mn-fls .btn{min-height:44px;margin:0;padding:2px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}.mn-fls .btn small{font-size:10px;opacity:.75;font-weight:600}.mn-fls .btn.on{border-color:var(--gold);color:var(--gold2)}
+.mn-fls.rows{display:flex;flex-direction:column;gap:6px;max-height:56vh;overflow-y:auto}.mn-fls.rows .btn{height:auto;min-height:56px;line-height:1.4;flex-shrink:0;white-space:normal;flex-direction:row;justify-content:flex-start;gap:10px;padding:8px 10px;text-align:right;align-items:center}
+.mn-fls.rows .btn>b{min-width:58px;font-size:15px}.mn-fls.rows .tx{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}.mn-fls.rows .ics{display:flex;flex-wrap:wrap;gap:2px}
+.mn-fls.rows .btn small{font-size:12px;opacity:.85;line-height:1.5;white-space:normal}.mn-fls.rows .btn small em{font-style:normal;color:var(--gold2);font-weight:800}
 .mn-fl{position:absolute;top:10px;inset-inline-start:12px;z-index:4;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:800;line-height:1.5;color:var(--gold2);padding:3px 10px 3px 9px;border-radius:20px;background:#000b;border:1px solid #5a4630;pointer-events:none}
 .mn-fl svg{width:13px;height:13px;flex:none}
 .mn-fl.pp{animation:mnFlIn .6s both}
@@ -3626,13 +3629,17 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
     mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع المنجم':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
 const MN_FLT={3:'فحم',4:'تعزيز',8:'دهب',14:'زمرد',20:'القاع'};
+/* 5.71 (Twister): what each floor can give, for the floor picker: rollRock's ores, the enhancement stones and the attar's herb */
+const MN_FL_AT={stone:1,copper:1,iron:1,silver:1,turq:1,coal:3,stone1:4,shih:5,stone2:7,gold:8,stone3:14,emerald:14};
+const mnFlOres=n=>Object.keys(MN_FL_AT).filter(k=>MAT[k]&&n>=MN_FL_AT[k]);
 /* pick a floor you already reached: tap the floor tag («الدور N ▾») */
 function mnPick(){const h=S.hero,V=gxVisit('mine'),D=h.mn&&h.mn.deep||1;if(D<=1||GX.busy)return;twSheetX();
   const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${G('اختار','اختاري')} الدور<small>أعمق دور ${G('وصلته','وصلتيه')}: ${D}</small></div>
     <div class="tw-sm">المنجم بيفتكر الدور اللي ${G('كنت','كنتي')} فيه. ${G('اختار','اختاري')} أي دور ${G('وصلته','وصلتيه')} قبل كده${GX.rock?G('، والصخرة اللي قدامك هتسيبها','، والصخرة اللي قدامك هتسيبيها'):''}.</div>
-    <div class="mn-fls">${Array.from({length:D},(_,i)=>i+1).map(n=>`<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}">${n}${MN_FLT[n]?`<small>${MN_FLT[n]}</small>`:''}</button>`).join('')}</div>
-    <div class="tw-sm">كل ما ${G('تنزل','تنزلي')} الصخر بيبقى أتقل والخام أغلى: الفحم من الدور 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.</div>
+    <div class="tw-sm">كل دور مكتوب جنبه الأحجار اللي بتطلع فيه. اللي بالدهبي بيبدأ يطلع من الدور ده.</div>
+    <div class="mn-fls rows">${Array.from({length:D},(_,i)=>i+1).map(n=>{const ks=mnFlOres(n),nw=n>1?ks.filter(k=>MN_FL_AT[k]===n):[];
+      return `<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}"><b>الدور ${n}</b><span class="tx"><span class="ics">${ks.map(k=>twMat(k,20)).join('')}</span><small>${ks.map(k=>nw.includes(k)?`<em>${resN(k)}</em>`:resN(k)).join('، ')}</small></span></button>`}).join('')}</div>
     <button class="btn small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
   app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
   d.querySelectorAll('[data-fl]').forEach(b=>b.onclick=()=>{const n=+b.dataset.fl;twSheetX();if(n===V.floor)return;V.floor=n;V.hole=0;V.deep=Math.max(V.deep||1,n);GX.rock=null;GX.rubble=0;mnKeep(h,n);
@@ -4412,6 +4419,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.71',d:'10 أكتوبر',add:['في «{اختار|اختاري} الدور» في المنجم كل دور بقى مكتوب جنبه الأحجار اللي بتطلع فيه بصورها، واللي بيبدأ يطلع من الدور ده مكتوب بالدهبي.'],fix:['اتأكدنا إن نقلك لدور تاني من القايمة ما بيرجّعش مجهود، حتى لو معاك «رئة المغارة». المجهود بيرجع بس لما {تنزل|تنزلي} من الحفرة.']},
   {v:'5.70',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع فحم مع النحاس والحديد والفضة، عشان السبك والورشة من غير ما {تنزل|تنزلي} المنجم للدور 3.'],fix:[]},
   {v:'5.69',d:'10 أكتوبر',add:['كل تخصص بقى ليه أول قدرة بتاعته مكان أول قدرة في نوعك القديم (يعني الحداد بقى أول ضربة عنده «خبطة شاكوش» مش «ضربة من الضلمة»). التخصصات اللي من نفس السكة بتشترك في نفس القدرة الأولى.'],fix:['نقط القدرة اللي {كنت صرفتها|كنتي صرفتيها} على أول قدرة في نوعك القديم بترجعلك كلها لوحدها أول ما {تفتح|تفتحي} اللعبة {وانت ماسك|وانتي ماسكة} تخصص.','الرفيق ما بقاش بيعلق على «بيلعب معاك لايف من موبايله» لو الليلة مع صاحبك اتقفلت من غير ما تبدأ. ولو الليلة لسه مفتوحة، {تقدر|تقدري} {تدوس|تدوسي} على الرفيق مرتين {وتلغيها|وتلغيها}.']},
   {v:'5.68',d:'10 أكتوبر',add:['«شجرة عطارة» عند عم رجب: «دقة موزونة» (الدايرة الخضرا أوسع)، و«جرعة تقيلة» (كل الجرع أقوى)، و«بركة» (حظ أحسن، وممكن عشبة ترجع)، و«عِشرة العطّارين» (خبرة أكتر)، وروابط وتاج «حكيم الكفر» وطريقين {تختار|تختاري} واحد منهم.','لعبة الهون اتعملت من الأول بنفس شكل الحداد والطبخ: الأول {بتدق|بتدقي} لما الدايرة تقفل على النقطة الخضرا (5 دقات)، وبعدين {بتصب|بتصبي} الجرعة في القزازة {وتسيب|وتسيبي} لما توصل الخط الدهبي قبل ما تفيض.','الجرع بقى ليها جودة زي السلاح والأكل: بايظة، عادية، كويسة، ممتازة، تحفة. التحفة أقوى 70% والبايظة أضعف. وممكن {تطلعلك|تطلعلك} «محظوظ!» أو «منحوس..».','الجرع الممتازة والتحفة بتطلع بصفة: «مركّزة» (مفعولها أقوى 25%) أو «منعشة» (بترجّع طاقة في القتال).','كل جودة ليها مكانها في الشنطة جنب الجرعة العادية، وبتتباع في السوق بسعر على قد جودتها.'],fix:['زرار واحد «{اعمل|اعملي}» لكل جرعة، و«{اعمل|اعملي} بسرعة» بيطلّع جرعة واحدة «عادية» من غير لعب.','قزازة الصحيان لسه من غير جودة: الدق المظبوط بيطلّع منها أكتر.']},
