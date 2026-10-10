@@ -4400,6 +4400,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+  {v:'5.65',d:'10 أكتوبر',add:['«العطارة» في البلد: عم رجب العطّار. {بتدق|بتدقي} الأعشاب في الهون: إبرة بتجري على شريط و{بتدوس|بتدوسي} 3 مرات في الأخضر، وكل ما الدقة تبقى أحسن الجرع بتطلع أكتر (من 1 لـ3). «بسرعة» بتطلّع جرعة واحدة.','شغلانة جديدة: «عطارة». كل مستوى بيخلّي كل الجرع اللي {بتشربها|بتشربيها} {وبترميها|وبترميها} أقوى 5%، وبيفتح جرع جديدة.','6 أعشاب: نعناع وحلبة وحبة البركة من عند عم رجب، و{بتلاقي|بتلاقي} شيح الجبل في المنجم من الدور 5، وعشبة الترعة {وانت بتصطاد|وانتي بتصطادي}، وزهرة الغيطان في الغيط وبعد القتالات الصعبة. النعناع كمان بيطلع مع المحصول.','3 حاجات جديدة للشنطة: «ترياق» بيرجّع صحة كل دور 3 أدوار، و«جرعة نار» {بترميها|بترميها} على وحش فيولّع، و«جرعة ضل» بتخلّي أول ضربتين {عليك|عليكي} ما ييجوش. و{تقدر|تقدري} {تعمل|تعملي} جرعة الشفا والكبيرة وقزازة الصحيان بإيدك.','3 تخصصات جديدة للعطارة: العطّار (نادر)، الحكيم (ملحمي)، وطبيب السراية (خفي، بييجي باختبار)، ولقبين و3 إنجازات.'],fix:['«{غيّر|غيّري} نوعك» بقى اسمه «{غيّر|غيّري} تخصصك»، و«نوعك الأساسي» بقى «تخصصك الأساسي».']},
   {v:'5.64',d:'10 أكتوبر',add:[],fix:['«الورشة» بقت فوق في شاشة الحداد، وكل حاجة {ركّبتها|ركّبتيها} مكتوب جنبها بتديك إيه.','في «{اختار|اختاري} الدور» في المنجم بقى مكتوب إيه اللي بيطلع في كل دور: الفحم من 3، وحجر التعزيز من 4، والدهب من 8، والزمرد من 14.']},
   {v:'5.63',d:'10 أكتوبر',add:['المنجم بقى بيفتكر الدور اللي {كنت|كنتي} فيه: لما {ترجع|ترجعي} {بتكمّل|بتكمّلي} من نفس الدور بدل ما {تبدأ|تبدأي} من الأول.','زرار «{اختار|اختاري} الدور» تحت في المنجم: {تنزل|تنزلي} أو {تطلع|تطلعي} على طول لأي دور {وصلته|وصلتيه} قبل كده.'],fix:[]},
   {v:'5.62',d:'10 أكتوبر',add:['«{غيّر|غيّري} نوعك»: في آخر شاشة «التخصصات» بقى فيه طريق صعب {تغيّر|تغيّري} بيه نوعك الأساسي. محتاج المستوى 6، وبيتكلف 250 جنيه لكل مستوى، ومرة واحدة في الأسبوع.','صفات النوع القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، والصحة والطاقة بيمشوا معاه. المستوى والعدة والألقاب والشغلانات بيفضلوا زي ما هم.','نص نقط القدرة اللي {صرفتها|صرفتيها} على القدرات القديمة بس هو اللي بيرجع، والتخصص اللي بتاع نوعك القديم بس بيروح ومش بيرجع.'],fix:[]},
@@ -23569,7 +23570,7 @@ function spCost(h,at){const o=spOn(h);let m=o&&o.cost&&o.cost[at]||1;if(at==='sm
 {const l0=lifeXP;lifeXP=function(h,k,n){if(h&&h.cnt&&(k==='smith'||k==='tailor'||k==='cook'))h.cnt['made_'+k]=(h.cnt['made_'+k]||0)+1;const r=l0.apply(this,arguments);
   /* only work done by hand: a quick make, the smelter or «احصد الكل» never brings a chance (Twister) */
   const quick=S.spQuick&&Date.now()-S.spQuick<3000;
-  try{if(!quick&&h&&h===S.hero&&!S.combat&&(k==='smith'||k==='tailor'||k==='cook'||k==='farm'||k==='mine'||k==='fish'))spEvent(h,k,Math.min(2,.5+.25*(n||1)))}catch(e){console.warn(e)}return r}}
+  try{if(!quick&&h&&h===S.hero&&!S.combat&&(k==='smith'||k==='tailor'||k==='cook'||k==='farm'||k==='mine'||k==='fish'||k==='attar'))spEvent(h,k,Math.min(2,.5+.25*(n||1)))}catch(e){console.warn(e)}return r}}
 /* a hard fight you win: a boss, three foes or more, or you end it under a third of your health */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let hard=0;
   try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');hard=boss?1.5:(C.foes.length>=3||h.hp<MXH(h)/3)?1:0}}catch(e){}
@@ -23856,7 +23857,7 @@ async function spShades(h,C,out){if(!SPS.list.length){SPS.list.push({n:h.name,d:
 {const hf=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;const r=hf.apply(this,arguments);try{if(C&&C.hh&&C.me&&C.me.sharp&&!(o&&o.fx==='poison')){if(--C.me.sharp.n<=0)delete C.me.sharp}}catch(e){}return r}}
 SP_CH.push((h,C)=>C&&C.me&&C.me.sharp?['cheer','سلاح متسقي +'+C.me.sharp.a,C.me.sharp.n,C.me.sharp.t]:null);
 /* the specialisation's description lines plus its fight moves, for the offer, the celebration and the list */
-function spDL(o){const k=SPK[o.id];return k?o.d.concat(['قدراتك في القتال بتتغير: '+k.map(s=>s.n).join('، ')+'، والقدرة الأساسية بتاعة نوعك بتفضل']):o.d}
+function spDL(o){const k=SPK[o.id];return k?o.d.concat(['قدراتك في القتال بتتغير: '+k.map(s=>s.n).join('، ')+'، والقدرة الأساسية بتاعة تخصصك الأساسي بتفضل']):o.d}
 /* ----- the trades (5.57): المنجم، الترعة، and one more step for الخياط، الطباخ and الفلاح -----
    Each comes only while you do that work by hand (a rock you break, a fish you pull, a dish you play). Their work effects are
    tree-style numbers (tf: the same keys the craft trees use, added on top), and each has its own three fight moves (SPK_ADD). */
@@ -24239,7 +24240,7 @@ function spInfo(h,id){const o=SP[id];if(!o)return;twSheetX();const R=SP_R[o.r],K
   d.innerHTML=`<div class="bk"></div><div class="pn spi">
     <div class="spi-hd">${spIco(o,64)}<div><small style="color:${R.c}">${R.n}</small><b>${spName(o,h)}</b></div></div>
     <div class="tw-lbl">${G('بيديك','بيديكي')} إيه</div><ul class="sp-d">${o.d.map(x=>`<li>${T(x)}</li>`).join('')}</ul>
-    ${mv?`<div class="tw-lbl">قدراتك في القتال</div><div class="tw-sm">بيبقوا مكان قدرات نوعك، ما عدا القدرة الأساسية. ${G('بتكبّرهم','بتكبّريهم')} بنقط القدرة من البروفايل.</div>${mv}`:''}
+    ${mv?`<div class="tw-lbl">قدراتك في القتال</div><div class="tw-sm">بيبقوا مكان قدرات تخصصك الأساسي، ما عدا القدرة الأساسية. ${G('بتكبّرهم','بتكبّريهم')} بنقط القدرة من البروفايل.</div>${mv}`:''}
     ${on?`<div class="tw-sm spi-on">ده ${G('تخصصك','تخصصك')} دلوقتي.</div>`:`<div class="tw-lbl">بييجي إزاي</div>
       ${o.prog?`<div class="tw-sm">${o.prog(h)}</div>`:''}
       ${ev.length?`<div class="tw-sm">لما الشروط تكمل، الفرصة بتيجي ${T(ev.join(' أو '))}، ومش كل مرة.</div>`:''}
@@ -24415,7 +24416,7 @@ const blAny=h=>hasSkill(h,'bl_any')?[0,.25,.35,.45,.55,.7][skL(h,'bl_any')]:0;
   if(x.cheer&&S.comp&&S.comp.hp>0&&C.cp){fxOn(C.cp,'cheer');out.push(`${S.comp.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
   return say(`${a.name}: ${s.n}! ${out.join(' · ')}`,'good')}}
 /* ==========================================================================
-   سرداب: changing your class («{تغيّر|تغيّري} نوعك», 5.62, Twister: hard, but possible)
+   سرداب: changing your class («{تغيّر|تغيّري} تخصصك», 5.62, Twister: hard, but possible)
    From the التخصصات screen. Needs level 6, costs 250 جنيه a level, once a week, never during a trial.
    What changes: the class's base stats and level growth are swapped (other points you earned stay), health and energy
    follow the new class, half the skill points spent on the old class moves come back, and a specialisation that only
@@ -24426,7 +24427,7 @@ const ccCost=h=>250*h.lvl;
 const ccEnB=(c,L)=>(c==='ساحر'||c==='معالج')&&L>=4?2:0;
 function ccWhy(h){if(h.lvl<CC_LVL)return `لازم ${G('توصل','توصلي')} المستوى ${CC_LVL} (${G('انت','انتي')} دلوقتي ${h.lvl})`;
   const s=h.sp||{};if(s.trial)return `${G('خلّص','خلّصي')} الاختبار اللي شغال الأول`;
-  const w=(h.clsChg||0)+CC_WEEK-Date.now();if(w>0)return `${G('غيّرت','غيّرتي')} نوعك قريب. تقدر تاني بعد ${spDays(w)}`;
+  const w=(h.clsChg||0)+CC_WEEK-Date.now();if(w>0)return `${G('غيّرت','غيّرتي')} تخصصك قريب. تقدر تاني بعد ${spDays(w)}`;
   if(h.money<ccCost(h))return `محتاج ${ccCost(h)} جنيه (معاك ${h.money})`;return ''}
 function ccRefund(h){const old=(CSK[h.cls]||[]).map(s=>s.id);let spent=0;h.skL=h.skL||{};
   old.forEach(id=>{const L=h.skL[id]||1;for(let n=2;n<=L;n++)spent+=SK_COST[n]||0;delete h.skL[id]});return Math.floor(spent/2)}
@@ -24447,9 +24448,9 @@ function ccSheet(h){twSheetX();const why=ccWhy(h),opts=Object.keys(CLASSES).filt
   const s=h.sp||{},o=s.on&&SP[s.on];
   const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   d.innerHTML=`<div class="bk"></div><div class="pn">
-    <div class="h">${G('غيّر','غيّري')} نوعك<small>${G('انت','انتي')} دلوقتي ${clsF(h.cls,h.g==='f')}</small></div>
-    <div class="tw-sm">طريق صعب: ${ccCost(h)} جنيه، ومرة واحدة في الأسبوع. صفات نوعك القديم ونموّها بيتشالوا ويتحط مكانهم بتوع النوع الجديد، وكل اللي ${G('كسبته','كسبتيه')} غير كده بيفضل. نص نقط القدرة اللي ${G('صرفتها','صرفتيها')} على قدراتك القديمة بس هي اللي بترجع.</div>
-    ${o&&o.cls?`<div class="tw-sm" style="color:#f0a090">تخصصك «${spName(o,h)}» بتاع ${clsF(o.cls,h.g==='f')} بس: لو ${G('غيّرت','غيّرتي')} نوعك هيروح ومش هيرجع.</div>`:''}
+    <div class="h">${G('غيّر','غيّري')} تخصصك<small>${G('انت','انتي')} دلوقتي ${clsF(h.cls,h.g==='f')}</small></div>
+    <div class="tw-sm">طريق صعب: ${ccCost(h)} جنيه، ومرة واحدة في الأسبوع. صفات تخصصك القديم ونموّها بيتشالوا ويتحط مكانهم بتوع التخصص الجديد، وكل اللي ${G('كسبته','كسبتيه')} غير كده بيفضل. نص نقط القدرة اللي ${G('صرفتها','صرفتيها')} على قدراتك القديمة بس هي اللي بترجع.</div>
+    ${o&&o.cls?`<div class="tw-sm" style="color:#f0a090">تخصصك «${spName(o,h)}» بتاع ${clsF(o.cls,h.g==='f')} بس: لو ${G('غيّرت','غيّرتي')} تخصصك هيروح ومش هيرجع.</div>`:''}
     ${why?`<div class="tw-sm" style="color:#f0a090">${why}.</div>`:''}
     <div class="cc-ops">${opts.map(c=>`<button class="btn ghost small${cur===c?' on':''}" data-cc="${c}" ${why?'disabled':''}>${clsF(c,h.g==='f')}</button>`).join('')}</div>
     ${cur&&!why?`<div class="tw-sm">${h.g==='f'&&DESC_F[cur]||CLASSES[cur].desc}</div><button class="btn small" id="ccGo">${SPV.ccAsk?G('متأكد؟ الفلوس مش هترجع','متأكدة؟ الفلوس مش هترجع'):`${G('هبقى','هبقى')} ${clsF(cur,h.g==='f')} · ${ccCost(h)} جنيه`}</button>`:''}
@@ -24458,13 +24459,261 @@ function ccSheet(h){twSheetX();const why=ccWhy(h),opts=Object.keys(CLASSES).filt
   d.querySelectorAll('[data-cc]').forEach(b=>b.onclick=()=>{SPV.cc=b.dataset.cc;SPV.ccAsk=0;ccSheet(h)});
   const go=d.querySelector('#ccGo');if(go)go.onclick=()=>{if(!SPV.ccAsk){SPV.ccAsk=1;return ccSheet(h)}const nc=SPV.cc,r=ccDo(h,nc);SPV.cc='';SPV.ccAsk=0;twSheetX();if(!r)return render();
     render();SFX.levelup&&SFX.levelup();
-    band(G('بقيت','بقيتي')+' '+clsF(nc,h.g==='f'),G('نوعك اتغيّر','نوعك اتغيّر'),`${r.back?`رجعلك ${r.back} نقطة قدرة`:'قدراتك الجديدة مستنياك'}${r.lost?` · «${r.lost}» راح`:''}`,{dur:3200})}}
+    band(G('بقيت','بقيتي')+' '+clsF(nc,h.g==='f'),G('تخصصك اتغيّر','تخصصك اتغيّر'),`${r.back?`رجعلك ${r.back} نقطة قدرة`:'قدراتك الجديدة مستنياك'}${r.lost?` · «${r.lost}» راح`:''}`,{dur:3200})}}
 {const s0=SCREENS.spec;SCREENS.spec=function(){const r=s0.apply(this,arguments);try{const h=S.hero,w=view.querySelector('.sp-scr');if(!h||!w)return r;const why=ccWhy(h);
-  w.insertAdjacentHTML('beforeend',`<div class="tw-lbl">نوعك الأساسي</div><div class="card cc-card" role="button" id="ccOpen"><b>${G('غيّر','غيّري')} نوعك</b><small>${why?why:`${ccCost(h)} جنيه · مرة في الأسبوع`}</small></div>`);
+  w.insertAdjacentHTML('beforeend',`<div class="tw-lbl">تخصصك الأساسي</div><div class="card cc-card" role="button" id="ccOpen"><b>${G('غيّر','غيّري')} تخصصك</b><small>${why?why:`${ccCost(h)} جنيه · مرة في الأسبوع`}</small></div>`);
   $('#ccOpen').onclick=()=>ccSheet(h)}catch(e){console.warn(e)}return r}}
 (function(){const st=document.createElement('style');st.textContent=`
 .cc-card{display:flex;flex-direction:column;gap:4px;cursor:pointer;min-height:44px}.cc-card small{opacity:.75;line-height:1.5}
 .cc-ops{display:flex;flex-wrap:wrap;gap:8px}.cc-ops .btn{flex:1 1 40%;min-height:44px;margin:0}.cc-ops .btn.on{border-color:var(--gold);color:var(--gold2)}`;document.head.appendChild(st)})();
+/* ==========================================================================
+   سرداب: العطارة (5.65, plan «سرداب: الخطة الجاية», row «العطارة»: العطّار، الحكيم، طبيب السراية)
+   A new trade and a shop in town: عم رجب العطّار. Herbs come from his shop (نعناع، حلبة، حبة البركة) and from the other
+   trades (شيح الجبل in the mine from floor 5, عشبة الترعة while fishing, نعناع and زهرة الغيطان from the field, and the
+   flower from hard fights too). Potions are pounded in the mortar (الهون): a needle runs over a bar, tap three times in the
+   green; the better the taps, the more potions come out (1 to 3). «بسرعة» makes one and never brings a specialisation.
+   The trade level makes every potion you drink or throw stronger (atPot: +5% a level, the specialisation and two titles on top).
+   Three new things for the bag: ترياق (health back every turn), جرعة نار (thrown: damage and fire), جرعة ضل (smoke: the next
+   two hits on you miss). The attar line of specialisations lives at the bottom of this file (SP_ADD, SPK_ADD, SPT).
+   ========================================================================== */
+const AT_HERB={mint:{n:'نعناع',c:'#5ad08a',p:6},helba:{n:'حلبة',c:'#e0b84a',p:8},blackseed:{n:'حبة البركة',c:'#3a3040',p:30,tier:1},
+  shih:{n:'شيح الجبل',c:'#9aa890',p:35,tier:1},nileh:{n:'عشبة الترعة',c:'#45a8b4',p:30,tier:1},bloom:{n:'زهرة الغيطان',c:'#a578d6',p:90,tier:2}};
+Object.keys(AT_HERB).forEach(k=>MAT[k]=Object.assign({herb:1},AT_HERB[k]));
+Object.assign(TW_SRC,{mint:'عم رجب أو الغيط',helba:'عم رجب',blackseed:'عم رجب',shih:'المنجم من الدور 5 وتحت',nileh:'الترعة وانت بتصطاد',bloom:'الغيط والقتالات الصعبة'});
+Object.assign(TW_FEM,{helba:1,blackseed:1,nileh:1,bloom:1});
+/* what عم رجب sells, and from which trade level */
+const AT_SELL={mint:{p:10,lv:1},helba:{p:12,lv:1},blackseed:{p:40,lv:3}};
+
+/* the trade */
+LIFE.attar={n:'عطارة',d:'الجرع بتشتغل أقوى، {وبتفتح|وبتفتحي} جرع جديدة'};
+const atFix=h=>{if(h&&h.life&&!h.life.attar)h.life.attar={lvl:1,xp:0};return h};
+(HEROES||[]).forEach(h=>{if(h)atFix(h)});
+PF_LIFEIC.attar='<svg viewBox="0 0 40 40"><path d="M27 4.5L17.5 22" stroke="#c98326" stroke-width="3.6" stroke-linecap="round"/><path d="M5 19h30q-1 9.5-8.5 12.5V35H13.5v-3.5Q6 28.5 5 19z" fill="#c98326"/><path d="M5 19h30" stroke="#fff0b0" stroke-width="2"/><path d="M11 21q9 3 18 0" stroke="#3a9e55" stroke-width="2.4" fill="none"/></svg>';
+PF_LIFEHOW.attar=()=>`بتكبر لما ${G('تعمل','تعملي')} جرع عند عم رجب العطّار`;
+const atLv=h=>h&&h.life&&h.life.attar?h.life.attar.lvl:1;
+/* how much stronger the potions are: the trade level, the specialisation and the titles */
+function atPot(h){if(!h)return 1;let m=1+.05*(atLv(h)-1);try{const o=spOn(h);if(o&&o.pot)m*=o.pot;titlesOn(h).forEach(t=>{if(t.pot)m*=t.pot})}catch(e){}return m}
+const atPc=h=>Math.round((atPot(h)-1)*100);
+const atHero=()=>S.hero;
+ITEMS.potion.heal=()=>{const h=atHero();return Math.round((5+(h?h.lvl:1))*atPot(h))};
+ITEMS.potion.info=()=>`ترجّع ${ITEMS.potion.heal()} صحة`;
+ITEMS.bigpotion.heal=()=>{const h=atHero();return Math.round((12+(h?h.lvl:1))*atPot(h))};
+ITEMS.bigpotion.info=()=>`ترجّع ${ITEMS.bigpotion.heal()} صحة`;
+
+/* the three new things for the bag */
+const atRg=h=>Math.max(2,Math.round((2+Math.floor((h?h.lvl:1)/3))*atPot(h)));
+const atFireD=h=>Math.round((3+Math.ceil((h?h.lvl:1)/2))*atPot(h));
+const atBurn=h=>Math.max(1,Math.round(2*atPot(h)));
+Object.assign(ITEMS,{
+  antidote:{name:'ترياق',price:60,use:'at',info:()=>`بيرجّع ${atRg(atHero())} صحة كل دور، 3 أدوار ({ليك|ليكي} أو لرفيقك)`},
+  firepot:{name:'جرعة نار',price:70,use:'at',info:()=>`{بترميها|بترميها} على وحش: ${atFireD(atHero())} ضرر، وبيولّع دورين`},
+  shadowpot:{name:'جرعة ضل',price:80,use:'at',info:()=>'دخان أسود حواليك: أول ضربتين {عليك|عليكي} مش هييجوا'}});
+Object.assign(BAG_MAX,{antidote:3,firepot:3,shadowpot:2});
+['antidote','firepot','shadowpot'].forEach(k=>{if(!BAG_FIGHT.includes(k))BAG_FIGHT.push(k)});
+const AT_FIGHT={antidote:1,firepot:1,shadowpot:1};
+
+/* pixel art: the herbs, the new potions, the mortar and its pestle */
+Object.assign(PXI_D,{
+  mint:P20_rc(PXI_D.molokhia,{q:'O'}),
+  helba:P20_rc(PXI_D.ful,{G:'Y',q:'o',Y:'W'}),
+  blackseed:P20_rc(PXI_D.ful,{G:'g',q:'v',Y:'c'}),
+  shih:P20_rc(PXI_D.molokhia,{G:'c',q:'g',z:'b'}),
+  nileh:P20_rc(PXI_D.molokhia,{G:'O',q:'l',z:'i'}),
+  bloom:P20_rc(PXI_D.tamatem,{R:'P',r:'p',m:'i',W:'Y'}),
+  antidote:P20_rc(PXI_D.potion,{R:'G',r:'q',m:'z'}),
+  firepot:P20_rc(PXI_D.potion,{R:'Y',r:'o',m:'r'}),
+  shadowpot:P20_rc(PXI_D.potion,{R:'P',r:'p',m:'h'}),
+  at_mortar:P20_grid(16,['','','','','','KKKKKKKKKKKKKKKK','KYYyyyyyyyyyyooK','KKGqGGqGqGGqGqKK','.KYyyyyyyyyyyoK','.KYyyyyyyyyyooK','..KYyyyyyyyyoK','..KyyyyyyyyyoK','...KyyyyyyyoK','....KKyyyyKK','...KYyyyyyyoK','...KKKKKKKKKK']),
+  at_pestle:P20_grid(16,['..........KK','.........KYoK','........KYoK','.......KYoK','......KYoK','.....KYoK','....KYoK','...KYoK','..KYyoK','.KYyyoK','.KyyooK','..KKKK'])});
+
+/* the recipes: what goes in, the trade level, rarity, and the experience a brew gives */
+const AT_REC={
+  potion:{need:{mint:2},lv:1,tier:0,xp:1},
+  antidote:{need:{mint:1,helba:2},lv:2,tier:0,xp:2},
+  bigpotion:{need:{mint:2,blackseed:1},lv:3,tier:1,xp:2},
+  firepot:{need:{helba:1,shih:1},lv:4,tier:1,xp:3},
+  shadowpot:{need:{nileh:1,blackseed:1},lv:5,tier:1,xp:3},
+  revive:{need:{bloom:1,blackseed:1,mint:2},lv:7,tier:2,xp:4}};
+const atRoom=(h,k)=>bagCap(h,k)-bagCount(h,k);
+
+/* herbs found while doing the other trades (shown together in one small note) */
+const AT_GOT={};let atGotT=0;
+function atGot(h,k,n){addRes(h,k,n||1);AT_GOT[k]=(AT_GOT[k]||0)+(n||1);clearTimeout(atGotT);
+  atGotT=setTimeout(()=>{const t=Object.keys(AT_GOT).map(x=>`${AT_GOT[x]} ${resN(x)}`).join(' و');Object.keys(AT_GOT).forEach(x=>delete AT_GOT[x]);
+    saveHero();toast(`<span style="color:#a6e3a0">${G('لقيت','لقيتي')} ${t}</span><br><small>للعطارة عند عم رجب</small>`)},700)}
+{const l0=lifeXP;lifeXP=function(h,k,n){const r=l0.apply(this,arguments);
+  try{if(h&&h===S.hero&&!S.combat){const quick=S.spQuick&&Date.now()-S.spQuick<3000;
+    if(k==='farm'){if(Math.random()<.25)atGot(h,'mint',1);if(!quick&&Math.random()<.03)atGot(h,'bloom',1)}
+    else if(k==='fish'&&Math.random()<.12)atGot(h,'nileh',1);
+    else if(k==='mine'&&typeof spFloor==='function'&&spFloor()>=5&&Math.random()<.08)atGot(h,'shih',1)}}catch(e){console.warn(e)}return r}}
+/* the flower sometimes stays behind after a hard fight */
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let ch=0;
+  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');ch=boss?.25:(C.foes.length>=3||h.hp<MXH(h)/3)?.08:.02}}catch(e){}
+  const r=e0.apply(this,arguments);
+  try{if(ch&&Math.random()<ch){addRes(h,'bloom',1);saveHero();setTimeout(()=>toast(`<span style="color:#d9cbff">${G('لقيت','لقيتي')} زهرة الغيطان</span><br><small>نابتة مكان القتال</small>`),1600)}}catch(e){}
+  return r}}
+
+/* ---------- in a fight ---------- */
+{const it0=itemTargets;itemTargets=function(k){if(!AT_FIGHT[k])return it0.apply(this,arguments);const h=S.hero,c=S.comp,C=S.combat,out=[];if(!C)return out;
+  if(k==='antidote'){out.push({who:'me',t:G('اشربه انت','اشربيه انتي'),s:`صحتك ${h.hp}/${MXH(h)} · ${atRg(h)} كل دور`});
+    if(c&&c.hp>0)out.push({who:'comp',t:`اديه لـ${c.name}`,s:`صحت${CG('ه','ها')} ${c.hp}/${c.max}`})}
+  else if(k==='firepot')C.foes.filter(f=>f.hp>0&&!f.fled).forEach(f=>out.push({who:'foe',id:f.id,t:`ارميها على ${f.name}`,s:`${atFireD(h)} ضرر ونار دورين`}));
+  else if(k==='shadowpot')out.push({who:'me',t:G('اكسرها تحت رجلك','اكسريها تحت رجلك'),s:'أول ضربتين مش هييجوا'});
+  return out}}
+{const u0=useItem;useItem=async function(k,t){const C=S.combat,h=S.hero,c=S.comp;if(!AT_FIGHT[k]||!C||C.busy||!t)return u0.apply(this,arguments);
+  ac();C.busy=true;C.bag=null;C.usedItem=true;h.bag[k]=Math.max(0,(h.bag[k]||0)-1);
+  if(k==='antidote'){SFX.gulp&&SFX.gulp();const rg={a:atRg(h),n:3};
+    if(t.who==='comp'&&c&&c.hp>0){fxOn(C.cp,'regen',rg);combat();const el=$('#compCard');if(el)pop(el,['#7fe07a','#e6ffe0'],18);await say(`{اديت|اديتي} ${c.name} ترياق: ${CG('هيرجع','هترجع')} ${rg.a} صحة كل دور، 3 أدوار.`,'good')}
+    else{fxOn(C.me,'regen',rg);combat();const el=$('#meCard');if(el)pop(el,['#7fe07a','#e6ffe0'],18);await say(`{شربت|شربتي} الترياق: ${G('هترجع','هترجعي')} ${rg.a} صحة كل دور، 3 أدوار.`,'good')}}
+  else if(k==='firepot'){const f=C.foes[t.id];if(f&&f.hp>0){const d=atFireD(h);hurtFoe(f,d);if(f.hp>0)fxOn(f.fx,'burn',{d:atBurn(h),n:2});bump('firepot');SFX.hit&&SFX.hit(.8);await sleep(700);
+    await say(`{رميت|رميتي} جرعة نار على ${f.name}: -${d}${f.hp>0?` · ${FF(f,'ولّع','ولّعت')}`:` · ${f.name} ${FF(f,'وقع','وقعت')}!`}`,'good')}}
+  else if(k==='shadowpot'){fxOn(C.me,'smoke',{n:2});combat();SFX.smoke&&SFX.smoke();const el=$('#meCard');if(el)pop(el,['#6b45a6','#1b1d3b','#a578d6'],26);
+    await say(`{كسرت|كسرتي} جرعة الضل: دخان أسود حواليك، أول ضربتين {عليك|عليكي} مش هييجوا.`,'good')}
+  bump('potUsed');saveHero();await afterHero()}}
+/* drinking a healing potion counts too */
+{const u0=useItem;useItem=async function(k,t){const C=S.combat;if(C&&!C.busy&&t&&(k==='potion'||k==='bigpotion'))try{bump('potUsed')}catch(e){}return u0.apply(this,arguments)}}
+
+/* ---------- the shop: عطارة عم رجب ---------- */
+TW_NPC.ragab=['عم رجب العطّار','#5a8a4a'];TW_WHO['عم رجب']='ragab';TW_WHO['عم رجب العطّار']='ragab';
+if(typeof PXP_NPC!=='undefined')PXP_NPC.ragab={look:{name:'عم رجب',g:'m',cls:'معالج',skin:'#a8724a',hairColor:'#d9d4cc',hair:'قصير',eyes:'#4a2a14',outfit:'#4a6a3a',age:'كبير',beard:'دقن طويلة'},bg:['q','z']};
+function atLines(h){return T(pick(['«النعناع للشفا، والحلبة للعزم، والشيح للي قلبه جامد.»','«{هات|هاتي} الأعشاب وأنا أوريك الهون بيتدق إزاي.»',
+  '«الجرعة اللي تتدق بإيدك غير اللي تتشري. فيها حتة منك.»','«زهرة الغيطان ما بتطلعش غير للي بيتعب. لو {لقيت|لقيتي} واحدة {هاتها|هاتيها}.»',
+  '«الشيح بيطلع في الجبل تحت، في الضلمة. الأعشاب الحلوة بتحب الأماكن الوحشة.»','«عشبة الترعة بتطلع مع السمك، والصيادين بيرموها وهما مش عارفين قيمتها.»',
+  '«حبة البركة دي جدتي كانت بتحطها في كل حاجة، حتى الشاي.»','«{دق|دقي} على مهلك. الهون اللي بيستعجل بيبوّظ الجرعة.»']))}
+const atCut=h=>{const o=spOn(h);return o&&o.herbCut||1};
+const atHerbP=(h,k)=>twGP(h,AT_SELL[k].p*atCut(h));
+function atArt(){const jar=(x,y,c)=>`<rect x="${x}" y="${y}" width="9" height="11" fill="#cfc6b8"/><rect x="${x+1}" y="${y+4}" width="7" height="6" fill="${c}"/><rect x="${x+2}" y="${y-2}" width="5" height="2" fill="#8e4f33"/>`;
+  return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#22281c"/><rect y="66" width="160" height="24" fill="#3a2a1a"/>
+  ${[22,44].map(y=>`<rect x="6" y="${y+12}" width="92" height="3" fill="#74412a"/>`).join('')}
+  ${[[10,23,'#7fe07a'],[24,23,'#f3c14d'],[38,23,'#a578d6'],[52,23,'#e04b3e'],[66,23,'#45c8dc'],[80,23,'#c98326'],[10,45,'#3a9e55'],[24,45,'#962e3a'],[38,45,'#fff0b0'],[52,45,'#6b45a6'],[66,45,'#7fe07a'],[80,45,'#f3c14d']].map(([x,y,c])=>jar(x,y,c)).join('')}
+  <rect x="104" y="50" width="18" height="16" fill="#c9b58a"/><rect x="104" y="48" width="18" height="4" fill="#3a9e55"/><rect x="126" y="54" width="16" height="12" fill="#c9b58a"/><rect x="126" y="52" width="16" height="4" fill="#f3c14d"/>
+  <rect x="112" y="18" width="2" height="22" fill="#8e4f33"/><rect x="108" y="38" width="10" height="3" fill="#7fe07a"/><rect x="128" y="18" width="2" height="18" fill="#8e4f33"/><rect x="124" y="34" width="10" height="3" fill="#c98326"/>
+  <rect x="144" y="18" width="2" height="24" fill="#8e4f33"/><rect x="140" y="40" width="10" height="3" fill="#a578d6"/><rect x="70" y="70" width="22" height="10" fill="#c98326"/><rect x="68" y="68" width="26" height="3" fill="#fff0b0"/><rect x="86" y="58" width="3" height="12" fill="#f3c14d"/></svg>`}
+{const pa=placeArt;placeArt=function(id){if(id==='attar')return atArt();return pa.apply(this,arguments)}}
+const atCan=h=>Object.keys(AT_REC).filter(k=>atLv(h)>=AT_REC[k].lv&&hasRes(h,AT_REC[k].need)&&atRoom(h,k)>0).length;
+TW_EXTRA.push(h=>{atFix(h);const n=atCan(h);
+  return {id:'attar',go:'attar',n:'العطارة',w:'عم رجب: أعشاب وجرع',s:n?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${n===1?'جرعة':n===2?'جرعتين':n+' جرع'}</span>`:`عطارة مستوى ${atLv(h)}`}});
+{const g=TW_GROUPS.find(x=>x.n==='السوق والصنايعية');if(g&&!g.go.includes('attar'))g.go.splice(Math.max(0,g.go.indexOf('gear')),0,'attar')}
+
+function atLifeHTML(h){const L=h.life.attar,nd=L.lvl*4,mx=L.lvl>=10,pc=atPc(h);
+  return `<div class="card tw-life"><div class="r1"><b>${LIFE.attar.n} <span>مستوى ${L.lvl}</span></b>${pc>0?`<span class="tw-ch up">الجرع أقوى ${pc}%</span>`:''}</div>
+    <div class="tw-bar lf"><i style="width:${mx?100:L.xp/nd*100}%"></i></div>
+    <div class="tw-sm">${mx?G('وصلت لآخر مستوى','وصلتي لآخر مستوى'):`فاضلك <b>${nd-L.xp}</b> خبرة ${G('وتطلع','وتطلعي')} عطارة مستوى ${L.lvl+1}`}. كل جرعة ${G('بتعملها','بتعمليها')} بتعلّمك، وكل مستوى بيخلّي الجرع اللي ${G('بتشربها','بتشربيها')} ${G('وبترميها','وبترميها')} أقوى 5%.</div></div>`}
+function atRecRow(h,k){const r=AT_REC[k],it=ITEMS[k],R=RARE[r.tier],lock=atLv(h)<r.lv,miss=twMiss(h,r.need),room=atRoom(h,k),have=h.bag[k]||0;
+  const nd=Object.keys(r.need).map(m=>`<span class="tw-nd ${(h.res[m]||0)>=r.need[m]?'ok':'no'}">${twMat(m,18)}${r.need[m]>1?r.need[m]+' ':''}${resN(m)}</span>`).join('');
+  const note=lock?'':miss.length?`<div class="tw-miss">ناقصك ${twMissTxt(miss)} · ${twSrcTxt(miss)}</div>`:room<1?`<div class="tw-miss" style="color:#f0a090">الشنطة شايلة آخرها من دي (${bagCount(h,k)} من ${bagCap(h,k)})</div>`:'';
+  const off=miss.length||room<1?'disabled':'';
+  return `<div class="tw-row at-row" style="--rc:${twRc(r.tier)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b style="color:${r.tier?R.c:'var(--ink)'}">${it.name}</b><small>${T(it.info())}${have?` · ${G('معاك','معاكي')} ${have}`:''}</small><div class="tw-chs">${nd}</div></div>
+    ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">عطارة مستوى ${r.lv}</small></button>`
+      :`<div class="at-bts"><button class="tw-buy" data-ath="${k}" ${off}>${G('دق بإيدك','دقي بإيدك')}<small>1 لـ3 جرع</small></button><button class="tw-buy ghost" data-atq="${k}" ${off}>بسرعة<small>جرعة واحدة</small></button></div>`}
+    ${note?`<div style="flex-basis:100%">${note}</div>`:''}</div>`}
+function atHerbRow(h,k){const m=MAT[k],s=AT_SELL[k],lock=atLv(h)<s.lv,p=atHerbP(h,k),have=h.res[k]||0;
+  return `<div class="tw-row" style="--rc:${twRc(m.tier||0)};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b>${m.n}</b><small>${have?`${G('معاك','معاكي')} ${have}`:`مش ${G('معاك','معاكي')} ولا ${TW_FEM[k]?'واحدة':'واحد'}`}</small></div>
+    ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">عطارة مستوى ${s.lv}</small></button>`
+      :twQB('h:'+k,qtyMax(99,h.money/p),p,0,`data-atb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`}
+SCREENS.attar=function(){const h=S.hero;if(!h){S.screen='title';return render()}atFix(h);
+  const wild=['shih','nileh','bloom'];
+  view.innerHTML=`${twTop('العطارة')}<div class="tw">
+    ${twNpcHTML('ragab',TWN.gr.ragab||(TWN.gr.ragab=atLines(h)))}
+    ${atLifeHTML(h)}
+    <div class="tw-stk"><div class="tw-wal"><span>${G('دق','دقي')} الأعشاب في الهون</span>${twMon(h)}</div></div>
+    <div class="tw-lbl">${G('اعمل','اعملي')} جرع بإيدك <small>كل ما الدقة تيجي في الأخضر، الجرع بتطلع أكتر</small></div>
+    <div class="col">${Object.keys(AT_REC).map(k=>atRecRow(h,k)).join('')}</div>
+    <div class="tw-lbl">أعشاب من عند عم رجب</div>
+    <div class="col">${Object.keys(AT_SELL).map(k=>atHerbRow(h,k)).join('')}</div>
+    <div class="tw-lbl">أعشاب ما بتتباعش <small>${G('بتلاقيها','بتلاقيها')} وانت ${G('شغال','شغالة')} في حاجة تانية</small></div>
+    <div class="card at-wild">${wild.map(k=>`<div class="at-wl">${twMat(k,30)}<div><b>${resN(k)}</b> <span>× ${h.res[k]||0}</span><small>${TW_SRC[k]}</small></div></div>`).join('')}</div></div>`;
+  twBack();
+  view.querySelectorAll('[data-ath]').forEach(b=>b.onclick=()=>atBrew(b.dataset.ath,0,b));
+  view.querySelectorAll('[data-atq]').forEach(b=>b.onclick=()=>atBrew(b.dataset.atq,1,b));
+  view.querySelectorAll('[data-atb]').forEach(b=>b.onclick=()=>atBuy(b.dataset.atb,b));qtyBind()};
+function atBuy(k,btn){const h=S.hero,s=AT_SELL[k];if(!h||!s||atLv(h)<s.lv)return;const p=atHerbP(h,k),mx=qtyMax(99,h.money/p);if(mx<1)return;const n=qtyN('h:'+k,mx);
+  h.money-=p*n;addRes(h,k,n);saveHero();floatAt(btn,twI('+'+n)+' '+resN(k),'#a6e3a0','',18);twPay(btn,p*n);twRender()}
+async function atBrew(k,quick,btn){const h=S.hero,r=AT_REC[k];if(!h||TWN.busy||!r||atLv(h)<r.lv||!hasRes(h,r.need))return;
+  const room=atRoom(h,k);if(room<1){toast('الشنطة شايلة آخرها من دي');return}
+  TWN.busy=1;takeRes(h,r.need);saveHero();let sc=0,n=1,x=0;
+  try{if(!quick){sc=await atGame(h,k,r);n=sc>=.8?3:sc>=.5?2:1;const o=spOn(h);if(o&&o.atX&&Math.random()<o.atX){n++;x=1}}}catch(e){console.warn(e)}finally{TWN.busy=0}
+  const got=Math.min(n,room);h.bag[k]=(h.bag[k]||0)+got;bump('brewed');
+  S.spQuick=quick?Date.now():0;lifeXP(h,'attar',r.xp+(sc>=.8?1:0));S.spQuick=0;saveHero();twRender();
+  SFX.good&&SFX.good();
+  toast(`<b style="color:#a6e3a0">${twI('+'+got)} ${ITEMS[k].name}</b>${x?'<br><small>الهون طلّع جرعة زيادة</small>':''}${got<n?`<br><small>الشنطة ما شالتش غير ${got}</small>`:''}`)}
+
+/* ---------- the mortar game: three taps in the green ---------- */
+const AT={sim:null};
+function atGame(h,k,r){if(AT.sim!=null)return Promise.resolve(AT.sim);
+  return new Promise(res=>{const hw=.12*(1+.05*(atLv(h)-1))*(1-.15*(r.tier||0)),c=.25+Math.random()*.5,N=3,sc=[];
+    let pos=Math.random(),dir=1,sp=.9,last=0,raf=0,done=0;
+    const d=document.createElement('div');d.className='at-ov';d.id='atOv';
+    d.innerHTML=`<div class="at-pn"><div class="at-hd"><b>${ITEMS[k].name}</b><span id="atHt">${G('دُق','دُقي')} لما الإبرة تيجي في الأخضر</span></div>
+      <div class="at-art"><div class="at-mo">${PXI_item('at_mortar',150)}</div><div class="at-ps" id="atPs">${PXI_item('at_pestle',96)}</div></div>
+      <div class="at-bar"><i class="z" style="left:${(c-hw)*100}%;width:${hw*200}%"></i><i class="zz" style="left:${(c-hw*.3)*100}%;width:${hw*60}%"></i><i class="n" id="atN"></i></div>
+      <div class="at-dots" id="atD">${'<i></i>'.repeat(N)}</div>
+      <button class="btn at-go" id="atGo">${G('دُق','دُقي')}</button></div>`;
+    app.appendChild(d);const nd=d.querySelector('#atN'),ps=d.querySelector('#atPs'),ht=d.querySelector('#atHt'),dots=[...d.querySelectorAll('#atD i')];
+    const step=now=>{if(done)return;const dt=Math.min(50,now-(last||now))/1000;last=now;pos+=dir*sp*dt;if(pos>1){pos=2-pos;dir=-1}if(pos<0){pos=-pos;dir=1}nd.style.left=(pos*100)+'%';raf=requestAnimationFrame(step)};
+    raf=requestAnimationFrame(step);
+    d.querySelector('#atGo').onclick=()=>{if(done||sc.length>=N)return;const dd=Math.abs(pos-c)/hw,s=dd<=.3?1:dd<=1?1-.5*(dd-.3)/.7:0;sc.push(s);
+      ps.classList.remove('hit');void ps.offsetWidth;ps.classList.add('hit');SFX.thud&&SFX.thud();vib&&vib(s?20:[10,30,10]);
+      const i=sc.length-1;dots[i].className=s>=.9?'p':s>0?'g':'b';ht.textContent=s>=.9?'مظبوطة!':s>0?'حلوة':G('فاتتك','فاتتك');ht.className=s>0?'':'warn';sp+=.18;
+      if(sc.length>=N){done=1;cancelAnimationFrame(raf);const a=sc.reduce((x,y)=>x+y,0)/N;
+        setTimeout(()=>{ht.textContent=a>=.8?'جرعة معلّم: هتطلع 3':a>=.5?'كويسة: هتطلع 2':'ماشي: هتطلع واحدة';ht.className='';(a>=.5?SFX.good:SFX.tick)&&(a>=.5?SFX.good():SFX.tick())},250);
+        setTimeout(()=>{d.remove();res(a)},1300)}}})}
+
+(function(){const st=document.createElement('style');st.textContent=`
+.at-bts{display:flex;flex-direction:column;gap:6px}.at-bts .tw-buy{min-height:44px}.at-bts .tw-buy.ghost{background:transparent;border-style:dashed}
+.at-wild{display:flex;flex-direction:column;gap:8px}.at-wl{display:flex;gap:10px;align-items:center}.at-wl>div{display:flex;flex-direction:column}.at-wl span{color:var(--mute);font-size:13px}.at-wl small{opacity:.75}
+.at-ov{position:fixed;inset:0;z-index:60;background:#0b0a08e6;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}
+.at-pn{width:min(360px,100%);background:var(--card2);border:1px solid var(--line,#3a3024);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.at-hd{display:flex;flex-direction:column;align-items:center;gap:4px}.at-hd b{font-size:20px;color:var(--gold2,#f3c14d)}.at-hd span{font-size:14px;opacity:.85;min-height:20px}.at-hd span.warn{color:#f0a090}
+.at-art{position:relative;height:150px;display:flex;justify-content:center;align-items:flex-end}.at-mo{width:150px;height:150px}
+.at-ps{position:absolute;width:96px;height:96px;left:calc(50% - 10px);top:-6px;transform-origin:20% 90%}.at-ps.hit{animation:atHit .32s ease-out}
+@keyframes atHit{0%{transform:translate(0,0) rotate(0)}35%{transform:translate(-14px,46px) rotate(-8deg)}100%{transform:translate(0,0) rotate(0)}}
+.at-bar{position:relative;height:26px;border-radius:8px;background:#2a221a;border:2px solid #4a3a28;overflow:hidden}
+.at-bar .z{position:absolute;top:0;bottom:0;background:#3a9e5599}.at-bar .zz{position:absolute;top:0;bottom:0;background:#7fe07acc}
+.at-bar .n{position:absolute;top:-2px;bottom:-2px;width:4px;margin-left:-2px;background:#fff0b0;box-shadow:0 0 6px #fff0b0}
+.at-dots{display:flex;justify-content:center;gap:10px}.at-dots i{width:16px;height:16px;border-radius:50%;border:2px solid #6e6152}.at-dots i.p{background:#f3c14d;border-color:#f3c14d}.at-dots i.g{background:#7fe07a;border-color:#7fe07a}.at-dots i.b{background:#e04b3e;border-color:#e04b3e}
+.at-go{min-height:56px;font-size:20px}`;document.head.appendChild(st)})();
+
+/* ---------- the attar line of specialisations ---------- */
+SP_EVN.attar='{وانت بتدق|وانتي بتدقي} في الهون';
+SP_ADD({id:'attar1',ev:'attar',r:'rare',m:'العطّار',f:'العطّارة',px:P20_rc(PXI_D.potion,{}),
+  need:h=>spLv(h,'attar')>=4&&spCnt(h,'brewed')>=15,
+  prog:h=>`عطارة مستوى 4 (دلوقتي ${spLv(h,'attar')}) و15 جرعة ${G('تعملها','تعمليها')} (${Math.min(15,spCnt(h,'brewed'))}/15)`,
+  st:{'حكمة':1},pot:1.3,herbCut:.8,
+  d:['حكمة +1','الجرع اللي {بتشربها|بتشربيها} {وبترميها|وبترميها} أقوى بـ30%','الأعشاب عند عم رجب أرخص 20%']});
+SP_ADD({id:'hakim',ev:'attar',r:'epic',m:'الحكيم',f:'الحكيمة',px:P20_rc(PXI_D.bigpotion,{}),
+  need:h=>spLv(h,'attar')>=7&&spCnt(h,'brewed')>=40,
+  prog:h=>`عطارة مستوى 7 (دلوقتي ${spLv(h,'attar')}) و40 جرعة (${Math.min(40,spCnt(h,'brewed'))}/40)`,
+  st:{'حكمة':1,'ذكاء':1},hp:2,pot:1.5,herbCut:.75,atX:.3,
+  d:['حكمة +1 · ذكاء +1 · صحة +2','الجرع أقوى بـ50%','مرة من كل 3 الهون بيطلّع جرعة زيادة','الأعشاب عند عم رجب أرخص الربع']});
+SP_ADD({id:'tabib',ev:'attar',r:'hidden',m:'طبيب السراية',f:'طبيبة السراية',px:P20_rc(PXI_D.at_mortar,{}),
+  need:h=>spLv(h,'attar')>=9&&spCnt(h,'brewed')>=70&&spCnt(h,'potUsed')>=25,
+  hint:'عم رجب: «كان فيه طبيب في السراية زمان، الجرعة من إيده كانت بتقوّم اللي واقع.»',
+  st:{'حكمة':2},hp:4,pot:2,herbCut:.7,atX:.5,
+  start:(h,C)=>{fxOn(C.me,'regen',{a:2,n:3})},
+  d:['حكمة +2 · صحة +4','الجرع أقوى الضعف','نص المرات الهون بيطلّع جرعة زيادة','أول كل قتال {بترجع|بترجعي} 2 صحة كل دور، 3 أدوار']});
+SPK_ADD('attar1',[
+  {n:'رشة نعناع',c:2,ico:'regen',heal:h=>4+Math.floor(h.lvl/2),d:'{انت|انتي} ورفيقك بترجعوا صحة على طول'},
+  {n:'بخور مُر',c:2,roll:'حكمة',tgt:1,ico:'smoke',dmg:h=>rnd(4)+Math.ceil(h.lvl/2),weak:1,d:'ريحة تقيلة في وش الوحش: ضرر، وضربته الجاية نص'},
+  {n:'جرعة على الماشي',c:3,ico:'mass',regen:{a:3,n:3},d:'الفريق كله بيرجع 3 صحة كل دور، 3 أدوار'}]);
+SPK_ADD('hakim',[
+  {n:'لبخة',c:2,ico:'regen',heal:h=>6+Math.floor(h.lvl/2),d:'{انت|انتي} ورفيقك بترجعوا صحة كتير'},
+  {n:'دخان الشيح',c:2,ico:'smoke',smoke:2,d:'أول ضربتين {عليك|عليكي} مش هييجوا'},
+  {n:'زيت حار',c:3,roll:'ذكاء',all:1,ico:'storm',dmg:h=>2,burn:h=>2+Math.floor(h.lvl/4),d:'كل الوحوش بتولّع'}]);
+SPK_ADD('tabib',[
+  {n:'إيد الطبيب',c:2,ico:'regen',heal:h=>8+Math.floor(h.lvl/2),d:'{انت|انتي} ورفيقك بترجعوا صحة كتير قوي'},
+  {n:'ترياق للكل',c:3,ico:'mass',regen:{a:5,n:3},d:'الفريق كله بيرجع 5 صحة كل دور، 3 أدوار'},
+  {n:'سم في الكاس',c:3,roll:'حكمة',tgt:1,ico:'venom',dmg:h=>rnd(6)+h.lvl,poison:h=>[3,3],d:'ضربة كبيرة، والوحش بيتسمم 3 أدوار'}]);
+SPT.tabib={days:6,steps:[{t:'{اعمل|اعملي} 15 جرعة',k:'brewed',n:15},{t:'{استعمل|استعملي} 10 جرع في القتال',k:'potUsed',n:10},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]};
+SP_RELIC.tabib={n:'هون نحاس قديم',d:'هون صغير، ريحة الأعشاب اللي فيه عمرها ما راحت'};
+/* titles and achievements */
+TITLES.push(
+  {id:'t_tabib',sec:1,m:'طبيب السراية',f:'طبيبة السراية',how:'بييجي مع تخصص مستخبي',ok:(c,h)=>spHad(h,'tabib'),hp:3,pot:1.1,b:'صحة +3 · الجرع أقوى 10%'},
+  {id:'t_brew3',m:'عطّار الحتة',f:'عطّارة الحتة',how:'{تعمل|تعملي} 50 جرعة',ok:c=>(c.brewed||0)>=50,pot:1.1,b:'الجرع أقوى 10%'});
+ACH.push({id:'at_1',n:'أول جرعة',d:'{تعمل|تعملي} أول جرعة في الهون',r:10},{id:'at_50',n:'الهون ما بيبردش',d:'{تعمل|تعملي} 50 جرعة',r:50},{id:'at_fire',n:'ولّعها',d:'{ترمي|ترمي} 10 جرع نار',r:30});
+{const a0=achScan;achScan=function(h){a0.apply(this,arguments);if(!h||h!==S.hero)return;try{const c=h.cnt||{},got=[];const chk=(id,ok)=>{if(ok&&!(h.ach&&h.ach[id]))got.push(id)};
+  chk('at_1',(c.brewed|0)>=1);chk('at_50',(c.brewed|0)>=50);chk('at_fire',(c.firepot|0)>=10);got.forEach((id,i)=>setTimeout(()=>ach(id),3500+i*2600))}catch(e){console.warn(e)}}}
+if(!ACH_SCR.includes('attar'))ACH_SCR.push('attar');
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
