@@ -2818,7 +2818,7 @@ SCREENS.town=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const eqN=TW_SLOTS.filter(s=>h.eq[s]).length,cs=twCanN(h,'smith'),ct=twCanN(h,'tailor'),ck=Object.keys(TW_REC).filter(k=>twCanCook(h,k)).length;
   const inStock=mk.list.filter(x=>x.stock>0).map(x=>resN(x.k));
   const tiles=[
-    {id:'adv',go:ADV_ORDER.length>1?'advs':'setup',n:'المغامرات',w:N_tileW(),s:N_tileTxt()},
+    {id:'adv',go:ADV_ORDER.length>1?'advs':'setup',n:'الدهاليز',w:N_tileW(),s:N_tileTxt()},
     {id:'market',go:'market',n:'السوق',w:'عم رمضان البياع',s:inStock.length?`${mk.fresh?'<span class="new">جديد: </span>':''}${inStock.slice(0,3).join(' و')}`:'قماش وعيش',bell:1,b:mk.fresh?'بضاعة جديدة':''},
     {id:'smith',go:'smith',n:'الحداد',w:'عم حسن',s:cs?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(cs)}</span>`:`حدادة مستوى ${lifeLvl(h,'smith')}`,bell:1},
     {id:'tailor',go:'tailor',n:'الخياط',w:'عم فتحي',s:ct?`<span class="ok">${G('تقدر تعمل','تقدري تعملي')} ${twThings(ct)}</span>`:(h.bagLvl||0)<BAGUPS.length?'شنط أكبر وهدوم':`خياطة مستوى ${lifeLvl(h,'tailor')}`,bell:1},
@@ -4462,6 +4462,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.86',d:'11 أكتوبر',add:['البلد بقت أوضح: فوق اسمك ومستواك وفلوسك ومجهودك بس، وبعدين «الدهاليز»، وبعدين 3 أقسام: «الحرف والعمل» و«الخدمات» و«الناس والحكايات»، وكل مكان فيه سطر واحد قصير','«المغامرات» بقى اسمها «الدهاليز» في البلد وقايمة الليالي','الشاشة الأولى فيها زرار واحد واضح و{بطلك|بطلتك} من غير زحمة. «الجديد في النسخة» و«ازاي ألعب؟» بقوا في الإعدادات، وزرار الإعدادات {بيقولك|بيقولكي} «جديد» لو فيه نسخة {مقريتهاش|مقريتيهاش}'],fix:['«مطرقة الأسطى» بقى اسمها «شاكوش الأسطى»، وحركة «مطرقة على الكل» بقت «شاكوش على الكل»']},
 {v:'5.85',d:'11 أكتوبر',add:['أول مرة؟ التدريب بقى 6 خطوات قصيرة، حاجة واحدة على الشاشة كل مرة: {تختار|تختاري} البطل، و{تختار|تختاري} في حدوتة صغيرة، وترمي النرد، و{تعمل|تعملي} {بطلك|بطلتك}، وقتال تدريبي، وبعدين البلد. وفيه «عيدها» و«تخطّي» في كل خطوة','شكل البطل بقى اختياري وقت ما {بتعمله|بتعمليه}: الاسم والتخصص بس، والباقي بدوسة لو {حابب|حابة}','اللي لعب قبل كده يدوس «لعبت قبل كده؟» ويعمل بطله على طول','أول ما {توصل|توصلي} البلد: 3 خطوات صغيرة (عم حسن، الأنشطة، أول مغامرة) بيتعلّموا لوحدهم، والأماكن بتنوّر لحد ما {تزورها|تزوريها}','«التدريب» بقى مكتبة دروس: 19 درس في 6 أقسام، بحث وفلتر، وكل درس فيه حاجة {تعملها|تعمليها} بإيدك و«عيدها». الدروس مش بتدي ولا بتاخد حاجة'],fix:[]},
 {v:'5.84',d:'11 أكتوبر',add:['«بورصة البلد» عند أستاذ مجدي في ناس البلد: أسهم أربع شركات من البلد (محاجر الجبل، مراكب الترعة، غيطان الكفر، ورشة حديد عم حسن). الأسعار بتتغير بعد كل ليلة {تخلّصها|تخلّصيها}، ومعاها أخبار بتطلّع وتنزّل','بتشتري {وتبيع|وتبيعي} بالسهم والرسوم 2%، و{بتشوف|بتشوفي} مكسبك اللي على الورق واللي اتقفل لوحده. أقصى حاجة في شركة واحدة 25 ألف','الشركة ممكن تفلس: السهم يبقى صفر والفلوس اللي فيه تضيع كلها (باقي فلوسك مالهاش دعوة)، وبعد 4 ليالي شركة جديدة تنزل مكانها','سماسرة بيعرضوا صفقات من برا: شوية منها حقيقية وأرخص من الشاشة، وأغلبها نصب. {شوف|شوفي} الشاشة، {افحص|افحصي} العقد، أو {اسأل|اسألي} أستاذ مجدي قبل ما {تدفع|تدفعي}'],fix:[]},
 {v:'5.83',d:'11 أكتوبر',add:['تلفزيون القهوة: ساعات بعد الليلة بيبقى فيه ماتش كورة بين فرق البلد. قبل الماتش {تقدر تراهن|تقدري تراهني} سامح أو منصور أو أبو حمدي على مين هيكسب أو التعادل، ومرة على النتيجة بالظبط. النسبة مكتوبة قبل ما {تدفع|تدفعي}، واللي {تقدر تكسبه|تقدري تكسبيه} على قد جيب اللي {راهنته|راهنتيه}','النتيجة بتتحدد أول ما الماتش يبدأ، و{بتتفرج|بتتفرجي} عليه دقيقة بدقيقة: الكورة بتجري، والأجوان والفرص والكروت بتتكتب، و«جوووول!» بيهز الشاشة. وفيه زرار يسرّع الماتش','في الباصرة والسيجة {بتختار|بتختاري} قواعد القعدة قبل ما {تلعب|تلعبي}: الباصرة بآخر ورقة بتتحسب ولا لأ، والخانة اللي في النص في السيجة بتحمي ولا لأ'],fix:[]},
@@ -9296,7 +9297,7 @@ SCREENS.advs=function(){const h=S.hero;if(!h){S.screen='title';return render()}
       <div class="atx"><b>${A.n}</b><small>${T(A.pitch)}</small>
       <div class="ameta"><span>${A.acts.map(a=>a.n).join(' · ')}</span><span class="${low?'alow':'aok'}">${N_lvTxt(lv)}</span>${wins[k]?`<span class="awin">${G('كسبتها','كسبتيها')} ${wins[k]===1?'مرة':wins[k]===2?'مرتين':wins[k]+' مرات'}</span>`:''}</div>
       ${cur?`<div class="awhere">${N_where(sv)}</div>`:''}</div></button>`};
-  view.innerHTML=`${twTop('المغامرات')}<div class="tw"><div class="tw-sm" style="margin:2px 0 4px">كل مغامرة ليلة طويلة في 3 أماكن، وفي آخر كل مكان مواجهة كبيرة. الليلة بتتحفظ بعد كل محطة.</div>
+  view.innerHTML=`${twTop('الدهاليز')}<div class="tw"><div class="tw-sm" style="margin:2px 0 4px">كل مغامرة ليلة طويلة في 3 أماكن، وفي آخر كل مكان مواجهة كبيرة. الليلة بتتحفظ بعد كل محطة.</div>
     <div class="col advs nin">${ADV_ORDER.map(card).join('')}</div></div>`;
   const b=$('#back');if(b)b.onclick=()=>twGo('town');twQ();
   view.querySelectorAll('[data-adv]').forEach(e=>e.onclick=()=>{SFX.page();S.adv=e.dataset.adv;S.screen='setup';render();view.scrollTop=0})};
@@ -23838,7 +23839,7 @@ SP_ADD({id:'ostaz',ev:'smith',r:'epic',m:'أسطى الحدادين',f:'أسطى
   need:h=>spLv(h,'smith')>=7&&spCnt(h,'smQ3')>=3,
   prog:h=>`حدادة مستوى 7 (دلوقتي ${spLv(h,'smith')}) و3 حاجات «ممتاز» أو أحسن (${Math.min(3,spCnt(h,'smQ3'))}/3)`,
   st:{'قوة':2},q:{smith:.08},cost:{smith:.8},own:{smith:{w:2,a:1}},
-  d:['قوة +2','الشغل عند الحداد أجود بكتير، وتمنه أقل 20%','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2','{بتعرف|بتعرفي} تعمل «مطرقة الأسطى»']});
+  d:['قوة +2','الشغل عند الحداد أجود بكتير، وتمنه أقل 20%','السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2','{بتعرف|بتعرفي} تعمل «شاكوش الأسطى»']});
 SP_ADD({id:'heir',ev:'smith',r:'legend',m:'وريث الحداد الأول',f:'وريثة الحداد الأول',px:P20_rc(SP_HAMMER,{W:'R',c:'r',g:'m',j:'v',b:'o',B:'y',v:'T'}),
   need:h=>spLv(h,'smith')>=9&&spCnt(h,'smQ4')>=2,
   hint:'عم حسن: «جدي كان بيقول إن الحداد الأول ساب علامته في كل تحفة اتعملت بعده.»',
@@ -23858,7 +23859,7 @@ Object.assign(GEAR,{
   string:{n:'خاتم فولاذ',slot:'ring',tier:3,st:{'قوة':2,'تحمّل':1},at:'smith',craft:{steel:2,gold:1},cm:150,lv:9,info:'قوة +2 · تحمّل +1'},
   moallem:{n:'سيف المعلّم',slot:'weapon',tier:3,dmg:6,skill:'double',at:'smith',craft:{steel:5,emerald:1,gold:2},cm:400,lv:10,info:'شغل آخر مستوى · «ضربتين»: لو {نجحت|نجحتي} كامل، {بتضرب|بتضربي} مرة كمان'},
   /* only for the smith classes */
-  ostazham:{n:'مطرقة الأسطى',slot:'weapon',tier:3,dmg:5,skill:'stun',at:'smith',craft:{steel:3,iron:3},cm:150,lv:7,sp:['ostaz','heir'],info:'للأسطى بس · «ضربة توقّع» · وهي في إيدك، الشغل عند الحداد بيطلع أجود'},
+  ostazham:{n:'شاكوش الأسطى',slot:'weapon',tier:3,dmg:5,skill:'stun',at:'smith',craft:{steel:3,iron:3},cm:150,lv:7,sp:['ostaz','heir'],info:'للأسطى بس · «ضربة توقّع» · وهي في إيدك، الشغل عند الحداد بيطلع أجود'},
   jadsword:{n:'سيف الجد الأول',slot:'weapon',tier:3,dmg:8,skill:'double',at:'smith',craft:{steel:6,emerald:2,gold:3,hair:1},cm:600,lv:10,sp:['heir'],info:'لورثة الحداد الأول بس · «ضربتين» · العفاريت والأرواح تعوّرك 1 أقل',spirit:1},
   jadarmor:{n:'درع الجد الأول',slot:'armor',tier:3,armor:5,hp:4,at:'smith',craft:{steel:7,gold:2,emerald:1},cm:500,lv:10,sp:['heir'],info:'لورثة الحداد الأول بس · الضربة بتقل 5 · صحة +4'}
 });
@@ -24015,7 +24016,7 @@ SPK_ADD('hadad',[
 SPK_ADD('ostaz',[
   {n:'ضربة الأسطى',c:2,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(6)+WD(h)+3,weak:1,d:'ضرر عالي، والوحش ضربته الجاية بتبقى نص'},
   {n:'تسقية',c:2,ico:'cheer',sharp:{a:3,n:3},cheer:1,d:'ضرباتك الـ3 الجاية +3، ورفيقك ضربته الجاية أكيد'},
-  {n:'مطرقة على الكل',c:3,roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(4)+Math.ceil(WD(h)/2)+2,d:'بتضرب كل الوحوش مرة واحدة'}]);
+  {n:'شاكوش على الكل',c:3,roll:'قوة',all:1,ico:'storm',dmg:h=>rnd(4)+Math.ceil(WD(h)/2)+2,d:'بتضرب كل الوحوش مرة واحدة'}]);
 SPK_ADD('heir',[
   {n:'نار الجد الأول',c:3,roll:'قوة',tgt:1,ico:'fire',dmg:h=>rnd(6)+WD(h)+h.lvl,burn:h=>3,d:'أقوى ضربة عندك، والوحش بيولّع دورين'},
   {n:'علامة الجد',c:2,ico:'cheer',sharp:{a:4,n:4},shield:1,cheer:1,d:'ضرباتك الـ4 الجاية +4، وأول ضربة {عليك|عليكي} بتتمص، ورفيقك ضربته أكيد'},
@@ -26522,9 +26523,9 @@ Object.assign(SC,{
   onb6:{art:'village',chip:'التدريب · خطوة 6 من 6',onEnter:()=>onbBagBack(),text:()=>`${S.comp.name}: «برافو! كده {انت جاهز|انتي جاهزة}.»<br>البلد فيها الحداد اللي بيعمل السلاح، والغيط والمطبخ، والمغامرات بتبدأ من هناك. ${G('اختار','اختاري')} ${G('هتروح','هتروحي')} فين.`,
     ch:()=>[{t:'أروح البلد',go:()=>onbFinish('town')},{t:'أبدأ مغامرة «النداهة» على طول',ghost:1,go:()=>onbFinish('adv')}]}});
 /* the town for a new hero: three small tasks that tick themselves; the three groups glow until done */
-const ONB_TASKS=[{k:'t1',grp:'السوق والصنايعية',n:'عم حسن الحداد',d:'{اعمل|اعملي} أو قوّي سلاحك',go:'smith',ic:'⚒️'},
-  {k:'t2',grp:'الأنشطة',n:'الأنشطة',d:'{ازرع|ازرعي} في الغيط أو {اطبخ|اطبخي} عند أم سيد',go:'farm',ic:'🌱'},
-  {k:'t3',grp:'المغامرات',n:'أول مغامرة',d:'{ادخل|ادخلي} أول ليلة',go:'setup',ic:'🌙'}];
+const ONB_TASKS=[{k:'t1',grp:'الحرف والعمل',n:'عم حسن الحداد',d:'{اعمل|اعملي} أو قوّي سلاحك',go:'smith',ic:'⚒️'},
+  {k:'t2',grp:'الحرف والعمل',n:'الأنشطة',d:'{ازرع|ازرعي} في الغيط أو {اطبخ|اطبخي} عند أم سيد',go:'farm',ic:'🌱'},
+  {k:'t3',grp:'الدهاليز',n:'أول دهليز',d:'{ادخل|ادخلي} أول ليلة',go:'setup',ic:'🌙'}];
 const ONB_SEEN={smith:'t1',farm:'t2',cook:'t2',mine:'t2',fish:'t2',setup:'t3',advs:'t3'};
 function onbMark(scr){const h=S.hero,O=onbFix(h);if(!O||O.town.hide||O.town.fin)return;const k=ONB_SEEN[scr];if(!k||O.town[k])return;O.town[k]=1;saveHero()}
 Object.keys(ONB_SEEN).forEach(s=>{if(s==='setup'){const s0=setup;setup=function(){try{onbMark('setup')}catch(e){}return s0.apply(this,arguments)}}
@@ -26541,7 +26542,7 @@ Object.keys(ONB_SEEN).forEach(s=>{if(s==='setup'){const s0=setup;setup=function(
 const LS_CAT=[['basic','أساسيات'],['dice','النرد والصفات'],['fight','القتال'],['bag','الشنطة والفلوس'],['craft','المهن والزراعة'],['friends','اللعب مع أصحابك']];
 const LS_ALL=[
   {id:'choose',c:'basic',n:'الاختيار',k:'اختيار حدوتة قصة',goal:'الحدوتة بتمشي على حسب اختيارك',steps:['اللعبة بتحكي اللي بيحصل.','{انت|انتي} {بتختار|بتختاري} هتعمل إيه.','مفيش اختيار غلط: الحدوتة بتكمل برضه.'],act:'choose'},
-  {id:'town',c:'basic',n:'البلد',k:'بلد حداد غيط سوق أماكن',goal:'{تعرف|تعرفي} البلد فيها إيه',steps:['البلد فيها المغامرات، والسوق والصنايعية، والأنشطة، وناس البلد.','كل مكان مقفول {بيقولك|بيقولكي} بيتفتح إمتى.'],act:'go',go:'town',btn:'روح البلد'},
+  {id:'town',c:'basic',n:'البلد',k:'بلد حداد غيط سوق أماكن',goal:'{تعرف|تعرفي} البلد فيها إيه',steps:['البلد فيها الدهاليز، والحرف والعمل، والخدمات، والناس والحكايات.','كل مكان مقفول {بيقولك|بيقولكي} بيتفتح إمتى.'],act:'go',go:'town',btn:'روح البلد'},
   {id:'help',c:'basic',n:'زرار ؟',k:'مساعدة شرح سؤال',goal:'لو {نسيت|نسيتي} حاجة',steps:['فوق في كل شاشة فيه زرار ؟.','فيه شرح كل حاجة في اللعبة.'],act:'go',go:'help',btn:'افتح الشرح'},
   {id:'dice',c:'dice',n:'رمية النرد',k:'نرد رمية زهر لون',goal:'{تفهم|تفهمي} ألوان الرمية',steps:['الرقم الكبير أحسن.','أخضر نجحت، أصفر نجحت بتمن، أحمر مانفعتش.'],act:'dice'},
   {id:'stats',c:'dice',n:'الصفات وفرصتك',k:'صفة قوة خفة حضور فرصة',goal:'{تختار|تختاري} حاجة {بطلك شاطر|بطلتك شاطرة} فيها',steps:['كل اختيار مكتوب جنبه بيعتمد على أنهي صفة.','الصفة بتتزوّد على النرد، فالفرصة بتبقى أحسن.'],act:'stat'},
@@ -26622,6 +26623,46 @@ SCREENS.lessons=function(){const h=S.hero;if(!h){S.screen='title';return render(
 .ls-hd .ic{width:24px;text-align:center;color:#7fe07a;font-weight:900}.ls-hd .tx{flex:1;display:flex;flex-direction:column}.ls-hd small{color:var(--mute);font-size:12px}
 .ls-b{padding:0 12px 12px}.ls-b ol{margin:4px 0 8px;padding-inline-start:20px;line-height:1.8;font-size:14px}
 @media (prefers-reduced-motion:reduce){.pulse,.tw-sec.onb-hl,.onb-ok{animation:none}}`;document.head.appendChild(st)}
+
+/* ---------- 5.86 / R02 part 1 (C01, C11, C12, C55) ----------
+   C01 the title: one clear action («روح البلد» / «ابدأ»), the hero's name, class, level and money and nothing more; «ازاي
+       ألعب؟» and «الجديد في نسخة» move into the settings («سجل التحديثات» with a «جديد» mark, also shown on the settings button
+       while a version is unread); the help stays one tap away on «؟» everywhere and in the settings.
+   C11 «الدهاليز» instead of «المغامرات» on the town tile, its group and the list screen (ids like 'advs' stay; inside the
+       stories a night is still a night / an adventure).
+   C12 the town: the hero card shows name, level, money and effort only; then «الدهاليز»; then three folders: «الحرف والعمل»,
+       «الخدمات», «الناس والحكايات»; each place shows its name and one short line.
+   C55 the tool is «شاكوش» everywhere it is shown (ids stay). B22 (the banner queue) was already done in 5.75. */
+TW_GROUPS.splice(0,TW_GROUPS.length,
+  {n:'الدهاليز',go:['advs','setup'],big:1},
+  {n:'الحرف والعمل',go:['smith','tailor','attar','cook','farm','mine','fish'],sm:'الصنايعية والأنشطة'},
+  {n:'الخدمات',go:['market','gear','spec','bank','bourse','barber']},
+  {n:'الناس والحكايات',go:['quests','hakawati','wada','cafe','mouled']});
+/* the title */
+{const t0=SCREENS.title;SCREENS.title=function(){const r=t0.apply(this,arguments);try{if(S.screen!=='title')return r;
+    ['#b4','#bNews'].forEach(q=>{const b=$(q);if(b)b.remove()});
+    const pf=$('#pf');if(pf)pf.querySelectorAll('div').forEach(d=>{if(/السمعة/.test(d.textContent)&&!d.querySelector('b'))d.remove()});
+    const sb=$('#setBtn');if(sb&&typeof newsUnseen==='function'&&newsUnseen()&&!sb.querySelector('.news-dot'))sb.insertAdjacentHTML('beforeend',' <span class="news-dot">جديد</span>')}catch(e){console.warn(e)}return r}}
+/* the settings: the change log, the help and the training are here now */
+{const os0=openSettings;openSettings=function(){const had=!!$('#setBg');os0.apply(this,arguments);const d=$('#setBg');if(had||!d)return;try{const box=d.querySelector('.setbox'),ok=box&&box.querySelector('#stOk');if(!ok)return;
+    /* review fix: nothing that leaves the screen while a fight is on (the «؟» is hidden there too); the lessons only from the title or the town */
+    if(S.screen==='combat'||S.combat)return;const unseen=typeof newsUnseen==='function'&&newsUnseen();
+    ok.insertAdjacentHTML('beforebegin',`<div class="set-more">
+      <button class="setrow" id="stNews"><span>سجل التحديثات <small>نسخة ${NEWS[0].v}</small></span>${unseen?'<span class="news-dot">جديد</span>':'<span>‹</span>'}</button>
+      <button class="setrow" id="stHelp"><span>ازاي ألعب؟</span><span>‹</span></button>
+      ${S.hero&&(S.screen==='title'||S.screen==='town')?`<button class="setrow" id="stLsn"><span>التدريب والدروس</span><span>‹</span></button>`:''}</div>`);
+    const close=()=>{const x=$('#setBg');if(x)x.remove()};
+    $('#stNews').onclick=()=>{close();NEWS_FROM=S.screen==='news'?'title':S.screen;S.screen='news';render()};
+    $('#stHelp').onclick=()=>{close();S.helpFrom=S.screen;S.screen='help';render()};
+    const ls=$('#stLsn');if(ls)ls.onclick=()=>{close();if(typeof LS!=='undefined'){LS.q='';LS.f='all'}twGo('lessons')}}catch(e){console.warn(e)}}}
+/* the town's hero card: name, level, money, effort */
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{if(S.screen!=='town')return r;
+    const me=view.querySelector('.tw-me');if(me){const hint=me.querySelector('.inf .tw-sm');if(hint)hint.classList.add('tw-xph')}}catch(e){console.warn(e)}return r}}
+{const st=document.createElement('style');st.textContent=`
+.set-more{display:flex;flex-direction:column;gap:6px;margin:8px 0}.set-more .setrow small{color:var(--mute);font-size:11px;margin-inline-start:6px}
+#setBtn .news-dot,.setrow .news-dot{font-size:11px}
+.tw-me .tw-xph{font-size:11px;opacity:.8}.tw-me ~ .tw-eff > .tw-sm:not(.r3){display:none}
+.tw-sec .tw-tile .lb>span{font-size:11px;opacity:.85}.tw-sec .tw-tile .lb em{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
