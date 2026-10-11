@@ -1414,7 +1414,13 @@ function bindQ(){const q=$('#qb');if(q)q.onclick=()=>{S.helpFrom=S.screen;S.scre
   const s=$('#snd');if(s)s.onclick=openSettings}
 const statDots=(v,gr)=>{gr=gr||0;const N=Math.max(5,v+2);return `<span class="dots">${Array.from({length:N},(_,i)=>i+1).map(n=>`<i class="${n<=v+2?(n>v+2-gr?'on up':'on'):''}"></i>`).join('')}</span>`};
 const plus=v=>v>0?`+${v} على النرد`:v<0?`−${-v} من النرد`:'من غير زيادة';
-function heroLine(h){return `التخصص: ${clsN(h)} · المستوى ${h.lvl}`}
+/* B01 (5.76): the hero's own class (حرامي، ابن البلد…) always comes from h.cls. clsN() is overridden in p56/90_ui.js to show a
+   held specialisation (منقّب، أسطى الحدادين…) — that is the abilities' name, not who the hero is — so identity lines use
+   clsBase(), and a held specialisation is shown next to it under its own name (spTag). */
+function clsBase(h){return clsF(h.cls,h&&h.g==='f')}
+function spNow(h){try{const o=typeof spOn==='function'&&spOn(h);return o?spName(o,h):''}catch(e){return ''}}
+function spTag(h){const n=spNow(h);return n?` · <span style="color:var(--gold2)">${n}</span>`:''}
+function heroLine(h){return `التخصص: ${clsBase(h)} · المستوى ${h.lvl}`}
 /* a girl hero's class and age are said in the feminine; the saved values stay the same */
 const CLS_F={'محارب':'محاربة','حرامي':'حرامية','ساحر':'ساحرة','معالج':'معالجة'},AGE_F={'شاب':'شابة','كبير':'كبيرة','عجوز':'عجوزة'};
 const DESC_F={'محارب':'بتضرب جامد وبتستحمل الضرب. بتقف قدام وبتحمي صحابها.','حرامي':'سريعة وخفيفة ولسانها حلو. بتضرب من غير ما حد ياخد باله.','ساحر':'جسمها ضعيف، بس بترمي نار وسحر من بعيد.','معالج':'بتعالج نفسها وصحابها، ونورها بيحرق العفاريت.'};
@@ -1527,7 +1533,7 @@ function profile(){
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>${h.g==='f'?'بطلتي':'بطلي'}</h2>${qBtn()}</div>
   <div class="pf-head"><div class="pic">${portrait(h,'pr')}</div>
     <div style="flex:1;min-width:0"><div class="nm">${esc(h.name)}</div><div id="pfTtl">${pfTitleTag(h,'lg')}</div>
-      <div style="font-size:13px;color:var(--mute)">التخصص: ${clsN(h)} · ${h.g==='f'?'بنت':'ولد'} · ${ageF(h.age,h.g==='f')}</div>
+      <div style="font-size:13px;color:var(--mute)">التخصص: ${clsBase(h)} · ${h.g==='f'?'بنت':'ولد'} · ${ageF(h.age,h.g==='f')}</div>${spNow(h)?`<div style="font-size:13px;color:var(--mute)">التخصص المكتسب: <b style="color:var(--gold2)">${spNow(h)}</b></div>`:''}
       <div style="font-size:13px;margin-top:4px">المستوى <b>${h.lvl}</b></div>
       <div class="xpbar" style="margin-top:4px"><i style="width:${h.xp/need*100}%"></i></div>
       <div style="font-size:11.5px;color:var(--dim);margin-top:3px">فاضلك <span class="num">${need-h.xp}</span> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div><button class="btn ghost small" id="edit" style="margin-top:8px;min-height:44px;padding:6px 14px">✎ ${G('عدّل الشكل','عدّلي الشكل')}</button></div></div>
@@ -2828,7 +2834,7 @@ SCREENS.town=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   <div class="tw${enter?' tw-in':''}">
     <div class="card"><div class="tw-me"><div class="pic">${portrait(h,'tw')}</div><div class="inf">
       <div class="r1"><b>${esc(h.name)}</b>${twMon(h)}</div>
-      <div class="r2">${clsN(h)} · المستوى ${h.lvl}${tt?` · <span style="color:var(--gold2)">${titleName(tt,h)}</span>`:''}</div>
+      <div class="r2">${clsBase(h)}${spTag(h)} · المستوى ${h.lvl}${tt?` · <span style="color:var(--gold2)">${titleName(tt,h)}</span>`:''}</div>
       <div class="tw-bar xp"><i style="width:${h.xp/need*100}%"></i></div>
       <div class="tw-sm">فاضلك <b>${need-h.xp}</b> خبرة ${G('وتطلع','وتطلعي')} المستوى ${h.lvl+1}</div></div></div>
       ${twEffHTML(h,1)}</div>
@@ -3057,7 +3063,7 @@ SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   const wears=QDUR.map(s=>qOn(h,s)).filter(Boolean);
   view.innerHTML=`${twTop('عدّتي')}<div class="tw">
     <div class="tw-doll"><div class="sd">${['weapon','armor','head'].map(slotB).join('')}</div>
-      <div class="md"><div class="pt" id="twPt">${portrait(h,'g')}</div><b>${esc(h.name)}</b><small>${clsN(h)} · المستوى ${h.lvl}</small></div>
+      <div class="md"><div class="pt" id="twPt">${portrait(h,'g')}</div><b>${esc(h.name)}</b><small>${clsBase(h)}${spTag(h)} · المستوى ${h.lvl}</small></div>
       <div class="sd">${['ring','neck','charm'].map(slotB).join('')}</div></div>
     <div class="tw-sm" style="text-align:center;margin-top:-4px">${G('دوس','دوسي')} على أي مكان عشان ${G('تلبس','تلبسي')} أو ${G('تقلع','تقلعي')}. الحاجات بتتعمل عند عم حسن وعم فتحي.</div>
     <div class="tw-lbl">أرقامك</div>
@@ -3495,7 +3501,23 @@ function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max
   if(treeLink(h,'mine','l1')&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<.06)k=MINE_K[MINE_K.indexOf(k)+1];
   /* طريقين: دهب الأعماق / نزلة على نزلة */
   {const o=tf(h,'mine','ore');if(o>0&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<o)k=MINE_K[MINE_K.indexOf(k)+1];else if(o<0&&(k==='iron'||k==='silver')&&Math.random()<-o)k=MINE_K[MINE_K.indexOf(k)-1]}
-  return k}
+  return mnBandFix(h,F,k)}
+/* B35 (5.76, Twister): floors no longer pile up every ore (floor 20 used to have them all). Each band of floors has its own short
+   list and a signature ore; a roll (with all the skill and tree bonuses above) that lands outside the band's list is re-picked
+   from the band, so bonuses still help but never bring an ore the floor doesn't have. */
+const MN_BANDS=[
+  {to:2,n:'السطح',w:{stone:50,copper:35,iron:15}},
+  {to:5,n:'عِرق الفحم',w:{stone:30,copper:20,coal:28,iron:22},g:['turq']},
+  {to:7,n:'طبقة الحديد',w:{stone:22,iron:45,coal:18,silver:15},g:['turq']},
+  {to:10,n:'أول عِرق دهب',w:{stone:22,iron:28,silver:25,gold:25}},
+  {to:13,n:'عِرق الفضة',w:{stone:22,silver:45,gold:18,coal:15},g:['turq']},
+  {to:16,n:'كهف الزمرد',w:{stone:40,silver:25,gold:35},g:['emerald','turq']},
+  {to:19,n:'الأعماق',w:{stone:25,iron:25,gold:30,silver:20},g:['emerald']},
+  {to:20,n:'قاع المنجم',w:{stone:22,gold:48,silver:30},g:['emerald']}];
+const mnBand=F=>MN_BANDS.find(b=>(F||1)<=b.to)||MN_BANDS[MN_BANDS.length-1];
+const mnBandHas=(F,k)=>{const b=mnBand(F);return k in b.w||(b.g||[]).includes(k)};
+function mnBandFix(h,F,k){if(mnBandHas(F,k))return k;const b=mnBand(F),L=lifeLvl(h,'mine'),w=Object.entries(b.w).map(([kk,v])=>[kk,kk==='stone'?v*Math.max(.4,1-.05*L):v]);
+  let r=Math.random()*w.reduce((a,x)=>a+x[1],0);for(const [kk,v] of w){if(r<v)return kk;r-=v}return 'stone'}
 const rocksN=n=>n===1?'صخرة واحدة':n===2?'صخرتين':n<=10?n+' صخرات':n+' صخرة';
 const crackOf=R=>R.hp>=R.max?0:Math.min(3,Math.ceil((1-R.hp/R.max)*3));
 const hitOf=h=>1+Math.floor(lifeLvl(h,'mine')/3)+Math.round(tf(h,'mine','hit'));
@@ -3645,19 +3667,21 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
     if(h.eff.v>e0)setTimeout(()=>{effUI();floatAt($('#gxEffN'),num(h.eff.v-e0,'+'),'#b4f0c2','',18)},700)}}
   sfx('mnDown');vib([15,60,15,60,15]);const fd=$('#mnFade');if(fd)cls(fd,'go');
   setTimeout(()=>{GX.busy=0;GX.rubble=0;if(S.screen!=='mine'||!$('#mnSlot'))return;mnFloorUI(1);mnSlot();mnBtn();mnGoal();const em=$('#mnSlot .mn-empty');if(em)em.classList.add('mn-later');
-    mnWord(`الدور ${F}`,F>=FLOOR_MAX?'قاع المنجم':F===14?'ريحة زمرد..':F>=11?'الصخر بيلمع دهب':F===8?'أول عِرق دهب':F===3?'هنا بيطلع فحم':F>=7?'الصخر هنا تقيل.. والخام غالي':F>=4?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
+    mnWord(`الدور ${F}`,mnBand(F)!==mnBand(F-1)?`${mnBand(F).n}: ${Object.keys(mnBand(F).w).concat(mnBand(F).g||[]).filter(k=>k!=='stone'&&MAT[k]).map(resN).join('، ')}`:F>=4&&F<7?'هنا ممكن يطلع حجر تعزيز':'الصخر أصعب.. والخام أحسن','fl');
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
 const MN_FLT={3:'فحم',4:'تعزيز',8:'دهب',14:'زمرد',20:'القاع'};
 /* 5.71 (Twister): what each floor can give, for the floor picker: rollRock's ores, the enhancement stones and the attar's herb */
 const MN_FL_AT={stone:1,copper:1,iron:1,silver:1,turq:1,coal:3,stone1:4,shih:5,stone2:7,gold:8,stone3:14,emerald:14};
-const mnFlOres=n=>Object.keys(MN_FL_AT).filter(k=>MAT[k]&&n>=MN_FL_AT[k]);
+/* B35: ores and gems come from the floor's band; enhancement stones and the herb keep their start floor */
+const MN_FL_EXTRA={stone1:4,shih:5,stone2:7,stone3:14};
+const mnFlOres=n=>{const b=mnBand(n);return Object.keys(b.w).concat(b.g||[]).concat(Object.keys(MN_FL_EXTRA).filter(k=>n>=MN_FL_EXTRA[k])).filter(k=>MAT[k])};
 /* pick a floor you already reached: tap the floor tag («الدور N ▾») */
 function mnPick(){const h=S.hero,V=gxVisit('mine'),D=h.mn&&h.mn.deep||1;if(D<=1||GX.busy)return;twSheetX();
   const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${G('اختار','اختاري')} الدور<small>أعمق دور ${G('وصلته','وصلتيه')}: ${D}</small></div>
     <div class="tw-sm">المنجم بيفتكر الدور اللي ${G('كنت','كنتي')} فيه. ${G('اختار','اختاري')} أي دور ${G('وصلته','وصلتيه')} قبل كده${GX.rock?G('، والصخرة اللي قدامك هتسيبها','، والصخرة اللي قدامك هتسيبيها'):''}.</div>
     <div class="tw-sm">كل دور مكتوب جنبه الأحجار اللي بتطلع فيه. اللي بالدهبي بيبدأ يطلع من الدور ده.</div>
-    <div class="mn-fls rows">${Array.from({length:D},(_,i)=>i+1).map(n=>{const ks=mnFlOres(n),nw=n>1?ks.filter(k=>MN_FL_AT[k]===n):[];
+    <div class="mn-fls rows">${Array.from({length:D},(_,i)=>i+1).map(n=>{const ks=mnFlOres(n),pk=n>1?mnFlOres(n-1):ks,nw=n>1?ks.filter(k=>!pk.includes(k)):[];
       return `<button class="btn ghost small${n===V.floor?' on':''}" data-fl="${n}"><b>الدور ${n}</b><span class="tx"><span class="ics">${ks.map(k=>twMat(k,20)).join('')}</span><small>${ks.map(k=>nw.includes(k)?`<em>${resN(k)}</em>`:resN(k)).join('، ')}</small></span></button>`}).join('')}</div>
     <button class="btn small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
   app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
@@ -4438,6 +4462,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.76',d:'11 أكتوبر',add:['كل حتة في المنجم بقى ليها خاماتها: السطح نحاس وحديد، بعده عِرق الفحم، طبقة الحديد، أول عِرق دهب، عِرق الفضة، كهف الزمرد، الأعماق، وقاع المنجم. أول ما {توصل|توصلي} حتة جديدة بيتكتبلك فيها إيه'],fix:['تأكيد «ليلة جديدة» بقى مقروء: سطر واضح وتحته سطر أصغر، من غير ما الكلام يدخل في بعض','البروفايل بقى بيكتب تخصصك الأصلي (حرامي، ابن البلد…)، والتخصص اللي {كسبته|كسبتيه} زي «منقّب» بيتكتب لوحده تحته','«حاجات ليها تمن» مش هتظهر مرتين في تجهيز الليلة','في العطارة الصب بقى طالع من بق الهون على القزازة، ولون الخلطة هو نفس لون الجرعة','ابن البلد مبقاش بيطلعله تخصص من شغلانة تانية وهو ماسك تخصص، وفرصته في التخصصات بقت أقل','السبايك وأي حاجة {بتعملها|بتعمليها} بسرعة من غير ميني جيم مبقتش بتدي خبرة','الفلاح الأسطوري بقى ممكن ييجي كمان مع «احصد الكل» والحصّادة']},
 {v:'5.75',d:'11 أكتوبر',add:[],fix:['زرار «{اخبز|اخبزي} عيش» وشوال الدقيق رجعوا عند أم سيد','لما {تكسر|تكسري} صخر كتير ورا بعض، الإعلانات بقت بتتجمع في إعلان واحد بعدد زي «دهب! ×12» بدل ما تفضل طالعة لدقايق. الإنجازات والمستوى الجديد بيظهروا الأول دايمًا','لو اللعبة اتقفلت {وانت|وانتي} بتعمل حاجة عند عم حسن أو عم فتحي أو أم سيد أو عم رجب أو الفرن، الخامات والفلوس بترجعلك أول ما {تفتح|تفتحي}','الحصّادة بقت بتعوّض آخر 3 حصدات بس لكل أرض لما {ترجع|ترجعي}، وكل حصدة ليها حد (القصب والرز 9 بالكتير)، عشان الغيط ما يطلّعش آلاف في زيارة واحدة. اللي في شنطتك زي ما هو','عرض السوق لو النت قطع وهو بينزل بيرجعلك، والفلوس اللي بتتجمع من السوق بتتحفظ أول بأول','الحفظ على السحابة والنسخة الاحتياطية بقوا أأمن: النسخة الغلط أو التقيلة بتترفض بدل ما تبوّظ أبطالك']},
 {v:'5.74',d:'10 أكتوبر',add:['في سوق اللاعبين {تقدر تشتري|تقدري تشتري} أي عدد من الحاجة المعروضة، مش لازم الكمية كلها: {اختار|اختاري} العدد بـ − و + أو «أقصى»','ولما {تعرض|تعرضي} كمية، السعر بقى «سعر الواحدة» والإجمالي بيبان تحته. الفلوس بتوصلك أول بأول مع كل حتة بتتباع'],fix:['الترقيع باليد عند عم فتحي بقى بيدي خبرة 3 أضعاف الترقيع بسرعة، ولو الشغل طلع حلو 4 أضعاف']},
 {v:'5.73',d:'10 أكتوبر',add:['البرادة والزيت بقوا بيتعملوا باليد عند عم حسن كمان، مش بس بيتشتروا: برادة الفضة من 2 فضة وفحمة (حدادة 3)، برادة الدهب من دهب وفضة وفحمة (حدادة 6)، وزيت التسقية من حبة البركة و2 فحم (حدادة 8)'],fix:['الضربة العادية بقى اسمها على السلاح اللي في إيدك: «خبطة مطرقة» بمطرقة الأسطى، «ضربة سيف» بالسيف، «طعنة خنجر» بالخنجر، و«بوكس» من غير سلاح. الساحر والمعالج فضلوا بسحرهم']},
@@ -5456,6 +5481,10 @@ function bOven(C){const N=4+Math.min(1,(C.o.tier|0)>>1),hw=.12*C.wl,gold=.62,per
 
 /* ---------- العطارة (5.68): الدق في الهون، وبعدين الصب في القزازة ---------- */
 const AT_PASTE=[[0,'#8fe08a'],[.5,'#3a9e55'],[1,'#1f4a30']];
+/* B04 (5.76): the paste turns into the recipe's own colour (C.o.col, the same one the pour and the potion use), not always green */
+const atPasteRamp=C=>C&&C.o&&C.o.col?[[0,AT_PASTE[0][1]],[.45,AT_PASTE[1][1]],[1,C.o.col]]:AT_PASTE;
+/* B04: where the mortar's pouring lip is after its tilt, in the scene's own (viewBox) coordinates, so the stream starts at the lip on any screen */
+function atLip(tilt){const a=62*tilt*Math.PI/180,x=(264-180)*.6,y=0;return [110+80*tilt+x*Math.cos(a)-y*Math.sin(a),120-30*tilt+x*Math.sin(a)+y*Math.cos(a)]}
 function atDefs(){return `<defs><linearGradient id="mgAW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2418"/><stop offset="1" stop-color="#0b0d08"/></linearGradient>
   <linearGradient id="mgAB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5a1a"/><stop offset=".35" stop-color="#f3c14d"/><stop offset=".55" stop-color="#fff0b0"/><stop offset="1" stop-color="#9a6a1e"/></linearGradient>
   <filter id="mgAG" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter></defs>`}
@@ -5503,7 +5532,7 @@ function aPound(C){const pr=TR(C.h,'attar','pound'),ww=C.wl*(1+.1*R3(pr)),GW=11*
   function draw(){const ring=ph==='ring';sa(E.mgASp,{opacity:ring?1:0});if(ring){sa(E.mgARg,{r:Math.max(1,r).toFixed(1)});sa(E.mgARgG,{r:Math.max(1,r).toFixed(1)});
       const e=Math.abs(r-RT);E.mgARg.setAttribute('stroke',e<=PW?'#ffd36a':e<=GW?'#7fe07a':'#e9ffe6')}
     const k=clamp((t-hitT)/260,0,1),dy=k<.35?k/.35:1-(k-.35)/.65;E.mgAPs.setAttribute('transform',`translate(180 ${(120+110*dy*(t-hitT<260?1:0)).toFixed(1)})`);
-    E.mgAP.setAttribute('fill',ramp(AT_PASTE,paste));E.mgALf.setAttribute('opacity',(1-paste).toFixed(2))}
+    E.mgAP.setAttribute('fill',ramp(atPasteRamp(C),paste));E.mgALf.setAttribute('opacity',(1-paste).toFixed(2))}
   return s}
 /* الصب: hold to pour the potion into the flask, let go when it reaches the golden line */
 function aPour(C){const hw=.05*C.wl,L=rr(.58,.74),col=C.o.col||'#e04b3e',FX=180,FY0=356,FH=196,gy=v=>FY0-v*FH*.86;
@@ -5523,7 +5552,7 @@ function aPour(C){const hw=.05*C.wl,L=rr(.58,.74),col=C.o.col||'#e04b3e',FX=180,
       if(hold&&end<0&&tilt>.6){ht+=dt;const rate=(.42+.1*Math.sin(ht/230)+.18*v)*C.sp;v+=rate*dt/1000;if(t-lastS>140){lastS=t;sf('mgFry',.15+.3*v)}if(v>=1){v=1;finish(1)}}
       if(end>=0&&t-end>1000)s.done(res);
       E.mgAMb.setAttribute('transform',`translate(${(110+80*tilt).toFixed(1)} ${(120-30*tilt).toFixed(1)}) rotate(${(62*tilt).toFixed(1)}) scale(.6) translate(-180 -268)`);
-      E.mgASt.setAttribute('opacity',hold&&end<0&&tilt>.6?1:0);
+      E.mgASt.setAttribute('opacity',hold&&end<0&&tilt>.6?1:0);{const [lx,ly]=atLip(tilt);E.mgASt.setAttribute('d',`M${lx.toFixed(1)} ${ly.toFixed(1)} Q${((lx+FX+40)/2).toFixed(1)} ${(ly-6).toFixed(1)} ${FX+40} 160`);E.mgASt.setAttribute('fill','none')}
       const y=gy(v);sa(E.mgALq,{y:y.toFixed(1),height:(FY0-y+8).toFixed(1)});sa(E.mgALt,{y:(y-2).toFixed(1)})},
     down(){if(end>=0)return;hold=1},
     up(){if(!hold||end>=0)return;hold=0;if(v<.1){v=0;ht=0;hint(`${C.g('اضغط','اضغطي')} مطوّل.. ${C.g('وسيب','وسيبي')} لما الجرعة توصل الخط`,1);return}finish(0)},peek:()=>({id:'pour',v,L,hw,hold,end,tilt,t})};
@@ -9273,7 +9302,9 @@ SCREENS.advs=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   if(same){go.insertAdjacentHTML('beforebegin',`<button class="btn nres" id="nRes"><span>${G('كمّل','كمّلي')} الليلة<small>${N_where(sv.N)}${sv.N.cards?' · '+N_cnt(sv.N.cards):''}</small></span></button>`);
     go.className='btn ghost nnew';go.textContent='ليلة جديدة';$('#nRes').onclick=N_resume}
   else go.insertAdjacentHTML('beforebegin',`<div class="nwarn">عندك ليلة متسابة في مغامرة «${N_advOf(sv.N).n}» (${N_where(sv.N)}). لو ${G('بدأت','بدأتي')} دي، اللي فاتت هتضيع.</div>`);
-  go.onclick=()=>{if(!armed){armed=1;go.classList.add('warn');go.innerHTML=`<span>${G('متأكد','متأكدة')}؟ الليلة اللي فاتت هتضيع<small>${G('دوس','دوسي')} تاني عشان ${G('تبدأ','تبدأي')} من الأول</small></span>`;SFX.meh();return}if(o)o()}}}
+  /* B05: the warning had no layout of its own on the gold button (only .nnew had the column style), so the two lines ran
+     into each other. Now any armed start button gets .ngo-warn: a clear title line and a smaller second line. */
+  go.onclick=()=>{if(!armed){armed=1;go.classList.add('warn','ngo-warn');go.innerHTML=`<span><b>${G('متأكد','متأكدة')}؟ الليلة المتسابة هتضيع</b><small>${G('دوس','دوسي')} تاني عشان ${G('تبدأ','تبدأي')} ليلة جديدة من الأول</small></span>`;SFX.meh();return}if(o)o()}}}
 
 /* ---------- the end of a night: a loss ends it (keep the experience and half the money earned), a win shows how long it was ---------- */
 function N_lossScreen(){const h=S.hero,N=S.night;
@@ -9376,6 +9407,8 @@ html,body{overflow-x:hidden;overflow-x:clip}
 .nres{flex-direction:column;margin-bottom:8px}.nres span,.nnew span{display:flex;flex-direction:column;align-items:center;line-height:1.3}
 .nres small,.nnew small{font-size:13px;font-weight:700;opacity:.85;margin-top:2px}
 .nnew.warn{border-color:var(--bad);color:#f0a090}
+.ngo-warn{height:auto;min-height:64px;padding:8px 14px}.ngo-warn span{display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.35;white-space:normal;text-align:center;letter-spacing:0}
+.ngo-warn b{font-size:16px;font-weight:800}.ngo-warn small{font-size:13px;font-weight:700;opacity:.9}
 .nsum{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .nsum .nrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px}
 .nsum .nrow span{color:var(--mute)}.nsum .nrow b{text-align:left}
@@ -21209,6 +21242,8 @@ async function H_throw(){const h=H_h(S.hero);if(!h||H_WD.busy||h.tabPend)return;
 /* ---------- the setup screen: switch the perks you bought on or off for the next night (before the dice) ---------- */
 function H_pkRow(p,h){const on=!!h.perkOn[p.id];return `<button class="h-pk${on?' on':''}" data-pk="${p.id}" aria-pressed="${on}"><span class="ic">${H_pkIc(p.id,26)}</span><span class="tx"><b>${p.n}</b><small class="up">${T(p.up)}</small><small class="dn">${T(p.dn)}</small></span><span class="sw"><i></i></span></button>`}
 {const s0=SCREENS.setup;SCREENS.setup=function(){s0.apply(this,arguments);const h=S.hero;if(!h||S.screen!=='setup')return;H_h(h);const own=H_PERKS.filter(p=>h.perks[p.id]);if(!own.length)return;
+  /* B03 (5.76): one section only, keyed by .h-pkl (not reproduced on 5.75; guard so a second pass can never add it twice) */
+  if(view.querySelector('.h-pkl'))return;
   const lb=[...view.querySelectorAll('.label')].find(l=>/نرد/.test(l.textContent));if(!lb)return;const sv=h.night&&h.night.N;
   lb.insertAdjacentHTML('beforebegin',`<div class="label h-pkl">حاجات ليها تمن <small>${sv?'للّيلة الجديدة بس':G('دوس عشان تشغّل أو تطفي','دوسي عشان تشغّلي أو تطفي')}</small></div><div class="col h-pks">${own.map(p=>H_pkRow(p,h)).join('')}</div>`);
   view.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{const id=b.dataset.pk,on=!h.perkOn[id];h.perkOn[id]=on?1:0;saveHero();b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);SFX.tick(on?950:520);vib(15)})}}
@@ -21410,7 +21445,7 @@ function dkHeroHTML(){const h=S.hero;
   const eq=(typeof TW_SLOTS!=='undefined'?TW_SLOTS:[]).map(s=>h.eq&&h.eq[s]&&GEAR[h.eq[s]]).filter(Boolean);
   const life=h.life?Object.keys(LIFE).filter(k=>h.life[k]).map(k=>`<span class="dk-tag" style="--rc:#cfc6b8">${LIFE[k].n} ${h.life[k].lvl}</span>`).join(''):'';
   const c=S.comp;
-  return `<div class="dk-c"><div class="dk-me"><div class="pic">${portrait(h,'dkP')}</div><div><b>${esc(h.name)}</b><small>${clsN(h)} · مستوى ${h.lvl}</small></div></div></div>
+  return `<div class="dk-c"><div class="dk-me"><div class="pic">${portrait(h,'dkP')}</div><div><b>${esc(h.name)}</b><small>${clsBase(h)}${spTag(h)} · مستوى ${h.lvl}</small></div></div></div>
   <div class="dk-c"><div class="dk-row"><span>الصحة</span><span>${hp}/${mh}</span></div><div class="dk-bar"><i style="width:${hp/Math.max(1,mh)*100}%;background:linear-gradient(90deg,#e04b3e,#ff8f73)"></i></div>${en}
     <div class="dk-row"><span>الفلوس</span><span style="color:var(--gold2)">${h.money||0} جنيه</span></div>
     <div class="dk-row"><span>السمعة</span><span style="color:${rc}">${rn}</span></div>
@@ -25134,6 +25169,31 @@ ftAuto=function(h){if(!h||!ftHas(h,'harv'))return;FARM_FIX(h);const n=farmN(h),g
       got[k]=(got[k]||0)+r.n;any=1;if(!ftReplant(h,i,k,g>=FARM_AUTO_MAX?Date.now():at))break}}}
   finally{FARM.auto=null}
   if(any){const L=h.farm.log=h.farm.log||{};for(const k in got)L[k]=(L[k]||0)+got[k];saveHero()}};
+
+/* ---------- 5.76 (Twister, 2026-10-11): specialisation offers, XP without a mini-game, the legendary farmer ---------- */
+
+/* B34: ابن البلد used to get offers from ANY line while holding a specialisation (5.61 spFree), so طباخ أفراح kept being offered
+   منقّب, عين الجبل… on every craft. Now he follows the same rule as everyone while holding one: only a step up in the same line.
+   His chance bonus is smaller: ×1.5 with no specialisation (was ×2), ×0.5 while holding one. */
+const BL_SP_FREE=1.5,BL_SP_HELD=.5;
+spFree=function(h){return !!h&&h.cls==='ابن البلد'&&!(h.sp&&h.sp.on)};
+{const e0=spEvent;spEvent=function(h,ev,mul){if(h&&h.cls==='ابن البلد')mul=(mul||1)/2*(h.sp&&h.sp.on?BL_SP_HELD:BL_SP_FREE);return e0.call(this,h,ev,mul)}}
+
+/* B36: work with no mini-game (smelting steel, making add-ins at the smith, any «بسرعة» make or mend, a bag made quickly)
+   gives no trade XP, so a trade can't be levelled by repeating a button. The made_ counters still count. */
+const XP_HAND_ONLY={smith:1,tailor:1,cook:1,attar:1};
+{const l0=lifeXP;lifeXP=function(h,k,n){const quick=S.spQuick&&Date.now()-S.spQuick<3000;
+  if(quick&&XP_HAND_ONLY[k]&&h&&h.life&&h.life[k]){if(h.cnt&&(k==='smith'||k==='tailor'||k==='cook'))h.cnt['made_'+k]=(h.cnt['made_'+k]||0)+1;return false}
+  return l0.apply(this,arguments)}}
+
+/* B37: «احصد الكل» and the harvester never rolled a farm specialisation (S.spQuick), so الفلاح الأسطوري almost never came to
+   anyone with a harvester. Now each plot harvested that way rolls the farm line too, at half the hand chance. */
+const FARM_AUTO_SP=.5;
+function farmAutoSp(h,n){if(!h||h!==S.hero||S.combat||!n)return;try{for(let i=0;i<n;i++){if(spEvent(h,'farm',FARM_AUTO_SP))break}}catch(e){console.warn(e)}}
+/* count each plot the harvester or «احصد الكل» takes (farmHarvest with quiet=1), then roll once per plot */
+{const h0=farmHarvest;farmHarvest=function(i,el,quiet){const r=h0.apply(this,arguments);if(r&&quiet)FARM.spN=(FARM.spN||0)+1;return r}}
+{const a0=ftAuto;ftAuto=function(h){FARM.spN=0;const r=a0.apply(this,arguments);const n=FARM.spN;FARM.spN=0;farmAutoSp(h,n);return r}}
+{const a0=farmHarvestAll;farmHarvestAll=function(){FARM.spN=0;const r=a0.apply(this,arguments);const n=FARM.spN;FARM.spN=0;farmAutoSp(S.hero,n);return r}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
