@@ -4462,6 +4462,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.77',d:'11 أكتوبر',add:['«بنك البلد» اتفتح في «ناس البلد»: أستاذ فوزي عنده خزنة {تحط|تحطي} فيها فلوسك و{تسحبها|تسحبيها} في أي وقت ببلاش، ووديعة بتخلص بعد 3 ليالي ومعاها 6% (لحد 300 جنيه)، ودفتر بكل حركة','على باب البنك ساعات بيبقى فيه وسيط بعرض. أغلبهم نصابين! قبل ما {توافق|توافقي} {بص|بصي} على الختم، {اطلب|اطلبي} العقد، أو {اسأل|اسألي} أستاذ فوزي. لو اتنصب {عليك|عليكي} {بتخسر|بتخسري} فلوس العرض بس، وأستاذ فوزي بيرجّعلك جزء بعد ليلتين','الحصّادة بقى ليها زرار {تشغّلها|تشغّليها} أو {توقفها|توقفيها} بيه'],fix:[]},
 {v:'5.76',d:'11 أكتوبر',add:['كل حتة في المنجم بقى ليها خاماتها: السطح نحاس وحديد، بعده عِرق الفحم، طبقة الحديد، أول عِرق دهب، عِرق الفضة، كهف الزمرد، الأعماق، وقاع المنجم. أول ما {توصل|توصلي} حتة جديدة بيتكتبلك فيها إيه'],fix:['تأكيد «ليلة جديدة» بقى مقروء: سطر واضح وتحته سطر أصغر، من غير ما الكلام يدخل في بعض','البروفايل بقى بيكتب تخصصك الأصلي (حرامي، ابن البلد…)، والتخصص اللي {كسبته|كسبتيه} زي «منقّب» بيتكتب لوحده تحته','«حاجات ليها تمن» مش هتظهر مرتين في تجهيز الليلة','في العطارة الصب بقى طالع من بق الهون على القزازة، ولون الخلطة هو نفس لون الجرعة','ابن البلد مبقاش بيطلعله تخصص من شغلانة تانية وهو ماسك تخصص، وفرصته في التخصصات بقت أقل','السبايك وأي حاجة {بتعملها|بتعمليها} بسرعة من غير ميني جيم مبقتش بتدي خبرة','الفلاح الأسطوري بقى ممكن ييجي كمان مع «احصد الكل» والحصّادة']},
 {v:'5.75',d:'11 أكتوبر',add:[],fix:['زرار «{اخبز|اخبزي} عيش» وشوال الدقيق رجعوا عند أم سيد','لما {تكسر|تكسري} صخر كتير ورا بعض، الإعلانات بقت بتتجمع في إعلان واحد بعدد زي «دهب! ×12» بدل ما تفضل طالعة لدقايق. الإنجازات والمستوى الجديد بيظهروا الأول دايمًا','لو اللعبة اتقفلت {وانت|وانتي} بتعمل حاجة عند عم حسن أو عم فتحي أو أم سيد أو عم رجب أو الفرن، الخامات والفلوس بترجعلك أول ما {تفتح|تفتحي}','الحصّادة بقت بتعوّض آخر 3 حصدات بس لكل أرض لما {ترجع|ترجعي}، وكل حصدة ليها حد (القصب والرز 9 بالكتير)، عشان الغيط ما يطلّعش آلاف في زيارة واحدة. اللي في شنطتك زي ما هو','عرض السوق لو النت قطع وهو بينزل بيرجعلك، والفلوس اللي بتتجمع من السوق بتتحفظ أول بأول','الحفظ على السحابة والنسخة الاحتياطية بقوا أأمن: النسخة الغلط أو التقيلة بتترفض بدل ما تبوّظ أبطالك']},
 {v:'5.74',d:'10 أكتوبر',add:['في سوق اللاعبين {تقدر تشتري|تقدري تشتري} أي عدد من الحاجة المعروضة، مش لازم الكمية كلها: {اختار|اختاري} العدد بـ − و + أو «أقصى»','ولما {تعرض|تعرضي} كمية، السعر بقى «سعر الواحدة» والإجمالي بيبان تحته. الفلوس بتوصلك أول بأول مع كل حتة بتتباع'],fix:['الترقيع باليد عند عم فتحي بقى بيدي خبرة 3 أضعاف الترقيع بسرعة، ولو الشغل طلع حلو 4 أضعاف']},
@@ -22518,7 +22519,7 @@ function ftAuto(h){if(!h||!ftHas(h,'harv'))return;FARM_FIX(h);const n=farmN(h),g
 {const fp=farmPlot;farmPlot=function(h,p,i){let s=fp.apply(this,arguments);if(p&&p.f)s=s.replace('<span class="tg">','<span class="tg"><i class="f">سماد</i>');return s}}
 /* the scarecrow keeps the crows away */
 {const ft=farmTick;farmTick=function(){const h=S.hero;if(h&&ftHas(h,'scare')){FARM.next=Date.now()+6e4;if(FARM.crow>=0){const p=h.farm.p[FARM.crow];if(p)p.cr=0;FARM.crow=-1}}
-  if(h&&S.screen==='farm'&&ftHas(h,'harv')&&h.farm.p.slice(0,farmN(h)).some(p=>farmReady(h,p))){ftAuto(h);return farmRe()}return ft.apply(this,arguments)}}
+  if(h&&S.screen==='farm'&&ftHas(h,'harv')&&!h.farm.hOff&&h.farm.p.slice(0,farmN(h)).some(p=>farmReady(h,p))){ftAuto(h);return farmRe()}return ft.apply(this,arguments)}}
 {const fr=farmRe;farmRe=function(){const h=S.hero;if(h){ftPrepAll(h)}return fr.apply(this,arguments)}}
 {const tw=SCREENS.town;SCREENS.town=function(){try{const h=S.hero;if(h){ftPrepAll(h);ftAuto(h)}}catch(e){console.warn(e)}return tw.apply(this,arguments)}}
 function ftHTML(h){const F=h.farm,L=farmL(h);let prev=true;
@@ -25170,6 +25171,14 @@ ftAuto=function(h){if(!h||!ftHas(h,'harv'))return;FARM_FIX(h);const n=farmN(h),g
   finally{FARM.auto=null}
   if(any){const L=h.farm.log=h.farm.log||{};for(const k in got)L[k]=(L[k]||0)+got[k];saveHero()}};
 
+/* 5.77 (Twister, 2026-10-11 18:06): the harvester can be switched off and on with a button (h.farm.hOff). While off it harvests
+   nothing (crops wait in the field, nothing is lost), «احصد الكل» and harvesting by hand still work. */
+{const a0=ftAuto;ftAuto=function(h){if(h&&h.farm&&h.farm.hOff)return;return a0.apply(this,arguments)}}
+{const f0=SCREENS.farm;SCREENS.farm=function(){const r=f0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='farm'||!h||!ftHas(h,'harv')||$('#ftHarv'))return r;
+    const row=[...view.querySelectorAll('.ft-row')].find(x=>/حصّادة/.test(x.textContent));if(!row)return r;const off=!!h.farm.hOff;
+    const tx=row.querySelector('.tx');if(tx)tx.insertAdjacentHTML('beforeend',`<button class="opt ${off?'':'on'}" id="ftHarv" style="margin-top:6px;min-height:44px">${off?`واقفة · ${G('دوس','دوسي')} عشان ${G('تشغّلها','تشغّليها')}`:`شغالة · ${G('دوس','دوسي')} عشان ${G('توقفها','توقفيها')}`}</button>`);
+    const b=$('#ftHarv');if(b)b.onclick=()=>{h.farm.hOff=h.farm.hOff?0:1;saveHero();SFX.tick&&SFX.tick(h.farm.hOff?520:950);toast(h.farm.hOff?'الحصّادة وقفت. الزرع هيستناك في الغيط':'الحصّادة اشتغلت');farmRe()}}catch(e){console.warn(e)}return r}}
+
 /* ---------- 5.76 (Twister, 2026-10-11): specialisation offers, XP without a mini-game, the legendary farmer ---------- */
 
 /* B34: ابن البلد used to get offers from ANY line while holding a specialisation (5.61 spFree), so طباخ أفراح kept being offered
@@ -25194,6 +25203,128 @@ function farmAutoSp(h,n){if(!h||h!==S.hero||S.combat||!n)return;try{for(let i=0;
 {const h0=farmHarvest;farmHarvest=function(i,el,quiet){const r=h0.apply(this,arguments);if(r&&quiet)FARM.spN=(FARM.spN||0)+1;return r}}
 {const a0=ftAuto;ftAuto=function(h){FARM.spN=0;const r=a0.apply(this,arguments);const n=FARM.spN;FARM.spN=0;farmAutoSp(h,n);return r}}
 {const a0=farmHarvestAll;farmHarvestAll=function(){FARM.spN=0;const r=a0.apply(this,arguments);const n=FARM.spN;FARM.spN=0;farmAutoSp(S.hero,n);return r}}
+
+/* ---------- 5.77 / E01 / C65: بنك البلد (offline, جنيه سرداب only) ----------
+   Two paths (Twister's spec):
+   (a) the real counter (أستاذ فوزي): a vault (put money in, take it out, free) and one fixed deposit at a time: you choose 500/2000/5000,
+       it matures after BK_FD_N finished nights, pays BK_FD_PCT% (max BK_FD_MAX), breaking it early gives the money back with no gain.
+   (b) a broker (وسيط) who may wait at the door, at most once per finished night. BK_SCAM of them are scams. Before deciding you can
+       look at the stamp, ask for the contract, ask the manager: every scam shows itself on at least one of them, a real offer never
+       does. Accepting a scam loses that offer's money only (never the vault or the deposit); the manager gets back BK_REC_PCT% of it
+       two nights later. A real offer is an investment that pays +BK_INV_PCT% (max BK_INV_MAX) two nights later.
+   Time is counted in finished nights (h.nDone), never the phone clock. Every move has a ledger line with its own number (h.bank.log).
+   Money moved while a night is saved also moves that night's starting money (m0, ck.m), so the night's loss rules don't change. */
+const BK_FD_N=3,BK_FD_PCT=6,BK_FD_MAX=300,BK_FD_AMT=[500,2000,5000],BK_VAULT_AMT=[100,500,2000];
+const BK_SCAM=.6,BK_REC_PCT=40,BK_INV_PCT=12,BK_INV_MAX=600,BK_INV_N=2,BK_LOG_MAX=30;
+TW_NPC.fawzy=['أستاذ فوزي، مدير البنك','#3a5a8a'];TW_WHO['أستاذ فوزي']='fawzy';
+if(typeof PXP_NPC!=='undefined')PXP_NPC.fawzy={look:{name:'أستاذ فوزي',g:'m',cls:'ساحر',skin:'#c08a5a',hairColor:'#2a2018',hair:'قصير',eyes:'#3a2410',outfit:'#2a3a5a',age:'كبير',beard:'شنب'},bg:['q','z']};
+function bkFix(h){if(!h)return null;const B=h.bank=h.bank&&typeof h.bank==='object'?h.bank:{};
+  B.v=Math.max(0,Math.floor(+B.v||0));B.tx=Math.max(0,Math.floor(+B.tx||0));if(!Array.isArray(B.log))B.log=[];if(!Array.isArray(B.inv))B.inv=[];if(!Array.isArray(B.rec))B.rec=[];
+  if(B.fd&&!(B.fd.a>0))B.fd=null;h.nDone=Math.max(0,Math.floor(+h.nDone||0));return B}
+const bkInt=n=>Math.max(0,Math.floor(+n||0));
+/* the night's starting money follows any bank move, so a saved night's loss/earn math is unchanged */
+function bkNightShift(h,d){const set=new Set([S.night,h.night&&h.night.N].filter(Boolean));set.forEach(N=>{if(typeof N.m0==='number')N.m0+=d;if(N.ck&&typeof N.ck.m==='number')N.ck.m+=d})}
+/* review fix: putting money in while a night is saved could push the night's m0 below 0 (negative money on going home, or a
+   loss with nothing to take). So money only goes INTO the bank with no night open; taking out and claims still work. */
+const bkInNight=h=>!!(S.night||(h&&h.night&&h.night.N));
+function bkMove(h,d){h.money=Math.max(0,h.money+d);bkNightShift(h,d)}
+function bkLog(h,k,a,t){const B=bkFix(h);B.tx++;B.log.push({id:B.tx,k,a,t:t||'',n:h.nDone,v:B.v,m:h.money});if(B.log.length>BK_LOG_MAX)B.log=B.log.slice(-BK_LOG_MAX);return B.tx}
+/* finished nights: a win (N_clear), or a loss (N_lossScreen) / going home (N_home) after the first act */
+/* review fix: a night counts if it was won or got past its first act (a camp), so 2 cards and «البلد» can't be farmed */
+function bkNightDone(h,N){if(!h||!N||N.bkDone)return;N.bkDone=1;if(!N.won&&!((N.act||0)>0)&&!N.camp)return;h.nDone=(h.nDone||0)+1}
+{const c0=N_clear;N_clear=function(){const h=S.hero,N=S.night||(h&&h.night&&h.night.N);if(h&&N){N.won=1;bkNightDone(h,N)}return c0.apply(this,arguments)}}
+{const l0=N_lossScreen;N_lossScreen=function(){const h=S.hero,N=S.night;if(h&&N&&!N.lossRes)bkNightDone(h,N);return l0.apply(this,arguments)}}
+{const n0=N_home;N_home=function(safe){const h=S.hero,N=S.night;if(h&&N)bkNightDone(h,N);return n0.apply(this,arguments)}}
+
+/* (a) the counter */
+function bkPut(n){const h=S.hero,B=bkFix(h);if(bkInNight(h))return;n=n==='all'?bkInt(h.money):bkInt(n);if(!n||n>h.money)return;bkMove(h,-n);B.v+=n;bkLog(h,'in',n);saveHero();SFX.coin&&SFX.coin();twRender()}
+function bkTake(n){const h=S.hero,B=bkFix(h);n=n==='all'?B.v:bkInt(n);if(!n||n>B.v)return;B.v-=n;bkMove(h,n);bkLog(h,'out',n);saveHero();SFX.coin&&SFX.coin();twRender()}
+const bkFdGain=a=>Math.min(BK_FD_MAX,Math.floor(a*BK_FD_PCT/100));
+function bkFdOpen(a){const h=S.hero,B=bkFix(h);if(bkInNight(h))return;a=bkInt(a);if(B.fd||!a||a>h.money)return;bkMove(h,-a);B.fd={a,at:h.nDone+BK_FD_N,g:bkFdGain(a),id:bkLog(h,'fd',a)};saveHero();SFX.reg&&SFX.reg();twRender()}
+function bkFdClaim(){const h=S.hero,B=bkFix(h),F=B.fd;if(!F||h.nDone<F.at)return;B.fd=null;bkMove(h,F.a+F.g);bkLog(h,'fdok',F.a+F.g,`+${F.g}`);saveHero();SFX.reg&&SFX.reg();toast(`الوديعة خلصت: ${twI('+'+(F.a+F.g))} جنيه`);twRender()}
+function bkFdBreak(){const h=S.hero,B=bkFix(h),F=B.fd;if(!F||h.nDone>=F.at)return;if(TWN.conf!=='bkfd'){TWN.conf='bkfd';SFX.meh&&SFX.meh();return twRender()}TWN.conf=null;
+  B.fd=null;bkMove(h,F.a);bkLog(h,'fdbrk',F.a);saveHero();twRender()}
+function bkInvClaim(id){const h=S.hero,B=bkFix(h),i=B.inv.findIndex(x=>x.id===id);if(i<0||h.nDone<B.inv[i].at)return;const x=B.inv.splice(i,1)[0];bkMove(h,x.a+x.g);bkLog(h,'invok',x.a+x.g,`+${x.g}`);saveHero();SFX.reg&&SFX.reg();toast(`الاستثمار رجع: ${twI('+'+(x.a+x.g))} جنيه`);twRender()}
+function bkRecClaim(id){const h=S.hero,B=bkFix(h),i=B.rec.findIndex(x=>x.id===id);if(i<0||h.nDone<B.rec[i].at)return;const x=B.rec.splice(i,1)[0];bkMove(h,x.a);bkLog(h,'rec',x.a);saveHero();SFX.reg&&SFX.reg();toast(`أستاذ فوزي رجّعلك ${x.a} جنيه من النصاب`);twRender()}
+
+/* (b) the broker: types of scam and which check shows them */
+const BK_SCAMS=[
+  {id:'badge',who:'موظف بكارنيه البنك',pitch:(a,r)=>`«أنا من البنك. ${G('حط','حطي')} ${a} جنيه في حساب الاستثمار الجديد وبعد ليلتين ياخدوا ${a+r}.»`,
+   show:{manager:'أستاذ فوزي: «مفيش حد عندنا بالاسم ده. الكارنيه ده مش بتاعنا.»'}},
+  {id:'stamp',who:'وسيط معاه إيصال',pitch:(a,r)=>`«الإيصال مختوم وجاهز. ${a} جنيه دلوقتي وبعد ليلتين ${a+r}.»`,
+   show:{stamp:'الختم مايل ومكتوب فيه «بنك البلاد» مش «بنك البلد».'}},
+  {id:'huge',who:'وسيط لابس بدلة',pitch:a=>`«فرصة العمر! ${a} جنيه يرجعوا ${a*3} بكرة الصبح. محدش يعرف عنها.»`,
+   show:{contract:'العقد ورقة فاضية تحت أول صفحة.. ومفيش مكتوب أي مبلغ.'}},
+  {id:'rush',who:'وسيط مستعجل',pitch:a=>`«${G('ادفع','ادفعي')} ${a} جنيه دلوقتي حالًا والعقد يتختم بكرة. لو ${G('استنيت','استنيتي')} هتضيع ${G('عليك','عليكي')}.»`,
+   show:{contract:'«العقد؟ بكرة.. بكرة.» مفيش عقد دلوقتي.',manager:'أستاذ فوزي: «إحنا مش بناخد فلوس قبل العقد. خلي بالك.»'}}];
+/* a real offer comes from the same kinds of people and promises a similar gain as the quiet scams, so only the checks tell them apart */
+const BK_WHO=['موظف بكارنيه البنك','وسيط معاه إيصال','تاجر قطن'];
+const BK_REAL_P={'موظف بكارنيه البنك':(a,g)=>`«البنك فاتح استثمار جديد. ${a} جنيه بعد ليلتين ${G('ترجعلك','ترجعلكي')} ومعاها ${g} جنيه.»`,
+  'وسيط معاه إيصال':(a,g)=>`«الإيصال مختوم وجاهز. ${a} جنيه دلوقتي، وبعد ليلتين ${a+g}.»`,
+  'تاجر قطن':(a,g)=>`«محتاج ${a} جنيه أكمّل بيهم شحنة. بعد ليلتين ${G('ترجعلك','ترجعلكي')} ومعاها ${g} جنيه، والعقد عند أستاذ فوزي.»`};
+const BK_REAL={who:'تاجر قطن',pitch:(a,g,who)=>(BK_REAL_P[who]||BK_REAL_P['تاجر قطن'])(a,g),
+  ok:{stamp:'الختم سليم: «بنك البلد» ومتوقّع من أستاذ فوزي.',contract:'العقد واضح: المبلغ والمدة والمكسب مكتوبين.',manager:'أستاذ فوزي: «ده راجل معروف، وعقده عندي.»'}};
+const BK_CHECKS=[['stamp','بص على الختم'],['contract','اطلب العقد'],['manager','اسأل أستاذ فوزي']];
+function bkBroker(h){const B=bkFix(h);if(B.br&&B.br.n===h.nDone)return B.br;if(bkInNight(h)||B.brAt===h.nDone||h.money<200||h.nDone<1)return null;
+  const a=Math.max(200,Math.min(5000,Math.round(h.money*.25/50)*50)),scam=Math.random()<BK_SCAM;
+  const s=scam?BK_SCAMS[Math.floor(Math.random()*BK_SCAMS.length)]:null,pct=s?15+Math.floor(Math.random()*21):10+Math.floor(Math.random()*9);
+  B.br={n:h.nDone,a,scam:s?s.id:'',seen:{},who:s?s.who:BK_WHO[Math.floor(Math.random()*BK_WHO.length)],g:s?Math.round(a*pct/100):Math.min(BK_INV_MAX,Math.floor(a*pct/100))};saveHero();return B.br}
+const bkScam=br=>BK_SCAMS.find(s=>s.id===br.scam);
+function bkCheck(k){const h=S.hero,B=bkFix(h),br=B.br;if(!br||br.n!==h.nDone||br.seen[k])return;br.seen[k]=1;saveHero();twRender()}
+function bkCheckTxt(br,k){if(!br.scam)return BK_REAL.ok[k];const s=bkScam(br);return s.show[k]||{stamp:'الختم باين عادي.',contract:'فيه ورقة مكتوب فيها كلام كتير.',manager:'أستاذ فوزي مشغول ومردش.'}[k]}
+function bkDeal(yes){const h=S.hero,B=bkFix(h),br=B.br;if(!br||br.n!==h.nDone||(yes&&bkInNight(h)))return;B.br=null;B.brAt=h.nDone;
+  if(!yes){if(br.scam&&Object.keys(br.seen).some(k=>bkScam(br).show[k])){bump('scamSpot');toast(`${G('كشفته','كشفتيه')}! ده كان نصاب.`)}saveHero();return twRender()}
+  const a=Math.min(br.a,bkInt(h.money));if(!a){saveHero();return twRender()}bkMove(h,-a);
+  if(br.scam){const id=bkLog(h,'scam',a,br.who||bkScam(br).who);const r=Math.floor(a*BK_REC_PCT/100);if(r)B.rec.push({id,a:r,at:h.nDone+2});bump('scamHit');
+    SFX.down&&SFX.down();band('',G('اتنصب عليك','اتنصب عليكي'),`راحوا ${a} جنيه. أستاذ فوزي هيدوّر عليه`,{color:'red',dur:2200,sound:false})}
+  else{const g=Math.min(BK_INV_MAX,a<br.a?Math.floor((br.g||0)*a/br.a):(br.g||Math.floor(a*BK_INV_PCT/100))),who=br.who||BK_REAL.who,id=bkLog(h,'inv',a,who);B.inv.push({id,a,g,at:h.nDone+BK_INV_N,who});SFX.reg&&SFX.reg();toast(`استثمار مع ${who}: بعد ${bkNights(BK_INV_N)}`)}
+  saveHero();twRender()}
+
+/* the screen */
+const BK_LOGN={in:'{حطيت|حطيتي} في الخزنة',out:'{سحبت|سحبتي} من الخزنة',fd:'{فتحت|فتحتي} وديعة',fdok:'الوديعة خلصت',fdbrk:'{كسرت|كسرتي} الوديعة',inv:'استثمار',invok:'الاستثمار رجع',scam:'اتنصب {عليك|عليكي}',rec:'{رجعلك|رجعلكي} من النصاب'};
+const bkNights=n=>n===1?'ليلة واحدة':n===2?'ليلتين':n+' ليالي';
+function bkBtn(attr,txt,sub,dis){return `<button class="tw-buy" ${attr} ${dis?'disabled':''}>${txt}${sub?`<small>${sub}</small>`:''}</button>`}
+SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}const B=bkFix(h),br=bkBroker(h),F=B.fd;
+  const left=F?Math.max(0,F.at-h.nDone):0;
+  const brHTML=br?(()=>{const s=br.scam?bkScam(br):null,who=br.who||(s?s.who:BK_REAL.who),g=br.g!=null?br.g:Math.min(BK_INV_MAX,Math.floor(br.a*BK_INV_PCT/100));
+    return `<div class="tw-lbl">حد مستنيك على باب البنك</div><div class="card bk-br"><b>${who}</b><div class="bk-p">${s?s.pitch(br.a,g):BK_REAL.pitch(br.a,g,who)}</div>
+      ${Object.keys(br.seen).map(k=>`<div class="bk-cl">${bkCheckTxt(br,k)}</div>`).join('')}
+      <div class="bk-bt">${BK_CHECKS.map(([k,t])=>bkBtn(`data-bkc="${k}"`,t,'',br.seen[k])).join('')}</div>
+      <div class="bk-bt">${bkBtn('data-bkd="1"',G('وافق وادفع','وافقي وادفعي'),`${Math.min(br.a,h.money)} جنيه`,h.money<1||bkInNight(h))}${bkBtn('data-bkd="0"',G('ارفض','ارفضي'),'')}</div></div>`})():'';
+  view.innerHTML=`${twTop('بنك البلد')}<div class="tw">
+    ${twNpcHTML('fawzy',`${G('أهلًا يا أستاذ','أهلًا يا أستاذة')}. الخزنة أمان، والوديعة مكسبها قليل بس مضمون. واللي يقولك «فلوسك هتتضاعف بكرة».. ${G('اسألني','اسأليني')} الأول.`)}
+    <div class="tw-stk"><div class="tw-wal"><span>في الخزنة: <b>${B.v}</b> جنيه</span>${twMon(h)}</div></div>
+    ${bkInNight(h)?`<div class="tw-miss">${G('عندك','عندك')} ليلة متسابة: ${G('تقدر تسحب وتستلم','تقدري تسحبي وتستلمي')}، بس الإيداع والوديعة بعد ما الليلة تخلص.</div>`:''}
+    ${brHTML}
+    <div class="tw-lbl">الخزنة <small>${G('حط','حطي')} و${G('اسحب','اسحبي')} في أي وقت ببلاش</small></div>
+    <div class="card bk-bt">${BK_VAULT_AMT.map(a=>bkBtn(`data-bkp="${a}"`,`${G('حط','حطي')} ${a}`,'',h.money<a||bkInNight(h))).join('')}${bkBtn('data-bkp="all"',G('حط كل اللي معاك','حطي كل اللي معاكي'),'',h.money<1||bkInNight(h))}</div>
+    <div class="card bk-bt">${BK_VAULT_AMT.map(a=>bkBtn(`data-bkt="${a}"`,`${G('اسحب','اسحبي')} ${a}`,'',B.v<a)).join('')}${bkBtn('data-bkt="all"',G('اسحب الكل','اسحبي الكل'),'',B.v<1)}</div>
+    <div class="tw-lbl">الوديعة <small>بعد ${bkNights(BK_FD_N)} ${G('بتاخدها','بتاخديها')} ومعاها ${BK_FD_PCT}% (لحد ${BK_FD_MAX} جنيه)</small></div>
+    ${F?`<div class="card bk-fd"><b>${F.a} جنيه</b> · ${left?`فاضل ${bkNights(left)} ${G('تخلّصها','تخلّصيها')}`:'خلصت!'} · المكسب ${F.g} جنيه
+        <div class="bk-bt">${left?bkBtn('data-bkfb="1"',TWN.conf==='bkfd'?G('متأكد؟ مش هتاخد المكسب','متأكدة؟ مش هتاخدي المكسب'):G('اكسر الوديعة','اكسري الوديعة'),'الفلوس ترجع من غير مكسب'):bkBtn('data-bkfc="1"',G('خد الوديعة','خدي الوديعة'),`${F.a+F.g} جنيه`)}</div></div>`
+      :`<div class="card bk-bt">${BK_FD_AMT.map(a=>bkBtn(`data-bkf="${a}"`,`وديعة ${a}`,`المكسب ${bkFdGain(a)}`,h.money<a||bkInNight(h))).join('')}</div>`}
+    ${B.inv.length?`<div class="tw-lbl">استثماراتك</div><div class="col">${B.inv.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه مع ${x.who||BK_REAL.who}</b><small>${h.nDone>=x.at?'رجعت!':'فاضل '+bkNights(x.at-h.nDone)} · المكسب ${x.g}</small></div>${h.nDone>=x.at?bkBtn(`data-bki="${x.id}"`,G('خد','خدي'),`${x.a+x.g} جنيه`):''}</div>`).join('')}</div>`:''}
+    ${B.rec.length?`<div class="tw-lbl">فلوس من النصابين</div><div class="col">${B.rec.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه</b><small>${h.nDone>=x.at?'أستاذ فوزي مسكه!':'أستاذ فوزي بيدوّر عليه.. فاضل '+bkNights(x.at-h.nDone)}</small></div>${h.nDone>=x.at?bkBtn(`data-bkr="${x.id}"`,G('خد','خدي'),`${x.a} جنيه`):''}</div>`).join('')}</div>`:''}
+    <div class="tw-lbl">الدفتر</div>
+    <div class="card bk-log">${B.log.length?B.log.slice().reverse().slice(0,12).map(x=>`<div class="bkl"><span>#${x.id} ${T(BK_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'?'neg':'pos'}">${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'?'−':'+'}${x.a}</b></div>`).join(''):'<small>لسه مفيش حركات</small>'}</div></div>`;
+  twBack();
+  const on=(sel,fn)=>view.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
+  on('[data-bkp]',b=>bkPut(b.dataset.bkp));on('[data-bkt]',b=>bkTake(b.dataset.bkt));on('[data-bkf]',b=>bkFdOpen(b.dataset.bkf));
+  on('[data-bkfc]',()=>bkFdClaim());on('[data-bkfb]',()=>bkFdBreak());on('[data-bki]',b=>bkInvClaim(+b.dataset.bki));on('[data-bkr]',b=>bkRecClaim(+b.dataset.bkr));
+  on('[data-bkc]',b=>bkCheck(b.dataset.bkc));on('[data-bkd]',b=>bkDeal(b.dataset.bkd==='1'))};
+{const st=document.createElement('style');st.textContent=`
+.bk-bt{display:flex;flex-wrap:wrap;gap:6px}.bk-bt .tw-buy{flex:1 1 30%;min-width:88px;min-height:44px}
+.bk-br{border-color:var(--gold2)}.bk-br .bk-p{margin:6px 0;line-height:1.6}.bk-cl{font-size:13px;color:#f2c77a;margin:4px 0;line-height:1.5}
+.bk-fd{line-height:1.7}.bk-log .bkl{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px solid var(--line);font-size:13px}
+.bk-log .bkl small{color:var(--mute)}.bk-log .pos{color:#a6e3a0}.bk-log .neg{color:#f0a090}`;document.head.appendChild(st)}
+function bkArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#1c2230"/><rect y="70" width="160" height="20" fill="#2a2a2a"/>
+  <rect x="30" y="22" width="100" height="48" fill="#cfc6b8"/><rect x="24" y="16" width="112" height="8" fill="#e8e0d0"/><rect x="40" y="8" width="80" height="8" fill="#e8e0d0"/>
+  ${[38,58,92,112].map(x=>`<rect x="${x}" y="28" width="8" height="40" fill="#b0a690"/>`).join('')}<rect x="72" y="40" width="16" height="30" fill="#3a2a1a"/><rect x="78" y="10" width="4" height="4" fill="#f3c14d"/>
+  <rect x="62" y="17" width="36" height="6" fill="#2a3a5a"/></svg>`}
+{const pa=placeArt;placeArt=function(id){if(id==='bank')return bkArt();return pa.apply(this,arguments)}}
+TW_EXTRA.push(h=>{const B=bkFix(h),br=B.br&&B.br.n===h.nDone||(B.brAt!==h.nDone&&h.money>=200&&h.nDone>=1),due=(B.fd&&h.nDone>=B.fd.at)||B.inv.some(x=>h.nDone>=x.at)||B.rec.some(x=>h.nDone>=x.at);
+  return {id:'bank',go:'bank',n:'بنك البلد',w:'أستاذ فوزي: خزنة ووديعة',s:due?`<span class="ok">فيه فلوس ${G('ليك','ليكي')} ${G('تستلمها','تستلميها')}</span>`:B.v?`في الخزنة ${B.v} جنيه`:'خزنة ووديعة',bell:due||br?1:0}});
+{const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('bank'))g.go.push('bank')}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
