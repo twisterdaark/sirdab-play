@@ -1837,12 +1837,16 @@ async function choose(c){
 const PACE=1300;
 const FF=(f,m,w)=>f&&(f.art==='nadaha'||f.fem||f.art==='sal')?w:m;
 /* the higher the hero, the tougher the foes: more health and damage, better aim (harder to dodge) and better defence (harder to hit) */
-const lvlDC=h=>{const L=(h&&h.lvl)||1;return Math.floor((L-1)/2)+Math.floor(Math.max(0,L-6)/4)};
+/* the card difficulty, from the hero's level only. 5.88 (C77): the old curve (⌊(L−1)/2⌋+⌊(L−6)/4⌋, 9 at level 15) outran the stats,
+   which stop growing at 5/4 by level 7; it is the same up to level 7 (3) and then +1 every 4 levels (5 at 15, 6 at 20). */
+const lvlDC=h=>{const L=(h&&h.lvl)||1;return Math.min(Math.floor((L-1)/2),3)+Math.floor(Math.max(0,L-7)/4)};
+/* the monsters' aim and guard keep the old curve: 5.88 changed the cards only */
+const foeDC=h=>{const L=(h&&h.lvl)||1;return Math.floor((L-1)/2)+Math.floor(Math.max(0,L-6)/4)};
 /* foe health ×: +35% a level, and from level 6 another +10% a level, so a high hero still has to work for it (5.49) */
 const FOE_HPM=L=>1+.35*(L-1)+.1*Math.max(0,L-5),FOE_DMG=L=>Math.floor(L/2)+Math.floor(Math.max(0,L-4)/3);
 function startCombat(foes,win,tutorial){
   const h=S.hero,L=h.lvl;
-  const C=S.combat={foes:foes.map((f,i)=>{const g=Object.assign({},f);g.acc=g.def=0;if(!tutorial&&L>1){g.hp=Math.round(f.hp*FOE_HPM(L));g.dmg=f.dmg+FOE_DMG(L);g.acc=g.def=lvlDC(h)}
+  const C=S.combat={foes:foes.map((f,i)=>{const g=Object.assign({},f);g.acc=g.def=0;if(!tutorial&&L>1){g.hp=Math.round(f.hp*FOE_HPM(L));g.dmg=f.dmg+FOE_DMG(L);g.acc=g.def=foeDC(h)}
       /* a foe can start hurt (f.hurt = the part of its health it lost) and dazed (f.daze = turns it skips: the same skip status as the shield bash) */
       const max=g.hp;if(f.hurt)g.hp=Math.max(1,Math.round(max*(1-f.hurt)));const fx=f.daze?{skip:{n:f.daze,daze:1,t:Date.now()}}:{};delete g.daze;
       return Object.assign(g,{id:i,max,lvl:tutorial?1:L,base:f,fx})}),
@@ -4462,6 +4466,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.88',d:'11 أكتوبر',add:['قبل ما ترمي النرد {بتشوف|بتشوفي} الحساب كله: «النرد + الصفة − الصعوبة»، وفرصتك بالظبط في النجاح والنجاح بتمن والفشل، و«الصعوبة جاية منين؟»','في «بطلي» ← «صفاتي»: صعوبة الكروت دلوقتي، وفرصتك في كل صفة بالنردين أو بنرد 20','«التخصصات» بقت ورقة بطل: صورتك ونوعك في القتال ومستواك وتخصصك وأشطر شغلانة وصحتك وطاقتك والست صفات. {دوس|دوسي} على أي صفة {تعرف|تعرفي} بتعمل إيه بالظبط في القتال والكروت، وتحت فيه «القدرات» و«الصفات» و«الشغلانات» و«الألقاب»','«عدّتي»: كل حتة مكتوب تحتها أرقامها، وبعدها اللي هيتغير لو {لبستها|لبستيها} (الأخضر أحسن والأحمر أقل)، وندرتها وجودتها وصنعة إيد مين ومعمولة من إيه وفين تتصلّح','قبل أي صناعة (الحداد والخياط والطباخة والعطار والترقيع): {معاك|معاكي} منها كام دلوقتي، {هتعمل|هتعملي} كام، وكل خامة بصورتها: محتاج كام و{معاك|معاكي} كام، والناقص بالأحمر'],fix:['الصعوبة كانت بتكبر أسرع من صفاتك بكتير: في المستوى 15 كانت 9 وأحسن صفة عندك كانت بتفشل أغلب الوقت. دلوقتي زي ما هي لحد المستوى 7، وبعدين بتزيد 1 كل 4 مستويات (5 في المستوى 15). الوحوش زي ما هي','«لسانه حلو» بقى يظهر بس لما يكون فيه حد {تكلمه|تكلميه}، و«عنيد» في الاختبارات اللي فيها شغل بالعافية أو بالصبر، و«ضهره قوي» بس لما يكون فيه حاجة تتشال، وبيشيل الضعف منها. وكل طبع بيظهر باسمه هو','«التحمّل» كان مكتوب إنه بيزوّد الصحة، وده ما كانش صح: بينفع في الكروت اللي فيها وجع أو تعب أو صبر']},
 {v:'5.87',d:'11 أكتوبر',add:['البلد ليها ساعة بتاعتها: اليوم في البلد نص ساعة لعب، {وبتشوفه|وبتشوفيه} تحت اسمك («اليوم كام» والصبح ولا الضهر ولا الليل). الساعة بتمشي بس {وانت|وانتي} {بتلعب|بتلعبي}، ومش بتعد {وانت|وانتي} في ليلة ولا في قتال، والليلة اللي {بتخلّصها|بتخلّصيها} في الدهاليز يوم برضو','البنك والقهوة والكورة والبورصة بقوا بالأيام: «بعد يومين» بدل «بعد ليلتين»، ومحفظة اللي {بتلاعبه|بتلاعبيه} بتتملا كل يوم','رهانات أكبر على القهوة: 10 و20 و50 و100 و200 ألف، والقديمة زي ما هي','الحاج سليمان قعد على القهوة: تاجر كبير بيلعب على الكبير، وجيبه يشيل لحد 400 ألف'],fix:[]},
 {v:'5.86',d:'11 أكتوبر',add:['البلد بقت أوضح: فوق اسمك ومستواك وفلوسك ومجهودك بس، وبعدين «الدهاليز»، وبعدين 3 أقسام: «الحرف والعمل» و«الخدمات» و«الناس والحكايات»، وكل مكان فيه سطر واحد قصير','«المغامرات» بقى اسمها «الدهاليز» في البلد وقايمة الليالي','الشاشة الأولى فيها زرار واحد واضح و{بطلك|بطلتك} من غير زحمة. «الجديد في النسخة» و«ازاي ألعب؟» بقوا في الإعدادات، وزرار الإعدادات {بيقولك|بيقولكي} «جديد» لو فيه نسخة {مقريتهاش|مقريتيهاش}'],fix:['«مطرقة الأسطى» بقى اسمها «شاكوش الأسطى»، وحركة «مطرقة على الكل» بقت «شاكوش على الكل»']},
 {v:'5.85',d:'11 أكتوبر',add:['أول مرة؟ التدريب بقى 6 خطوات قصيرة، حاجة واحدة على الشاشة كل مرة: {تختار|تختاري} البطل، و{تختار|تختاري} في حدوتة صغيرة، وترمي النرد، و{تعمل|تعملي} {بطلك|بطلتك}، وقتال تدريبي، وبعدين البلد. وفيه «عيدها» و«تخطّي» في كل خطوة','شكل البطل بقى اختياري وقت ما {بتعمله|بتعمليه}: الاسم والتخصص بس، والباقي بدوسة لو {حابب|حابة}','اللي لعب قبل كده يدوس «لعبت قبل كده؟» ويعمل بطله على طول','أول ما {توصل|توصلي} البلد: 3 خطوات صغيرة (عم حسن، الأنشطة، أول مغامرة) بيتعلّموا لوحدهم، والأماكن بتنوّر لحد ما {تزورها|تزوريها}','«التدريب» بقى مكتبة دروس: 19 درس في 6 أقسام، بحث وفلتر، وكل درس فيه حاجة {تعملها|تعمليها} بإيدك و«عيدها». الدروس مش بتدي ولا بتاخد حاجة'],fix:[]},
@@ -12367,7 +12372,7 @@ async function X_charge(e,p,i){const C=S.combat,h=S.hero,I=X_I(e);if(i!=null)I.c
 async function X_summon(e,p,i){const C=S.combat,h=S.hero,I=X_I(e);I.sum=(I.sum||0)+1;
   const q=Object.assign({name:'عفريت صغير',art:'afreet',hp:4,dmg:2},p.foe||{}),g=Object.assign({},FOE_X[q.art]||{},q);if(!q.trick)delete g.trick;
   if(typeof N_loot==='function')N_loot(g);
-  const L=h.lvl,f=Object.assign({},g);f.acc=f.def=0;if(L>1){f.hp=Math.round(g.hp*FOE_HPM(L));f.dmg=g.dmg+FOE_DMG(L);f.acc=f.def=lvlDC(h)}
+  const L=h.lvl,f=Object.assign({},g);f.acc=f.def=0;if(L>1){f.hp=Math.round(g.hp*FOE_HPM(L));f.dmg=g.dmg+FOE_DMG(L);f.acc=f.def=foeDC(h)}
   Object.assign(f,{id:C.foes.length,max:f.hp,lvl:L,base:q,fx:{}});f.X={int:'hit',cd:{},by:e.id};X_initFoe(f);C.foes.push(f);
   SFX.x_summon();combat();const el=$('#foe'+f.id);cls(el,'xin');pop(el,['#c3b2ff','#ffffff','#6a4ac6'],26);
   await say(p.say?X_tx(p.say,e,f):`${e.name} ${FF(e,'زعّق','زعّقت')}، و${f.name} ${FF(f,'طلع','طلعت')} من الضلمة ${FF(f,'يساعد','تساعد')}${FF(e,'ه','ها')}!`,'bad',1100)}
@@ -26700,6 +26705,265 @@ document.addEventListener('visibilitychange',()=>{KL.last=performance.now()});
 {const st=document.createElement('style');st.textContent=`
 .kl{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;margin:8px 0 2px;font-size:13px}.kl-d b{color:var(--gold2)}.kl-n{font-size:11px;color:var(--mute)}
 .kl-bar{grid-column:1/3;display:block;height:4px;border-radius:3px;background:#0005;overflow:hidden}.kl-bar b{display:block;height:100%;background:linear-gradient(90deg,#f3c14d,#ff9a5a)}`;document.head.appendChild(st)}
+
+/* ---------- 5.88 / R02 part 2: C77 (the difficulty explained) + C78 (natures only where they fit) ----------
+   C77 The card difficulty comes from the hero's level only (lvlDC in p8.js), not from the story, the place or luck. The raw dice are
+       never touched: the difficulty is taken off the sum. 5.88 rebalances lvlDC after an exact count of every roll (docs in
+       docs/ai/C77_DIFFICULTY.md): the old curve outran the stats (they stop growing at 5/4 by level 7), so at level 15 a hero's best
+       stat failed 65% on the d20 and 92% on two dice. Now it keeps the old steps up to level 7 (3), then +1 every 4 levels.
+       The roll shows «النرد + صفة − صعوبة», the exact chance of each result and where the difficulty comes from; «صفاتي» shows the
+       difficulty now and the chance on every stat with the hero's dice.
+   C78 «لسانه حلو», «عنيد» and «ضهره قوي» used to be added to every card of one type (people / test / prep), even with nobody to talk
+       to, nothing to push through or nothing to carry. Now each one is tied to a choice the scene already has and makes that same
+       action better: «لسانه حلو» = a talk choice (حضور) with advantage, «عنيد» = an effort choice (قوة/تحمّل) of a test with advantage,
+       «ضهره قوي» = a free pick-up of the scene (an item or materials) taken twice. No such choice → no nature choice. */
+
+/* the chance of each result, counted exactly with the same rules as rollCheck (p5.js) */
+function rcOdds(mod,dc,adv,two,hz){let f=0,p=0,n=0;
+  const one=used=>{const t=used.reduce((a,b)=>a+b,0)+mod-dc;let r=two?(t>=10?2:t>=7?1:0):(t>=15?2:t>=10?1:0);
+    const crit=two?(hz?used[0]+used[1]>=11:used[0]===6&&used[1]===6):used[0]>=(hz?19:20),fum=two?(used[0]===1&&used[1]===1):used[0]===1;
+    if(crit)r=2;if(fum)r=0;n++;if(r===2)f++;else if(r===1)p++};
+  if(two){if(adv){for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)for(let c=1;c<=6;c++){const x=[a,b,c],d=x.indexOf(Math.min(a,b,c));one(x.filter((_,i)=>i!==d))}}
+    else for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)one([a,b])}
+  else if(adv){for(let a=1;a<=20;a++)for(let b=1;b<=20;b++)one([Math.max(a,b)])}else for(let a=1;a<=20;a++)one([a]);
+  return {full:f/n,part:p/n,fail:(n-f-p)/n}}
+/* whole percents that add up to 100 */
+function rcPct(o){const a=[o.full,o.part,o.fail].map(x=>x*100),f=a.map(Math.floor);let r=100-f[0]-f[1]-f[2];
+  a.map((x,i)=>[x-f[i],i]).sort((p,q)=>q[0]-p[0]).forEach(([,i])=>{if(r>0){f[i]++;r--}});return {full:f[0],part:f[1],fail:f[2]}}
+const rcSgn=v=>`<bdi dir="ltr">${v>0?'+':v<0?'−':''}${Math.abs(v)}</bdi>`;
+const RC_LV=[1,5,10,15,20,30];
+function rcLvTable(h){return `<div class="dm-tb">${RC_LV.map(L=>`<span class="${h&&h.lvl>=L&&!RC_LV.some(x=>x>L&&h.lvl>=x)?'on':''}">مستوى ${L}<b>${lvlDC({lvl:L})}</b></span>`).join('')}</div>`}
+/* where a difficulty comes from, in words */
+function rcWhy(h,dc){let cu=0;try{const B=typeof burOf==='function'&&N_on()&&burOf();cu=B&&B.cursed||0}catch(e){}
+  const cuT=cu?` ومنها <b>${cu}</b> من اللعنة اللي ${G('عليك','عليكي')} الليلة دي.`:'';
+  if(S.combat&&S.screen==='combat')return `الرقم ده دقة الوحش أو حمايته. بيكبر مع مستواك عشان الوحوش بتقوى مع ${G('البطل','البطلة')}، مش من حظك ولا من النرد.${cuT}`;
+  const L=lvlDC(h),b=dc-cu,lv=`جاية من مستواك (<b>${h.lvl}</b>)، مش من الحكاية ولا المكان ولا الحظ.`;
+  const job=b!==L?(b<L?` ومنها <b>${L-b}</b> أقل عشان دي شغلانتك.`:` ومنها <b>${b-L}</b> زيادة عشان دي مش شغلانتك.`):'';
+  return `الصعوبة ${dc!==L?`هنا <b>${dc}</b>: <b>${L}</b> `:''}${lv}${job}${cuT} كل ما ${G('تكبر','تكبري')} الكروت بتصعب شوية، وصفاتك وعدّتك هما اللي بيعادلوها.
+    النرد نفسه ما بيتغيرش: الصعوبة بتتطرح من المجموع بس.${rcLvTable(h)}`}
+/* the dice: before the roll, the sum, the exact chances and the reason */
+function rcMath(stat,opt){const h=S.hero,D=$('#dStat');if(!D||!h)return;const old=$('#dMath');if(old)old.remove();
+  const mod=opt.mod!==undefined?opt.mod:ST(h,stat),dm=D.textContent.match(/صعوبة\s*(\d+)/),dc=dm?+dm[1]:(opt.dc||0),adv=/ميزة/.test(D.textContent),two=S.dice==='2d6',p=rcPct(rcOdds(mod,dc,adv,two,!!(h.hidden&&h.hidden.hazz)));
+  D.insertAdjacentHTML('afterend',`<div id="dMath" class="dm"><div class="dm-eq">${two?'النردين':'النرد'} <b class="${mod<0?'r':'g'}">${rcSgn(mod)}</b> ${stat}${dc?` <b class="r">${rcSgn(-dc)}</b> صعوبة`:''}${adv?' · <span class="g">ميزة</span>':''}</div>
+    <div class="dm-pc"><span class="g">نجاح <bdi dir="ltr">${p.full}%</bdi></span><span class="y">بتمن <bdi dir="ltr">${p.part}%</bdi></span><span class="r">مانفعتش <bdi dir="ltr">${p.fail}%</bdi></span></div>
+    ${dc?`<details class="dm-why"><summary>الصعوبة ${dc} جاية منين؟</summary><div>${rcWhy(h,dc)}</div></details>`:''}</div>`)}
+{const r0=rollCheck;rollCheck=function(stat,opt){const pr=r0.apply(this,arguments);try{rcMath(stat,opt||{})}catch(e){console.warn(e)}return pr}}
+/* once the dice fly, fold the reason away (small phones) */
+{const z=document.getElementById('dz');if(z)['pointerdown','keydown'].forEach(e=>z.addEventListener(e,()=>{const d=document.querySelector('#dMath details');if(d)d.open=false},true))}
+
+/* «صفاتي»: the difficulty now and the chance on every stat */
+const rcMode=()=>S.dcm||S.dice||'2d6';
+function rcCard(h){const dc=lvlDC(h),two=rcMode()==='2d6',hz=!!(h.hidden&&h.hidden.hazz);
+  return `<div class="card dc-card" id="dcCard"><div class="r1"><b>صعوبة الكروت دلوقتي: <bdi class="num">${dc}</bdi></b><small>مستوى ${h.lvl}</small></div>
+    <div class="tw-sm">جاية من مستواك بس. في كل كارت: ${two?'النردين':'النرد'} + الصفة − ${dc}. ${two?'10 أو أكتر نجاح، 7 لـ9 نجاح بتمن.':'15 أو أكتر نجاح، 10 لـ14 نجاح بتمن.'}</div>
+    <div class="dc-mode" role="tablist"><button data-dcm="2d6" class="${two?'on':''}">نردين</button><button data-dcm="d20" class="${two?'':'on'}">نرد 20</button></div>
+    <div class="dc-grid">${STATS.map(s=>{const m=ST(h,s),p=rcPct(rcOdds(m,dc,0,two,hz)),ok=p.full+p.part;
+      return `<div class="dc-s"><b>${s} <small>${rcSgn(m)}</small></b><span class="${ok>=60?'g':ok>=40?'y':'r'}"><bdi dir="ltr">${ok}%</bdi></span><small>منها <bdi dir="ltr">${p.full}%</bdi> من غير تمن</small></div>`}).join('')}</div>
+    <details class="dm-why"><summary>الصعوبة بتكبر إزاي؟</summary><div>${rcWhy(h,dc)}</div></details></div>`}
+{const t=PF_TABS.find(x=>x.id==='st');if(t){const f0=t.f;t.f=function(h){let s=f0.apply(this,arguments);try{const i=s.indexOf('<div class="label">أرقامك في القتال');const c=rcCard(h);s=i<0?s+c:s.slice(0,i)+c+s.slice(i)}catch(e){console.warn(e)}return s}}}
+function rcBind(){view.querySelectorAll('[data-dcm]').forEach(b=>b.onclick=()=>{if(rcMode()===b.dataset.dcm)return;S.dcm=b.dataset.dcm;try{SFX.tick(800)}catch(e){}
+  const c=$('#dcCard');if(c&&S.hero){const y=view.scrollTop,o=c.querySelector('details');const op=o&&o.open;c.outerHTML=rcCard(S.hero);view.scrollTop=y;const n=$('#dcCard details');if(n&&op)n.open=true;rcBind()}})}
+{const pt=pfTab;pfTab=function(){const r=pt.apply(this,arguments);try{rcBind()}catch(e){console.warn(e)}return r}}
+/* what each stat really does (the old تحمّل line promised health it never gave) */
+STAT_LONG['تحمّل']='جسمك بيستحمل قد إيه. بتنفع في الكروت اللي فيها وجع أو تعب أو برد، وإنك {تفضل|تفضلي} {ماسك|ماسكة} لحد ما الحاجة تتعمل. الصحة بتزيد من المستويات والعدّة، مش من التحمّل.';
+STAT_SHORT['تحمّل']='الاستحمال والصبر';
+
+/* ---------- C78: natures tied to a choice the scene already has ---------- */
+const H78_TALK=/أرقص|أزعق|أصرخ|أخوّف|أهدد|أراهن|أسرق|أخطف/;
+const H78_TRY=/أراهن|آكل|أشرب|أجري|أهرب|أسرق|أخطف/;
+const H78_tx=x=>T(String(typeof x.t==='function'?x.t():x.t));
+const H78_TOOK=x=>x&&!x.stat&&!x.H&&x.res&&typeof x.res==='object'&&(x.res.item||x.res.mats)&&!(x.res.money<0)&&!x.res.rep&&!x.res.use&&!x.res.hp&&!/آكل|أشرب|أسرق|أخطف|أشتري/.test(H78_tx(x));
+const H78_GRAB=/^(آخد|أشيل|ألم|أملا)/;
+/* the nature's own chip (the old one always showed the first nature, even for the 2nd or 3rd) */
+const H78_chip=id=>{const t=H_TABS[id];return t?`<span class="h-tch" style="--rc:${RARE[t.r].c}">${H_tabN(t)}</span>`:''};
+const H78_one=f=>{let o=typeof f==='function'?f():f;if(typeof o==='string')o={t:o};return Object.assign({},o||{})};
+/* the same check with advantage: the scene's own outcomes, marked used */
+function H78_adv(c,b,t,label){const R=b.res,ex={};Object.keys(b).forEach(k=>{if(!['t','sub','res','opt','H'].includes(k))ex[k]=b[k]});
+  return Object.assign(ex,{t:label,sub:`${H78_chip(t)} «${T(typeof b.t==='function'?b.t():b.t)}» {معاك|معاكي} فيها ميزة`,stat:b.stat,adv:1,H:1,res:{
+    full:()=>H_u(c,H78_one(R.full)),part:()=>H_u(c,H78_one(R.part)),fail:()=>H_u(c,H78_one(R.fail))}})}
+function H78(c,a,t){if(!N_on()||S.night.card!==c.id||S.scene!==c.id)return null;const U=S.night.H_used||{};if(U[c.id])return null;
+  const ty=c.type,base=(a||[]).filter(x=>x&&!x.H),pickF=f=>base.find(x=>!x.opt&&f(x))||base.find(f);
+  if(t==='lesan'){if(!['people','prep','test','trade'].includes(ty))return null;
+    const b=pickF(x=>x.stat==='حضور'&&x.res&&typeof x.res==='object'&&x.res.full&&!H78_TALK.test(T(String(typeof x.t==='function'?x.t():x.t))));
+    return b?H78_adv(c,b,t,'بلساني الحلو'):null}
+  if(t==='nid'){if(ty!=='test')return null;
+    const b=pickF(x=>(x.stat==='قوة'||x.stat==='تحمّل')&&x.res&&typeof x.res==='object'&&x.res.full&&!H78_TRY.test(T(String(typeof x.t==='function'?x.t():x.t))));
+    return b?H78_adv(c,b,t,'أعاند لحد ما تتعمل'):null}
+  if(t==='dahr'){if(ty!=='prep')return null;const b=pickF(x=>H78_TOOK(x)&&H78_GRAB.test(H78_tx(x)))||pickF(H78_TOOK);if(!b)return null;const r0=b.res,bt=T(typeof b.t==='function'?b.t():b.t);
+    return {t:'أشيل الضعف على ضهري',sub:`${H78_chip(t)} «${bt}» مرتين`,flag:b.flag,H:1,res:()=>{const h=S.hero,o=Object.assign({},r0);let more='';
+      if(o.mats){const m={};Object.keys(o.mats).forEach(k=>m[k]=(o.mats[k]||0)*2);o.mats=m}
+      if(o.item){const k=o.item,room=ITEMS[k]?bagCap(h,k)-bagCount(h,k):0;if(room>=2){h.bag[k]=(h.bag[k]||0)+1;more=`<div class="note" style="color:#a6e3a0">${itemIcon(k,20)} ${ITEMS[k].name} كمان واحدة على ضهرك</div>`}
+        else if(room===1)more=`<div class="note" style="color:var(--mute)">الشنطة ما خدتش التانية: مكانها اتملا</div>`}
+      return H_u(c,Object.assign(o,{tier:o.tier||'plain',t:()=>`${H_t(r0.t)}<div class="note" style="color:#a6e3a0">ضهرك شايل الضعف ولا كأنها حاجة.</div>${more}`}))}}}
+  return undefined}
+{const x0=H_extra1;H_extra1=function(c,a,t){const r=H78(c,a,t);if(r!==undefined)return r;const o=x0.apply(this,arguments);
+    try{if(o&&typeof o.sub==='string'&&t!==S.hero.tab)o.sub=o.sub.replace(H_chip(),H78_chip(t))}catch(e){}return o}}
+H_TABS.nid.d='في كروت الاختبار اللي فيها شغل بالعافية أو بالصبر (قوة أو تحمّل) فيه اختيار زيادة: «أعاند لحد ما تتعمل». نفس الحاجة، بس {معاك|معاكي} فيها ميزة.';
+H_TABS.lesan.d='في أي كارت فيه كلام مع حد (حضور) فيه اختيار زيادة: «بلساني الحلو». نفس الكلام، بس {معاك|معاكي} فيه ميزة.';
+H_TABS.dahr.d='الشنطة بتشيل حاجة زيادة من كل نوع، وفي كروت التجهيز اللي فيها حاجة تتشال {تقدر تشيل|تقدري تشيلي} الضعف منها.';
+
+{const st=document.createElement('style');st.textContent=`
+.dm{width:min(360px,90vw);margin:6px auto 0;font-size:13px;color:var(--mute);text-align:center}.dm b{font-weight:800}.dm .g{color:#a6e3a0}.dm .y{color:#f3d48f}.dm .r{color:#f0a090}
+.dm-eq{color:var(--ink)}.dm-pc{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:4px}.dm-pc span{padding:1px 8px;border-radius:10px;background:#ffffff0d;font-weight:700}
+.dm-why{margin-top:6px;text-align:start;font-size:12.5px;line-height:1.7}.dm-why summary{cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center;color:var(--gold2);list-style:none}
+.dm-why summary::-webkit-details-marker{display:none}.dm-why>div{background:#0004;border-radius:10px;padding:8px 10px}
+.dm-tb{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.dm-tb span{display:flex;flex-direction:column;align-items:center;padding:2px 8px;border-radius:8px;background:#ffffff0d;font-size:11px}
+.dm-tb span b{font-size:14px;color:var(--ink)}.dm-tb span.on{outline:1px solid var(--gold2)}
+.dc-card .r1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.dc-card .r1 small{color:var(--mute)}
+.dc-mode{display:flex;gap:6px;margin:8px 0}.dc-mode button{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit}
+.dc-mode button.on{border-color:var(--gold2);background:#e0b25a22;color:var(--gold2);font-weight:800}
+.dc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.dc-s{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-radius:10px;background:#ffffff08;min-width:0}
+.dc-s b{font-size:13px}.dc-s b small{font-weight:400;color:var(--mute)}.dc-s>span{font-size:18px;font-weight:800}.dc-s>span.g{color:#a6e3a0}.dc-s>span.y{color:#f3d48f}.dc-s>span.r{color:#f0a090}
+.dc-s>small{font-size:10.5px;color:var(--mute);text-align:center}`;document.head.appendChild(st)}
+
+/* ---------- 5.88 / R02 part 2: C13 «عدّتي» (each piece's card + the comparison) and C76 (what you own and need before every craft) ----------
+   C13 A slot's sheet lists each kind of piece you own there. Each card: the name and its quality, a line of tags (rarity ◆, the slot,
+       who made it), «الأرقام» (the piece's own numbers, neutral), «لو لبسته» (what changes against what you wear: green up, red down,
+       the meaning written on top), traits, what it does, what it's made of, the wear and where it is mended. Numbers are in <bdi dir="ltr">;
+       names typed by players (the maker, an engraved name) go through esc(). Nothing in qView or the stats changes.
+   C76 One shared block in the craft sheet (qPrep) for every craft that uses it (gear, bags, food, the attar, mending): the product
+       with what you own of it now (worn / in the bag, and the qualities), how many you make and what you'll have after, then each input
+       with its picture, «محتاج» and «معاك», what's missing in red, and the money. The callers say what they make through CRX, set just
+       before they open the sheet. The play/quick buttons check again on the tap. The cook list shows «معاك» next to each input too. */
+
+/* ---------- C13 ---------- */
+const gsK=t=>`<span class="gs-k">${t}</span>`;
+const gsNeutral=a=>a.map(([v,t,st])=>`<span class="tw-ch gs-nt">${st===2?twChipTxt([v,t,st]):st?`${twN(v)} ${t}`:`${t} ${twN(v)}`}</span>`).join('');
+const gsWho=at=>at==='smith'?'عم حسن الحداد':at==='tailor'?'عم فتحي الخياط':'';
+function gsRow(h,x,cur,slot){const id=x.id,g=GEAR[id],R=RARE[g.tier],v=qView(id,x.I),on=x.on,I=x.I,wear=twV(id,slot==='weapon'?'مسكت':'لبست');
+  const own=twGStats(v),df=on?null:twDiff(v,cur),made=g.craft?Object.keys(g.craft).map(k=>`<span class="gs-m">${twMat(k,16)}<bdi dir="ltr">${g.craft[k]}</bdi> ${resN(k)}</span>`).join(''):'';
+  const mx=qDur(id)?qMaxD(id,I):0,d=mx?(I.d==null?mx:I.d):0,rep=mx&&d<mx?`<small class="gs-rep">${d<=Math.floor(mx/4)?'<b>تعبانة</b> · ':''}التصليح عند ${gsWho(g.at)}${qRepMat(id)?` (${resN(qRepMat(id))})`:''}</small>`:'';
+  return `<div class="tw-row gs-row" style="--rc:${twRc(g.tier)}"><div class="ic${I.e>=10?' q-glow':''}">${twGear(id,42)}</div><div class="tx">
+    <div class="nmr"><b style="color:${R.c}">${v.n}</b>${qQChip(I.q)}${x.n>1?`<span class="tw-cnt">×<bdi dir="ltr">${x.n}</bdi></span>`:''}${on?`<span class="tw-on">${slot==='weapon'?'في إيدك':G('عليك','عليكي')}</span>`:''}</div>
+    <div class="gs-tags"><span class="gs-tag" style="--c:${R.c}">◆ ${R.n}</span><span class="gs-tag">${SLOTS[slot]}</span>${I.by?`<span class="gs-tag by">صنعة إيد ${esc(I.by)}</span>`:''}</div>
+    <div class="gs-l">${gsK('الأرقام')}${own.length?gsNeutral(own):'<span class="tw-ch gs-nt">من غير أرقام</span>'}</div>
+    ${on?'':`<div class="gs-l">${gsK(`لو ${wear}`)}${df.length?twChips(df):'<span class="tw-ch">نفس الأرقام</span>'}</div>`}
+    ${I.t&&I.t.length?`<div class="gs-l">${gsK('صفات')}${qTrChips(I.t,I.e>=4)}</div>`:''}
+    ${twInfo(g)?`<small class="gs-inf">${twInfo(g)}</small>`:''}
+    ${I.nm?`<small class="q-eng">محفور ${qFem(id)?'عليها':'عليه'}: «${esc(I.nm)}»</small>`:''}
+    ${made?`<div class="gs-l">${gsK('معمول من')}${made}</div>`:''}
+    ${qDurHTML(id,I)}${rep}</div>
+    <button class="tw-buy${on?' warn':''}" data-eq="${id}" data-u="${I.u}" data-on="${on?0:1}">${on?G('اقلع','اقلعي'):G(twWear(id),twWear(id)+'ي')}</button></div>`}
+function twSlotSheet(slot){const h=S.hero;twSheetX();const co=qOn(h,slot),cur=co?qView(co.id,co.I):(h.eq[slot]&&GEAR[h.eq[slot]]);
+  const rows0=[];Object.keys(GEAR).filter(id=>GEAR[id].slot===slot&&(h.gear[id]||0)>0).forEach(id=>giL(h,id).forEach((I,i)=>{const on=i===0&&qWorn(h,id),key=on?'on':`${id}|${I.q}|${I.e}|${I.t.join('.')}|${I.d}|${I.by||''}|${I.nm||''}`;
+    const r=rows0.find(x=>x.key===key);if(r)r.n++;else rows0.push({key,id,I,on,n:1})}));
+  rows0.sort((a,b)=>(b.on-a.on)||(GEAR[b.id].tier-GEAR[a.id].tier)||(qScore(b.I)-qScore(a.I)));
+  const shops=[...new Set(Object.keys(GEAR).filter(id=>GEAR[id].slot===slot).map(id=>GEAR[id].at))];
+  const many=rows0.some(x=>!x.on);
+  const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${SLOTS[slot]}<small>${cur?`${slot==='weapon'?'في إيدك':G('عليك','عليكي')}: ${cur.n}`:'فاضي'}</small></div>
+    ${many?`<div class="gs-lg"><span><i class="up"></i>أحسن من اللي ${slot==='weapon'?'في إيدك':G('عليك','عليكي')}</span><span><i class="dn"></i>أقل</span><span><b>◆</b> الندرة</span><span><b>●●●</b> الجودة</span></div>`:''}
+    ${rows0.map(x=>gsRow(h,x,cur,slot)).join('')||`<div class="tw-empty">مفيش حاجة لل${SLOTS[slot]} ${G('معاك','معاكي')} لسه.</div>`}
+    ${shops.map(a=>`<button class="btn ghost small" data-shop="${a}">${G('روح','روحي')} ل${gsWho(a)}</button>`).join('')}
+    <button class="btn small" data-x="1">${G('اقفل','اقفلي')}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
+  d.querySelectorAll('[data-shop]').forEach(b=>b.onclick=()=>{twSheetX();SFX.bell();twGo(b.dataset.shop)});
+  d.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{const id=b.dataset.eq,on=b.dataset.on==='1',u=b.dataset.u,g=GEAR[id],I=giL(h,id).find(x=>x.u===u);if(!I)return;const v=qView(id,I),df=on?twDiff(v,cur):twDiff(null,cur);twEquip(id,on,u);twSheetX();twRender();
+    const sl=view.querySelector(`[data-slot="${slot}"]`),pt=$('#twPt'),R=RARE[g.tier];if(sl){cls(sl,'glow');pop(sl,on?[R.c,'#ffffff',R.c]:['#86745f','#cfc6b8'],on?26:10)}
+    if(pt&&df.length){const best=df.slice().sort((a,b)=>b[0]-a[0])[0];floatAt(pt,twChipTxt(best),best[0]>0?'#a6e3a0':'#f0a090','',24);cls(pt,'glow')}})}
+
+/* ---------- C76 ---------- */
+let CRX=null;
+const crBagN=(h,k)=>Object.keys(h.bag||{}).filter(x=>bagBase(x)===k).reduce((a,x)=>a+(h.bag[x]||0),0);
+function crOwnHTML(h,o){if(!o)return '';
+  if(o.kind==='gear'){const id=o.id,n=h.gear[id]||0,on=Object.values(h.eq||{}).filter(x=>x===id).length,fm=!!TW_FEMG[id],one=fm?'واحدة':'واحد';
+    return `<div class="cr-own"><span>${G('معاك','معاكي')} ${fm?'منها':'منه'} دلوقتي: <b><bdi dir="ltr">${n}</bdi></b>${on?` · ${GEAR[id].slot==='weapon'?`${one} في إيدك`:`${one} ${G('عليك','عليكي')}`}`:''}</span>${n?`<span class="cr-q">${twOwnQ(h,id)}</span>`:''}</div>
+      <div class="cr-out">${G('هتعمل','هتعملي')} <b>1</b> · بعدها ${G('هيبقى معاك','هيبقى معاكي')} <b><bdi dir="ltr">${n+1}</bdi></b></div>`}
+  if(o.kind==='bag'){const L=h.bagLvl||0;return `<div class="cr-own"><span>شنطتك دلوقتي: <b>${L?BAGUPS[L-1].n:'الشنطة العادية'}</b></span></div><div class="cr-out">بعدها: <b>${o.b.n}</b></div>`}
+  if(o.kind==='food'||o.kind==='attar'){const k=o.k,n=crBagN(h,k),cap=bagCap(h,k),room=Math.max(0,cap-bagCount(h,k)),mk=o.kind==='attar'?Math.min(3,room):1;
+    return `<div class="cr-own"><span>${G('معاك','معاكي')} منها في الشنطة: <b><bdi dir="ltr">${n}</bdi></b></span><span class="cr-cap">مكانها في الشنطة: <bdi dir="ltr">${bagCount(h,k)}</bdi> من <bdi dir="ltr">${cap}</bdi></span></div>
+      <div class="cr-out">${G('هتعمل','هتعملي')} <b>${o.kind==='attar'&&mk>1?`من 1 لـ${mk}`:'1'}</b>${o.kind==='attar'&&mk>1?' (على قد ما الدق يطلع حلو)':''} · بعدها <b><bdi dir="ltr">${n+1}</bdi>${o.kind==='attar'&&mk>1?`–<bdi dir="ltr">${n+mk}</bdi>`:''}</b></div>`}
+  if(o.kind==='mend')return `<div class="cr-out">${G('هترقّع','هترقّعي')} <b>حتة واحدة</b> وتاخد تمنها</div>`;
+  return ''}
+function crNeedHTML(h,c){const need=c.need||{},ks=Object.keys(need);if(!ks.length&&!c.fee)return '';
+  const row=(ic,n,nd,hv,u)=>`<div class="cr-r ${hv>=nd?'ok':'no'}"><span class="ic">${ic}</span><b>${n}</b><span class="cr-nd">محتاج <bdi dir="ltr">${nd}</bdi>${u||''}</span><span class="cr-hv">${G('معاك','معاكي')} <bdi dir="ltr">${hv}</bdi></span>${hv<nd?`<em>ناقصك <bdi dir="ltr">${nd-hv}</bdi></em>`:''}</div>`;
+  return `<div class="cr-need">${ks.map(k=>row(twMat(k,26),resN(k),need[k],h.res[k]||0)).join('')}${c.fee?row(`<span class="cr-coin">ج</span>`,'الشغل',c.fee,h.money,' جنيه'):''}</div>`}
+const crOk=(h,c)=>!c||(hasRes(h,c.need||{})&&h.money>=(c.fee||0));
+function crBlock(h,c){return `<div class="cr-inv" id="crInv">${crOwnHTML(h,c.out)}${crNeedHTML(h,c)}${crOk(h,c)?'':`<div class="tw-miss">ناقصك حاجات، ${G('كمّلها','كمّليها')} الأول</div>`}</div>`}
+{const q0=qPrep;qPrep=function(o){const c=CRX;CRX=null;const pr=q0.apply(this,arguments);try{const h=S.hero,d=$('#twSh');if(c&&h&&d){const pre=d.querySelector('.q-pre');if(pre)pre.insertAdjacentHTML('afterend',crBlock(h,c));
+      /* check again on the tap: what you have could have changed */
+      d.querySelectorAll('[data-go="play"],[data-go="quick"]').forEach(b=>b.addEventListener('click',e=>{if(crOk(S.hero,c))return;e.stopImmediatePropagation();e.preventDefault();
+        const x=$('#crInv');if(x)x.outerHTML=crBlock(S.hero,c);toast(`ناقصك حاجات: ${G('شوف','شوفي')} الأحمر`)},true))}}catch(e){console.warn(e)}return pr}}
+{const f0=twCraft;twCraft=function(id){const h=S.hero,g=GEAR[id];try{CRX=g&&g.craft?{need:g.craft,fee:twCm(h,g.cm,g.at),out:{kind:'gear',id}}:null}catch(e){CRX=null}try{return f0.apply(this,arguments)}finally{CRX=null}}}
+{const f0=twBag;twBag=function(mode){const h=S.hero,b=BAGUPS[h&&h.bagLvl||0];try{CRX=mode!=='buy'&&b?{need:b.craft,fee:twCm(h,b.cm,'tailor'),out:{kind:'bag',b}}:null}catch(e){CRX=null}try{return f0.apply(this,arguments)}finally{CRX=null}}}
+{const f0=twCook;twCook=function(k){const r=TW_REC[k];CRX=r?{need:r.need,fee:0,out:{kind:'food',k}}:null;try{return f0.apply(this,arguments)}finally{CRX=null}}}
+{const f0=atBrew;atBrew=function(k){const r=AT_REC[k];CRX=r?{need:r.need,fee:0,out:{kind:'attar',k}}:null;try{return f0.apply(this,arguments)}finally{CRX=null}}}
+{const f0=twMend;twMend=function(){CRX={need:{cloth:MEND.cloth},fee:0,out:{kind:'mend'}};try{return f0.apply(this,arguments)}finally{CRX=null}}}
+/* the cook list: «معاك» next to each input */
+{const r0=twRecRow;twRecRow=function(h,k){let s=r0.apply(this,arguments);try{const r=TW_REC[k];Object.keys(r.need).forEach(m=>{const hv=h.res[m]||0;
+    s=s.replace(`${resN(m)}</span>`,`${resN(m)} <i class="cr-hvs">(${G('معاك','معاكي')} <bdi dir="ltr">${hv}</bdi>)</i></span>`)})}catch(e){}return s}}
+
+{const st=document.createElement('style');st.textContent=`
+.gs-row{flex-wrap:wrap}.gs-row .tx{display:flex;flex-direction:column;gap:3px;min-width:0}.gs-row .nmr{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.gs-tags{display:flex;flex-wrap:wrap;gap:4px}.gs-tag{font-size:11px;padding:0 7px;border-radius:9px;background:#ffffff0d;color:var(--c,var(--mute));line-height:1.7}.gs-tag.by{color:#d9cbff}
+.gs-l{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.gs-k{font-size:11px;color:var(--mute);min-width:52px}
+.tw-ch.gs-nt{background:#ffffff10;color:var(--ink)}.gs-inf{color:var(--mute)}.gs-m{display:inline-flex;align-items:center;gap:3px;font-size:12px}
+.gs-rep{color:#ffd36a}.gs-rep b{color:#f0a090}
+.gs-lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--mute);margin:-2px 0 8px}.gs-lg span{display:inline-flex;align-items:center;gap:4px}
+.gs-lg i{width:10px;height:10px;border-radius:3px;display:inline-block}.gs-lg i.up{background:#a6e3a0}.gs-lg i.dn{background:#f0a090}.gs-lg b{font-size:10px;color:var(--ink)}
+.cr-inv{background:#0003;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:8px 0;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.cr-own{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 8px}.cr-q{display:flex;flex-wrap:wrap;gap:4px}.cr-cap{color:var(--mute);font-size:12px}
+.cr-out{color:var(--mute)}.cr-out b{color:var(--gold2)}
+.cr-need{display:flex;flex-direction:column;gap:4px}.cr-r{display:grid;grid-template-columns:30px 1fr auto auto;gap:2px 8px;align-items:center;padding:3px 6px;border-radius:9px;background:#ffffff08}
+.cr-r .ic{display:flex}.cr-r b{font-size:13px;min-width:0}.cr-nd,.cr-hv{font-size:12px;white-space:nowrap}.cr-r.ok .cr-hv{color:#a6e3a0}.cr-r.no .cr-hv{color:#f0a090}
+.cr-r em{grid-column:2/5;font-style:normal;font-size:12px;color:#f0a090;font-weight:800}
+.cr-coin{width:24px;height:24px;border-radius:50%;background:#f3c14d;color:#3a2a10;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px}
+.cr-hvs{font-style:normal;font-size:11px;opacity:.85}`;document.head.appendChild(st)}
+
+/* ---------- 5.88 / R02 part 2: C14 التخصصات as a hero sheet ----------
+   On top of the specialisations screen: a hero card with the real numbers (the picture, the fighting class and level, the
+   specialisation, the best trade, health and energy, the six stats). Each stat opens what it really does: the rolls that use it in
+   a fight (the plain hit, the class moves that roll it, the dodge, the master hit chance from خفة) and the chance on cards now.
+   Then tabs: «التخصصات» (the old list, untouched), «القدرات», «الصفات», «الشغلانات», «الألقاب» (the same pages as «بطلي»).
+   The card says what is the fighting class (محارب…), what is a trade (حدادة…) and what is a specialisation, so they don't mix. */
+const HC_TABS=[{id:'sp',n:'التخصصات'},{id:'sk',n:'القدرات'},{id:'st',n:'الصفات'},{id:'life',n:'الشغلانات'},{id:'ttl',n:'الألقاب'}];
+function hcUses(h,s){const out=[],K=CLASSES[h.cls];
+  try{if(K&&K.atk&&K.atk.stat===s)out.push(`ضربتك العادية («${K.atk.name}») بترمي بيها`)}catch(e){}
+  try{const sk=skillsOf(h).filter(k=>k.roll===s&&!k.pass);const on=sk.filter(k=>h.lvl>=k.lv),off=sk.filter(k=>h.lvl<k.lv);
+    if(on.length)out.push(`${on.length>1?'قدرات':'قدرة'} بترمي بيها: ${on.map(k=>'«'+k.n+'»').join('، ')}`);
+    if(off.length)out.push(`<span class="hc-dim">وبعدين: ${off.map(k=>`«${k.n}» (مستوى ${k.lv})`).join('، ')}</span>`)}catch(e){}
+  if(s==='خفة'){out.push(`التفادي من الضرب بيترمي بيها`);try{out.push(`فرصة «ضربة المعلّم» دلوقتي <bdi dir="ltr">${pfPc(critChance(h))}%</bdi>`)}catch(e){}}
+  return out}
+function hcTip(h,s){const m=ST(h,s),dc=lvlDC(h),two=(S.dice||'2d6')==='2d6',p=rcPct(rcOdds(m,dc,0,two,!!(h.hidden&&h.hidden.hazz))),u=hcUses(h,s),parts=stParts(h,s);
+  return `<b>${s} ${rcSgn(m)}</b>${parts.length?` <small>(${parts.join('، ')})</small>`:''}<div>${T(STAT_LONG[s])}</div>
+    <div class="hc-u"><span class="hc-k">في القتال</span><div>${u.length?u.map(x=>`<div>${x}</div>`).join(''):'<span class="hc-dim">ما فيش حاجة في قتالك بترمي بيها. بتنفع في الكروت.</span>'}</div></div>
+    <div class="hc-u"><span class="hc-k">في الكروت</span><div>بـ${two?'النردين':'نرد 20'} وصعوبة ${dc}: نجاح <bdi dir="ltr">${p.full}%</bdi> · بتمن <bdi dir="ltr">${p.part}%</bdi> · مانفعتش <bdi dir="ltr">${p.fail}%</bdi></div></div>`}
+function hcCard(h){const ks=Object.keys(LIFE).filter(k=>h.life&&h.life[k]),top=ks.slice().sort((a,b)=>(h.life[b].lvl-h.life[a].lvl)||((h.life[b].xp||0)-(h.life[a].xp||0)))[0],TL=top&&h.life[top],sp=spNow(h);
+  return `<div class="card hc"><div class="hc-top"><div class="pic">${portrait(h,'hc')}</div><div class="tx"><b class="nm">${esc(h.name)}</b>
+      <div class="hc-l"><span class="hc-k">القتال</span><span>${clsBase(h)} · المستوى <bdi dir="ltr">${h.lvl}</bdi></span></div>
+      <div class="hc-l"><span class="hc-k">التخصص</span><span>${sp?`<b style="color:var(--gold2)">${sp}</b>`:`لسه ما ${G('اتخصصتش','اتخصصتيش')}`}</span></div>
+      <div class="hc-l"><span class="hc-k">أشطر شغلانة</span><span>${TL&&(TL.lvl>1||TL.xp)?`${LIFE[top].n} مستوى <bdi dir="ltr">${TL.lvl}</bdi>`:'لسه'}</span></div>
+      <div class="hc-bars"><span class="hp">${PFI.heart}<bdi dir="ltr">${Math.max(0,h.hp|0)}/${MXH(h)}</bdi> صحة</span><span class="en">${PFI.bolt}<bdi dir="ltr">${MXE(h)}</bdi> طاقة</span></div></div></div>
+    <div class="hc-st">${STATS.map(s=>{const v=ST(h,s);return `<button class="hc-s${S.hcS===s?' on':''}" data-hcs="${s}" aria-expanded="${S.hcS===s}"><span>${s}</span><b class="${v>0?'up':v<0?'dn':''}">${rcSgn(v)}</b></button>`}).join('')}</div>
+    <div class="hc-tip" id="hcTip"${S.hcS?'':' hidden'}>${S.hcS?hcTip(h,S.hcS):''}</div>
+    <div class="tw-sm hc-note">«القتال» هو نوعك في القتال، و«الشغلانات» شغل إيدك في البلد، و«التخصص» بيتفتح من الاتنين.</div></div>`}
+function hcPanel(h,id){if(id==='sk')return pfSkills(h);if(id==='life')return pfLife(h);if(id==='ttl')return pfTitles(h);if(id==='st'){const t=PF_TABS.find(x=>x.id==='st');return t?t.f(h):''}return ''}
+function hcShow(id){const h=S.hero;S.sptab=id;const m=$('#spMain'),p=$('#ppan');if(!m||!p||!h)return;const sp=id==='sp';m.hidden=!sp;p.hidden=sp;p.innerHTML=sp?'':hcPanel(h,id);
+  view.querySelectorAll('[data-hct]').forEach(b=>{const on=b.dataset.hct===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+  if(!sp){try{rcBind()}catch(e){}p.onclick=e=>{const b=e.target.closest('[data-ttl]');if(b){const v=b.dataset.ttl||null;if((v&&!hasTitle(h,v))||h.title===v)return;h.title=v;saveHero();try{SFX.titlePick()}catch(x){}hcShow('ttl')}}}}
+{const s0=SCREENS.spec;SCREENS.spec=function(){const r=s0.apply(this,arguments);try{const h=S.hero,w=view.querySelector('.sp-scr');if(S.screen!=='spec'||!h||!w||$('#spMain'))return r;
+    const main=document.createElement('div');main.id='spMain';while(w.firstChild)main.appendChild(w.firstChild);
+    w.insertAdjacentHTML('afterbegin',`${hcCard(h)}<div class="hc-tabs" role="tablist">${HC_TABS.map(t=>`<button data-hct="${t.id}" role="tab">${t.n}</button>`).join('')}</div>`);
+    w.appendChild(main);main.insertAdjacentHTML('afterend','<div id="ppan" role="tabpanel" hidden></div>');
+    view.querySelectorAll('[data-hct]').forEach(b=>b.onclick=()=>{if(S.sptab===b.dataset.hct)return;try{SFX.page()}catch(e){}hcShow(b.dataset.hct)});
+    view.querySelectorAll('[data-hcs]').forEach(b=>b.onclick=()=>{const s=b.dataset.hcs;S.hcS=S.hcS===s?'':s;const t=$('#hcTip');
+      view.querySelectorAll('[data-hcs]').forEach(x=>{const on=x.dataset.hcs===S.hcS;x.classList.toggle('on',on);x.setAttribute('aria-expanded',on)});
+      if(t){t.hidden=!S.hcS;t.innerHTML=S.hcS?hcTip(h,S.hcS):''}});
+    hcShow(HC_TABS.some(t=>t.id===S.sptab)?S.sptab:'sp')}catch(e){console.warn(e)}return r}}
+{const st=document.createElement('style');st.textContent=`
+.hc{padding:12px}.hc-top{display:flex;gap:12px;align-items:flex-start}.hc .pic{width:84px;height:84px;flex:none;border-radius:14px;overflow:hidden;border:2px solid var(--gold);background:#0005}
+.hc .pic svg,.hc .pic canvas,.hc .pic img{width:100%;height:100%}.hc .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hc .nm{font-size:17px}
+.hc-l{display:flex;gap:6px;font-size:13px;align-items:baseline;flex-wrap:wrap}.hc-k{font-size:11px;color:var(--mute);min-width:62px}
+.hc-bars{display:flex;gap:10px;font-size:12.5px;margin-top:2px}.hc-bars span{display:inline-flex;align-items:center;gap:3px}.hc-bars .hp{color:#f0806a}.hc-bars .en{color:var(--en)}.hc-bars svg{width:14px;height:14px}
+.hc-st{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.hc-s{min-height:48px;border-radius:10px;border:1px solid var(--line);background:#ffffff08;color:var(--ink);font:inherit;display:flex;justify-content:space-between;align-items:center;padding:4px 10px}
+.hc-s.on{border-color:var(--gold2);background:#e0b25a1c}.hc-s span{font-size:13px}.hc-s b{font-size:16px}.hc-s b.up{color:#a6e3a0}.hc-s b.dn{color:#f0a090}
+.hc-tip[hidden]{display:none}.hc-tip{margin-top:8px;background:#0004;border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.7;display:flex;flex-direction:column;gap:4px}.hc-tip small{color:var(--mute)}
+.hc-u{display:flex;gap:6px;align-items:baseline}.hc-u>div,.hc-u>span+div{flex:1}.hc-dim{color:var(--mute)}
+.hc-note{margin-top:8px}
+.hc-tabs{display:flex;gap:6px;overflow-x:auto;margin:10px 0 6px;scrollbar-width:none}.hc-tabs::-webkit-scrollbar{display:none}
+.hc-tabs button{flex:none;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:14px}
+.hc-tabs button.on{border-color:var(--gold2);color:var(--gold2);background:#e0b25a1c;font-weight:800}`;document.head.appendChild(st)}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
