@@ -380,14 +380,33 @@ function coinsTo(fromEl,toEl,amount,onTick){return new Promise(res=>{if(!fromEl|
   for(let i=0;i<n;i++){const c=document.createElement('div');c.className='coin';app.appendChild(c);const sx=a.x+(Math.random()-.5)*40,sy=a.y+(Math.random()-.5)*30;
     const an=c.animate([{transform:`translate(${sx-7}px,${sy-7}px) scale(.4)`},{transform:`translate(${sx-7+(Math.random()-.5)*60}px,${sy-50}px) scale(1.2)`,offset:.3},{transform:`translate(${b.x-7}px,${b.y-7}px) scale(.7)`}],{duration:650+i*60,easing:'cubic-bezier(.5,0,.8,.6)',delay:i*45});
     an.onfinish=()=>{c.remove();done++;SFX.coin(1+done*0.04);if(onTick)onTick(Math.round(per*done));cls(toEl,'glow');if(done===n)res()}}})}
-function toast(html){const t=document.createElement('div');t.className='toast';t.innerHTML=html;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2700)}
+/* B22 (E00): at most 3 toasts on screen; the oldest goes when a 4th comes */
+function toast(html){const box=$('#toasts');if(!box)return;const t=document.createElement('div');t.className='toast';t.innerHTML=html;box.appendChild(t);
+  while(box.children.length>3)box.firstElementChild.remove();setTimeout(()=>t.remove(),2700)}
 /* big gold band across the screen (achievements, level up, victory) */
 let bandQ=Promise.resolve(),bandEnd=0,pendRev=0;
 /* banners wait while the big chest reveal is open, so they never cover it */
 const noReveal=()=>new Promise(r=>{const ck=()=>{const R=$('#reveal');if(pendRev||(R&&!R.classList.contains('hidden')))setTimeout(ck,200);else r()};ck()});
-function band(s1,t,s2,o){o=o||{};bandQ=bandQ.then(noReveal).then(()=>new Promise(res=>{const B=$('#band');B.className='';if(o.color)B.classList.add(o.color);
-  B.querySelector('.s1').textContent=s1||'';B.querySelector('.t').textContent=t;B.querySelector('.s2').textContent=s2||'';const d=o.dur||2400;bandEnd=Date.now()+d;B.style.setProperty('--bd',d+'ms');
-  void B.offsetWidth;B.classList.add('go');if(o.sound!==false)(o.sound||SFX.fanfare)();vib(o.color==='red'?[200]:[40,40,90]);setTimeout(res,d-150)}));return bandQ}
+/* B22 (E00): banners used to wait in one endless Promise chain (2.4 s each), so breaking 100 rocks queued minutes of
+   banners. Now: a small queue. Important banners (level, achievement, victory, titles…) always show, in order, first.
+   Banners marked o.low (common mining/fishing finds, with o.key = what was found) merge by key into one banner with a
+   count, show for ~1 s, and at most BAND_LOWMAX of them wait; older ones are dropped (the items themselves were already
+   given — this is display only). band() still returns a Promise; bandQ still resolves when the queue is empty. */
+const BAND_LOWMAX=3,BAND_LOWDUR=1000;let BQ=[],bandRun=0,bandDrain=null;
+function band(s1,t,s2,o){o=o||{};let res;const p=new Promise(r=>res=r);
+  if(o.low){const k=o.key||t;const m=BQ.find(x=>x.low&&x.k===k);
+    if(m){m.n++;m.t=t;m.s2=s2;res();return p}
+    const lows=BQ.filter(x=>x.low);while(lows.length>=BAND_LOWMAX){const d=lows.shift();BQ.splice(BQ.indexOf(d),1);d.res()}
+    BQ.push({low:1,k,n:1,s1,t,s2,o,res})}
+  else{const at=BQ.findIndex(x=>x.low);const it={low:0,n:1,s1,t,s2,o,res};if(at<0)BQ.push(it);else BQ.splice(at,0,it)}
+  if(!bandRun)bandPump();return p}
+function bandPump(){bandRun=1;let done;bandDrain=new Promise(r=>done=r);bandQ=bandDrain;
+  (async()=>{while(BQ.length){await noReveal();const it=BQ.shift();if(!it)continue;await bandShow(it);it.res()}bandRun=0;done()})()}
+function bandShow(it){const o=it.o;return new Promise(res=>{const B=$('#band');if(!B)return res();B.className='';if(o.color)B.classList.add(o.color);
+  const t=it.n>1?`${it.t} ×${it.n}`:it.t;
+  B.querySelector('.s1').textContent=it.s1||'';B.querySelector('.t').textContent=t;B.querySelector('.s2').textContent=it.s2||'';
+  const d=it.low?Math.min(o.dur||BAND_LOWDUR,BAND_LOWDUR+100):(o.dur||2400);bandEnd=Date.now()+d;B.style.setProperty('--bd',d+'ms');
+  void B.offsetWidth;B.classList.add('go');if(o.sound!==false)(o.sound||SFX.fanfare)();vib(o.color==='red'?[200]:[40,40,90]);setTimeout(res,d-150)})}
 
 /* ---------- sound 2: mixer, music, ambience and many more effects ---------- */
 let musOn=store('sirdab.music')!==false;
@@ -2921,11 +2940,11 @@ async function twCraft(id,btn){const h=S.hero,g=GEAR[id];if(TWN.busy||!g||!g.cra
   const can=()=>lifeLvl(h,at)>=(g.lv||1)&&spGearOk(h,id)&&hasRes(h,g.craft)&&h.money>=cost;if(!can())return;
   const pr=await qPrep({at,title:`${twV(id,'اعمل')} ${g.n}`,costTxt:`${needTxt(g.craft)} + ${cost} جنيه`,icon:twGear(id,50),adds:qAdds(h,id,g.craft),made:qMade(h,id)});
   if(!pr||TWN.busy||!can())return;const add=pr.add&&pr.add.ok?pr.add:null;
-  TWN.busy=1;takeRes(h,g.craft);if(add)qTakeAdd(h,add);h.money-=cost;saveHero();twPay(btn,cost);
+  TWN.busy=1;takeRes(h,g.craft);if(add)qTakeAdd(h,add);h.money-=cost;crPend(h,g.craft,add,cost);twPay(btn,cost);
   let Q={q:1,lucky:false,unlucky:false,traits:[]},played=0;
   if(pr.go==='play'){const r=await qPlay(at,h,{tier:g.tier,name:g.n,icon:twGear(id,64)});played=!r.none;Q=craftQ(h,at,r.score,add,id)}
   const I=giNew(id,Q.q,{t:Q.traits,nm:Q.q>=4?h.name:'',by:h.name,s2:at==='tailor'&&Q.q>=3&&treeR(h,'tailor','stitch')>=4});
-  giAdd(h,id,I);qMark(h,id);const ref=qRefund(h,at,g.craft);saveHero();const v=qView(id,I),fem=qFem(id);
+  giAdd(h,id,I);qMark(h,id);const ref=qRefund(h,at,g.craft);crDone(h);saveHero();const v=qView(id,I),fem=qFem(id);
   const r=await twCeremony({kind:at,hits:played?0:pr.go==='quick'?2:4,q:I.q,luck:Q.lucky?'up':Q.unlucky?'down':'',icon:twGear(id,124),title:v.n,
     sub:`${twDid('عملت',id)} بإيدك${I.q>=4?` ${G('وحفرت','وحفرتي')} اسمك ${fem?'عليها':'عليه'}`:''}!${I.s2?` ${fem?'هتستحمل':'هيستحمل'} الضعف.`:''}`,
     chips:twChips(twGStats(v))+qTrChips(I.t)+(typeof spOwnChip==='function'?spOwnChip(h,id,I):''),sub2:I.t.length?qTrLines(I.t):I.q===0?`الشغل باظ: ${fem?'هتستحمل':'هيستحمل'} أقل وتمن${fem?'ها':'ه'} أقل. ${G('تقدر','تقدري')} ${G('تفك','تفكي')}${fem?'ها':'ه'} من «حاجتك».`:'',acts:twEqActs(h,id,I.u),
@@ -2952,9 +2971,9 @@ async function twBag(mode,btn){const h=S.hero,L=h.bagLvl||0,b=BAGUPS[L];if(TWN.b
   if(mode==='buy'){cost=twGP(h,b.buy);if(h.money<cost)return}else{cost=twCm(h,b.cm,'tailor');const can=()=>lifeLvl(h,'tailor')>=b.lv&&hasRes(h,b.craft)&&h.money>=cost;if(!can())return;
     /* v4.2: a bag made by hand is sewn in the tailor game too (bags have no quality) */
     const pr=await qPrep({at:'tailor',title:`${twV(b.id,'اعمل')} ${b.n}`,costTxt:`${needTxt(b.craft)} + ${cost} جنيه`,icon:twGear(b.id,50),adds:[],made:qMade(h,b.id),playTxt:G('ابدأ الخياطة','ابدأي الخياطة'),noQ:`الشنطة مالهاش جودة. لو الشغل طلع حلو ${G('بتاخد','بتاخدي')} خبرة خياطة زيادة.`});
-    if(!pr||TWN.busy||!can()||(h.bagLvl||0)!==L)return;TWN.busy=1;takeRes(h,b.craft);h.money-=cost;saveHero();
+    if(!pr||TWN.busy||!can()||(h.bagLvl||0)!==L)return;TWN.busy=1;takeRes(h,b.craft);h.money-=cost;crPend(h,b.craft,null,cost);
     if(pr.go==='play'){const r=await qPlay('tailor',h,{tier:b.tier,name:b.n,icon:twGear(b.id,64)});played=!r.none;good=played&&r.score>=.8}qMark(h,b.id)}
-  TWN.busy=1;if(mode==='buy')h.money-=cost;h.bagLvl=L+1;saveHero();twPay(btn,cost,mode==='buy');
+  TWN.busy=1;if(mode==='buy')h.money-=cost;h.bagLvl=L+1;crDone(h);saveHero();twPay(btn,cost,mode==='buy');
   const caps=Object.keys(b.add).map(k=>`<span class="tw-ch up">${TW_BAGK[k][1]} ${bagCap(h,TW_BAGK[k][0])} (${twN(b.add[k])})</span>`).join('');
   await twCeremony({kind:mode==='buy'?'buy':'tailor',hits:played?0:undefined,tier:b.tier,icon:twGear(b.id,124),title:b.n,sub:`شنطتك كبرت! دلوقتي بتشيل:${good?` <span style="color:#a6e3a0">(شغل حلو: ${twI('+2')} خبرة)</span>`:''}`,chips:caps,snd:SFX.bell,acts:[{v:'ok',t:'تمام'}],msg:`${G('دوس','دوسي')} ${G('وخيّط','وخيّطي')}!`});
   TWN.busy=0;if(mode!=='buy'){S.spQuick=played?0:Date.now();lifeXP(h,'tailor',1+b.tier+(good?2:0));S.spQuick=0;bump('crafted');saveHero()}twRender()}
@@ -2982,7 +3001,7 @@ SCREENS.cook=function(){const h=S.hero;if(!h){S.screen='title';return render()}
     <div class="tw-stk"><div class="tw-wal"><span>الأكل في شنطتك: <b style="color:${fc>=cap?'#f0a090':'var(--ink)'}">${fc} من ${cap}</b></span>${twMon(h)}</div></div>
     <div class="tw-lbl">${G('اطبخ','اطبخي')} بإيدك <small>ببلاش، من السمك اللي ${G('بتصطاده','بتصطاديه')}</small></div>
     <div class="col">${Object.keys(TW_REC).map(k=>twRecRow(h,k)).join('')}</div>
-    <div class="tw-lbl">أكل وشرب جاهز من عند أم سيد</div>
+    <div class="tw-lbl" data-section="ready-food">أكل وشرب جاهز من عند أم سيد</div>
     ${twRepNote(h,'أم سيد',1,pr)}
     <div class="col">${['foul','grilled','shai','ahwa','erqsous'].map(k=>twFoodRow(h,k)).join('')}</div>
     <div class="tw-lbl">${G('كُل','كُلي')} ${G('وارجّع','وارجّعي')} مجهودك</div>
@@ -3009,14 +3028,14 @@ async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl
   const pr=await qPrep({at:'cook',food:1,title:`${G('اطبخ','اطبخي')} ${ITEMS[k].name}`,costTxt:needTxt(r.need),icon:twFood(k,50),adds:qAdds(h,'food',r.need),made:qMade(h,k),
     playTxt:TW_BAKE.includes(k)?G('ابدأ العجن','ابدأي العجن'):G('ابدأ الطبخ','ابدأي الطبخ'),quickTxt:G('اطبخ بسرعة','اطبخي بسرعة')});
   if(!pr||TWN.busy||!hasRes(h,r.need)||bagFull(h,k))return;const add=pr.add&&pr.add.ok?pr.add:null;
-  TWN.busy=1;takeRes(h,r.need);if(add)qTakeAdd(h,add);saveHero();
+  TWN.busy=1;takeRes(h,r.need);if(add)qTakeAdd(h,add);crPend(h,r.need,add,0);
   let Q={q:1,lucky:false,unlucky:false,traits:[]},played=0,burnt=0;
   if(pr.go==='play'){const g=await qPlay(TW_BAKE.includes(k)?'bread':'cook',h,{tier:r.tier,name:ITEMS[k].name,icon:twFood(k,64),dish:k});played=!g.none;Q=craftQ(h,'cook',g.score,add);
     if(g.burnt){burnt=1;Q={q:0,lucky:false,unlucky:false,traits:[]}}}
   const key=fqKey(k,Q.q,Q.traits[0]||'');fqReg(key);h.bag[key]=(h.bag[key]||0)+1;qMark(h,k);
   /* توفير: sometimes a second dish, sometimes an ingredient comes back */
   const th=treeR(h,'cook','thrift'),two=th>=4&&Math.random()<.2&&!bagFull(h,k);if(two)h.bag[key]++;
-  const back=th&&Math.random()<.05*Math.min(3,th)?pick(Object.keys(r.need)):null;if(back)addRes(h,back,1);saveHero();
+  const back=th&&Math.random()<.05*Math.min(3,th)?pick(Object.keys(r.need)):null;if(back)addRes(h,back,1);crDone(h);saveHero();
   const eatOk=effNow(h)<EFF_MAX,it=ITEMS[key];
   const v=await twCeremony({kind:'cook',tier:r.tier,hits:played?0:pr.go==='quick'?2:3,q:Q.q,food:1,luck:Q.lucky?'up':Q.unlucky?'down':'',icon:twFood(k,124),title:it.name,
     sub:`${burnt?`${G('سبتها','سبتيها')} على النار زيادة واتحرقت، بس لسه تتاكل. `:''}${two?`${twI('+2')} في الشنطة (طلعت أكلتين!)`:`${twI('+1')} في الشنطة`} · ${T(it.info())}`,
@@ -3600,13 +3619,13 @@ function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxSt
   /* a way down, sometimes */
   if(F<FLOOR_MAX&&Math.random()<downOf(h))V.hole=1;
   /* the rare-drop band goes first; level, health, title and achievement bands queue after it */
-  if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{dur:1800,sound:SFX.sparkle});
-  else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{dur:1600,sound:SFX.sparkle});
+  if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{low:1,key:'gold',dur:1800,sound:SFX.sparkle});
+  else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{low:1,key:'silver',dur:1600,sound:SFX.sparkle});
   if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في المنجم.. منه سيف وتميمة',{color:'blue',dur:2600,sound:SFX.turq})}
-  else if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{color:'blue',dur:2400,sound:SFX.turq})}
+  else if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{low:1,key:'turq',color:'blue',dur:2400,sound:SFX.turq})}
   if(s3)band(RARE[tierOf('stone3')].n,`${MAT.stone3.n}!`,'أقوى حجر تعزيز.. بيطلع بس في الأعماق',{dur:2600,sound:SFX.turq});
-  else if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{color:'blue',dur:2200,sound:SFX.turq});
-  else if(s1)band(RARE[tierOf('stone1')].n,`${MAT.stone1.n}!`,'بيقوّي العدة عند الحداد',{dur:1800,sound:SFX.sparkle});
+  else if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{low:1,key:'stone2',color:'blue',dur:2200,sound:SFX.turq});
+  else if(s1)band(RARE[tierOf('stone1')].n,`${MAT.stone1.n}!`,'بيقوّي العدة عند الحداد',{low:1,key:'stone1',dur:1800,sound:SFX.sparkle});
   const xp=1+t,up=lifeXP(h,'mine',xp);bump('rocks');const c=h.cnt.rocks;
   if(c%10===0&&(h.minehp||0)<10){h.minehp=(h.minehp||0)+1;band('كل 10 صخرات','جسمك اتشد',`صحة +1 على طول · صحتك الكاملة بقت ${MXH(h)}`,{dur:2200,sound:SFX.levelup})}
   if(R.k==='turq')ach('m_turq');if(c>=10)ach('m_rocks10');
@@ -3824,8 +3843,8 @@ function fsLand(k,o){o=o||{};fsCommit();const h=S.hero,V=gxVisit('fish'),tok=++F
   fsSay(o.fight?(n>1?'سمكتين مرة واحدة!':k==='goldfish'?G('غلبتها!','غلبتيها!'):G('غلبته!','غلبتيه!')):`${G('شدّيت','شدّيتي')}! ردّ فعلك ${((o.rt||0)/1000).toFixed(2)} ثانية`,'good');
   FS.b={m:'reel',t0:performance.now(),d:600,x0:FS.bx,y0:FS.by,arc:50};
   FS.pend=()=>{
-    if(k==='eel')band(RARE[2].n,'تعبان مية!','بيتلوّى.. بس بيتشوي حلو عند أم سيد',{color:'blue',dur:2200,sound:SFX.sparkle});
-    if(k==='bayad')band(RARE[1].n,'سمكة بياض!','سمكة كبيرة.. تعمل طاجن',{dur:1800,sound:SFX.sparkle});
+    if(k==='eel')band(RARE[2].n,'تعبان مية!','بيتلوّى.. بس بيتشوي حلو عند أم سيد',{low:1,key:'eel',color:'blue',dur:2200,sound:SFX.sparkle});
+    if(k==='bayad')band(RARE[1].n,'سمكة بياض!','سمكة كبيرة.. تعمل طاجن',{low:1,key:'bayad',dur:1800,sound:SFX.sparkle});
     if(k==='goldfish')band(RARE[3].n,'سمكة دهب!','الصيادين بيحكوا عنها.. ومحدش شافها',{dur:2800,sound:()=>{SFX.shimmer();setTimeout(SFX.fanfare,300)}});
     const up=lifeXP(h,'fish',xp);bump(M.junk?'shoes':'fish',n);
     if(M.junk)ach('f_shoe');else{ach('f_first');if(k==='goldfish')ach('f_gold')}
@@ -4419,6 +4438,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.75',d:'11 أكتوبر',add:[],fix:['زرار «{اخبز|اخبزي} عيش» وشوال الدقيق رجعوا عند أم سيد','لما {تكسر|تكسري} صخر كتير ورا بعض، الإعلانات بقت بتتجمع في إعلان واحد بعدد زي «دهب! ×12» بدل ما تفضل طالعة لدقايق. الإنجازات والمستوى الجديد بيظهروا الأول دايمًا','لو اللعبة اتقفلت {وانت|وانتي} بتعمل حاجة عند عم حسن أو عم فتحي أو أم سيد أو عم رجب أو الفرن، الخامات والفلوس بترجعلك أول ما {تفتح|تفتحي}','الحصّادة بقت بتعوّض آخر 3 حصدات بس لكل أرض لما {ترجع|ترجعي}، وكل حصدة ليها حد (القصب والرز 9 بالكتير)، عشان الغيط ما يطلّعش آلاف في زيارة واحدة. اللي في شنطتك زي ما هو','عرض السوق لو النت قطع وهو بينزل بيرجعلك، والفلوس اللي بتتجمع من السوق بتتحفظ أول بأول','الحفظ على السحابة والنسخة الاحتياطية بقوا أأمن: النسخة الغلط أو التقيلة بتترفض بدل ما تبوّظ أبطالك']},
 {v:'5.74',d:'10 أكتوبر',add:['في سوق اللاعبين {تقدر تشتري|تقدري تشتري} أي عدد من الحاجة المعروضة، مش لازم الكمية كلها: {اختار|اختاري} العدد بـ − و + أو «أقصى»','ولما {تعرض|تعرضي} كمية، السعر بقى «سعر الواحدة» والإجمالي بيبان تحته. الفلوس بتوصلك أول بأول مع كل حتة بتتباع'],fix:['الترقيع باليد عند عم فتحي بقى بيدي خبرة 3 أضعاف الترقيع بسرعة، ولو الشغل طلع حلو 4 أضعاف']},
 {v:'5.73',d:'10 أكتوبر',add:['البرادة والزيت بقوا بيتعملوا باليد عند عم حسن كمان، مش بس بيتشتروا: برادة الفضة من 2 فضة وفحمة (حدادة 3)، برادة الدهب من دهب وفضة وفحمة (حدادة 6)، وزيت التسقية من حبة البركة و2 فحم (حدادة 8)'],fix:['الضربة العادية بقى اسمها على السلاح اللي في إيدك: «خبطة مطرقة» بمطرقة الأسطى، «ضربة سيف» بالسيف، «طعنة خنجر» بالخنجر، و«بوكس» من غير سلاح. الساحر والمعالج فضلوا بسحرهم']},
 {v:'5.72',d:'10 أكتوبر',add:['عم حسن الحداد بقى بيبيع حاجات {تحطها|تحطيها} مع حجر التعزيز: «برادة فضة» بتزوّد النسبة 10%، و«برادة دهب» بتزوّدها 20%','و«زيت التسقية»: من +8، لو التعزيز فشل الحتة ما تنزلش درجة','{اختار|اختاري} اللي {عايزه|عايزاه} من على الحتة نفسها قبل ما {تدوس|تدوسي} «عزّز»، والنسبة الجديدة بتبان على الزرار'],fix:['الزيادة اللي تخصصك (الحداد، الأسطى وغيرهم) بيحطها على الحاجة اللي {عملتها|عملتيها} بإيدك بقت مكتوبة على الحتة نفسها وفي لحظة الصنع','والخواتم والقلايد والتمايم اللي {بتعملها|بتعمليها} بإيدك بقت بتاخد زيادة صحة من تخصصك كمان']},
@@ -18677,13 +18697,14 @@ function brRowsHTML(h){const fl=h.res.flour||0,br=h.res.bread||0,ok=fl>=BR_FLOUR
       <button class="tw-buy" id="brSack" ${h.money<p?'disabled':''}>${G('اشتري','اشتري')}<small>${p} جنيه</small></button></div></div>`}
 function brBind(){const b=$('#brBake');if(b)b.onclick=()=>brBake(b);const s=$('#brSack');if(s)s.onclick=()=>brSack(s)}
 function brSack(btn){const h=S.hero,p=twGP(h,BR_SACK_P);if(!h||h.money<p||TWN.busy)return;h.money-=p;addRes(h,'flour',BR_SACK);saveHero();twPay(btn,p);twRender();toast(`${twI('+'+BR_SACK)} دقيق`)}
-async function brBake(btn){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_FLOUR)return;TWN.busy=1;h.res.flour-=BR_FLOUR;saveHero();
+async function brBake(btn){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_FLOUR)return;TWN.busy=1;h.res.flour-=BR_FLOUR;crPend(h,{flour:BR_FLOUR},null,0);
   let g;try{g=await qPlay('bread',h,{tier:0,name:'عيش بلدي',icon:twMat('bread',64)})}finally{TWN.busy=0}
   const sc=Math.max(0,Math.min(1,+g.score||0)),n=g.none?3:g.burnt?1:Math.max(1,Math.min(5,1+Math.round(sc*4)));
-  addRes(h,'bread',n);lifeXP(h,'cook',1+(sc>=.78?1:0));saveHero();twRender();
+  addRes(h,'bread',n);crDone(h);lifeXP(h,'cook',1+(sc>=.78?1:0));saveHero();twRender();
   SFX.heal();toast(`${g.burnt?`الفرن حرق أغلبه، و${G('لحقت','لحقتي')} رغيف واحد`:n>=5?'عيش سخن ومنفوخ!':n>=3?'عيش حلو':'عيش ماشي حاله'} · ${twI('+'+n)} عيش`)}
 {const o=SCREENS.cook;SCREENS.cook=function(){const r=o.apply(this,arguments);const h=S.hero;if(!h||S.screen!=='cook')return r;
-  const lb=[...view.querySelectorAll('.tw-lbl')].find(e=>/أكل جاهز/.test(e.textContent));if(lb){lb.insertAdjacentHTML('beforebegin',brRowsHTML(h));brBind()}return r}}
+  /* B20 (E00): find the section by its data-section mark, not its words (the title changed and the bread rows vanished); never add them twice */
+  const lb=view.querySelector('[data-section="ready-food"]');if(lb&&!view.querySelector('#brBake,.br-row')){lb.insertAdjacentHTML('beforebegin',brRowsHTML(h));brBind()}return r}}
 
 /* ---------- follow-ups: what you chose comes back later in the same night (prefix NF_) ----------
    An outcome plants one with  follow:'<card id>'  or  follow:{id,in:[2,4],why:'..'}  (a list works too).
@@ -19686,9 +19707,10 @@ function fbLoad(){if(!fbOn())return Promise.reject(new Error('nocfg'));if(FB_REA
 const fbDoc=()=>FB.db.collection('users').doc(FB.user.uid);
 const fbSum=()=>HEROES.filter(Boolean).map(h=>({n:String(h.name||'').slice(0,24),l:h.lvl||1}));
 /* the rules accept exactly {data: string under 900000 chars, updatedAt: timestamp, v: int} */
-function fbPut(o){let D={code:o.code,t:o.t||Date.now(),sum:o.sum||fbSum(),prev:o.prev||'',sid:FB.sid};fbSetSync(D.t);let s=JSON.stringify(D);
+function fbPut(o){let D={code:o.code,t:o.t||Date.now(),sum:o.sum||fbSum(),prev:o.prev||'',sid:FB.sid};let s=JSON.stringify(D);
   if(s.length>880000){D.prev='';s=JSON.stringify(D)}if(s.length>880000)throw {code:'too-big'};
-  return fbDoc().set({data:s,updatedAt:window.firebase.firestore.FieldValue.serverTimestamp(),v:1})}
+  /* B30 (R00): the last-sync marker moves only after the cloud took the save (it used to move first, even when the upload failed) */
+  return fbDoc().set({data:s,updatedAt:window.firebase.firestore.FieldValue.serverTimestamp(),v:1}).then(r=>{fbSetSync(D.t);return r})}
 async function fbUp(force){if(!FB.user||FB.busy||FB.locked)return;FB.busy=1;try{const code=bkCode();
     let prev='';if(force!=='first'){let C=null;try{C=await fbGet()}catch(e){}
       if(C&&C.sid&&C.sid!==FB.sid&&(C.t||0)>fbSyncT()&&C.code!==code){FB.busy=0;return fbLock('cloud',C)}
@@ -19883,16 +19905,20 @@ function mkIco(x,w){if(mkF(x)){const k=mkFk(x);return itemIcon2(typeof fqParse==
 function mkHero(sh){return HEROES.find(h=>h&&h.lbId===sh)||S.hero}
 
 /* the seller collects what sold (on opening the market and after signing in) */
+async function mkPendFix(){for(const h of HEROES.filter(h=>h&&h.mkPend)){const P=h.mkPend;let d=null;
+    try{d=await mkCol().doc(P.lid).get()}catch(e){continue}
+    if(!d.exists){if(P.f)h.bag[P.f]=(h.bag[P.f]||0)+P.c;else if(P.k==='m')h.res[P.id]=(h.res[P.id]||0)+P.c;else if(P.I)giAdd(h,P.id,P.I)}
+    delete h.mkPend;saveHero()}}
 async function mkCollect(){if(!FB.user||MK.col)return;MK.col=1;let got=0,n=0;
-  try{const q=await mkCol().where('s','==',FB.user.uid).get();MK.mine=q.docs.map(d=>Object.assign({_id:d.id},d.data()));
+  try{await mkPendFix();const q=await mkCol().where('s','==',FB.user.uid).get();MK.mine=q.docs.map(d=>Object.assign({_id:d.id},d.data()));
     /* 5.74: a listing bought in part keeps what was paid in pv until the seller collects it here */
     for(const x of MK.mine.filter(x=>x.st==='sold'||(x.st==='open'&&x.pv>0))){const ref=mkCol().doc(x._id);let got1=0,cnt=0,bn='';
       try{await FB.db.runTransaction(async tr=>{got1=0;const d0=await tr.get(ref);if(!d0.exists)return;const d=d0.data(),pv=d.pv||0;
         if(d.st==='sold'){tr.update(ref,pv?{st:'paid',pv:0}:{st:'paid'});got1=d.p+pv;cnt=d.c+(d.up&&pv?Math.round(pv/d.up):0)}
         else if(d.st==='open'&&pv>0){tr.update(ref,{pv:0});got1=pv;cnt=d.up?Math.round(pv/d.up):0;x.c=d.c;x.p=d.p}
         bn=d.bn;if(d.st==='sold')x.st='paid';x.pv=0})}catch(e){got1=0}
-      if(got1){const h=mkHero(x.sh),v=got1-Math.ceil(got1*MK_FEE);h.money+=v;got+=v;n++;h.mkLog=(h.mkLog||[]).slice(-9).concat([{n:mkName(x),c:cnt||1,p:v,b:String(bn||'').slice(0,20)}])}}
-    if(n){saveHero();toast(`اتباعلك ${n===1?'حاجة':n+' حاجات'} في سوق اللاعبين: +${got} جنيه`);SFX.reg&&SFX.reg()}
+      if(got1){const h=mkHero(x.sh),v=got1-Math.ceil(got1*MK_FEE);h.money+=v;got+=v;n++;h.mkLog=(h.mkLog||[]).slice(-9).concat([{n:mkName(x),c:cnt||1,p:v,b:String(bn||'').slice(0,20)}]);saveHero()}}
+    if(n){toast(`اتباعلك ${n===1?'حاجة':n+' حاجات'} في سوق اللاعبين: +${got} جنيه`);SFX.reg&&SFX.reg()}
     MK.mine.filter(x=>x.st==='paid'||x.st==='gone').forEach(x=>{mkCol().doc(x._id).delete().catch(()=>{})});
     MK.mine=MK.mine.filter(x=>x.st==='open')}
   catch(e){MK.err=mkNet(e)}finally{MK.col=0}}
@@ -19937,11 +19963,14 @@ async function mkList(){const h=S.hero,o=MK.sel;if(!o||MK.busy||!FB.user)return;
   if(MK.mine==null)await mkCollect();if(MK.mine==null){MK.msg=mkNet();return render()}
   if(mkOpenN()>=MK_MAX){MK.msg=`أقصى حاجة ${MK_MAX} عروض في نفس الوقت. ${G('رجّع','رجّعي')} عرض أو ${G('استنى','استني')} لما حاجة تتباع.`;return render()}
   let I=null;if(o.f){if((h.bag[o.f]||0)<c)return;h.bag[o.f]-=c}else if(o.k==='m'){if((h.res[o.id]||0)<c)return;h.res[o.id]-=c}else{I=giDel(h,o.id,o.u);if(!I)return}
+  /* B26 (R00): the listing gets its id first and is noted on the hero in the same save that takes the item;
+     if the game closes before the market got it, mkPendFix gives the item back (or forgets the note if it did arrive) */
+  const ref0=mkCol().doc();h.mkPend={lid:ref0.id,f:o.f||'',k:o.k,id:o.id,c,I:I||null};
   saveHero();MK.busy=1;render();
   const up=p,tot=up*c;
   const x={s:FB.user.uid,sh:lbId(h),sn:String(h.name||'').slice(0,20),k:o.k,id:o.id,c,x:I?JSON.stringify((({u,...r})=>r)(I)).slice(0,1500):'',p:tot,up,pv:0,st:'open',b:'',bn:'',t:window.firebase.firestore.FieldValue.serverTimestamp()};
-  try{let ref;try{ref=await mkCol().add(x)}catch(e){if(!(e&&e.code==='permission-denied'))throw e;delete x.up;delete x.pv;ref=await mkCol().add(x)}(MK.mine=MK.mine||[]).push(Object.assign({_id:ref.id},x,{t:null}));MK.sel=null;MK.price='';MK.cnt=1;MK.msg='';MK.tab='mine';SFX.reg&&SFX.reg();toast('العرض نزل السوق.')}
-  catch(e){if(o.f)h.bag[o.f]=(h.bag[o.f]||0)+c;else if(o.k==='m')h.res[o.id]=(h.res[o.id]||0)+c;else giAdd(h,o.id,I);MK.msg=mkNet(e)}
+  try{let ref=ref0;try{await ref0.set(x)}catch(e){if(!(e&&e.code==='permission-denied'))throw e;delete x.up;delete x.pv;await ref0.set(x)}delete h.mkPend;(MK.mine=MK.mine||[]).push(Object.assign({_id:ref.id},x,{t:null}));MK.sel=null;MK.price='';MK.cnt=1;MK.msg='';MK.tab='mine';SFX.reg&&SFX.reg();toast('العرض نزل السوق.')}
+  catch(e){delete h.mkPend;if(o.f)h.bag[o.f]=(h.bag[o.f]||0)+c;else if(o.k==='m')h.res[o.id]=(h.res[o.id]||0)+c;else giAdd(h,o.id,I);MK.msg=mkNet(e)}
   saveHero();MK.busy=0;render()}
 async function mkBack(x){const h=S.hero;if(MK.busy)return;MK.busy=1;const ref=mkCol().doc(x._id);let ok=0,pv=0;
   /* what is left comes back (read fresh: others may have bought part of it), and what was bought of it is paid now */
@@ -24792,13 +24821,13 @@ async function atBrew(k,btn){const h=S.hero,r=AT_REC[k];if(!h||TWN.busy||!r||atL
   const pr=await qPrep({at:'attar',title:`${G('اعمل','اعملي')} ${it0.name}`,costTxt:needTxt(r.need),icon:twFood(k,50),made:qMade(h,k)||!!(h.cnt&&h.cnt.brewed),
     noQ:noQ?`${it0.name} ما لهاش جودة: كل ما ${G('تدق','تدقي')} أحسن بتطلع أكتر.`:'',playTxt:G('ابدأ الدق','ابدأي الدق'),quickTxt:G('اعمل بسرعة','اعملي بسرعة')});
   if(!pr||TWN.busy||!hasRes(h,r.need)||atRoom(h,k)<1)return;
-  const quick=pr.go==='quick';TWN.busy=1;takeRes(h,r.need);saveHero();
+  const quick=pr.go==='quick';TWN.busy=1;takeRes(h,r.need);crPend(h,r.need,null,0);
   let sc=0,n=1,x=0,played=0,Q={q:1,lucky:false,unlucky:false,traits:[]};
   try{
     if(!quick){const g=AT.sim!=null?{score:AT.sim}:await qPlay('attar',h,{tier:r.tier,name:it0.name,icon:twFood(k,64),col:AQ_COL[k]});played=!g.none;sc=g.score;
       n=sc>=.8?3:sc>=.5?2:1;const o=spOn(h);if(o&&o.atX&&Math.random()<o.atX){n++;x=1}if(!noQ)Q=craftQ(h,'attar',sc)}
     const got=Math.max(1,Math.min(n,atRoom(h,k))),key=noQ?k:fqKey(k,Q.q,Q.traits[0]||'');if(key!==k)aqReg(key);
-    h.bag[key]=(h.bag[key]||0)+got;qMark(h,k);bump('brewed');const back=played?qRefund(h,'attar',r.need):null;saveHero();
+    h.bag[key]=(h.bag[key]||0)+got;qMark(h,k);bump('brewed');const back=played?qRefund(h,'attar',r.need):null;crDone(h);saveHero();
     const it=ITEMS[key];
     await twCeremony({kind:'attar',tier:r.tier,hits:played?0:2,q:noQ?null:Q.q,luck:Q.lucky?'up':Q.unlucky?'down':'',icon:twFood(k,124),title:it.name,
       sub:`${twI('+'+got)} في الشنطة${x?' (الهون طلّع واحدة زيادة)':''}${got<n?` · الشنطة ما شالتش غير ${got}`:''} · ${T(it.info())}`,
@@ -25061,6 +25090,50 @@ function atkNm(h,base){if(!h||ATK_MAGIC[h.cls])return base;const id=h.eq&&h.eq.w
   const n0=String(g.n).split(' ')[0];return `${ATK_V[n0]||'ضربة'} ${n0}`}
 Object.keys(CLASSES).forEach(c=>{const a=CLASSES[c].atk;if(!a)return;const base=a.name;
   Object.defineProperty(a,'name',{configurable:true,enumerable:true,get(){const h=S.hero;try{return h&&h.cls===c?atkNm(h,base):base}catch(e){return base}}})});
+
+/* ---------- R00 / B33 (2026-10-11): a craft never loses its inputs if the game closes mid mini-game ----------
+   Before: twCraft, twCook, twBag (made by hand), brBake and atMake took the materials/money and SAVED, then waited for
+   the mini-game; closing the app there kept the loss and gave nothing. Now the taken inputs are written in h.cpend
+   in the same save, and the save that adds the finished thing also clears h.cpend (crDone). On load, a hero with an
+   unfinished h.cpend gets its inputs back once (crRecover), so nothing is lost and nothing is made twice. */
+function crPend(h,res,add,money,bag){h.cpend={res:Object.assign({},res||{}),add:add?{k:add.k,bag:!!add.bag}:null,m:money||0,bag:Object.assign({},bag||{}),t:Date.now()};saveHero()}
+function crDone(h){if(h&&h.cpend)delete h.cpend}
+function crRecover(h){const p=h&&h.cpend;if(!p)return 0;delete h.cpend;if(typeof p!=='object')return 0;
+  h.res=h.res||{};h.bag=h.bag||{};
+  Object.keys(p.res||{}).forEach(k=>{const n=Math.floor(+p.res[k]||0);if(n>0&&n<=9999)h.res[k]=(h.res[k]||0)+n});
+  Object.keys(p.bag||{}).forEach(k=>{const n=Math.floor(+p.bag[k]||0);if(n>0&&n<=9999)h.bag[k]=(h.bag[k]||0)+n});
+  if(p.add&&p.add.k){if(p.add.bag)h.bag[p.add.k]=(h.bag[p.add.k]||0)+1;else h.res[p.add.k]=(h.res[p.add.k]||0)+1}
+  const m=Math.floor(+p.m||0);if(m>0&&m<=10000000)h.money=(h.money||0)+m;return 1}
+{let n=0;HEROES.forEach(h=>{if(crRecover(h))n++});
+  if(n){store('sirdab.heroes',HEROES);setTimeout(()=>{try{toast('شغلانة اتقفلت في النص قبل ما تخلص: الخامات والفلوس رجعت مكانها.')}catch(e){}},1500)}}
+
+/* ---------- R00 / F-06: a backup is checked before it replaces the saves ----------
+   bkParse accepted any JSON with a heroes array; bkApply then wrote every sirdab.* key it held. Now: size cap,
+   only string values under sirdab.* keys, at most 40 keys, and heroes must be a short list of hero-shaped objects. */
+const BK_MAXLEN=6000000,BK_MAXKEYS=40;
+{const p0=bkParse;bkParse=function(txt){if(String(txt||'').length>BK_MAXLEN*1.4)return null;const P=p0.apply(this,arguments);if(!P)return null;
+  const ks=Object.keys(P.d);if(!ks.length||ks.length>BK_MAXKEYS)return null;let tot=0;
+  for(const k of ks){if(k.indexOf('sirdab.')!==0||k.length>60)return null;const v=P.d[k];if(typeof v!=='string')return null;tot+=v.length;if(tot>BK_MAXLEN)return null}
+  let hs;try{hs=JSON.parse(P.d['sirdab.heroes'])}catch(e){return null}
+  if(!Array.isArray(hs)||hs.length>8)return null;
+  if(!hs.every(h=>h===null||(h&&typeof h==='object'&&!Array.isArray(h)&&typeof h.name==='string'&&h.name.length<=40&&(h.money==null||Number.isFinite(+h.money)))))return null;
+  return P}}
+
+/* ---------- E00 / B17 + B19 (Twister, 2026-10-11): farm caps ----------
+   Root cause (tools/econ/farm_b17_b19.js): the harvester + seed box replayed up to 12 grow cycles per plot on every
+   town/farm visit, each replant starting at the past ready time, so time away was paid in full again and again
+   (~940 cane ≈ 15 000 جنيه or ~990 rice in one visit at farm level 10).
+   Now: (1) one visit catches up at most FARM_AUTO_MAX cycles per plot, and the last replant starts now, so older time
+   away is not paid later; (2) one harvest gives at most FARM_CAP[crop] = most of the crop + 5 (cane and rice 9),
+   after water, level, tree, fertilizer and a golden harvest. Nothing already in a save is taken away. */
+const FARM_AUTO_MAX=3;
+const FARM_CAP=k=>CROPS[k]?CROPS[k].y[1]+5:99;
+{const fy=farmYield;farmYield=function(h,p){const r=fy.apply(this,arguments);if(r&&p&&p.c)r.n=Math.max(1,Math.min(r.n,FARM_CAP(p.c)));return r}}
+ftAuto=function(h){if(!h||!ftHas(h,'harv'))return;FARM_FIX(h);const n=farmN(h),got={};let any=0;FARM.auto=1;
+  try{for(let i=0;i<n;i++){let g=0;while(g<FARM_AUTO_MAX){const p=h.farm.p[i];if(!farmReady(h,p))break;const k=p.c,at=p.t0+p.d,r=farmHarvest(i,null,1);if(!r)break;g++;
+      got[k]=(got[k]||0)+r.n;any=1;if(!ftReplant(h,i,k,g>=FARM_AUTO_MAX?Date.now():at))break}}}
+  finally{FARM.auto=null}
+  if(any){const L=h.farm.log=h.farm.log||{};for(const k in got)L[k]=(L[k]||0)+got[k];saveHero()}};
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
