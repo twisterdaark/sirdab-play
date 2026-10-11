@@ -588,6 +588,29 @@ Object.assign(SFX,{
 const TRIM={choose:.5,levelup:.55,reveal:.6,repUp:.7,repDown:.7,pickup:.7,revive:.7,battle:.6,master:.8,page:.6,blip:.7};
 Object.keys(TRIM).forEach(k=>{const f=SFX[k];if(!f)return;SFX[k]=function(){const m=mix();if(!m)return;const s=m.sfx;let g=m.trim[k];if(!g){g=m.a.createGain();g.gain.value=TRIM[k];g.connect(s);m.trim[k]=g}m.sfx=g;try{return f.apply(this,arguments)}finally{m.sfx=s}}});
 
+/* ---------- 5.90 / R03 (N01): the language layer — kept tiny on purpose ----------
+   Only the choice of language, loc(), the catalog helper and the screen-text helper live here. The English text itself lives with
+   the thing it belongs to: a catalog's names right after the catalog (I18N(MAT,{…}) in p3b.js), a screen's words at the bottom of
+   that screen's file (L10N({…})). Anything without English shows in Arabic as it is (never a key, never «undefined»).
+   IDs never change and nothing English is saved: the swap is for showing only, so the language can change at any time.
+   - LANG: 'ar' | 'en' | null (not chosen yet; an old save with heroes is Arabic, a new player picks on the first screen).
+   - loc(e,f,lang): e.i18n[lang][f] when it is real text, else e[f].
+   - I18N(cat,map): attaches i18n.en to the catalog's entries; in English the shown fields are swapped (the Arabic kept in e._ar).
+   - L10N(words,rules): words = exact Arabic → English for one screen; rules = [regex, replacement] for text with numbers.
+     In English a MutationObserver on #app swaps text nodes and labels as screens draw (p80.js starts it). */
+const LANG=(()=>{try{const v=JSON.parse(localStorage.getItem('sirdab.lang')||'null');return v==='en'||v==='ar'?v:null}catch(e){return null}})();
+const EN=LANG==='en';
+function loc(e,f,lang){lang=lang||LANG||'ar';if(!e)return '';if(lang!=='ar'){const L=e.i18n&&e.i18n[lang],t=L&&L[f];if(typeof t==='string'&&t.trim())return t}
+  const a=e._ar&&f in e._ar?e._ar[f]:e[f];return typeof a==='function'?a():a}
+function I18N(cat,map){Object.keys(map||{}).forEach(k=>{const e=cat&&cat[k];if(!e||typeof e!=='object')return;e.i18n=e.i18n||{};e.i18n.en=Object.assign(e.i18n.en||{},map[k]);if(EN)i18nSwap(e)})}
+function i18nSwap(e){const en=e.i18n&&e.i18n.en;if(!en)return;e._ar=e._ar||{};
+  Object.keys(en).forEach(f=>{const v=en[f];if(typeof v!=='string'||!v.trim())return;if(!(f in e._ar))e._ar[f]=e[f];e[f]=typeof e._ar[f]==='function'?(()=>v):v})}
+const L10N_W=new Map(),L10N_R=[];
+function L10N(words,rules){Object.keys(words||{}).forEach(k=>L10N_W.set(k,words[k]));(rules||[]).forEach(r=>L10N_R.push(r))}
+function l10nStr(s){if(typeof s!=='string')return null;const t=s.trim();if(t==='‹')return s.replace('‹','›');if(!t||!/[؀-ۿ]/.test(t))return null;let o=L10N_W.get(t);
+  if(o==null)for(const [re,to] of L10N_R){re.lastIndex=0;if(re.test(t)){re.lastIndex=0;o=t.replace(re,to);break}}
+  return o==null||o===t?null:s.replace(t,o)}
+
 /* ---------- data ---------- */
 const STATS=['قوة','خفة','تحمّل','ذكاء','حكمة','حضور'];
 const STAT_SHORT={'قوة':'الضرب والشيل','خفة':'السرعة والتفادي','تحمّل':'الصحة والاستحمال','ذكاء':'السحر والتفكير','حكمة':'الانتباه والعلاج','حضور':'الكلام والإقناع'};
@@ -705,6 +728,10 @@ function addRep(n,why){const h=S.hero,before=REP(h.rep)[0];h.rep=Math.max(-100,M
   if(before!==after){if(h.rep<=-60)ach('villain');if(h.rep>=60)ach('hero')}saveHero()}
 function ach(id){const h=S.hero;if(!h||h.ach[id])return;const a=ACH.find(x=>x.id===id);if(!a)return;h.ach[id]=1;if(a.r)h.money+=a.r;saveHero();
   band('إنجاز جديد',T(a.n),T(a.d)+(a.r?` · \u2066+${a.r}\u2069 جنيه`:''))}
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"potion": {"name": "Healing potion"}, "bigpotion": {"name": "Big healing potion"}, "revive": {"name": "Waking bottle"}, "salt": {"name": "Bag of salt"}, "wax": {"name": "Ear wax plugs"}, "amulet": {"name": "Silver charm"}});
+I18N(CLASSES,{'محارب':{n:'Warrior',desc:'Hits hard and takes the hits. Stands in front and protects friends.',good:'Strength and Endurance'},'حرامي':{n:'Thief',desc:'Quick, light and smooth-talking. Strikes before anyone notices.',good:'Agility and talk'},'ساحر':{n:'Mage',desc:'A frail body, but throws fire and magic from afar.',good:'Intellect'},'معالج':{n:'Healer',desc:'Heals themself and friends; their light burns afreets.',good:'Wisdom'}});
 
 /* ---------- v4: resources, gear, life skills, class skills, hidden stats, titles ---------- */
 const MAT={
@@ -884,6 +911,12 @@ function fixHero4(h){
 HEROES=HEROES.map(fixHero4);S.hero=HEROES[ACTIVE]||null;
 const _fixHero3=fixHero;
 fixHero=function(h){return fixHero4(_fixHero3(h))};
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"stone": {"n": "Stone"}, "copper": {"n": "Copper"}, "iron": {"n": "Iron"}, "silver": {"n": "Silver"}, "turq": {"n": "Turquoise"}, "salskin": {"n": "Salawa hide"}, "salfang": {"n": "Salawa fang"}, "horn": {"n": "Afreet horn"}, "hair": {"n": "Lock of the Naddaha's hair"}, "cloth": {"n": "Cloth"}, "bread": {"n": "Bread"}, "bolti": {"n": "Tilapia"}, "qarmout": {"n": "Catfish"}, "bouri": {"n": "Mullet"}, "goldfish": {"n": "Goldfish"}, "shoe": {"n": "Old slipper"}, "stone1": {"n": "Enhancing stone"}, "stone2": {"n": "Blue enhancing stone"}, "stone3": {"n": "Golden enhancing stone"}});
+I18N(ITEMS,{"foul": {"name": "Plate of foul"}, "grilled": {"name": "Grilled fish"}, "qdish": {"name": "Catfish in tomato sauce"}, "seniya": {"name": "Fish tray"}});
+I18N(GEAR,{"shuma": {"n": "Cudgel"}, "copsword": {"n": "Copper sword"}, "dagger": {"n": "Poisoned dagger"}, "ironsword": {"n": "Iron sword"}, "turqstaff": {"n": "Turquoise staff"}, "vest": {"n": "Leather vest"}, "ironarmor": {"n": "Iron armour"}, "turban": {"n": "Turban"}, "helmet": {"n": "Iron helmet"}, "copring": {"n": "Copper ring"}, "silring": {"n": "Silver ring"}, "hornneck": {"n": "Afreet horn necklace"}, "hairneck": {"n": "Naddaha's hair necklace"}, "amulet": {"n": "Silver charm"}});
+I18N(LIFE,{"mine": {"n": "Mining"}, "fish": {"n": "Fishing"}, "cook": {"n": "Cooking"}, "smith": {"n": "Smithing"}, "tailor": {"n": "Tailoring"}, "farm": {"n": "Farming"}});
 
 /* ---------- portraits ---------- */
 function hairShapes(h,hc){
@@ -1583,6 +1616,11 @@ function help(){let g0='';view.scrollTop=0;
   $('#back').onclick=()=>{S.screen=S.helpFrom||'title';S.helpFrom=null;render()};
 }
 
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"سِرداب": "Sirdab", "حواديت.. ونرد.. وانت البطل": "Folk tales.. dice.. and you are the hero", "حواديت.. ونرد.. وانتي البطلة": "Folk tales.. dice.. and you are the hero", "ابدأ": "Start", "أول مرة؟ هنعلّمك وانت بتلعب": "First time? We'll teach you as you play", "أول مرة؟ هنعلّمك وانتي بتلعبي": "First time? We'll teach you as you play", "بطلي ‹": "My hero ›", "بطلتي ‹": "My hero ›", "هدية النهارده": "Today's gift", "صندوق ببلاش كل يوم. دوس وافتحه": "A free chest every day. Tap to open it", "صندوق ببلاش كل يوم. دوسي وافتحيه": "A free chest every day. Tap to open it", "التدريب": "Training", "أبطالي": "My heroes", "+ بطل جديد": "+ New hero", "شغال دلوقتي": "Playing now", "شغالة دلوقتي": "Playing now", "العب": "Play", "العبي": "Play", "تقدر تعمل لحد 3 أبطال وتجرب تخصصات مختلفة. كل بطل ليه مستواه وفلوسه وشنطته.": "You can make up to 3 heroes and try different classes. Each hero has their own level, money and bag.", "تقدري تعملي لحد 3 أبطال وتجربي تخصصات مختلفة. كل بطل ليه مستواه وفلوسه وشنطته.": "You can make up to 3 heroes and try different classes. Each hero has their own level, money and bag.", "محاربة": "Warrior", "حرامية": "Thief", "ساحرة": "Mage", "معالجة": "Healer", "مصارعة": "Wrestler", "بنت البلد": "Local", "محارب ·": "Warrior ·", "حرامي ·": "Thief ·", "ساحر ·": "Mage ·", "معالج ·": "Healer ·"},[[/^التخصص: (.+?) · المستوى (\d+)(?: · (\d+) جنيه)?$/,(m,c,l,g)=>`Class: ${c} · Level ${l}${g?` · ${g} coins`:''}`],[/^أبطالي \((\d)\/3\)$/,'My heroes ($1/3)'],[/^(\d+) جنيه · السمعة (.+)$/,'$1 coins · reputation: $2']]);
+/* 5.90 (R03): the hero maker's English words */
+L10N({"اعمل بطلك": "Make your hero", "اعملي بطلتك": "Make your hero", "بطلك": "Your hero", "بطلتك": "Your hero", "التخصص:": "Class:", "التخصص": "Class", "ولد ولا بنت؟": "Boy or girl?", "ولد": "Boy", "بنت": "Girl", "الاسم": "Name", "غيّر شكل بطلك (اختياري)": "Change your hero's look (optional)", "غيّري شكل بطلتك (اختياري)": "Change your hero's look (optional)", "لون البشرة": "Skin colour", "الشعر": "Hair", "لون الشعر": "Hair colour", "لون العينين": "Eye colour", "شكل العين": "Eye shape", "البُق": "Mouth", "السن": "Age", "الدقن والشنب": "Beard and moustache", "علامة مميزة": "Distinguishing mark", "لون اللبس": "Clothes colour", "احكي عن بطلك (لو حابب)": "Tell us about your hero (if you like)", "احكي عن بطلتك (لو حابة)": "Tell us about your hero (if you like)", "خلّصت بطلي": "My hero is ready", "خلّصت بطلتي": "My hero is ready", "مثلاً: كريم": "e.g. Karim", "مثلاً: منى": "e.g. Mona", "البطل": "The hero", "لون": "Colour", "من غير": "None", "بيضرب جامد وبيستحمل الضرب. بيقف قدام ويحمي صحابه.": "Hits hard and takes the hits. Stands in front and protects friends.", "سريع وخفيف ولسانه حلو. بيضرب من غير ما حد ياخد باله.": "Quick, light and smooth-talking. Strikes before anyone notices.", "جسمه ضعيف، بس بيرمي نار وسحر من بعيد.": "A frail body, but throws fire and magic from afar.", "بيعالج نفسه وصحابه، ونوره بيحرق العفاريت.": "Heals themself and friends; their light burns afreets.", "بيحارب بإيده الفاضية: بيمسك ويرمي ويكسر. من غير سلاح بيبقى أخطر.": "Fights bare-handed: grabs, throws and breaks. Deadlier without a weapon.", "مش متخصص في حاجة، بيعرف من كل حاجة شوية. أي تخصص بييجيله أسهل، وبيقدر يغيّره بسهولة.": "Not set on one thing; knows a bit of everything. Any specialisation comes easier, and changes easily."},[[/^شاطرة? في: (.+)$/,(m,g)=>'Good at: '+({'القوة والتحمّل':'Strength and Endurance','الخفة والكلام':'Agility and talk','الذكاء':'Intellect','الحكمة':'Wisdom','القوة والخفة':'Strength and Agility','شوية من كل حاجة':'A bit of everything'}[g]||g)],[/^· صحة (\d+)$/,'· Health $1']]);
+L10N({"ست زينب:": "Sitt Zeinab:", "اختار": "Pick your", "اختاري": "Pick your", "الأول: ده اللي بطلك شاطر فيه. النقط اللي فوق هي": "first: it's what your hero is good at. The dots above are the", "الأول: ده اللي بطلتك شاطرة فيه. النقط اللي فوق هي": "first: it's what your hero is good at. The dots above are the", "الصفات": "stats", "، كل نقطة زيادة بتتزوّد على النرد. وبعدين الشكل زي ما تحب، الشكل مالوش دعوة بالقوة.": ", and each dot is added to the dice. Then make the look you like; looks never change strength.", "، كل نقطة زيادة بتتزوّد على النرد. وبعدين الشكل زي ما تحبي، الشكل مالوش دعوة بالقوة.": ", and each dot is added to the dice. Then make the look you like; looks never change strength."});
 
 /* ---------- training ---------- */
 function startTraining(){const h=S.hero;h.hp=MXH(h);h.energy=MXE(h);S.comp=compFor(h);S.flags={};S.training=true;S.run=null;S.screen='story';goto('yard')}
@@ -3056,14 +3094,26 @@ async function twCook(k,btn){const h=S.hero,r=TW_REC[k];if(TWN.busy||!r||lifeLvl
   if(v==='eat'){const b=view.querySelector(`[data-eat="${key}"]`)||$('#twEb');if(b)twEat(key,b)}}
 
 /* ---------- عدّتي: the hero with the 6 slots around ---------- */
+/* what the worn traits add up to (the same sums as qTr users in p9q.js), with the result you get */
+function twTrSum(h,t,n,k){const b=v=>`<b>${twI(v)}</b>`;
+  if(t==='hadd')return `ضربة المعلّم ${b('+'+(n*5+k*3)+'%')} · فرصتك دلوقتي ${b(Math.round(critChance(h)*100)+'%')}`;
+  if(t==='khafif')return `خفة ${b('+'+(n+k))} · خفتك دلوقتي ${b((ST(h,'خفة')>=0?'+':'−')+Math.abs(ST(h,'خفة')))}`;
+  if(t==='mabrouk'){const p=50*(n+k);return `فلوس الصناديق ${b('+'+p+'%')} · الصندوق بيدي ${b('×'+(1+p/100))}`}
+  if(t==='afreet')return `ضرر ${b('+'+(2*n+k))} على العفاريت والأرواح في كل ضربة`;
+  if(t==='malh')return `ضرر ${b('+'+(3*n+2*k))} على النداهة في كل ضربة`;
+  if(t==='mateen')return `كل حتة منهم بتستحمل ${k===n?b('×1.75'):k?`${b('×1.5')} (واللي +4 أو أكتر ${b('×1.75')})`:b('×1.5')}`;
+  return ''}
 SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   /* v4.2: the slots show the piece you wear: its quality, enhancement and wear */
   const slotB=s=>{const id=h.eq[s],g=id&&GEAR[id],o=g&&qOn(h,s),v=g&&(o?qView(id,o.I):g),best=twBetter(h,s);
     return `<button class="tw-slot${g?' on':' em'}" data-slot="${s}" style="${g?`--rc:${RARE[g.tier].c}`:''}">${best?'<span class="best">أحسن</span>':''}<span class="sn">${SLOTS[s]}</span><span class="ic${o&&o.I.e>=10?' q-glow':''}">${g?twGear(id,40):'<svg viewBox="0 0 24 24" width="22"><path d="M12 5v14M5 12h14" stroke="#86745f" stroke-width="2.4" stroke-linecap="round"/></svg>'}</span><span class="gn" style="${g?`color:${RARE[g.tier].c}`:''}">${g?v.n:'فاضي'}</span>${o?`<span class="q-sq" style="color:${QC[o.I.q]}">${QN[o.I.q]}</span>${qDur(id)?twSlotDur(id,o.I):''}`:''}</button>`};
   const gh=gearOn(h).reduce((a,g)=>a+(g.hp||0),0),ge=gearOn(h).reduce((a,g)=>a+(g.en||0),0),ga=gearOn(h).reduce((a,g)=>a+(g.armor||0),0),w=h.eq.weapon&&GEAR[h.eq.weapon]&&gView(h,h.eq.weapon),sp=SPIRITRED(h),rs=gearOn(h).some(g=>g.resist);
   const num=(v,l,e)=>`<div class="tw-num"><b>${v}</b><small>${l}</small>${e?`<em>${e}</em>`:''}</div>`;
-  const trs=[];TW_SLOTS.forEach(s=>{const o=qOn(h,s);if(o)o.I.t.forEach(t=>trs.push(`<div class="tw-sm">✦ <b style="color:#d9cbff">${QT[t].n}</b> من ${GEAR[o.id].n}: ${T(QT[t].d(o.I.e>=4))}</div>`))});
-  TW_SLOTS.forEach(s=>{const o=qOn(h,s);if(o&&o.I.by)trs.push(`<div class="tw-sm q-by">${GEAR[o.id].n}: صنعة إيد ${esc(o.I.by)}</div>`)});
+  /* 5.90 (Twister 00:57): one line per trait: which pieces give it and what it all adds up to; one line per maker */
+  const trs=[],trG={},byG={};TW_SLOTS.forEach(s=>{const o=qOn(h,s);if(!o)return;o.I.t.forEach(t=>{(trG[t]=trG[t]||[]).push({n:GEAR[o.id].n,s:o.I.e>=4})});if(o.I.by)(byG[o.I.by]=byG[o.I.by]||[]).push(GEAR[o.id].n)});
+  Object.keys(trG).forEach(t=>{const L=trG[t],n=L.length,k=L.filter(x=>x.s).length,sum=twTrSum(h,t,n,k);
+    trs.push(`<div class="tw-sm tw-tr">✦ <b style="color:#d9cbff">${QT[t].n}</b>${n>1?` <span class="tw-cnt">×${n}</span>`:''} <small>(${L.map(x=>x.n).join('، ')})</small>: ${sum||T(QT[t].d(k>0))}</div>`)});
+  Object.keys(byG).forEach(b=>trs.push(`<div class="tw-sm q-by">صنعة إيد ${esc(b)}: ${byG[b].join('، ')}</div>`));
   const wears=QDUR.map(s=>qOn(h,s)).filter(Boolean);
   view.innerHTML=`${twTop('عدّتي')}<div class="tw">
     <div class="tw-doll"><div class="sd">${['weapon','armor','head'].map(slotB).join('')}</div>
@@ -3121,6 +3171,12 @@ SCREENS.end=function(){end();const h=S.hero;if(!h)return;if(S.endRes&&!S.endRes.
   const L=S.lost,b=$('#home');if(b){b.textContent=G('ارجع البلد','ارجعي البلد');b.onclick=()=>{if(L&&!L.tutorial){twRestock(h);saveHero()}S.lost=null;S.endRes=null;twGo('town')}}};
 /* a help topic for the town, unless the help already has one */
 if(!HELP.some(t=>t.h==='البلد'))HELP.push({g:'البلد',h:'البلد',b:()=>`بين كل مغامرة والتانية ${G('بترجع','بترجعي')} <b>البلد</b>:<br><b>السوق:</b> عم رمضان بيبيع قماش وعيش وحاجات بتتغير بعد كل مغامرة، وبيشتري منك أي حاجة ${G('تجيبها','تجيبيها')}.<br><b>الحداد والخياط:</b> ${G('تشتري','تشتري')} العدّة جاهزة، أو ${G('تعملها','تعمليها')} بإيدك من الحاجات اللي ${G('بتجمعها','بتجمعيها')} وبفلوس أقل. وكل ما ${G('تعمل','تعملي')} أكتر ${G('بتتعلم','بتتعلمي')} ${G('وتفتح','وتفتحي')} حاجات أقوى. وعم فتحي بيعمل <b>شنط أكبر</b>.<br><b>الطباخة:</b> ${G('اطبخ','اطبخي')} السمك اللي ${G('بتصطاده','بتصطاديه')}. الأكل بيرجّع صحة في القتال، ولو ${G('كلته','كلتيه')} في البلد بيرجّع <b>المجهود</b>.<br><b>المنجم والترعة:</b> التنقيب والصيد بياخدوا مجهود، والمجهود بيرجع لوحده 1 كل دقيقة.<br><b>عدّتي:</b> ${G('بتلبس','بتلبسي')} العدّة في 6 أماكن حوالين ${G('بطلك','بطلتك')}، و${G('بتشوف','بتشوفي')} كل حاجة بتزوّد إيه.`});
+/* 5.90 (R03): English names */
+I18N(BAGUPS,{"0": {"n": "Big cloth bag"}, "1": {"n": "Salawa-hide bag"}, "2": {"n": "Big saddlebag"}, "3": {"n": "Saddlebag with pockets"}, "4": {"n": "The mayor's saddlebag"}});
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"البلد": "The Village", "كفر الصفصاف": "Kafr El-Safsaf", "فاضلك": "Need", "مجهود": "Effort", "مليان": "Full", "الشنطة": "Bag", "فاضية": "Empty", "المنجم والترعة بياخدوا مجهود، والأكل بيرجّعه.": "The mine and the canal take effort; food brings it back.", "السوق": "Market", "عم رمضان البياع": "Uncle Ramadan the seller", "قماش وعيش": "Cloth and bread", "بضاعة جديدة": "New stock", "جديد:": "New:", "الحداد": "The Smith", "عم حسن": "Uncle Hassan", "الخياط": "The Tailor", "عم فتحي": "Uncle Fathy", "شنط أكبر وهدوم": "Bigger bags and clothes", "الطباخة": "The Cook", "أم سيد": "Umm Sayed", "فول وسمك مشوي": "Beans and grilled fish", "المنجم": "The Mine", "عجوز الجبل": "The Mountain Elder", "نحاس وحديد وفضة": "Copper, iron and silver", "الترعة": "The Canal", "صيد السمك": "Fishing", "بلطي وقرموط وبوري": "Tilapia, catfish and mullet", "عدّتي": "My gear", "سلاحك وهدومك": "Your weapon and clothes", "القهوة": "The Café", "قهوة عم صابر": "Uncle Saber's café", "دكة وشاي وكلام": "A bench, tea and talk", "عم حسن الحداد": "Uncle Hassan the smith", "عم فتحي الخياط": "Uncle Fathy the tailor", "أم سيد الطباخة": "Umm Sayed the cook", "العمدة": "The Mayor", "عم عبده الفلاح": "Uncle Abdo the farmer", "عم رجب العطّار": "Uncle Ragab the herbalist"},[[/^خبرة وتطلع المستوى (\d+)$/,'more XP to level $1'],[/^خبرة وتطلعي المستوى (\d+)$/,'more XP to level $1'],[/^(.+) · المستوى (\d+)$/,'$1 · Level $2'],[/^لابس (\d) من 6$/,'Wearing $1 of 6'],[/^لابسة (\d) من 6$/,'Wearing $1 of 6'],[/^حدادة مستوى (\d+)$/,'Smithing level $1'],[/^خياطة مستوى (\d+)$/,'Tailoring level $1'],[/^عطارة مستوى (\d+)$/,'Herbalism level $1'],[/^السوق: بضاعة جديدة$/,'Market: new stock']]);
+L10N({},[[/^فاضل (.+?) وتعملي? (.+)$/,(m,a,b)=>`Still need ${a.replace(/^(.+) (واحدة?)$/,'1 $1').replace(/^(\d+) (.+)$/,'$1 $2')} to make ${b}`],[/^(.+) من السوق$/,'$1 from the market'],[/^فاضلك (\d+) جنيه وتعملي? (.+)$/,'Need $1 more coins to make $2']]);
 /* ---------- v4: المنجم (mining) and الترعة (fishing): effort, rocks, fish, sounds ---------- */
 (function(){const st=document.createElement('style');st.textContent=`
 .gx-stats{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px 12px 3px}
@@ -3582,10 +3638,15 @@ function mnGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks
   if(best){const g0=GEAR[best.id],at=g0.at==='tailor'?'الخياط':'الحداد';lines.push(best.tot?`فاضلك <b>${missTxt(best.miss)}</b> ${G('وتعمل','وتعملي')} «${g0.n}» عند ${at}`:`<span class="ok">${G('معاك','معاكي')} خامات «${g0.n}».. ${G('روح','روحي')} ${at==='الحداد'?'للحداد':'للخياط'}</span>`)}
   lines.push(`الفاس بتشيل <b>${d}</b> من الصخرة${L<9?` · في مستوى ${3*Math.floor(L/3)+3} تبقى ${d+1}`:''}`);
   lines.push(`الشق اللي بينوّر بضربتين، وبرا الشق إيدك بتتعب (كل ${mnTireN(h)===2?'ضربتين':mnTireN(h)+' ضربات'} بمجهود) · ضربة معلّم <b>${Math.round(critOf(h)*100)}%</b> بتشيل 3 أضعاف`);
-  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> من ${FLOOR_MAX} · النزلة بتبان ساعات لما صخرة تتكسر${F<3?' · من الدور 3 بيطلع فحم':F<8?' · من الدور 8 بيطلع دهب':F<14?' · من الدور 14 بيطلع زمرد وحجر تعزيز دهبي':' · هنا الزمرد والحجر الدهبي'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع المنجم`);
+  const stay=!!(h.mn&&h.mn.stay);
+  lines.push(F<FLOOR_MAX?`${G('انت','انتي')} في <b>الدور ${F}</b> من ${FLOOR_MAX} · ${stay?`<b>${G('ثابت','ثابتة')} هنا</b>، النزلات واقفة`:'النزلة بتبان ساعات لما صخرة تتكسر'}${F<3?' · من الدور 3 بيطلع فحم':F<8?' · من الدور 8 بيطلع دهب':F<14?' · من الدور 14 بيطلع زمرد وحجر تعزيز دهبي':' · هنا الزمرد والحجر الدهبي'}`:`${G('انت','انتي')} في <b>الدور ${F}</b> · ده قاع المنجم`);
   if((h.minehp||0)<10)lines.push(`كل 10 صخرات جسمك بيتشد (صحة ${num(1,'+')}) · فاضل ${rocksN(10-c%10)}`);
   const t0=TITLES.find(t=>t.id==='mountain');if(t0&&!hasTitle(h,'mountain'))lines.push(`لقب «${titleName(t0,h)}» بعد 50 صخرة · ${G('كسرت','كسرتي')} ${c}`);
   g.innerHTML=lines.map(l=>`<div><span>${l}</span></div>`).join('');
+  /* 5.90 (Twister 00:55): «خليني في الدور ده»: no ways down while it is on */
+  {const o=$('#mnStay');if(o)o.remove();if(F<FLOOR_MAX||stay){g.insertAdjacentHTML('afterend',`<button class="mn-stay${stay?' on':''}" id="mnStay" aria-pressed="${stay}">📍 ${stay?`${G('ثابت','ثابتة')} في الدور ده · مفيش نزلات`:'خليني في الدور ده'}<small>${stay?G('دوس عشان النزلات ترجع','دوسي عشان النزلات ترجع'):G('من غير ما النزلة تطلعلك كل شوية','من غير ما النزلة تطلعلكي كل شوية')}</small></button>`);
+    $('#mnStay').onclick=()=>{h.mn=h.mn||{};h.mn.stay=h.mn.stay?0:1;if(h.mn.stay&&V.hole){V.hole=0;if(!GX.rock)mnSlot()}saveHero();try{SFX.tick(h.mn.stay?900:600)}catch(e){}
+      toast(h.mn.stay?`${G('هتفضل','هتفضلي')} في الدور ${V.floor||1}`:'النزلات رجعت');mnBtn();mnGoal()}}}
   const rk=$('#gxRocks');if(rk){const n=V.rocks;rk.textContent=n?rocksN(n):''}}
 function mnSpawn(){const h=S.hero,V=gxVisit('mine');if(GX.rock||GX.busy)return;
   /* نفَس طويل: now and then a rock costs no effort */
@@ -3643,7 +3704,7 @@ function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxSt
   const newChip=drops.some(([k])=>!mnKs(V).includes(k));
   drops.forEach(([k,n])=>{addRes(h,k,n);V.n[k]=(V.n[k]||0)+n});V.rocks++;
   /* a way down, sometimes */
-  if(F<FLOOR_MAX&&Math.random()<downOf(h))V.hole=1;
+  if(F<FLOOR_MAX&&!(h.mn&&h.mn.stay)&&Math.random()<downOf(h))V.hole=1;   /* 5.90: «خليني في الدور ده» (p81.js) stops the ways down */
   /* the rare-drop band goes first; level, health, title and achievement bands queue after it */
   if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{low:1,key:'gold',dur:1800,sound:SFX.sparkle});
   else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{low:1,key:'silver',dur:1600,sound:SFX.sparkle});
@@ -4466,6 +4527,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.90',d:'12 أكتوبر',add:['اللعبة بقت بلغتين: أول ما {تفتح|تفتحي} اللعبة لأول مرة {بتختار|بتختاري} «العربية» أو «English»، {وتقدر تغيّرها|وتقدري تغيّريها} في أي وقت من الإعدادات («اللغة · Language»). بالإنجليزي الشاشة بتبقى من الشمال لليمين، وأسامي الخامات والعدّة والحاجات والشاشات الأساسية بالإنجليزي، والحواديت لسه بالعربي. مفيش حاجة بتضيع لما {تغيّر|تغيّري}','المنجم: زرار «خليني في الدور ده». طول ما هو شغال مفيش نزلات بتطلع، {وتفضل|وتفضلي} {تكسّر|تكسّري} في نفس الدور. دوسة تانية والنزلات ترجع','ماتشات القهوة: اللعيبة بقوا نقط بلون فرقتهم ومحددين بخط (أصحاب الأرض أبيض على الشمال، والضيوف أسود على اليمين)، وبيجروا ورا الكورة. وجنب اسم كل فرقة نفس النقطة','لو {انت|انتي} مش {داخل|داخلة} بحساب جوجل، اللعبة {بتفكّرك|بتفكّرك} {تدخل|تدخلي} عشان أبطالك ما يضيعوش، مرة في اليوم بالكتير'],fix:['«عدّتي»: كل صفة من صفات العدّة في سطر واحد: كام حتة فيها وهي مين، والمجموع النهائي (مثلًا ضد العفاريت ×2: ضرر +5 على العفاريت في كل ضربة، أو مبروك: الصندوق بيدي ×2.5). و«صنعة إيد» سطر واحد لكل صنايعي']},
 {v:'5.89',d:'12 أكتوبر',add:['«جرنال البلد» عند عم سعيد بياع الجرايد في «الناس والحكايات»: جرنال جديد كل يوم في البلد، فيه خبر اليوم والجو وماتش القهوة وأسعار البورصة وإعلانات من لوحة الطلبات','ساعات الجرنال بيبقى فيه «همسة»: كلام عن حاجة مستخبية لسه ما {لقيتهاش|لقيتيهاش}، زي تخصص مستخبي لنوعك أو صفة مستخبية، وفين الفرصة بتيجي','وساعات بيبقى فيه «وصفة النهارده»: {احفظها|احفظيها} {وتقدر تعملها|وتقدري تعمليها} على طول عند أم سيد أو عم رجب أو عم حسن. 7 وصفات: طبق فول، شاي بالنعناع، عسلية، قهوة محوّجة، بخور، عرقسوس، شعلة','تحت ساعة البلد بيظهر «جرنال النهارده نزل» لحد ما {تقراه|تقريه}'],fix:[]},
 {v:'5.88',d:'11 أكتوبر',add:['قبل ما ترمي النرد {بتشوف|بتشوفي} الحساب كله: «النرد + الصفة − الصعوبة»، وفرصتك بالظبط في النجاح والنجاح بتمن والفشل، و«الصعوبة جاية منين؟»','في «بطلي» ← «صفاتي»: صعوبة الكروت دلوقتي، وفرصتك في كل صفة بالنردين أو بنرد 20','«التخصصات» بقت ورقة بطل: صورتك ونوعك في القتال ومستواك وتخصصك وأشطر شغلانة وصحتك وطاقتك والست صفات. {دوس|دوسي} على أي صفة {تعرف|تعرفي} بتعمل إيه بالظبط في القتال والكروت، وتحت فيه «القدرات» و«الصفات» و«الشغلانات» و«الألقاب»','«عدّتي»: كل حتة مكتوب تحتها أرقامها، وبعدها اللي هيتغير لو {لبستها|لبستيها} (الأخضر أحسن والأحمر أقل)، وندرتها وجودتها وصنعة إيد مين ومعمولة من إيه وفين تتصلّح','قبل أي صناعة (الحداد والخياط والطباخة والعطار والترقيع): {معاك|معاكي} منها كام دلوقتي، {هتعمل|هتعملي} كام، وكل خامة بصورتها: محتاج كام و{معاك|معاكي} كام، والناقص بالأحمر'],fix:['الصعوبة كانت بتكبر أسرع من صفاتك بكتير: في المستوى 15 كانت 9 وأحسن صفة عندك كانت بتفشل أغلب الوقت. دلوقتي زي ما هي لحد المستوى 7، وبعدين بتزيد 1 كل 4 مستويات (5 في المستوى 15). الوحوش زي ما هي','«لسانه حلو» بقى يظهر بس لما يكون فيه حد {تكلمه|تكلميه}، و«عنيد» في الاختبارات اللي فيها شغل بالعافية أو بالصبر، و«ضهره قوي» بس لما يكون فيه حاجة تتشال، وبيشيل الضعف منها. وكل طبع بيظهر باسمه هو','«التحمّل» كان مكتوب إنه بيزوّد الصحة، وده ما كانش صح: بينفع في الكروت اللي فيها وجع أو تعب أو صبر']},
 {v:'5.87',d:'11 أكتوبر',add:['البلد ليها ساعة بتاعتها: اليوم في البلد نص ساعة لعب، {وبتشوفه|وبتشوفيه} تحت اسمك («اليوم كام» والصبح ولا الضهر ولا الليل). الساعة بتمشي بس {وانت|وانتي} {بتلعب|بتلعبي}، ومش بتعد {وانت|وانتي} في ليلة ولا في قتال، والليلة اللي {بتخلّصها|بتخلّصيها} في الدهاليز يوم برضو','البنك والقهوة والكورة والبورصة بقوا بالأيام: «بعد يومين» بدل «بعد ليلتين»، ومحفظة اللي {بتلاعبه|بتلاعبيه} بتتملا كل يوم','رهانات أكبر على القهوة: 10 و20 و50 و100 و200 ألف، والقديمة زي ما هي','الحاج سليمان قعد على القهوة: تاجر كبير بيلعب على الكبير، وجيبه يشيل لحد 400 ألف'],fix:[]},
@@ -12505,6 +12567,10 @@ Object.assign(SFX,{
 @media (prefers-reduced-motion:reduce){.xmom,.xmom *,.xstamp,.xban,.foe .xint,.foe .xcall,.acts .act.xwake{animation-duration:.01s!important}}
 `;document.head.appendChild(st)})();
 
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"torch": {"name": "Torch"}, "incense": {"name": "Incense"}});
+I18N(GEAR,{"bead": {"n": "Blue bead"}});
+
 /* the hyena has an adventure of its own now, so النداهة's night keeps one hyena card (in the fields) */
 ['k_hyena','t_hyena'].forEach(id=>{const c=CARD[id],d=c&&DECKS[c.place],i=d?d.indexOf(c):-1;if(i>=0)d.splice(i,1)});
 /* ---------- the second adventure: «سرداب الباشا». The acts' cards, bosses and art are in p12a.js (الجنينة), p12b.js (السراية) and p12c.js (السرداب) ---------- */
@@ -18757,6 +18823,9 @@ async function brBake(btn){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_F
   /* B20 (E00): find the section by its data-section mark, not its words (the title changed and the bread rows vanished); never add them twice */
   const lb=view.querySelector('[data-section="ready-food"]');if(lb&&!view.querySelector('#brBake,.br-row')){lb.insertAdjacentHTML('beforebegin',brRowsHTML(h));brBind()}return r}}
 
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"flour": {"n": "Flour"}});
+
 /* ---------- follow-ups: what you chose comes back later in the same night (prefix NF_) ----------
    An outcome plants one with  follow:'<card id>'  or  follow:{id,in:[2,4],why:'..'}  (a list works too).
    The card then comes 2 to 4 stops later, guaranteed as one of the cards in the hand, with a small «عشان..» line.
@@ -19389,6 +19458,14 @@ async function counterHit(e){const C=S.combat,h=S.hero;
   const el=$('#meCard');if(el)floatAt(el,'ضربة مرتدة!','#ffd36a','crit',24);SFX.clank&&SFX.clank(1.2);
   await sleep(350);await extraHit(e,'ضربة مرتدة');
   if(S.run)S.run.counters=(S.run.counters||0)+1}
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"coal": {"n": "Coal"}, "gold": {"n": "Gold"}, "emerald": {"n": "Emerald"}, "bisaria": {"n": "Bisaria"}, "shrimp": {"n": "Shrimp"}, "bayad": {"n": "Bayad fish"}, "eel": {"n": "Eel"}});
+I18N(ITEMS,{"bisfry": {"name": "Fried bisaria"}, "shrsoup": {"name": "Shrimp soup"}, "fateer": {"name": "Feteer meshaltet"}, "bayadtaj": {"name": "Bayad tagine"}, "eelgrill": {"name": "Grilled eel"}});
+I18N(GEAR,{"coalarmor": {"n": "Tempered iron armour"}, "goldring": {"n": "Gold ring"}, "goldneck": {"n": "Gold necklace"}, "emcharm": {"n": "Emerald charm"}, "emsword": {"n": "Emerald sword"}, "goldturban": {"n": "Gold-embroidered turban"}});
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"نسخة احتياطية": "Backup"});
 /* ==========================================================================
    سرداب: skill levels (p21.js, v5.4)
    Every class skill has levels 1..5. Each hero level gives one «نقطة قدرة»; a rare trader in the night
@@ -19712,6 +19789,9 @@ Object.assign(PXI_D,{
 /* where to get them: the night market and the town food shop */
 {const g0=genShop;genShop=function(){const L=g0.apply(this,arguments);
   if(Math.random()<.8)L.push({k:'shai',stock:rnd(3)});if(Math.random()<.5)L.push({k:'ahwa',stock:rnd(2)});if(Math.random()<.25)L.push({k:'erqsous',stock:1});return L}}
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"shai": {"name": "Mint tea"}, "ahwa": {"name": "Spiced coffee"}, "erqsous": {"name": "Bottle of licorice drink"}, "bleela": {"name": "Bleela with milk"}, "koshary": {"name": "Plate of koshary"}});
 /* ---------- the title screen: a different monster every time it opens ----------
    mostly one monster, sometimes a pack side by side, and now and then one giant that fills the sky. */
 const TS_SKIP=['dummy','k_thief','k_ghafir','g_thief','ma_bandit','mb_smug','mb_cutter','ua_ghafir','ua_broker','ua_boy','ub_broker','uc_thief','q_cook','q_hunter','mc_hunter','k_awad','ub_seller','uc_servant','q_servant','d_digger','j_digger'];
@@ -19862,6 +19942,9 @@ async function fbResume(){if(!FB.user||FB.locked)return;let C=null;try{C=await f
 #fbLock{position:fixed;inset:0;z-index:99990;background:#05070cf0;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}
 .fbl-box{max-width:360px;width:100%;background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;text-align:center}
 .fbl-ic{font-size:34px;color:var(--gold2)}.fbl-box b{font-size:18px;color:var(--gold2)}.fbl-box p{margin:0;font-size:14px;line-height:1.8;color:var(--ink)}.fbl-box .btn{margin:0;min-height:48px}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"حسابي": "My account", "· جوجل": "· Google"});
 /* ---------- weekly leaderboard (online stage 2) ----------
    every night that ends (won or lost) gets a score; each hero keeps its best of the week.
    signed-in players send it to lb/{week}/s/{uid}_{heroId}; anyone can read the top 20.
@@ -19936,6 +20019,9 @@ SCREENS.lb=function(){view.scrollTop=0;const h=S.hero,mine=(FB.user?FB.user.uid+
 .lb-w{flex:1;min-width:0}.lb-w b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb-w small{color:var(--mute);font-size:12px}.lb-s{color:var(--gold2)}
 .lb-how{color:var(--mute);font-size:12px;margin-top:8px;text-align:center}
 #bLb{display:flex;align-items:center;justify-content:center;gap:6px}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"ترتيب الأسبوع": "This week’s ranking"});
 /* ---------- player market (online stage 3) ----------
    signed-in players list spare gear or materials at their own price; another player buys it.
    a listing lives in mk/{id}: open → sold (buyer, in a transaction so only one wins) → paid (seller collects, minus 5%).
@@ -20099,6 +20185,9 @@ function shoeMove(h){if(!h||!h.res||!(h.res.shoe>0))return;h.bag=h.bag||{};h.bag
   await say(line.join(' · '),'good');saveHero();return afterHero()}}
 /* a slipper sprite for the bag */
 if(PXI_D.shoe&&!PXI_D.shbshb)PXI_D.shbshb=PXI_D.shoe;
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"shbshb": {"name": "Flying slipper"}});
 /* ---------- a friend's hero as your companion (online stage 4, the light version) ----------
    signed-in players publish their heroes to pal/{uid}_{heroId} (a look snapshot, class, level, health).
    before a night the player can pick one of them; it walks with them as the companion and fights by itself.
@@ -20356,7 +20445,7 @@ SCREENS.coopg=function(){const h=S.hero,R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask)
     <div class="nrow"><span>الخبرة</span><b style="color:#a6e3a0">+${rw.xp|0}</b></div><div class="nrow"><span>الفلوس</span><b style="color:var(--gold2)">+${rw.m|0} جنيه</b></div></div>`}
   else if(R.st==='wait')body=`<div class="card tw-empty">${G('دخلت','دخلتي')} ليلة ${esc(R.hn)}. ${G('استنى','استني')} لما الليلة تبدأ..</div>`;
   else if(V){body=`<div class="co-top"><b>${esc(V.w||V.hd||'')}</b></div>
-    <div class="card co-who"><div><b>${esc(V.me.n)}</b>${coBar(V.me.hp,V.me.mx,'#d0533f')}</div>${V.cp?`<div><b>${first?`${esc(h.name)} (${G('انت','انتي')})`:esc(V.cp.n||R.gn)}</b>${coBar(V.cp.hp,V.cp.mx,'#6fbf73')}</div>`:''}${(()=>{const L=(V.al||[]).filter(x=>x&&x.u!==(FB.user&&FB.user.uid)).map(x=>esc(x.n));return L.length?`<small>${G('معاك','معاكي')} كمان: ${L.join('، ')}</small>`:''})()}</div>
+    <div class="card co-who"><div><b translate="no">${esc(V.me.n)}</b>${coBar(V.me.hp,V.me.mx,'#d0533f')}</div>${V.cp?`<div><b>${first?`${esc(h.name)} (${G('انت','انتي')})`:esc(V.cp.n||R.gn)}</b>${coBar(V.cp.hp,V.cp.mx,'#6fbf73')}</div>`:''}${(()=>{const L=(V.al||[]).filter(x=>x&&x.u!==(FB.user&&FB.user.uid)).map(x=>esc(x.n));return L.length?`<small>${G('معاك','معاكي')} كمان: ${L.join('، ')}</small>`:''})()}</div>
     ${V.f?`<div class="col">${V.f.map(f=>`<div class="card co-foe"><b>${esc(f.n)}</b>${coBar(f.hp,f.mx,'#c0392b')}</div>`).join('')}</div>
       <div class="card co-log">${(V.l||[]).map(t=>`<div>${esc(t)}</div>`).join('')}</div>`:`<div class="story co-story">${esc(V.x||'')}</div>`}
     ${mine?`<div class="tw-lbl">${G('دورك! اختار','دورك! اختاري')} ${G('هتعمل','هتعملي')} إيه</div><div class="col">${a.o.map((o,i)=>`<button class="btn co-o" data-co="${i}">${esc(o.t)}</button>`).join('')}</div>`
@@ -21354,6 +21443,9 @@ Object.assign(SFX,{
 .h-mk{text-align:center;color:#a6e3a0;font-weight:700;margin-top:-4px}
 @media (prefers-reduced-motion:reduce){.wd-s.in,.wd-in{transition:none}.wd-tray.lv3 .wd-glow{animation:none}}
 `;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"الحكواتي": "The Storyteller", "عم شاكر": "Uncle Shaker", "حاجات ليها تمن": "Things with a price", "الودعية": "The Shell Reader", "أم عطية": "Umm Attia", "الودع بيقول طبعك": "The shells tell your nature"});
 /* ---------- more natures (طباع), a rarity above gold, and up to 3 natures at once ----------
    slots: 1, a 2nd at level 5, a 3rd at level 10. The 1st is the one أم عطية throws (h.tab);
    the others are picked from any nature already seen (h.tabX). A «ياقوتي» nature carries three others inside it (inc). */
@@ -21721,6 +21813,14 @@ TREE_FK.farm={f1:{q:'{بتزرع|بتزرعي} إزاي؟',a:{n:'زرع كتير
     b:{n:'الحراسة',good:'الغربان بتيجي أقل (−40%)',bad:'الزرع أبطأ 5%',fx:{crowless:.4,slow:.05}},
     c:{n:'الحصاد الكبير',good:'المحصول الدهب أكتر (+6%)',bad:'التقاوي أغلى 10%',fx:{gold:.06,seed:.1}}}};
 TREE_IC.farm='<path d="M12 21V10" stroke="#3a9e55" stroke-width="2" stroke-linecap="round"/><path d="M12 13Q4 13 4 5Q12 5 12 13z" fill="#7fe07a"/><path d="M12 10Q19 10 20 3Q12 3 12 10z" fill="#3a9e55"/><rect x="4" y="20" width="16" height="2.5" rx="1.2" fill="#74412a"/>';
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"ful": {"n": "Fava beans"}, "tamatem": {"n": "Tomatoes"}, "basal": {"n": "Onions"}, "roz": {"n": "Rice"}, "molokhia": {"n": "Molokhia"}, "asab": {"n": "Sugar cane"}});
+I18N(ITEMS,{"salata": {"name": "Country salad"}, "taameya": {"name": "Hot taameya"}, "asabj": {"name": "Sugar cane juice"}, "molo": {"name": "Molokhia with rice"}, "mahshi": {"name": "Mahshi"}});
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"الغيط": "The Field", "فول وطماطم ورز": "Beans, tomatoes and rice"});
+I18N(LIFE,{farm:{n:'Farming'}});
 /* ---------- live night = the offline game for everyone, decided by votes (v5.26) ----------
    The host's phone runs the night exactly like offline. It sends its screen (the HTML of #view, and of the dice when they are open)
    with the view (vw.m); every friend sees that same screen. Any tap on a choice, a card, a fight move, a target or «تمام» is a vote
@@ -22326,6 +22426,9 @@ function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{co
   el.innerHTML=`<span class="ic">🤝</span><span class="tx"><b>${k?`${G('ارجع','ارجعي')} لليلة ${esc(k)}`:'العب مع صحابك لايف'}</b><small>${FB.user?`${G('افتح','افتحي')} ليلة ${G('وادعي','وادعي')} صحابك، أو ${G('ادخل','ادخلي')} ليلتهم بكود · لحد 5`:'محتاج حساب جوجل'}</small></span><span class="ar">‹</span>`;
   const first=view.querySelector('.advc');if(first)first.insertAdjacentElement('beforebegin',el);else view.appendChild(el);
   el.onclick=()=>{SFX.bell&&SFX.bell();CO.err='';CO.from='advs';S.screen='coop';render()}}catch(e){}return r}}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"✓ اتشافوا كلهم": "✓ All seen"});
 /* ---------- more looks and gear you can hide (v5.32) ----------
    1. Eye shapes and mouths: new paper-doll kinds 'eyesh' and 'mouth' (p9p.js draws them right after the face). Each one paints
       skin over the face's own eyes or smile, then draws its own. 'عادي' and 'ابتسامة' are the face as it was.
@@ -22784,6 +22887,9 @@ function kfStoryHTML(h){KF.st=(KF.st==null?Math.floor(Math.random()*KF_STORIES.l
   const show=()=>{const old=$('#kfStory');const html=kfStoryHTML(h);if(old)old.outerHTML=html;else $('#kfStB').insertAdjacentHTML('afterend',html);SFX.page&&SFX.page();$('#kfStN').onclick=show};
   $('#kfStB').onclick=show}catch(e){console.warn(e)}return r}}
 {const st=document.createElement('style');st.textContent=`.kf-story{margin-top:8px;animation:pp .4s ease both}.kf-story b{color:var(--gold2);font-family:var(--display);font-size:18px;font-weight:400}.kf-story p{font-family:var(--story);font-size:16px;line-height:1.8;margin:6px 0 10px}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"دوار العمدة": "The Mayor's house", "مهمات بفلوس وهدايا": "Paid jobs and gifts", "الناس محتاجة مساعدة": "People need help"});
 /* ---------- v5.33: everyone sees their own chance in a live night ----------
    Each choice that needs a roll says «فرصتك …» for the hero on that phone, and under it a small row with everyone else's
    chance (name and a coloured word). The host writes every player's chance into the choice (their stats travel in the room
@@ -22913,6 +23019,9 @@ SCREENS.barber=function(){const h=S.hero;if(!h){S.screen='title';return render()
 .brb-mir .tx{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}.brb-mir .tx small{color:var(--dim);font-size:13px}.brb-mir .btn{min-height:44px;font-size:15px}
 .brb-w{gap:6px}.brb-o{display:flex;flex-direction:column;align-items:center;min-height:52px;padding:4px 10px}.brb-o b{font-size:14px}.brb-o small{font-size:11px;color:#f2c77a}
 .brb-o.wear{border-color:#7fe07a}.brb-c{flex-direction:column}.brb-c i{display:block;width:22px;height:12px;border-radius:4px;border:1px solid #0006}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"صالون عادل": "Adel's salon", "عادل الحلاق": "Adel the barber", "قصّات وصبغات مش في أي حتة": "Cuts and dyes you won't find anywhere else"});
 /* ---------- more talk (v5.35): town lines, café lines, and more of عم صابر's stories ---------- */
 {const l0=twLines;twLines=function(h){const L=l0.apply(this,arguments),cnt=h.cnt||{};L.push(
   ['ramadan','الفلوس بتيجي وتروح. البضاعة الحلوة هي اللي بتفضل في الدماغ.'],
@@ -23236,6 +23345,8 @@ function gemOffer(h){const w=Math.floor(Date.now()/GEM_WIN);let s=w*7919+((h&&h.
 .gem-offer .gem-ic{flex:none;animation:tsBob 2.4s ease-in-out infinite alternate}.gem-offer .tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 .gem-offer small{color:var(--gc);font-weight:800;font-size:12px}.gem-offer b{font-size:17px}.gem-offer span{font-size:13px;color:var(--ink)}.gem-offer em{font-style:normal;font-size:12px;color:var(--dim)}
 .gem-got{color:#a6e3a0;font-weight:800;font-size:13px}`;document.head.appendChild(st)}
+/* 5.90 (R03): English names */
+I18N(MAT,{"yaqout": {"n": "Fire ruby"}, "zomorod": {"n": "Blood emerald"}, "kahraman": {"n": "Thunder amber"}, "lowli": {"n": "Sea pearl"}, "eincat": {"n": "Cat's eye"}});
 /* ---------- الشغلانات inside the adventures (v5.38) ----------
    Some stops get one extra choice that only someone who knows a trade can really pull off: {job:[skill,level], stat, t, res}.
    With the level (or more) the roll is easy (3 easier than usual); without it, it is 4 harder: you can still try, but it
@@ -23490,6 +23601,10 @@ TW_EXTRA.forEach((f0,i)=>{TW_EXTRA[i]=function(h){const t=f0.apply(this,argument
 .fa-buf{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:#0002;border:1px solid #fff1}.fa-buf.rd{border-color:#7fe07a;box-shadow:0 0 12px #7fe07a33}
 .fa-buf.lock{opacity:.55}.fa-buf .tx{flex:1;display:flex;flex-direction:column;gap:2px}.fa-buf .tx small{color:var(--dim);font-size:12px}.fa-buf .tx .fd{color:var(--gold2)}
 .fa-buf .btn{min-height:44px;flex:none;width:auto;min-width:96px;padding:0 16px;margin:0}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"egg": {"n": "Eggs"}, "milk": {"n": "Milk"}, "barsim": {"n": "Clover"}});
+I18N(ITEMS,{"ojja": {"name": "Onion omelette"}, "gebna": {"name": "Cottage cheese"}, "rozlaban": {"name": "Rice pudding"}, "basbousa": {"name": "Basbousa"}});
 /* ---------- 5.44: «المولد» (a weekly fair in the village) and «مسابقة الصيد» (a weekly fishing contest with its own board) ----------
    The fair's stalls open Thursday, Friday and Saturday (the phone's own day). Each week (the same week as the leaderboard, from Saturday)
    عم حمدي sells three of the fair sweets plus a «صندوق المولد». The contest runs all week: every fish landed at الترعة gives points
@@ -23596,6 +23711,12 @@ SCREENS.mouled=function(){const h=S.hero;if(!h){S.screen='title';return render()
 .fc-pz{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;background:#0002;border:1px solid #fff1;text-align:center}
 .fc-pz b{font-size:18px;color:var(--mute)}.fc-pz small{font-size:12px;color:var(--dim);line-height:1.4}.fc-pz.ok{border-color:#7fe07a}.fc-pz.ok b{color:#a6e3a0}.fc-pz.got{opacity:.6}
 .fc-pz i{font-style:normal;font-size:12px;color:#a6e3a0}.fc-pz .btn{min-height:44px;width:100%;margin:0}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"hommos": {"name": "Hot chickpeas"}, "halawa": {"name": "Mouled sweets"}, "termes": {"name": "Lupini beans"}, "asaleya": {"name": "Molasses candy"}, "fesdo": {"name": "Sesame and peanut bar"}});
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"المولد": "The Mouled", "عم حمدي ومسابقة الصيد": "Uncle Hamdy and the fishing contest"});
 /* ---------- 5.45: achievements for the barber, the errands, the farm, the animals and the fair ----------
    Most are read from the hero's own state (what is owned, counters), checked after a render on the village screens,
    so an old save that already earned one gets it the next time the village opens. */
@@ -23918,6 +24039,10 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
     takeRes(h,nx.need);h.money-=nx.p;h.ws=n+1;saveHero();band('الورشة',nx.n,nx.d,{dur:2200,sound:SFX.fanfare});twRender()})}catch(e){console.warn(e)}return r}}
 (function(){const st=document.createElement('style');st.textContent=`.ws-got{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:#0003;border:1px solid #7fe07a33}
 .ws-got>div{display:flex;flex-direction:column;gap:1px}.ws-got b{color:#a6e3a0;font-size:14px}.ws-got small{opacity:.8;line-height:1.5}`;document.head.appendChild(st)})();
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"steel": {"n": "Steel"}});
+I18N(GEAR,{"stsword": {"n": "Steel sword"}, "balta": {"n": "Axe"}, "zard": {"n": "Chain mail"}, "sthelm": {"n": "Steel helmet"}, "string": {"n": "Steel ring"}, "moallem": {"n": "Master's sword"}, "ostazham": {"n": "Master smith's hammer"}, "jadsword": {"n": "First ancestor's sword"}, "jadarmor": {"n": "First ancestor's armour"}});
 /* ----- the other crafts: الخياط (rare), الطباخ (rare), الفلاح الأسطوري (legendary), and صاحب الصنعة (secret: three crafts at 8) ----- */
 SP_ADD({id:'khayat',ev:'tailor',r:'rare',m:'الخياط',f:'الخياطة',px:P20_grid(16,['','.........KK','........KWcK','.......KWcK','......KWcK','.....KWcK','....KWcK','...KWcK..KK','..KWcK..KrrK','..KcK..KrRrK','...K..KrRRrK','.....KrRrrK','.....KrrrK','......KKK','','']),
   need:h=>spLv(h,'tailor')>=4&&(spCnt(h,'made_tailor')>=6||spCnt(h,'crafted')>=10),
@@ -24389,6 +24514,9 @@ SCREENS.spec=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 /* with a specialisation, its name is what you are: shown where the class name was (Twister 5.57) */
 {const c0=clsN;clsN=function(h){const o=spOn(h);return o?spName(o,h):c0.apply(this,arguments)}}
 {const p0=pfSkills;pfSkills=function(h){let H=p0.apply(this,arguments);const o=spOn(h);if(o)H=H.replace('قدرات ال'+spName(o,h),'قدرات «'+spName(o,h)+'»');return H};const t=PF_TABS.find(x=>x.id==='sk');if(t)t.f=pfSkills}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"التخصصات": "Specialisations", "لسه ما اتخصصتش": "Not specialised yet", "لسه ما اتخصصتيش": "Not specialised yet", "الحرفة والقتال بيفتحوها": "Crafts and fights open them"});
 /* ----- اختبار التحول and آثار القدامى (5.58, plan «سرداب: خطة التخصصات الجديدة») -----
    A hidden, legendary or secret specialisation is no longer taken with a button. When its chance comes, accepting starts a
    trial: three steps and a deadline in days. Finish all three in time and it is yours (with the celebration); miss the
@@ -24655,6 +24783,8 @@ const blAny=h=>hasSkill(h,'bl_any')?[0,.25,.35,.45,.55,.7][skL(h,'bl_any')]:0;
   if(x.taunt||x.shield){a.hide=1;if(x.taunt)a.taunt=1;combat();out.push(g('هيصد الضربة الجاية','هتصد الضربة الجاية'))}
   if(x.cheer&&S.comp&&S.comp.hp>0&&C.cp){fxOn(C.cp,'cheer');out.push(`${S.comp.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
   return say(`${a.name}: ${s.n}! ${out.join(' · ')}`,'good')}}
+/* 5.90 (R03): English */
+I18N(CLASSES,{[MU]:{n:'Wrestler',desc:'Fights bare-handed: grabs, throws and breaks. Deadlier without a weapon.',good:'Strength and Agility'},[BL]:{n:'Local',desc:'Not set on one thing; knows a bit of everything. Any specialisation comes easier, and changes easily.',good:'A bit of everything'}});
 /* ==========================================================================
    سرداب: changing your class («{تغيّر|تغيّري} تخصصك», 5.62, Twister: hard, but possible)
    From the التخصصات screen. Needs level 6, costs 250 جنيه a level, once a week, never during a trial.
@@ -24937,6 +25067,14 @@ ACH.push({id:'at_1',n:'أول جرعة',d:'{تعمل|تعملي} أول جرعة
 {const a0=achScan;achScan=function(h){a0.apply(this,arguments);if(!h||h!==S.hero)return;try{const c=h.cnt||{},got=[];const chk=(id,ok)=>{if(ok&&!(h.ach&&h.ach[id]))got.push(id)};
   chk('at_1',(c.brewed|0)>=1);chk('at_50',(c.brewed|0)>=50);chk('at_fire',(c.firepot|0)>=10);got.forEach((id,i)=>setTimeout(()=>ach(id),3500+i*2600))}catch(e){console.warn(e)}}}
 if(!ACH_SCR.includes('attar'))ACH_SCR.push('attar');
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(ITEMS,{"antidote": {"name": "Antidote"}, "firepot": {"name": "Fire potion"}, "shadowpot": {"name": "Shadow potion"}});
+I18N(MAT,{"mint": {"n": "Mint"}, "helba": {"n": "Fenugreek"}, "blackseed": {"n": "Black seed"}, "shih": {"n": "Mountain wormwood"}, "nileh": {"n": "Canal herb"}, "bloom": {"n": "Field flower"}});
+I18N(LIFE,{attar:{n:'Herbalism'}});
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"العطارة": "The Herbalist", "عم رجب: أعشاب وجرع": "Uncle Ragab: herbs and potions"});
 /* ==========================================================================
    سرداب: the two bigger bags of 5.67 (BAGUPS in p9.js) get their pixel pictures: recolours of the big خُرج.
    ========================================================================== */
@@ -25131,6 +25269,9 @@ function eaMake(k,btn){const h=S.hero,r=EA_MK[k];if(!h||!r||TWN.busy||spLv(h,'sm
 .q-eab.on{border-color:#f3c14d;background:#f3c14d22;box-shadow:0 0 0 2px #f3c14d44}
 .ea-mk{width:100%;display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px dashed #ffffff1f}.ea-mk>small{flex:1;font-size:11.5px;opacity:.85;line-height:1.5}.ea-mk .tw-act{min-height:46px;min-width:96px}
 .tw-ch.sp-own{background:#f3c14d22;color:#f3d27a}`;document.head.appendChild(st)})();
+
+/* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
+I18N(MAT,{"brada1": {"n": "Silver filings"}, "brada2": {"n": "Gold filings"}, "zeit": {"n": "Tempering oil"}});
 /* ==========================================================================
    سرداب 5.73 (Twister): the plain hit is named after the weapon in your hand, not the class
    («الضربة العادية عندي طعنة خنجر مع إني حداد وسلاحي شاكوش الأسطى»).
@@ -25140,7 +25281,8 @@ function eaMake(k,btn){const h=S.hero,r=EA_MK[k];if(!h||!r||TWN.busy||spLv(h,'sm
 const ATK_MAGIC={'ساحر':1,'معالج':1};
 const ATK_V={'خنجر':'طعنة','مطرقة':'خبطة','شاكوش':'خبطة','بلطة':'ضربة','شومة':'ضربة','عصاية':'ضربة','سيف':'ضربة'};
 function atkNm(h,base){if(!h||ATK_MAGIC[h.cls])return base;const id=h.eq&&h.eq.weapon,g=id&&GEAR[id];if(!g)return 'بوكس';if(g.atkN)return g.atkN;
-  const n0=String(g.n).split(' ')[0];return `${ATK_V[n0]||'ضربة'} ${n0}`}
+  if(typeof EN!=='undefined'&&EN)return `${g.n} hit`;
+  const n0=String(typeof loc==='function'?loc(g,'n','ar'):g.n).split(' ')[0];return `${ATK_V[n0]||'ضربة'} ${n0}`}
 Object.keys(CLASSES).forEach(c=>{const a=CLASSES[c].atk;if(!a)return;const base=a.name;
   Object.defineProperty(a,'name',{configurable:true,enumerable:true,get(){const h=S.hero;try{return h&&h.cls===c?atkNm(h,base):base}catch(e){return base}}})});
 
@@ -25364,6 +25506,9 @@ function bkArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid
 TW_EXTRA.push(h=>{const B=bkFix(h),br=B.br&&B.br.n===h.nDone||(B.brAt!==h.nDone&&h.money>=200&&h.nDone>=1),due=B.fds.some(x=>h.nDone>=x.at)||B.pl.some(x=>h.nDone>=x.at)||B.inv.some(x=>h.nDone>=x.at)||B.rec.some(x=>h.nDone>=x.at);
   return {id:'bank',go:'bank',n:'بنك البلد',w:'أستاذ فوزي: خزنة ووديعة',s:due?`<span class="ok">فيه فلوس ${G('ليك','ليكي')} ${G('تستلمها','تستلميها')}</span>`:B.v?`في الخزنة ${B.v} جنيه`:'خزنة ووديعة',bell:due||br?1:0}});
 {const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('bank'))g.go.push('bank')}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"بنك البلد": "The Village Bank", "أستاذ فوزي: خزنة ووديعة": "Mr Fawzy: safe and deposits", "خزنة ووديعة": "Safe and deposits"});
 
 /* ---------- 5.78 / E02: ألعاب قهوة عم صابر (offline, against NPCs, جنيه سرداب only) ----------
    Real rules, fair NPCs: the dice and the shuffle come from a seeded generator whose state is saved with the game (CF.cur.r),
@@ -26453,6 +26598,9 @@ if(BR_ON){TW_EXTRA.push(h=>{const X=brFix(h),pend=(h.nDone|0)>X.n,of=X.of&&X.of.
 .br-sum{font-size:13px;text-align:center;color:#f2c77a}
 @media (prefers-reduced-motion:reduce){.br-news div,.br-p b.up,.br-p b.dn{animation:none}.br-news{white-space:normal}.br-news div{padding:0 8px}}`;document.head.appendChild(st)}
 
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"بورصة البلد": "The Village Exchange", "أستاذ مجدي: أسهم شركات البلد": "Mr Magdy: shares in village companies", "أسهم وأخبار": "Shares and news", "الأسعار اتغيرت": "Prices changed"});
+
 /* ---------- 5.85 / R01 = C02 + C03 (Twister): التدريب من أول دقيقة ----------
    C02. A first-time player gets six short steps, one thing on the screen at a time, «خطوة N من 6», «عيدها» and «تخطّي»:
      1 one clear tap (the hero: ولد ولا بنت؟)   2 a choice between two, and its story result   3 one dice roll and what the
@@ -26672,6 +26820,9 @@ TW_GROUPS.splice(0,TW_GROUPS.length,
 .tw-me .tw-xph{font-size:11px;opacity:.8}.tw-me ~ .tw-eff > .tw-sm:not(.r3){display:none}
 .tw-sec .tw-tile .lb>span{font-size:11px;opacity:.85}.tw-sec .tw-tile .lb em{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}`;document.head.appendChild(st)}
 
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"الدهاليز": "The Passages", "الحرف والعمل": "Crafts and work", "الخدمات": "Services", "الناس والحكايات": "People and stories", "الصنايعية والأنشطة": "Craftsmen and activities", "سجل التحديثات": "What's new", "التدريب والدروس": "Training and lessons", "روح البلد": "Go to the village", "روحي البلد": "Go to the village", "لعبت قبل كده؟ اعمل بطل على طول": "Played before? Make a hero now", "لعبتي قبل كده؟ اعملي بطلة على طول": "Played before? Make a hero now", "الحداد، الخياط، العطارة، الطباخة، الغيط، المنجم، الترعة": "Smith, tailor, herbalist, cook, field, mine, canal"},[[/^نسخة ([\d.]+)$/,'version $1'],[/^(\d+) مغامرات · كل واحدة ليلة طويلة$/,'$1 adventures · each one a long night']]);
+
 /* ---------- 5.87 (Twister 21:25): ساعة البلد ----------
    The town has its own clock: one town day = KL_DAY of active play (the game open, on screen, touched in the last KL_IDLE),
    so a phone clock change can't move it, and leaving the phone idle doesn't either. A night finished in the dungeons is a day
@@ -26706,6 +26857,9 @@ document.addEventListener('visibilitychange',()=>{KL.last=performance.now()});
 {const st=document.createElement('style');st.textContent=`
 .kl{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;margin:8px 0 2px;font-size:13px}.kl-d b{color:var(--gold2)}.kl-n{font-size:11px;color:var(--mute)}
 .kl-bar{grid-column:1/3;display:block;height:4px;border-radius:3px;background:#0005;overflow:hidden}.kl-bar b{display:block;height:100%;background:linear-gradient(90deg,#f3c14d,#ff9a5a)}`;document.head.appendChild(st)}
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"· الصبح": "· morning", "· الضهر": "· noon", "· العصر": "· afternoon", "· المغرب": "· sunset", "· الليل": "· night"},[[/^(\S+) اليوم$/,'$1 Day'],[/^يوم جديد بعد (\d+) (?:دقيقة|دقايق) لعب$/,'New day in $1 min of play'],[/^يوم جديد بعد دقيقة لعب$/,'New day in 1 min of play'],[/^يوم جديد بعد دقيقتين لعب$/,'New day in 2 min of play']]);
 
 /* ---------- 5.88 / R02 part 2: C77 (the difficulty explained) + C78 (natures only where they fit) ----------
    C77 The card difficulty comes from the hero's level only (lvlDC in p8.js), not from the story, the place or luck. The raw dice are
@@ -27127,6 +27281,123 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 .kl-jr{grid-column:1/3;min-height:44px;margin-top:6px;border-radius:10px;border:1px solid var(--gold2);background:#e0b25a1c;color:var(--gold2);font:inherit;font-weight:800;animation:jrGlow 2.4s ease-in-out infinite}
 @keyframes jrGlow{0%,100%{box-shadow:0 0 0 #e0b25a00}50%{box-shadow:0 0 14px #e0b25a55}}`;document.head.appendChild(st)}
 
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"جرنال البلد": "The Village Paper", "عم سعيد: أخبار البلد كل يوم": "Uncle Saeed: village news every day", "جرنال النهارده نزل": "Today's paper is out", "📰 جرنال النهارده نزل": "📰 Today's paper is out", "اتقرا. بكرة فيه جديد": "Read. A new one tomorrow", "جرنال البلد: جرنال النهارده نزل": "The Village Paper: today's paper is out"});
+
+/* ---------- 5.90 / R03 part 1 (N01): picking the language ----------
+   First run (no saved language and no hero yet): a screen with two big choices, each in its own language with its flag:
+   «العربية» (Egypt) and «English» (UK). An old save with heroes is Arabic and is never asked. The settings have «اللغة · Language»
+   to change it any time; the game saves and reloads in the new language (nothing is lost: only how things are shown changes).
+   In English: the page is left-to-right, the catalogs show their English names (I18N, next to each catalog), and the words of the
+   screens that have them (L10N, at the bottom of each screen's file) are swapped as the screens draw. Everything else stays Arabic
+   for now (later steps add it file by file; tools/i18n_report.js counts what is done). */
+const FLAG_EG=`<svg viewBox="0 0 30 20" width="42" height="28" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><rect width="30" height="6.67" fill="#ce1126"/><rect y="13.33" width="30" height="6.67" fill="#000"/><path d="M15 7.2l1.6 1.2-.6 2.2h-2l-.6-2.2z" fill="#c09300"/><rect x="13.6" y="10.6" width="2.8" height="1.4" fill="#c09300"/></svg>`;
+const FLAG_UK=`<svg viewBox="0 0 60 30" width="56" height="28" aria-hidden="true"><clipPath id="ukc"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#ukc)" stroke="#c8102e" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"/></svg>`;
+function langSet(v){if(v!=='ar'&&v!=='en')return;const same=v===LANG||(v==='ar'&&LANG===null);   /* Arabic on the first run: nothing to reload */store('sirdab.lang',v);if(same){S.screen=S.langFrom||'title';S.langFrom=null;return render()}
+  try{if(S.hero)saveHero()}catch(e){}try{SFX.page()}catch(e){}setTimeout(()=>location.reload(),150)}
+SCREENS.lang=function(){const back=S.langFrom;view.scrollTop=0;
+  view.innerHTML=`${back?`<div class="top"><button class="ib" id="back">${EN?'Back':'رجوع'}</button><h2>اللغة · Language</h2><span></span></div>`:''}
+  <div class="lg"><h1 class="title" lang="ar" dir="rtl">سِرداب</h1><p class="lg-q"><span lang="ar" dir="rtl">اختار لغة اللعبة</span><span lang="en" dir="ltr">Choose the game's language</span></p>
+    <button class="lg-b${LANG==='ar'||!LANG?' on':''}" data-lang="ar" lang="ar" dir="rtl">${FLAG_EG}<span><b>العربية</b><small>مصري، زي ما اللعبة اتعملت</small></span></button>
+    <button class="lg-b${LANG==='en'?' on':''}" data-lang="en" lang="en" dir="ltr">${FLAG_UK}<span><b>English</b><small>Some text is still in Arabic</small></span></button>
+    <p class="lg-n"><span lang="ar" dir="rtl">${G('تقدر','تقدري')} ${G('تغيّرها','تغيّريها')} بعدين من الإعدادات.</span><span lang="en" dir="ltr">You can change it later in the settings.</span></p></div>`;
+  const b=$('#back');if(b)b.onclick=()=>{S.screen=back;S.langFrom=null;render()};
+  view.querySelectorAll('[data-lang]').forEach(x=>x.onclick=()=>{try{ac()}catch(e){}langSet(x.dataset.lang)})};
+/* first run: ask before anything long; an old save is Arabic */
+if(LANG===null){if(HEROES.length)store('sirdab.lang','ar');else S.screen='lang'}
+/* the settings: «اللغة · Language» */
+{const os0=openSettings;openSettings=function(){const had=!!$('#setBg');os0.apply(this,arguments);const d=$('#setBg');if(had||!d)return;try{if(S.screen==='combat'||S.combat||S.night)return;   /* review: no reload in the middle of a night */
+    const ok=d.querySelector('#stOk');if(!ok||d.querySelector('#stLang'))return;
+    ok.insertAdjacentHTML('beforebegin',`<button class="setrow" id="stLang"><span>اللغة · Language</span><span>${EN?'English ›':'العربية ‹'}</span></button>`);
+    d.querySelector('#stLang').onclick=()=>{d.remove();S.langFrom=S.screen==='lang'?'title':S.screen;S.screen='lang';render()}}catch(e){console.warn(e)}}}
+/* English: left-to-right, class names, and the screen words swapped as they draw */
+const CLS_EN={'محارب':'Warrior','حرامي':'Thief','ساحر':'Mage','معالج':'Healer','مصارع':'Wrestler','ابن البلد':'Local'};
+if(EN){document.documentElement.lang='en';document.documentElement.dir='ltr';document.documentElement.classList.add('en');
+  {const c0=clsF;clsF=function(c){return CLS_EN[c]||c0.apply(this,arguments)}}
+  /* names people typed are never translated: anything under translate="no", and any text that is one of the heroes' names */
+  const own=t=>{const v=t.trim();return !!v&&HEROES.some(x=>x&&String(x.name||'').trim()===v)};
+  const skip=n=>{const e=n.nodeType===1?n:n.parentElement;return !!(e&&e.closest&&e.closest('[translate="no"]'))};
+  const tx=x=>{if(skip(x)||own(x.nodeValue))return;const t=l10nStr(x.nodeValue);if(t!=null)x.nodeValue=t};
+  const one=n=>{if(n.nodeType===3){tx(n);return}
+    if(n.nodeType!==1)return;['aria-label','placeholder','title'].forEach(a=>{const v=n.getAttribute&&n.getAttribute(a);if(v){const t=l10nStr(v);if(t!=null)n.setAttribute(a,t)}});
+    if(skip(n))return;const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let x;while(x=w.nextNode()){if(x.nodeType===3){tx(x)}
+      else['aria-label','placeholder','title'].forEach(a=>{const v=x.getAttribute(a);if(v){const t=l10nStr(v);if(t!=null)x.setAttribute(a,t)}})}};
+  const root=document.getElementById('app')||document.body;one(root);
+  new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')one(m.target);else m.addedNodes.forEach(one)}}).observe(root,{childList:true,subtree:true,characterData:true});
+  try{document.title='Sirdab'}catch(e){}}
+/* words used everywhere */
+L10N({'رجوع':'Back','تمام':'OK','غيّر رأيك':'Change my mind','غيّري رأيك':'Change my mind','خده':'Take it','الإعدادات':'Settings','ازاي ألعب':'How to play','ازاي ألعب؟':'How to play?',
+  'القايمة':'Menu','الصوت والإعدادات':'Sound and settings','جنيه':'coins','جديد':'New','قريب':'Soon','اقفل':'Close','اقفلي':'Close','امسح':'Delete',
+  'قوة':'Strength','خفة':'Agility','تحمّل':'Endurance','ذكاء':'Intellect','حكمة':'Wisdom','حضور':'Presence','سلاح':'Weapon','درع':'Armour','راس':'Head','خاتم':'Ring','قلادة':'Necklace','تميمة':'Charm'},
+  [[/^(\d+) جنيه$/,'$1 coins'],[/^المستوى (\d+)$/,'Level $1'],[/^مستوى (\d+)$/,'level $1']]);
+{const st=document.createElement('style');st.textContent=`
+html.en #app{direction:ltr}html.en #pvBody{left:auto!important;right:0!important}html.en #pvName{padding-left:0!important;padding-right:44px!important}html.en .sw i{right:auto;left:3px}html.en .sw.on i{transform:translateX(20px)}
+html.en .setrow.sl input::-webkit-slider-runnable-track{background:linear-gradient(to right,var(--gold) var(--p),#0009 var(--p))}html.en .tw-tile,html.en .card,html.en .setrow{text-align:start}
+.lg{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 6px}.lg .title{margin:0}.lg-q,.lg-n{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute);margin:0;text-align:center}
+.lg-q{font-size:16px;color:var(--ink)}.lg-n{font-size:12.5px}
+.lg-b{width:100%;max-width:340px;min-height:72px;display:flex;align-items:center;gap:14px;padding:10px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.lg-b svg{flex:none;border-radius:4px;box-shadow:0 1px 4px #0008}.lg-b span{display:flex;flex-direction:column;text-align:start}.lg-b b{font-size:20px}.lg-b small{color:var(--mute);font-size:12px}
+.lg-b.on{border-color:var(--gold2);box-shadow:0 0 0 1px var(--gold2) inset}.lg-b:active{transform:scale(.98)}`;document.head.appendChild(st)}
+
+/* ---------- 5.90 (Twister 00:55): stay on a floor in the mine, and players on the café TV ----------
+   المنجم: «خليني في الدور ده» (h.mn.stay). While it is on, a broken rock never opens a way down, so the main button stays «هات صخرة»
+   and nobody keeps asking you to go down; turning it off brings the ways down back. The floor you are on is kept as before (5.63).
+   الكورة: six players a side as dots in their team's colour with an outline (home: white outline, on the left; away: dark
+   outline, on the right; the keeper a bit bigger). Before kick-off and after the whistle they stand in shape; during the match
+   they drift with the ball, and the nearest of each side goes for it. The scoreboard names carry the same dot, so you can tell who
+   is who. */
+/* the mine part lives inside p9b.js (mnGoal), where the mine's functions are */
+/* the players */
+const KR_FORM=[[5,50,1],[20,28],[20,72],[33,50],[43,24],[43,76]];
+function krPl(F,side,i,bx,by){const [x0,y0,gk]=KR_FORM[i],x=side?100-x0:x0;if(bx==null)return [x,y0];
+  const pull=gk?.12:i<3?.28:.42,jit=Math.sin((F.mn|0)*.9+i*2.1+side*3.7)*3;let x1=x+(bx-x)*pull,y1=y0+(by-y0)*(gk?.35:pull)+jit;
+  if(gk)x1=side?Math.max(88,Math.min(97,x1)):Math.max(3,Math.min(12,x1));return [Math.max(3,Math.min(97,x1)),Math.max(8,Math.min(92,y1))]}
+function krPlHTML(F){const H=KR_TEAMS[F.h],A=KR_TEAMS[F.a];let s='';[H,A].forEach((T,side)=>KR_FORM.forEach((f,i)=>{const [x,y]=krPl(F,side,i);
+    s+=`<i class="kr-p ${side?'a':'h'}${f[2]?' gk':''}" data-pl="${side}${i}" style="--c:${T.c};left:${x}%;top:${y}%"></i>`}));return s}
+{const t0=krTV;krTV=function(F){let s=t0.apply(this,arguments);try{s=s.replace('<i class="kr-box r"></i>','<i class="kr-box r"></i>'+krPlHTML(F));
+    s=s.replace(/<span class="kr-t" style="--c:([^"]+)">/g,(m,c)=>m+`<i class="kr-dot" style="--c:${c}"></i>`);
+    let k=0;s=s.replace(/<i class="kr-dot"/g,m=>m.replace('kr-dot',k++?'kr-dot a':'kr-dot h'))}catch(e){console.warn(e)}return s}}
+{const k0=krTick;krTick=function(){const r=k0.apply(this,arguments);try{const b=$('#krBall'),h=S.hero,F=h&&cfFix(h).kr;if(!b||!F||F.st!=='live')return r;
+    const bx=parseFloat(b.style.left)||50,by=parseFloat(b.style.top)||50;const near=[0,1].map(side=>{let best=-1,d=1e9;for(let i=1;i<KR_FORM.length;i++){const [x,y]=krPl(F,side,i,bx,by),dd=(x-bx)**2+(y-by)**2;if(dd<d){d=dd;best=i}}return best});
+    view.querySelectorAll('.kr-p').forEach(p=>{const side=+p.dataset.pl[0],i=+p.dataset.pl.slice(1);let [x,y]=krPl(F,side,i,bx,by);
+      if(i===near[side]){x=x+(bx-x)*.6+(side?2.5:-2.5);y=y+(by-y)*.6}p.style.left=x+'%';p.style.top=y+'%'})}catch(e){}return r}}
+{const st=document.createElement('style');st.textContent=`
+.mn-stay{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;min-height:48px;margin:8px 0 0;border-radius:12px;border:1px dashed var(--line);background:#0003;color:var(--ink);font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.mn-stay small{font-size:11.5px;font-weight:400;color:var(--mute)}.mn-stay.on{border-style:solid;border-color:var(--gold2);background:#e0b25a1c;color:var(--gold2)}
+.kr-p{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--c);border:2px solid #fff;box-shadow:0 1px 2px #0009;transition:left .35s linear,top .35s linear;z-index:1}
+.kr-p.a{border-color:#111}.kr-p.gk{width:12px;height:12px;margin:-6px 0 0 -6px}.kr-ball{z-index:2}
+.kr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);border:2px solid #fff;margin-inline-end:5px;vertical-align:-1px}.kr-dot.a{border-color:#111}
+@media (prefers-reduced-motion:reduce){.kr-p{transition:none}}`;document.head.appendChild(st)}
+/* 5.90 (R03): English words */
+L10N({'📍 خليني في الدور ده':'📍 Keep me on this floor','من غير ما النزلة تطلعلك كل شوية':'No ways down popping up','النزلات رجعت':'Ways down are back'},[[/^📍 ثابتة? في الدور ده · مفيش نزلات$/,'📍 Staying on this floor · no ways down'],[/^دوسي? عشان النزلات ترجع$/,'Tap to bring the ways down back']]);
+
+/* ---------- 5.90 (Twister 00:58): «احفظ حاجتك على جوجل» ----------
+   Not signed in with Google? On the title or the town, right after the language is picked on the first run, a card asks you to
+   sign in so your heroes are safe if the phone is wiped or changed. «بعدين» closes it. It comes back at most once a day, never
+   twice in one session, and never while you are signed in (or when the page is opened as a file, where Google sign-in can't
+   work). «ادخل بجوجل» opens the settings on «حسابي», where the usual sign-in is. */
+const SG_KEY='sirdab.signAsk',SG_GAP=20*3600*1000,SG={shown:0};
+const sgCan=()=>{try{if(typeof fbOn!=='function'||!fbOn()||FB.user||FB.locked)return false;if(localStorage.getItem(FB_FLAG)==='1')return false}catch(e){return false}
+  return /^https?:$/.test(location.protocol)||!!window.__sgTest};
+function sgDue(){if(SG.shown||!sgCan())return false;const last=+(store(SG_KEY)||0);return !last||Date.now()-last>=SG_GAP}
+function sgShow(){if($('#sgBox'))return;SG.shown=1;store(SG_KEY,Date.now());const h=S.hero,d=document.createElement('div');d.id='sgBox';
+  d.innerHTML=`<div class="sg-c" role="dialog" aria-label="احفظ حاجتك"><div class="sg-ic">☁️</div><b>${h?`${G('احفظ','احفظي')} ${h.g==='f'?'بطلتك':'بطلك'} على جوجل`:'احفظ أبطالك على جوجل'}</b>
+    <p>${G('انت','انتي')} لسه مش ${G('داخل','داخلة')} بحساب جوجل. لو الموبايل اتمسح أو ${G('غيّرته','غيّرتيه')}، كل حاجة ممكن تضيع. ${G('ادخل','ادخلي')} مرة واحدة وأبطالك هيتحفظوا لوحدهم.</p>
+    <button class="btn" id="sgGo">${G('ادخل','ادخلي')} بجوجل</button><button class="btn ghost small" id="sgLater">بعدين</button></div>`;
+  app.appendChild(d);try{SFX.page()}catch(e){}
+  const close=()=>{d.classList.add('out');setTimeout(()=>d.remove(),180)};
+  d.querySelector('#sgLater').onclick=close;
+  d.querySelector('#sgGo').onclick=()=>{d.remove();openSettings();const b=$('#stFb');if(b){b.click();const x=$('#fbBox');if(x)x.scrollIntoView({block:'center'})}}}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{if((S.screen==='title'||S.screen==='town')&&!S.night&&!S.combat&&sgDue())setTimeout(()=>{if((S.screen==='title'||S.screen==='town')&&!$('#setBg')&&!$('#twSh'))sgShow()},700)}catch(e){}return r}}
+{const st=document.createElement('style');st.textContent=`
+#sgBox{position:absolute;inset:0;z-index:85;background:#000a;display:flex;align-items:flex-end;justify-content:center;padding:16px;animation:stIn .18s ease-out;transition:opacity .18s}#sgBox.out{opacity:0}
+.sg-c{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:10px;text-align:center}
+.sg-c b{font-size:18px}.sg-c p{margin:0;color:var(--mute);line-height:1.8;font-size:14px}.sg-ic{font-size:34px}.sg-c .btn{margin:0;min-height:48px}`;document.head.appendChild(st)}
+/* 5.90 (R03): English words */
+L10N({'احفظ أبطالك على جوجل':'Save your heroes with Google','احفظ بطلك على جوجل':'Save your hero with Google','احفظي بطلتك على جوجل':'Save your hero with Google','ادخل بجوجل':'Sign in with Google','ادخلي بجوجل':'Sign in with Google','بعدين':'Later',
+  'انت لسه مش داخل بحساب جوجل. لو الموبايل اتمسح أو غيّرته، كل حاجة ممكن تضيع. ادخل مرة واحدة وأبطالك هيتحفظوا لوحدهم.':"You're not signed in with Google yet. If the phone is wiped or changed, everything could be lost. Sign in once and your heroes are saved by themselves.",
+  'انتي لسه مش داخلة بحساب جوجل. لو الموبايل اتمسح أو غيّرتيه، كل حاجة ممكن تضيع. ادخلي مرة واحدة وأبطالك هيتحفظوا لوحدهم.':"You're not signed in with Google yet. If the phone is wiped or changed, everything could be lost. Sign in once and your heroes are saved by themselves."});
+
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
 function bigWord(t,sub,kind){const d=document.createElement('div');d.className='mword'+(kind?' '+kind:'');d.innerHTML=`<i></i><span>${t}</span>${sub?`<small>${sub}</small>`:''}`;app.appendChild(d);setTimeout(()=>d.remove(),1400)}
@@ -27266,6 +27537,9 @@ function afterRender(){const s=S.screen;
 document.addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('button,.ch,.act,[data-k],[data-v]');if(!el||el.disabled)return;
   if(el.id==='revOk'||el.classList.contains('chest'))return;(el.classList.contains('ch')?SFX.choose:SFX.tap)()},true);
 document.addEventListener('input',e=>{const t=e.target;if(t&&(t.tagName==='TEXTAREA'||(t.tagName==='INPUT'&&(!t.type||t.type==='text'))))SFX.key()},true);
+
+/* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
+L10N({"الصوت كله": "All sound", "الموسيقى": "Music", "علو الموسيقى": "Music volume", "علو الأصوات": "Effects volume"});
 
 render();
 })();
