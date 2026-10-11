@@ -4462,6 +4462,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.79',d:'11 أكتوبر',add:['البنك بقى شايل فلوس أكتر: لحد 3 ودايع في نفس الوقت، كل وديعة لحد 100 ألف، {تختار|تختاري} 3 ليالي بـ5% (لحد 5000) أو 7 ليالي بـ12% (لحد 12000). كسر الوديعة قبل ميعادها بيخصم 10%','«استثمارات البنك»: شراكة في دكان (6% مضمون)، شحنة قطن (غالبًا +25%، وساعات −50%)، وقافلة للصعيد (يا +80% يا −50%). المكسب والخسارة مكتوبين قبل ما {تدفع|تدفعي}','الخزنة بقى فيها 1000 و10 آلاف و50 ألف، والخزنة أمان: مفيش حاجة بتتاخد منها لو {وقعت|وقعتي}. والوسيط ممكن {يجيلك|يجيلكي} بعرض لحد 50 ألف','القهوة: الرهان بقى لحد 5000 جنيه، وجيوب سامح ومنصور وأبو حمدي بقت أكبر (1500 و6000 و25000)'],fix:[]},
 {v:'5.78',d:'11 أكتوبر',add:['قهوة عم صابر بقى فيها «طاولة ودومينو»: {العب|العبي} طاولة زهر بقواعدها الكاملة، أو دومينو بلدي لحد 51، مع سامح (لسه بيتعلم) أو منصور (لعيب كويس) أو أبو حمدي (معلّم قديم)','{تقدر تلعب|تقدري تلعبي} ودي، أو على 25 أو 100 أو 250 أو 500 جنيه. الرهان بيتحجز أول اللعبة، ولو {كسبت|كسبتي} {بتاخده|بتاخديه} ومعاه مكسبك بعد حق القهوة. كل واحد فيهم جيبه محدود لحد الليلة الجاية','اللعبة اللي شغالة بتتحفظ بعد كل حركة، ولو اللعبة اتقفلت {بتكمّل|بتكمّلي} من مكانك بنفس الزهر'],fix:[]},
 {v:'5.77',d:'11 أكتوبر',add:['«بنك البلد» اتفتح في «ناس البلد»: أستاذ فوزي عنده خزنة {تحط|تحطي} فيها فلوسك و{تسحبها|تسحبيها} في أي وقت ببلاش، ووديعة بتخلص بعد 3 ليالي ومعاها 6% (لحد 300 جنيه)، ودفتر بكل حركة','على باب البنك ساعات بيبقى فيه وسيط بعرض. أغلبهم نصابين! قبل ما {توافق|توافقي} {بص|بصي} على الختم، {اطلب|اطلبي} العقد، أو {اسأل|اسألي} أستاذ فوزي. لو اتنصب {عليك|عليكي} {بتخسر|بتخسري} فلوس العرض بس، وأستاذ فوزي بيرجّعلك جزء بعد ليلتين','الحصّادة بقى ليها زرار {تشغّلها|تشغّليها} أو {توقفها|توقفيها} بيه'],fix:[]},
 {v:'5.76',d:'11 أكتوبر',add:['كل حتة في المنجم بقى ليها خاماتها: السطح نحاس وحديد، بعده عِرق الفحم، طبقة الحديد، أول عِرق دهب، عِرق الفضة، كهف الزمرد، الأعماق، وقاع المنجم. أول ما {توصل|توصلي} حتة جديدة بيتكتبلك فيها إيه'],fix:['تأكيد «ليلة جديدة» بقى مقروء: سطر واضح وتحته سطر أصغر، من غير ما الكلام يدخل في بعض','البروفايل بقى بيكتب تخصصك الأصلي (حرامي، ابن البلد…)، والتخصص اللي {كسبته|كسبتيه} زي «منقّب» بيتكتب لوحده تحته','«حاجات ليها تمن» مش هتظهر مرتين في تجهيز الليلة','في العطارة الصب بقى طالع من بق الهون على القزازة، ولون الخلطة هو نفس لون الجرعة','ابن البلد مبقاش بيطلعله تخصص من شغلانة تانية وهو ماسك تخصص، وفرصته في التخصصات بقت أقل','السبايك وأي حاجة {بتعملها|بتعمليها} بسرعة من غير ميني جيم مبقتش بتدي خبرة','الفلاح الأسطوري بقى ممكن ييجي كمان مع «احصد الكل» والحصّادة']},
@@ -25207,21 +25208,29 @@ function farmAutoSp(h,n){if(!h||h!==S.hero||S.combat||!n)return;try{for(let i=0;
 
 /* ---------- 5.77 / E01 / C65: بنك البلد (offline, جنيه سرداب only) ----------
    Two paths (Twister's spec):
-   (a) the real counter (أستاذ فوزي): a vault (put money in, take it out, free) and one fixed deposit at a time: you choose 500/2000/5000,
-       it matures after BK_FD_N finished nights, pays BK_FD_PCT% (max BK_FD_MAX), breaking it early gives the money back with no gain.
+   (a) the real counter (أستاذ فوزي): a vault (put money in, take it out, free) and fixed deposits (5.79: up to 3, see BK_FD_T),
+       breaking one early gives the money back with no gain; and official investments with written odds (BK_PLANS).
    (b) a broker (وسيط) who may wait at the door, at most once per finished night. BK_SCAM of them are scams. Before deciding you can
        look at the stamp, ask for the contract, ask the manager: every scam shows itself on at least one of them, a real offer never
        does. Accepting a scam loses that offer's money only (never the vault or the deposit); the manager gets back BK_REC_PCT% of it
        two nights later. A real offer is an investment that pays +BK_INV_PCT% (max BK_INV_MAX) two nights later.
    Time is counted in finished nights (h.nDone), never the phone clock. Every move has a ledger line with its own number (h.bank.log).
    Money moved while a night is saved also moves that night's starting money (m0, ck.m), so the night's loss rules don't change. */
-const BK_FD_N=3,BK_FD_PCT=6,BK_FD_MAX=300,BK_FD_AMT=[500,2000,5000],BK_VAULT_AMT=[100,500,2000];
-const BK_SCAM=.6,BK_REC_PCT=40,BK_INV_PCT=12,BK_INV_MAX=600,BK_INV_N=2,BK_LOG_MAX=30;
+/* 5.79 (Twister: «معانا 200 ألف مش عارفين نصرفهم»): bigger limits. Up to BK_FD_MAXN deposits at once, short (3 nights, 5%) or long
+   (7 nights, 12%), each gain capped at BK_FD_MAX; official investments (BK_PLANS) with their odds written on them; broker offers up to
+   BK_BR_MAX. Old saves: a 5.77 deposit (h.bank.fd) moves into the list with its own terms. */
+/* review fix: each term has its own cap so the long one always pays at least as much; breaking early costs BK_FD_BRK% (Twister 18:55) */
+const BK_FD_T=[{n:3,p:5,max:5000},{n:7,p:12,max:12000}],BK_FD_MAX=12000,BK_FD_BRK=10,BK_FD_AMT=[1000,5000,20000,50000,100000],BK_FD_MAXN=3,BK_VAULT_AMT=[1000,10000,50000];
+const BK_SCAM=.6,BK_REC_PCT=40,BK_INV_PCT=12,BK_INV_MAX=6000,BK_INV_N=2,BK_LOG_MAX=30,BK_BR_MAX=50000;
+/* review fix: the safe one pays least, risk pays more on average (shop +6%; cotton EV +10%; caravan EV +15%) */
+const BK_PLANS=[{id:'shop',n:'شراكة في دكان',nt:5,ok:1,up:6,dn:0,d:'مكسب قليل بس مضمون'},
+  {id:'cotton',n:'شحنة قطن',nt:4,ok:.8,up:25,dn:50,d:'غالبًا مكسب حلو، ولو الشحنة اتبلّت نصها بيروح'},
+  {id:'caravan',n:'قافلة للصعيد',nt:6,ok:.5,up:80,dn:50,d:'يا مكسب كبير قوي، يا نصها يروح'}],BK_PL_MAXN=3,BK_PL_GMAX=60000;
 TW_NPC.fawzy=['أستاذ فوزي، مدير البنك','#3a5a8a'];TW_WHO['أستاذ فوزي']='fawzy';
 if(typeof PXP_NPC!=='undefined')PXP_NPC.fawzy={look:{name:'أستاذ فوزي',g:'m',cls:'ساحر',skin:'#c08a5a',hairColor:'#2a2018',hair:'قصير',eyes:'#3a2410',outfit:'#2a3a5a',age:'كبير',beard:'شنب'},bg:['q','z']};
 function bkFix(h){if(!h)return null;const B=h.bank=h.bank&&typeof h.bank==='object'?h.bank:{};
   B.v=Math.max(0,Math.floor(+B.v||0));B.tx=Math.max(0,Math.floor(+B.tx||0));if(!Array.isArray(B.log))B.log=[];if(!Array.isArray(B.inv))B.inv=[];if(!Array.isArray(B.rec))B.rec=[];
-  if(B.fd&&!(B.fd.a>0))B.fd=null;h.nDone=Math.max(0,Math.floor(+h.nDone||0));return B}
+  if(!Array.isArray(B.fds))B.fds=[];if(B.fd){if(B.fd.a>0)B.fds.push(B.fd);B.fd=null}B.fds.forEach(x=>{if(!(x.id>0)){B.tx++;x.id=B.tx}});if(!Array.isArray(B.pl))B.pl=[];h.nDone=Math.max(0,Math.floor(+h.nDone||0));return B}
 const bkInt=n=>Math.max(0,Math.floor(+n||0));
 /* the night's starting money follows any bank move, so a saved night's loss/earn math is unchanged */
 function bkNightShift(h,d){const set=new Set([S.night,h.night&&h.night.N].filter(Boolean));set.forEach(N=>{if(typeof N.m0==='number')N.m0+=d;if(N.ck&&typeof N.ck.m==='number')N.ck.m+=d})}
@@ -25240,11 +25249,20 @@ function bkNightDone(h,N){if(!h||!N||N.bkDone)return;N.bkDone=1;if(!N.won&&!((N.
 /* (a) the counter */
 function bkPut(n){const h=S.hero,B=bkFix(h);if(bkInNight(h))return;n=n==='all'?bkInt(h.money):bkInt(n);if(!n||n>h.money)return;bkMove(h,-n);B.v+=n;bkLog(h,'in',n);saveHero();SFX.coin&&SFX.coin();twRender()}
 function bkTake(n){const h=S.hero,B=bkFix(h);n=n==='all'?B.v:bkInt(n);if(!n||n>B.v)return;B.v-=n;bkMove(h,n);bkLog(h,'out',n);saveHero();SFX.coin&&SFX.coin();twRender()}
-const bkFdGain=a=>Math.min(BK_FD_MAX,Math.floor(a*BK_FD_PCT/100));
-function bkFdOpen(a){const h=S.hero,B=bkFix(h);if(bkInNight(h))return;a=bkInt(a);if(B.fd||!a||a>h.money)return;bkMove(h,-a);B.fd={a,at:h.nDone+BK_FD_N,g:bkFdGain(a),id:bkLog(h,'fd',a)};saveHero();SFX.reg&&SFX.reg();twRender()}
-function bkFdClaim(){const h=S.hero,B=bkFix(h),F=B.fd;if(!F||h.nDone<F.at)return;B.fd=null;bkMove(h,F.a+F.g);bkLog(h,'fdok',F.a+F.g,`+${F.g}`);saveHero();SFX.reg&&SFX.reg();toast(`الوديعة خلصت: ${twI('+'+(F.a+F.g))} جنيه`);twRender()}
-function bkFdBreak(){const h=S.hero,B=bkFix(h),F=B.fd;if(!F||h.nDone>=F.at)return;if(TWN.conf!=='bkfd'){TWN.conf='bkfd';SFX.meh&&SFX.meh();return twRender()}TWN.conf=null;
-  B.fd=null;bkMove(h,F.a);bkLog(h,'fdbrk',F.a);saveHero();twRender()}
+const bkFdGain=(a,t)=>Math.min(t.max||BK_FD_MAX,Math.floor(a*t.p/100));
+const bkFdBrk=a=>Math.floor(a*BK_FD_BRK/100);
+function bkFdOpen(a,ti){const h=S.hero,B=bkFix(h);if(bkInNight(h))return;a=bkInt(a);const t=BK_FD_T[+ti]||BK_FD_T[0];if(B.fds.length>=BK_FD_MAXN||!a||a>h.money)return;
+  bkMove(h,-a);B.fds.push({a,at:h.nDone+t.n,g:bkFdGain(a,t),nt:t.n,id:bkLog(h,'fd',a,`${bkNights(t.n)} ${t.p}%`)});saveHero();SFX.reg&&SFX.reg();twRender()}
+function bkFdClaim(id){const h=S.hero,B=bkFix(h),i=B.fds.findIndex(x=>x.id===id);if(i<0||h.nDone<B.fds[i].at)return;const F=B.fds.splice(i,1)[0];bkMove(h,F.a+F.g);bkLog(h,'fdok',F.a+F.g,`+${F.g}`);saveHero();SFX.reg&&SFX.reg();toast(`الوديعة خلصت: ${twI('+'+(F.a+F.g))} جنيه`);twRender()}
+function bkFdBreak(id){const h=S.hero,B=bkFix(h),i=B.fds.findIndex(x=>x.id===id);if(i<0||h.nDone>=B.fds[i].at)return;if(TWN.conf!=='bkfd'+id){TWN.conf='bkfd'+id;SFX.meh&&SFX.meh();return twRender()}TWN.conf=null;
+  const F=B.fds.splice(i,1)[0],back=F.a-bkFdBrk(F.a);bkMove(h,back);bkLog(h,'fdbrk',back,`−${bkFdBrk(F.a)}`);saveHero();twRender()}
+/* official investments: the odds are written on them; the result is decided when you put the money in (no reloading for luck) */
+function bkPlanOpen(pid,a){const h=S.hero,B=bkFix(h),P=BK_PLANS.find(x=>x.id===pid);if(!P||bkInNight(h))return;a=bkInt(a);if(B.pl.length>=BK_PL_MAXN||!a||a>h.money)return;
+  const ok=Math.random()<P.ok,g=ok?Math.min(BK_PL_GMAX,Math.floor(a*P.up/100)):-Math.floor(a*P.dn/100);
+  bkMove(h,-a);B.pl.push({pid,a,g,at:h.nDone+P.nt,id:bkLog(h,'pl',a,P.n)});saveHero();SFX.reg&&SFX.reg();twRender()}
+function bkPlanClaim(id){const h=S.hero,B=bkFix(h),i=B.pl.findIndex(x=>x.id===id);if(i<0||h.nDone<B.pl[i].at)return;const x=B.pl.splice(i,1)[0],P=BK_PLANS.find(y=>y.id===x.pid)||{n:'استثمار'},back=Math.max(0,x.a+x.g);
+  bkMove(h,back);bkLog(h,x.g>=0?'plok':'plbad',back,`${P.n} ${x.g>=0?'+':''}${x.g}`);saveHero();
+  if(x.g>=0){SFX.reg&&SFX.reg();toast(`${P.n} نجحت: ${twI('+'+back)} جنيه`)}else{SFX.meh&&SFX.meh();toast(`${P.n} خسرت: ${G('رجعلك','رجعلكي')} ${back} من ${x.a}`)}twRender()}
 function bkInvClaim(id){const h=S.hero,B=bkFix(h),i=B.inv.findIndex(x=>x.id===id);if(i<0||h.nDone<B.inv[i].at)return;const x=B.inv.splice(i,1)[0];bkMove(h,x.a+x.g);bkLog(h,'invok',x.a+x.g,`+${x.g}`);saveHero();SFX.reg&&SFX.reg();toast(`الاستثمار رجع: ${twI('+'+(x.a+x.g))} جنيه`);twRender()}
 function bkRecClaim(id){const h=S.hero,B=bkFix(h),i=B.rec.findIndex(x=>x.id===id);if(i<0||h.nDone<B.rec[i].at)return;const x=B.rec.splice(i,1)[0];bkMove(h,x.a);bkLog(h,'rec',x.a);saveHero();SFX.reg&&SFX.reg();toast(`أستاذ فوزي رجّعلك ${x.a} جنيه من النصاب`);twRender()}
 
@@ -25267,7 +25285,7 @@ const BK_REAL={who:'تاجر قطن',pitch:(a,g,who)=>(BK_REAL_P[who]||BK_REAL_P
   ok:{stamp:'الختم سليم: «بنك البلد» ومتوقّع من أستاذ فوزي.',contract:'العقد واضح: المبلغ والمدة والمكسب مكتوبين.',manager:'أستاذ فوزي: «ده راجل معروف، وعقده عندي.»'}};
 const BK_CHECKS=[['stamp','بص على الختم'],['contract','اطلب العقد'],['manager','اسأل أستاذ فوزي']];
 function bkBroker(h){const B=bkFix(h);if(B.br&&B.br.n===h.nDone)return B.br;if(bkInNight(h)||B.brAt===h.nDone||h.money<200||h.nDone<1)return null;
-  const a=Math.max(200,Math.min(5000,Math.round(h.money*.25/50)*50)),scam=Math.random()<BK_SCAM;
+  const a=Math.max(200,Math.min(BK_BR_MAX,Math.round(h.money*.25/50)*50)),scam=Math.random()<BK_SCAM;
   const s=scam?BK_SCAMS[Math.floor(Math.random()*BK_SCAMS.length)]:null,pct=s?15+Math.floor(Math.random()*21):10+Math.floor(Math.random()*9);
   B.br={n:h.nDone,a,scam:s?s.id:'',seen:{},who:s?s.who:BK_WHO[Math.floor(Math.random()*BK_WHO.length)],g:s?Math.round(a*pct/100):Math.min(BK_INV_MAX,Math.floor(a*pct/100))};saveHero();return B.br}
 const bkScam=br=>BK_SCAMS.find(s=>s.id===br.scam);
@@ -25282,11 +25300,10 @@ function bkDeal(yes){const h=S.hero,B=bkFix(h),br=B.br;if(!br||br.n!==h.nDone||(
   saveHero();twRender()}
 
 /* the screen */
-const BK_LOGN={in:'{حطيت|حطيتي} في الخزنة',out:'{سحبت|سحبتي} من الخزنة',fd:'{فتحت|فتحتي} وديعة',fdok:'الوديعة خلصت',fdbrk:'{كسرت|كسرتي} الوديعة',inv:'استثمار',invok:'الاستثمار رجع',scam:'اتنصب {عليك|عليكي}',rec:'{رجعلك|رجعلكي} من النصاب'};
+const BK_LOGN={pl:'استثمار',plok:'الاستثمار نجح',plbad:'الاستثمار خسر',in:'{حطيت|حطيتي} في الخزنة',out:'{سحبت|سحبتي} من الخزنة',fd:'{فتحت|فتحتي} وديعة',fdok:'الوديعة خلصت',fdbrk:'{كسرت|كسرتي} الوديعة',inv:'استثمار',invok:'الاستثمار رجع',scam:'اتنصب {عليك|عليكي}',rec:'{رجعلك|رجعلكي} من النصاب'};
 const bkNights=n=>n===1?'ليلة واحدة':n===2?'ليلتين':n+' ليالي';
 function bkBtn(attr,txt,sub,dis){return `<button class="tw-buy" ${attr} ${dis?'disabled':''}>${txt}${sub?`<small>${sub}</small>`:''}</button>`}
-SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}const B=bkFix(h),br=bkBroker(h),F=B.fd;
-  const left=F?Math.max(0,F.at-h.nDone):0;
+SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}const B=bkFix(h),br=bkBroker(h);
   const brHTML=br?(()=>{const s=br.scam?bkScam(br):null,who=br.who||(s?s.who:BK_REAL.who),g=br.g!=null?br.g:Math.min(BK_INV_MAX,Math.floor(br.a*BK_INV_PCT/100));
     return `<div class="tw-lbl">حد مستنيك على باب البنك</div><div class="card bk-br"><b>${who}</b><div class="bk-p">${s?s.pitch(br.a,g):BK_REAL.pitch(br.a,g,who)}</div>
       ${Object.keys(br.seen).map(k=>`<div class="bk-cl">${bkCheckTxt(br,k)}</div>`).join('')}
@@ -25300,21 +25317,27 @@ SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
     <div class="tw-lbl">الخزنة <small>${G('حط','حطي')} و${G('اسحب','اسحبي')} في أي وقت ببلاش</small></div>
     <div class="card bk-bt">${BK_VAULT_AMT.map(a=>bkBtn(`data-bkp="${a}"`,`${G('حط','حطي')} ${a}`,'',h.money<a||bkInNight(h))).join('')}${bkBtn('data-bkp="all"',G('حط كل اللي معاك','حطي كل اللي معاكي'),'',h.money<1||bkInNight(h))}</div>
     <div class="card bk-bt">${BK_VAULT_AMT.map(a=>bkBtn(`data-bkt="${a}"`,`${G('اسحب','اسحبي')} ${a}`,'',B.v<a)).join('')}${bkBtn('data-bkt="all"',G('اسحب الكل','اسحبي الكل'),'',B.v<1)}</div>
-    <div class="tw-lbl">الوديعة <small>بعد ${bkNights(BK_FD_N)} ${G('بتاخدها','بتاخديها')} ومعاها ${BK_FD_PCT}% (لحد ${BK_FD_MAX} جنيه)</small></div>
-    ${F?`<div class="card bk-fd"><b>${F.a} جنيه</b> · ${left?`فاضل ${bkNights(left)} ${G('تخلّصها','تخلّصيها')}`:'خلصت!'} · المكسب ${F.g} جنيه
-        <div class="bk-bt">${left?bkBtn('data-bkfb="1"',TWN.conf==='bkfd'?G('متأكد؟ مش هتاخد المكسب','متأكدة؟ مش هتاخدي المكسب'):G('اكسر الوديعة','اكسري الوديعة'),'الفلوس ترجع من غير مكسب'):bkBtn('data-bkfc="1"',G('خد الوديعة','خدي الوديعة'),`${F.a+F.g} جنيه`)}</div></div>`
-      :`<div class="card bk-bt">${BK_FD_AMT.map(a=>bkBtn(`data-bkf="${a}"`,`وديعة ${a}`,`المكسب ${bkFdGain(a)}`,h.money<a||bkInNight(h))).join('')}</div>`}
+    <div class="tw-lbl">الودايع <small>لحد ${BK_FD_MAXN} في نفس الوقت · كسرها قبل ميعادها بيخصم ${BK_FD_BRK}%</small></div>
+    ${B.fds.map(F=>{const left=Math.max(0,F.at-h.nDone);return `<div class="card bk-fd"><b>${F.a} جنيه</b>${F.nt?` · ${bkNights(F.nt)}`:''} · ${left?`فاضل ${bkNights(left)}`:'خلصت!'} · المكسب ${F.g} جنيه
+        <div class="bk-bt">${left?bkBtn(`data-bkfb="${F.id}"`,TWN.conf==='bkfd'+F.id?G('متأكد؟','متأكدة؟'):G('اكسر الوديعة','اكسري الوديعة'),`يرجع ${F.a-bkFdBrk(F.a)} (−${BK_FD_BRK}%)`):bkBtn(`data-bkfc="${F.id}"`,G('خد الوديعة','خدي الوديعة'),`${F.a+F.g} جنيه`)}</div></div>`}).join('')}
+    ${B.fds.length<BK_FD_MAXN?`<div class="bk-row">${BK_FD_T.map((t,k)=>`<button class="cf-opt${(TWN.bkT|0)===k?' on':''}" data-bktm="${k}"><b>${bkNights(t.n)}</b><small>المكسب ${t.p}% (لحد ${t.max})</small></button>`).join('')}</div>
+      <div class="card bk-bt">${BK_FD_AMT.map(a=>bkBtn(`data-bkf="${a}"`,`وديعة ${a}`,`المكسب ${bkFdGain(a,BK_FD_T[TWN.bkT|0])}`,h.money<a||bkInNight(h))).join('')}</div>`:''}
+    <div class="tw-lbl">استثمارات البنك <small>المكسب والخسارة مكتوبين قبل ما ${G('تدفع','تدفعي')} · لحد ${BK_PL_MAXN} في نفس الوقت</small></div>
+    ${B.pl.map(x=>{const P=BK_PLANS.find(y=>y.id===x.pid)||{n:'استثمار'},left=Math.max(0,x.at-h.nDone);return `<div class="tw-row"><div class="tx"><b>${x.a} جنيه في ${P.n}</b><small>${left?'فاضل '+bkNights(left):`خلص! النتيجة ${G('مستنياك','مستنياكي')}`}</small></div>${left?'':bkBtn(`data-bkpl="${x.id}"`,G('شوف النتيجة','شوفي النتيجة'),'')}</div>`}).join('')}
+    ${B.pl.length<BK_PL_MAXN?`<div class="bk-row">${BK_PLANS.map(P=>`<button class="cf-opt${(TWN.bkP||'shop')===P.id?' on':''}" data-bkpp="${P.id}"><b>${P.n}</b><small>${bkNights(P.nt)} · ${P.ok>=1?`+${P.up}% مضمون`:`${Math.round(P.ok*100)}%: +${P.up}% · ${Math.round((1-P.ok)*100)}%: −${P.dn}%`}</small></button>`).join('')}</div>
+      <div class="tw-sm">${(BK_PLANS.find(P=>P.id===(TWN.bkP||'shop'))||BK_PLANS[0]).d}</div>
+      <div class="card bk-bt">${BK_FD_AMT.map(a=>bkBtn(`data-bkpa="${a}"`,`${G('حط','حطي')} ${a}`,'',h.money<a||bkInNight(h))).join('')}</div>`:''}
     ${B.inv.length?`<div class="tw-lbl">استثماراتك</div><div class="col">${B.inv.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه مع ${x.who||BK_REAL.who}</b><small>${h.nDone>=x.at?'رجعت!':'فاضل '+bkNights(x.at-h.nDone)} · المكسب ${x.g}</small></div>${h.nDone>=x.at?bkBtn(`data-bki="${x.id}"`,G('خد','خدي'),`${x.a+x.g} جنيه`):''}</div>`).join('')}</div>`:''}
     ${B.rec.length?`<div class="tw-lbl">فلوس من النصابين</div><div class="col">${B.rec.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه</b><small>${h.nDone>=x.at?'أستاذ فوزي مسكه!':'أستاذ فوزي بيدوّر عليه.. فاضل '+bkNights(x.at-h.nDone)}</small></div>${h.nDone>=x.at?bkBtn(`data-bkr="${x.id}"`,G('خد','خدي'),`${x.a} جنيه`):''}</div>`).join('')}</div>`:''}
     <div class="tw-lbl">الدفتر</div>
-    <div class="card bk-log">${B.log.length?B.log.slice().reverse().slice(0,12).map(x=>`<div class="bkl"><span>#${x.id} ${T(BK_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'?'neg':'pos'}">${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'?'−':'+'}${x.a}</b></div>`).join(''):'<small>لسه مفيش حركات</small>'}</div></div>`;
+    <div class="card bk-log">${B.log.length?B.log.slice().reverse().slice(0,12).map(x=>`<div class="bkl"><span>#${x.id} ${T(BK_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'?'neg':'pos'}">${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'?'−':'+'}${x.a}</b></div>`).join(''):'<small>لسه مفيش حركات</small>'}</div></div>`;
   twBack();
   const on=(sel,fn)=>view.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
-  on('[data-bkp]',b=>bkPut(b.dataset.bkp));on('[data-bkt]',b=>bkTake(b.dataset.bkt));on('[data-bkf]',b=>bkFdOpen(b.dataset.bkf));
-  on('[data-bkfc]',()=>bkFdClaim());on('[data-bkfb]',()=>bkFdBreak());on('[data-bki]',b=>bkInvClaim(+b.dataset.bki));on('[data-bkr]',b=>bkRecClaim(+b.dataset.bkr));
+  on('[data-bkp]',b=>bkPut(b.dataset.bkp));on('[data-bkt]',b=>bkTake(b.dataset.bkt));on('[data-bkf]',b=>bkFdOpen(b.dataset.bkf,TWN.bkT|0));on('[data-bktm]',b=>{TWN.bkT=+b.dataset.bktm;twRender()});on('[data-bkpp]',b=>{TWN.bkP=b.dataset.bkpp;twRender()});on('[data-bkpa]',b=>bkPlanOpen(TWN.bkP||'shop',b.dataset.bkpa));on('[data-bkpl]',b=>bkPlanClaim(+b.dataset.bkpl));
+  on('[data-bkfc]',b=>bkFdClaim(+b.dataset.bkfc));on('[data-bkfb]',b=>bkFdBreak(+b.dataset.bkfb));on('[data-bki]',b=>bkInvClaim(+b.dataset.bki));on('[data-bkr]',b=>bkRecClaim(+b.dataset.bkr));
   on('[data-bkc]',b=>bkCheck(b.dataset.bkc));on('[data-bkd]',b=>bkDeal(b.dataset.bkd==='1'))};
 {const st=document.createElement('style');st.textContent=`
-.bk-bt{display:flex;flex-wrap:wrap;gap:6px}.bk-bt .tw-buy{flex:1 1 30%;min-width:88px;min-height:44px}
+.bk-bt{display:flex;flex-wrap:wrap;gap:6px}.bk-row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.bk-row .cf-opt{flex:1 1 30%}.bk-bt .tw-buy{flex:1 1 30%;min-width:88px;min-height:44px}
 .bk-br{border-color:var(--gold2)}.bk-br .bk-p{margin:6px 0;line-height:1.6}.bk-cl{font-size:13px;color:#f2c77a;margin:4px 0;line-height:1.5}
 .bk-fd{line-height:1.7}.bk-log .bkl{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px solid var(--line);font-size:13px}
 .bk-log .bkl small{color:var(--mute)}.bk-log .pos{color:#a6e3a0}.bk-log .neg{color:#f0a090}`;document.head.appendChild(st)}
@@ -25323,7 +25346,7 @@ function bkArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid
   ${[38,58,92,112].map(x=>`<rect x="${x}" y="28" width="8" height="40" fill="#b0a690"/>`).join('')}<rect x="72" y="40" width="16" height="30" fill="#3a2a1a"/><rect x="78" y="10" width="4" height="4" fill="#f3c14d"/>
   <rect x="62" y="17" width="36" height="6" fill="#2a3a5a"/></svg>`}
 {const pa=placeArt;placeArt=function(id){if(id==='bank')return bkArt();return pa.apply(this,arguments)}}
-TW_EXTRA.push(h=>{const B=bkFix(h),br=B.br&&B.br.n===h.nDone||(B.brAt!==h.nDone&&h.money>=200&&h.nDone>=1),due=(B.fd&&h.nDone>=B.fd.at)||B.inv.some(x=>h.nDone>=x.at)||B.rec.some(x=>h.nDone>=x.at);
+TW_EXTRA.push(h=>{const B=bkFix(h),br=B.br&&B.br.n===h.nDone||(B.brAt!==h.nDone&&h.money>=200&&h.nDone>=1),due=B.fds.some(x=>h.nDone>=x.at)||B.pl.some(x=>h.nDone>=x.at)||B.inv.some(x=>h.nDone>=x.at)||B.rec.some(x=>h.nDone>=x.at);
   return {id:'bank',go:'bank',n:'بنك البلد',w:'أستاذ فوزي: خزنة ووديعة',s:due?`<span class="ok">فيه فلوس ${G('ليك','ليكي')} ${G('تستلمها','تستلميها')}</span>`:B.v?`في الخزنة ${B.v} جنيه`:'خزنة ووديعة',bell:due||br?1:0}});
 {const g=TW_GROUPS.find(x=>x.n==='ناس البلد');if(g&&!g.go.includes('bank'))g.go.push('bank')}
 
@@ -25336,8 +25359,8 @@ TW_EXTRA.push(h=>{const B=bkFix(h),br=B.br&&B.br.n===h.nDone||(B.brAt!==h.nDone&
    No bets while a night is saved (same rule as the bank). A game in progress is saved after every move and resumes on reload. */
 const CAFE_BETS=true;                 /* feature flag: false = friendly games only (e.g. if a store's age rating needs it) */
 const cfFee=s=>Math.max(1,Math.round(s*.05));   /* «حق القهوة»: 5% of the win (25→1, 100→5, 250→13, 500→25) */
-const CF_STAKES=[25,100,250,500],CF_LOG_MAX=30;
-const CF_NPC={sameh:{lv:0,purse:300,how:'لسه بيتعلم'},mansour:{lv:1,purse:800,how:'لعيب كويس'},hamdy:{lv:2,purse:2000,how:'معلّم قديم'}};
+const CF_STAKES=[25,100,250,500,1000,2500,5000],CF_LOG_MAX=30;   /* 5.79: bigger stakes for rich heroes */
+const CF_NPC={sameh:{lv:0,purse:1500,how:'لسه بيتعلم'},mansour:{lv:1,purse:6000,how:'لعيب كويس'},hamdy:{lv:2,purse:25000,how:'معلّم قديم'}};
 /* mulberry32: small, seedable; the state lives in the saved game so nothing can be re-rolled */
 function cfRnd(G0){let t=(G0.r=(G0.r+0x6D2B79F5)|0);t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}
 const cfInt=(G0,n)=>Math.floor(cfRnd(G0)*n);
