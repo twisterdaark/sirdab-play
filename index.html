@@ -410,7 +410,7 @@ function bandShow(it){const o=it.o;return new Promise(res=>{const B=$('#band');i
   const t=it.n>1?`${it.t} ×${it.n}`:it.t;
   B.querySelector('.s1').textContent=it.s1||'';B.querySelector('.t').textContent=t;B.querySelector('.s2').textContent=it.s2||'';
   const d=it.low?Math.min(o.dur||BAND_LOWDUR,BAND_LOWDUR+100):(o.dur||2400);bandEnd=Date.now()+d;B.style.setProperty('--bd',d+'ms');
-  void B.offsetWidth;B.classList.add('go');if(o.sound!==false)(o.sound||SFX.fanfare)();vib(o.color==='red'?[200]:[40,40,90]);setTimeout(res,d-150)})}
+  void B.offsetWidth;B.classList.add('go');if(o.sound!==false)(o.sound||SFX.fanfare)();if(o.vib!==false)vib(o.color==='red'?[200]:[40,40,90]);if(o.fx)try{o.fx()}catch(e){}setTimeout(res,d-150)})}
 
 /* ---------- sound 2: mixer, music, ambience and many more effects ---------- */
 let musOn=store('sirdab.music')!==false;
@@ -918,11 +918,11 @@ const MXE=h=>h.maxen+gearOn(h).reduce((a,g)=>a+(g.en||0),0);
 const ARM=h=>(h.armor||0)+gearOn(h).reduce((a,g)=>a+(g.armor||0),0);
 /* armour takes off at most half of a hit, so a well-dressed hero still feels the foes (5.49) */
 const ARMcut=(h,d)=>Math.min(ARM(h),Math.floor(d/2));
-const WDMG=h=>gearOn(h).reduce((a,g)=>a+(g.dmg||0),0)+titlesOn(h).reduce((a,t)=>a+(t.dmg||0),0)+(typeof qFoeDmg==='function'?qFoeDmg(h):0);
+let WDMG=h=>gearOn(h).reduce((a,g)=>a+(g.dmg||0),0)+titlesOn(h).reduce((a,t)=>a+(t.dmg||0),0)+(typeof qFoeDmg==='function'?qFoeDmg(h):0);
 const SPIRITRED=h=>gearOn(h).concat(titlesOn(h)).reduce((a,g)=>a+(g.spirit||0),0);
 const wSkill=h=>{const w=h.eq&&h.eq.weapon&&GEAR[h.eq.weapon];return w&&w.skill};
-const lootMul=h=>titlesOn(h).reduce((a,t)=>a*(t.loot||1),1);
-const titlePrice=h=>titlesOn(h).reduce((a,t)=>a*(t.price||1),1);
+let lootMul=h=>titlesOn(h).reduce((a,t)=>a*(t.loot||1),1);
+let titlePrice=h=>titlesOn(h).reduce((a,t)=>a*(t.price||1),1);
 
 /* effort (مجهود): mining and fishing cost it; it comes back with time or food */
 let EFF_MAX=20;
@@ -4285,7 +4285,7 @@ function foeChips(f){const x=f.fx||{},L=[];
   if(x.weak)L.push(['weak',FF(f,'مدوّخ','مدوّخة'),0,x.weak.t]);
   return fxChips(L)}
 const rageOn=h=>hasSkill(h,'rage')&&h.hp>0&&h.hp<MXH(h)*skRageT(h);
-const thb=h=>h.hidden&&h.hidden.thabat&&h.hp>0&&h.hp<=MXH(h)/3?2:0;
+let thb=h=>h.hidden&&h.hidden.thabat&&h.hp>0&&h.hp<=MXH(h)/3?2:0;
 function meChips(){const C=S.combat,h=S.hero,m=C.me,L=[];
   if(C.guard)L.push(['guard',G('مستخبي','مستخبية'),0,0]);
   if(m.taunt)L.push(['taunt',`كلهم ${G('عليك','عليكي')}`,0,m.taunt.t]);
@@ -4786,6 +4786,13 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.14',d:'12 أكتوبر',add:['القدرات بقت بتكبر من الاستعمال: كل ما {تستعمل|تستعملي} قدرة في قتال حقيقي بتقرب لمستواها الجاي (لحد 4 مرات في القتال الواحد). مستوى البطل مبقاش بيدي نقط، والنقط اللي كانت {معاك|معاكي} بقت «ورق تدريب»: الورقة بتقرّب قدرة نص المسافة لمستواها الجاي، مرة في اليوم لكل قدرة. مستوياتك القديمة زي ما هي',
+  'تخصصات جديدة: «الخطيب» و«شيخ الكلام» (من القتالات اللي {بتخلّصها|بتخلّصيها} بالكلام)، «الساحر الكبير» و«الساحر الأعظم»، «سيد السيف»، «ضلّ الموت»، «فارس النور»، «صاحب المقابر»، «صاحب الخيالات»',
+  '«مروّض الوحوش» و«حارس العهد»: تخصص جديد بيتفتح بالأفعال مش بالحظ: {تعفي|تعفي} عن أنواع وحوش مختلفة، {تأكّل|تأكّلي} وحوش جعانة {يساعدوك|يساعدوكي}، ويبقى عندك وحش في المأوى',
+  '12 لقب جديد و20 إنجاز جديد. شاشة الإنجازات فيها أنواع وبحث و«خلصتها / لسه»، والإنجازات السرية مبتبانش قبل ما تحصل',
+  'لحظات حلوة: أول «ممتاز» و«تحفة» عند الحداد، أول لبس وطبخة «تحفة»، نوع سمك جديد، أول حصاد، وكل زعيم {بتوقّعه|بتوقّعيه} أول مرة. بتظهر مرة واحدة بس، ومن الإعدادات «مؤثرات المكافآت» تختار هادية / عادية / حفلة',
+  'الصفات المخفية بقت ليها رتب: «حظ» و«ثبات» بيكبروا لرتبة 2 و3 بأفعال جديدة'],
+ fix:['شاشة النرد بقى فيها كلام أقل: النرد والمجموع والنتيجة بس، والحسبة والنسب و«كان ناقصك» بقوا جوه «الصعوبة جاية منين؟» لو {حبيت|حبيتي} {تشوفهم|تشوفيهم}','مزايا الألقاب من نفس النوع بقى ليها سقف: الأسعار لحد −20%، فلوس القتال لحد +30%، الصحة لحد +15%، كل صفة لحد +3، والضرب لحد +2']},
 {v:'6.13',d:'12 أكتوبر',add:['حكايات الليالي كلها بقت بالإنجليزي للي مختار English: كروت المغامرات الأربعة واختياراتها، المحطات والاستراحات، المشاهد الثابتة، الكروت اللي بتيجي بعدها، وحكايات عم شاكر'],fix:[]},
 {v:'6.12',d:'12 أكتوبر',add:['«الخلا»: الصيد بقى اسمه «الخلا» وبقى خريطة مرسومة فيها الغيطان والترعة والجبل والمنجم ومكان صيد السمك، متوصلين ببعض. الأماكن اللي لسه {مارحتهاش|مارحتيهاش} عليها ضباب، وأول زيارة ليها هدية خبرة','وحوش «نادرة» في الخلا بتلمع: أقوى شوية وغنايمها أحلى. والانتصارات ورا بعض في نفس الطلعة بتولّع 🔥 وبتزوّد الخبرة والفلوس لحد +50%','الشنطة بقت خانات زي ماينكرافت: مساحة واحدة لكل حاجة، وكل خانة فيها نوع واحد (الجرع لحد 8، الأكل لحد 16، الخامات لحد 64). الترقيات بتزوّد صفوف، والزيادة بتروح «المخزن» في البلد ومش بتضيع، والليلة بتاخد اللي في الشنطة بس'],fix:['الصناديق بقت مفيدة: اللي فيها على قد مستواك والمكان (جرع وأكل على قدك، حاجات الوحوش هنا بتخاف منها، خامات لحاجة {تقدر|تقدري} تعملها قريب، وحاجة نادرة ساعات). والحاجة اللي مش هتفيدك بتتحول لحاجة أحسن','الطبخ: أول خطوة بتوريك مكونات الأكلة، والسمكة بس لو فيها سمك. ووصفات الجرنال بقى ليها جودة زي باقي الشغل','القهوة: القمار بقى ليه حدود عشان مايعملش تضخم: عم صابر معاه كاش محدود كل يوم، الرهان لحد 10000، الكبار بقوا أشطر، والقهوة بتاخد نسبة أكبر على الرهانات الكبيرة','عرض الوسيط في البنك والبورصة بيفضل 3 أيام لحد ما {تقرر|تقرري}، وفي البورصة فيه زرار «اسحب الناقص من الخزنة»']},
 {v:'6.11',d:'12 أكتوبر',add:['أيام البلد بقت بتعدّي {وانت|وانتي} {قافل|قافلة} اللعبة كمان، بس أبطأ: كل ساعتين غياب بيوم، ولحد 4 أيام في المرة. وأول ما {ترجع|ترجعي} بيقولك عدّى قد إيه. وطول ما اللعبة مفتوحة قدامك الوقت بيعدّي عادي حتى لو مش {بتلعب|بتلعبي}','الساعة بقت فوق خالص في كل شاشات البلد: الساعة كام، اليوم كام، وفاضل كام دقيقة على اليوم الجاي. وسما البلد بتتغير مع الساعة: الفجر والصبح والضهر والعصر والمغرب والليل','البنك والبورصة اتعملوا من جديد: أستاذ فوزي وأستاذ مجدي ورا الشباك، تابات بدل الزراير الكتير، {تختار|تختاري} المبلغ مرة و{تحط|تحطي} أو {تسحب|تسحبي}، والودايع بقت عقود مختومة بشريط بيعد الأيام، وختم بينزل وفلوس بتطير'],fix:['زعيم المكان في الصيد («الغريق» و«أم السلعوات» و«الضبع الأبيض») بقى بيرجع كل 3 أيام في البلد، ومكانه بيقولك راجع امتى. اليوم في البلد قصير، فكان بيرجع بسرعة قوي','صورة الوحش في القتال مابقتش بتغطي رقم مستواه','عروض الوسطا في البنك والبورصة بقت على قد فلوسك (اللي معاك واللي في الخزنة)، وأقصى حاجة في الشركة الواحدة بتكبر مع فلوسك','كشف النصابين بقى أصعب بكتير: مفيش «اسأل أستاذ فوزي» تاني. فيه لوحة قواعد (الختم الرسمي، الإمضة، المكسب المسموح، الوسطا المعتمدين)، وكل نصاب بيكسر قاعدة واحدة بس، وغالبًا في ورقة لازم {تبص|تبصي} عليها، والوسيط بيوريك حاجتين بس من تلاتة. في البورصة الورقة ليها وش وضهر و{تشوف|تشوفي} واحد بس. ولما {تقرر|تقرري} بيبان كان نصاب ولا لأ']},
@@ -25302,6 +25309,160 @@ I18NA(ACH,{sp_1:{n:'First specialisation',d:'Take your first specialisation'},sp
   sp_rel:{n:'An old relic',d:'Find a relic on one of the big ones'},sp_lv5:{n:'Full power',d:'Raise a specialisation move to level 5'},ttl_5:{n:'Five titles',d:'Hold 5 titles'},ttl_10:{n:'Titles galore',d:'Hold 10 titles'},
   mn_300:{n:'The mountain knows you',d:'Break 300 rocks'},mn_f20:{n:'Deep down',d:'Reach floor 20 of the mine'},fs_150:{n:'The canal knows you',d:'Catch 150 fish'},st_20:{n:'Steel',d:'Smelt steel 20 times'},
   ck_50:{n:'Open kitchen',d:'Cook 50 dishes'},cr_30:{n:'The workshop is home',d:'Make 30 things by hand'},fist_10:{n:'Empty hands',d:'Win 10 fights with no weapon'},sp_b10:{n:'The big ones fear you',d:'Drop 10 big ones while specialised'}});
+/* ----- 6.14 (Twister 22:23): more specialisations, inspired by the classes of a long fantasy story Twister likes -----
+   Our own names, lore and numbers; the source is never named in the game. One line per idea:
+   - «الخطيب» → «شيخ الكلام» (any class, ev 'talk'): comes from talking foes down (cnt.talkWin, counted in p113). A weak
+     fighter with little health, but words that stop a blow, slow a foe or lift you up.
+   - «الساحر الكبير» (epic) → «الساحر الأعظم» (legend, trial) for the mage: two spells at once, and the greatest one can let a
+     spell go off again by itself after the turn.
+   - «سيد السيف» (warrior, legend, trial), «ضلّ الموت» (thief, legend, trial), «فارس النور» (healer, epic),
+     «صاحب المقابر» (mage, hidden, trial), «صاحب الخيالات» (mage, rare).
+   Every one swaps the three moves like the others (SPK_ADD), and the moves grow by use (C81, p112). */
+const SP_OGX=(c,rows)=>P20_grid(16,rows.map(r=>r.replace(/W/g,c[0]).replace(/C/g,c[1])));
+const OG_SCROLL=['','..KKKKKKKKKKK','.KWWWWWWWWWWWK','.KWCCCCCCCCCWK','..KWWWWWWWWWK','..KWCCCCCCCWK','..KWWWWWWWWWK','..KWCCCCCCCWK','..KWWWWWWWWWK','..KWCCCCCWWWK','..KWWWWWWWWWK','.KWWWWWWWWWWWK','.KKKKKKKKKKKKK','',''];
+const OG_STAR=['','.......KK','......KWWK','......KWWK','.KKKKKWCCWKKKKK','.KWWWWCCCCWWWWK','..KWWCCCCCCWWK','...KWCCCCCCWK','...KWCCCCCCWK','..KWWCKKKKCWWK','..KWCK....KCWK','..KKK......KKK','',''];
+const OG_BLADE=['','.............KK','............KWK','...........KWK','..........KWK','.........KWK','........KWK','..KK...KWK','..KCK.KWK','...KCKWK','....KCK','...KCKCK','..KCK.KCK','..KK...KK',''];
+const ogWpn=h=>!!(h&&h.eq&&h.eq.weapon);
+const ogLow=f=>f&&f.hp>0&&f.hp<=(f.max||f.hp)/2;
+const ogTalk=h=>spCnt(h,'talkWin');
+
+SP_ADD({id:'khatib',ev:'talk',r:'rare',m:'الخطيب',f:'الخطيبة',px:SP_OGX(['y','o'],OG_SCROLL),
+  need:h=>h.lvl>=3&&ogTalk(h)>=5,
+  prog:h=>`مستوى 3 (دلوقتي ${h.lvl}) و5 قتالات ${G('تخلّصها','تخلّصيها')} بالكلام (${Math.min(5,ogTalk(h))}/5)`,
+  st:{'حضور':2},hp:-2,
+  d:['حضور +2 · صحة −2','كلامك سلاحك: قدراتك بتهدّي وبتبطّأ وبتشجّع']});
+SP_ADD({id:'khatib2',ev:'talk',r:'epic',m:'شيخ الكلام',f:'شيخة الكلام',px:SP_OGX(['O','Q'],OG_SCROLL),
+  need:h=>h.lvl>=7&&ogTalk(h)>=20,
+  prog:h=>`مستوى 7 (دلوقتي ${h.lvl}) و20 قتال ${G('تخلّصه','تخلّصيه')} بالكلام (${Math.min(20,ogTalk(h))}/20)`,
+  st:{'حضور':3,'حكمة':1},
+  d:['حضور +3 · حكمة +1','كلمة واحدة منك بتوقّف الوحوش كلها دور']});
+SPK_ADD('khatib',[
+  {n:'لسان سليط',c:1,roll:'حضور',tgt:1,ico:'shadow',dmg:h=>rnd(2)+1,weak:1,d:'كلمة بتوجع: الوحش ضربته الجاية بتبقى نص'},
+  {n:'إقناع',c:2,roll:'حضور',tgt:1,ico:'cheer',dmg:h=>rnd(2),skip:1,d:'{بتقنعه|بتقنعيه} يستنى: بيفوّت دوره'},
+  {n:'كلمة حماس',c:2,ico:'warcry',heal:2,sharp:{a:2,n:3},d:'صحة +2، وضرباتك الـ3 الجايين +2'}]);
+SPK_ADD('khatib2',[
+  {n:'لسان سليط',c:1,roll:'حضور',tgt:1,ico:'shadow',dmg:h=>rnd(4)+2,weak:1,d:'كلمة بتوجع: الوحش ضربته الجاية بتبقى نص'},
+  {n:'كلمة تسكّت',c:3,roll:'حضور',all:1,ico:'warcry',dmg:h=>rnd(2),skip:1,d:'الوحوش كلها بتفوّت دورها'},
+  {n:'خطبة الحماس',c:2,ico:'raise',heal:4,shield:1,sharp:{a:3,n:3},d:'صحة +4، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3'}]);
+
+SP_ADD({id:'sahirk',ev:'fight',r:'epic',cls:'ساحر',m:'الساحر الكبير',f:'الساحرة الكبيرة',px:SP_OGX(['L','l'],OG_STAR),
+  need:h=>h.lvl>=7&&spCnt(h,'kAll')>=120,
+  prog:h=>`مستوى 7 (دلوقتي ${h.lvl}) و120 وحش ${G('توقّعه','توقّعيه')} (${Math.min(120,spCnt(h,'kAll'))}/120)`,
+  st:{'ذكاء':2},dmg:(h,f)=>2,
+  d:['ذكاء +2 · ضرر +2','{بتطلّع|بتطلّعي} سحرين في نفس واحد']});
+SP_ADD({id:'sahira',ev:'fight',r:'legend',cls:'ساحر',m:'الساحر الأعظم',f:'الساحرة العظمى',px:SP_OGX(['y','O'],OG_STAR),
+  need:h=>h.lvl>=10&&spCnt(h,'kAll')>=300&&spCnt(h,'bossK')>=10,
+  hint:'الشيخ عبد الصمد: «زمان كان فيه ساحر بيقول الكلمة مرة، والسحر يطلع تلات مرات.»',
+  st:{'ذكاء':3,'حكمة':1},hp:3,dmg:(h,f)=>4,
+  after:async(h,C)=>{if(Math.random()>=.25)return;const t=C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(f=>f.hp>0);if(!t)return;
+    const d=Math.min(t.hp,3+Math.floor(h.lvl/2));hurtFoe(t,d,{fx:'magic'});await sleep(520);await say(`السحر طلع تاني لوحده: ${t.name} -${d}${t.hp<=0?` · ${FF(t,'وقع','وقعت')}`:''}`,'good',700)},
+  d:['ذكاء +3 · حكمة +1 · صحة +3 · ضرر +4','بعد دورك، السحر ممكن يطلع تاني لوحده (25%)']});
+SPK_ADD('sahirk',[
+  {n:'سحرين في نفس',c:2,roll:'ذكاء',all:1,ico:'storm',dmg:h=>rnd(4)+2,d:'سحرين مع بعض بيضربوا كل الوحوش'},
+  {n:'نار وتلج',c:2,roll:'ذكاء',tgt:1,ico:'fire',dmg:h=>rnd(6)+3,skip:1,d:'نار بعدها تلج: الوحش بيتجمّد دور'},
+  {n:'درع السحر',c:2,ico:'shield',heal:3,shield:1,d:'صحة +3، وأول ضربة بتتمص'}]);
+SPK_ADD('sahira',[
+  {n:'تلات سحرات',c:3,roll:'ذكاء',all:1,ico:'storm',dmg:h=>rnd(6)+5,d:'تلات سحرات ورا بعض على كل الوحوش'},
+  {n:'سحر الأولين',c:3,roll:'ذكاء',tgt:1,ico:'fire',dmg:h=>rnd(8)+8,weak:1,d:'سحر قديم تقيل: والوحش ضربته الجاية بتبقى نص'},
+  {n:'سور السحر',c:2,ico:'shield',heal:5,shield:1,sharp:{a:2,n:3},d:'صحة +5، أول ضربة بتتمص، وضرباتك الـ3 الجايين +2'}]);
+
+SP_ADD({id:'sayf',ev:'fight',r:'legend',cls:'محارب',m:'سيد السيف',f:'سيدة السيف',px:SP_OGX(['W','y'],OG_BLADE),
+  need:h=>h.lvl>=10&&spCnt(h,'kAll')>=250,
+  hint:'عم حسن الحداد: «فيه إيد لو مسكت السيف، السيف نفسه بيسمع كلامها.»',
+  st:{'قوة':2,'خفة':1},dmg:(h,f)=>ogWpn(h)?(f&&f.boss?5:3):0,
+  d:['قوة +2 · خفة +1','بالسلاح في إيدك: ضرر +3، و+5 على الزعما']});
+SPK_ADD('sayf',[
+  {n:'ضربة واحدة',c:2,roll:'قوة',tgt:1,ico:'bash',dmg:h=>rnd(8)+6,d:'ضربة واحدة صافية بكل وزنك'},
+  {n:'دايرة السيف',c:3,roll:'خفة',all:1,ico:'storm',dmg:h=>rnd(6)+4,d:'السيف بيلف حواليك ويضرب كل الوحوش'},
+  {n:'وقفة السيف',c:2,ico:'shield',shield:1,sharp:{a:3,n:3},taunt:1,d:'الوحوش كلها {عليك|عليكي}، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3'}]);
+
+SP_ADD({id:'mawt',ev:'fight',r:'legend',cls:'حرامي',m:'ضلّ الموت',f:'ضلّ الموت',px:SP_OGX(['p','P'],OG_BLADE),
+  need:h=>h.lvl>=10&&spCnt(h,'kAll')>=250,
+  hint:'عم شاكر: «اللي بيمشي ورا الموت، الموت نفسه بيوسّعله.»',
+  st:{'خفة':3},dmg:(h,f)=>ogLow(f)?5:2,
+  d:['خفة +3','ضرر +2، و+5 على الوحش اللي صحته تحت النص']});
+SPK_ADD('mawt',[
+  {n:'من ورا',c:2,roll:'خفة',tgt:1,ico:'shadow',dmg:h=>rnd(8)+5,d:'ضربة من ورا الضهر'},
+  {n:'سمّ الليل',c:2,roll:'خفة',tgt:1,ico:'venom',dmg:h=>rnd(4)+2,weak:1,d:'سمّ بيتقّل الوحش: ضربته الجاية بتبقى نص'},
+  {n:'تختفي',c:2,ico:'smoke',shield:1,sharp:{a:3,n:2},d:'{بتختفي|بتختفي} لحظة: أول ضربة بتتمص، وضربتك الجاية +3'}]);
+
+SP_ADD({id:'nour',ev:'fight',r:'epic',cls:'معالج',m:'فارس النور',f:'فارسة النور',px:SP_OGX(['y','W'],OG_STAR),
+  need:h=>h.lvl>=7&&spCnt(h,'kAll')>=120,
+  prog:h=>`مستوى 7 (دلوقتي ${h.lvl}) و120 وحش ${G('توقّعه','توقّعيه')} (${Math.min(120,spCnt(h,'kAll'))}/120)`,
+  st:{'تحمّل':1,'حضور':1},hp:5,
+  d:['تحمّل +1 · حضور +1 · صحة +5','{بتحارب|بتحاربي} في الصف الأول وتداوي في نفس الوقت']});
+SPK_ADD('nour',[
+  {n:'ضربة النور',c:1,roll:'حضور',tgt:1,ico:'bash',dmg:h=>rnd(6)+2,d:'ضربة منوّرة على وحش واحد'},
+  {n:'درع النور',c:2,ico:'shield',heal:4,shield:1,taunt:1,d:'صحة +4، الوحوش كلها {عليك|عليكي}، وأول ضربة بتتمص'},
+  {n:'نور يطرد',c:3,roll:'حكمة',all:1,ico:'exorcise',dmg:h=>rnd(6)+3,d:'نور بيضرب كل الوحوش'}]);
+
+SP_ADD({id:'qobour',ev:'fight',r:'hidden',cls:'ساحر',m:'صاحب المقابر',f:'صاحبة المقابر',px:SP_OGX(['g','m'],OG_STAR),
+  need:h=>h.lvl>=6&&spCnt(h,'kAll')>=80,
+  hint:'التُربي: «فيه ناس المقابر بتسمع كلامها بالليل.»',
+  st:{'ذكاء':1,'حكمة':1},
+  kill:(h,f)=>{const C=S.combat;if(!C)return;C.ogQ=Math.min(4,(C.ogQ|0)+1);const d=Math.min(2,MXH(h)-h.hp);if(d>0)h.hp+=d},
+  dmg:(h,f)=>{const C=S.combat;return C?(C.ogQ|0):0},
+  d:['ذكاء +1 · حكمة +1','كل وحش {بتوقّعه|بتوقّعيه} بيرجّعلك 2 صحة، وضربك بيزيد 1 لحد +4 في القتال']});
+SPK_ADD('qobour',[
+  {n:'إيد من التراب',c:2,roll:'ذكاء',tgt:1,ico:'venom',dmg:h=>rnd(6)+3,skip:1,d:'إيد بتطلع من الأرض وتمسك الوحش دور'},
+  {n:'برد المقابر',c:2,roll:'ذكاء',all:1,ico:'freeze',dmg:h=>rnd(4)+2,d:'برد بيضرب كل الوحوش'},
+  {n:'نَفَس التربة',c:2,ico:'regen',heal:4,d:'صحة +4'}]);
+
+SP_ADD({id:'khayal',ev:'fight',r:'rare',cls:'ساحر',m:'صاحب الخيالات',f:'صاحبة الخيالات',px:SP_OGX(['Q','O'],OG_SCROLL),
+  need:h=>h.lvl>=4&&spCnt(h,'kAll')>=40,
+  prog:h=>`مستوى 4 (دلوقتي ${h.lvl}) و40 وحش ${G('توقّعه','توقّعيه')} (${Math.min(40,spCnt(h,'kAll'))}/40)`,
+  st:{'ذكاء':1,'خفة':1},
+  hit:(h,f)=>{if(f.hp<=0||Math.random()>=.1)return;fxOn(f.fx=f.fx||{},'skip',{n:1});setTimeout(()=>{const el=$('#foe'+f.id);if(el)floatAt(el,FF(f,'اتلخبط!','اتلخبطت!'),'#9fb8ff','',20)},300)},
+  d:['ذكاء +1 · خفة +1','ضربتك ممكن تخلّي الوحش يشوف خيالات ويفوّت دوره (10%)']});
+SPK_ADD('khayal',[
+  {n:'خيال',c:1,roll:'ذكاء',tgt:1,ico:'smoke',dmg:h=>rnd(3)+1,weak:1,d:'الوحش بيضرب خياله: ضربته الجاية بتبقى نص'},
+  {n:'تلات نسخ',c:2,ico:'smoke',shield:1,heal:2,d:'تلات نسخ منك: أول ضربة بتتمص، وصحة +2'},
+  {n:'دوخة',c:2,roll:'ذكاء',tgt:1,ico:'storm',dmg:h=>rnd(4)+2,skip:1,d:'الوحش بيدوخ ويفوّت دوره'}]);
+
+/* the trials of the hidden and legendary ones */
+Object.assign(SPT,{
+  sahira:{days:7,steps:[{t:'{اكسب|اكسبي} 15 قتال',k:'sp_win',n:15},{t:'{اكسب|اكسبي} 3 قتالات قدام 3 وحوش أو أكتر',k:'sp_many',n:3},{t:'{اكسب|اكسبي} قتالين زعيم',k:'sp_boss',n:2}]},
+  sayf:{days:7,steps:[{t:'{اكسب|اكسبي} 15 قتال',k:'sp_win',n:15},{t:'{اكسب|اكسبي} 3 قتالات صعبة (3 وحوش أو صحتك تحت التلت)',k:'sp_hard',n:3},{t:'{اكسب|اكسبي} قتالين زعيم',k:'sp_boss',n:2}]},
+  mawt:{days:7,steps:[{t:'{اكسب|اكسبي} 15 قتال',k:'sp_win',n:15},{t:'{اكسب|اكسبي} 3 قتالات وصحتك تحت التلت',k:'sp_low',n:3},{t:'{اكسب|اكسبي} قتالين زعيم',k:'sp_boss',n:2}]},
+  qobour:{days:5,steps:[{t:'{اكسب|اكسبي} 10 قتالات',k:'sp_win',n:10},{t:'{اكسب|اكسبي} 3 قتالات قدام 3 وحوش أو أكتر',k:'sp_many',n:3},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]}});
+
+/* English */
+L10NG({'الخطيب':'The Orator','الخطيبة':'The Orator','شيخ الكلام':'Master of words','شيخة الكلام':'Master of words','الساحر الكبير':'The great mage','الساحرة الكبيرة':'The great mage',
+  'الساحر الأعظم':'The greatest mage','الساحرة العظمى':'The greatest mage','سيد السيف':'Lord of the sword','سيدة السيف':'Lady of the sword','ضلّ الموت':'Shadow of death',
+  'فارس النور':'Knight of light','فارسة النور':'Knight of light','صاحب المقابر':'Keeper of the graves','صاحبة المقابر':'Keeper of the graves','صاحب الخيالات':'The illusionist','صاحبة الخيالات':'The illusionist',
+  'حضور +2 · صحة −2':'Presence +2 · Health −2','كلامك سلاحك: قدراتك بتهدّي وبتبطّأ وبتشجّع':'Words are your weapon: your moves calm, slow and cheer',
+  'حضور +3 · حكمة +1':'Presence +3 · Wisdom +1','كلمة واحدة منك بتوقّف الوحوش كلها دور':'One word from you stops every foe for a turn',
+  'ذكاء +2 · ضرر +2':'Intelligence +2 · Damage +2','{بتطلّع|بتطلّعي} سحرين في نفس واحد':'You cast two spells in one breath',
+  'ذكاء +3 · حكمة +1 · صحة +3 · ضرر +4':'Intelligence +3 · Wisdom +1 · Health +3 · Damage +4','بعد دورك، السحر ممكن يطلع تاني لوحده (25%)':'After your turn, the spell may go off again by itself (25%)',
+  'قوة +2 · خفة +1':'Strength +2 · Agility +1','بالسلاح في إيدك: ضرر +3، و+5 على الزعما':'With a weapon in hand: damage +3, +5 on bosses',
+  'خفة +3':'Agility +3','ضرر +2، و+5 على الوحش اللي صحته تحت النص':'Damage +2, +5 on a foe under half health',
+  'تحمّل +1 · حضور +1 · صحة +5':'Endurance +1 · Presence +1 · Health +5','{بتحارب|بتحاربي} في الصف الأول وتداوي في نفس الوقت':'You fight in the front row and heal at the same time',
+  'ذكاء +1 · حكمة +1':'Intelligence +1 · Wisdom +1','كل وحش {بتوقّعه|بتوقّعيه} بيرجّعلك 2 صحة، وضربك بيزيد 1 لحد +4 في القتال':'Every foe you drop gives back 2 health, and your hits grow by 1 up to +4 in the fight',
+  'ذكاء +1 · خفة +1':'Intelligence +1 · Agility +1','ضربتك ممكن تخلّي الوحش يشوف خيالات ويفوّت دوره (10%)':'Your hit may make the foe see things and miss its turn (10%)',
+  'لسان سليط':'Sharp tongue','كلمة بتوجع: الوحش ضربته الجاية بتبقى نص':'A word that stings: the foe\'s next hit is halved','إقناع':'Persuasion','{بتقنعه|بتقنعيه} يستنى: بيفوّت دوره':'You talk it into waiting: it misses its turn',
+  'كلمة حماس':'Rousing word','صحة +2، وضرباتك الـ3 الجايين +2':'Health +2, and your next 3 hits +2','كلمة تسكّت':'Silencing word','الوحوش كلها بتفوّت دورها':'Every foe misses its turn',
+  'خطبة الحماس':'Rousing speech','صحة +4، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3':'Health +4, the first hit is soaked, and your next 3 hits +3',
+  'سحرين في نفس':'Two in one breath','سحرين مع بعض بيضربوا كل الوحوش':'Two spells together hit every foe','نار وتلج':'Fire and ice','نار بعدها تلج: الوحش بيتجمّد دور':'Fire then ice: the foe freezes a turn',
+  'درع السحر':'Spell shield','صحة +3، وأول ضربة بتتمص':'Health +3, and the first hit is soaked','تلات سحرات':'Three spells','تلات سحرات ورا بعض على كل الوحوش':'Three spells in a row on every foe',
+  'سحر الأولين':'Spell of the first ones','سحر قديم تقيل: والوحش ضربته الجاية بتبقى نص':'A heavy old spell: the foe\'s next hit is halved','سور السحر':'Wall of spells','صحة +5، أول ضربة بتتمص، وضرباتك الـ3 الجايين +2':'Health +5, the first hit is soaked, and your next 3 hits +2',
+  'ضربة واحدة':'One strike','ضربة واحدة صافية بكل وزنك':'One clean strike with all your weight','دايرة السيف':'Sword circle','السيف بيلف حواليك ويضرب كل الوحوش':'The sword turns around you and hits every foe',
+  'وقفة السيف':'Sword stance','الوحوش كلها {عليك|عليكي}، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3':'Every foe turns on you, the first hit is soaked, and your next 3 hits +3',
+  'من ورا':'From behind','ضربة من ورا الضهر':'A strike from behind','سمّ الليل':'Night poison','سمّ بيتقّل الوحش: ضربته الجاية بتبقى نص':'A poison that slows the foe: its next hit is halved',
+  'تختفي':'Vanish','{بتختفي|بتختفي} لحظة: أول ضربة بتتمص، وضربتك الجاية +3':'You vanish for a moment: the first hit is soaked, and your next hit +3',
+  'ضربة النور':'Strike of light','ضربة منوّرة على وحش واحد':'A shining strike on one foe','درع النور':'Shield of light','صحة +4، الوحوش كلها {عليك|عليكي}، وأول ضربة بتتمص':'Health +4, every foe turns on you, and the first hit is soaked',
+  'نور يطرد':'Light that drives out','نور بيضرب كل الوحوش':'Light that hits every foe','إيد من التراب':'Hand from the dust','إيد بتطلع من الأرض وتمسك الوحش دور':'A hand rises from the ground and holds the foe a turn',
+  'برد المقابر':'Grave cold','برد بيضرب كل الوحوش':'A cold that hits every foe','نَفَس التربة':'Breath of the earth','صحة +4':'Health +4',
+  'خيال':'Mirage','الوحش بيضرب خياله: ضربته الجاية بتبقى نص':'The foe hits a mirage: its next hit is halved','تلات نسخ':'Three copies','تلات نسخ منك: أول ضربة بتتمص، وصحة +2':'Three copies of you: the first hit is soaked, and health +2',
+  'دوخة':'Dizzy','الوحش بيدوخ ويفوّت دوره':'The foe gets dizzy and misses its turn',
+  /* the tamer (p113) */
+  'إيد هادية':'Calm hand','ضربة هادية: الوحش ضربته الجاية نص':'A calm hit: the foe\'s next hit is halved','كلمة في الصميم':'Right on target','كلمة في الوش: ضرر، وضربته الجاية نص':'A word to the face: damage, and its next hit is halved',
+  'حضور +1 · حكمة +1':'Presence +1 · Wisdom +1','وحش المأوى اللي معاك الليلة ألفته بتزيد أكتر':'The shelter creature with you tonight bonds faster',
+  'قدراتك: عين المروّض، صوت الألفة، نداء الرفيق':'Your moves: Tamer\'s eye, Voice of trust, Call the companion','حضور +1 · حكمة +1 · تحمّل +1 · صحة +4':'Presence +1 · Wisdom +1 · Endurance +1 · Health +4',
+  'قدراتك: عين المروّض، صوت العهد، عهد الرفقة':'Your moves: Tamer\'s eye, Voice of the oath, Oath of company','عين المروّض':'Tamer\'s eye','صوت الألفة':'Voice of trust','نداء الرفيق':'Call the companion',
+  'صوت العهد':'Voice of the oath','عهد الرفقة':'Oath of company','{بتقرا|بتقري} الوحش: ضربة خفيفة، وضربته الجاية بتبقى نص':'You read the beast: a light hit, and its next hit is halved',
+  'صوت هادي بيوقف عداء الوحش: بيفوّت دوره':'A calm voice stops the beast\'s anger: it misses its turn','{بتنادي|بتنادي} على اللي معاك: صحة +3، وضرباتك الـ2 الجايين +2':'You call your companion: health +3, and your next 2 hits +2',
+  '{بتقرا|بتقري} الوحش: ضربة، وضربته الجاية بتبقى نص':'You read the beast: a hit, and its next hit is halved','صوت بيهدّي الوحوش كلها: كل واحد بيفوّت دوره':'A voice that calms every beast: each misses its turn',
+  'صحة +5، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3':'Health +5, the first hit is soaked, and your next 3 hits +3'});
 /* ---------- search at the smith, the tailor and the cook (5.57, Twister): a box on the sticky bar that hides what does not match ---------- */
 const TWQ={smith:'',tailor:'',cook:''};
 /* Arabic letters that people type either way count as the same */
@@ -41340,6 +41501,392 @@ function cf2HiTx(npc,s){const c={stake:s},lv=CF_NPC[npc].lv,up=cfLvAt(c,lv)>lv;r
 {const st=document.createElement('style');st.textContent=`
 .cf2-box{margin:4px 0 6px;padding:8px 10px;font-size:13px}.cf2-row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:4px}.cf2-row span{color:var(--gold2);font-weight:800}
 .cf2-say{margin-top:4px;color:var(--mute);font-size:12px;line-height:1.5}.cf2-box.out{border-color:var(--bad)}.cf2-box.out .cf2-say{color:#f2c77a;font-weight:700}`;document.head.appendChild(st)}
+
+/* ---------- 6.14 R04 · C63 «لحظات المكافأة» (RewardFx) ----------
+   A short reveal the first time something worth it happens (first «ممتاز»/«تحفة» at the smith, a new fish, the first harvest,
+   a boss down…). It never gives anything by itself: the real reward comes from the system that made it, unchanged.
+   - Each moment is RFX[id] (RFX_ADD below). on:0 = defined now, switched on by the version that builds that system
+     (wardrobe, alloys, workshops, animals, projects, contracts, duels, co-op help).
+   - rfx(id, ent, o): shows once per hero per id+ent (h.rewardSeen['id|ent']=1, saved at once), so a reload never shows it again.
+     o.n = what it was about (item/fish/boss name), o.sub = an extra line. Returns true when it showed.
+   - Three levels, local to the phone (localStorage 'sirdab_fx'): quiet (text only, no sound, no vibration),
+     std (default: one sound), party (rare moments also throw a small burst of pixels). The phone's reduced-motion
+     setting turns the burst off whatever is chosen. Nothing here changes a chance, a drop or a price.
+   - h.rwLog: the last 40 moments shown (id, ent, name, day) so they can be looked at again from the achievements, no reward.
+   - Old heroes (no h.rewardSeen yet): moments they clearly already had are marked seen once (rfxSeed), so nobody gets
+     «first ممتاز» for the hundredth time. */
+const RFX={};
+function RFX_ADD(o){RFX[o.id]=o}
+const RFX_LVS=['quiet','std','party'];
+function rfxLv(){let v='std';try{v=localStorage.getItem('sirdab_fx')||'std'}catch(e){}return RFX_LVS.includes(v)?v:'std'}
+function rfxSetLv(v){try{localStorage.setItem('sirdab_fx',RFX_LVS.includes(v)?v:'std')}catch(e){}}
+const rfxRM=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+const rfxT=a=>Array.isArray(a)?(EN&&a[1]?a[1]:a[0]):(a||'');
+/* id · n:[ar,en] · ic · snd (SFX key) · r: 1 = rare (party burst) · on: 1 = live now */
+[
+  ['RUSH_SMITH_01',['أول قطعة «ممتاز» من إيدك','Your first «Excellent» piece'],'⚒️','sparkle',0,1],
+  ['RUSH_SMITH_02',['أول «تحفة» من إيدك','Your first «Masterpiece»'],'🔨','fanfare',1,1],
+  ['RUSH_SMITH_03',['سبيكة جديدة','A new alloy'],'🧪','reveal',0,0],
+  ['RUSH_SMITH_04',['التحسين نجح','The upgrade held'],'✨','shimmer',0,1],
+  ['RUSH_TAILOR_01',['أول لبس فوق الدرع','First outfit over your armour'],'👘','page',0,0],
+  ['RUSH_TAILOR_02',['أول قطعة جوّانية مفيدة','First useful inner piece'],'🧵','page',0,0],
+  ['RUSH_TAILOR_03',['أول لبس «تحفة»','First «Masterpiece» clothing'],'🪡','fanfare',1,1],
+  ['RUSH_TAILOR_04',['طقم كامل','A full outfit'],'🧥','cheer',1,0],
+  ['RUSH_FISH_01',['نوع جديد في الصيد','A new kind of catch'],'🐟','sparkle',0,1],
+  ['RUSH_FISH_02',['صيدة نادرة','A rare catch'],'🐠','fanfare',1,0],
+  ['RUSH_FISH_03',['رمية مظبوطة','A perfect cast'],'🎣','good',0,0],
+  ['RUSH_FISH_04',['دفتر المكان كمل','The place\'s logbook is full'],'📘','cheer',1,0],
+  ['RUSH_FARM_01',['أول حصاد','Your first harvest'],'🌾','cheer',0,1],
+  ['RUSH_FARM_02',['حصاد دهب','A golden harvest'],'🌟','fanfare',1,0],
+  ['RUSH_FARM_03',['الأرض كبرت مرحلة','The farm grew a stage'],'🏡','bell',0,0],
+  ['RUSH_FARM_04',['أول خير من الحيوانات','First produce from the animals'],'🥚','good',0,0],
+  ['RUSH_WORLD_01',['طريق سري','A secret path'],'🗝️','whisper',1,0],
+  ['RUSH_WORLD_02',['الزعيم وقع','The boss is down'],'👑','fanfare',1,1],
+  ['RUSH_WORLD_03',['صفحة سرية','A secret page'],'📜','page',0,0],
+  ['RUSH_WORLD_04',['مشروع البلد خلص','A village project is done'],'🔔','bell',1,0],
+  ['RUSH_SOCIAL_01',['أول طبخة «تحفة»','Your first «Masterpiece» dish'],'🍲','fanfare',1,1],
+  ['RUSH_SOCIAL_02',['عقد كبير اتختم','A big contract sealed'],'📮','clack',0,0],
+  ['RUSH_SOCIAL_03',['كسبت مبارزة ودية','A friendly duel won'],'🤝','cheer',0,0],
+  ['RUSH_SOCIAL_04',['ساعدت صاحبك','You helped a friend'],'💞','good',0,0],
+].forEach(([id,n,ic,snd,r,on])=>RFX_ADD({id,n,ic,snd,r,on}));
+
+function rfxSeed(h){if(!h||h.rewardSeen)return;const S0=h.rewardSeen={},c=h.cnt||{},mk=(id,e)=>S0[id+'|'+(e||'')]=1;
+  if(c.smQ3)mk('RUSH_SMITH_01');if(c.smQ4)mk('RUSH_SMITH_02');if(c.harvest)mk('RUSH_FARM_01');
+  try{Object.keys(MAT).forEach(k=>{const M=MAT[k];if((M.fish||k==='goldfish')&&((h.res&&h.res[k]>0)||(h.overR&&h.overR[k]>0)))mk('RUSH_FISH_01',k)})}catch(e){}
+  /* old heroes with fish: species they sold long ago can't be known; their first catch of one again shows once, no reward */
+}
+function rfxBurst(){const b=document.createElement('div');b.className='rfx-burst';b.setAttribute('aria-hidden','true');
+  const C=['#ffd34d','#ff8a3d','#7fd1ff','#9be36b','#ff6fa8','#fff3c4'];
+  b.innerHTML=Array.from({length:18},(_,i)=>{const a=i/18*6.283,d=70+Math.random()*60;return `<i style="--x:${Math.round(Math.cos(a)*d)}px;--y:${Math.round(Math.sin(a)*d-30)}px;background:${C[i%C.length]};animation-delay:${Math.round(Math.random()*120)}ms"></i>`}).join('');
+  document.body.appendChild(b);setTimeout(()=>b.remove(),1700)}
+function rfxShow(D,o){const lv=rfxLv(),quiet=lv==='quiet',burst=lv==='party'&&D.r&&!rfxRM();
+  return band(`${D.ic} ${rfxT(['لحظة حلوة','A moment'])}`,rfxT(D.n),[o.n,o.sub].filter(Boolean).join(' · '),
+    {color:D.r?'':'blue',dur:quiet?1600:D.r?2600:2000,sound:quiet?false:(SFX[D.snd]||SFX.fanfare),vib:!quiet,fx:burst?rfxBurst:null})}
+function rfx(id,ent,o){o=o||{};const h=S.hero,D=RFX[id];if(!h||!D||!D.on)return false;
+  try{rfxSeed(h);const key=id+'|'+(ent==null?'':String(ent).slice(0,40));if(h.rewardSeen[key])return false;h.rewardSeen[key]=1;
+    h.rwLog=(h.rwLog||[]).slice(-39);h.rwLog.push({id,e:ent==null?'':String(ent).slice(0,40),n:String(o.n||'').slice(0,40),d:h.nDone|0});saveHero();
+    rfxShow(D,o);return true}catch(e){console.warn(e);return false}}
+/* again from the log: the same card, nothing given */
+function rfxReplay(i){const h=S.hero,L=h&&h.rwLog&&h.rwLog[i],D=L&&RFX[L.id];if(D)rfxShow(D,{n:L.n})}
+const rfxNm=id=>{try{return (GEAR[id]&&(GEAR[id].n||GEAR[id].name))||(ITEMS[id]&&ITEMS[id].name)||(MAT[id]&&(MAT[id].n||MAT[id].name))||''}catch(e){return ''}};
+
+/* ---- the live hooks ---- */
+/* crafting: the quality the work really came out with */
+{const c0=craftQ;craftQ=function(h,at,score,addIn,id){const r=c0.apply(this,arguments);
+  try{if(h===S.hero&&r&&!S.spQuick){const q=r.q|0,n=rfxNm(id);
+    if(at==='smith'){if(q>=3)rfx('RUSH_SMITH_01','',{n});if(q>=4)rfx('RUSH_SMITH_02','',{n})}
+    else if(at==='tailor'&&q>=4)rfx('RUSH_TAILOR_03','',{n});
+    else if(at==='cook'&&q>=4)rfx('RUSH_SOCIAL_01','',{n})}}catch(e){console.warn(e)}return r}}
+/* upgrades: +5, +7 and +10 on one piece, once each */
+{const e0=qEnhTry;qEnhTry=function(h,u){const f=qFind(h,u),was=f&&f.I.e;const r=e0.apply(this,arguments);
+  try{const g=qFind(h,u);if(r&&g&&h===S.hero&&g.I.e>was&&[5,7,10].includes(g.I.e))rfx('RUSH_SMITH_04',u+':'+g.I.e,{n:`${rfxNm(g.id)} +${g.I.e}`})}catch(e){console.warn(e)}return r}}
+/* fishing: a kind never caught before, and the rare ones */
+{const a0=addRes;addRes=function(h,k,n){const r=a0.apply(this,arguments);
+  try{const M=MAT[k];if(h&&h===S.hero&&S.screen==='fish'&&M&&(M.fish||k==='goldfish')&&!M.junk){const nm=rfxNm(k);rfx('RUSH_FISH_01',k,{n:nm});if(tierOf(k)>=2)rfx('RUSH_FISH_02',k,{n:nm})}}catch(e){console.warn(e)}return r}}
+/* the farm: the first harvest by hand, and a golden one */
+{const f0=farmHarvest;farmHarvest=function(i,el,quiet){const h=S.hero,p=h&&h.farm&&h.farm.p[i],k=p&&p.c;const r=f0.apply(this,arguments);
+  try{if(r&&k&&!quiet){rfx('RUSH_FARM_01','',{n:rfxNm(k)});if(r.gold)rfx('RUSH_FARM_02',k,{n:rfxNm(k)})}}catch(e){console.warn(e)}return r}}
+/* a boss beaten in a real fight (not the training, not a peace), once per boss */
+{const e0=endFight;endFight=function(won){const C=S.combat;let B=null;
+  try{if(won&&C&&!C.tutorial&&!C.peace)B=C.foes.find(f=>f.boss||f.art==='nadaha')}catch(e){}
+  const r=e0.apply(this,arguments);try{if(B)rfx('RUSH_WORLD_02',B.art||B.name,{n:B.name||B.n||''})}catch(e){console.warn(e)}return r}}
+
+/* the settings: «المؤثرات» quiet / normal / party */
+{const os0=openSettings;openSettings=function(){const had=!!$('#setBg');os0.apply(this,arguments);const d=$('#setBg');if(had||!d)return;try{
+    const ok=d.querySelector('#stOk');if(!ok||d.querySelector('#stFx'))return;const N={quiet:['هادية','Quiet'],std:['عادية','Standard'],party:['حفلة','Party']};
+    const lbl=()=>rfxT(N[rfxLv()]);
+    ok.insertAdjacentHTML('beforebegin',`<button class="setrow" id="stFx"><span>${rfxT(['مؤثرات المكافآت','Reward effects'])}</span><span class="st-fx"><b>${lbl()}</b></span></button>`);
+    const b=d.querySelector('#stFx');b.onclick=()=>{const i=RFX_LVS.indexOf(rfxLv());rfxSetLv(RFX_LVS[(i+1)%3]);b.querySelector('b').textContent=lbl();SFX.tap&&SFX.tap()}}catch(e){console.warn(e)}}}
+
+(function(){const s=document.createElement('style');s.textContent=`
+.rfx-burst{position:fixed;left:50%;top:22%;width:0;height:0;z-index:9999;pointer-events:none}
+.rfx-burst i{position:absolute;width:6px;height:6px;image-rendering:pixelated;opacity:0;animation:rfxP 1.3s ease-out forwards}
+@keyframes rfxP{0%{opacity:1;transform:translate(0,0)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 60px))}}
+@media (prefers-reduced-motion: reduce){.rfx-burst{display:none}}`;document.head.appendChild(s)})();
+
+/* ---------- 6.14 R04 · C05 titles + C06 achievements ----------
+   C05: 12 more titles (3 fight, 3 smith/tailor, 2 mine/fish, 2 farm/cook, 2 town), hard but measurable, read from h.cnt like
+   the old ones (written «(c.X||0)>=N» so the profile's progress bar reads them). Every title owned keeps its small gift, but
+   gifts of one kind share one cap (TT_CAP): prices at most −20%, fight money at most +30%, health at most +15% of base
+   health (never under +3), each stat at most +3, hits at most +2. Choosing the title under your name changes nothing in them.
+   C06: 20 more achievements with one fixed event and one reward each, the achievements tab gets kinds (قتال، مغامرات، مهن،
+   استكشاف، فلوس، مجتمع، أسرار), a search box (Arabic and English) and done / still open filters, and a secret one shows «؟؟؟»
+   until it is earned. Rewards are money only, once (ach() keeps h.ach[id]); nothing here can be farmed twice.
+   New counters: h.cnt.bossK (a boss beaten in a real fight). */
+const TT_CAP={price:.8,loot:1.3,hpPct:.15,hpMin:3,st:3,dmg:2};
+TITLES.push(
+  {id:'t4_edge',m:'قلبه حديد',f:'قلبها حديد',how:'{تكسب|تكسبي} 15 قتال وصحتك أقل من التلت',ok:c=>(c.lowWins||0)>=15,hp:3,b:'صحة +3'},
+  {id:'t4_boss',m:'كاسر الزعما',f:'كاسرة الزعما',how:'{توقّع|توقّعي} 10 زعما في قتال حقيقي',ok:c=>(c.bossK||0)>=10,dmg:1,b:'ضربك +1'},
+  {id:'t4_k300',m:'سيف الكفر',f:'سيف الكفر',how:'{توقّع|توقّعي} 300 وحش',ok:c=>(c.kAll||0)>=300,st:{'قوة':1},b:'قوة +1'},
+  {id:'t4_anvil',m:'شيخ السندان',f:'شيخة السندان',how:'{تعمل|تعملي} 5 حاجات «تحفة» عند الحداد',ok:c=>(c.smQ4||0)>=5,st:{'تحمّل':1},b:'تحمّل +1'},
+  {id:'t4_fire',m:'أبو النار',f:'أم النار',how:'{تصهر|تصهري} 100 مرة',ok:c=>(c.smelt||0)>=100,hp:2,b:'صحة +2'},
+  {id:'t4_needle',m:'إبرة الكفر',f:'إبرة الكفر',how:'{تخيّط|تخيّطي} 40 حاجة بإيدك',ok:c=>(c.made_tailor||0)>=40,st:{'خفة':1},b:'خفة +1'},
+  {id:'t4_deep',m:'ضلمة المنجم',f:'ضلمة المنجم',how:'{تكسر|تكسري} 500 صخرة',ok:c=>(c.rocks||0)>=500,st:{'تحمّل':1},b:'تحمّل +1'},
+  {id:'t4_rfish',m:'عين السمك',f:'عين السمك',how:'{تصطاد|تصطادي} 10 سمكات نادرة',ok:c=>(c.sp_rfish||0)>=10,st:{'حكمة':1},b:'حكمة +1'},
+  {id:'t4_field',m:'أبو الغيط',f:'أم الغيط',how:'{تحصد|تحصدي} 500 مرة',ok:c=>(c.harvest||0)>=500,price:.97,b:'الأسعار أرخص 3%'},
+  {id:'t4_cook',m:'طباخ الكفر',f:'طباخة الكفر',how:'{تطبخ|تطبخي} 100 أكلة',ok:c=>(c.cooked||0)>=100,hp:2,b:'صحة +2'},
+  {id:'t4_scam',m:'محدش يضحك عليه',f:'محدش يضحك عليها',how:'{تكشف|تكشفي} 10 نصابين في البنك أو البورصة',ok:c=>(c.scamSpot||0)>=10,price:.97,b:'الأسعار أرخص 3%'},
+  {id:'t4_cafe',m:'معلم القهوة',f:'معلمة القهوة',how:'{تكسب|تكسبي} 25 دور في قهوة عم صابر',ok:c=>(c.cafeWin||0)>=25,loot:1.05,b:'فلوس القتال +5%'});
+I18NA(TITLES,{t4_edge:{m:'Iron heart',f:'Iron heart',how:'Win 15 fights with under a third of your health',b:'Health +3'},
+  t4_boss:{m:'Boss breaker',f:'Boss breaker',how:'Drop 10 bosses in real fights',b:'Your hits +1'},t4_k300:{m:'Sword of the village',f:'Sword of the village',how:'Drop 300 monsters',b:'Strength +1'},
+  t4_anvil:{m:'Master of the anvil',f:'Mistress of the anvil',how:'Make 5 «Masterpiece» things at the smith',b:'Endurance +1'},t4_fire:{m:'Father of fire',f:'Mother of fire',how:'Smelt 100 times',b:'Health +2'},
+  t4_needle:{m:'Village needle',f:'Village needle',how:'Sew 40 things by hand',b:'Agility +1'},t4_deep:{m:'Mine dark',f:'Mine dark',how:'Break 500 rocks',b:'Endurance +1'},
+  t4_rfish:{m:'Fish eye',f:'Fish eye',how:'Catch 10 rare fish',b:'Wisdom +1'},t4_field:{m:'Father of the field',f:'Mother of the field',how:'Harvest 500 times',b:'Prices 3% cheaper'},
+  t4_cook:{m:'Village cook',f:'Village cook',how:'Cook 100 dishes',b:'Health +2'},t4_scam:{m:'Nobody fools him',f:'Nobody fools her',how:'Catch 10 swindlers at the bank or the exchange',b:'Prices 3% cheaper'},
+  t4_cafe:{m:'Café master',f:'Café master',how:'Win 25 games at Saber\'s café',b:'Fight money +5%'}});
+
+/* the caps: one total per kind of gift */
+const ttSum=(h,f)=>titlesOn(h).reduce((a,t)=>a+(f(t)||0),0);
+{const p0=titlePrice;titlePrice=function(h){return Math.max(TT_CAP.price,p0.apply(this,arguments))}}
+{const l0=lootMul;lootMul=function(h){return Math.min(TT_CAP.loot,l0.apply(this,arguments))}}
+{const m0=MXH;MXH=function(h){const m=m0.apply(this,arguments);try{const t=ttSum(h,x=>x.hp),cap=Math.max(TT_CAP.hpMin,Math.round((h.maxhp||0)*TT_CAP.hpPct));return t>cap?m-(t-cap):m}catch(e){return m}}}
+{const s0=ST;ST=function(h,k){const v=s0.apply(this,arguments);try{const t=ttSum(h,x=>x.st&&x.st[k]);return t>TT_CAP.st?v-(t-TT_CAP.st):v}catch(e){return v}}}
+{const d0=WDMG;WDMG=function(h){const v=d0.apply(this,arguments);try{const t=ttSum(h,x=>x.dmg);return t>TT_CAP.dmg?v-(t-TT_CAP.dmg):v}catch(e){return v}}}
+
+/* ---- C06 achievements ---- */
+const ACH_CATS=[['fight',['قتال','Fight']],['adv',['مغامرات','Adventures']],['craft',['مهن','Trades']],['explore',['استكشاف','Exploring']],['eco',['فلوس','Money']],['social',['مجتمع','Town']],['secret',['أسرار','Secrets']]];
+const ACH4=[
+  ['a4_sm25','craft','إيد السندان','{تعمل|تعملي} 25 حاجة بإيدك عند الحداد',60,c=>(c.made_smith|0)>=25,'Anvil hands','Make 25 things by hand at the smith'],
+  ['a4_tl25','craft','إيد الإبرة','{تخيّط|تخيّطي} 25 حاجة بإيدك',60,c=>(c.made_tailor|0)>=25,'Needle hands','Sew 25 things by hand'],
+  ['a4_ck50','craft','مطبخ مفتوح','{تطبخ|تطبخي} 50 أكلة',60,c=>(c.cooked|0)>=50,'Open kitchen','Cook 50 dishes'],
+  ['a4_q4x3','craft','تلات تحف','3 حاجات «تحفة» عند الحداد',150,c=>(c.smQ4|0)>=3,'Three masterpieces','3 «Masterpiece» things at the smith'],
+  ['a4_br30','craft','عطار شاطر','{تعمل|تعملي} 30 جرعة',60,c=>(c.brewed|0)>=30,'Clever herbalist','Make 30 potions'],
+  ['a4_boss5','adv','خمس زعما','{توقّع|توقّعي} 5 زعما في قتال حقيقي',100,c=>(c.bossK|0)>=5,'Five bosses','Drop 5 bosses in real fights'],
+  ['a4_low5','fight','على الحافة','{تكسب|تكسبي} 5 قتالات وصحتك أقل من التلت',50,c=>(c.lowWins|0)>=5,'On the edge','Win 5 fights with under a third of your health'],
+  ['a4_relic','adv','أثر الزعيم','{تلاقي|تلاقي} أول أثر من زعيم',80,c=>(c.relics|0)>=1,'A boss relic','Find your first boss relic'],
+  ['a4_k100','fight','مية وقعة','{توقّع|توقّعي} 100 وحش',100,c=>(c.kAll|0)>=100,'A hundred falls','Drop 100 monsters'],
+  ['a4_k500','fight','خمسميت وقعة','{توقّع|توقّعي} 500 وحش',250,c=>(c.kAll|0)>=500,'Five hundred falls','Drop 500 monsters',1],
+  ['a4_fish8','explore','دفتر السمك','{تصطاد|تصطادي} 8 أنواع سمك مختلفة',80,(c,h)=>Object.keys(h.rewardSeen||{}).filter(k=>k.indexOf('RUSH_FISH_01|')===0).length>=8,'Fish logbook','Catch 8 different kinds of fish'],
+  ['a4_rock300','explore','تحت الأرض','{تكسر|تكسري} 300 صخرة',60,c=>(c.rocks|0)>=300,'Underground','Break 300 rocks'],
+  ['a4_roam10','explore','الخلا بيتك','{تخلّص|تخلّصي} 10 طلبات صيد في الخلا',60,c=>(c.roamQ|0)>=10,'The wild is home','Finish 10 hunting errands in the wild'],
+  ['a4_kh5','explore','كل ركن','{تروح|تروحي} 5 أماكن على خريطة الخلا',60,(c,h)=>Object.keys((h.kh&&h.kh.seen)||{}).length>=5,'Every corner','Visit 5 places on the wild\'s map'],
+  ['a4_scam5','eco','عينك حمرا','{تكشف|تكشفي} 5 نصابين',80,c=>(c.scamSpot|0)>=5,'Sharp eye','Catch 5 swindlers'],
+  ['a4_100k','eco','مية ألف','يبقى معاك والخزنة 100000 جنيه',0,(c,h)=>(h.money|0)+((h.bank&&h.bank.v)|0)>=100000,'A hundred thousand','Hold 100000 coins with the safe'],
+  ['a4_cafe10','eco','ملك الطاولة','{تكسب|تكسبي} 10 أدوار في القهوة',50,c=>(c.cafeWin|0)>=10,'King of the board','Win 10 café games'],
+  ['a4_qb50','social','الكفر بيعتمد عليك','50 مهمة في دوار العمدة',120,(c,h)=>((h.qb&&h.qb.done)|0)>=50,'The village counts on you','50 errands at the mayor\'s'],
+  ['a4_kr5','social','حظ الكورة','{تكسب|تكسبي} 5 رهانات على ماتشات القهوة',40,c=>(c.krWin|0)>=5,'Football luck','Win 5 bets on café matches'],
+  ['a4_feed5','secret','الخير بيرجع','{تأكّل|تأكّلي} 5 وحوش جعانة {يساعدوك|يساعدوكي} بعدها',60,c=>(c.fed_help|0)>=5,'Kindness returns','Feed 5 hungry beasts that help you after',1],
+];
+ACH4.forEach(([id,cat,n,d,r,ok,ne,de,sec])=>ACH.push({id,cat,n,d,r,ok4:ok,sec:sec?1:0}));
+I18NA(ACH,Object.fromEntries(ACH4.map(a=>[a[0],{n:a[6],d:a[7]}])));
+/* the kind of the older ones, from their ids */
+function achCat(a){if(a.cat)return a.cat;const id=a.id;
+  if(/^(crit|master|combo|nopot|mb_|ub_|low|k_)/.test(id))return 'fight';
+  if(/^(brb_|qb_|ml_|fc_|co|fr|lb)/.test(id))return 'social';
+  if(/^(fm_|sm|tl|ck|at_|cr|q|ea|jr|sp)/.test(id))return 'craft';
+  if(/^(roam|kh_|hungry|bond|mn|fs|fish)/.test(id))return 'explore';
+  if(/^(bk|bank|bs|cf|kr|mk)/.test(id))return 'eco';
+  return 'adv'}
+function achCheck4(h){if(!h||h!==S.hero||!h.ach)return;const c=h.cnt||{},got=[];
+  ACH.forEach(a=>{if(a.ok4&&!h.ach[a.id]){let y=false;try{y=a.ok4(c,h)}catch(e){}if(y)got.push(a.id)}});
+  got.forEach((id,i)=>setTimeout(()=>{if(S.hero===h)ach(id)},600+i*2600))}
+{const b0=bump;bump=function(k,n){try{kAllFix(S.hero)}catch(e){}const r=b0.apply(this,arguments);try{const h=S.hero;if(h&&/^k_/.test(k)&&k!=='k_dummy'){h.cnt.kAll=(h.cnt.kAll|0)+(n||1)}achCheck4(h)}catch(e){console.warn(e)}return r}}
+{const a0=achScan;achScan=function(h){const r=a0.apply(this,arguments);try{achCheck4(h)}catch(e){}return r}}
+/* a boss beaten in a real fight (not the training, not a peace) */
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let b=0;
+  try{if(won&&C&&!C.tutorial&&!C.rm&&h)b=C.foes.filter(f=>(f.boss||f.art==='nadaha')&&f.hp<=0&&!f.fled).length}catch(e){}
+  const r=e0.apply(this,arguments);try{if(b&&h){h.cnt.bossK=(h.cnt.bossK|0)+b;saveHero();checkTitles(h);achCheck4(h)}}catch(e){console.warn(e)}return r}}
+/* old heroes: the kill total starts from the kills already counted per kind */
+function kAllFix(h){if(!h||!h.cnt||h.cnt.kAll!=null)return;h.cnt.kAll=Object.keys(h.cnt).filter(k=>/^k_/.test(k)&&k!=='k_dummy'&&k!=='k_salam').reduce((a,k)=>a+(h.cnt[k]|0),0)}
+
+/* the achievements tab: kinds, search, done / open */
+const A4=rfxT;
+function achPanel4(h){kAllFix(h);const done=ACH.filter(a=>h.ach[a.id]).length;
+  const row=a=>{const on=!!h.ach[a.id],hid=a.sec&&!on,cat=achCat(a);
+    const n=hid?A4(['؟؟؟','???']):T(a.n),d=hid?A4(['إنجاز سري: بيبان لما يحصل','A secret: it shows when it happens']):pfTx(a.d,1);
+    const s=hid?'':(String(a.n)+' '+String(a.d)+' '+n+' '+d).toLowerCase();
+    return `<div class="ach a4r ${on?'on':''}" data-c="${cat}" data-on="${on?1:0}" data-s="${s.replace(/"/g,'')}"><span class="md">${on?'★':'☆'}</span><span><b>${n}</b><small>${d}${a.r&&!hid?` · ${a.r} ${A4(['جنيه','coins'])}`:''}</small></span></div>`};
+  return `<div class="label">${A4(['الإنجازات','Achievements'])} <span class="num">${done}/${ACH.length}</span></div>
+  <div class="a4-bar"><input id="a4Q" type="search" placeholder="${A4(['دوّر على إنجاز','Search achievements'])}" autocomplete="off">
+    <div class="a4-f"><button data-f="all" class="on">${A4(['الكل','All'])}</button><button data-f="1">${A4(['خلصتها','Done'])}</button><button data-f="0">${A4(['لسه','Open'])}</button></div>
+    <div class="a4-c"><button data-k="" class="on">${A4(['كل الأنواع','All kinds'])}</button>${ACH_CATS.map(([k,n])=>{const L=ACH.filter(a=>achCat(a)===k),g=L.filter(a=>h.ach[a.id]).length;return L.length?`<button data-k="${k}">${A4(n)} <small>${g}/${L.length}</small></button>`:''}).join('')}</div></div>
+  <div class="card a4-list">${ACH.map(row).join('')}</div><div class="pf-note a4-none" hidden>${A4(['مفيش إنجاز بالاسم ده','No achievement by that name'])}</div>`}
+function achBind4(){const p=$('#ppan');if(!p||!p.querySelector('.a4-list'))return;let F='all',K='',Q='';
+  const go=()=>{let n=0;p.querySelectorAll('.a4r').forEach(r=>{const y=(F==='all'||r.dataset.on===F)&&(!K||r.dataset.c===K)&&(!Q||r.dataset.s.indexOf(Q)>=0);r.hidden=!y;if(y)n++});const z=p.querySelector('.a4-none');if(z)z.hidden=n>0};
+  const q=p.querySelector('#a4Q');if(q)q.oninput=()=>{Q=q.value.trim().toLowerCase();go()};
+  p.querySelectorAll('.a4-f button').forEach(b=>b.onclick=()=>{F=b.dataset.f;p.querySelectorAll('.a4-f button').forEach(x=>x.classList.toggle('on',x===b));go()});
+  p.querySelectorAll('.a4-c button').forEach(b=>b.onclick=()=>{K=b.dataset.k;p.querySelectorAll('.a4-c button').forEach(x=>x.classList.toggle('on',x===b));go()})}
+{const t=PF_TABS.find(x=>x.id==='ach');if(t)t.f=achPanel4}
+{const t0=pfTab;pfTab=function(id){const r=t0.apply(this,arguments);try{if(S.ptab==='ach')achBind4()}catch(e){console.warn(e)}return r}}
+
+(function(){const s=document.createElement('style');s.textContent=`
+.a4-bar{display:flex;flex-direction:column;gap:6px;margin:0 0 8px}
+.a4-bar input{width:100%;box-sizing:border-box;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid #6b5a43;background:#1d1812;color:#f3e6cf;font:inherit}
+.a4-f,.a4-c{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.a4-f button,.a4-c button{flex:0 0 auto;min-height:36px;padding:4px 12px;border-radius:999px;border:1px solid #6b5a43;background:transparent;color:#d8c7a6;font:inherit;font-size:.85em}
+.a4-f button.on,.a4-c button.on{background:#e0b65a;color:#2a1f12;border-color:#e0b65a}
+.a4-c small{opacity:.7}`;document.head.appendChild(s)})();
+
+/* ---------- 6.14 R04 · C81 «القدرات بتكبر بالاستعمال» ----------
+   A move (class move or specialisation move, everything in skillsOf) no longer goes up by spending points: it grows by being
+   used for real. h.skX[id] counts real uses; at SKX_NEED[n] uses the move reaches level n, as long as the hero's level allows
+   it (the old skGate). What counts: the move really went off in a real fight (the turn was taken: energy spent or the free
+   use taken, a log line added), not the training, not the scarecrow, at most SKX_FIGHT per move per fight, and a heal only
+   when someone was hurt. Opening screens, re-renders, chained hits and poison ticks never call useSkill, so they add nothing.
+   Old heroes keep every level they have (skL is never lowered). Points they still hold (h.skP), and points that come later
+   (زكريا's paper, a class change refund, the old spec refund), become «ورقة تدريب» (h.skT): one paper pushes one move half
+   the way to its next level, once per move per town day; it never jumps a level by itself. A new hero level gives no points.
+   The trade trees (TREE/LIFE) are untouched. */
+const SKX_NEED=[0,0,6,16,32,56],SKX_FIGHT=4;
+const skxGet=(h,id)=>((h.skX||{})[id])|0;
+function skxFix(h){if(!h)return;skInit(h);h.skX=h.skX||{};
+  if(!h.skV2){h.skV2=1;Object.keys(h.skL||{}).forEach(id=>{const L=skL(h,id);h.skX[id]=Math.max(h.skX[id]|0,SKX_NEED[L]||0)})}
+  if((h.skP|0)>0){h.skT=(h.skT|0)+(h.skP|0);h.skP=0}}
+/* the hero reaches the next level of a move when the uses are there and the hero's level allows it */
+function skxLvl(h,s,quiet){const id=s.id;let L=skL(h,id),up=0;
+  while(L<SK_MAX&&skxGet(h,id)>=SKX_NEED[L+1]&&h.lvl>=skGate(s,L+1)){L++;up=1}
+  if(up){h.skL=h.skL||{};h.skL[id]=L;if(!quiet)band(rfxT(['قدرتك كبرت','Your move grew']),`${s.n} · ${rfxT(['مستوى','Level'])} ${L}`,rfxT(['من كتر ما {استعملتها|استعملتيها}','From using it so much']).replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>G(a,b)),{sound:SFX.levelup})}
+  return up}
+function skxAdd(h,s,n){skxFix(h);const L=skL(h,s.id);if(L>=SK_MAX)return 0;h.skX[s.id]=skxGet(h,s.id)+n;return skxLvl(h,s)}
+/* the gate on the move, used by the hero's page: «n of N uses» */
+function skxBar(h,s){skxFix(h);const L=skL(h,s.id);if(L>=SK_MAX)return `<div class="skx"><small>${rfxT(['أعلى مستوى','Top level'])}</small></div>`;
+  const a=SKX_NEED[L],b=SKX_NEED[L+1],v=Math.min(b,skxGet(h,s.id)),g=skGate(s,L+1),w=Math.round((v-a)/(b-a)*100);
+  return `<div class="skx"><div class="bar"><i style="width:${Math.max(0,w)}%"></i></div><small>${v}/${b} ${rfxT(['استعمال للمستوى','uses to level'])} ${L+1}${h.lvl<g?` · ${rfxT(['محتاج مستوى بطل','needs hero level'])} ${g}`:''}</small></div>`}
+
+/* real uses only */
+{const u0=useSkill;useSkill=async function(id,chosen){const C=S.combat,h=S.hero;
+  const pre=C&&h&&C.phase==='me'&&!C.busy?{l:(C.log||[]).length,down:!!(S.comp&&S.comp.hp<=0),hurt:[h].concat(S.comp?[S.comp]:[]).some(x=>x&&x.hp>0&&x.hp<(x===h?MXH(h):(x.max||x.hp)))}:null;
+  const r=await u0.apply(this,arguments);
+  try{if(pre&&!C.tutorial){const s=skillsOf(h).find(x=>x.id===id);
+    const went=(C.log||[]).length>pre.l;   /* review: the move that ends the fight counts too (S.combat is gone by then); a free-energy proc counts */
+    const dummy=(C.foes||[]).every(f=>f.art==='dummy');const heal=s&&(s.spx?!!(s.spx.heal||s.spx.regen):((id==='sp'&&h.cls==='معالج')||id==='mass'||id==='regen'));
+    if(s&&went&&!dummy&&!(heal&&!pre.hurt)&&!(id==='raise'&&!pre.down)){C.skx=C.skx||{};if((C.skx[id]|0)<SKX_FIGHT){C.skx[id]=(C.skx[id]|0)+1;skxAdd(h,s,1);saveHero()}}}}catch(e){console.warn(e)}
+  return r}}
+/* points become training papers */
+{const g0=gainXP;gainXP=function(){const h=S.hero;if(h)skxFix(h);const p0=h?h.skP|0:0;const ups=g0.apply(this,arguments);
+  try{if(h){h.skP=p0;skxFix(h);if(ups&&ups.length)ups.forEach(u=>{u.note=String(u.note||'').replace(' · نقطة قدرة جديدة','');
+    skillsOf(h).forEach(s=>skxLvl(h,s,1))})}}catch(e){console.warn(e)}return ups}}
+const skPaperDay=h=>h.nDone|0;
+skCan=function(h,s){skxFix(h);const L=skL(h,s.id),n=L+1;if(L>=SK_MAX||h.lvl<s.lv)return {max:L>=SK_MAX,lock:h.lvl<s.lv};
+  const g=skGate(s,n),used=((h.skTd||{})[s.id])===skPaperDay(h);return {n,c:1,g,paper:1,used,ok:h.lvl>=g&&(h.skT|0)>=1&&!used}};
+skUp=function(id){const h=S.hero,s=skillsOf(h).find(x=>x.id===id);if(!s)return;const q=skCan(h,s);if(!q.ok)return;
+  const L=skL(h,id),a=SKX_NEED[L],b=SKX_NEED[L+1],have=skxGet(h,id),step=Math.ceil((b-a)/2);
+  h.skT--;h.skTd=h.skTd||{};h.skTd[id]=skPaperDay(h);h.skX[id]=Math.min(b,Math.max(have,a)+step);skxLvl(h,s);saveHero();
+  SFX.page&&SFX.page();const y=view.scrollTop;render();view.scrollTop=y};
+{const l0=skLvHTML;skLvHTML=function(h,s,full){let H=l0.apply(this,arguments);try{if(full!==false)H+=skxBar(h,s)}catch(e){}return H}}
+{const p0=pfSkills;pfSkills=function(h){skxFix(h);let H=p0.apply(this,arguments);
+  try{const p=h.skT|0,pn=p===0?'مفيش ورق تدريب':p===1?'ورقة تدريب واحدة':p===2?'ورقتين تدريب':p+' ورق تدريب';
+    H=H.replace(/<div class="sk-pts[^"]*"><b>[\s\S]*?<\/b><small>[\s\S]*?<\/small><\/div>/,`<div class="sk-pts${p?' on':''}"><b>${pn}</b><small class="skx-n">${T('القدرات بتكبر لما {تستعملها|تستعمليها} في قتال حقيقي. ورقة التدريب بتقرّب قدرة نص المسافة لمستواها الجاي، مرة في اليوم لكل قدرة.')}</small></div>`);
+    H=H.replace(/علّيها · (?:نقطة|نقطتين|\d+ نقط)/g,'ورقة تدريب')}catch(e){}return H}}
+
+(function(){const s=document.createElement('style');s.textContent=`
+.skx{margin-top:4px}.skx .bar{height:6px;border-radius:3px;background:#3a3024;overflow:hidden}.skx .bar i{display:block;height:100%;background:#8fd16a}
+.skx small{opacity:.8;font-size:.78em}.skx-n{margin-bottom:8px}`;document.head.appendChild(s)})();
+/* review: a class change (ccRefund) or the old first-move refund (spFirstBack) lowers or clears skL and gives points back;
+   the uses go down with the level, so the papers they become are the only gain (no level jumping back on the next gainXP) */
+function skxSync(h,before){if(!h||!h.skX)return;Object.keys(h.skX).forEach(id=>{const was=before[id]|0,now=(h.skL&&h.skL[id])|0;if(now<was||(was&&!now))h.skX[id]=SKX_NEED[Math.max(1,now)]||0})}
+{const c0=ccRefund;ccRefund=function(h){const b=Object.assign({},(h&&h.skL)||{});const r=c0.apply(this,arguments);try{skxSync(h,b)}catch(e){}return r}}
+{const f0=spFirstBack;spFirstBack=function(h){const b=Object.assign({},(h&&h.skL)||{});const r=f0.apply(this,arguments);try{if(r)skxSync(h,b)}catch(e){}return r}}
+/* review: the hero's page tabs hold the functions they were built with */
+{const t=PF_TABS.find(x=>x.id==='sk');if(t)t.f=pfSkills}
+/* زكريا's paper and the English of the skills tab */
+{const a0=applyOutcome;applyOutcome=function(o){const r=a0.apply(this,arguments);try{if(o&&o.skUp&&typeof RES==='object'&&RES&&RES.extra){skxFix(S.hero);RES.extra=RES.extra.replace(/\+(?:نقطة قدرة|\d+ نقط قدرة) · [^<]*/,'+'+o.skUp+' '+(o.skUp===1?'ورقة تدريب':'ورق تدريب')+' · '+T('{استعملها|استعمليها} من صفحة بطلك'))}}catch(e){}return r}}
+L10NG({'مفيش ورق تدريب':'No training papers','ورقة تدريب واحدة':'One training paper','ورقتين تدريب':'Two training papers','ورقة تدريب':'Training paper','ورق تدريب':'training papers',
+  'القدرات بتكبر لما {تستعملها|تستعمليها} في قتال حقيقي. ورقة التدريب بتقرّب قدرة نص المسافة لمستواها الجاي، مرة في اليوم لكل قدرة.':'Moves grow when you use them in real fights. A training paper takes one move half the way to its next level, once a day per move.',
+  '{استعملها|استعمليها} من صفحة بطلك':"use it from your hero's page",'قدرتك كبرت':'Your move grew','من كتر ما استعملتها':'From using it so much','من كتر ما استعملتيها':'From using it so much'});
+L10N({},[[/^(\d+) ورق تدريب$/,(m,n)=>n+' training papers'],[/^\+(\d+) (?:ورقة تدريب|ورق تدريب) · (.+)$/,(m,n,x)=>'+'+n+' training paper'+(n==='1'?'':'s')+' · '+(l10nStr(x)||x)]]);
+
+/* ---------- 6.14 R04 · C87 «مروّض الوحوش» (Twister 21:56: a full specialisation) + C96 hybrid ----------
+   Mercy, feeding and the one-creature shelter stay open to every hero (C86/C88/C92). The tamer line is a specialisation like
+   the others (swaps the hero's three moves) and opens from a chain of real deeds, never from luck alone: once the deeds are
+   done, the next real spare or helpful feeding offers it at once (ev 'tame', chance ×TM_MUL so it is ~certain).
+   - «مروّض الوحوش» (rare): level 5, 3 different kinds spared in real fights (h.tmK, one count per encounter), 2 hungry beasts
+     fed that helped after (cnt.fed_help), a creature bonded in the shelter (cnt.bonded). No kill is ever needed.
+   - «حارس العهد» (epic, the mastery step): level 9, 8 kinds spared, 6 fed that helped, the shelter creature at bond 3.
+   Passives: the shelter creature's bond grows one more per night it helps (still ≤3 a night), presence/wisdom. The moves
+   level by use (C81). Bosses, sentient folk and spirits are never tamed (the shelter's own rules stay as they are). */
+const TM_MUL=13;
+const tmKinds=h=>Object.keys((h&&h.tmK)||{}).length;
+const tmBond=h=>{try{return Math.max(0,...crtFix(h).list.map(c=>crLv(c)))}catch(e){return 0}};
+const SP_PAW=c=>P20_grid(16,['','....KK....KK','...KWWK..KWWK','...KWWK..KWWK','.KK.KK.KK.KK.KK','KWWK..KWWK..KWWK','KWWK.KKKKKK.KWWK','.KK.KWWWWWWK.KK','....KWCCCCWK','...KWCCCCCCWK','...KWCCCCCCWK','...KWWCCCCWWK','....KWWWWWWK','.....KKKKKK','',''].map(r=>r.replace(/W/g,c[0]).replace(/C/g,c[1])));
+SP_ADD({id:'tamer',ev:'tame',r:'rare',m:'مروّض الوحوش',f:'مروّضة الوحوش',px:SP_PAW(['y','o']),
+  need:h=>h.lvl>=5&&tmKinds(h)>=3&&spCnt(h,'fed_help')>=2&&spCnt(h,'bonded')>=1,
+  prog:h=>`مستوى 5 (دلوقتي ${h.lvl}) · ${G('تعفي','تعفي')} عن 3 أنواع وحوش مختلفة (${Math.min(3,tmKinds(h))}/3) · ${G('تأكّل','تأكّلي')} وحشين جعانين ${G('يساعدوك','يساعدوكي')} (${Math.min(2,spCnt(h,'fed_help'))}/2) · وحش في المأوى (${Math.min(1,spCnt(h,'bonded'))}/1)`,
+  st:{'حضور':1,'حكمة':1},
+  d:['حضور +1 · حكمة +1','وحش المأوى اللي معاك الليلة ألفته بتزيد أكتر','قدراتك: عين المروّض، صوت الألفة، نداء الرفيق']});
+SP_ADD({id:'tamer2',ev:'tame',r:'epic',m:'حارس العهد',f:'حارسة العهد',px:SP_PAW(['O','Q']),
+  need:h=>h.lvl>=9&&tmKinds(h)>=8&&spCnt(h,'fed_help')>=6&&tmBond(h)>=3,
+  prog:h=>`مستوى 9 (دلوقتي ${h.lvl}) · 8 أنواع ${G('عفيت','عفيتي')} عنها (${Math.min(8,tmKinds(h))}/8) · 6 وحوش جعانة ${G('ساعدوك','ساعدوكي')} (${Math.min(6,spCnt(h,'fed_help'))}/6) · ألفة وحش المأوى 3 (${Math.min(3,tmBond(h))}/3)`,
+  st:{'حضور':1,'حكمة':1,'تحمّل':1},hp:4,
+  d:['حضور +1 · حكمة +1 · تحمّل +1 · صحة +4','وحش المأوى اللي معاك الليلة ألفته بتزيد أكتر','قدراتك: عين المروّض، صوت العهد، عهد الرفقة']});
+SPK_ADD('tamer',[
+  {n:'عين المروّض',c:1,roll:'حكمة',tgt:1,ico:'shadow',dmg:h=>rnd(3)+1,weak:1,d:'{بتقرا|بتقري} الوحش: ضربة خفيفة، وضربته الجاية بتبقى نص'},
+  {n:'صوت الألفة',c:2,roll:'حضور',tgt:1,ico:'cheer',dmg:h=>rnd(2),skip:1,d:'صوت هادي بيوقف عداء الوحش: بيفوّت دوره'},
+  {n:'نداء الرفيق',c:2,ico:'raise',heal:3,sharp:{a:2,n:2},d:'{بتنادي|بتنادي} على اللي معاك: صحة +3، وضرباتك الـ2 الجايين +2'}]);
+SPK_ADD('tamer2',[
+  {n:'عين المروّض',c:1,roll:'حكمة',tgt:1,ico:'shadow',dmg:h=>rnd(4)+2,weak:1,d:'{بتقرا|بتقري} الوحش: ضربة، وضربته الجاية بتبقى نص'},
+  {n:'صوت العهد',c:2,roll:'حضور',all:1,ico:'warcry',dmg:h=>rnd(2),skip:1,d:'صوت بيهدّي الوحوش كلها: كل واحد بيفوّت دوره'},
+  {n:'عهد الرفقة',c:3,ico:'raise',heal:5,shield:1,sharp:{a:3,n:3},d:'صحة +5، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3'}]);
+I18NA([SP.tamer,SP.tamer2],{tamer:{m:'Beast tamer',f:'Beast tamer'},tamer2:{m:'Keeper of the oath',f:'Keeper of the oath'}});
+
+/* a real spare: one count per kind, once per encounter; then the tamer offer may come */
+{const t0=tkDo;tkDo=async function(k){const C=S.combat,h=S.hero;let f=null,pc=-1;try{if(k==='spare'&&C)f=tkSpareOf(C);if(k==='talk'&&C)pc=C.foes.filter(x=>x.out==='pacified').length}catch(e){}
+  const r=await t0.apply(this,arguments);
+  /* 6.14 TW-OG: a fight ended by talking counts toward «الخطيب» (p56/97_og.js), once per encounter */
+  try{if(pc>=0&&h&&!C.tutorial&&C.foes.filter(x=>x.out==='pacified').length>pc&&!encDone(h,`${C.enc}:og_talk`)){h.cnt.talkWin=(h.cnt.talkWin|0)+1;saveHero();spEvent(h,'talk',1)}}catch(e){console.warn(e)}
+  try{if(f&&f.out==='spared'&&h&&!C.tutorial){const kind=String(f.art||'').replace(/^g_/,'');if(kind&&!encDone(h,`${C.enc}:tm${f.id}`)){h.tmK=h.tmK||{};h.tmK[kind]=(h.tmK[kind]|0)+1;saveHero();spEvent(h,'tame',TM_MUL)}}}catch(e){console.warn(e)}
+  return r}}
+/* feeding that helped also counts toward it */
+{const b0=crNightEnd;crNightEnd=function(h){const N=S.night;try{if(h&&N&&N.beast&&!N.crGiven&&(spHas(h,'tamer')||spHas(h,'tamer2'))&&(N.crF|0)>0)N.crF=Math.min(3,(N.crF|0)+1)}catch(e){}
+  const r=b0.apply(this,arguments);try{if(h&&h===S.hero)spEvent(h,'tame',TM_MUL)}catch(e){}return r}}
+/* the first move in front, like every other specialisation (p63 ran before these existed, or gave them the smith's) */
+Object.assign(SPF,{tame:{n:'إيد هادية',c:1,roll:'حكمة',tgt:1,ico:'cheer',dmg:h=>rnd(3)+Math.ceil(h.lvl/2),weak:1,d:'ضربة هادية: الوحش ضربته الجاية نص'},
+  talk:{n:'كلمة في الصميم',c:1,roll:'حضور',tgt:1,ico:'shadow',dmg:h=>rnd(3)+Math.ceil(h.lvl/2),weak:1,d:'كلمة في الوش: ضرر، وضربته الجاية نص'},
+  sahirk:SPF.ramad,sahira:SPF.ramad,qobour:SPF.ramad,khayal:SPF.ramad,sayf:SPF.dam,mawt:SPF.zell,nour:SPF.tariqa});
+['tamer','tamer2','khatib','khatib2','sahirk','sahira','sayf','mawt','nour','qobour','khayal'].forEach(id=>{const o=SP[id];if(!o||!SPK[id])return;SPK[id]=SPK[id].filter(s=>!s.first);const x=Object.assign({},spfOf(o)),s={id:'sp_'+id+'_f',lv:1,cost:x.c,n:x.n,d:x.d,roll:x.roll,tgt:x.tgt?1:0,spx:x,first:1};
+  SKD[s.id]=spkUp(x);if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[x.ico]||SKI.bash;SPK[id].unshift(s)});
+/* English for the «on the way» lines of the tamer and the 6.14 lines (in front of p95's general rule, which would leave them) */
+L10N_R.unshift(
+  [/^مستوى (\d+) \(دلوقتي (\d+)\) و(\d+) (?:قتالات|قتال) (?:تخلّصها|تخلّصيها|تخلّصه|تخلّصيه) بالكلام \((\d+\/\d+)\)$/,(m,a,b,n,p)=>`Level ${a} (now ${b}) and ${n} fights ended by talking (${p})`],
+  [/^مستوى (\d+) \(دلوقتي (\d+)\) و(\d+) وحش (?:توقّعه|توقّعيه) \((\d+\/\d+)\)$/,(m,a,b,n,p)=>`Level ${a} (now ${b}) and ${n} monsters dropped (${p})`],
+  [/^مستوى (\d+) \(دلوقتي (\d+)\) · (?:تعفي) عن 3 أنواع وحوش مختلفة \((\d+\/3)\) · (?:تأكّل|تأكّلي) وحشين جعانين (?:يساعدوك|يساعدوكي) \((\d+\/2)\) · وحش في المأوى \((\d+\/1)\)$/,
+    (m,a,b,x,y,z)=>`Level ${a} (now ${b}) · spare 3 different kinds of beasts (${x}) · feed 2 hungry beasts that help you (${y}) · a creature in the shelter (${z})`],
+  [/^مستوى (\d+) \(دلوقتي (\d+)\) · 8 أنواع (?:عفيت|عفيتي) عنها \((\d+\/8)\) · 6 وحوش جعانة (?:ساعدوك|ساعدوكي) \((\d+\/6)\) · ألفة وحش المأوى 3 \((\d+\/3)\)$/,
+    (m,a,b,x,y,z)=>`Level ${a} (now ${b}) · 8 kinds spared (${x}) · 6 hungry beasts that helped you (${y}) · shelter creature bond 3 (${z})`]);
+L10NG({'الشيخ عبد الصمد: «زمان كان فيه ساحر بيقول الكلمة مرة، والسحر يطلع تلات مرات.»':'Sheikh Abdel-Samad: «Long ago there was a mage who said the word once, and the spell came out three times.»',
+  'عم حسن الحداد: «فيه إيد لو مسكت السيف، السيف نفسه بيسمع كلامها.»':'Hassan the smith: «There are hands that, when they hold a sword, the sword itself listens to them.»',
+  'عم شاكر: «اللي بيمشي ورا الموت، الموت نفسه بيوسّعله.»':'Uncle Shaker: «Whoever walks behind death, death itself makes way for.»',
+  'التُربي: «فيه ناس المقابر بتسمع كلامها بالليل.»':'The gravedigger: «There are people the graves listen to at night.»',
+  '{اكسب|اكسبي} 15 قتال':'Win 15 fights','{اكسب|اكسبي} قتالين زعيم':'Win 2 boss fights','{اكسب|اكسبي} 3 قتالات وصحتك تحت التلت':'Win 3 fights under a third of your health'});
+
+/* ---------- 6.14 R04 · C04 «الصفات المخفية بتكبر» ----------
+   A hidden trait (HIDDEN in p3b) can now grow to rank 2 and 3 (h.hidR[id]; rank 1 = the old h.hidden[id], kept as is so
+   every old check still works). Each rank needs its own milestone, counted once, and gives a small effect that stays inside
+   the old caps (critChance is still capped at 35%):
+   - حظ: rank 2 after 3 different nights with 3+ lucky hits each, rank 3 after 8 (h.hzN counts a night once). Lucky hits +1% / +2%.
+   - ثبات: rank 2 at 30 fights won with under a third of your health, rank 3 at 60 of them and 5 bosses down.
+     At low health your hits +3 / +4 instead of +2.
+   صبر and هيبة keep one rank for now. A rank is never sold, never lost on a reload, and can't be farmed past 3. */
+const HID_MAX=3,HID_EN={sabr:'Patience',hazz:'Luck',hayba:'Awe',thabat:'Steadfast'};
+const hidR=(h,id)=>!h||!h.hidden||!h.hidden[id]?0:Math.max(1,Math.min(HID_MAX,((h.hidR||{})[id])|0));
+function hidUp(h,id,r,why){if(!h||!h.hidden||!h.hidden[id]||hidR(h,id)>=r)return;h.hidR=h.hidR||{};h.hidR[id]=r;saveHero();
+  band(rfxT(['صفة مخفية اتطورت','A hidden trait grew']),`${rfxT([HIDDEN[id].n,HID_EN[id]||HIDDEN[id].n])} · ${rfxT(['رتبة','rank'])} ${r}`,why||'',{color:'blue',dur:2600,sound:SFX.shimmer})}
+function hidCheck4(h){if(!h||h!==S.hero||!h.hidden)return;const c=h.cnt||{},nz=h.hzN|0;
+  if(nz>=3)hidUp(h,'hazz',2,rfxT(['3 ليالي فيهم ضربات حظ كتير','3 nights full of lucky hits']));if(nz>=8)hidUp(h,'hazz',3,rfxT(['8 ليالي فيهم ضربات حظ كتير','8 nights full of lucky hits']));
+  if((c.lowWins|0)>=30)hidUp(h,'thabat',2,rfxT([G('30 قتال كسبته وانت على الحافة','30 قتال كسبتيه وانتي على الحافة'),'30 fights won on the edge']));
+  if((c.lowWins|0)>=60&&(c.bossK|0)>=5)hidUp(h,'thabat',3,rfxT(['60 قتال على الحافة و5 زعما','60 fights on the edge and 5 bosses']))}
+/* a night with 3+ lucky hits counts once */
+{const e0=N_endAdv;N_endAdv=function(){const h=S.hero,run=S.run;try{if(h&&run&&!run.hzRec&&(run.crits|0)>=3){run.hzRec=1;h.hzN=(h.hzN|0)+1;saveHero();setTimeout(()=>hidCheck4(h),1500)}}catch(e){}
+  return e0.apply(this,arguments)}}
+{const b0=bump;bump=function(k){const r=b0.apply(this,arguments);try{if(k==='lowWins')hidCheck4(S.hero)}catch(e){}return r}}
+/* the effects */
+{const c0=critChance;critChance=function(h){let c=c0.apply(this,arguments);const r=hidR(h,'hazz');if(r>1)c=Math.min(.35,c+.01*(r-1));return c}}
+thb=h=>h&&h.hidden&&h.hidden.thabat&&h.hp>0&&h.hp<=MXH(h)/3?[0,2,3,4][hidR(h,'thabat')]:0;
+/* the hero's page: the rank next to the trait */
+{const t=PF_TABS.find(x=>x.id==='st'),p0=t?t.f:pfStats,f=function(h){let H=p0.apply(this,arguments);try{Object.keys(HIDDEN).forEach(id=>{const r=hidR(h,id);if(r>1){const n=HIDDEN[id].n;H=H.replace(`>${n}<`,`>${n} <small class="hid-r">${'★'.repeat(r)}</small><`)}})}catch(e){}return H};if(t)t.f=f;else pfStats=f}
+
+/* ---------- 6.14 TW-DICE (Twister 23:33): less to read on the dice screen ----------
+   On the screen: the dice, the total, the result and «الصعوبة X جاية منين؟». The sum line, the three chances, «كان ناقصك…» and the
+   lines of where each result starts move inside that tap (or a «إزاي بتتحسب؟» tap when there is no difficulty). Nothing changes
+   in the roll itself. */
+{const m0=rcMath;rcMath=function(stat,opt){const r=m0.apply(this,arguments);try{const M=$('#dMath');if(!M)return r;
+    let d=M.querySelector('details');if(!d){M.insertAdjacentHTML('beforeend',`<details class="dm-why"><summary>${T(rfxT(['إزاي بتتحسب؟','How is it worked out?']))}</summary><div></div></details>`);d=M.querySelector('details')}
+    const box=d.querySelector('div');['.dm-pc','.dm-eq'].forEach(q=>{const e=M.querySelector(':scope > '+q);if(e&&box)box.prepend(e)})}catch(e){console.warn(e)}return r}}
+{const E=document.getElementById('dExplain');if(E&&typeof MutationObserver==='function'){let busy=0;new MutationObserver(()=>{if(busy||E.querySelector(':scope > .dx-why'))return;busy=1;try{
+    const near=E.querySelector('.near');const txt=[...E.childNodes].filter(n=>n.nodeType===3&&n.textContent.trim());if(!near&&!txt.length)return;
+    const sum=rfxT(['النتيجة بتتحسب إزاي؟','How is the result read?']);const keep=[...E.querySelectorAll('.streak')];const inner=[near?near.outerHTML:'',txt.map(n=>esc(n.textContent)).join(' ')].filter(Boolean).join('');
+    E.innerHTML='';keep.forEach(k=>E.appendChild(k));E.insertAdjacentHTML('beforeend',`<details class="dm-why dx-why"><summary>${sum}</summary><div>${inner}</div></details>`)}catch(e){}finally{busy=0}}).observe(E,{childList:true})}}
+L10NG({'إزاي بتتحسب؟':'How is it worked out?','النتيجة بتتحسب إزاي؟':'How is the result read?'});
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
