@@ -4786,6 +4786,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.11',d:'12 أكتوبر',add:['أيام البلد بقت بتعدّي {وانت|وانتي} {قافل|قافلة} اللعبة كمان، بس أبطأ: كل ساعتين غياب بيوم، ولحد 4 أيام في المرة. وأول ما {ترجع|ترجعي} بيقولك عدّى قد إيه. وطول ما اللعبة مفتوحة قدامك الوقت بيعدّي عادي حتى لو مش {بتلعب|بتلعبي}','الساعة بقت فوق خالص في كل شاشات البلد: الساعة كام، اليوم كام، وفاضل كام دقيقة على اليوم الجاي. وسما البلد بتتغير مع الساعة: الفجر والصبح والضهر والعصر والمغرب والليل','البنك والبورصة اتعملوا من جديد: أستاذ فوزي وأستاذ مجدي ورا الشباك، تابات بدل الزراير الكتير، {تختار|تختاري} المبلغ مرة و{تحط|تحطي} أو {تسحب|تسحبي}، والودايع بقت عقود مختومة بشريط بيعد الأيام، وختم بينزل وفلوس بتطير'],fix:['زعيم المكان في الصيد («الغريق» و«أم السلعوات» و«الضبع الأبيض») بقى بيرجع كل 3 أيام في البلد، ومكانه بيقولك راجع امتى. اليوم في البلد قصير، فكان بيرجع بسرعة قوي','صورة الوحش في القتال مابقتش بتغطي رقم مستواه','عروض الوسطا في البنك والبورصة بقت على قد فلوسك (اللي معاك واللي في الخزنة)، وأقصى حاجة في الشركة الواحدة بتكبر مع فلوسك','كشف النصابين بقى أصعب بكتير: مفيش «اسأل أستاذ فوزي» تاني. فيه لوحة قواعد (الختم الرسمي، الإمضة، المكسب المسموح، الوسطا المعتمدين)، وكل نصاب بيكسر قاعدة واحدة بس، وغالبًا في ورقة لازم {تبص|تبصي} عليها، والوسيط بيوريك حاجتين بس من تلاتة. في البورصة الورقة ليها وش وضهر و{تشوف|تشوفي} واحد بس. ولما {تقرر|تقرري} بيبان كان نصاب ولا لأ']},
 {v:'6.10',d:'12 أكتوبر',add:['أغلب اللعبة بقت بالإنجليزي للي مختار English: صفحة البطل (صفاتك، القدرات بمستوياتها، الشغلانات، الألقاب، الإنجازات، الشنطة)، التخصصات كلها بقدراتها واختباراتها، القتال كله (سجل القتال، النرد والصعوبة جاية منين، نقط الضعف واللي العدو ناوي عليه، حيل الكبار، الغنايم والصناديق)، أسامي كل الوحوش، قايمة المغامرات وشاشة التجهيز وآخر الليلة، والأحجار النادرة. كلام حكايات الليالي نفسه لسه بالعربي، وده جاي في نسخة لوحده'],fix:['القتال بقى فيه 4 زراير بس: ضربتك، «قدرات»، الشنطة، و«اتصرّف». «اتصرّف» بيفتح الاستخباية والراحة والكلام. ولما النداهة تنده، زرار «اتصرّف» بينوّر و«فوق!» أول حاجة جواه','للي مختار English: سطر الضربة بيقول ليه عملت أقل (لابس درع، بيحمي نفسه، جلده تخين)، وإشعارات البلد بقت بالإنجليزي']},
 {v:'6.09',d:'12 أكتوبر',add:['للي مختار English: المنجم والترعة وعم رجب العطّار بقوا بالإنجليزي وانت {بتلعب|بتلعبي}، وورقة الشغل اللي بتظهر قبل أي صنعة، وكل الألقاب'],
  fix:['فتح الحساب في البنك بقى بتمن ثابت للكل: 2500 جنيه، مهما كان مستواك أو الفلوس اللي {معاك|معاكي}']},
@@ -18862,6 +18863,16 @@ function caveFloor(g,r,base,dark,mid,glint){rc(g,0,0,g.w,g.h,dark);for(let i=0;i
   for(let x=0;x<g.w;x+=4+Math.floor(r()*5)){const h=3+Math.floor(r()*10);pl(g,[[x,0],[x+4,0],[x+2,h]],base)}rc(g,10,0,3,100,'b');rc(g,116,0,3,100,'b');rc(g,10,30,109,3,'b');lamp(g,26,36,'y',10);
   for(let i=0;i<9;i++){const x=8+Math.floor(r()*114),y=20+Math.floor(r()*70);sp(g,x,y,glint);sp(g,x-1,y,mid);sp(g,x+1,y,mid);sp(g,x,y-1,mid);sp(g,x,y+1,mid)}rc(g,0,92,g.w,8,dark);rc(g,0,92,g.w,1,base)}
 
+/* 6.11: the town at each part of the day; ph 'n' is the night picture exactly as before (same calls, same random order) */
+function townV(g,r,ph){const V={n:[['K','1','1','2','p','m'],18,'1'],a:[['1','2','2','p','m','r'],8,'2'],m:[['4','4','5','5','Q'],0,'3'],d:[['l','L','L','5','Q'],0,'3'],s:[['4','5','5','Q','Y'],0,'3'],g:[['p','m','r','R','o','y'],0,'p']}[ph]||[['K','1','1','2','p','m'],18,'1'];
+  const day=ph==='m'||ph==='d'||ph==='s',far=V[2];sky(g,V[0],0,40);if(V[1])stars(g,r,V[1],ph==='a'?12:22);
+  if(ph==='n')moon(g,98,10,4,1);else if(ph==='a')moon(g,112,17,3,1);
+  else{const u={m:[24,17,4],d:[66,7,4],s:[100,14,4],g:[110,29,6]}[ph];el(g,u[0],u[1],u[2]+1.5,u[2]+1.5,ph==='g'?'o':'Y');el(g,u[0],u[1],u[2],u[2],ph==='g'?'y':'W');
+    if(day)[[6,9,14],[80,13,18],[42,5,10]].forEach(([x,y,w])=>{rc(g,x+2,y-1,w-5,1,'W');rc(g,x,y,w,2,'W');rc(g,x+1,y+2,w-2,1,'C')})}
+  [[0,30,40],[56,32,20],[100,30,30]].forEach(([x,y,w])=>rc(g,x,y,w,12,far));rc(g,64,34,24,6,far);rc(g,78,26,6,8,far);palm(g,36,38,15,'K',.3);palm(g,112,36,16,'K',-.3);
+  [[0,36,17,'v'],[19,32,21,'b'],[43,38,13,'v'],[88,34,19,'v'],[108,31,22,'b']].forEach(([x,y,w,k])=>{rc(g,x,y,w,53-y,k);rc(g,x,y,w,1,'T');for(let i=1;i<w-1;i+=5){const lit=r()<.6;rc(g,x+i,y+3,2,3,lit&&!day?'y':'K')}});
+  rc(g,22,38,8,6,'y');for(let i=22;i<30;i+=2)rc(g,i,38,1,6,'o');pl(g,[[20,37],[32,37],[31,35],[21,35]],'m');rc(g,61,30,1,20,'K');if(day)rc(g,59,27,3,3,'K');else lamp(g,60,28,'Y',6);
+  [[10,53],[30,53],[96,53]].forEach(([x,y])=>arch(g,x,y,4,8,'K'));rc(g,0,50,130,3,'K')}
 const SZ={S:[120,50,480,200],T:[130,53,390,160],P:[100,56,160,90],M:[130,100,390,300]};
 const D={
 _sky:['S',(g,r)=>{sky(g,['K','1','1','2','v'],0,50);stars(g,r,12,26)}],
@@ -18999,11 +19010,10 @@ uc_hall:['S',(g,r)=>{stoneBg(g,r,'K','1');rc(g,0,6,120,1,'g');[[10,'W'],[24,'W']
   for(let i=0;i<5;i++)rc(g,46-i*2,30+i*3,28+i*4,3,i%2?'v':'b');rc(g,52,20,16,10,'b');eyes(g,58,24,'K');ln(g,46,10,74,10,'o');ln(g,60,4,60,10,'o');el(g,50,12,3,1,'o');el(g,70,12,3,1,'o');wallLamps(g,[36,84],10,['y','P'])}],
 
 /* ---------- the town (البلد): the header, the tiles, the café and the hall ---------- */
-'P:town':['T',(g,r)=>{sky(g,['K','1','1','2','p','m'],0,40);stars(g,r,18,22);moon(g,98,10,4,1);
-  [[0,30,40],[56,32,20],[100,30,30]].forEach(([x,y,w])=>rc(g,x,y,w,12,'1'));rc(g,64,34,24,6,'1');rc(g,78,26,6,8,'1');palm(g,36,38,15,'K',.3);palm(g,112,36,16,'K',-.3);
-  [[0,36,17,'v'],[19,32,21,'b'],[43,38,13,'v'],[88,34,19,'v'],[108,31,22,'b']].forEach(([x,y,w,k])=>{rc(g,x,y,w,53-y,k);rc(g,x,y,w,1,'T');for(let i=1;i<w-1;i+=5)rc(g,x+i,y+3,2,3,r()<.6?'y':'K')});
-  rc(g,22,38,8,6,'y');for(let i=22;i<30;i+=2)rc(g,i,38,1,6,'o');pl(g,[[20,37],[32,37],[31,35],[21,35]],'m');rc(g,61,30,1,20,'K');lamp(g,60,28,'Y',6);
-  [[10,53],[30,53],[96,53]].forEach(([x,y])=>arch(g,x,y,4,8,'K'));rc(g,0,50,130,3,'K')}],
+'P:town':['T',(g,r)=>townV(g,r,'n')],
+/* 6.11 (Twister 13:52): the town picture follows the town clock: dawn, morning, noon, afternoon, sunset (night is the one above) */
+'P:town_n':['T',(g,r)=>townV(g,r,'n')],'P:town_a':['T',(g,r)=>townV(g,r,'a')],'P:town_m':['T',(g,r)=>townV(g,r,'m')],
+'P:town_d':['T',(g,r)=>townV(g,r,'d')],'P:town_s':['T',(g,r)=>townV(g,r,'s')],'P:town_g':['T',(g,r)=>townV(g,r,'g')],
 'P:adv':['P',(g,r)=>{sky(g,['K','1','1','2','p'],0,34);stars(g,r,10,16);halo(g,30,30,12,{p:'m',2:'p'});hills(g,36,4,'1',r,.09);rc(g,0,36,100,20,'K');
   pl(g,[[22,56],[50,40],[56,38],[60,38],[46,46],[60,56]],'b');for(let i=0;i<5;i++)rc(g,46-i*4,41+i*3,3,1,'B');rc(g,22,24,2,32,'v');pl(g,[[24,25],[38,25],[41,27],[38,29],[24,29]],'B');pl(g,[[22,31],[10,31],[7,33],[10,35],[22,35]],'B');
   palm(g,8,40,10,'K',.3);palm(g,90,38,11,'K',-.3);palm(g,82,40,7,'K',-.2);rc(g,1,40,6,6,'K');rc(g,3,42,2,2,'y')}],
@@ -27347,7 +27357,7 @@ const LS_ALL=[
   {id:'night',c:'fight',n:'الليلة الطويلة',k:'مغامرة ليلة فصل',goal:'{تفهم|تفهمي} الليلة',steps:['الليلة فيها كذا محطة، وكل محطة ليها كروت.','لو {خرجت|خرجتي} الليلة بتتحفظ و{تكمّلها|تكمّليها} بعدين.'],act:'read',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
   {id:'enh',c:'craft',n:'التعزيز',k:'تعزيز حجر سلاح عم حسن',goal:'تقوّي قطعة',steps:['عم حسن بيعزّز القطع بالأحجار.','كل خطوة أصعب من اللي قبلها، والبرادة بتساعد.'],act:'go',go:'smith',btn:'روح عم حسن',lock:h=>h.lvl<3?'بيتفتح في المستوى 3':''},
   {id:'spec',c:'fight',n:'التخصصات',k:'تخصص نادر أسطوري',goal:'{تعرف|تعرفي} التخصصات',steps:['ساعات {وانت بتشتغل يطلعلك|وانتي بتشتغلي يطلعلكي} تخصص جديد.','كل تخصص بيغيّر حركاتك.'],act:'go',go:'spec',btn:'افتح التخصصات',lock:h=>h.lvl<5?'بيتفتح في المستوى 5':''},
-  {id:'money',c:'bag',n:'البنك والبورصة',k:'بنك وديعة خزنة بورصة أسهم',goal:'{تشغّل|تشغّلي} فلوسك',steps:['البنك: {تفتح|تفتحي} حساب مرة واحدة، وبعدها خزنة أمان ووديعة مكسبها مضمون.','البورصة: أسهم بتطلع وتنزل، وممكن {تخسر|تخسري}.'],act:'go',go:'bank',btn:'روح البنك',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
+  {id:'money',c:'bag',n:'البنك والبورصة',k:'بنك وديعة خزنة بورصة أسهم',goal:'{تشغّل|تشغّلي} فلوسك',steps:['البنك: {تفتح|تفتحي} حساب مرة واحدة، وبعدها خزنة أمان ووديعة مكسبها مضمون.','البورصة: أسهم بتطلع وتنزل، وممكن {تخسر|تخسري}.','الوسطا اللي على الباب: {قارن|قارني} ورقهم بقواعد أستاذ فوزي ومجدي. اللي مش ماشي على قاعدة واحدة نصاب.','أيام البلد بتعدّي {وانت|وانتي} {قافل|قافلة} اللعبة كمان، بس أبطأ.'],act:'go',go:'bank',btn:'روح البنك',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
   {id:'cafe',c:'friends',n:'القهوة',k:'قهوة طاولة دومينو باصرة سيجة كورة',goal:'{تلعب|تلعبي} مع ناس القهوة',steps:['طاولة ومحبوسة ودومينو وباصرة وسيجة.','ودي أو على فلوس، والماتش على التلفزيون.'],act:'go',go:'cafe',btn:'روح القهوة',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''}];
 const LS={q:'',f:'all',open:'',r:null};
 const lsLock=(h,L)=>L.lock?L.lock(h):'';
@@ -27500,7 +27510,8 @@ const klLeft=h=>Math.max(1,Math.ceil((KL_DAY-(h.clk|0))/60000));
 function klHTML(h){const [p,ic]=klPart(h),pct=Math.round(100*(h.clk|0)/KL_DAY);
   return `<div class="kl" id="klBox"><span class="kl-d">${ic} اليوم <b>${klDay(h)}</b> · ${p}</span><span class="kl-n">يوم جديد بعد ${klMin(klLeft(h))} لعب</span><i class="kl-bar"><b style="width:${pct}%"></b></i></div>`}
 function klTick(){const now=performance.now(),dt=Math.min(Math.max(0,now-KL.last),KL_TICK*2);KL.last=now;const h=S.hero;
-  if(!h||KL.off||document.hidden||now-KL.act>KL_IDLE||S.night||S.combat)return;
+  /* 6.11 (Twister 15:33: «احسب الليالي لو اللعبه مفتوحه حتي لو سايبها مفتوحه ومبيلعبش»): open and on screen counts, touched or not */
+  if(!h||KL.off||document.hidden||S.night||S.combat)return;
   h.clk=(h.clk|0)+dt;KL.save+=dt;
   if(h.clk>=KL_DAY){h.clk-=KL_DAY;h.nDone=(h.nDone|0)+1;KL.save=0;saveHero();try{toast(`${klPart(h)[1]} يوم جديد في البلد: اليوم ${klDay(h)}`);SFX.bell&&SFX.bell()}catch(e){}
     if(S.screen==='town'||S.screen==='bank'||S.screen==='bourse'||S.screen==='cafe')twRender();return}
@@ -28800,7 +28811,11 @@ const RM_PL={'سلعوة':'سلعوات','ديب':'ديابة','حنش':'حنا�
 const RM_PL_EN={'سلعوات':'salawas','ديابة':'wolves','حناشات':'snakes','ضباع':'hyenas','قراميط':'catfish','غرقانين':'drowned ones'};
 const rmEnN=a=>{if(L10N_W.has(a))return L10N_W.get(a);const m=/^(\d+) (.+)$/.exec(a);return m&&RM_PL_EN[m[2]]?`${m[1]} ${RM_PL_EN[m[2]]}`:null};
 const rmNames=foes=>foes.length>1?`${foes.length} ${RM_PL[foes[0].name]||foes[0].name}`:foes[0].name;
-const rmBossUp=(h,Z)=>{const B=rmZone(Z).boss;return !!B&&Z.boss[Z.zone]!==(h.nDone|0)};
+/* 6.11 (Twister 15:00: «مكتوب مرة في اليوم بس قتلت الغريق وطلعلي تاني»): a town day is 15 minutes of play and every finished night is a day too,
+   so «once a day» came back too fast. A field boss now comes back RM_BOSS_CD town days after it falls, and its place says when. */
+const RM_BOSS_CD=3;
+const rmBossLeft=(h,Z)=>{const d=Z.boss&&Z.boss[Z.zone];if(d==null)return 0;const n=h.nDone|0;return n<d?0:Math.max(0,RM_BOSS_CD-(n-d))};
+const rmBossUp=(h,Z)=>{const B=rmZone(Z).boss;return !!B&&rmBossLeft(h,Z)===0};
 /* ---------- 5.97 / N15.B part 2: الجبل (from level 7) ----------
    سفح الجبل (safe; عجوز الجبل, rest, the way to the other areas) / المدق الصخري / مغارة الخفافيش / قمة الضباع (elite «الضبع الأعرج»,
    boss «الضبع الأبيض» once a town day). The beasts are the ones of «مغارة الضبع», with their weak points and traits (fire, salt,
@@ -28917,7 +28932,7 @@ SCREENS.roam=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   const enc=()=>{if(c.ev)return encEv();const E=ROAM_ENCOUNTERS[c.e];return `<div class="card rm-enc${E.elite?' elite':''}${E.boss?' boss':''}"><div class="rm-foes">${c.foes.map(f=>`<span class="rm-fp">${foeArt(f.art)}</span>`).join('')}</div>
     <b class="rm-en">${rmNames(c.foes)}${E.elite?' <span class="rm-el">نخبة</span>':E.boss?' <span class="rm-el">زعيم</span>':''}</b><div class="rm-say">${T(E.say)}</div>
     <div class="rm-bt"><button class="btn" id="rmF">⚔ أقاتل</button>${c.fought?`<div class="rm-q">القتال ده بدأ: لازم يخلص</div>`:`<button class="btn ghost" id="rmA">🤫 أتسحّب بالراحة <small>(خفة)</small></button><button class="btn ghost" id="rmB" ${ef<1?'disabled':''}>↩ أرجع لـ${R.pts[Z.prev&&Z.prev!==Z.at?Z.prev:R.start].n} <small>(1 مجهود)</small></button>`}</div></div>`};
-  const B=R.boss,bossHere=!c&&B&&Z.at===B.at,bossBox=()=>{if(!bossHere)return '';const E=ROAM_ENCOUNTERS[B.e];return rmBossUp(h,Z)?`<button class="btn rm-boss" id="rmBoss" ${ef<2?'disabled':''}>⚠ ${G('واجه','واجهي')} ${E.n} <small>زعيم المكان · مرة في اليوم · 2 مجهود</small></button>`:`<div class="rm-q">${E.n} ${FF({fem:E.fem},'وقع','وقعت')} النهارده. ${FF({fem:E.fem},'هيرجع','هترجع')} بكرة.</div>`};
+  const B=R.boss,bossHere=!c&&B&&Z.at===B.at,bossBox=()=>{if(!bossHere)return '';const E=ROAM_ENCOUNTERS[B.e];return rmBossUp(h,Z)?`<button class="btn rm-boss" id="rmBoss" ${ef<2?'disabled':''}>⚠ ${G('واجه','واجهي')} ${E.n} <small>زعيم المكان · بيطلع كل ${RM_BOSS_CD} أيام · 2 مجهود</small></button>`:(()=>{const L=rmBossLeft(h,Z);return `<div class="rm-q">${E.n} ${FF({fem:E.fem},'وقع','وقعت')}. ${FF({fem:E.fem},'هيرجع','هترجع')} ${L===1?'بكرة':'بعد '+bkNights(L)}.</div>`})()};
   const qBox=()=>{if(!rmAtStart(Z))return q.st==='on'||q.st==='ready'?`<div class="rm-q">مهمة ${D.who}: <b>${q.n} من ${D.need}</b> ${D.units}${q.st==='ready'?` · ${G('ارجع','ارجعي')} ${D.f?'لها':'له'}`:''}</div>`:'';
     const pay=rmPay(h,Z.zone);const says=q.st==='none'?D.offer(pay):q.st==='on'?D.on(D.need-q.n):q.st==='ready'?D.ready():D.done();
     return `${twNpcHTML(D.npc,T(says))}<div class="rm-bt">${q.st==='none'?`<button class="btn" id="rmQ">${D.yes}</button>`:q.st==='ready'?`<button class="btn" id="rmQ">${G('خد حقك','خدي حقك')} · ${pay.m} جنيه</button>`:q.st==='on'?`<div class="rm-q">العداد: <b>${q.n} من ${D.need}</b></div>`:''}
@@ -29010,14 +29025,14 @@ const RM_WHO_EN={'عم عبده':'Uncle Abdo','أم سيد':'Umm Sayed','عجو�
 /* 5.96: English for الترعة, the bosses and moving between areas */
 L10N({'الصيد':'Hunting','من غير مغامرة':'No adventure','الترعة':'The canal','شط الترعة':'Canal bank','البوص':'The reeds','الكوبري الخشب':'Wooden bridge','الهويس القديم':'Old lock','الغيطان والترعة':'The fields and the canal','أماكن تانية للصيد':'Other hunting grounds',
   'حنش':'Snake','ضبع':'Hyena','قرموط':'Catfish','عفريت المية':'Water afreet','غرقان':'Drowned one','قرموط عجوز':'Old catfish','أم السلعوات':'Mother of salawas','الغريق':'The drowned man','زعيم':'Boss',
-  'زعيم المكان · مرة في اليوم · 2 مجهود':'Boss of this place · once a day · 2 effort','أم سيد · راحة':'Umm Sayed · rest','حاضر، هجيبهم':'Deal, I\'ll get them',
+  'زعيم المكان · مرة في اليوم · 2 مجهود':'Boss of this place · once a day · 2 effort','زعيم المكان · بيطلع كل 3 أيام · 2 مجهود':'Boss of this place · every 3 days · 2 effort','أم سيد · راحة':'Umm Sayed · rest','حاضر، هجيبهم':'Deal, I\'ll get them',
   'مراكب صيد مربوطة على الشط، وأم سيد بتنشر الشبك.':'Fishing boats tied at the bank; Umm Sayed spreads her nets.','البوص أطول منك بكتير، والطين بيشد رجلك.':'The reeds tower over you and the mud pulls at your feet.',
   'الكوبري بيزيّق تحت رجلك، والمية تحته سودا.':'The bridge creaks under you; the water below is black.','هويس حديد صدي، والمية بتلف تحته. اللي بيغرق هنا ما بيطلعش.':'A rusty iron lock with water churning under it. Whoever drowns here stays down.',
   'حاجة بتزحف بين البوص، وصوت فحيح قريب من رجلك.':'Something crawls in the reeds; a hiss near your feet.','ضحكة ضبع في الضلمة.. وريحة وحشة.':'A hyena laughs in the dark.. and a foul smell.',
   'شنبات طويلة طالعة من المية، وبُق قد الطبق.':'Long whiskers out of the water, and a mouth as wide as a plate.','المية بتغلي من غير نار، وحد بيضحك من تحتها.':'The water boils with no fire, and someone laughs beneath it.',
   'إيد مبلولة طالعة من الهويس، وبعدها كتف، وبعدها وش من غير عينين.':'A wet hand rises from the lock, then a shoulder, then a face with no eyes.','قرموط قد العجل، على ضهره شبك قديم متقطع. المية اتهزّت لما اتحرك.':'A catfish as big as a calf, old torn nets on its back. The water shook when it moved.',
   'المية عند الهويس وقفت. واحد طالع منها لابس هدوم من زمان، وكله طحالب.':'The water at the lock went still. A man rises from it in old clothes, all weeds.'},
-  [[/^⚠ واجهي? (.+)$/,(m,a)=>`⚠ Face ${L10N_W.get(a)||a}`],[/^(.+) (وقع|وقعت) النهارده\. (هيرجع|هترجع) بكرة\.$/,(m,a)=>`${L10N_W.get(a)||a} fell today. Back tomorrow.`],[/^من المستوى (\d+)$/,'From level $1'],
+  [[/^⚠ واجهي? (.+)$/,(m,a)=>`⚠ Face ${L10N_W.get(a)||a}`],[/^(.+) (وقع|وقعت) النهارده\. (هيرجع|هترجع) بكرة\.$/,(m,a)=>`${L10N_W.get(a)||a} fell today. Back tomorrow.`],[/^(.+) (?:وقع|وقعت)\. (?:هيرجع|هترجع) (بكرة|بعد (\d+) (?:أيام|يوم)|بعد يومين)\.$/,(m,a,w,n)=>`${L10N_W.get(a)||a} fell. Back ${w==='بكرة'?'tomorrow':`in ${n||2} days`}.`],[/^من المستوى (\d+)$/,'From level $1'],
    [/^وصلتي? (.+)\.$/,(m,a)=>`You reached ${L10N_W.get(a)||a}.`],[/^الزعيم محتاج 2 مجهود\. اللي جاي بعد ([\d:]+)\.$/,'The boss needs 2 effort. Next in $1.'],
    [/^مهمة (عم عبده|أم سيد|عجوز الجبل): (\d+) من (\d+)( · ارجعي? (له|لها) عند (.+))?\.$/,(m,w,a,b,c,x,p)=>`${RM_WHO_EN[w]}'s errand: ${a} of ${b}${c?` · go back to ${w==='أم سيد'?'her':'him'} at the ${L10N_W.get(p)||p}`:''}.`],[/^مهمة عجوز الجبل:$/,'The mountain elder\'s errand:'],
    [/^مهمة أم سيد:$/,'Umm Sayed\'s errand:'],[/^(قراميط|سلعوات|ضباع)( · ارجعي? (له|لها))?$/,(m,k,c,x)=>`${RM_PL_EN[k]}${c?` · go back to ${x==='لها'?'her':'him'}`:''}`],[/^(قراميط|ضباع) (\d+) من (\d+)$/,(m,k,a,b)=>`${RM_PL_EN[k][0].toUpperCase()+RM_PL_EN[k].slice(1)} ${a} of ${b}`],
@@ -29975,6 +29990,477 @@ L10N({},[[/^(?:الضربة متوقفة قبل الموت · )?(?:استخبى|
   const t=w.length>1?w.slice(0,-1).join(', ')+' or '+w[w.length-1]:w[0];return (hd?'Killing blow held · ':'')+t.charAt(0).toUpperCase()+t.slice(1)}],
   [/^(?:اتصرّف|اتصرّفي) · ✋$/,'More moves · ✋'],[/^مفيش حاجة تنفع دلوقتي$/,'Nothing works right now'],
   [/^(?:فوق!|فوقي!) · (?:اتصرّف|اتصرّفي)$/,'Snap out! · More moves']]);
+
+/* ---------- 6.11 (Twister 2026-10-12 13:38–13:52): البنك والبورصة والوقت ----------
+   (1) Town days also pass while the game is closed or left alone (13:43), slower than play: KL_OFF of the play speed (2 hours away =
+       one town day), at most KL_OFF_MAX days per return, nothing under KL_OFF_MIN. The latest phone time ever seen is kept (h.clkAt)
+       and only time after it counts, so turning the phone clock back and forth gives nothing twice. Not inside a night or a fight
+       (a finished night is a day of its own already).
+   (2) The clock sits at the very top of every town screen (#klTop, outside the scrolling view, 13:52): the hour, the day and the
+       minutes to the next day; the town picture follows the hour (P:town_* in p17s.js).
+   (3) Offers fit the money (13:38): the man at the bank door and the exchange's private deals are sized from the money on you plus
+       the safe; the exchange's cap per company grows with it.
+   (4) Spotting a swindler is a judgement now (13:48): the bank's rules are on a board (the stamp, Fawzy's signature, a gain of
+       8–18% in 4 days, the licensed names); every swindler breaks exactly one rule, often on a paper you must look at, and the man
+       shows only two of his three papers. There is no «ask Fawzy» answer any more. At the exchange the paper has two sides and he
+       lets you turn it once.
+   (5) The look (13:38): the bank hall with أستاذ فوزي behind the counter and the exchange board with أستاذ مجدي, tabs instead of the
+       long button lists, one amount picker, deposit contracts with the bank's stamp and a progress bar, the stamp thump, coins and
+       counting numbers, the brokers' faces. Everything new has its English written next to it (ae). */
+const ae=(a,e)=>EN?e:a;
+const nf=n=>Math.round(+n||0).toLocaleString('en-US');
+const dN=n=>EN?(n===1?'1 day':n+' days'):bkNights(n);
+const r50=n=>Math.round(n/50)*50;
+const sg=(n,pre)=>`<bdi dir="ltr">${pre!=null?pre:(n>=0?'+':'−')}${nf(Math.abs(n))}</bdi>`;
+
+/* ================= (1) time away ================= */
+const KL_OFF=1/8,KL_OFF_MAX=4,KL_OFF_MIN=10*60000;
+function klAway(h,gap){const add=Math.min(gap*KL_OFF,KL_OFF_MAX*KL_DAY),t=(h.clk|0)+add,d=Math.floor(t/KL_DAY);
+  h.clk=Math.max(0,Math.floor(t-d*KL_DAY));if(d)h.nDone=(h.nDone|0)+d;const hr=Math.max(1,Math.round(add/KL_DAY*24));saveHero();
+  const msg=d?ae(`${G('وانت غايب','وانتي غايبة')} عدّى ${bkNights(d)} في البلد: النهارده اليوم ${klDay(h)}`,`While you were away ${d===1?'a day':d+' days'} passed in the village: today is day ${klDay(h)}`)
+    :ae(`${G('وانت غايب','وانتي غايبة')} عدّت ${hr===1?'ساعة':hr===2?'ساعتين':hr+(hr<=10?' ساعات':' ساعة')} في البلد`,`While you were away ${hr===1?'an hour':hr+' hours'} passed in the village`);
+  KL.away={d,hr,msg};setTimeout(()=>{try{toast(msg);if(d)SFX.bell&&SFX.bell()}catch(e){}},700);
+  if(['town','bank','bourse','cafe'].includes(S.screen))try{twRender()}catch(e){}
+  return d}
+function klOffTick(){const h=S.hero;if(!h||KL.off||document.hidden)return;   /* open and on screen = play time (p75), so only time hidden or closed is «away» */const now=Date.now();
+  if(!(h.clkAt>0)){h.clkAt=now;return}const gap=now-h.clkAt;if(gap<0)return;   /* the phone clock went back: wait until it passes the latest time seen */
+  if(gap>=KL_OFF_MIN&&!S.night&&!S.combat)klAway(h,gap);h.clkAt=now}
+setInterval(()=>{try{klOffTick();klTopSync()}catch(e){}},KL_TICK);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>{try{klOffTick()}catch(e){}},60)});
+['pointerdown','keydown'].forEach(e=>addEventListener(e,()=>{const h=S.hero;if(h&&h.clkAt>0&&Date.now()-h.clkAt>=KL_OFF_MIN)setTimeout(()=>{try{klOffTick()}catch(e){}},0)},{passive:true,capture:true}));
+
+/* ================= (2) the clock on top, the sky by the hour ================= */
+function klHr(h){const f=Math.max(0,Math.min(.999,(h.clk|0)/KL_DAY));return Math.floor((6+f*24)%24)}
+const klPh=H=>H>=19||H<3?'n':H<5?'a':H<11?'m':H<15?'d':H<17?'s':'g';
+const KL_IC={n:'🌙',a:'🌄',m:'☀️',d:'☀️',s:'🌤️',g:'🌇'};
+function klHourTxt(H){const n=H%12||12;if(EN)return `${n} ${H<12?'AM':'PM'}`;
+  return `${n} ${H<3?'بالليل':H<5?'الفجر':H<12?'الصبح':H<14?'الضهر':H<17?'العصر':H<19?'المغرب':'بالليل'}`}
+function klTopHTML(h){const H=klHr(h),ph=klPh(H),L=klLeft(h),pct=Math.round(100*(h.clk|0)/KL_DAY);
+  return `<i class="kl-ic" aria-hidden="true">${KL_IC[ph]}</i><b class="kl-h">${klHourTxt(H)}</b><span class="kl-dy">${ae('اليوم','Day')} <b>${klDay(h)}</b></span><span class="kl-lf">${ae(`فاضل ${L} د على اليوم الجاي`,`${L} min to the next day`)}</span><i class="kl-pr"><b style="width:${pct}%"></b></i>`}
+const KLT={el:null};
+function klTopMount(){if(KLT.el&&KLT.el.isConnected)return KLT.el;const app=document.getElementById('app'),v=document.getElementById('view');if(!app||!v||v.parentNode!==app)return null;
+  const d=document.createElement('div');d.id='klTop';d.className='kl-top';d.hidden=true;app.insertBefore(d,v);return KLT.el=d}
+function klTopOn(){const h=S.hero;if(!h||S.night||S.combat)return false;return S.screen==='town'||!!view.querySelector('.twtop')}
+function klSky(h,ph){if(S.screen!=='town')return;const hd=view.querySelector('.tw-head');if(!hd||hd.dataset.ph===ph)return;const sv=hd.querySelector(':scope>svg');if(!sv||typeof PXS==='undefined')return;
+  const s=PXS.get('P:town_'+ph);if(!s)return;const t=document.createElement('div');t.innerHTML=s.replace('<svg','<svg preserveAspectRatio="xMidYMid slice"');const n=t.firstElementChild;if(n){sv.replaceWith(n);hd.dataset.ph=ph}}
+function klTopSync(){const d=klTopMount();if(!d)return;const on=klTopOn();d.hidden=!on;if(!on)return;const h=S.hero,ph=klPh(klHr(h));d.dataset.p=ph;d.innerHTML=klTopHTML(h);klSky(h,ph)}
+{const r0=render;render=function(){if(S.screen!==KLT.scr){KLT.scr=S.screen;KLT.n=(KLT.n|0)+1}const r=r0.apply(this,arguments);try{klTopSync()}catch(e){}return r}}
+
+/* ================= shared pieces: faces, stamps, papers, the hall ================= */
+function bk2Face(key,look,bg){if(typeof PXP_NPC==='undefined'||typeof PXP_svg!=='function')return '';if(!PXP_NPC[key])PXP_NPC[key]={look:Object.assign({name:''},look),bg:bg||['q','z']};try{return PXP_svg(key)}catch(e){return ''}}
+const bk2Pk=a=>a[Math.floor(Math.random()*a.length)];
+function bk2Look(){return {g:'m',cls:'ساحر',skin:bk2Pk(LOOK.skin),hairColor:bk2Pk(['#1b1412','#4a2c1a','#8a5a2b','#d9d4cc']),hair:bk2Pk(['قصير','مموج','كيرلي','أصلع']),eyes:bk2Pk(LOOK.eyes),
+  outfit:bk2Pk(LOOK.outfit),age:bk2Pk(['شاب','كبير']),beard:bk2Pk(['من غير','شنب','سكسوكة','دقن كاملة','شنب مبروم'])}}
+/* the photo on a false card: two things you can see at a glance are different */
+function bk2Alt(l){const o=Object.assign({},l);o.beard=l.beard==='من غير'||l.beard==='شنب'?'دقن كاملة':'من غير';o.hairColor=l.hairColor==='#d9d4cc'||l.hairColor==='#8a5a2b'?'#1b1412':'#c98f4a';
+  if(Math.random()<.5)o.hair=l.hair==='أصلع'?'كيرلي':'أصلع';return o}
+/* a stamp drawn on a 30×30 pixel grid: o={t (text index), ink, sh (o round, s square, h hexagon), star, tilt, faint, w (bank|br)} */
+const BK2_INK={b:'#2f5fd0',r:'#cf3b2c',p:'#7a3fb0',g:'#23955a',t:'#1f8f9a'};
+const BK2_ST=[['بنك البلد','VILLAGE BANK'],['بنك البلاد','VILLAGES BANK'],['بنك الريف','RURAL BANK']];
+const BR2_ST=[['بورصة البلد','VILLAGE EXCHANGE'],['بورصة البلاد','VILLAGES EXCHANGE']];
+const BK2_STAR=(()=>{const P=[];for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,r=k%2?1.5:3.6;P.push([15+r*Math.cos(a),15.4+r*Math.sin(a)])}const out=[];
+  for(let y=10;y<21;y++)for(let x=10;x<21;x++){const px=x+.5,py=y+.5;let ins=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const [xi,yi]=P[i],[xj,yj]=P[j];if((yi>py)!==(yj>py)&&px<(xj-xi)*(py-yi)/(yj-yi)+xi)ins=!ins}if(ins)out.push([x,y])}return out})();
+function bk2Stamp(o,cls){const col=BK2_INK[o.ink]||BK2_INK.b,N=30,c=14.5;let px='';
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const dx=x-c,dy=y-c;let d;
+    if(o.sh==='s')d=Math.max(Math.abs(dx),Math.abs(dy))+.6;else if(o.sh==='h'){const ax=Math.abs(dx),ay=Math.abs(dy);d=Math.max(ax*.866+ay*.5,ay)+.4}else d=Math.hypot(dx,dy);
+    if((d>=12.6&&d<=14.4)||(d>=10.3&&d<=11))px+=`M${x} ${y}h1v1h-1z`}
+  if(o.star)BK2_STAR.forEach(([x,y])=>{px+=`M${x} ${y}h1v1h-1z`});
+  const T=(o.w==='br'?BR2_ST:BK2_ST)[o.t|0]||BK2_ST[0],t1=EN?T[1]:T[0],t2=o.w==='br'?ae('أسهم وشركات','SHARES'):ae('كفر الصفصاف','KAFR EL-SAFSAF');
+  return `<svg class="bk2-st ${cls||''}" viewBox="0 0 30 30" style="--rt:${o.tilt|0}deg;opacity:${o.faint?.55:.93}" aria-label="${esc(t1)}"><path d="${px}" fill="${col}" shape-rendering="crispEdges"/>
+    <text x="15" y="${o.star?10.2:12.6}" text-anchor="middle" font-size="${EN?2.3:3}" font-weight="900" fill="${col}" textLength="${EN?14:12.5}" lengthAdjust="spacingAndGlyphs">${esc(t1)}</text>
+    <text x="15" y="${o.star?21.9:19.6}" text-anchor="middle" font-size="${EN?1.8:2.3}" font-weight="700" fill="${col}" textLength="${EN?12:10.5}" lengthAdjust="spacingAndGlyphs">${esc(t2)}</text></svg>`}
+const BK2_OFF={t:0,ink:'b',sh:'o',star:1,tilt:-8,faint:0};      /* the bank's real stamp */
+const BR2_OFF={t:0,ink:'g',sh:'h',star:1,tilt:6,faint:0,w:'br'}; /* the exchange's */
+/* the hall: a pixel room, the manager behind his window, his line */
+function bk2HallSVG(kind,h){const H=klHr(h),ang=(H%12)*30-90,hx=(18+4*Math.cos(ang*Math.PI/180)).toFixed(1),hy=(13+4*Math.sin(ang*Math.PI/180)).toFixed(1),br=kind==='br';
+  const wall=br?'#1d2a24':'#2a2236',wall2=br?'#24352c':'#33293f',day='mds'.includes(klPh(H)),sky=day?'#6a9ad8':klPh(H)==='g'?'#c45a2a':'#141a33';
+  const win=x=>`<rect x="${x}" y="5" width="22" height="22" fill="${sky}"/>${day?'':`<rect x="${x+15}" y="8" width="2" height="2" fill="#ebe1cc"/>`}${[3,7,11,15,19].map(i=>`<rect x="${x+i}" y="5" width="1" height="22" fill="#c9a24a"/>`).join('')}<rect x="${x}" y="15" width="22" height="1" fill="#c9a24a"/><rect x="${x-1}" y="27" width="24" height="2" fill="#7a4a24"/>`;
+  const board=x=>`<rect x="${x}" y="4" width="30" height="22" fill="#0b120c"/><rect x="${x}" y="4" width="30" height="1" fill="#3a5a44"/>${[0,1,2,3,4].map(i=>`<rect x="${x+3+i*5.4}" y="${23-[6,9,4,11,7][(i+x)%5]}" width="3" height="${[6,9,4,11,7][(i+x)%5]}" fill="${(i+x)%3?'#7fe07a':'#ff8a6a'}"/>`).join('')}<rect x="${x}" y="26" width="30" height="2" fill="#3a5a44"/>`;
+  return `<svg viewBox="0 0 120 44" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="120" height="44" fill="${wall}"/>${[0,7,14,21].map(y=>`<rect y="${y}" width="120" height="1" fill="${wall2}"/>`).join('')}
+    ${br?board(4)+board(86):win(5)+win(93)}
+    <rect y="31" width="120" height="13" fill="#3a2414"/><rect y="31" width="120" height="2" fill="#7a4a24"/><rect y="38" width="120" height="1" fill="#2a180c"/>
+    <circle cx="${br?47:36}" cy="13" r="5" fill="#ebe1cc"/><circle cx="${br?47:36}" cy="13" r="5" fill="none" stroke="#7a4a24" stroke-width="1"/><line x1="${br?47:36}" y1="13" x2="${(+hx+(br?29:18)).toFixed(1)}" y2="${hy}" stroke="#1f1420" stroke-width="1"/><line x1="${br?47:36}" y1="13" x2="${br?47:36}" y2="9.5" stroke="#962e3a" stroke-width=".6"/>
+    <rect x="${br?73:84}" y="0" width="1" height="4" fill="#46271e"/><rect x="${br?70:81}" y="4" width="7" height="2" fill="#f3c14d"/><rect x="${br?71:82}" y="6" width="5" height="1" fill="#fff0b0"/></svg>`}
+function bk2Hall(kind,h,who,say){const face=kind==='br'?(PXP_NPC.magdy?PXP_svg('magdy'):''):(PXP_NPC.fawzy?PXP_svg('fawzy'):'');
+  return `<div class="bk2-hall ${kind}"><div class="bg">${bk2HallSVG(kind,h)}</div><div class="win"><span class="pf">${face}</span><i class="bar"></i></div></div><div class="bk2-say"><b>${who}</b><span>${say}</span></div>`}
+function bk2Tabs(cur,list,attr){return `<div class="bk2-tabs" role="tablist">${list.map(([k,t,b])=>`<button class="bk2-tab${cur===k?' on':''}" ${attr}="${k}" role="tab" aria-selected="${cur===k}">${t}${b?`<i class="dot">${b}</i>`:''}</button>`).join('')}</div>`}
+function bk2Count(el,from,to){if(!el||from==null||from===to)return;const t0=performance.now(),D=700;const f=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);el.textContent=nf(from+(to-from)*e);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function bk2Coins(el,n){try{pop(el,['#ffd36a','#f3c14d','#fff3b0','#c98326'],n||20)}catch(e){}}
+function bk2Thud(){try{SFX.thud&&SFX.thud();setTimeout(()=>{try{SFX.coin&&SFX.coin(.6)}catch(e){}},90)}catch(e){}}
+const bk2W=h=>Math.max(0,(h.money|0)+((h.bank&&h.bank.v)|0));   /* what the hero has: on him plus the safe */
+
+/* ================= (3)+(4) the man at the bank door ================= */
+const BK2_LIC=[['حمدي سليمان','Hamdy Soliman'],['عادل فهمي','Adel Fahmy'],['سيد عبد الحميد','Sayed Abdel Hamid'],['ممدوح شاكر','Mamdouh Shaker'],['رضا السيد','Reda El-Sayed'],['وجيه ناصر','Wagih Nasser'],['عاطف منصور','Atef Mansour'],['شريف عزت','Sherif Ezzat']];
+const BK2_NEAR=[['حمدي سلمان','Hamdy Salman'],['عادل فهيم','Adel Fahim'],['سيد عبد المجيد','Sayed Abdel Meguid'],['ممدوح شكري','Mamdouh Shokry'],['رضا السعيد','Reda El-Saeed'],['وجيه نصار','Wagih Nassar'],['عاطف منسي','Atef Mansy'],['شريف عزمي','Sherif Azmy']];
+const BK2_SIG=[['ف. عبد السلام','F. Abdel Salam'],['ف. عبد السلامة','F. Abdel Salama'],['ق. عبد السلام','K. Abdel Salam'],['ف. عبد العليم','F. Abdel Alim']];
+const bk2Nm=n=>{const L=n&&n.f?BK2_NEAR:BK2_LIC,r=L[(n&&n.i)|0]||L[0];return EN?r[1]:r[0]};
+const bk2Sig=i=>{const r=BK2_SIG[i|0]||BK2_SIG[0];return EN?r[1]:r[0]};
+const BK2_PCT=[8,18],BK2_D=4,BK2_LOOKS=2,BK2_MAX=300000;
+/* each swindler breaks one rule: [kind, weight, where it shows] */
+const BK2_K=[['greedy',1,'pitch'],['unlisted',2,'pitch'],['cardName',1,'card'],['cardPhoto',2,'card'],['stampTxt',1,'stamp'],['stampInk',1,'stamp'],['stampStar',1,'stamp'],['sign',2,'contract'],['cMis',2,'contract']];
+const bk2Where=k=>(BK2_K.find(x=>x[0]===k)||[])[2]||'';
+function bk2Make(h){const W=bk2W(h),a=Math.max(200,Math.min(BK2_MAX,r50(W*(.12+Math.random()*.13)))),scam=Math.random()<BK_SCAM;
+  let k='real';if(scam){let t=Math.random()*BK2_K.reduce((s,x)=>s+x[1],0);for(const x of BK2_K){t-=x[1];if(t<0){k=x[0];break}}if(k==='real')k='sign'}
+  const i=Math.floor(Math.random()*BK2_LIC.length),o={v:2,n:h.nDone,a,k,nm:{i,f:k==='unlisted'?1:0},seen:{},push:Math.random()<.3?1:0,no:1000+Math.floor(Math.random()*9000)};
+  o.pct=k==='greedy'?30+Math.floor(Math.random()*31):BK2_PCT[0]+Math.floor(Math.random()*(BK2_PCT[1]-BK2_PCT[0]+1));o.d=k==='greedy'&&Math.random()<.5?1:BK2_D;o.g=Math.max(1,Math.round(a*o.pct/100));
+  o.lk=bk2Look();o.ph=k==='cardPhoto'?bk2Alt(o.lk):null;
+  o.cd={nm:k==='cardName'?(Math.random()<.5?{i,f:1}:{i:(i+1+Math.floor(Math.random()*(BK2_LIC.length-1)))%BK2_LIC.length,f:0}):o.nm,bk:0};
+  const sq=k==='stampStar'&&Math.random()<.5;o.st={t:k==='stampTxt'?1+Math.floor(Math.random()*2):0,ink:k==='stampInk'?bk2Pk(['r','p','g']):'b',sh:sq?'s':'o',star:k==='stampStar'&&!sq?0:1,tilt:-16+Math.floor(Math.random()*33),faint:Math.random()<.3?1:0};
+  o.ct={a,d:o.d,g:o.g,sig:k==='sign'?1+Math.floor(Math.random()*3):0};
+  if(k==='cMis'){const w=Math.floor(Math.random()*3);o.mis=['a','d','g'][w];if(w===0)o.ct.a=r50(a*1.5);else if(w===1)o.ct.d=o.d*10;else o.ct.g=Math.max(1,Math.round(o.g/10))}
+  return o}
+bkBroker=function(h){const B=bkFix(h);if(B.br&&B.br.n===h.nDone&&B.br.v===2)return B.br;if(bkInNight(h)||B.brAt===h.nDone||bk2W(h)<400||h.nDone<1)return null;
+  B.br=bk2Make(h);saveHero();return B.br};
+bkCheck=function(k){const h=S.hero,B=bkFix(h),o=B.br;if(!o||o.v!==2||o.n!==h.nDone||o.seen[k]||Object.keys(o.seen).length>=BK2_LOOKS)return;o.seen[k]=1;TWN.bkFlip=k;saveHero();try{SFX.page&&SFX.page()}catch(e){}twRender()};
+function bk2Why(o){const nm=bk2Nm(o.nm);switch(o.k){
+  case 'greedy':return o.d===1?ae(`وعدك بالمكسب بكرة، والبنك مدته ${dN(BK2_D)}، والمكسب ${o.pct}%: أكتر من المسموح`,`He promised the gain tomorrow; the bank takes ${BK2_D} days, and ${o.pct}% is above the limit`):ae(`المكسب ${o.pct}%: البنك عمره ما بيدي أكتر من ${BK2_PCT[1]}%`,`A ${o.pct}% gain: the bank never pays more than ${BK2_PCT[1]}%`);
+  case 'unlisted':return ae(`«${nm}» مش في قايمة الوسطا المعتمدين`,`“${nm}” is not on the list of licensed brokers`);
+  case 'cardName':return ae(`الاسم في الكارنيه «${bk2Nm(o.cd.nm)}» مش «${nm}»`,`The card said “${bk2Nm(o.cd.nm)}”, not “${nm}”`);
+  case 'cardPhoto':return ae('الصورة اللي في الكارنيه مش هو','The photo on the card was not him');
+  case 'stampTxt':return ae(`الختم مكتوب فيه «${BK2_ST[o.st.t][0]}» مش «بنك البلد»`,`The stamp said “${BK2_ST[o.st.t][1]}”, not “VILLAGE BANK”`);
+  case 'stampInk':return ae('حبر الختم مش أزرق','The stamp ink was not blue');
+  case 'stampStar':return o.st.sh==='s'?ae('الختم مربع، والختم الرسمي مدوّر','The stamp was square; the real one is round'):ae('الختم من غير النجمة اللي في نصه','The stamp had no star in the middle');
+  case 'sign':return ae(`الإمضة «${bk2Sig(o.ct.sig)}» مش إمضة أستاذ فوزي`,`The signature “${bk2Sig(o.ct.sig)}” is not Mr Fawzy's`);
+  case 'cMis':return o.mis==='a'?ae(`العقد مكتوب فيه ${nf(o.ct.a)} مش ${nf(o.a)}`,`The contract said ${nf(o.ct.a)}, not ${nf(o.a)}`):o.mis==='d'?ae(`العقد مكتوب فيه ${dN(o.ct.d)} مش ${dN(o.d)}`,`The contract said ${dN(o.ct.d)}, not ${dN(o.d)}`):ae(`المكسب في العقد ${nf(o.ct.g)} مش ${nf(o.g)}`,`The gain in the contract was ${nf(o.ct.g)}, not ${nf(o.g)}`)}
+  return ''}
+bkDeal=function(yes){const h=S.hero,B=bkFix(h),o=B.br;if(!o||o.v!==2||o.n!==h.nDone)return;if(yes&&(bkInNight(h)||!bkAc(h)||h.money<o.a))return;
+  B.br=null;B.brAt=h.nDone;const scam=o.k!=='real',where=bk2Where(o.k),saw=scam&&(where==='pitch'||!!o.seen[where]);
+  if(!yes){B.last={n:h.nDone,res:scam?'dodged':'missed',o,g:o.g,nm:o.nm,saw:saw?1:0};
+    if(scam&&saw)bump('scamSpot');saveHero();if(scam){try{SFX.good&&SFX.good()}catch(e){}}else{try{SFX.meh&&SFX.meh()}catch(e){}}TWN.bkFx=scam?'dodged':'missed';return twRender()}
+  bkMove(h,-o.a);
+  if(scam){const id=bkLog(h,'scam',o.a,'');const L=B.log[B.log.length-1];if(L)L.w=o.nm;const r=Math.floor(o.a*BK_REC_PCT/100);if(r)B.rec.push({id,a:r,at:h.nDone+BK_INV_N});bump('scamHit');
+    B.last={n:h.nDone,res:'hit',o,a:o.a,r,nm:o.nm};TWN.bkFx='hit';saveHero();try{SFX.down&&SFX.down()}catch(e){}
+    band('',ae(G('اتنصب عليك','اتنصب عليكي'),'You were swindled'),ae(`راحوا ${nf(o.a)} جنيه. أستاذ فوزي هيدوّر عليه`,`${nf(o.a)} coins gone. Mr Fawzy will look for him`),{color:'red',dur:2200,sound:false});return twRender()}
+  const id=bkLog(h,'inv',o.a,'');const L=B.log[B.log.length-1];if(L)L.w=o.nm;B.inv.push({id,a:o.a,g:o.g,at:h.nDone+o.d,who:o.nm,nt:o.d});
+  B.last={n:h.nDone,res:'deal',g:o.g,a:o.a,d:o.d,nm:o.nm};TWN.bkFx='deal';TWN.bkThump='inv'+id;saveHero();twRender()};
+/* old offers saved before 6.11 are dropped for a new one the same day */
+{const f0=bkFix;bkFix=function(h){const B=f0.apply(this,arguments);if(B&&B.br&&B.br.v!==2)B.br=null;return B}}
+
+/* ================= the bank screen ================= */
+const BK2_AMT=[1000,10000,50000,100000];
+const BK2_PLEN={shop:['A share in a shop','A small but sure gain'],cotton:['A cotton shipment','Mostly a good gain; if the shipment gets wet, half is lost'],caravan:['A caravan to Upper Egypt','Either a big gain or half is lost']};
+const bk2PlN=P=>EN&&BK2_PLEN[P.id]?BK2_PLEN[P.id][0]:P.n;
+const bk2PlD=P=>EN&&BK2_PLEN[P.id]?BK2_PLEN[P.id][1]:P.d;
+const bk2Who=w=>w&&typeof w==='object'?bk2Nm(w):(EN&&/[؀-ۿ]/.test(w||'')?'a broker':(w||ae('وسيط','a broker')));
+function bk2Safe(B){const lv=B.v<=0?0:Math.min(5,1+Math.floor(Math.log10(Math.max(1,B.v))-2));let coins='';
+  for(let i=0;i<lv;i++)coins+=`<rect x="${21-i%2}" y="${30-i*3}" width="10" height="2" fill="#f3c14d"/><rect x="${21-i%2}" y="${30-i*3}" width="10" height="1" fill="#fff0b0"/>`;
+  return `<svg class="bk2-sf" viewBox="0 0 40 36" shape-rendering="crispEdges" aria-hidden="true"><rect x="4" y="2" width="32" height="32" fill="#5a6270"/><rect x="4" y="2" width="32" height="2" fill="#8a96a0"/><rect x="6" y="6" width="28" height="26" fill="#2a2e36"/>${coins}
+    <rect x="${B.v>0?6:24}" y="6" width="${B.v>0?3:10}" height="26" fill="#454c58"/><circle cx="${B.v>0?8:29}" cy="19" r="1.5" fill="#c9a24a"/><rect x="4" y="34" width="5" height="2" fill="#1f1420"/><rect x="31" y="34" width="5" height="2" fill="#1f1420"/></svg>`}
+function bk2Vault(h,B){const sel=TWN.bkA||1000,night=bkInNight(h),can=(n,from)=>n==='all'?from>0:from>=n,amt=(n,from)=>n==='all'?from:n;
+  return `<div class="card bk2-vault">${bk2Safe(B)}
+    <div class="bk2-amts">${[...BK2_AMT,'all'].map(a=>`<button class="bk2-chip${sel===a?' on':''}" data-bka="${a}">${a==='all'?ae('الكل','All'):nf(a)}</button>`).join('')}</div>
+    <div class="bk2-two"><button class="btn bk2-go" id="bkIn" ${night||!can(sel,h.money)?'disabled':''}><span>⬇ ${ae(G('حط في الخزنة','حطي في الخزنة'),'Put in')}</span><small>${can(sel,h.money)?nf(amt(sel,h.money)):ae(`معاك ${nf(h.money)} بس`,`you have ${nf(h.money)}`)}</small></button>
+      <button class="btn ghost bk2-go" id="bkOut" ${!can(sel,B.v)?'disabled':''}><span>⬆ ${ae(G('اسحب','اسحبي'),'Take out')}</span><small>${can(sel,B.v)?nf(amt(sel,B.v)):ae(`في الخزنة ${nf(B.v)} بس`,`${nf(B.v)} in the safe`)}</small></button></div>
+    <div class="tw-sm">${ae(`الخزنة ببلاش ومن غير مكسب، وفلوسها محدش يقرب لها حتى لو ${G('وقعت','وقعتي')} في ليلة.`,'The safe is free and earns nothing. Nobody touches its money, even if you fall in a night.')}</div></div>`}
+function bk2Paper(cls,head,rows,stamp,extra,attr){return `<div class="bk2-paper ${cls||''}" ${attr||''}><div class="ph"><b>${head[0]}</b><span>${head[1]||''}</span></div>${rows.map(([k,v,c])=>`<div class="pr"><span>${k}</span><b class="${c||''}">${v}</b></div>`).join('')}${extra||''}${stamp||''}</div>`}
+function bk2Bar(done,all){const p=all?Math.max(0,Math.min(100,Math.round(100*done/all))):100;return `<i class="bk2-bar${p>=100?' full':''}"><b style="width:${p}%"></b></i>`}
+function bk2Fd(h,B){const night=bkInNight(h),ti=TWN.bkT|0,t=BK_FD_T[ti]||BK_FD_T[0],a=TWN.bkF||BK_FD_AMT[0],g=bkFdGain(a,t);
+  const list=B.fds.map(F=>{const left=Math.max(0,F.at-h.nDone),nt=F.nt||left||1;
+    return bk2Paper('fd'+(left?'':' done'),[`${ae('وديعة','Deposit')} #${F.id}`,left?ae(`فاضل ${bkNights(left)}`,`${left} ${left===1?'day':'days'} left`):ae('خلصت!','Done!')],
+      [[ae('المبلغ','Amount'),nf(F.a)],[ae('المكسب','Gain'),sg(F.g),'pos']],bk2Stamp(Object.assign({},BK2_OFF,{tilt:-12+(F.id*7)%24}),TWN.bkThump==='fd'+F.id?'thump':''),
+      bk2Bar(nt-left,nt)+`<div class="pb">${left?`<button class="tw-buy" data-bkfb="${F.id}">${TWN.conf==='bkfd'+F.id?ae(G('متأكد؟','متأكدة؟'),'Sure?'):ae(G('اكسر الوديعة','اكسري الوديعة'),'Break it')}<small>${ae(`يرجع ${nf(F.a-bkFdBrk(F.a))} (−${BK_FD_BRK}%)`,`get ${nf(F.a-bkFdBrk(F.a))} back (−${BK_FD_BRK}%)`)}</small></button>`:`<button class="tw-buy gold" data-bkfc="${F.id}">${ae(G('خد الوديعة','خدي الوديعة'),'Collect')}<small>${nf(F.a+F.g)}</small></button>`}</div>`)}).join('');
+  const nw=B.fds.length<BK_FD_MAXN?`<div class="card bk2-new"><div class="bk2-lb">${ae('وديعة جديدة','New deposit')} <small>${ae(`لحد ${BK_FD_MAXN} في نفس الوقت`,`up to ${BK_FD_MAXN} at once`)}</small></div>
+      <div class="bk2-amts">${BK_FD_T.map((x,k)=>`<button class="bk2-chip wide${ti===k?' on':''}" data-bktm="${k}"><b>${dN(x.n)}</b><small>${x.p}% · ${ae('لحد','max')} ${nf(x.max)}</small></button>`).join('')}</div>
+      <div class="bk2-amts">${BK_FD_AMT.map(x=>`<button class="bk2-chip${a===x?' on':''}" data-bkfa="${x}" ${h.money<x?'disabled':''}>${nf(x)}</button>`).join('')}</div>
+      <div class="bk2-pre">${ae(`بعد ${bkNights(t.n)}: <b>${nf(a+g)}</b> <span class="pos">(${sg(g)})</span>`,`In ${t.n} days: <b>${nf(a+g)}</b> <span class="pos">(${sg(g)})</span>`)}</div>
+      <button class="btn" id="bkFdGo" ${night||h.money<a?'disabled':''}>${ae(G('افتح الوديعة','افتحي الوديعة'),'Open the deposit')} · ${nf(a)}</button>
+      <div class="tw-sm">${ae(`كسرها قبل ميعادها بيخصم ${BK_FD_BRK}%`,`Breaking it early costs ${BK_FD_BRK}%`)}</div></div>`:'';
+  const pP=BK_PLANS.find(P=>P.id===(TWN.bkP||'shop'))||BK_PLANS[0],pa=TWN.bkPA||BK_FD_AMT[0];
+  const pls=B.pl.map(x=>{const P=BK_PLANS.find(y=>y.id===x.pid)||{n:'استثمار',id:''},left=Math.max(0,x.at-h.nDone),nt=P.nt||left||1;
+    return bk2Paper('pl'+(left?'':' done'),[`${bk2PlN(P)} #${x.id}`,left?ae(`فاضل ${bkNights(left)}`,`${left} ${left===1?'day':'days'} left`):ae('النتيجة طلعت!','The result is in!')],[[ae('المبلغ','Amount'),nf(x.a)]],bk2Stamp(Object.assign({},BK2_OFF,{tilt:10-(x.id*5)%20}),''),
+      bk2Bar(nt-left,nt)+(left?'':`<div class="pb"><button class="tw-buy gold" data-bkpl="${x.id}">${ae(G('شوف النتيجة','شوفي النتيجة'),'See the result')}</button></div>`))}).join('');
+  const nwp=B.pl.length<BK_PL_MAXN?`<div class="card bk2-new"><div class="bk2-lb">${ae('استثمارات البنك','The bank\'s investments')} <small>${ae('المكسب والخسارة مكتوبين قبل ما تدفع','gain and loss written before you pay')}</small></div>
+      <div class="bk2-amts">${BK_PLANS.map(P=>`<button class="bk2-chip wide${pP.id===P.id?' on':''}" data-bkpp="${P.id}"><b>${bk2PlN(P)}</b><small>${dN(P.nt)} · ${P.ok>=1?ae(`<bdi dir="ltr">+${P.up}%</bdi> مضمون`,`+${P.up}% sure`):ae(`<bdi dir="ltr">+${P.up}%</bdi> بفرصة ${Math.round(P.ok*100)}% · <bdi dir="ltr">−${P.dn}%</bdi> بفرصة ${Math.round((1-P.ok)*100)}%`,`${Math.round(P.ok*100)}%: +${P.up}% · ${Math.round((1-P.ok)*100)}%: −${P.dn}%`)}</small></button>`).join('')}</div>
+      <div class="tw-sm">${bk2PlD(pP)}</div>
+      <div class="bk2-amts">${BK_FD_AMT.map(x=>`<button class="bk2-chip${pa===x?' on':''}" data-bkpq="${x}" ${h.money<x?'disabled':''}>${nf(x)}</button>`).join('')}</div>
+      <button class="btn" id="bkPlGo" ${night||h.money<pa?'disabled':''}>${ae(G('استثمر','استثمري'),'Invest')} ${nf(pa)} · ${bk2PlN(pP)}</button></div>`:'';
+  return `${list}${nw}${pls}${nwp}`}
+function bk2Rules(){return `<details class="card bk2-rules"${TWN.bkRul?' open':''}><summary>📋 ${ae('قواعد أستاذ فوزي: ازاي تعرف الوسيط السليم','Mr Fawzy\'s rules: how to tell a real broker')}</summary>
+  <div class="ru"><div class="st">${bk2Stamp(Object.assign({},BK2_OFF,{tilt:0}),'')}</div><ul>
+    <li>${ae('الختم الرسمي <b>مدوّر</b>، حبره <b>أزرق</b>، مكتوب فيه «بنك البلد» وفي نصه <b>نجمة</b>. لو مايل أو باهت عادي.','The real stamp is <b>round</b>, in <b>blue</b> ink, says “VILLAGE BANK” and has a <b>star</b> in the middle. Tilted or faint is fine.')}</li>
+    <li>${ae(`إمضة أستاذ فوزي: <i class="sg">${bk2Sig(0)}</i>`,`Mr Fawzy's signature: <i class="sg">${bk2Sig(0)}</i>`)}</li>
+    <li>${ae(`المكسب من <b>${BK2_PCT[0]}%</b> لـ<b>${BK2_PCT[1]}%</b> في <b>${dN(BK2_D)}</b>: يعني 10,000 ترجع ومعاها من 800 لـ1,800. أكتر من كده أو أسرع = نصب.`,`The gain is <b>${BK2_PCT[0]}%</b> to <b>${BK2_PCT[1]}%</b> in <b>${BK2_D} days</b>: 10,000 comes back with 800 to 1,800. More or faster = a swindle.`)}</li>
+    <li>${ae('العقد لازم يطابق كلامه: المبلغ والمدة والمكسب.','The contract must match what he says: amount, term and gain.')}</li>
+    <li>${ae('الكارنيه: نفس الاسم ونفس الوش.','The card: the same name and the same face.')}</li>
+    <li>${ae('الوسطا المعتمدين:','Licensed brokers:')} <span class="ls">${BK2_LIC.map(x=>`<b>${EN?x[1]:x[0]}</b>`).join('')}</span></li></ul></div></details>`}
+function bk2Look2(o,k){if(k==='card')return `<div class="bk2-id"><div class="idh">🏦 ${EN?BK2_ST[o.cd.bk|0][1]:BK2_ST[o.cd.bk|0][0]} · ${ae('وسيط معتمد','licensed broker')}</div><div class="idb"><span class="idp">${bk2Face('bk2p_'+o.n+'_'+o.no+(o.ph?'x':''),o.ph||o.lk,['b','v'])}</span><div><b>${bk2Nm(o.cd.nm)}</b><small>${ae('رقم','No.')} ${o.no}</small></div></div></div>`;
+  if(k==='stamp')return `<div class="bk2-rc"><small>${ae('الإيصال المختوم','The stamped receipt')}</small>${bk2Stamp(o.st,'big')}</div>`;
+  if(k==='contract')return bk2Paper('ct',[ae('عقد استثمار','Investment contract'),'#'+o.no],[[ae('الوسيط','Broker'),bk2Nm(o.nm)],[ae('المبلغ','Amount'),nf(o.ct.a)],[ae('المدة','Term'),dN(o.ct.d)],[ae('المكسب','Gain'),sg(o.ct.g)]],'',`<div class="sgr"><span>${ae('إمضة البنك','Bank signature')}</span><i class="sg">${bk2Sig(o.ct.sig)}</i></div>`);return ''}
+function bk2Pitch(o){const nm=bk2Nm(o.nm),dd=o.d===1?ae('بكرة','tomorrow'):ae(`بعد ${bkNights(o.d)}`,`in ${o.d} days`);
+  return ae(`«أنا ${nm}، وسيط من طرف البنك. ${G('حط','حطي')} ${nf(o.a)} جنيه، و${dd} ${G('ترجعلك','ترجعلكي')} ومعاها ${nf(o.g)} جنيه مكسب.${o.push?` بس ${G('قرر','قرري')} دلوقتي، أنا مش فاضي.`:''}»`,
+    `“I'm ${nm}, a broker for the bank. Put in ${nf(o.a)} coins and ${dd} they come back with ${nf(o.g)} coins on top.${o.push?' But decide now, I\'m busy.':''}”`)}
+function bk2Last(h,B){const L=B.last;if(!L||L.n!==h.nDone)return '';const nm=bk2Nm(L.nm),fx=TWN.bkFx===L.res?' fx':'';
+  if(L.res==='deal')return `<div class="card bk2-res ok${fx}"><div class="sb">${bk2Stamp(Object.assign({},BK2_OFF,{tilt:-10}),'thump')}</div><b>${ae('اتختم!','Stamped!')}</b><span>${ae(`${nf(L.a)} مع ${nm}: ${G('ترجعلك','ترجعلكي')} بعد ${bkNights(L.d)} ومعاها ${nf(L.g)}`,`${nf(L.a)} with ${nm}: back in ${L.d} days with ${nf(L.g)} on top`)}</span></div>`;
+  if(L.res==='hit')return `<div class="card bk2-res bad${fx}"><div class="tear"><i></i><i></i></div><b>${ae(G('اتنصب عليك','اتنصب عليكي'),'Swindled')}</b><span>${L.o?bk2Why(L.o):''}</span><small>${ae(`أستاذ فوزي هيرجّعلك ${nf(L.r)} بعد ${bkNights(BK_INV_N)}`,`Mr Fawzy will get ${nf(L.r)} back in ${BK_INV_N} days`)}</small></div>`;
+  if(L.res==='dodged')return `<div class="card bk2-res ok${fx}"><div class="sb"><span class="nsb">${ae('نصاب','SWINDLER')}</span></div><b>${L.saw?ae(G('كشفته!','كشفتيه!'),'You caught him!'):ae('نجيت!','Lucky escape!')}</b><span>${L.o?bk2Why(L.o):''}</span></div>`;
+  return `<div class="card bk2-res${fx}"><b>${ae('ده كان وسيط سليم','He was a real broker')}</b><span>${ae(`فاتك مكسب ${nf(L.g)} جنيه.. المرة الجاية ${G('بص','بصي')} على الورق كويس.`,`You missed a ${nf(L.g)} gain. Next time read his papers well.`)}</span></div>`}
+function bk2Br(h,B,o){const night=bkInNight(h);let card='';
+  if(o){const n=Object.keys(o.seen).length,need=Math.max(0,o.a-h.money),canV=need>0&&B.v>=need;
+    card=`<div class="card bk2-man"><div class="mh"><span class="mf">${bk2Face('bk2m_'+o.n+'_'+o.no,o.lk,['q','z'])}</span><div><b>${bk2Nm(o.nm)}</b><small>${ae('واقف على باب البنك','waiting at the bank door')}</small></div></div>
+      <div class="mp">${bk2Pitch(o)}</div>
+      <div class="ml">${n<BK2_LOOKS?ae(`${G('هيوريك','هيوريكي')} حاجتين بس من ورقه، ${G('اختار','اختاري')}:`,'He will show you only two of his papers. Pick:'):ae('لمّ ورقه: «كفاية كده»','He packed his papers: “that\'s enough”')}</div>
+      <div class="bk2-looks">${[['card','🪪',ae('الكارنيه','His card')],['stamp','🔏',ae('الختم','The stamp')],['contract','📜',ae('العقد','The contract')]].map(([k,ic,t])=>`<button class="bk2-lk${o.seen[k]?' seen':''}" data-bkc="${k}" ${o.seen[k]||n>=BK2_LOOKS?'disabled':''}><i>${ic}</i>${t}</button>`).join('')}</div>
+      <div class="bk2-seen">${['card','stamp','contract'].filter(k=>o.seen[k]).map(k=>`<div class="bk2-sw${TWN.bkFlip===k?' flip':''}">${bk2Look2(o,k)}</div>`).join('')}</div>
+      <div class="bk2-two"><button class="btn bk2-go" data-bkd="1" ${night||h.money<o.a?'disabled':''}><span>✍️ ${ae(G('وافق وادفع','وافقي وادفعي'),'Agree and pay')}</span><small>${nf(o.a)}</small></button><button class="btn ghost bk2-go" data-bkd="0"><span>✋ ${ae(G('ارفض','ارفضي'),'Refuse')}</span><small>${ae('ببلاش','free')}</small></button></div>
+      ${need>0?`<div class="tw-sm bk2-need">${ae(`معاك ${nf(h.money)} بس`,`You only have ${nf(h.money)}`)}${canV&&!night?` <button class="tw-buy" data-bkneed="${need}">${ae(`${G('اسحب','اسحبي')} ${nf(need)} من الخزنة`,`Take ${nf(need)} from the safe`)}</button>`:''}</div>`:''}</div>`}
+  else if(!bk2Last(h,B))card=`<div class="card bk2-none">${ae('مفيش حد على الباب دلوقتي. الوسطا بييجوا مرة كل يوم في البلد.','Nobody at the door now. Brokers come once a village day.')}</div>`;
+  const inv=B.inv.length?`<div class="bk2-lb">${ae('فلوسك مع الوسطا','Your money with brokers')}</div>${B.inv.map(x=>{const left=Math.max(0,x.at-h.nDone),nt=x.nt||BK_INV_N;
+      return bk2Paper('iv'+(left?'':' done'),[bk2Who(x.who),left?ae(`فاضل ${bkNights(left)}`,`${left} ${left===1?'day':'days'} left`):ae('رجعت!','Back!')],[[ae('المبلغ','Amount'),nf(x.a)],[ae('المكسب','Gain'),sg(x.g),'pos']],bk2Stamp(Object.assign({},BK2_OFF,{tilt:6-(x.id*9)%18}),TWN.bkThump==='inv'+x.id?'thump':''),
+        bk2Bar(nt-left,nt)+(left?'':`<div class="pb"><button class="tw-buy gold" data-bki="${x.id}">${ae(G('خد','خدي'),'Collect')}<small>${nf(x.a+x.g)}</small></button></div>`))}).join('')}`:'';
+  const rec=B.rec.length?`<div class="bk2-lb">${ae('فلوس من النصابين','Money back from swindlers')}</div>${B.rec.map(x=>{const left=Math.max(0,x.at-h.nDone);return `<div class="tw-row"><div class="tx"><b>${nf(x.a)}</b><small>${left?ae(`أستاذ فوزي بيدوّر عليه.. فاضل ${bkNights(left)}`,`Mr Fawzy is looking for him.. ${left} ${left===1?'day':'days'} left`):ae('أستاذ فوزي مسكه!','Mr Fawzy caught him!')}</small></div>${left?'':`<button class="tw-buy gold" data-bkr="${x.id}">${ae(G('خد','خدي'),'Collect')}<small>${nf(x.a)}</small></button>`}</div>`}).join('')}`:'';
+  return `${bk2Last(h,B)}${card}${bk2Rules()}${inv}${rec}`}
+const BK2_LOGEN={pl:'Investment',plok:'The investment paid',plbad:'The investment lost',in:'Put in the safe',out:'Took out of the safe',fd:'Opened a deposit',fdok:'Deposit done',fdbrk:'Broke a deposit',inv:'Money with a broker',invok:'A broker paid back',scam:'Swindled',rec:'Got back from a swindler',ac:'Opened an account'};
+const BK2_LOGIC={in:'⬇',out:'⬆',fd:'📜',fdok:'💰',fdbrk:'✂️',pl:'📈',plok:'📈',plbad:'📉',inv:'🤝',invok:'💰',scam:'🚨',rec:'🛡️',ac:'🏦'};
+function bk2Log(h,B){const neg=k=>k==='scam'||k==='in'||k==='fd'||k==='inv'||k==='pl'||k==='ac';
+  return `<div class="card bk-log bk2-log">${B.log.length?B.log.slice().reverse().slice(0,20).map(x=>{const t=x.w?bk2Who(x.w):(EN&&/[؀-ۿ]/.test(x.t||'')?'':x.t);
+    return `<div class="bkl"><span><i class="li">${BK2_LOGIC[x.k]||'•'}</i>#${x.id} ${EN?(BK2_LOGEN[x.k]||x.k):T(BK_LOGN[x.k]||x.k)}${t?` <small>${esc(t)}</small>`:''}${x.n!=null?` <small class="dy">${ae('يوم','day')} ${(x.n|0)+1}</small>`:''}</span><b class="${neg(x.k)?'neg':'pos'}">${sg(x.a,neg(x.k)?'−':'+')}</b></div>`}).join(''):`<small>${ae('لسه مفيش حركات','No moves yet')}</small>`}</div>`}
+const BK2_SAY={v:()=>ae(`الخزنة أمان: ${G('حط','حطي')} و${G('اسحب','اسحبي')} وقت ما ${G('تحب','تحبي')}، ببلاش.`,'The safe is safe: put in and take out whenever you like, free.'),
+  fd:()=>ae(`الوديعة مكسبها مضمون. ${G('سيبها','سيبيها')} لحد ميعادها وهي تكبر.`,'A deposit\'s gain is sure. Leave it until its day and it grows.'),
+  br:()=>ae(`${G('افتكر','افتكري')} القواعد اللي على اللوحة. اللي مش ماشي عليها نصاب، مهما كان كلامه حلو.`,'Remember the rules on the board. Whoever breaks one is a swindler, however sweet he talks.'),
+  log:()=>ae('كل قرش داخل وخارج مكتوب هنا برقمه.','Every coin in and out is written here with its number.')};
+const bk90Screen=SCREENS.bank;
+SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}if(!bkAc(h))return bk90Screen.apply(this,arguments);
+  const B=bkFix(h),o=bkBroker(h),A=B.ac,night=bkInNight(h),dueFd=B.fds.some(x=>h.nDone>=x.at)||B.pl.some(x=>h.nDone>=x.at),dueBr=B.inv.some(x=>h.nDone>=x.at)||B.rec.some(x=>h.nDone>=x.at);
+  if(TWN.bkIn!==KLT.n){TWN.bkIn=KLT.n;TWN.bkTab=dueFd?'fd':(dueBr||o)?'br':'v'}
+  const tab=TWN.bkTab;
+  view.innerHTML=`${twTop(ae('بنك البلد','The Village Bank'))}<div class="tw bk2">
+    ${bk2Hall('bank',h,ae('أستاذ فوزي، مدير البنك','Mr Fawzy, the bank manager'),(BK2_SAY[tab]||BK2_SAY.v)())}
+    <div class="bk2-sum"><div class="bk2-big"><small>${ae('في الخزنة','In the safe')}</small><b id="bkV">${nf(TWN.bkVs!=null?TWN.bkVs:B.v)}</b></div><div class="bk2-big"><small>${ae('معاك','On you')}</small><b id="bkM">${nf(h.money)}</b></div></div>
+    <div class="tw-sm bk-ac" id="bkAc">🏦 ${ae('حسابك رقم','Account no.')} <b translate="no"><bdi dir="ltr">${A.no}</bdi></b> · ${ae('من اليوم','since day')} ${(A.d|0)+1}</div>
+    ${night?`<div class="tw-miss">${ae(`عندك ليلة متسابة: ${G('تقدر تسحب وتستلم','تقدري تسحبي وتستلمي')}، بس الإيداع والوديعة والوسطا بعد ما الليلة تخلص.`,'You have a saved night: you can take out and collect, but putting in, deposits and brokers wait until it ends.')}</div>`:''}
+    ${bk2Tabs(tab,[['v',ae('الخزنة','Safe')],['fd',ae('الودايع','Deposits'),dueFd?'✓':''],['br',ae('الوسطا','Brokers'),o?'1':dueBr?'✓':''],['log',ae('الدفتر','Ledger')]],'data-bktab')}
+    <div class="bk2-pane">${tab==='fd'?bk2Fd(h,B):tab==='br'?bk2Br(h,B,o):tab==='log'?bk2Log(h,B):bk2Vault(h,B)}</div></div>`;
+  twBack();const on=(sel,fn)=>view.querySelectorAll(sel).forEach(b=>b.onclick=e=>fn(b,e));
+  on('[data-bktab]',b=>{TWN.bkTab=b.dataset.bktab;TWN.bkFx=null;TWN.bkFlip=null;try{SFX.tick&&SFX.tick(760)}catch(e){}twRender()});
+  on('[data-bka]',b=>{const v=b.dataset.bka;TWN.bkA=v==='all'?'all':+v;twRender()});
+  const act=(fl,fn)=>{const v0=B.v,m0=h.money;TWN.bkVs=v0;TWN.bkCoin=fl;fn();if(B.v===v0&&h.money===m0){TWN.bkVs=null;TWN.bkCoin=null}};
+  const iB=$('#bkIn');if(iB)iB.onclick=()=>act('v',()=>bkPut(TWN.bkA||1000));
+  const oB=$('#bkOut');if(oB)oB.onclick=()=>act('m',()=>bkTake(TWN.bkA||1000));
+  on('[data-bktm]',b=>{TWN.bkT=+b.dataset.bktm;twRender()});on('[data-bkfa]',b=>{TWN.bkF=+b.dataset.bkfa;twRender()});
+  const fG=$('#bkFdGo');if(fG)fG.onclick=()=>{TWN.bkThump='fd'+(B.tx+1);bkFdOpen(TWN.bkF||BK_FD_AMT[0],TWN.bkT|0);TWN.bkThump=null};
+  on('[data-bkpp]',b=>{TWN.bkP=b.dataset.bkpp;twRender()});on('[data-bkpq]',b=>{TWN.bkPA=+b.dataset.bkpq;twRender()});
+  const pG=$('#bkPlGo');if(pG)pG.onclick=()=>bkPlanOpen(TWN.bkP||'shop',TWN.bkPA||BK_FD_AMT[0]);
+  on('[data-bkfc]',b=>act('m',()=>bkFdClaim(+b.dataset.bkfc)));on('[data-bkfb]',b=>bkFdBreak(+b.dataset.bkfb));on('[data-bkpl]',b=>act('m',()=>bkPlanClaim(+b.dataset.bkpl)));
+  on('[data-bki]',b=>act('m',()=>bkInvClaim(+b.dataset.bki)));on('[data-bkr]',b=>act('m',()=>bkRecClaim(+b.dataset.bkr)));
+  on('[data-bkc]',b=>bkCheck(b.dataset.bkc));on('[data-bkd]',b=>bkDeal(b.dataset.bkd==='1'));on('[data-bkneed]',b=>act('m',()=>bkTake(+b.dataset.bkneed)));
+  const rd=view.querySelector('.bk2-rules');if(rd)rd.addEventListener('toggle',()=>{TWN.bkRul=rd.open?1:0});
+  /* the little shows: counting numbers, coins, the stamp coming down */
+  const vEl=$('#bkV');if(TWN.bkVs!=null&&TWN.bkVs!==B.v){bk2Count(vEl,TWN.bkVs,B.v)}TWN.bkVs=null;
+  if(TWN.bkCoin){bk2Coins(TWN.bkCoin==='v'?vEl:$('#bkM'),22);TWN.bkCoin=null}
+  if(view.querySelector('.bk2-st.thump'))setTimeout(bk2Thud,260);TWN.bkThump=null;
+  if(TWN.bkFx==='hit'){const c=view.querySelector('.bk2-res.bad');if(c)c.classList.add('shake')}
+  TWN.bkFx=null;TWN.bkFlip=null};
+/* a claim leaves coins flying from the money; the toasts get their English */
+L10N({},[[/^الوديعة خلصت: ⁦?\+?(\d+)⁩? جنيه$/,'Deposit done: +$1 coins'],[/^الاستثمار رجع: ⁦?\+?(\d+)⁩? جنيه$/,'Investment back: +$1 coins'],[/^أستاذ فوزي رجّعلك (\d+) جنيه من النصاب$/,'Mr Fawzy got $1 coins back from the swindler'],
+  [/^(شراكة في دكان|شحنة قطن|قافلة للصعيد) نجحت: ⁦?\+?(\d+)⁩? جنيه$/,(m,p,n)=>`${({'شراكة في دكان':'The shop share','شحنة قطن':'The cotton shipment','قافلة للصعيد':'The caravan'})[p]} paid: +${n} coins`],
+  [/^(شراكة في دكان|شحنة قطن|قافلة للصعيد) خسرت: رجعلكي? (\d+) من (\d+)$/,(m,p,a,b)=>`${({'شراكة في دكان':'The shop share','شحنة قطن':'The cotton shipment','قافلة للصعيد':'The caravan'})[p]} lost: ${a} of ${b} came back`]]);
+
+/* ================= the exchange ================= */
+const BR2_CO={'محاجر الجبل':['Mountain Quarries','محاجر الجبال','Mountains Quarries'],'محاجر الصعيد':['Upper Egypt Quarries','محاجر السعيد','Saeed Quarries'],'محاجر الوادي':['Valley Quarries','محاجر الوديان','Valleys Quarries'],
+  'مراكب الترعة':['Canal Boats','مراكب الترعه','Canal Boat'],'مراكب النيل':['Nile Boats','مراكب النيلي','Nili Boats'],'مراكب البحيرة':['Lake Boats','مراكب البحيره','Lake Boat'],
+  'غيطان الكفر':['Kafr Fields','غيطان الكفور','Kufur Fields'],'غيطان الوادي':['Valley Fields','غيطان الوديان','Valleys Fields'],'غيطان الدلتا':['Delta Fields','غيطان الدلتة','Delta Field'],
+  'ورشة حديد عم حسن':['Uncle Hassan\'s Iron Works','ورشة حديد عم حسين','Uncle Hussein\'s Iron Works'],'حديد البلد':['Village Iron','حديد البلاد','Villages Iron'],'مسابك الكفر':['Kafr Foundries','مسابك الكفور','Kufur Foundries'],
+  'ذهب الصعيد':['Upper Egypt Gold'],'بترول الواحات':['Oasis Oil'],'سكر البندر':['City Sugar']};
+const BR2_NEARAR={};Object.keys(BR2_CO).forEach(k=>{const r=BR2_CO[k];if(r[1])BR2_NEARAR[r[1]]=r[2]});
+const coEn=n=>BR2_CO[n]?BR2_CO[n][0]:BR2_NEARAR[n]||n;
+const coTx=n=>EN?coEn(n):n;
+const BR2_SEC={'حجر وطوب':'Stone and brick','نقل ومراكب':'Transport and boats','زراعة':'Farming','حدادة':'Ironwork'};
+const BR2_EVEN=[['{n} خدت طلبية كبيرة من البندر','{n} got a big order from the city'],['إنتاج {n} زاد الشهر ده','{n} made more this month'],['{n} فتحت فرع جديد','{n} opened a new branch'],['تجار البندر بيتخانقوا على بضاعة {n}','City traders are fighting over {n}\'s goods'],
+  ['حريق صغير في مخزن {n}','A small fire in {n}\'s store'],['{n} اتأخرت في تسليم طلبية كبيرة','{n} is late with a big order'],['عمال {n} قاعدين في البيت','{n}\'s workers stayed home'],['الخامات غليت على {n}','Materials got pricier for {n}'],
+  ['شركة جديدة نزلت البورصة: {n}','A new company is listed: {n}'],['{n} أفلست! السهم بقى صفر','{n} went bankrupt! The share is now 0']];
+function brEvTx(ev){if(!EN||!ev)return ev;for(const [a,e] of BR2_EVEN){const re=new RegExp('^'+a.replace(/[.*+?^$()|[\]\\]/g,'\\$&').replace('{n}','(.+)')+'$'),m=ev.match(re);if(m)return e.replace('{n}',coEn(m[1]))}return ''}
+const BR2_WHO=[['سعيد','Saeed'],['ماهر','Maher'],['حسام','Hossam'],['جمال','Gamal'],['عصام','Essam'],['فتحي','Fathy'],['نبيل','Nabil'],['كمال','Kamal']];
+const brWho=i=>{const r=BR2_WHO[i|0]||BR2_WHO[0];return EN?r[1]:r[0]};
+const BR2_SIG=[['م. حسنين','M. Hassanein'],['م. حسانين','M. Hassanin'],['ن. حسنين','N. Hassanein']];
+const brSig=i=>{const r=BR2_SIG[i|0]||BR2_SIG[0];return EN?r[1]:r[0]};
+/* the cap per company grows with what the hero has (on him, in the safe, in shares) */
+function brCap(h){const X=h.bourse,inS=X&&X.own?Object.values(X.own).reduce((a,w)=>a+(w.c|0),0):0;return Math.max(BR_CAP,Math.min(500000,Math.round((bk2W(h)+inS)*.25/1000)*1000))}
+brMaxBuy=function(h,X,C){if(C.bust||C.p<1)return 0;const o=brOwn(X,C),cap=brCap(h);let q=Math.floor(Math.min(h.money,cap-o.c)/(C.p*(1+BR_FEE/100)));while(q>0&&(q*C.p+brFee(q*C.p)>h.money||o.c+q*C.p+brFee(q*C.p)>cap))q--;return Math.max(0,q)};
+brBuy=function(id,q){const h=S.hero;if(!BR_ON||!h||brLocked(h))return false;brTick(h);const X=brFix(h),C=X.co.find(c=>c.id===id);q=Math.floor(+q||0);if(!C||C.bust||q<1)return false;
+  const v=q*C.p,tot=v+brFee(v),k=brKey(C),o=X.own[k]||{q:0,c:0};if(h.money<tot||o.c+tot>brCap(h))return false;
+  h.money-=tot;o.q+=q;o.c+=tot;X.own[k]=o;brLog(X,'buy',tot,`${q} سهم ${brName(C)} بـ${C.p}`);saveHero();SFX.coin&&SFX.coin(.8);
+  toast(ae(`${G('اشتريت','اشتريتي')} ${q} سهم ${brName(C)} بـ${nf(tot)} جنيه (معاهم ${nf(tot-v)} رسوم)`,`Bought ${q} shares of ${coEn(brName(C))} for ${nf(tot)} coins (${nf(tot-v)} in fees)`));return true};
+brSell=function(id,q){const h=S.hero;if(!BR_ON||!h||brLocked(h))return false;brTick(h);const X=brFix(h),C=X.co.find(c=>c.id===id);q=Math.floor(+q||0);if(!C||C.bust||q<1)return false;
+  const k=brKey(C),o=X.own[k];if(!o||q>brFreeQ(h,o))return false;const v=q*C.p,net=Math.max(0,v-brFee(v)),cost=q===o.q?o.c:Math.round(o.c*q/o.q);
+  h.money+=net;o.q-=q;o.c-=cost;X.real+=net-cost;if(!o.q)delete X.own[k];else if(o.lk&&o.lk.n!==(h.nDone|0))delete o.lk;brLog(X,'sell',net,`${q} سهم ${brName(C)} بـ${C.p}`);saveHero();
+  if(net>cost){SFX.reg&&SFX.reg()}else{SFX.coin&&SFX.coin(.7)}
+  toast(ae(`${G('بعت','بعتي')} ${q} سهم بـ${nf(net)} جنيه: ${net>=cost?'مكسب':'خسارة'} ${nf(Math.abs(net-cost))}`,`Sold ${q} shares for ${nf(net)} coins: ${net>=cost?'a gain of':'a loss of'} ${nf(Math.abs(net-cost))}`));return true};
+/* the private deals: [kind, weight] — pump/name/fake show against the board, front/back only on the paper (one side) */
+const BR2_K=[['pump',2],['name',2],['fake',1],['front',2],['back',2]];
+function brMake(h,X){const live=X.co.filter(C=>!C.bust),W=bk2W(h),budget=Math.max(200,Math.min(BK2_MAX,r50(W*(.10+Math.random()*.12))));let k='real';
+  if(Math.random()<BR_SCAM){let t=Math.random()*BR2_K.reduce((s,x)=>s+x[1],0);for(const x of BR2_K){t-=x[1];if(t<0){k=x[0];break}}if(k==='real')k='back'}
+  if(!live.length&&k!=='fake')return null;const C=live[Math.floor(Math.random()*live.length)];
+  const o={v:2,n:h.nDone|0,kind:k,seen:{},who:Math.floor(Math.random()*BR2_WHO.length),lk:bk2Look(),no:100+Math.floor(Math.random()*900)};
+  if(k==='fake'){const nm=BR_FAKE[Math.floor(Math.random()*BR_FAKE.length)],px=r50(40+Math.random()*160)||50;Object.assign(o,{co:nm,coS:nm,p:0,px,q:Math.max(1,Math.floor(budget/px))})}
+  else{const nm=brName(C),near=BR2_CO[nm]&&BR2_CO[nm][1]||brAlt(nm),px=Math.max(1,Math.round(C.p*(k==='pump'?1.04+Math.random()*.11:.9+Math.random()*.05)));
+    Object.assign(o,{id:C.id,g:C.g|0,co:nm,coS:k==='name'?near:nm,p:C.p,px,q:Math.max(1,Math.floor(budget/px))})}
+  o.a=o.q*o.px;
+  o.cf={co:o.coS,q:o.q,px:o.px};o.cb={st:Object.assign({},BR2_OFF,{tilt:-14+Math.floor(Math.random()*29),faint:Math.random()<.3?1:0}),sig:0};
+  if(k==='front'){const w=Math.floor(Math.random()*2);o.mis=w?'q':'px';if(w)o.cf.q=Math.max(1,Math.floor(o.q/10));else o.cf.px=Math.round(o.px*1.3)+1}
+  if(k==='back'){const w=Math.floor(Math.random()*3);o.mis=['st','ink','sig'][w];if(w===0)o.cb.st.t=1;else if(w===1)o.cb.st=Object.assign(o.cb.st,Math.random()<.5?{ink:'b'}:{sh:'o'});else o.cb.sig=1+Math.floor(Math.random()*2)}
+  if((k==='real'||k==='pump')&&brOwn(X,C).c+o.a>brCap(h)){const q=Math.floor((brCap(h)-brOwn(X,C).c)/o.px);if(q<1)return null;o.q=o.cf.q=q;o.a=q*o.px}
+  return o}
+brOffer=function(h){const X=brFix(h),n=h.nDone|0;if(X.of&&X.of.n===n&&X.of.v===2)return X.of.done?null:X.of;if(X.of&&X.of.n===n&&!X.of.v&&!X.of.done)X.ofAt=-1;
+  if(X.ofAt===n||brLocked(h)||bk2W(h)<300||n<1)return null;X.ofAt=n;X.of=null;if(Math.random()>=BR_OFFER){saveHero();return null}
+  X.of=brMake(h,X);saveHero();return X.of};
+brCheck=function(k){const h=S.hero,X=brFix(h),o=X.of;if(!o||o.v!==2||o.done||o.n!==(h.nDone|0)||Object.keys(o.seen).length>=1)return;o.seen[k]=1;TWN.brFlip=k;saveHero();try{SFX.page&&SFX.page()}catch(e){}twRender()};
+function brWhy(o){const sc=coTx(o.coS),co=coTx(o.co);switch(o.kind){
+  case 'pump':return ae(`كان بيبيع بـ${nf(o.px)} للسهم، والشاشة ${nf(o.p)}: أغلى من السوق`,`He sold at ${nf(o.px)} a share while the board said ${nf(o.p)}: above the market`);
+  case 'name':return ae(`«${sc}» مش على الشاشة: الشركة اسمها «${co}»`,`“${sc}” is not on the board: the company is “${co}”`);
+  case 'fake':return ae(`مفيش شركة اسمها «${sc}» على الشاشة أصلًا`,`There is no “${sc}” on the board at all`);
+  case 'front':return o.mis==='q'?ae(`الورقة مكتوب فيها ${o.cf.q} سهم مش ${o.q}`,`The paper said ${o.cf.q} shares, not ${o.q}`):ae(`الورقة مكتوب فيها ${nf(o.cf.px)} للسهم مش ${nf(o.px)}`,`The paper said ${nf(o.cf.px)} a share, not ${nf(o.px)}`);
+  case 'back':return o.mis==='sig'?ae(`الإمضة «${brSig(o.cb.sig)}» مش إمضة أستاذ مجدي`,`The signature “${brSig(o.cb.sig)}” is not Mr Magdy's`):o.mis==='st'?ae('الختم مكتوب فيه «بورصة البلاد»','The stamp said “VILLAGES EXCHANGE”'):ae('ختم البورصة مسدّس أخضر، ودي غيره','The exchange stamp is a green hexagon; this one was not')}return ''}
+brDeal=function(yes){const h=S.hero,X=brFix(h),o=X.of;if(!o||o.v!==2||o.done||o.n!==(h.nDone|0))return;const scam=o.kind!=='real';
+  if(!yes){o.done=1;const saw=scam&&(['pump','name','fake'].includes(o.kind)||(o.kind==='front'&&o.seen.f)||(o.kind==='back'&&o.seen.b));if(saw)bump('scamSpot');
+    X.last={n:o.n,res:scam?'dodged':'missed',o,saw:saw?1:0,g:scam?0:Math.max(0,(o.p-o.px)*o.q)};TWN.brFx=X.last.res;saveHero();try{(scam?SFX.good:SFX.meh)()}catch(e){}return twRender()}
+  if(brLocked(h)||h.money<o.a)return;
+  if(o.kind!=='real'&&o.kind!=='pump'){h.money-=o.a;o.done=1;brLog(X,'scam',o.a,'');const L=X.log[X.log.length-1];if(L)L.w=o.who;bump('scamHit');try{SFX.down&&SFX.down()}catch(e){}
+    X.last={n:o.n,res:'hit',o,a:o.a};TWN.brFx='hit';band('',ae(G('اتنصب عليك','اتنصب عليكي'),'You were swindled'),ae(`راحوا ${nf(o.a)} جنيه`,`${nf(o.a)} coins gone`),{color:'red',dur:2400,sound:false});saveHero();return twRender()}
+  const C=X.co.find(c=>c.id===o.id&&(c.g|0)===o.g&&!c.bust);if(!C){o.done=1;saveHero();return twRender()}
+  const k=brKey(C),w=X.own[k]||{q:0,c:0};if(w.c+o.a>brCap(h)){toast(ae(`كده هتعدّي ${nf(brCap(h))} جنيه في ${brName(C)}: مينفعش`,`That would pass ${nf(brCap(h))} coins in ${coEn(brName(C))}: not allowed`));return}
+  h.money-=o.a;w.q+=o.q;w.c+=o.a;w.lk={n:h.nDone|0,q:((w.lk&&w.lk.n===(h.nDone|0))?w.lk.q:0)+o.q};X.own[k]=w;o.done=1;brLog(X,o.kind==='pump'?'pump':'deal',o.a,`${o.q} سهم ${o.co} بـ${o.px}`);
+  if(o.kind==='pump'){bump('scamHit');X.last={n:o.n,res:'pumped',o,a:o.a,over:o.a-o.q*o.p};TWN.brFx='pumped';try{SFX.meh&&SFX.meh()}catch(e){}}
+  else{X.last={n:o.n,res:'deal',q:o.q,px:o.px,p:o.p,co:o.co};TWN.brFx='deal';try{SFX.reg&&SFX.reg()}catch(e){}}
+  saveHero();twRender()};
+/* the screen */
+const BR2_LOGEN={buy:'Bought',sell:'Sold',bust:'The company went bankrupt',scam:'Swindled',pump:'Outside deal (too dear)',deal:'Outside deal'};
+const BR2_LOGIC={buy:'🛒',sell:'💰',bust:'💥',scam:'🚨',pump:'📉',deal:'🤝'};
+function brLogT(x){if(x.w!=null)return brWho(x.w);const t=x.t||'';if(!EN)return t;let m=t.match(/^(\d+) سهم (.+?) بـ(\d+)(?: من .+)?$/);if(m)return `${m[1]} × ${coEn(m[2])} @ ${m[3]}`;m=t.match(/^(\d+) سهم (.+)$/);if(m)return `${m[1]} × ${coEn(m[2])}`;return /[؀-ۿ]/.test(t)?'':t}
+brCard=function(h,X,C,fresh){const D=brDef(C.id),o=brOwn(X,C),val=o.q*C.p,pl=val-o.c,open=BR.sel===C.id,ch=Math.round(C.ch*1000)/10,cap=brCap(h),nm=coTx(brName(C));
+  const trade=open&&!C.bust?(()=>{const mx=BR.side==='b'?brMaxBuy(h,X,C):brFreeQ(h,o);BR.q=Math.max(mx?1:0,Math.min(BR.q,mx));const v=BR.q*C.p,fee=BR.q?brFee(v):0,cost=o.q?Math.round(o.c*BR.q/o.q):0,net=Math.max(0,v-fee);
+    return `<div class="br-tr"><div class="br-tabs"><button class="cf-opt${BR.side==='b'?' on':''}" data-brs="b"><b>${ae('اشتري','Buy')}</b></button><button class="cf-opt${BR.side==='s'?' on':''}" data-brs="s" ${o.q?'':'disabled'}><b>${ae(G('بيع','بيعي'),'Sell')}</b></button></div>
+      <div class="br-q"><button class="tw-buy" data-brq="-10">−10</button><button class="tw-buy" data-brq="-1">−</button><b>${BR.q}</b><button class="tw-buy" data-brq="1">+</button><button class="tw-buy" data-brq="10">+10</button><button class="tw-buy" data-brq="max">${ae('الكل','All')} (${mx})</button></div>
+      <div class="br-sum">${BR.q} × ${nf(C.p)} = ${nf(v)} · ${ae('رسوم','fee')} ${nf(fee)} · ${BR.side==='b'?ae(`${G('هتدفع','هتدفعي')} <b>${nf(v+fee)}</b>`,`you pay <b>${nf(v+fee)}</b>`):ae(`${G('هتاخد','هتاخدي')} <b>${nf(net)}</b> (${net-cost>=0?'مكسب':'خسارة'} ${nf(Math.abs(net-cost))})`,`you get <b>${nf(net)}</b> (${net-cost>=0?'gain':'loss'} ${nf(Math.abs(net-cost))})`)}</div>
+      <button class="btn" id="brGo" ${!BR.q||brLocked(h)?'disabled':''}>${BR.side==='b'?ae(`اشتري ${BR.q} سهم`,`Buy ${BR.q} shares`):ae(`${G('بيع','بيعي')} ${BR.q} سهم`,`Sell ${BR.q} shares`)}</button>
+      ${BR.side==='b'&&o.c+v+fee>cap?`<div class="tw-sm">${ae(`أقصى حاجة في شركة واحدة ${nf(cap)} جنيه.`,`At most ${nf(cap)} coins in one company.`)}</div>`:''}</div>`})():'';
+  return `<div class="card br-co${C.bust?' bust':''}${open?' open':''}" style="--c:${D.c}"><button class="br-hd" data-brc="${C.id}"><div class="br-n"><b>${nm}</b><small>${EN?BR2_SEC[D.sec]||D.sec:D.sec}</small></div>${brSpark(C,90,30)}
+      <div class="br-p"><b class="${fresh&&C.ch?(C.ch>0?'up':'dn'):''}">${C.bust?ae('مفلسة','Bankrupt'):nf(C.p)}</b><small class="${C.ch>0?'pos':C.ch<0?'neg':''}">${C.bust?(X.n-C.bust<BR_RELIST?ae(`شركة جديدة بعد ${bkNights(BR_RELIST-(X.n-C.bust))}`,`new company in ${BR_RELIST-(X.n-C.bust)} days`):''):`${C.ch>0?'▲':C.ch<0?'▼':'•'} ${Math.abs(ch)}%`}</small></div></button>
+    ${C.ev&&brEvTx(C.ev)?`<div class="br-ev ${C.evk}">📰 ${brEvTx(C.ev)}</div>`:''}
+    ${o.q?`<div class="br-own">${ae(`${G('معاك','معاكي')} ${o.q} سهم = ${nf(val)} جنيه · ${G('دفعت','دفعتي')} ${nf(o.c)}`,`You hold ${o.q} shares = ${nf(val)} coins · paid ${nf(o.c)}`)} · <span class="${pl>=0?'pos':'neg'}">${sg(pl)}</span>${o.q>brFreeQ(h,o)?ae(` · ${o.q-brFreeQ(h,o)} منهم من صفقة برا، ${G('تبيعهم','تبيعيهم')} من بكرة`,` · ${o.q-brFreeQ(h,o)} from an outside deal, sellable from tomorrow`):''}</div>`:''}${trade}</div>`};
+function brRules(){return `<details class="card bk2-rules br"${TWN.brRul?' open':''}><summary>📋 ${ae('قواعد أستاذ مجدي للصفقات اللي من برا','Mr Magdy\'s rules for outside deals')}</summary>
+  <div class="ru"><div class="st">${bk2Stamp(Object.assign({},BR2_OFF,{tilt:0}),'')}</div><ul>
+    <li>${ae('الشركة لازم تكون على الشاشة <b>بنفس اسمها بالظبط</b>.','The company must be on the board <b>with exactly the same name</b>.')}</li>
+    <li>${ae('الصفقة السليمة <b>أرخص من الشاشة</b>. أغلى من الشاشة؟ ده بيضحك عليك.','A real deal is <b>cheaper than the board</b>. Dearer than the board? He is fooling you.')}</li>
+    <li>${ae('وش الورقة: الشركة وعدد الأسهم والسعر، زي كلامه بالظبط.','Front of the paper: company, number of shares and price, exactly as he said.')}</li>
+    <li>${ae(`ضهر الورقة: ختم <b>مسدّس أخضر</b> مكتوب فيه «بورصة البلد»، وإمضة <i class="sg">${brSig(0)}</i>.`,`Back of the paper: a <b>green hexagon</b> stamp saying “VILLAGE EXCHANGE”, and the signature <i class="sg">${brSig(0)}</i>.`)}</li></ul></div></details>`}
+function brSide(o,k){if(k==='f')return bk2Paper('ct br',[ae('شهادة أسهم','Share certificate'),'#'+o.no],[[ae('الشركة','Company'),coTx(o.cf.co)],[ae('عدد الأسهم','Shares'),String(o.cf.q)],[ae('سعر السهم','Price a share'),nf(o.cf.px)]],'','');
+  return `<div class="bk2-rc"><small>${ae('ضهر الورقة','Back of the paper')}</small>${bk2Stamp(o.cb.st,'big')}<div class="sgr"><span>${ae('إمضة البورصة','Exchange signature')}</span><i class="sg">${brSig(o.cb.sig)}</i></div></div>`}
+function brLast(h,X){const L=X.last;if(!L||L.n!==(h.nDone|0))return '';const fx=TWN.brFx===L.res?' fx':'';
+  if(L.res==='deal')return `<div class="card bk2-res ok${fx}"><div class="sb">${bk2Stamp(Object.assign({},BR2_OFF,{tilt:-8}),'thump')}</div><b>${ae('صفقة حلوة!','A good deal!')}</b><span>${ae(`${L.q} سهم ${coTx(L.co)} بـ${nf(L.px)} بدل ${nf(L.p)}`,`${L.q} shares of ${coTx(L.co)} at ${nf(L.px)} instead of ${nf(L.p)}`)}</span></div>`;
+  if(L.res==='hit')return `<div class="card bk2-res bad${fx}"><div class="tear"><i></i><i></i></div><b>${ae(G('اتنصب عليك','اتنصب عليكي'),'Swindled')}</b><span>${L.o?brWhy(L.o):''}</span></div>`;
+  if(L.res==='pumped')return `<div class="card bk2-res bad${fx}"><b>${ae(G('اشتريت غالي','اشتريتي غالي'),'You paid too much')}</b><span>${L.o?brWhy(L.o):''}</span><small>${ae(`${G('دفعت','دفعتي')} زيادة ${nf(L.over)} جنيه`,`${nf(L.over)} coins too many`)}</small></div>`;
+  if(L.res==='dodged')return `<div class="card bk2-res ok${fx}"><div class="sb"><span class="nsb">${ae('نصاب','SWINDLER')}</span></div><b>${L.saw?ae(G('كشفته!','كشفتيه!'),'You caught him!'):ae('نجيت!','Lucky escape!')}</b><span>${L.o?brWhy(L.o):''}</span></div>`;
+  return `<div class="card bk2-res${fx}"><b>${ae('دي كانت صفقة سليمة','It was a real deal')}</b><span>${ae(`فاتك حوالي ${nf(L.g)} جنيه تحت سعر الشاشة.`,`You missed about ${nf(L.g)} coins under the board price.`)}</span></div>`}
+function brOfferHTML2(h,X,o){if(!o)return brLast(h,X)||`<div class="card bk2-none">${ae('مفيش حد عنده صفقة النهارده. ممكن ييجي حد بكرة.','No outside deal today. Someone may come tomorrow.')}</div>`;
+  const n=Object.keys(o.seen).length,C=o.id&&X.co.find(c=>c.id===o.id),over=C&&brOwn(X,C).c+o.a>brCap(h);
+  return `${brLast(h,X)}<div class="card bk2-man"><div class="mh"><span class="mf">${bk2Face('br2m_'+o.n+'_'+o.no,o.lk,['g','3'])}</span><div><b>${brWho(o.who)}</b><small>${ae('سمسار عايز يكلمك','a broker wants a word')}</small></div></div>
+    <div class="mp">${ae(`«عندي ${o.q} سهم في «${o.coS}» بـ${nf(o.px)} للسهم. يعني ${nf(o.a)} جنيه بس، ومحتاج الفلوس النهارده.»`,`“I have ${o.q} shares in “${coEn(o.coS)}” at ${nf(o.px)} a share. That's just ${nf(o.a)} coins, and I need the money today.”`)}</div>
+    <div class="ml">${n?ae('لمّ الورقة: «كفاية كده»','He took the paper back: “that\'s enough”'):ae(`${G('هيوريك','هيوريكي')} الورقة مرة واحدة: وشها أو ضهرها`,'He shows you his paper once: the front or the back')}</div>
+    <div class="bk2-looks two">${[['f','📄',ae('وش الورقة','The front')],['b','🔏',ae('ضهر الورقة','The back')]].map(([k,ic,t])=>`<button class="bk2-lk${o.seen[k]?' seen':''}" data-brk="${k}" ${n?'disabled':''}><i>${ic}</i>${t}</button>`).join('')}</div>
+    <div class="bk2-seen">${['f','b'].filter(k=>o.seen[k]).map(k=>`<div class="bk2-sw${TWN.brFlip===k?' flip':''}">${brSide(o,k)}</div>`).join('')}</div>
+    <div class="bk2-two"><button class="btn bk2-go" data-brd="1" ${h.money<o.a||brLocked(h)||over?'disabled':''}><span>✍️ ${ae(G('اشتري','اشتري'),'Buy')}</span><small>${nf(o.a)}</small></button><button class="btn ghost bk2-go" data-brd="0"><span>✋ ${ae(G('ارفض','ارفضي'),'Refuse')}</span><small>${ae('ببلاش','free')}</small></button></div>
+    ${h.money<o.a?`<div class="tw-sm bk2-need">${ae(`معاك ${nf(h.money)} بس`,`You only have ${nf(h.money)}`)}</div>`:''}</div>`}
+SCREENS.bourse=function(){const h=S.hero;if(!h){S.screen='title';return render()}brTick(h);const X=brFix(h),fresh=X.fresh|0,o=brOffer(h);X.fresh=0;
+  const val=X.co.reduce((a,C)=>a+brOwn(X,C).q*C.p,0),paid=Object.values(X.own).reduce((a,w)=>a+w.c,0),un=val-paid,lost=X.lost;X.lost=null;
+  const news=X.co.filter(C=>C.ev&&brEvTx(C.ev)).map(C=>`<span class="${C.evk}">${brEvTx(C.ev)}</span>`).join(' · ');
+  if(TWN.brIn!==KLT.n){TWN.brIn=KLT.n;TWN.brTab=o?'of':'mk'}const tab=TWN.brTab;
+  const say=tab==='of'?ae(`اللي ييجي يعرض ${G('عليك','عليكي')} صفقة من برا، ${G('قارن','قارني')} كلامه بالشاشة وبالقواعد. أنا مش هقولك.`,'Anyone offering an outside deal: compare his words with the board and the rules. I won\'t tell you.')
+    :tab==='log'?ae('كل بيعة وشروة مكتوبة هنا.','Every buy and sale is written here.'):ae('الأسعار بتتغير كل يوم. اللي يطلع ممكن ينزل، والشركة ممكن تفلس.','Prices change every day. What goes up can come down, and a company can go bankrupt.');
+  view.innerHTML=`${twTop(ae('بورصة البلد','The Village Exchange'))}<div class="tw br bk2">
+    ${bk2Hall('br',h,ae('أستاذ مجدي، مدير البورصة','Mr Magdy, head of the exchange'),say)}
+    <div class="bk2-sum"><div class="bk2-big"><small>${ae('أسهمك','Your shares')}</small><b>${nf(val)}</b></div><div class="bk2-big"><small>${ae('على الورق','On paper')}</small><b class="${un>=0?'pos':'neg'}">${sg(un)}</b></div><div class="bk2-big"><small>${ae('معاك','On you')}</small><b id="brM">${nf(h.money)}</b></div></div>
+    ${brLocked(h)?`<div class="tw-miss">${ae('عندك ليلة متسابة: البيع والشرا مقفولين لحد ما الليلة تخلص.','You have a saved night: buying and selling wait until it ends.')}</div>`:''}
+    ${bk2Tabs(tab,[['mk',ae('الشاشة','The board')],['of',ae('صفقات برا','Outside deals'),o?'1':''],['log',ae('الدفتر','Ledger')]],'data-brtab')}
+    <div class="bk2-pane">${tab==='of'?`${brOfferHTML2(h,X,o)}${brRules()}`:tab==='log'?`<div class="br-pl"><span>${ae('اللي اتقفل','Closed')}: <b class="${X.real>=0?'pos':'neg'}">${sg(X.real)}</b></span></div><div class="card bk-log bk2-log">${X.log.length?X.log.slice().reverse().slice(0,20).map(x=>`<div class="bkl"><span><i class="li">${BR2_LOGIC[x.k]||'•'}</i>#${x.id} ${EN?(BR2_LOGEN[x.k]||x.k):T(BR_LOGN[x.k]||x.k)} <small>${esc(brLogT(x))}</small></span><b class="${x.k==='sell'?'pos':'neg'}">${sg(x.a,x.k==='sell'?'+':'−')}</b></div>`).join(''):`<small>${ae('لسه مفيش حركات','No moves yet')}</small>`}</div>`
+      :`${news?`<div class="br-news"><div>${news}</div></div>`:''}${X.co.map(C=>brCard(h,X,C,fresh)).join('')}<div class="tw-sm">${ae(`رسوم ${BR_FEE}% على كل بيع وشرا. أقصى حاجة في شركة واحدة ${nf(brCap(h))} جنيه (بتكبر مع فلوسك). الشركة اللي تفلس الأسهم اللي فيها بتضيع كلها، بس باقي فلوسك مالهاش دعوة.`,`A ${BR_FEE}% fee on every buy and sale. At most ${nf(brCap(h))} coins in one company (it grows with your money). If a company goes bankrupt its shares are lost, but the rest of your money is safe.`)}</div>`}</div></div>`;
+  twBack();const on=(q,fn)=>view.querySelectorAll(q).forEach(b=>b.onclick=()=>fn(b));
+  on('[data-brtab]',b=>{TWN.brTab=b.dataset.brtab;TWN.brFx=null;TWN.brFlip=null;try{SFX.tick&&SFX.tick(760)}catch(e){}twRender()});
+  on('[data-brc]',b=>{BR.sel=BR.sel===b.dataset.brc?'':b.dataset.brc;BR.q=1;BR.side='b';SFX.tick&&SFX.tick(760);twRender()});
+  on('[data-brs]',b=>{BR.side=b.dataset.brs;BR.q=1;twRender()});
+  on('[data-brq]',b=>{const C=X.co.find(c=>c.id===BR.sel);if(!C)return;const mx=BR.side==='b'?brMaxBuy(h,X,C):brFreeQ(h,brOwn(X,C)),v=b.dataset.brq;BR.q=v==='max'?mx:Math.max(1,Math.min(mx,BR.q+ +v));twRender()});
+  const go=$('#brGo');if(go)go.onclick=()=>{const ok=BR.side==='b'?brBuy(BR.sel,BR.q):brSell(BR.sel,BR.q);if(ok){BR.q=1;twRender();const el=view.querySelector('.br-co.open');if(el)bk2Coins(el,18)}};
+  on('[data-brk]',b=>brCheck(b.dataset.brk));on('[data-brd]',b=>brDeal(b.dataset.brd==='1'));
+  const rd=view.querySelector('.bk2-rules');if(rd)rd.addEventListener('toggle',()=>{TWN.brRul=rd.open?1:0});
+  if(view.querySelector('.bk2-st.thump'))setTimeout(bk2Thud,260);
+  if(TWN.brFx==='hit'||TWN.brFx==='pumped'){const c=view.querySelector('.bk2-res.bad');if(c)c.classList.add('shake')}TWN.brFx=null;TWN.brFlip=null;
+  if(fresh){SFX.tick&&SFX.tick(880);if(news)setTimeout(()=>{SFX.whoosh&&SFX.whoosh()},200)}
+  if(lost&&lost.length)setTimeout(()=>band(ae('شركة أفلست','A company went bankrupt'),lost.map(x=>coTx(x.n)).join(ae(' و',' and ')),ae(`${G('خسرت','خسرتي')} ${nf(lost.reduce((a,x)=>a+x.a,0))} جنيه كانوا في أسهمها.`,`You lost ${nf(lost.reduce((a,x)=>a+x.a,0))} coins in its shares.`),{dur:2800,sound:SFX.meh}),300)};
+/* the town tiles in English */
+L10N({'أستاذ فوزي: خزنة ووديعة':'Mr Fawzy: safe and deposits','خزنة ووديعة':'Safe and deposits'},[[/^في الخزنة (\d+) جنيه$/,'$1 coins in the safe'],[/^فيه فلوس ليكي? تستلميها$|^فيه فلوس ليك تستلمها$/,'Money waiting for you'],[/^أسهمك (\d+) جنيه$/,'Your shares: $1 coins'],[/^و(\d+) كمان$/,'and $1 more']]);
+
+/* ================= the look ================= */
+{const st=document.createElement('style');st.textContent=`
+/* Twister 15:00: a foe's drawing covered its level badge */
+.foe .lv{z-index:6}
+/* the old clock line under the hero card gives way to the one on top; the paper's button that rides in it stays */
+#klBox{display:block;margin:8px 0 2px}#klBox>.kl-d,#klBox>.kl-n,#klBox>.kl-bar{display:none}#klBox:not(:has(.kl-jr)){display:none}#klBox .kl-jr{width:100%;margin-top:0}
+.kl-top{flex:none;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;z-index:3;min-height:30px;padding:4px 12px 6px;font-size:12.5px;line-height:1.3;color:#f2e6cc;
+  background:linear-gradient(180deg,#1b1d3b,#141526);border-bottom:1px solid #ffffff14;transition:background .8s}
+.kl-top[hidden]{display:none}.kl-top .kl-h{font-weight:900;color:var(--gold2);font-size:13.5px}.kl-top .kl-dy b{color:var(--gold2)}.kl-top .kl-lf{color:#cdbf9f;font-size:11.5px}
+.kl-top>span::before{content:'·';margin-inline-end:6px;opacity:.6}.kl-top .kl-ic{font-style:normal}
+.kl-top .kl-pr{position:absolute;inset-inline:0;bottom:0;height:2px;background:#0004}.kl-top .kl-pr b{display:block;height:100%;background:linear-gradient(90deg,#f3c14d,#ff9a5a)}
+.kl-top[data-p="a"]{background:linear-gradient(180deg,#29305f,#5a2a3a)}.kl-top[data-p="m"]{background:linear-gradient(180deg,#3d5a9a,#5a72b4);color:#fff}.kl-top[data-p="d"]{background:linear-gradient(180deg,#2f6fd0,#4a8ad8);color:#fff}
+.kl-top[data-p="s"]{background:linear-gradient(180deg,#4a6ab0,#b08a4a);color:#fff}.kl-top[data-p="g"]{background:linear-gradient(180deg,#6b2a4a,#c45a2a);color:#fff}
+.kl-top[data-p="m"] .kl-lf,.kl-top[data-p="d"] .kl-lf,.kl-top[data-p="s"] .kl-lf,.kl-top[data-p="g"] .kl-lf{color:#fff9}
+.kl-top[data-p="m"] .kl-h,.kl-top[data-p="d"] .kl-h,.kl-top[data-p="s"] .kl-h,.kl-top[data-p="g"] .kl-h,.kl-top[data-p="m"] .kl-dy b,.kl-top[data-p="d"] .kl-dy b,.kl-top[data-p="s"] .kl-dy b,.kl-top[data-p="g"] .kl-dy b{color:#fff3b0}
+.bk2-hall{position:relative;height:128px;margin:0 -16px;overflow:hidden;background:#000}.bk2-hall .bg,.bk2-hall .bg svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bk2-hall .win{position:absolute;bottom:4px;left:calc(50% - 46px);width:92px;height:92px;border:4px solid #7a4a24;border-radius:10px 10px 4px 4px;background:#1a2440;overflow:hidden;box-shadow:0 4px 0 #2a180c}
+.bk2-hall.br .win{border-color:#3a5a44}.bk2-hall .pf,.bk2-hall .pf svg{display:block;width:100%;height:100%}
+.bk2-hall .win .bar{position:absolute;inset-inline:0;bottom:0;height:12px;background:#5a3418;border-top:2px solid #c9a24a}
+.bk2-say{position:relative;margin:10px 0 8px;background:#1d1610;border:1px solid #c9a24a66;border-radius:12px;padding:7px 12px;font-size:13.5px;line-height:1.6;color:#f2e6cc;animation:bk2Say .5s ease-out}
+.bk2-say::before{content:'';position:absolute;top:-7px;left:calc(50% - 7px);width:12px;height:12px;background:#1d1610;border-top:1px solid #c9a24a66;border-left:1px solid #c9a24a66;transform:rotate(45deg)}
+.bk2-say b{display:block;font-size:11.5px;color:var(--gold2)}@keyframes bk2Say{from{opacity:0;transform:translateY(6px)}}
+.bk2-sum{display:flex;gap:8px;margin:2px 0 6px}.bk2-big{flex:1;background:#00000040;border:1px solid var(--line);border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;align-items:center}
+.bk2-big small{font-size:11.5px;color:var(--mute)}.bk2-big b{font-size:20px;font-weight:900;color:var(--gold2);font-variant-numeric:tabular-nums}.bk2 .pos{color:#7fe07a}.bk2 .neg{color:#ff8a6a}.bk2-big b.pos{color:#7fe07a}.bk2-big b.neg{color:#ff8a6a}
+.bk2-tabs{display:flex;gap:4px;margin:8px 0;background:#00000040;border-radius:12px;padding:4px;position:sticky;top:0;z-index:2;backdrop-filter:blur(4px)}
+.bk2-tab{flex:1;min-height:44px;border:0;border-radius:9px;background:none;color:var(--mute);font:inherit;font-weight:800;font-size:13.5px;position:relative;cursor:pointer}
+.bk2-tab.on{background:linear-gradient(180deg,#c9a24a,#8a6a2a);color:#1d1610}.bk2-tab .dot{position:absolute;top:3px;inset-inline-end:5px;min-width:16px;height:16px;border-radius:8px;background:#e04b3e;color:#fff;font-style:normal;font-size:10.5px;line-height:16px;animation:bk2Dot 1.4s ease-in-out infinite}
+@keyframes bk2Dot{50%{transform:scale(1.18)}}
+.bk2-pane{display:flex;flex-direction:column;gap:8px;animation:bk2In .25s ease-out}@keyframes bk2In{from{opacity:0;transform:translateY(4px)}}
+.bk2-amts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.bk2-chip{flex:1 1 18%;min-height:44px;min-width:58px;border-radius:10px;border:1px solid var(--line);background:#00000033;color:var(--ink);font:inherit;font-weight:800;font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums}
+.bk2-chip.wide{flex:1 1 40%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px}.bk2-chip.wide small{font-weight:600;font-size:11.5px;color:var(--mute)}
+.bk2-chip.on{border-color:var(--gold2);background:#c9a24a2a;color:var(--gold2);box-shadow:0 0 0 1px var(--gold2) inset}.bk2-chip:disabled{opacity:.4}
+.bk2-two{display:flex;gap:8px;margin:6px 0}.bk2-go{flex:1;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin:0}.bk2-go small{font-size:12px;opacity:.8;font-variant-numeric:tabular-nums}
+.bk2-vault{display:flex;flex-direction:column;align-items:stretch}.bk2-sf{width:84px;height:76px;align-self:center;image-rendering:pixelated}
+.bk2-lb{font-weight:800;color:var(--gold2);margin:6px 2px 0}.bk2-lb small{color:var(--mute);font-weight:600;font-size:12px}.bk2-pre{text-align:center;margin:4px 0 8px;font-size:15px}
+.bk2-paper{position:relative;background:linear-gradient(180deg,#f1e4c6,#e3d2ad);color:#3a2a1a;border-radius:4px;padding:10px 12px 10px;box-shadow:0 0 0 2px #7a5a2a,0 0 0 4px #2a1a0c,0 6px 0 4px #0004;margin:6px 4px;overflow:hidden}
+.bk2-paper .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px dashed #7a5a2a66;padding-bottom:4px;margin-bottom:4px}.bk2-paper .ph b{font-size:15px}.bk2-paper .ph span{font-size:12.5px;color:#7a5a2a;font-weight:700}
+.bk2-paper .pr{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-size:14px;border-bottom:1px dotted #7a5a2a55;padding-inline-end:76px}.bk2-paper .pr b{font-variant-numeric:tabular-nums}.bk2-paper .pr b.pos{color:#1f7a3a}
+.bk2-paper .bk2-st{position:absolute;inset-inline-end:10px;top:30px;width:66px;height:66px}.bk2-paper.done{box-shadow:0 0 0 2px #c9a24a,0 0 0 4px #2a1a0c,0 0 18px 4px #f3c14d55}
+.bk2-paper .pb{display:flex;justify-content:flex-end;margin-top:6px}.bk2-paper .pb .tw-buy{min-height:44px;min-width:120px}.bk2-paper .tw-buy.gold,.bk2-res .tw-buy.gold,.tw-row .tw-buy.gold{background:linear-gradient(180deg,#f3c14d,#c98326);color:#1d1610;border-color:#fff3b0;animation:bk2Glow 1.6s ease-in-out infinite}
+@keyframes bk2Glow{50%{box-shadow:0 0 14px #f3c14d99}}
+.bk2-bar{display:block;height:8px;border-radius:4px;background:#7a5a2a33;margin:8px 0 0;overflow:hidden;margin-inline-end:76px}.bk2-bar b{display:block;height:100%;background:repeating-linear-gradient(90deg,#2f5fd0 0 6px,#4a7ae0 6px 12px);transition:width .6s}
+.bk2-bar.full b{background:repeating-linear-gradient(90deg,#c98326 0 6px,#f3c14d 6px 12px);animation:bk2Run 1s linear infinite;background-size:24px 100%}@keyframes bk2Run{to{background-position:24px 0}}
+.bk2-paper .sgr{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;font-size:12.5px;padding-inline-end:76px}.sg{font-family:var(--display),serif;font-style:italic;font-size:18px;color:#1a2a6a;letter-spacing:.5px}
+.bk2-st{transform:rotate(var(--rt));image-rendering:pixelated}.bk2-st.big{width:120px;height:120px;display:block;margin:6px auto}
+.bk2-st.thump{animation:bk2Thump .55s cubic-bezier(.2,.9,.3,1.2) both}@keyframes bk2Thump{0%{transform:scale(2.6) rotate(calc(var(--rt) - 25deg));opacity:0}60%{transform:scale(.9) rotate(var(--rt));opacity:1}80%{transform:scale(1.05) rotate(var(--rt))}100%{transform:scale(1) rotate(var(--rt))}}
+.bk2-rules summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center;color:var(--gold2)}.bk2-rules .ru{display:flex;gap:10px;align-items:flex-start}.bk2-rules .st{flex:none;width:76px;height:76px;background:#f1e4c6;border-radius:8px;padding:5px}.bk2-rules .st svg{width:100%;height:100%}
+.bk2-rules ul{margin:0;padding-inline-start:18px;font-size:13px;line-height:1.7}.bk2-rules .ls{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:2px}.bk2-rules .ls b{font-weight:700;color:#e8d9bd;background:#ffffff10;border-radius:6px;padding:0 6px}
+.bk2-rules .sg{color:#9ab4ff;font-size:16px}
+.bk2-man{border-color:var(--gold2);animation:bk2In .35s ease-out}.bk2-man .mh{display:flex;gap:10px;align-items:center}.bk2-man .mf{flex:none;width:72px;height:72px;border-radius:12px;overflow:hidden;border:3px solid #5a3418;background:#1a2440}.bk2-man .mf svg{display:block;width:100%;height:100%}
+.bk2-man .mh small{display:block;color:var(--mute);font-size:12px}.bk2-man .mh b{font-size:17px}.bk2-man .mp{margin:8px 0;line-height:1.65;background:#00000033;border-radius:10px;padding:8px 10px;font-size:14.5px}
+.bk2-man .ml{font-size:12.5px;color:#f2c77a;margin:4px 0}.bk2-looks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bk2-looks.two{grid-template-columns:repeat(2,1fr)}
+.bk2-lk{min-height:58px;border-radius:12px;border:1px dashed var(--gold2);background:#c9a24a14;color:var(--ink);font:inherit;font-weight:800;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.bk2-lk i{font-style:normal;font-size:20px}.bk2-lk.seen{border-style:solid;background:#c9a24a33}.bk2-lk:disabled:not(.seen){opacity:.35}
+.bk2-seen{display:flex;flex-direction:column;gap:6px;margin:6px 0}.bk2-sw.flip{animation:bk2Flip .45s ease-out}@keyframes bk2Flip{from{transform:perspective(600px) rotateY(80deg);opacity:0}}
+.bk2-rc{background:linear-gradient(180deg,#f1e4c6,#e3d2ad);color:#3a2a1a;border-radius:6px;padding:8px;text-align:center;box-shadow:0 0 0 2px #7a5a2a}.bk2-rc small{font-weight:700;color:#7a5a2a}.bk2-rc .sgr{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px;font-size:12.5px}
+.bk2-id{background:linear-gradient(135deg,#e8eef8,#c8d4e8);color:#1a2440;border-radius:10px;padding:8px;box-shadow:0 0 0 2px #2e4a7a}.bk2-id .idh{font-size:12px;font-weight:800;border-bottom:1px solid #2e4a7a55;padding-bottom:4px;margin-bottom:6px}
+.bk2-id .idb{display:flex;gap:10px;align-items:center}.bk2-id .idp{flex:none;width:58px;height:58px;border-radius:6px;overflow:hidden;border:2px solid #2e4a7a}.bk2-id .idp svg{display:block;width:100%;height:100%}.bk2-id b{display:block;font-size:16px}.bk2-id small{color:#2e4a7a}
+.bk2-need{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.bk2-need .tw-buy{min-height:44px}
+.bk2-none{color:var(--mute);text-align:center;line-height:1.6}
+.bk2-res{position:relative;display:flex;flex-direction:column;gap:3px;padding-inline-end:84px;min-height:84px;justify-content:center;overflow:hidden}.bk2-res b{font-size:17px}.bk2-res span{font-size:13.5px;line-height:1.55}.bk2-res small{color:var(--mute)}
+.bk2-res.ok{border-color:#7fe07a88;background:linear-gradient(90deg,#7fe07a14,transparent)}.bk2-res.bad{border-color:#ff8a6a88;background:linear-gradient(90deg,#ff8a6a1c,transparent)}
+.bk2-res .sb{position:absolute;inset-inline-end:8px;top:50%;transform:translateY(-50%);width:72px;height:72px;display:flex;align-items:center;justify-content:center}.bk2-res .sb svg{width:72px;height:72px}
+.bk2-res .nsb{display:inline-block;padding:4px 8px;border:3px solid #cf3b2c;color:#cf3b2c;font-weight:900;font-size:15px;transform:rotate(-14deg);border-radius:6px;background:#cf3b2c14}.bk2-res.fx .nsb{animation:bk2Thump2 .55s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes bk2Thump2{0%{transform:scale(2.6) rotate(-40deg);opacity:0}60%{transform:scale(.9) rotate(-14deg);opacity:1}100%{transform:scale(1) rotate(-14deg)}}
+.bk2-res .tear{position:absolute;inset-inline-end:10px;top:50%;width:60px;height:70px;transform:translateY(-50%)}.bk2-res .tear i{position:absolute;top:0;width:30px;height:70px;background:linear-gradient(180deg,#f1e4c6,#e3d2ad);box-shadow:0 0 0 2px #7a5a2a}
+.bk2-res .tear i:first-child{left:0;clip-path:polygon(0 0,100% 0,80% 20%,100% 40%,75% 60%,100% 80%,85% 100%,0 100%)}.bk2-res .tear i:last-child{right:0;clip-path:polygon(0 0,100% 0,100% 100%,15% 100%,0 80%,25% 60%,0 40%,20% 20%)}
+.bk2-res.fx .tear i:first-child{animation:bk2TearL .8s .2s ease-in both}.bk2-res.fx .tear i:last-child{animation:bk2TearR .8s .2s ease-in both}
+@keyframes bk2TearL{to{transform:translate(-8px,10px) rotate(-14deg);opacity:.7}}@keyframes bk2TearR{to{transform:translate(8px,14px) rotate(16deg);opacity:.7}}
+.bk2-res.bad.fx::after{content:'';position:absolute;inset:0;background:#e04b3e;animation:bk2Flash .7s ease-out both;pointer-events:none}@keyframes bk2Flash{0%{opacity:.55}100%{opacity:0}}
+.bk2-res.shake{animation:bk2Shake .45s ease-in-out}@keyframes bk2Shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.bk2-log .bkl .li{font-style:normal;margin-inline-end:4px}.bk2-log .bkl .dy{opacity:.7}.bk2-log .bkl b{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.bk2-st.thump,.bk2-res.fx .nsb,.bk2-res .tear i,.bk2-res.bad.fx::after,.bk2-res.shake,.bk2-sw.flip,.bk2-pane,.bk2-man,.bk2-tab .dot,.bk2-bar.full b,.bk2-say,.tw-buy.gold{animation:none!important}}`;document.head.appendChild(st)}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
