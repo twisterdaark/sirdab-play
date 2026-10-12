@@ -613,6 +613,8 @@ function i18nSwap(e){const en=e.i18n&&e.i18n.en;if(!en)return;e._ar=e._ar||{};
   Object.keys(en).forEach(f=>{const v=en[f];if(typeof v!=='string'||!v.trim())return;if(!(f in e._ar))e._ar[f]=e[f];e[f]=typeof e._ar[f]==='function'?(()=>v):v})}
 const L10N_W=new Map(),L10N_R=[];
 function L10N(words,rules){Object.keys(words||{}).forEach(k=>L10N_W.set(k,words[k]));(rules||[]).forEach(r=>L10N_R.push(r))}
+/* English for a line written with {m|f} markers: both forms (as T() shows them) get the same English. L10NG({'arabic {m|f}':'english'}) */
+function L10NG(map){Object.keys(map||{}).forEach(k=>{const en=map[k];[1,2].forEach(i=>L10N_W.set(k.replace(/\{([^{}|]*)\|([^{}]*)\}/g,(x,a,b)=>i===1?a:b).trim(),en))})}
 function l10nStr(s){if(typeof s!=='string')return null;const t=s.trim();if(t==='‹')return s.replace('‹','›');if(!t||!/[؀-ۿ]/.test(t))return null;let o=L10N_W.get(t);
   if(o==null)for(const [re,to] of L10N_R){re.lastIndex=0;if(re.test(t)){re.lastIndex=0;o=t.replace(re,to);break}}
   return o==null||o===t?null:s.replace(t,o)}
@@ -751,6 +753,14 @@ L10N({'إنجاز جديد':'New achievement','وحشة أوي':'Very bad','وح
   [[/^سمعتك (اتحسنت|نزلت): من «(.+)» لـ«(.+)»$/,(m,u,a,b)=>`Your reputation ${u==='اتحسنت'?'rose':'fell'}: from «${REP_EN[a]||a}» to «${REP_EN[b]||b}»`],
    [/^\u2066\+(\d+)\u2069 جنيه$/,'\u2066+$1\u2069 coins'],
    [/^سمعتك (اتحسنت|نزلت) شوية \(لسه «(.+)»\)$/,(m,u,a)=>`Your reputation ${u==='اتحسنت'?'rose':'fell'} a little (still «${REP_EN[a]||a}»)`]]);
+/* 6.07 (R03b): what bag items do, and the bag's sections, in English (food lines come from the rules in p9.js) */
+L10NG({'بتصحّي اللي وقع بنص صحته، أو {تشربها|تشربيها} ترجّعلك صحتك كلها':'Wakes the fallen with half their health, or drink it for all your health back','ترميه على عدو. الجن والعفاريت بيكرهوه':'Throw it at a foe. Jinn and afreets hate it',
+  'صوت النداهة يبقى أصعب يشدك، وفي القتال {بتقطع|بتقطعي} بيه ندهتها':'The Naddaha\'s voice pulls you less, and in a fight it cuts off her call','العفاريت والأرواح تعوّرك أقل. بتفضل {معاك|معاكي}':'Afreets and spirits hurt you less. It stays with you',
+  '{ترميها|ترميها} على عدو. اللي بيخاف من النار بيقع على الأرض':'Throw it at a foe. Whatever fears fire falls to the ground','{تولّعه|تولّعيه} في وش عدو. اللي بيخاف منه بيقع على الأرض':'Light it in a foe\'s face. Whatever fears it falls to the ground',
+  '{ترميه|ترميه} على عدو: ضربة على الدماغ، وساعات {بيدوّخه|بيدوّخه}. العفاريت والأرواح بتتجنن منه.':'Throw it at a foe: a blow to the head, sometimes a daze. Afreets and spirits go mad over it.',
+    'دخان أسود حواليك: أول ضربتين {عليك|عليكي} مش هييجوا':'Black smoke around you: the first two blows at you miss'});
+L10N({},[[/^بيرجّع (\d+) صحة كل دور، 3 أدوار \((?:ليك|ليكي) أو لرفيقك\)$/,'$1 health back a turn for 3 turns (you or your companion)'],[/^بترميها على وحش: (\d+) ضرر، وبيولّع دورين$/,'Throw it at a beast: $1 damage, and it burns for two turns']]);
+L10N({'جرع الشفا':'Healing potions','قزايز الصحيان':'Waking bottles','المشاريب':'Drinks','جرع العطّار':'Herbal potions','الأكل':'Food','الملح':'Salt'},[[/^قسم «(.+)» في الشنطة مليان \((\d+) من (\d+)\)$/,(m,n,a,b)=>`The bag's «${l10nStr(n)||n}» section is full (${a} of ${b})`],[/^قسم «(.+)» مليان \((\d+) من (\d+)\)$/,(m,n,a,b)=>`«${l10nStr(n)||n}» is full (${a} of ${b})`]]);
 
 /* ---------- v4: resources, gear, life skills, class skills, hidden stats, titles ---------- */
 const MAT={
@@ -956,6 +966,16 @@ L10N({'ضربة سيف':'Sword strike','ضربة قوية على عدو واحد
   'تشجيع':'Cheer','ضربة رفيقك الجاية تيجي أكيد و+2':'Your companion\'s next hit surely lands, +2','طرد الجن':'Exorcism','ضربتك العادية على العفاريت والأرواح ضررها ×1.7':'Your plain hit does ×1.7 to afreets and spirits',
   'تصحية':'Revive','تصحّي رفيقك لو وقع، بنص صحته':'Wake your fallen companion with half health','علاج للكل':'Healing for all','انت ورفيقك بترجعوا 3 صحة كل دور لمدة 3 أدوار':'You and your companion get 3 health back a turn for 3 turns',
   'انتي ورفيقك بترجعوا 3 صحة كل دور لمدة 3 أدوار':'You and your companion get 3 health back a turn for 3 turns'});
+/* 6.06 (R03b): the hidden stats in English (their names, what they do, and the hint someone in town drops) */
+I18N(HIDDEN,{sabr:{n:'Patience',d:'Mining and fishing give better finds, and effort comes back faster'},hazz:{n:'Luck',d:'Lucky hits come easier (11 on two dice, or 19 on the d20)'},
+  hayba:{n:'Awe',d:'Weak beasts may run as soon as they see you'},thabat:{n:'Steadfast',d:'When your health runs low, your hits get +2'}});
+L10N({'صفة مخفية اتفتحت':'A hidden stat opened','الجبل ما بيديش غير للي ما زهقش.':'The mountain gives only to those who don\'t tire of it.','الحظ بيحب اللي بيكرره.':'Luck loves whoever keeps trying.',
+  'اللي يكسب من غير سيف، الناس بتهابه.':'Whoever wins without a sword, people hold in awe.','الحديد بيقوى في النار.':'Iron grows strong in the fire.'});
+/* 6.07 (R03b): what each trade does and what each piece of gear does, in English */
+I18N(LIFE,{mine:{d:'Rock breaks faster, and rare finds come more often'},fish:{d:'The pull lasts longer, and pricier fish come more often'},cook:{d:'Food gives back more health, and you open new dishes'},
+  smith:{d:'You open stronger things at the smith, and pay less'},tailor:{d:'You open things at the tailor, and pay less'}});
+L10N({'قلادة':'Necklace','تميمة':'Charm','ضرر':'Damage','حماية':'Armour','ضد العفاريت':'vs afreets','في القتال':'in fights','ضد صوت النداهة':'vs the Naddaha\'s voice',
+  'جرع شفا':'Healing potions','أكل':'Food','ملح':'Salt','قزازة صحيان':'Waking bottle','مشاريب':'Drinks','جرع عطّار':'Herbal potions','حدادة':'Smithing','خياطة':'Tailoring','عطارة':'Herbalism','زراعة':'Farming','طبخ':'Cooking','تنقيب':'Mining','صيد':'Fishing'});
 
 /* ---------- portraits ---------- */
 function hairShapes(h,hc){
@@ -1920,6 +1940,8 @@ async function choose(c){
   let o=c.res[r.tier];if(typeof o==='function')o=o();if(typeof o==='string')o={t:o};
   applyOutcome(o,r.tier,c);
 }
+/* 6.07 (R03b): the quantity buttons in English */
+L10N({},[[/^(?:بيع|بيعي) (\d+)$/,'Sell $1'],[/^(\d+) جنيه$/,'$1 coins']]);
 
 /* ---------- combat ---------- */
 const PACE=1300;
@@ -3242,7 +3264,81 @@ I18N(BAGUPS,{"0": {"n": "Big cloth bag"}, "1": {"n": "Salawa-hide bag"}, "2": {"
 
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"البلد": "The Village", "كفر الصفصاف": "Kafr El-Safsaf", "فاضلك": "Need", "مجهود": "Effort", "مليان": "Full", "الشنطة": "Bag", "فاضية": "Empty", "المنجم والترعة بياخدوا مجهود، والأكل بيرجّعه.": "The mine and the canal take effort; food brings it back.", "السوق": "Market", "عم رمضان البياع": "Uncle Ramadan the seller", "قماش وعيش": "Cloth and bread", "بضاعة جديدة": "New stock", "جديد:": "New:", "الحداد": "The Smith", "عم حسن": "Uncle Hassan", "الخياط": "The Tailor", "عم فتحي": "Uncle Fathy", "شنط أكبر وهدوم": "Bigger bags and clothes", "الطباخة": "The Cook", "أم سيد": "Umm Sayed", "فول وسمك مشوي": "Beans and grilled fish", "المنجم": "The Mine", "عجوز الجبل": "The Mountain Elder", "نحاس وحديد وفضة": "Copper, iron and silver", "الترعة": "The Canal", "صيد السمك": "Fishing", "بلطي وقرموط وبوري": "Tilapia, catfish and mullet", "عدّتي": "My gear", "سلاحك وهدومك": "Your weapon and clothes", "القهوة": "The Café", "قهوة عم صابر": "Uncle Saber's café", "دكة وشاي وكلام": "A bench, tea and talk", "عم حسن الحداد": "Uncle Hassan the smith", "عم فتحي الخياط": "Uncle Fathy the tailor", "أم سيد الطباخة": "Umm Sayed the cook", "العمدة": "The Mayor", "عم عبده الفلاح": "Uncle Abdo the farmer", "عم رجب العطّار": "Uncle Ragab the herbalist"},[[/^خبرة وتطلع المستوى (\d+)$/,'more XP to level $1'],[/^خبرة وتطلعي المستوى (\d+)$/,'more XP to level $1'],[/^(.+) · المستوى (\d+)$/,'$1 · Level $2'],[/^لابس (\d) من 6$/,'Wearing $1 of 6'],[/^لابسة (\d) من 6$/,'Wearing $1 of 6'],[/^حدادة مستوى (\d+)$/,'Smithing level $1'],[/^خياطة مستوى (\d+)$/,'Tailoring level $1'],[/^عطارة مستوى (\d+)$/,'Herbalism level $1'],[/^السوق: بضاعة جديدة$/,'Market: new stock']]);
-L10N({},[[/^فاضل (.+?) وتعملي? (.+)$/,(m,a,b)=>`Still need ${a.replace(/^(.+) (واحدة?)$/,'1 $1').replace(/^(\d+) (.+)$/,'$1 $2')} to make ${b}`],[/^(.+) من السوق$/,'$1 from the market'],[/^فاضلك (\d+) جنيه وتعملي? (.+)$/,'Need $1 more coins to make $2']]);
+L10N({},[[/^فاضل (.+?) وتعملي? (.+)$/,(m,a,b)=>`Still need ${a.replace(/^(.+) (واحدة?)$/,'1 $1').replace(/^(\d+) (.+)$/,'$1 $2')} to make ${b}`],[/^([^·]+) من السوق$/,'$1 from the market'],[/^فاضلك (\d+) جنيه وتعملي? (.+)$/,'Need $1 more coins to make $2']]);
+/* 6.06 (R03b): the town's voices in English — names, what they say in passing, how they greet you (L10NG: one English for both forms) */
+L10N({'عم صابر':'Uncle Saber','منصور':'Mansour','أبو حمدي':'Abu Hamdy','سامح':'Sameh','الحاج سليمان':'Hajj Soliman','سعاد بتاعة الفطير':'Soad the pastry woman','عم حمدي بتاع الحلاوة':'Uncle Hamdy the sweets seller',
+  'سماح الكوافيرة':'Samah the hairdresser','عم سعيد بياع الجرايد':'Uncle Saeed the newspaper seller','أستاذ فوزي، مدير البنك':'Mr Fawzy, the bank manager','أستاذ مجدي، مدير البورصة':'Mr Magdy, the exchange manager'});
+L10NG({'البضاعة عندي بتتغير بعد كل مغامرة. {تعالى|تعالي} بدري قبل ما تخلص.':'My goods change after every adventure. Come early before they run out.',
+  'أي حاجة {تجيبها|تجيبيها} من المنجم أو الترعة، أنا أشتريها منك. بسعري أنا طبعًا.':'Anything you bring from the mine or the canal, I\'ll buy. At my price, of course.',
+  '{هات|هاتي} نحاس من المنجم، وأنا أعلّمك {تعمل|تعملي} سيف بإيدك.':'Bring copper from the mine, and I\'ll teach you to make a sword with your own hands.',
+  'اللي بيعمل حاجته بإيده بيدفع أقل.. وإيده بتتعلم.':'Whoever makes things by hand pays less.. and the hand learns.',
+  'جلد السلعوة لو {جبته|جبتيه}، أعملك منه صديري {يحميك|يحميكي}.':'Bring me salawa hide and I\'ll make you a vest that protects you.',
+  'السمك اللي {بتصطاده|بتصطاديه} {هاته|هاتيه}، أشويهولك بعيش سخن.':'Bring me the fish you catch, and I\'ll grill it for you with hot bread.',
+  'الأكل اللي في شنطتك بيرجّعلك صحتك في القتال.. ولو {كلته|كلتيه} هنا بيرجّعلك حيلك.':'The food in your bag gives you health back in a fight.. and eaten here it gives you your strength back.',
+  'الصخر اللي بيلمع أزرق ده فيروز. قليل.. بس يستاهل التعب.':'The rock that shines blue is turquoise. Rare.. but worth the effort.',
+  'المنجم مش هيجري. {خد نفسك وارجع|خدي نفسك وارجعي} تاني.':'The mine isn\'t going anywhere. Catch your breath and come back.',
+  'الكفر كله بيدعيلك. ربنا يحفظك.':'The whole village prays for you. God keep you.','الناس بتقفل الشبابيك أول ما تعدّي. خلّي بالك من سمعتك.':'People shut their windows when you pass. Mind your reputation.',
+  'الكفر هادي النهارده.. بس الترعة لسه بتنده بالليل.':'The village is quiet today.. but the canal still calls at night.',
+  'شنطتك صغيرة {يا ابني|يا بنتي}. {تعالى|تعالي} أوسّعهالك.':'Your bag is small, my child. Come, I\'ll make it bigger.',
+  'الجيب خفيف؟ {بيع|بيعي} اللي مش {محتاجه|محتاجاه}، أنا بشتري كل حاجة.':'Light pockets? Sell what you don\'t need, I buy everything.',
+  '{شكلك تعبان|شكلك تعبانة}. {كُل|كُلي} لقمة ترجّعلك حيلك.':'You look tired. Have a bite to get your strength back.',
+  '{اطبخ|اطبخي} كتير، وأنا أعلّمك صينية السمك.':'Cook a lot, and I\'ll teach you the fish tray.',
+  'عم رمضان بصلك بشك وحط إيده على الفلوس: «{عايز|عايزة} إيه؟»':'Uncle Ramadan eyes you and puts a hand on his money: «What do you want?»',
+  '«{اتفضل|اتفضلي}.. بس الأسعار {عليك|عليكي} غير.»':'«Come in.. but your prices are different.»','«أهلاً {بالبطل|بالبطلة}! {اتفضل|اتفضلي}، عندي حاجات حلوة النهارده.»':'«Welcome, hero! Come in, I have nice things today.»',
+  '«{اتفضل|اتفضلي}، البضاعة طازة.»':'«Come in, the goods are fresh.»','«{بص|بصي} براحتك. اللي يعجبك نتكلم فيه.»':'«Take your time. Whatever you like, we can talk about.»',
+  'عم حسن ما رفعش عينه من النار: «{قول|قولي} {عايز|عايزة} إيه {وامشي|وامشي}.»':'Uncle Hassan doesn\'t look up from the fire: «Say what you want and go.»',
+  '«{هات|هاتي} الحاجة وأنا أعلّمك، أو {خد|خدي} اللي {عايزه|عايزاه} جاهز.»':'«Bring the materials and I\'ll teach you, or take what you want ready-made.»',
+  '«الحديد بيحب الإيد اللي بتصبر عليه.»':'«Iron loves the hand that is patient with it.»','«ناقصك نحاس ولا حديد؟ عندي جاهز، بس المنجم أرخص.»':'«Short of copper or iron? I have some, but the mine is cheaper.»',
+  'عم فتحي بصلك من فوق النضارة: «هنشوف.»':'Uncle Fathy looks at you over his glasses: «We\'ll see.»','«{تعالى|تعالي}، {تحب|تحبي} أفصّلك إيه؟»':'«Come, what shall I make for you?»',
+  '«الغُرزة الحلوة بتعيش أكتر من صاحبها.»':'«A good stitch outlives its owner.»','أم سيد قلبت وشها: «الأكل للي يستاهله.»':'Umm Sayed turns her face away: «Food is for those who deserve it.»',
+  '«{تعالى|تعالي} يا {حبيبي|حبيبتي}، الأكل سخن.»':'«Come, dear, the food is hot.»','«مفيش حاجة بترجّع الروح زي طبق فول.»':'«Nothing brings the soul back like a plate of beans.»','«أهلاً.»':'«Hello.»'});
+/* 6.07 (R03b): the smith's and the tailor's shops in English (and what they share with the cook, the market and the herbalist) */
+const twEnParts=s=>s.split(/ و(?=\d|[A-Za-z])/).map(x=>{x=x.trim();let m;if(m=/^(\d+) جنيه$/.exec(x))return m[1]+' coins';if(m=/^(.+) (?:واحد|واحدة)$/.exec(x))return '1 '+(l10nStr(m[1])||m[1]);return l10nStr(x)||x}).join(' and ');
+L10NG({'{اشتري|اشتري} جاهز، أو {اعمل|اعملي} بإيدك بأرخص':'Buy ready-made, or make it by hand for less','{صلّح|صلّحي}، {عزّز|عزّزي}، {فكّ|فكّي}، أو {ادمج|ادمجي}':'Repair, enhance, take apart, or merge',
+  'ولو {عملت|عملتي} الحاجة بإيدك، تمن الشغل مش بيتأثر بسمعتك.':'If you make it by hand, the work\'s price doesn\'t follow your reputation.','{معاك|معاكي} كل الحاجات!':'You have everything!',
+  'كل حاجة {بتعملها|بتعمليها} بإيدك بتعلّمك':'Everything you make by hand teaches you','كل أكلة {بتطبخها|بتطبخيها} بتعلّمك':'Every dish you cook teaches you'});
+L10N({'الشغل':'Work','حاجتك':'Yours','الكل':'All','هدوم':'Clothes','عادي':'Normal','كويس':'Good','نادر':'Rare','أسطوري':'Legendary','في إيدك':'In hand','عليك':'Worn','عليكي':'Worn','معاك':'You have','معاكي':'You have',
+  'اللي عندك:':'Yours:','اشتري جاهز':'Buy ready-made','مش بيتباع جاهز.':'Not sold ready-made.','لازم يتعمل بالإيد':'It has to be made by hand','لازم تتعمل بالإيد':'It has to be made by hand',
+  'اعمله بإيدك':'Make it by hand','اعملها بإيدك':'Make it by hand','اعمليه بإيدك':'Make it by hand','اعمليها بإيدك':'Make it by hand','الشنطة العادية':'The plain bag','فاضلك':'Need',
+  'خامات':'Materials','أغلى من المنجم والسوق، بس جاهزة على طول':'Dearer than the mine and the market, but always ready','موجود على طول':'Always in stock','موجودة على طول':'Always in stock','أقصى':'Max'},
+  [[/^الشغل أرخص (\d+)%$/,'Work $1% cheaper'],[/^خبرة (?:وتطلع|وتطلعي) (.+) مستوى (\d+)\. (.+)\.$/,(m,n,l,how)=>`more XP for ${l10nStr(n)||n} level ${l}. ${l10nStr(how)||how}.`],
+   [/^(?:وصلت|وصلتي) لآخر مستوى\. (.+)\.$/,(m,how)=>`You reached the top level. ${l10nStr(how)||how}.`],[/^شجرة ([A-Za-z].*|حدادة|خياطة|طبخ|تنقيب|صيد|زراعة|عطارة)$/,(m,n)=>`${l10nStr(n)||n} tree`],[/^(\d+) (?:نقط|نقطة)$/,'$1 points'],
+   [/^(?:معاك|معاكي) ×(\d+)$/,'You have ×$1'],[/^(?:محتاج|محتاجة) (.+) مستوى (\d+)$/,(m,n,l)=>`Needs ${l10nStr(n)||n} level ${l}`],[/^([^·]+) \+ (\d+)\s+جنيه$/,(m,a,c)=>{const o=/^(.+) (?:واحد|واحدة)$/.exec(a);return `${o?'1 '+(l10nStr(o[1])||o[1]):(l10nStr(a)||a)} + ${c} coins`}],
+   [/^ناقصك (?!\d+\s+جنيه\.?$)([^·:]+)$/,(m,a)=>'Short of '+twEnParts(a)],[/^(?:معاك|معاكي) كل الحاجات، (?:تقدر تعمل|تقدري تعملي)\S* دلوقتي!$/,'You have everything; you can make it now!'],
+   [/^([A-Za-z][A-Za-z' -]*|الحاجات دي) من (.+)$/,(m,a,b)=>{const S=x=>(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[x])||l10nStr(x)||x;return `${a==='الحاجات دي'?'These':a} from ${(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[b])||b.split(/ و(?=\S)/).map(S).join(' and ')}`}],
+   [/^(?:شايل|شايلة) ([A-Za-z«].*|الشنطة العادية)$/,(m,n)=>'Carrying '+(n==='الشنطة العادية'?'the plain bag':l10nStr(n)||n)],[/^لازم «(.+)» الأول$/,(m,n)=>`«${l10nStr(n)||n}» first`],
+   [/^ده أكتر عدد (?:تقدر تشيله|تقدري تشيليه) في كل قسم من الشنطة\.(?: الأرقام الخضرا هي اللي هتزيد مع «(.+)»\.| دي أكبر شنطة عند عم فتحي\.)$/,(m,n)=>`The most you can carry in each section of the bag.${n?` The green numbers grow with «${l10nStr(n)||n}».`:' This is Uncle Fathy\'s biggest bag.'}`],
+   [/^(\d+)\s+جنيه$/,'$1 coins'],[/^بيدخل في: (.+)$/,(m,a)=>'Used in: '+a.split('، ').map(x=>l10nStr(x)||x).join(', ')],[/^عندك (\d+)$/,'you have $1'],
+   [/^سمعتك «([^»]+)»، ف(.+) (?:مزوّد|مزوّدة) (?:عليك|عليكي)$/,(m,r,w)=>`Your reputation is «${l10nStr(r)||r}», so ${l10nStr(w)||w} charges you`],[/^في كل حاجة\.$/,'more on everything.'],
+   [/^(?:سمعتك «([^»]+)»(?: ولقبك «([^»]+)»)?|لقبك «([^»]+)»)، ف(.+) (?:مخصملك|مخصمالك)$/,(m,r,t1,t2,w)=>`${r?`Your reputation «${l10nStr(r)||r}»`:''}${t1||t2?`${r?' and ':''}your title «${l10nStr(t1||t2)||t1||t2}»`:''}: ${l10nStr(w)||w} gives you`],[/^من كل حاجة\.$/,'off everything.'],
+   [/^يعني (?:بتدفع|بتدفعي) زيادة (\d+) جنيه لو (?:اشتريت|اشتريتي) حاجة من كل نوع\.(.*)$/,(m,n,rest)=>`That is ${n} coins more if you buy one of each.${rest?' '+(/لقبك/.test(rest)?'Your title softens it a little. ':'')+'Reputation improves when you help people.':''}`],
+   [/^يعني (?:بتوفّر|بتوفّري) (\d+) جنيه لو (?:اشتريت|اشتريتي) حاجة من كل نوع\.$/,'That saves you $1 coins if you buy one of each.']]);
+L10N({'صحة':'Health','قماش':'Cloth','عم حسن':'Uncle Hassan','عم فتحي':'Uncle Fathy','أم سيد':'Umm Sayed','عم رمضان':'Uncle Ramadan','عم رجب':'Uncle Ragab'});
+/* where materials come from (TW_SRC), in English: used only inside the «… من …» rule above, so single words like «الترعة» keep their own English elsewhere */
+const TW_SRC_EN={"المنجم": "the mine", "المنجم أو السوق": "the mine or the market", "الترعة": "the canal", "السوق": "the market", "السلاعوة أو السوق": "salawas or the market", "العفاريت أو السوق": "afreets or the market", "النداهة": "the Naddaha", "عم حسن أو تحت في المنجم": "Uncle Hassan or deep in the mine", "عم حسن أو الوحوش الكبيرة": "Uncle Hassan or the big beasts", "الوحوش الكبيرة وآخر المنجم": "the big beasts and the bottom of the mine", "أم سيد": "Umm Sayed", "المنجم من الدور 3": "the mine from floor 3", "المنجم من الدور 8": "the mine from floor 8", "المنجم من الدور 14": "the mine from floor 14", "الترعة من صيد 2": "the canal from Fishing 2", "الترعة من صيد 4": "the canal from Fishing 4", "الترعة من صيد 6": "the canal from Fishing 6", "الغيط": "the field", "الغيط من زراعة 2": "the field from Farming 2", "الغيط من زراعة 3": "the field from Farming 3", "الغيط من زراعة 4": "the field from Farming 4", "الغيط من زراعة 6": "the field from Farming 6", "فراخك في الغيط": "your hens in the field", "جاموستك في الغيط": "your buffalo in the field", "عم رجب أو الغيط": "Uncle Ragab or the field", "عم رجب": "Uncle Ragab", "المنجم من الدور 5 وتحت": "the mine from floor 5 down", "الترعة مع الصيد": "the canal while fishing", "الغيط والقتالات الصعبة": "the field and hard fights", "عم حسن": "Uncle Hassan", "ضباع الترعة والجبل": "hyenas of the canal and the mountain", "الرخم في الجبل": "vultures on the mountain"};
+/* 6.07 (R03b): the cook, effort and food lines in English */
+L10NG({'{اطبخ|اطبخي} بإيدك':'Cook by hand','ببلاش، من السمك اللي {بتصطاده|بتصطاديه}':'free, from the fish you catch','{اطبخ|اطبخي}':'Cook','{كُل|كُلي} {وارجّع|وارجّعي} مجهودك':'Eat and get your effort back',
+  'مفيش أكل في شنطتك. {اطبخ|اطبخي} أو {اشتري|اشتري} من فوق.':'No food in your bag. Cook or buy from above.'});
+L10N({'الأكل في شنطتك:':'Food in your bag:','أكل وشرب جاهز من عند أم سيد':'Ready food and drink from Umm Sayed','مجهود':'Effort','مليان':'Full',
+  'المنجم والترعة بياخدوا مجهود، والأكل بيرجّعه.':'The mine and the canal take effort, and food brings it back.','مجهودك مليان. خلّي الأكل للقتال.':'Your effort is full. Keep the food for fights.','مجهودك مليان. خلّي الأكل للقتال':'Your effort is full. Keep the food for fights',
+  'بيرجع 1 كل دقيقة':'1 back every minute','بيرجع 1 كل 40 ثانية':'1 back every 40 seconds'},
+  [[/^(?:يرجّع|ترجّع|بيرجّع) (\d+) صحة$/,'Restores $1 health'],[/^ولو (?:كلته|كلتها|شربته|شربتها|كلتيه|كلتيها|شربتيه|شربتيها) في البلد (?:يرجّع|ترجّع) (\d+) مجهود$/,'in the village, $1 effort'],
+   [/^طاقة ⁦\+(\d+)⁩(?: في القتال)?$/,'Energy +$1 in fights'],[/^طاقة ⁦\+(\d+)⁩ في القتال، ساقعة ومتلجة$/,'Energy +$1 in fights, ice cold'],[/^الجاي بعد (\d+:\d+)$/,'next in $1'],
+   [/^(\d+) من (\d+)$/,'$1 of $2'],[/^(?:معاك|معاكي) (\d+)$/,'you have $1'],[/^طبخ مستوى (\d+)$/,'Cooking level $1'],
+   [/^(.+)\. (?:كُل|كُلي) حاجة الأول أو (?:كبّر|كبّري) شنطتك عند عم فتحي$/,(m,a)=>`${l10nStr(a)||a}. Eat something first or get a bigger bag from Uncle Fathy`]]);
+/* 6.07 (R03b): the market and «عدّتي» in English */
+L10NG({'مفيش حاجة {تبيعها|تبيعيها} دلوقتي.':'Nothing to sell right now.','{روح|روحي} المنجم أو الترعة {وهات|وهاتي} حاجات، وعم رمضان بيشتري كل حاجة.':'Go to the mine or the canal and bring things; Uncle Ramadan buys everything.',
+  '{دوس|دوسي} على أي مكان عشان {تلبس|تلبسي} أو {تقلع|تقلعي}. الحاجات بتتعمل عند عم حسن وعم فتحي.':'Tap any slot to wear or take off. Things are made at Uncle Hassan\'s and Uncle Fathy\'s.',
+  'كل ضربة تيجي {فيك|فيكي}':'on every blow at you','صوت النداهة ما بيأثرش {فيك|فيكي}':'The Naddaha\'s voice doesn\'t move you','حتة زيادة مش {لابسها|لابساها}':'a spare piece you aren\'t wearing'});
+L10N({'السوق':'Market','بيع':'Sell','البضاعة بتتجدد بعد كل مغامرة':'Stock changes after every adventure','بيشتري بأقل من سعره، وسوق اللاعبين أحسن':'He buys below the price; the players\' market pays better','عرض':'Deal',
+  'خلص':'Sold out','فاضل 1 بس!':'Only 1 left!','حاجات':'Things','سمك':'Fish','عدّة زيادة':'Spare gear','ارميه':'Throw it away','عم رمضان ضحك: «ده ما يتباعش!»':'Uncle Ramadan laughed: «That\'s not for sale!»',
+  'بسعر أعلى عشان جودتها':'a better price for its quality','بتمن قليل':'for little','للقتال':'For fights','عدّتي':'My gear','فاضي':'Empty','أحسن':'Better','أرقامك':'Your numbers','الضربة بتقل':'Blows hurt less','ضرر زيادة':'Extra damage','على كل ضربة':'on every hit',
+  'الرقم ده بيتزوّد على النرد':'this number is added to the dice','المتانة':'Durability','كل قتال بياخد 1 من السلاح والدرع والراس':'each fight takes 1 from the weapon, armour and head',
+  'في حاجة تعبانة. التصليح عند عم حسن (الحديد والنحاس) وعم فتحي (القماش والجلد).':'Something is worn. Repairs at Uncle Hassan\'s (iron and copper) and Uncle Fathy\'s (cloth and leather).',
+  'الضرب والشيل':'hitting and carrying','السرعة والتفادي':'speed and dodging','الاستحمال والصبر':'toughness and patience','السحر والتفكير':'magic and thinking','الانتباه والعلاج':'awareness and healing','الكلام والإقناع':'talk and persuasion'},
+  [[/^فاضل (\d+)$/,'$1 left'],[/^زيادة (\d+) جنيه عشان سمعتك$/,'$1 coins more for your reputation'],[/^خصم (\d+) جنيه$/,'$1 coins off'],[/^بـ(\d+) جنيه الواحدة$/,'$1 coins each'],
+   [/^(.+)\. (?:فكّر|فكّري) قبل ما (?:تبيع|تبيعي)(?:ها|ه)$/,(m,r)=>`${l10nStr(r)||r}. Think before you sell it`],[/^منها (.+) من العدّة$/,(m,n)=>`${n} from gear`],[/^سلاحك:$/,'Your weapon:'],
+   [/^العفاريت والأرواح (?:بتعوّرك) (\d+) أقل$/,'Afreets and spirits hurt you $1 less'],[/^صنعة إيد (.+): (.+)$/,(m,b,a)=>`Made by ${b}: ${a.split('، ').map(x=>l10nStr(x)||x).join(', ')}`],[/^المستوى (\d+)$/,'Level $1']]);
 /* ---------- v4: المنجم (mining) and الترعة (fishing): effort, rocks, fish, sounds ---------- */
 (function(){const st=document.createElement('style');st.textContent=`
 .gx-stats{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px 12px 3px}
@@ -4602,6 +4698,8 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.07',d:'12 أكتوبر',add:['للي مختار English: الدكاكين بقت بالإنجليزي: الحداد والخياط والطباخة، «عدّتي»، السوق (شرا وبيع)، والشنطة؛ وكل حتة عدّة بتقول بتعمل إيه، والجودة والتعزيز والتصليح والفك والدمج']},
+{v:'6.06',d:'12 أكتوبر',add:['للي مختار English: ناس البلد بقوا بيتكلموا إنجليزي: كل كلام البلد والقهوة، ترحيب أصحاب الدكاكين على حسب سمعتك، حكايات عم صابر كلها، والصفات المخفية وتلميحاتها']},
 {v:'6.05',d:'12 أكتوبر',add:['أول جزء من اللعبة بالإنجليزي للي مختار English: أول دقيقة كلها (الخطوات الست، عمل البطل بكل أشكاله، قتال التدريب)، شاشة القتال وقدرات الست أنواع، الإنجازات، وسطر السمعة'],
  fix:['إنجازات «اللقمة الحلوة» و«رد الجميل» بقى كلامها زي باقي الإنجازات','السلعوة الصغيرة وجرو الديب ما بقوش بيقفوا لو الثقة ما كملتش: المرحلة التانية بترجع في يوم تاني لحد ما الثقة توصل 3 من نوعين مساعدة','الجرو لو {سبته|سبتيه} على المدق مش بيظهر تاني نفس اليوم، والخطف بيحصل أول مرة بس','الوحش اللي {بتسيبه|بتسيبيه} حر بيرجع مكانه (الجرو للجبل)']},
 {v:'6.04',d:'12 أكتوبر',add:['الوحوش اللي بتاكل لحمة ممكن تبقى «جعانة» في القتال (بيبان على كارتها، وفي الغيطان أكتر). الجعان بتديله سمكة بياكل ويمشي حتى لو لسه قوي، وحتى الشرس زي الخنزير البري','وحش جعان طبعه أمين لو {أكّلته|أكّلتيه} واللي معاه لسه بيحاربوك، ممكن يعض واحد منهم وهو ماشي (مرة واحدة). والضبع الجعان لسه ممكن يخطف الأكل','إنجازين جداد: «اللقمة الحلوة» و«رد الجميل»'],
@@ -5134,6 +5232,14 @@ function twMend(btn){const h=S.hero;if(!h||TWN.busy||(h.res.cloth||0)<MEND.cloth
 .bg-job{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .bg-job .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.bg-job .r1 b{font-size:15px}
 .bg-job .btn small{display:block;font-size:12px;font-weight:700;opacity:.8}`;document.head.appendChild(st)}
+/* 6.07 (R03b): the mending job in English */
+L10NG({'ناس البلد سايبين هدوم مقطّعة عند عم فتحي. كل ترقيعة بقماشة واحدة، وعم فتحي {بيديك|بيديكي} عليها 5 جنيه.':'Village folk leave torn clothes with Uncle Fathy. Each patch takes one piece of cloth, and Uncle Fathy pays you 5 coins for it.'});
+L10N({'شغلانة: ترقيع هدوم':'Job: mending clothes','ناقصك قماش · من السوق':'Short of cloth · from the market'},
+  [[/^(?:رقّع|رقّعي) حتة$/,'Mend a piece'],[/^قماشة واحدة · (?:معاك|معاكي) (\d+)$/,'one cloth · you have $1'],[/^⁦\+(\d+)⁩ خبرة خياطة · ⁦\+(\d+)⁩ باليد$/,'\u2066+$1\u2069 tailoring XP · \u2066+$2\u2069 by hand']]);
+/* 6.07 (R03b): the bag screen in English */
+L10NG({'{روح|روحي} لعم فتحي':'Go to Uncle Fathy','{روح|روحي} لأم سيد':'Go to Umm Sayed','{معاك|معاكي} أكبر شنطة.':'You have the biggest bag.','{ماسكه|ماسكاه}':'in hand','{لابسه|لابساه}':'worn'});
+L10N({'شنطة أكبر بتكبّر الأقسام كلها، عند عم فتحي الخياط.':'A bigger bag makes every section bigger, at Uncle Fathy the tailor\'s.','مفيش أكل في الشنطة. أم سيد بتبيع أكل وبتطبخ.':'No food in the bag. Umm Sayed sells food and cooks.',
+  'الشنطة متقسمة أقسام، وكل قسم ليه مساحة لوحده: لو قسم اتملا، التاني لسه فيه مكان.':'The bag is split into sections, each with its own room: when one is full, the others still have space.','الشنطة':'Bag'},[[/^(\d+) من (\d+) · فاضل (\d+)$/,'$1 of $2 · $3 left']]);
 /* ---------- v4.2 الحِرف: the craft mini-games (الحدادة، الخياطة، الطبخ), played before the craft ceremony ----------
    mgPlay(kind,h,opts) → Promise<{score,grade,burnt?,perfectRun?}>
    kind 'smith'|'tailor'|'cook'; opts {tier,name,icon}. score 0..1; grade 'bad'|'ok'|'good'|'great'|'perfect'; burnt is cook only.
@@ -6221,6 +6327,22 @@ Object.assign(SFX,{
 .q-enh .bts{width:min(300px,84vw)}.q-enh .bts .btn[disabled]{opacity:.35}
 @media (prefers-reduced-motion:reduce){.q-glow svg,.q-enh .it,.q-enh .rays{animation:none!important}}
 `;document.head.appendChild(st)}
+/* 6.07 (R03b): quality, traits, repair, enhancement, taking apart and merging — in English */
+L10N({'بايظ':'Botched','بايظة':'Botched','ممتاز':'Excellent','ممتازة':'Excellent','تحفة':'Masterwork','حاد':'Sharp','حادة':'Sharp','خفيف':'Light','خفيفة':'Light','متين':'Sturdy','متينة':'Sturdy',
+  'مبروك':'Blessed','مبروكة':'Blessed','متشرّب ملح':'Salt-soaked','متشرّبة ملح':'Salt-soaked','مشبّع':'Filling','مشبّعة':'Filling','سخن':'Hot','سخنة':'Hot','متانة':'Durability','حتة واحدة':'one piece','حتتين':'two pieces',
+  'حجارة التعزيز':'Enhancement stones','الحجر الدهبي مش بيتباع: بيطلع من الوحوش الكبيرة وتحت في المنجم':'The golden stone isn\'t sold: it comes from the big beasts and deep in the mine','عم حسن الحداد هو اللي بيبيعها':'Uncle Hassan the smith sells them',
+  'للتعزيز من +1 لـ+3 · بينجح على طول':'for enhancing +1 to +3 · always works','للتعزيز من +4 لـ+7':'for enhancing +4 to +7','الأرقام لسه زي ما هي':'the numbers stay the same','الصفات الخاصة بتقوى':'special traits grow stronger',
+  'بتاخد صفة خاصة جديدة':'gains a new special trait','لو فشل، بينزل درجة':'if it fails, it drops a step','لو فشل، الحجر بيروح بس':'if it fails, only the stone is lost','آخر درجة تعزيز':'Top enhancement','نجح!':'It worked!','ما نفعش..':'It didn\'t take..'},
+  [[/^ضربة المعلّم ⁦\+(\d+)%⁩$/,'master strike +$1%'],[/^خفة ⁦\+(\d+)⁩$/,'agility +$1'],[/^بيستحمل ×([\d.]+)$/,'lasts ×$1'],[/^فلوس الصناديق ⁦\+(\d+)%⁩$/,'chest money +$1%'],
+   [/^ضرر ⁦\+(\d+)⁩ على العفاريت والأرواح$/,'damage +$1 on afreets and spirits'],[/^ضرر ⁦\+(\d+)⁩ على النداهة$/,'damage +$1 on the Naddaha'],[/^⁦\+(\d+)⁩ مجهود لو (?:كلته|كلتيه) في البلد$/,'+$1 effort if eaten in the village'],
+   [/^⁦\+(\d+)⁩ صحة في القتال$/,'+$1 health in fights'],[/^حاجتك اللي (.+) بيشتغل فيها$/,(m,w)=>`Your things ${l10nStr(w)||w} works on`],[/^(\d+) حتت$/,'$1 pieces'],
+   [/^مفيش حاجة (?:معاك|معاكي) من عند (.+) لسه\.$/,(m,w)=>`You have nothing from ${l10nStr(w)||w} yet.`],[/^(?:اعمل|اعملي) أو اشتري حاجة من «الشغل»\.$/,'Make or buy something from «Work».'],
+   [/^(?:صلّح|صلّحي) الكل$/,'Repair all'],[/^(\d+) حاجات · (\d+) جنيه$/,'$1 things · $2 coins'],[/^(?:صلّح|صلّحي)(?:ها|ه)$/,'Repair it'],[/^(?:صلّح|صلّحي) بـ(.+)$/,(m,a)=>`Repair with ${l10nStr(a)||a}`],
+   [/^(.+) (?:واحد|واحدة) \+ (\d+) جنيه$/,(m,a,c)=>`1 ${l10nStr(a)||a} + ${c} coins`],[/^(?:عزّز|عزّزي) لـ⁦\+(\d+)⁩$/,'Enhance to +$1'],[/^(.+) · (\d+)%$/,(m,a,p)=>`${l10nStr(a)||a} · ${p}%`],
+   [/^لو (?:عزّزت|عزّزتي) لـ⁦\+(\d+)⁩:$/,'If enhanced to +$1:'],[/^الزيادة الجاية عند ⁦\+(\d+)⁩$/,'next gain at +$1'],[/^(?:فكّ|فكّي)(?:ها|ه)$/,'Take it apart'],
+   [/^(?:هتاخد|هتاخدي) (.+?)( وممكن الحجر)?$/,(m,a,s)=>`you get ${l10nStr(a)||a}${s?' and maybe the stone':''}`],[/^(?:ادمجهم|ادمجيهم)$/,'Merge them'],
+   [/^اتنين (\S+) ← (?:واحد|واحدة) (\S+) · (\d+) جنيه$/,(m,a,b,c)=>`two ${l10nStr(a)||a} → one ${l10nStr(b)||b} · ${c} coins`],[/^صنعة إيد: (.+)$/,'Made by: $1'],[/^محفور (?:عليها|عليه): «(.+)»$/,'Engraved: «$1»'],
+   [/^(?:صلّحت|صلّحتي) (حتة|حتتين|\d+ حتت) بـ(\d+) جنيه$/,(m,n,c)=>`Repaired ${n==='حتة'?'one piece':n==='حتتين'?'two pieces':n.replace(' حتت',' pieces')} for ${c} coins`]]);
 /* ---------- v4.2 الشجرة: one skill tree per life skill, 4 branches × 5 ranks (v5.2) ---------- */
 /* h.tree = {mine:{heavy:0,...,xp:0}, ...} (created lazily), h.treeV=2. 3 points per skill level. Rank n of a branch costs n points.
    Ranks 1-4 grow one small bonus; rank 5 is a strong passive. treeRank() gives the rank 0..5.
@@ -6670,6 +6792,18 @@ Object.assign(SFX,{
   {g:'البلد',h:'التعزيز والفك والدمج',b:()=>`<b>التعزيز:</b> بحجر تعزيز ${G('تقدر تقوّي','تقدري تقوّي')} السلاح أو الدرع أو الراس لحد ${twI('+10')}. كل درجة ضرر أو حماية زيادة.<br>من ${twI('+1')} لـ${twI('+3')} بالحجر العادي وبينجح على طول. من ${twI('+4')} لـ${twI('+7')} بالحجر الأزرق، ولو فشل الحجر بيروح بس. من ${twI('+8')} بالحجر الدهبي، ولو فشل الحتة بتنزل درجة.<br>${twI('+4')} بيقوّي الصفة، و${twI('+7')} بيفتح صفة تانية، و${twI('+10')} الحتة بتنوّر.<br>عم حسن بيبيع الحجر العادي والأزرق. الدهبي بيطلع من الوحوش الكبيرة وتحت في المنجم.<br><b>فكّها:</b> أي حتة مش ${G('لابسها','لابساها')} بترجّع نص خاماتها.<br><b>ادمجهم:</b> حتتين زي بعض وبنفس الجودة بيبقوا حتة واحدة أحسن درجة (لحد «ممتاز»).`},
   {g:'البلد',h:'شجرة الشغلانة',b:()=>`كل شغلانة ليها <b>شجرة</b> فيها 3 فروع، وكل فرع 4 درجات. كل مستوى ${G('بتطلعه','بتطلعيه')} في الشغلانة ${G('بيديك','بيديكي')} نقطة ${G('تحطها','تحطيها')} في الدرجة اللي ${G('عايزها','عايزاها')}.<br>الدرجة الرابعة في كل فرع حاجة مميزة، وبتتفتح بعد التلاتة اللي قبلها.<br>الشجرة بتتفتح من مربع الشغلانة عند الحداد والخياط والطباخة، ومن زرار «الشجرة» فوق في المنجم والترعة.<br>لو ${G('عايز','عايزة')} ${G('توزّع','توزّعي')} النقط من الأول، صاحب الشغلانة بيرجّعهالك بفلوس.`},
   {g:'البلد',h:'قهوة عم صابر',b:()=>`في البلد قهوة فيها <b>دكة</b>: طول ما ${G('انت قاعد','انتي قاعدة')} عليها المجهود بيرجع <b>أسرع 3 مرات</b>، والناس بتتكلم حواليك.<br><b>الشاي:</b> الكوباية بـ10 جنيه وبترجّع 4 مجهود على طول. كل كوباية زيادة في نفس الساعة بالضعف (10، 20، 40...).<br>ولما ${G('ترجع','ترجعي')} من مغامرة مجهودك بيتملى.`});}
+/* 6.06 (R03b): the café's talk in English */
+L10NG({'{اقعد|اقعدي} {يا ابني|يا بنتي}، الشاي على النار.':'Sit down, my child, the tea is on the fire.','الدكة دي ريّحت ناس كتير قبلك. {ريّح|ريّحي} رجليك.':'This bench has rested many before you. Rest your feet.',
+  'الكوباية الأولى بعشرة. التانية في نفس الساعة بعشرين. أصل الشاي بيخلص.':'The first glass is ten. The second in the same hour is twenty. Tea runs out, you see.','الكرسي ده بتاعي من تلاتين سنة. حتى صابر عارف كده.':'This chair has been mine for thirty years. Even Saber knows it.',
+  'الشاي بتاع صابر تقيل. يصحّي النايم.':'Saber\'s tea is strong. It wakes the sleeping.','أنا حلاق الكفر من عشرين سنة. كل الكلام بيعدّي عليا.':'I\'ve been the village barber for twenty years. All the talk passes through me.',
+  'الواد ابن أختي عايز يبقى حداد زي عم حسن. قولتله الحدادة عايزة صبر.':'My nephew wants to be a smith like Uncle Hassan. I told him smithing needs patience.','مراتي بتقول إني بقعد هنا كتير. أنا بقول إني بقعد هنا بالقدر الكافي.':'My wife says I sit here too much. I say I sit here just enough.',
+  'الترعة النهارده هادية. بس أنا برضه مش هنزلها.':'The canal is calm today. I still won\'t go in.','الكهربا قطعت امبارح ساعتين، والكفر كله نزل القهوة.':'The power was out for two hours yesterday, and the whole village came to the café.',
+  'أنا لو معايا فلوس، أعمل سيف حديد وأقعد بيه هنا عشان الناس تشوفه.':'If I had money, I\'d have an iron sword made and sit here with it so people see.','الفطير لسه طالع من الفرن. ريحته وصلت لآخر الشارع.':'The feteer just came out of the oven. You can smell it at the end of the street.',
+  'خلّي بالك من نفسك {يا حبيبي|يا حبيبتي}. الدنيا بالليل مش أمان.':'Take care of yourself, dear. The night isn\'t safe.','الكفر كله بيتكلم عنك. {خلّيك|خلّيكي} كده.':'The whole village talks about you. Stay that way.',
+  '{انت|انتي} اللي الناس بتتكلم {عليه|عليها}؟ أنا مش شايف حاجة. أنا بشرب شايي وبس.':'You\'re the one people talk about? I see nothing. I just drink my tea.','شكلك {بتكسر|بتكسري} صخر كتير في المنجم. إيدك باينة عليها.':'Looks like you break a lot of rock in the mine. It shows on your hands.',
+  'عم سيد الصياد بيقول إنك {بقيت|بقيتي} {تصطاد|تصطادي} أحسن منه. بس ما {تقولوش|تقوليلوش} إني قولت.':'Uncle Sayed the fisherman says you fish better than him now. But don\'t tell him I said so.',
+  '{شكلك هلكان|شكلك هلكانة}. {اقعد|اقعدي} {واشرب|واشربي} حاجة سخنة.':'You look worn out. Sit and drink something hot.'});
+L10N({},[[/^(.+)؟ ده أحسن من اللي كنت عايز أعمله\.$/,(m,a)=>`${l10nStr(a)||a}? That's better than the one I wanted to make.`]]);
 /* ==========================================================================
    سرداب: pixel heroes (p9p.js)
    1. The paper doll from art round 5: pd_core.js, then the pd_parts_*.js files, pasted as they are.
@@ -18962,6 +19096,11 @@ async function brBake(btn){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_F
 
 /* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
 I18N(MAT,{"flour": {"n": "Flour"}});
+/* 6.07 (R03b): baking bread in English */
+L10NG({'{اخبز|اخبزي} عيش':'Bake bread','{اخبز|اخبزي}':'Bake'});
+L10N({'العيش بيدخل في كل طبخة':'Bread goes into every dish','عيش بلدي':'Village bread','شوال دقيق':'Sack of flour','اشتري':'Buy'},
+  [[/^(\d+) دقيق بيطلّعوا من رغيف لـ(\d+)، على حسب (?:عجنك|عجنِك) وخَبزك · معاك (\d+) عيش$/,'$1 flour make 1 to $2 loaves, by your kneading and baking · you have $3 bread'],[/^(\d+) دقيق$/,'$1 flour'],
+   [/^(\d+) دقيق · معاك (\d+)$/,'$1 flour · you have $2'],[/^ناقصك (\d+) دقيق · اشتريه من أم سيد تحت$/,'Short of $1 flour · buy it from Umm Sayed below'],[/^⁦\+(\d+)⁩ دقيق$/,'⁦+$1⁩ flour']]);
 
 /* ---------- follow-ups: what you chose comes back later in the same night (prefix NF_) ----------
    An outcome plants one with  follow:'<card id>'  or  follow:{id,in:[2,4],why:'..'}  (a list works too).
@@ -22580,6 +22719,8 @@ function twFolds(box){box.querySelectorAll('.tw-sec:not(.big)').forEach(sec=>{co
 
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"✓ اتشافوا كلهم": "✓ All seen"});
+/* 6.07 (R03b): the players' market card in English */
+L10N({'سوق اللاعبين':'Players\' market','بيع واشتري مع لاعيبة تانيين':'Buy and sell with other players','بيع واشتري مع لاعيبة تانيين · محتاج حساب جوجل':'Buy and sell with other players · needs a Google account'});
 /* ---------- more looks and gear you can hide (v5.32) ----------
    1. Eye shapes and mouths: new paper-doll kinds 'eyesh' and 'mouth' (p9p.js draws them right after the face). Each one paints
       skin over the face's own eyes or smile, then draws its own. 'عادي' and 'ابتسامة' are the face as it was.
@@ -22715,6 +22856,9 @@ function vanToggle(h,s){const hid=h.hide=h.hide||{};if(hid[s])delete hid[s];else
 .van-eye:active svg{transform:scale(.88)}.van-eye.off svg{color:#f0a090;border-color:#f0a09088}
 .tw-slot.van-hid .ic{opacity:.45}
 .van-sh{gap:8px}.van-sh svg{color:#a6e3a0}.van-sh.off svg{color:#f0a090}`;document.head.appendChild(st)}
+/* 6.07 (R03b): hiding gear looks, in English */
+L10NG({'اللي {تخفيه|تخفيه} بيفضل {لابسه|لابساه} وبيديك نفس القوة':'What you hide stays worn and gives the same strength','{ورّي|ورّي} العدّة كلها':'Show all gear','{اخفي|اخفي} شكل العدّة كلها':'Hide the look of all gear'});
+L10N({'الشكل':'Looks'},[[/^(👁|🚫) (.+): (مخفي|باين)$/,(m,i,s,v)=>`${i} ${l10nStr(s)||s}: ${v==='مخفي'?'hidden':'shown'}`]]);
 /* ---------- cooking that fits the dish (v5.32) ----------
    The frying step shows what you are really cooking: fish only when the dish has fish in it; طعمية, بصل, طماطم, محشي, قصب
    or قمح otherwise, each with its own raw-to-burnt colours. And the recipes use what the field grows. */
@@ -23041,6 +23185,51 @@ function kfStoryHTML(h){KF.st=(KF.st==null?Math.floor(Math.random()*KF_STORIES.l
 
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"دوار العمدة": "The Mayor's house", "مهمات بفلوس وهدايا": "Paid jobs and gifts", "الناس محتاجة مساعدة": "People need help"});
+/* 6.06 (R03b): more of the town's and the café's talk in English */
+L10NG({'أنا بشتري، بس بسعري. لو {عايز|عايزة} سعر أحسن {بيع|بيعي} للناس في سوق اللاعبين.':'I buy, but at my price. For a better price, sell to people at the players\' market.',
+  'الطماطم غليت تاني. الناس بتقول الغيط بتاع عم عبده هو اللي ماسك السوق.':'Tomatoes went up again. People say Uncle Abdo\'s field holds the whole market.',
+  'امبارح واحد جالي بسمكة دهب. ما صدقتش لحد ما عضتني.':'Yesterday someone brought me a golden fish. I didn\'t believe it until it bit me.',
+  'البياع اللي مش بيضحك، بضاعته بتبات.':'A seller who never smiles keeps his goods overnight.',
+  'النار بتحب الصبور. اللي بيستعجل بيطلع حديده مشروخ.':'Fire loves the patient. Whoever rushes gets cracked iron.',
+  'جدي كان بيعمل حدوة للحصان من غير ما يبص. أنا لسه بتعلم.':'My grandfather made horseshoes without looking. I\'m still learning.',
+  'فيه سيف قديم معلّق عندي من أيام جدي. محدش عارف بتاع مين.':'There\'s an old sword hanging in my shop since my grandfather\'s day. Nobody knows whose it is.',
+  'القماش زي الناس. فيه اللي يستحمل وفيه اللي يتقطع من أول شدّة.':'Cloth is like people. Some hold up, some tear at the first pull.',
+  'مراتي بتقولي ما تخيطش بالليل. بتقول الإبرة بتشوف حاجات احنا مش شايفينها.':'My wife says don\'t sew at night. She says the needle sees things we don\'t.',
+  'الجلابية اللي على الحبل دي بتاعة واحد ما رجعش من الغيطان. لسه مستنيه.':'The galabeya on the line belongs to a man who never came back from the fields. I\'m still waiting for him.',
+  'البصل في الصينية ده سر الطعم. أي حد يقولك غير كده بيضحك عليك.':'The onion in the tray is the secret. Anyone who says otherwise is fooling you.',
+  'القرموط ما يتعملش من غير صلصة طماطم. اللي يعمله بالعيش ده ما بيعرفش.':'Catfish isn\'t made without tomato sauce. Whoever makes it with bread doesn\'t know.',
+  '{كُل|كُلي} قبل ما {تطلع|تطلعي}. الجعان بيشوف عفاريت مش موجودة.':'Eat before you go out. The hungry see afreets that aren\'t there.',
+  'الغراب ده ذكي. بيستنى لحد ما {تلف|تلفي} وشك.':'That crow is clever. It waits until you turn your face.',
+  'الفزاعة بتاعتي لابسة جلابية أبويا الله يرحمه. الغربان لسه بتخاف منه.':'My scarecrow wears my late father\'s galabeya. The crows still fear him.',
+  'الأرض لو حطيتلها سماد، تردّلك الجميل. زي الناس بالظبط.':'Give the land fertiliser and it pays you back. Just like people.',
+  'في الجبل حفر محدش عارف مين حفرها. أنا ما بقربش منها.':'There are holes in the mountain nobody knows who dug. I don\'t go near them.',
+  'الصخر بيتكلم لو {سكت|سكتي} كفاية.':'Rock talks if you keep quiet long enough.','الدوار مفتوح لأي حد عايز يساعد. البلد محتاجة إيدين.':'The Mayor\'s house is open to anyone who wants to help. The village needs hands.',
+  'امبارح خفير الترعة قال إنه سمع حد بينادي اسمه. قولتله ما يردش.':'Yesterday the canal guard said he heard someone call his name. I told him not to answer.',
+  'الكفر ده عاش قبلنا وهيعيش بعدنا. احنا بس ضيوف عليه.':'This village lived before us and will live after us. We\'re only its guests.',
+  'المقابر اللي ورا الجامع، محدش بيعدّي جنبها بعد العشا. ولا حتى أنا.':'Nobody passes the graves behind the mosque after the evening prayer. Not even me.',
+  'في مهمة {خلّصتها|خلّصتيها} وما {جيتش|جيتيش} {تسلّمها|تسلّميها}. الدوار مستنيك.':'There\'s an errand you finished and didn\'t hand in. The Mayor\'s house is waiting.',
+  'الحصّادة اللي {اشتريتها|اشتريتيها} دي ما شفتش زيها. الغيط بقى بيشتغل لوحده.':'I\'ve never seen a harvester like the one you bought. The field works by itself now.',
+  'زمان كان فيه راديو هنا، والكفر كله يقعد يسمع أم كلثوم لحد الفجر.':'There used to be a radio here, and the whole village listened to Umm Kulthum until dawn.',
+  'الشاي ده من نفس البراد بقاله عشرين سنة. البراد عجّز وأنا كمان.':'This tea comes from the same kettle for twenty years. The kettle got old, and so did I.',
+  'أنا كسبت في الدومينو أربعين سنة. محدش في الكفر يقدر يقفل عليا.':'I\'ve won at dominoes for forty years. Nobody in the village can block me.',
+  'الواد بتاع الفرن بيقول إنه شاف النداهة. أنا قولتله: لو شفتها ما كنتش هتبقى هنا تحكي.':'The bakery boy says he saw the Naddaha. I told him: if you had, you wouldn\'t be here to tell it.',
+  'حلقت امبارح لواحد غريب. ما اتكلمش خالص، ولما مشي لقيت الفلوس قديمة من أيام الملك.':'Yesterday I shaved a stranger. He never spoke, and when he left the money was from the king\'s time.',
+  'اللي يقعد على كرسي الحلاقة بيقول كل حاجة. أنا عارف أسرار الكفر كله.. بس ساكت.':'Whoever sits in the barber\'s chair tells everything. I know all the village\'s secrets.. but I keep quiet.',
+  'الولاد بيلعبوا الكورة جنب الترعة. أنا بقولهم: الكورة لو وقعت، سيبوها.':'The kids play football by the canal. I tell them: if the ball falls in, leave it.',
+  'أبويا كان بيقول: الليل في الكفر له صحابه، والنهار لينا.':'My father used to say: the night in the village has its own people, and the day is ours.',
+  'اشتغلت في مصر سنتين. رجعت. الزحمة هناك أوحش من العفاريت هنا.':'I worked in Cairo for two years. I came back. The crowds there are worse than the afreets here.'});
+L10NG({'لو {عندك|عندك} سمك زيادة، عم رمضان بياخده بتراب الفلوس. {بيعه|بيعيه} لحد من الناس أحسن.':'If you have extra fish, Uncle Ramadan takes it for pennies. Better sell it to someone.',
+  'الفطير المشلتت عايز سمنة بلدي. السمنة اللي في المحلات دي ما ينفعش.':'Feteer needs village ghee. The shop ghee won\'t do.','بنتي اتجوزت وسافرت. الفرن بقى أوسع من البيت.':'My daughter married and moved away. The oven feels bigger than the house now.',
+  'فيه ست في آخر الكفر بتعجن بالليل. محدش شاف وشها، بس العيش بتاعها مفيش زيه.':'There\'s a woman at the end of the village who kneads at night. Nobody has seen her face, but her bread has no equal.',
+  'بنت الطاحونة':'The mill\'s daughter','زمان كان فيه طاحونة على الترعة، وكانت بتدور لوحدها في الليالي اللي مفيهاش هوا. الطحان قعد ليلة يستنى يشوف مين بيدورها. الصبح لقوه نايم جنبها، وشعره أبيض كله، ومن يومها ما نطقش. الطاحونة اتهدت، بس الحجر بتاعها لسه في الترعة، ولما المية تنزل تسمعه بيلف.':'Long ago there was a mill on the canal, and it turned by itself on windless nights. The miller sat up one night to see who turned it. In the morning they found him asleep beside it, his hair all white, and he never spoke again. The mill fell down, but its stone is still in the canal, and when the water drops you can hear it turning.',
+  'خطوبة الغريب':'The stranger\'s engagement','واحد غريب جه الكفر وطلب إيد بنت الشيخ. كان لابس نضيف وكلامه حلو، والشيخ وافق. ليلة الفرح الكلب بتاع البيت فضل ينبح لحد ما الغريب مشي. لما راحوا يدوروا عليه، ما لقوش غير آثار رجلين في الطين.. رجلين معزة.':'A stranger came to the village and asked for the sheikh\'s daughter. He dressed well and spoke sweetly, and the sheikh agreed. On the wedding night the house dog barked until the stranger left. When they went looking for him, they found only footprints in the mud.. a goat\'s feet.',
+  'الحمار اللي بيعد':'The donkey that counted','عم بيومي الله يرحمه كان عنده حمار بيعد. يخبط برجله على الأرض على قد ما تقوله. في ليلة خبط تلات مرات من غير ما حد يسأله. بعدها بتلات أيام عم بيومي مات. الحمار بعدها ما خبطش تاني.':'The late Uncle Bayoumi had a donkey that counted. It stamped as many times as you told it. One night it stamped three times without anyone asking. Three days later Uncle Bayoumi died. The donkey never stamped again.',
+  'النخلة اللي بتعيط':'The palm that weeps','النخلة الطويلة اللي على الطريق دي، بيقولوا إنها بتعيط في أول الشتا. أنا شخصياً سمعتها. صوت زي واحدة بتنادي على عيالها. الناس بتربطلها شرايط حمرا عشان تسكت. ولحد دلوقتي ساكتة.':'That tall palm by the road, they say it weeps at the start of winter. I heard it myself. A voice like a woman calling her children. People tie red ribbons on it so it stays quiet. And so far it has.',
+  'التاجر والقرش':'The merchant and the coin','تاجر من البندر جه يشتري قطن، وبات في الكفر. الصبح لقى في جيبه قرش قديم ما يعرفش جه منين. رماه في الترعة. الليلة اللي بعدها لقاه تاني في جيبه، مبلول. رجع البندر وما جاش هنا تاني.':'A merchant from the town came to buy cotton and spent the night in the village. In the morning he found an old coin in his pocket and didn\'t know where it came from. He threw it in the canal. The next night it was back in his pocket, wet. He went back to town and never came here again.',
+  'الواد اللي رجع':'The boy who came back','واد صغير تاه في الغيطان يومين. الكفر كله دوّر عليه. اليوم التالت رجع لوحده، نضيف وشبعان، وقال إن ست طيبة كانت بتأكّله. سألوه شكلها إيه، قال: حلوة.. بس رجليها مش باينة.':'A little boy was lost in the fields for two days. The whole village searched for him. On the third day he came back alone, clean and well fed, and said a kind woman had been feeding him. They asked what she looked like. He said: pretty.. but you couldn\'t see her feet.',
+  'دكة صابر':'Saber\'s bench','الدكة اللي {انت قاعد|انتي قاعدة} عليها دي عملها جدي من خشب سقف بيت اتهد. البيت اتهد لوحده في ليلة من غير مطر ولا هوا. ومن ساعتها الدكة دي أي حد يقعد عليها يرتاح. ما تسألنيش ليه.':'The bench you\'re sitting on, my grandfather made it from the roof beams of a house that fell. It fell by itself on a night with no rain and no wind. Since then, anyone who sits on this bench rests easy. Don\'t ask me why.',
+  'اللي ما بيناموش':'Those who don\'t sleep','فيه ناس في الكفر ما بتنامش. مش عشان تعبانين، عشان شافوا حاجة ومش عايزين يحلموا بيها. لو قابلت حد عينه حمرا الصبح، ما تسألهوش شاف إيه. ادّيله كوباية شاي وخلاص.':'Some people in the village don\'t sleep. Not because they\'re tired, but because they saw something and don\'t want to dream of it. If you meet someone with red eyes in the morning, don\'t ask what they saw. Just give them a glass of tea.',
+  'حكاية تانية':'Another story','📜 اسمع حكاية من عم صابر':'📜 Hear a story from Uncle Saber','📜 اسمعي حكاية من عم صابر':'📜 Hear a story from Uncle Saber'});
 /* ---------- v5.33: everyone sees their own chance in a live night ----------
    Each choice that needs a roll says «فرصتك …» for the hero on that phone, and under it a small row with everyone else's
    chance (name and a coloured word). The host writes every player's chance into the choice (their stats travel in the room
@@ -23258,6 +23447,58 @@ KF_STORIES.push(
   ['شجرة الجميز','الجميزة اللي على أول الكفر عمرها أكبر من الكفر نفسه. محدش بيقطع منها فرع. مرة واحد قطع فرع علشان يعمل منه عصاية. الفرع نزّف عصارة حمرا، والراجل من يومها إيده ما بقتش تقفل.'],
   ['السلعوة والطفل','ست في الكفر صحيت لقت السلعوة واقفة جنب سرير ابنها. ما صرختش. حطت قدامها طبق لبن، وقعدت تغني. السلعوة شربت ومشيت. من ساعتها الستات في الكفر بيحطوا طبق لبن عند الباب في الليالي الصعبة. اللي بيضحك عليهم ما بيكملش الشتا.'],
   ['ساعة الدوار','ساعة الدوار وقفت على تلاتة وتلت من سنين. اليوم اللي وقفت فيه، العمدة القديم مات. العمدة الجديد جاب صنايعي من البندر يصلحها. الصنايعي فتحها، وقفلها، ومشي من غير ما ياخد فلوس، وقال حاجة واحدة بس: سيبوها.']);
+/* 6.06 (R03b): these lines and stories in English */
+L10NG({'الفلوس بتيجي وتروح. البضاعة الحلوة هي اللي بتفضل في الدماغ.':'Money comes and goes. Good goods are what stay in the mind.',
+  'فيه واحد كل أسبوع بيشتري مني ملح كتير. سألته بتعمل بيه إيه، قال: بحط على العتبة.':'Someone buys a lot of salt from me every week. I asked what for. He said: I put it on the doorstep.',
+  'أنا مش بفاصل. بس لو {فاصلت|فاصلتي} حلو ممكن أضحك.':'I don\'t haggle. But if you haggle well, I might smile.','الشنطة اللي على ضهرك دي محتاجة تكبر. {روح|روحي} لعم فتحي.':'That bag on your back needs to grow. Go see Uncle Fathy.',
+  'أبويا الله يرحمه كان بيقول: البيعة الأولى في اليوم بركة، ما تفاصلش فيها.':'My late father used to say: the first sale of the day is a blessing, don\'t haggle over it.',
+  'بيقولوا في سوق اللاعبين حد باع سمكة دهب بألف. أنا لو معايا واحدة ما أبيعهاش.':'They say at the players\' market someone sold a golden fish for a thousand. If I had one I wouldn\'t sell it.',
+  'الحديد ما بيكدبش. لو الضربة غلط، هيقولك.':'Iron doesn\'t lie. If the blow is wrong, it tells you.','سيف من غير اسم زي راجل من غير أصل. {سمّي|سمّي} سلاحك.':'A sword without a name is like a man without roots. Name your weapon.',
+  'الشرار ده بيطير في كل حتة. علشان كده أنا ما عنديش حواجب.':'The sparks fly everywhere. That\'s why I have no eyebrows.','فيه ناس بتيجي تتفرج على الكور بس. أنا بحب ده، النار بتحب الجمهور.':'Some people come just to watch the forge. I like that; fire loves an audience.',
+  'الدرع التقيل بيحميك، بس بيبطّأك. {اختار|اختاري} على حسب ما {انت|انتي}.':'Heavy armour protects you, but slows you. Choose by who you are.','ابن أخت عادل عايز يتعلم. قولتله: أول سنة بتكنس بس.':'Adel\'s nephew wants to learn. I told him: the first year you only sweep.',
+  'الإبرة أخطر من السيف. السيف بيجرح مرة، الإبرة بتشك كل يوم.':'A needle is worse than a sword. A sword wounds once, a needle pricks every day.','الغرزة المستعجلة بتفك في أول ليلة. {خد|خدي} وقتك.':'A hurried stitch comes undone on the first night. Take your time.',
+  'الصوف ده من خرفان الحاج سعيد. هو بيقول إنها بتحلم.':'This wool is from Hajj Saeed\'s sheep. He says they dream.','الشنطة الكبيرة نعمة ونقمة. بتشيل كتير، وبتخليك تشيل حاجات ما لهاش لازمة.':'A big bag is a blessing and a curse. It holds a lot, and makes you carry things you don\'t need.',
+  'عمري ما خيطت كفن. ولا هخيط. فيه حاجات ما بتتعملش بالفلوس.':'I have never sewn a shroud. I never will. Some things aren\'t done for money.','الفول المدمس عايز ليلة كاملة على نار هادية. زي الحب كده.':'Slow-cooked beans need a whole night on a low fire. Like love.',
+  'العصير في الخلاط لازم يبقى ناعم. اللي فيه حتت ده مش عصير، ده عقاب.':'Juice must be smooth. With bits in it, it\'s not juice, it\'s a punishment.','جوزي كان بيقول إن أكلي بيرجّع الروح. أنا بقول إنه كان جعان بس.':'My husband used to say my food brings the soul back. I say he was just hungry.',
+  'الملوخية ليها شهقة. اللي ما بيشهقش عليها، بتطلع ماسخة.':'Molokhia needs its gasp. If you don\'t gasp over it, it comes out bland.','{خد|خدي} {معاك|معاكي} أكل قبل الليلة. الغيطان ما فيهاش مطاعم.':'Take food with you before the night. The fields have no restaurants.',
+  'فيه ناس بتطبخ بعنيها، وناس بتطبخ بقلبها. أنا بطبخ بالاتنين.':'Some cook with their eyes, some with their heart. I cook with both.','الزرعة زي العيل الصغير. لو نسيتها يوم، تزعل منك أسبوع.':'A crop is like a small child. Forget it for a day and it sulks for a week.',
+  'القصب ده طويل وصبور. {اتعلم|اتعلمي} منه.':'Sugarcane is tall and patient. Learn from it.','فيه أرض في آخر الغيط ما بنزرعهاش. جدي قال اللي يزرعها ما يحصدهاش.':'There\'s land at the end of the field we never plant. My grandfather said whoever plants it won\'t harvest it.',
+  'الرشاش ده اختراع. زمان كنا بنشيل المية على راسنا.':'The sprinkler is an invention. We used to carry water on our heads.','الطماطم بتحب الشمس. وأنا بحب الضل. علشان كده بنتقابل الصبح بس.':'Tomatoes love the sun. I love the shade. So we only meet in the morning.',
+  'الفيروز ده مش حجر. ده دمعة الجبل.':'Turquoise isn\'t a stone. It\'s the mountain\'s tear.','اللي بيكسر الصخر بغضب، الصخر بيكسره.':'Whoever breaks rock in anger gets broken by it.',
+  'الضلمة في المنجم مش فاضية. بس اللي جوّاها مش بيأذي اللي ماشي في حاله.':'The dark in the mine isn\'t empty. But what\'s in it doesn\'t hurt those who mind their business.','عيني دي راحت في المنجم. التانية لسه شايفة كفاية.':'I lost this eye in the mine. The other still sees enough.',
+  'الناس بتجيلي بمشاكلها. وأنا بوزعها على اللي يقدر.':'People bring me their troubles. I hand them to whoever can carry them.','فيه حد بيسيب أكل على باب الدوار كل ليلة. محدش عارف مين. ولا عايز أعرف.':'Someone leaves food at the Mayor\'s door every night. Nobody knows who. I don\'t want to know.',
+  'ساعة الدوار واقفة من سنين. ومحدش رضي يصلحها.':'The Mayor\'s clock stopped years ago. Nobody agreed to fix it.','المهمة التقيلة ما بديهاش لأي حد. لازم أشوف إيدك الأول.':'I don\'t give the heavy errands to just anyone. I need to see your hand first.',
+  'القصّة الجديدة بتغير الواحد. ناس دخلت عندي خايفة وطلعت أسود.':'A new haircut changes a person. People came in scared and walked out lions.','الصبغة الزرقا دي جايبها من مصر. الكفر كله اتكلم عليها.':'I brought this blue dye from Cairo. The whole village talked about it.',
+  'الكوافير بتاعي جنب الدوار. البنات بتيجي تتكلم أكتر ما بتعمل شعرها.':'My salon is by the Mayor\'s house. The girls come to talk more than to do their hair.','الحنة الحمرا دي من أسوان. بتمسك شهر.':'This red henna is from Aswan. It lasts a month.',
+  'جوزي عادل بيقول إن محلي أحلى من محله. وده صح.':'My husband Adel says my shop is nicer than his. And it\'s true.','الموس عندي ما بيرحمش، بس إيدي خفيفة.':'My razor shows no mercy, but my hand is light.',
+  'زبون امبارح طلب أحلقله دقنه. لما خلصت لقيت ورا ودنه علامة زي العضة. ما سألتش.':'Yesterday a customer asked for a shave. When I finished I saw a mark like a bite behind his ear. I didn\'t ask.',
+  'الناس بقت تعرف اسمك. {اللي قتل|اللي قتلت} الوحوش دي كلها.':'People know your name now. The one who killed all those beasts.','سمعت عن الوحوش اللي {قتلتها|قتلتيها}. سلاحك محتاج يتشحذ.':'I heard about the beasts you killed. Your weapon needs sharpening.',
+  '{انت|انتي} بقيت تجيب سمك أكتر من الصيادين نفسهم.':'You bring in more fish than the fishermen themselves.','إيدك بقت تعرف الطبيخ. يمكن في يوم {تاخد|تاخدي} مكاني.':'Your hands know cooking now. Maybe one day you\'ll take my place.',
+  'الفلوس اللي {معاك|معاكي} دي محتاجة تتصرف. البضاعة الجديدة وصلت.':'That money of yours needs spending. New goods have arrived.','القصّة دي عليك تجنن. الكل بيسألني عنها.':'That haircut looks great on you. Everyone asks me about it.',
+  '{بقيت|بقيتي} تقيل. الجبل حاسس بخطوتك.':'You\'ve grown heavy. The mountain feels your step.',
+  'الشاي الخفيف ده للضيوف. الشاي التقيل للي هيسهر.':'Light tea is for guests. Strong tea is for those staying up.','الدكة دي اتصلحت سبع مرات. وكل مرة حد بيقعد عليها ويقول إنها مريحة.':'This bench has been fixed seven times. And every time someone sits on it and says it\'s comfortable.',
+  'زمان كان فيه شاعر بيقعد هنا ويقول أشعار عن الترعة. ليلة ما رجعش. القصيدة الأخيرة ما خلصتش.':'There was a poet who sat here reciting about the canal. One night he didn\'t come back. His last poem was never finished.',
+  'القهوة دي بتسمع أكتر ما بتتكلم. زيي.':'This café listens more than it talks. Like me.','لو {عايز|عايزة} حكاية، {اسأل|اسألي}. عندي حكايات أكتر من الشاي.':'If you want a story, ask. I have more stories than tea.',
+  'الدومينو زي الحياة. اللي بيقفل الأول بيكسب، بس اللي بيعرف يستنى بيكسب أكتر.':'Dominoes is like life. Whoever blocks first wins, but whoever knows how to wait wins more.',
+  'أنا وصابر ما اتخانقناش من أربعين سنة. لأني دايمًا عنده حق. هو بيقول كده.':'Saber and I haven\'t fought in forty years. Because I\'m always right, he says.',
+  'الشباب دلوقتي بيلعبوا بالموبايل. أنا بلعب بالحجارة، الحجارة ما بتفصلش شحن.':'Young people play on their phones now. I play with tiles; tiles never run out of battery.',
+  'امبارح الطاولة اتحركت لوحدها. قولت لصابر، قالي: دي الرياح. مفيش رياح.':'Yesterday the backgammon board moved by itself. I told Saber, he said: the wind. There was no wind.',
+  'عندي محل جنب الدوار دلوقتي. {عدّي|عدّي} عليا، عندي قصّات ما شفتهاش قبل كده.':'I have a shop by the Mayor\'s house now. Drop by, I have cuts you\'ve never seen.',
+  'الشعر بيطلع تاني. الكلام اللي بيتقال على كرسي الحلاقة ما بيرجعش.':'Hair grows back. What\'s said in the barber\'s chair never does.','واحد طلب مني أصبغ شعره أخضر. قولتله: مالك؟ قال: عايز النداهة ما تعرفنيش.':'A man asked me to dye his hair green. I asked why. He said: so the Naddaha won\'t know me.',
+  'ابني بيقول إنه شاف نور في الغيط بالليل. قولتله: ده عم عبده بيسقي. هو عارف إن عم عبده بينام بدري.':'My son says he saw a light in the field at night. I told him: that\'s Uncle Abdo watering. He knows Uncle Abdo sleeps early.',
+  'الترعة دي غرّقت ناس كتير. بس برضه بنشرب منها. الدنيا كده.':'This canal has drowned many people. And still we drink from it. That\'s life.','لو {شفت|شفتي} كلب أسود قاعد على الجسر، {لف|لفي} من الناحية التانية. {ما تسألش|ما تسأليش} ليه.':'If you see a black dog sitting on the bridge, go around the other way. Don\'t ask why.',
+  'في مصر الناس بتجري طول الوقت. هنا الناس بتمشي، بس بتبص وراها.':'In Cairo people run all the time. Here people walk, but they look behind them.','أنا عايز أفتح محل موبايلات هنا. بس الشبكة ما بتجيش غير جنب المقابر.':'I want to open a phone shop here. But there\'s signal only near the graves.',
+  'عم رمضان بيشتري برخص وبيبيع بغلا. لو {عايز|عايزة} {تكسب|تكسبي}، {بيع|بيعي} للناس مش له.':'Uncle Ramadan buys cheap and sells dear. If you want to profit, sell to people, not to him.',
+  'العيش البلدي عايز إيد، مش مكنة.':'Village bread needs a hand, not a machine.','الفرن عندي بيسخن لوحده الفجر. أنا ما بقتش بسأل.':'My oven heats up by itself at dawn. I\'ve stopped asking.',
+  'بنت أختي بتعرف تعمل كحك أحلى مني. بس ما تقولهاش إني قلت كده.':'My niece makes better kahk than me. But don\'t tell her I said so.','الست اللي بتعجن بالليل في آخر الكفر.. امبارح لقيت رغيف من عندها على عتبة بيتي.':'The woman who kneads at night at the end of the village.. yesterday I found one of her loaves on my doorstep.',
+  'الجاموسة البيضا':'The white buffalo','في سنة الجفاف ظهرت في الكفر جاموسة بيضا ملهاش صاحب. كانت بتدّي لبن كتير، والناس كلها شربت منه. لما المطر نزل، الجاموسة اختفت. فيه ناس بتقول إنها كانت نعمة، وناس بتقول إنها كانت دين، وإن الدين لسه ما اتدفعش.':'In the year of the drought a white buffalo with no owner appeared in the village. She gave plenty of milk, and everyone drank. When the rain came, she vanished. Some say she was a blessing, some say she was a debt, and the debt is still unpaid.',
+  'حارس الجسر':'The bridge guard','زمان كان فيه خفير على الجسر اسمه عم شعبان. ما كانش بينام، ولا بياكل قدام حد. في ليلة عدّى عليه عيال بيضحكوا، فقالهم: روحوا قبل ما الترعة تصحى. تاني يوم لقوا الجسر فاضي، وعصايته مغروزة في الطين. لحد النهارده محدش شالها.':'There was once a guard on the bridge called Uncle Shaaban. He never slept, and never ate in front of anyone. One night some laughing kids passed him and he told them: go home before the canal wakes. The next day the bridge was empty, his stick planted in the mud. To this day nobody has pulled it out.',
+  'المراية':'The mirror','عادل الحلاق عنده مراية قديمة ما بيحطهاش في المحل. بيقول إنها كانت بتاعة أبوه، وإن أبوه بص فيها في ليلة وشاف حد واقف وراه. لما لف ما لقاش حد. من ساعتها عادل بيحلق قدام مراية جديدة، والقديمة متغطية بملاية.':'Adel the barber has an old mirror he never puts in the shop. He says it was his father\'s, and that one night his father looked in it and saw someone standing behind him. When he turned, nobody was there. Since then Adel shaves in front of a new mirror, and the old one stays under a sheet.',
+  'فرح من غير معازيم':'A wedding with no guests','مرة الكفر كله سمع زغاريط ودف جاي من ناحية الغيطان. افتكروا فيه فرح، وطلع شوية شباب يباركوا. لقوا كراسي مرصوصة وأكل سخن، ومفيش ولا حد. واحد منهم أكل لقمة. التانيين رجعوا من غيره. أمه لسه بتحط له طبق كل ليلة.':'Once the whole village heard ululations and drums from the fields. They thought it was a wedding, and some young men went to congratulate. They found chairs in rows and hot food, and no one at all. One of them ate a bite. The others came back without him. His mother still sets a plate for him every night.',
+  'الواد اللي باع ضله':'The boy who sold his shadow','حكاية قديمة عن واد طمّاع قابل راجل غريب على الترعة، وعرض عليه شوال فلوس قصاد ضله. الواد ضحك وقال ماشي. تاني يوم الناس لاحظوا إنه بيمشي في الشمس من غير ضل. أول الأمر اتباهى بفلوسه. بعدها بقى ما بيطلعش غير بالليل. وفي الآخر ما طلعش خالص.':'An old tale of a greedy boy who met a stranger by the canal, who offered him a sack of money for his shadow. The boy laughed and said fine. The next day people noticed he walked in the sun with no shadow. At first he showed off his money. Then he only went out at night. In the end he didn\'t go out at all.',
+  'شجرة الجميز':'The sycamore','الجميزة اللي على أول الكفر عمرها أكبر من الكفر نفسه. محدش بيقطع منها فرع. مرة واحد قطع فرع علشان يعمل منه عصاية. الفرع نزّف عصارة حمرا، والراجل من يومها إيده ما بقتش تقفل.':'The sycamore at the edge of the village is older than the village itself. Nobody cuts a branch from it. Once a man cut one to make a stick. The branch bled red sap, and since that day the man\'s hand won\'t close.',
+  'السلعوة والطفل':'The salawa and the child','ست في الكفر صحيت لقت السلعوة واقفة جنب سرير ابنها. ما صرختش. حطت قدامها طبق لبن، وقعدت تغني. السلعوة شربت ومشيت. من ساعتها الستات في الكفر بيحطوا طبق لبن عند الباب في الليالي الصعبة. اللي بيضحك عليهم ما بيكملش الشتا.':'A woman in the village woke to find the salawa standing by her son\'s bed. She didn\'t scream. She set a dish of milk before it and sat singing. The salawa drank and left. Since then the village women put a dish of milk by the door on hard nights. Whoever laughs at them doesn\'t make it through the winter.',
+  'ساعة الدوار':'The Mayor\'s clock','ساعة الدوار وقفت على تلاتة وتلت من سنين. اليوم اللي وقفت فيه، العمدة القديم مات. العمدة الجديد جاب صنايعي من البندر يصلحها. الصنايعي فتحها، وقفلها، ومشي من غير ما ياخد فلوس، وقال حاجة واحدة بس: سيبوها.':'The Mayor\'s clock stopped at twenty past three years ago. The day it stopped, the old Mayor died. The new Mayor brought a craftsman from town to fix it. The craftsman opened it, closed it, and left without taking any money, saying only one thing: leave it.'});
 /* ---------- the main menu, dressed up (v5.36) ----------
    1. A pixel star field on a canvas behind the whole top of the screen: stars drift slowly in three layers and twinkle,
       a few big ones sparkle, and now and then a shooting star crosses. Still when the phone asks for less motion.
@@ -24199,6 +24440,12 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
 /* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
 I18N(MAT,{"steel": {"n": "Steel"}});
 I18N(GEAR,{"stsword": {"n": "Steel sword"}, "balta": {"n": "Axe"}, "zard": {"n": "Chain mail"}, "sthelm": {"n": "Steel helmet"}, "string": {"n": "Steel ring"}, "moallem": {"n": "Master's sword"}, "ostazham": {"n": "Master smith's hammer"}, "jadsword": {"n": "First ancestor's sword"}, "jadarmor": {"n": "First ancestor's armour"}});
+/* 6.07 (R03b): the workshop and smelting in English */
+L10N({'الورشة':'The workshop','لسه على قدها':'still a plain one','سندان جديد':'New anvil','الشغل عند الحداد أجود شوية':'Work at the smith comes out a bit finer','كور بمنفاخ':'Forge with bellows',
+  'النار أسخن: الشغل أجود، وتمنه أقل 10%':'A hotter fire: finer work, and 10% cheaper','فرن عالي':'Tall furnace','الحديد بيسيح صح: الشغل أجود بكتير، والسبك بيطلع فولاذتين':'Iron melts right: much finer work, and smelting gives two steel',
+  'ركّب':'Install','ركّبي':'Install','للورشة':'for the workshop','ناقصك حاجة':'something missing','الورشة كاملة. مفيش أحسن منها في البلد.':'The workshop is complete. There is no better one in the village.',
+  'السبك':'Smelting','فولاذ للشغل التقيل':'steel for heavy work','فولاذ':'Steel','فولاذ ×2':'Steel ×2','اسبك':'Smelt','اسبكي':'Smelt','دلوقتي':'Now'},
+  [[/^(\d+) من (\d+)$/,'$1 of $2'],[/^حدادة مستوى (\d+)$/,'Smithing level $1'],[/^(?:سبكت|سبكتي) (فولاذتين|فولاذ) · عندك (\d+)$/,(m,a,n)=>`You smelted ${a==='فولاذتين'?'two steel':'one steel'} · you have ${n}`]]);
 /* ----- the other crafts: الخياط (rare), الطباخ (rare), الفلاح الأسطوري (legendary), and صاحب الصنعة (secret: three crafts at 8) ----- */
 SP_ADD({id:'khayat',ev:'tailor',r:'rare',m:'الخياط',f:'الخياطة',px:P20_grid(16,['','.........KK','........KWcK','.......KWcK','......KWcK','.....KWcK','....KWcK','...KWcK..KK','..KWcK..KrrK','..KcK..KrRrK','...K..KrRRrK','.....KrRrrK','.....KrrrK','......KKK','','']),
   need:h=>spLv(h,'tailor')>=4&&(spCnt(h,'made_tailor')>=6||spCnt(h,'crafted')>=10),
@@ -25442,6 +25689,12 @@ function eaMake(k,btn){const h=S.hero,r=EA_MK[k];if(!h||!r||TWN.busy||spLv(h,'sm
 
 /* 5.90 (R03): English names, shown only when the player picks English (p2c.js) */
 I18N(MAT,{"brada1": {"n": "Silver filings"}, "brada2": {"n": "Gold filings"}, "zeit": {"n": "Tempering oil"}});
+/* 6.07 (R03b): the enhancement add-ins in English */
+L10NG({'اشتريها أو {اعملها|اعمليها} بإيدك، {واختارها|واختاريها} من على الحتة قبل ما {تعزّز|تعزّزي}. بتروح مع الحجر':'Buy them or make them by hand, and pick one on the piece before you enhance. It goes with the stone',
+  '{اعمل|اعملي}':'Make'});
+L10N({'حاجات تتحط مع الحجر':'Things that go in with the stone','برادة الفضة والدهب وزيت التسقية بتتباع عند عم حسن الحداد، وبتنفع هنا كمان':'Silver filings, gold filings and tempering oil are sold at Uncle Hassan the smith\'s, and they work here too'},
+  [[/^بتزوّد النسبة ⁦\+(\d+)%⁩ في أي تعزيز ممكن يفشل$/,'+$1% chance on any enhancement that can fail'],[/^من ⁦\+(\d+)⁩: لو التعزيز فشل، الحتة ما تنزلش درجة$/,'From +$1: if the enhancement fails, the piece doesn\'t drop a step'],
+   [/^أو (?:اعملها|اعمليها|اعمله|اعمليه) بإيدك: (.+)$/,(m,a)=>'or make it by hand: '+(l10nStr(a)||a)]]);
 /* ==========================================================================
    سرداب 5.73 (Twister): the plain hit is named after the weapon in your hand, not the class
    («الضربة العادية عندي طعنة خنجر مع إني حداد وسلاحي شاكوش الأسطى»).
@@ -27518,6 +27771,9 @@ L10N({"جرنال البلد": "The Village Paper", "عم سعيد: أخبار �
 /* 5.91: the paid paper and the old ones */
 L10N({'الجرانيل القديمة':'Old papers','اتشترى · ببلاش':'Bought · free','📰 جرنال النهارده':"📰 Today's paper",'عدد قديم':'Old issue','📜 فيه وصفة':'📜 Has a recipe','🤫 فيه همسة':'🤫 Has a whisper','وصفة من العدد ده':'Recipe from this issue'},
   [[/^اشتري الجرنال · ?$/,'Buy the paper · '],[/^ما اتشتراش · ?$/,'Not bought · ']]);
+/* 6.07 (R03b): saved recipes in English */
+L10NG({'لسه ما {حفظتش|حفظتيش} وصفة من هنا. {اقرا|اقري} جرنال البلد كل يوم.':'You haven\'t saved a recipe from here yet. Read the village paper every day.'});
+L10N({'(معاك':'(you have','(معاكي':'(you have','وصفات من الجرنال':'Recipes from the paper','من الجرنال':'from the paper','وصفة من الجرنال: بتطلع واحدة، من غير جودة.':'A recipe from the paper: makes one, with no quality.'},[[/^\((?:معاك|معاكي) (\d+)\)$/,'(you have $1)']]);
 
 /* ---------- 5.90 / R03 part 1 (N01): picking the language ----------
    First run (no saved language and no hero yet): a screen with two big choices, each in its own language with its flag:
@@ -27848,6 +28104,9 @@ function satLabel(){const h=S.hero;if(!h)return;view.querySelectorAll('[data-s]'
     satLabel();view.querySelectorAll('.qty').forEach(q=>{q.addEventListener('click',()=>setTimeout(satLabel,0));const v=q.querySelector('.qin');if(v){v.addEventListener('input',()=>setTimeout(satLabel,0));v.addEventListener('change',()=>setTimeout(satLabel,0))}})}catch(e){console.warn(e)}return r}}
 {const st=document.createElement('style');st.textContent=`.sat-note{margin:2px 2px 8px;line-height:1.7}.sat-f{display:block;color:#f0a090;font-size:11.5px}`;document.head.appendChild(st)}
 L10N({},[[/^بـ(\d+) جنيه الواحدة$/,'$1 coins each'],[/^النهارده بـ(\d+) جنيه الواحدة/,'Today $1 coins each']]);
+/* 6.07 (R03b): the market filling up, in English */
+L10NG({'عم رمضان: «لو {جبتلي|جبتيلي} من نفس الحاجة كتير في يوم واحد، هاخدها بأقل. السوق ليه آخر.» السعر بيرجع كل يوم جديد في البلد.':'Uncle Ramadan: «If you bring me a lot of the same thing in one day, I take it for less. The market has its limit.» The price comes back every new day in the village.'});
+L10N({},[[/^(?:بعت|بعتي) (\d+) النهارده، والسوق اتملى شوية$/,'you sold $1 today, and the market filled up a little']]);
 
 /* ---------- 5.92 / C07: الشنطة ----------
    - Nothing you win is sold behind your back any more. When a bag section is full, a chest or a card that gives you a bag item puts
@@ -27942,6 +28201,17 @@ SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 .mt-sum{margin:4px 2px 2px}.mt-row .tx small{line-height:1.6}`;document.head.appendChild(st)}
 L10N({'الحاجات':'Things','📦 صندوق الزيادة':'📦 Overflow box','صندوق الزيادة':'Overflow box','الشنطة مليانة':'The bag is full','الشنطة قربت تتملي':'The bag is almost full','فيه مكان':'There is room','ما يتباعش':"Can't be sold"},
   [[/^الخامات ?(\d*)$/,'Materials $1'],[/^شايلة? (\d+) من (\d+)$/,'Carrying $1 of $2']]);
+/* 6.07 (R03b): the bag and the overflow box in English */
+L10NG({'كل قسم ليه مكانه: لو قسم اتملا، التاني لسه فيه مكان. اللي {تكسبه|تكسبيه} وقسمه مليان بيروح «صندوق الزيادة» ومش بيتباع.':'Each section has its own room: when one is full, the others still have space. What you win into a full section goes to «the overflow box» and is never sold.',
+  '{بيع|بيعي} عند عم رمضان':'Sell at Uncle Ramadan\'s','{خده|خديه}':'Take it'});
+L10N({'الشنطة مليانة':'The bag is full','الشنطة قربت تتملي':'The bag is nearly full','فيه مكان':'There\'s room','مفيش خامات. المنجم والترعة والغيط والمغامرات بيطلّعوا خامات.':'No materials. The mine, the canal, the field and adventures give materials.',
+  '⛏️ معادن وحجارة':'⛏️ Metals and stones','💎 أحجار كريمة':'💎 Gems','✨ تعزيز':'✨ Enhancement','🐟 سمك':'🐟 Fish','🌾 زرع وأكل':'🌾 Crops and food','🌿 أعشاب':'🌿 Herbs','🐺 من الوحوش':'🐺 From beasts','📦 تانية':'📦 Other','📦 صندوق الزيادة':'📦 Overflow box'},
+  [[/^(?:شايل|شايلة)$/,'Carrying'],[/^من$/,'of'],[/^(?:معاك|معاكي) (\d+) حتة في (\d+) نوع\. الخامات مالهاش حد في الشنطة\.$/,'You have $1 pieces of $2 kinds. Materials have no limit in the bag.'],
+   [/^عم رمضان بياخدها بـ(\d+) جنيه النهارده$/,'Uncle Ramadan takes it for $1 coins today'],[/^بتدخل في: (.+)$/,(m,a)=>'Used in: '+a.replace(/…$/,'').split('، ').map(x=>l10nStr(x)||x).join(', ')+(/…$/.test(a)?'…':'')],
+   [/^(\d+) من (\d+) · حاجات (?:كسبتها|كسبتيها) والشنطة كانت مليانة$/,'$1 of $2 · things you won while the bag was full'],[/^فيه مكان في قسم «(.+)»$/,(m,n)=>`Room in «${l10nStr(n)||n}»`],
+   [/^في الصندوق دلوقتي (\d+)\.$/,'$1 in the box now.'],[/^متأكدة?؟$/,'Sure?']]);
+L10NG({'{كُل|كُلي}':'Eat','{البس|البسي} من عدّتي':'Wear from my gear','اللي {طبخته|طبختيه}':'what you cooked'});
+L10N({'عدّة':'Gear','جرع ومشاريب':'Potions and drinks','من شنطتك':'from your bag'},[[/^(\S+) ·$/,(m,a)=>(l10nStr(a)||a)+' ·'],[/^(\d+ )?حتة في (\d+) نوع\. الخامات مالهاش حد في الشنطة\.$/,(m,a,b)=>`${a||''}pieces of ${b} kinds. Materials have no limit in the bag.`],[/^⁦\+(\d+)⁩ مجهود$/,'+$1 effort']]);
 
 /* ---------- 5.93 / R06b / C86: العفو والاستسلام والمفاوضة (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
    A fifth button in a fight, «💬 كلام» (only in a night, not in training, not against a boss, not in a live room with friends).
@@ -28948,12 +29218,26 @@ document.addEventListener('input',e=>{const t=e.target;if(t&&(t.tagName==='TEXTA
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"الصوت كله": "All sound", "الموسيقى": "Music", "علو الموسيقى": "Music volume", "علو الأصوات": "Effects volume"});
 /* 5.93: a folded town group lists its places «أ، ب، ج». A new place used to leave the whole line Arabic; when every name is known it is put together in English (last rule, so it never hides another one) */
-L10N({},[[/^[^،·]+(?:، [^،·]+)+$/,s=>{const p=s.split('، ').map(x=>L10N_W.get(x.trim()));return p.every(v=>v!=null)?p.join(', '):s}]]);
+L10N({},[[/^[^،·«»]+(?:، [^،·«»]+)+$/,s=>{const p=s.split('، ').map(x=>L10N_W.get(x.trim()));return p.every(v=>v!=null)?p.join(', '):s}]]);
 /* 6.05: a line made of parts «أ · ب · ج», or a reason «· أ», is put together in English when every Arabic part is known (last rules) */
 const l10nPart=x=>{const r=l10nStr(x);return r!=null?r:(/[؀-ۿ]/.test(x)?null:x)};
 L10N({},[[/^[^·]*[^\s·][^·]*(?: · [^·]+)+$/,s=>{const p=s.split(' · ').map(l10nPart);return p.every(v=>v!=null)?p.join(' · '):s}],[/^· (.+)$/,(s,a)=>{const r=l10nPart(a);return r!=null?'· '+r:s}]]);
 /* 6.05: a heroine's class line (DESC_F) shows the class's English line */
 try{if(typeof DESC_F!=='undefined')Object.keys(DESC_F).forEach(c=>{const e=CLASSES[c]&&loc(CLASSES[c],'desc','en');if(e&&e!==DESC_F[c]&&!L10N_W.has(DESC_F[c]))L10N_W.set(DESC_F[c],e)})}catch(e){}
+/* 6.06: a quoted line «…» whose words are known (the town's talk, greetings) comes out quoted in English (last rule) */
+L10N({},[[/^«([^«»]+)»$/,(s,a)=>{const r=l10nStr(a);return r!=null?'«'+r.trim()+'»':s}]]);
+/* 6.07 (R03b): what each piece of gear does, in English (here because gear comes from many parts: p3b, p11, p20, p56) */
+I18N(GEAR,{shuma:{info:'«Stunning blow»: on a full success, the foe\'s next hit is halved'},copsword:{info:'«Double strike»: on a full success, you hit once more'},
+  dagger:{info:'Every hit may poison the foe (it loses health each turn)'},ironsword:{info:'Higher damage · «Wide blow»: on a full success, half the blow reaches a second foe'},
+  turqstaff:{info:'The first skill in every fight costs no energy'},vest:{info:'Blows hurt 1 less'},ironarmor:{info:'Blows hurt 2 less, but it weighs you down (agility −1)'},
+  turban:{info:'Health +2 · Presence +1'},helmet:{info:'Health +4'},copring:{info:'Strength +1'},silring:{info:'Presence +1 · Wisdom +1'},hornneck:{info:'Energy +1 in fights'},
+  hairneck:{info:'Wisdom +2 · the Naddaha\'s voice doesn\'t move you'},amulet:{info:'Afreets and spirits hurt you 1 less'},bead:{info:'Your plain hit drops whatever fears the blue bead'},
+  coalarmor:{info:'Iron tempered on a coal fire: blows hurt 3 less, but it weighs you down (agility −1)'},goldring:{info:'Strength +1 · Presence +2'},goldneck:{info:'Energy +1 in fights · Health +2'},
+  emcharm:{info:'Afreets and spirits hurt you 2 less · Health +3'},emsword:{info:'High damage · «Double strike»: on a full success, you hit once more'},goldturban:{info:'Health +4 · Presence +2'},
+  stsword:{info:'High damage · «Wide blow»: on a full success, half the blow reaches a second foe'},balta:{info:'Heavy and crushing: high damage, but agility −1 · «Stunning blow»'},
+  zard:{info:'Steel rings: blows hurt 4 less, and it doesn\'t weigh you down'},sthelm:{info:'Health +6 · blows hurt 1 less'},string:{info:'Strength +2 · Endurance +1'},
+  moallem:{info:'Top-level work · «Double strike»: on a full success, you hit once more'},ostazham:{info:'For the master only · «Stunning blow» · in your hand, work at the smith comes out finer'},
+  jadsword:{info:'For the first smith\'s heirs only · «Double strike» · afreets and spirits hurt you 1 less'},jadarmor:{info:'For the first smith\'s heirs only · blows hurt 5 less · Health +4'}});
 
 render();
 })();
