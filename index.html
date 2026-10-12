@@ -4534,6 +4534,12 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.94',d:'12 أكتوبر',add:['«{اخرج|اخرجي} للصيد» في الدهاليز: {تطلع|تطلعي} الغيطان من غير مغامرة. أربع أماكن متوصلة ببعض: طرف الغيط، غيطان الدرة، الساقية القديمة، وآخر الغيط عند الترعة. كل ما {تبعد|تبعدي} الخطر بيزيد',
+  '«{دوّر|دوّري} هنا» بمجهود واحد: ممكن تطلع لك سلعوة أو ديب أو خنزير بري، أو أعشاب، أو ولا حاجة. قدام أي وحش {تقاتل|تقاتلي}، أو {تتسحّب|تتسحّبي} برمية خفة، أو {ترجع|ترجعي} من مكان ما {جيت|جيتي} بمجهود. القتال اللي يبدأ لازم يخلص، حتى لو اللعبة اتقفلت. وعند الترعة ممكن تطلع «سلعوة كبيرة» أقوى وغنايمها أحسن',
+  'القتال هو نفس القتال: الخبرة والفلوس والصناديق بتيجي من غير أي مهمة. «💬 كلام» شغال، إلا الاستسلام. والسمعة من العفو في الغيطان مرتين في اليوم بالكتير',
+  'عم عبده على طرف الغيط عايز 5 سلعوات: العداد بيعد اللي {بتوقعها|بتوقعيها} بجد بس (اللي {بتعفي|بتعفي} عنها أو بتاكل وتمشي ما بتتحسبش). المكافأة مرة واحدة لما {تسلّمه|تسلّميه}، والمهمة بترجع تاني يوم. وأول مرة ليها إنجاز «صياد الغيطان»',
+  'لو {وقعت|وقعتي} في الغيطان {بترجع|بترجعي} طرف الغيط بتلت صحتك، ويضيع منك 5% من فلوسك (100 جنيه بالكتير). {بتطلع|بتطلعي} بالصحة اللي معاك، وعند عم عبده {تقدر|تقدري} {ترتاح|ترتاحي} بمجهود واحد',
+  'مكانك ومهمتك بيتحفظوا لو اللعبة اتقفلت، و«{ارجع|ارجعي} البلد» بتنهي الطلعة. ومش هينفع {تطلع|تطلعي} الغيطان وعندك ليلة متسابة'],fix:[]},
 {v:'5.93',d:'12 أكتوبر',add:['في القتال زرار «💬 كلام» (مش مع الزعيم، ومش في التدريب). كل وحش ليه طبعه: فوق الوحش بيبان «متردد» أو «خايف» أو «رافض الصلح»، والصحة القليلة لوحدها عمرها ما بتخلي وحش شرس يستسلم',
   '«أوقف الضربة»: وهو شغّال، الضربة اللي كانت هتموّت وحش ينفع يتسامح (حتى الضربة الحظ أو السم) بتقف قبل الموت: بيستسلم ويجري، من غير غنايم، وسمعتك +2',
   '«أعفي عنه» لو الوحش «خايف»: يجري، ومفيش غنايم منه، وسمعتك +3. «أفاوضهم» مع اللي بيتكلموا بس (الناس والعفاريت) برمية حضور: ينجح كامل يمشوا {وتاخد|وتاخدي} نص خبرتهم، نص نص يطلبوا فلوس، فشل يضيع دورك',
@@ -28053,6 +28059,187 @@ ACH.push({id:'bond',n:'أول عهد',d:'وحش يعاهدك ويعيش في م�
 .cr-bt{display:flex;flex-wrap:wrap;gap:6px}.cr-bt .tw-buy{min-height:44px;flex:1 1 40%}.cr-in{display:flex;gap:6px}.cr-in input{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:#0004;color:var(--ink);font:inherit;padding:0 10px}
 .cr-pt{display:flex;width:100%;height:100%;align-items:center;justify-content:center}.cr-pt svg{width:100%;height:100%}`;document.head.appendChild(st)}
 L10N({'مأوى الوحوش':'Monster shelter','على طرف الغيطان':'At the edge of the fields','فاضي لسه':'Empty for now','الثقة والألفة':'Trust and bond','المهمة دلوقتي':'Job now','في المأوى':'In the shelter','بتحرس الغيط':'Guards the field','سلعوة صغيرة':'Little salawa','الحداد، الخياط، العطارة، الطباخة، الغيط، مأوى الوحوش، المنجم، الترعة':'Smith, tailor, herbalist, cook, field, monster shelter, mine, canal'});
+
+/* ---------- 5.94 / N15.A: الصيد الحر في الغيطان (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
+   From the town («اخرج للصيد» in الدهاليز) the hero goes out to الغيطان without starting an adventure. The area is four points
+   joined by paths (ROAM_ZONES): طرف الغيط (safe; عم عبده, rest, the errand, the way home), غيطان الدرة, الساقية القديمة, and آخر الغيط
+   عند الترعة (the most dangerous, with an elite «سلعوة كبيرة»). Moving along a path is free. «دوّر هنا» costs 1 مجهود and is rolled and
+   saved at once: nothing, something to pick up (herbs), or an encounter (ROAM_ENCOUNTERS: سلعوة / ديب / خنزير بري / سلعوة كبيرة).
+   An encounter waits on its point (saved in h.roam.cur with its own id) until the hero fights it, sneaks away (a خفة roll; a failed
+   one starts the fight) or goes back the way they came. Fights are the normal fight engine (alone: foes 25% less health, 20% softer,
+   like «لوحدك» in a night); «💬 كلام» works except giving up. A win gives the normal experience, money, drops and chests, quest or not;
+   the encounter is settled in the same save as the rewards, so a reload can't give them twice. A loss: back to طرف الغيط with a third
+   of your health and 5% of your money (at most 100). The errand «5 سلعوات» from عم عبده counts only real kills (a foe that yields,
+   is spared, fed or runs away never counts) and is handed in once (it can be taken again the next town day). The place and the
+   errand are kept in h.roam; closing the game keeps you where you were; «ارجع البلد» ends the trip. Not while a night is saved. */
+const RM_V=1,RM_NEED=5,RM_CHEST=.4;
+const ROAM_ZONES={ghitan:{n:'الغيطان',art:'fields',start:'edge',order:['edge','corn','saqia','canal'],
+  pts:{edge:{n:'طرف الغيط',d:0,links:['corn','saqia'],txt:'آخر بيت في البلد ورا ضهرك، والغيطان قدامك. عم عبده قاعد على المصطبة.'},
+    corn:{n:'غيطان الدرة',d:1,links:['edge','saqia','canal'],w:{sal:6,wolf:3,res:3,none:3},res:[['mint',1,2]],txt:'عيدان الدرة أطول منك، والهوا بيحركها كأن فيها حد.'},
+    saqia:{n:'الساقية القديمة',d:2,links:['edge','corn','canal'],w:{sal:4,wolf:3,boar:3,res:2,none:3},res:[['mint',1,1],['helba',1,1]],txt:'ساقية خشب واقفة من سنين، والطين حواليها عليه آثار رجلين كتير.'},
+    canal:{n:'آخر الغيط عند الترعة',d:3,links:['corn','saqia'],w:{sal:4,boar:3,salbig:2,res:2,none:2},res:[['nileh',1,1]],rare:['bloom',.08],txt:'الترعة ساكتة، والبوص عالي. هنا الوحوش أكبر.'}}}};
+const ROAM_ENCOUNTERS={sal:{n:'سلعوة',art:'sal',hp:8,dmg:2,fem:1,sal:1,two:[0,.15,.3,.35],say:'عينين بتلمع في الضلمة، وصوت خربشة بين العيدان.'},
+  wolf:{n:'ديب',art:'g_wolf',hp:6,dmg:2,two:[0,.25,.35,.4],say:'عوا قريب.. وحاجة رمادي بتلف حواليك.'},
+  boar:{n:'خنزير بري',art:'g_boar',hp:9,dmg:2,two:[0,0,0,0],say:'خنزير بري بيحفر في الطين، ورفع راسه وبينفخ.'},
+  salbig:{n:'سلعوة كبيرة',art:'rm_salbig',hp:14,dmg:3,fem:1,sal:1,elite:1,two:[0,0,0,0],say:'سلعوة كبيرة قد العجل، في رجلها أثر فخ قديم. شافتك قبل ما تشوفها.'}};
+const RM_DANGER=['أمان','خطر قليل','خطر متوسط','خطر كبير'];
+const rmSalArt=a=>a==='sal'||a==='rm_salbig';
+/* the elite: a darker, bigger salawa (same drawing), her own loot */
+Object.defineProperty(FOE_ART_X,'rm_salbig',{enumerable:true,get(){return String(foeArt('sal')).replace('<svg','<svg style="filter:hue-rotate(-28deg) saturate(1.5) brightness(.82)"')}});
+LOOT.rm_salbig={xp:7,m:[30,55],chest:.6};FOE_DROPS.rm_salbig=[['salskin',.9],['salfang',.5]];
+TK_SP_RX.unshift([/(^|_)salbig$/,{spare:1,feed:1}]);
+function rmFix(h){if(!h)return null;let Z=h.roam;if(!Z||typeof Z!=='object'||Array.isArray(Z))Z=h.roam={};Z.v=RM_V;if(!ROAM_ZONES[Z.zone])Z.zone='ghitan';const R=ROAM_ZONES[Z.zone];
+  if(!R.pts[Z.at])Z.at=R.start;if(!R.pts[Z.prev])Z.prev=R.start;Z.on=Z.on?1:0;Z.seq=Z.seq|0;if(!Array.isArray(Z.done))Z.done=[];if(Z.done.length>60)Z.done=Z.done.slice(-60);
+  if(Z.cur&&!(Z.cur.uid&&ROAM_ENCOUNTERS[Z.cur.e]&&Array.isArray(Z.cur.foes)&&Z.cur.foes.length&&Z.cur.at===Z.at))Z.cur=null;
+  if(!Z.q||typeof Z.q!=='object')Z.q={};const q=Z.q;q.id='sal5';q.need=RM_NEED;q.n=Math.max(0,Math.min(RM_NEED,q.n|0));if(!['none','on','ready','done'].includes(q.st))q.st='none';q.times=q.times|0;
+  if(q.st==='done'&&(h.nDone|0)>(q.day|0))q.st='none';if(q.st==='on'&&q.n>=RM_NEED)q.st='ready';
+  if(!Z.st||typeof Z.st!=='object')Z.st={};['trips','search','kills','won','lost','avoid'].forEach(k=>Z.st[k]=Z.st[k]|0);return Z}
+/* when the next effort comes back (p9b's helpers live inside a block there) */
+const rmWait=h=>{effNow(h);const ms=h.eff.v>=EFF_MAX?0:Math.max(0,(h.hidden&&h.hidden.sabr?40000:60000)-(Date.now()-h.eff.t)),t=Math.ceil(ms/1000);return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`};
+const rmZone=Z=>ROAM_ZONES[Z.zone];
+const rmPt=Z=>rmZone(Z).pts[Z.at];
+const rmWPick=w=>{const k=Object.keys(w),t=k.reduce((a,x)=>a+w[x],0);let r=Math.random()*t;for(const x of k){r-=w[x];if(r<0)return x}return k[k.length-1]};
+/* the foes of an encounter, fixed when it is rolled (saved with it): danger adds health and a little hit; alone they are softer (like «لوحدك») */
+function rmFoes(e,d){const E=ROAM_ENCOUNTERS[e],n=1+(Math.random()<(E.two[d]||0)?1:0),hp=Math.max(1,Math.round(E.hp*(1+.12*Math.max(0,d-1))*CM_SOLO_HP)),dmg=E.dmg+(d>=3?1:0);
+  return Array.from({length:n},()=>{const f={name:E.n,art:E.art,hp,dmg};if(E.fem)f.fem=1;return f})}
+const rmNames=foes=>foes.length>1?`${foes.length} ${foes[0].art==='g_wolf'?'ديابة':foes[0].art==='sal'?'سلعوات':foes[0].name}`:foes[0].name;
+/* ---------- the actions ---------- */
+function rmStart(h){const Z=rmFix(h);if(Z.on)return Z;Z.on=1;Z.at=rmZone(Z).start;Z.prev=Z.at;Z.cur=null;Z.msg=null;Z.st.trips++;h.hp=Math.max(1,Math.min(MXH(h),h.hp|0));saveHero();return Z}
+function rmGo(h,id){const Z=rmFix(h),P=rmPt(Z);if(!Z.on||Z.cur||!P.links.includes(id)||!rmZone(Z).pts[id])return;Z.prev=Z.at;Z.at=id;Z.msg=null;saveHero();try{SFX.page()}catch(e){}twRender()}
+function rmSearch(h){const Z=rmFix(h),P=rmPt(Z);if(!Z.on||Z.cur||!P.w)return;
+  if(!useEff(h)){toast(`مفيش مجهود. اللي جاي بعد ${rmWait(h)}، أو ${G('كُل','كُلي')} حاجة.`);try{SFX.meh()}catch(e){}return}
+  Z.seq++;Z.st.search++;const uid='r'+Z.seq+'_'+Date.now().toString(36),k=rmWPick(P.w);
+  if(ROAM_ENCOUNTERS[k]){Z.cur={uid,e:k,at:Z.at,foes:rmFoes(k,P.d)};Z.msg=null;try{SFX.bell&&SFX.bell()}catch(e){}}
+  else if(k==='res'){const [rk,a,b]=pick(P.res),n=a+Math.floor(Math.random()*(b-a+1));addRes(h,rk,n);let t=`{لقيت|لقيتي} ${n>1?n+' ':''}${resN(rk)} ${matIc(rk,18)}`;
+    if(P.rare&&Math.random()<P.rare[1]){addRes(h,P.rare[0],1);t+=` · و${resN(P.rare[0])} ${matIc(P.rare[0],18)}!`}Z.msg={t};try{SFX.pickup&&SFX.pickup()}catch(e){}}
+  else{Z.msg={t:pick(['{دورت|دورتي} بين العيدان.. مفيش غير الهوا.','الأرض فيها آثار، بس اللي سابها مشي من بدري.','سكوت. حتى الضفادع ساكتة.'])};try{SFX.tick(520)}catch(e){}}
+  saveHero();twRender()}
+function rmBack(h){const Z=rmFix(h);if(!Z.cur||Z.cur.fought)return;if(!useEff(h)){toast(`${G('محتاج','محتاجة')} مجهود تجري بيه. ${G('قاتل','قاتلي')} أو ${G('اتسحّب','اتسحّبي')}.`);try{SFX.meh()}catch(e){}return}Z.cur=null;const to=Z.prev&&Z.prev!==Z.at?Z.prev:rmZone(Z).start;Z.prev=Z.at;Z.at=to;Z.msg={t:`{رجعت|رجعتي} لـ${rmPt(Z).n} من غير ما حد ياخد باله.`};saveHero();try{SFX.page()}catch(e){}twRender()}
+async function rmAvoid(h){const Z=rmFix(h),c=Z.cur;if(!c||c.fought||RM.busy)return;const P=rmPt(Z),E=ROAM_ENCOUNTERS[c.e];RM.busy=1;
+  try{const r=await rollCheck('خفة',{label:'تتسحّب من غير ما يحسوا بيك',cancel:true,dc:Math.max(0,P.d-1)+(E.elite?2:0)});if(r.cancel)return twRender();
+    if(r.tier==='full'||r.tier==='part'){Z.cur=null;Z.st.avoid++;const many=c.foes.length>1,f0=c.foes[0];let t=`{اتسحّبت|اتسحّبتي} بالراحة من غير ما ${many?'ياخدوا بالهم':FF(f0,'ياخد باله','تاخد بالها')}.`;
+      if(r.tier==='part'){h.hp=Math.max(1,h.hp-2);t=[t,'بس {اتخربشت|اتخربشتي} في البوص (−2 صحة).']}Z.msg={t};saveHero();return twRender()}
+    Z.msg={bad:1,t:`${rmNames(c.foes)} ${c.foes.length>1?'شافوك':FF(c.foes[0],'شافك','شافتك')}!`};saveHero();RM.busy=0;return rmFight(h)}finally{RM.busy=0}}
+function rmFight(h){const Z=rmFix(h),c=Z.cur;if(!c||S.combat)return;S.roamFight={uid:c.uid,e:c.e};S.comp=cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;
+  if(!c.fought){c.fought=1;saveHero()}   /* once it starts it has to be finished: a reload brings it back with only «أقاتل» */
+  startCombat(JSON.parse(JSON.stringify(c.foes)),'roam_back',false);const C=S.combat;if(!C)return;C.enc='rm:'+c.uid;
+  C.foes.forEach(g=>{if(typeof g.dmg==='number'&&g.dmg>0){const v=g.dmg*CM_SOLO_DMG;g.dmg=Math.max(1,Math.floor(v)+(Math.random()<v%1?1:0))}});if(S.screen==='combat')try{combat()}catch(e){}}   /* drawn again now that it is known as a field fight («💬 كلام») */
+function rmRest(h){const Z=rmFix(h);if(!Z.on||Z.at!=='edge'||Z.cur)return;if(h.hp>=MXH(h)&&h.energy>=MXE(h)){toast(`${G('انت','انتي')} ${G('مرتاح','مرتاحة')} خلاص.`);return}
+  if(!useEff(h)){toast(`مفيش مجهود. اللي جاي بعد ${rmWait(h)}.`);try{SFX.meh()}catch(e){}return}h.hp=MXH(h);h.energy=MXE(h);Z.msg={t:'{قعدت|قعدتي} جنب عم عبده {وشربت|وشربتي} شاي. صحتك وطاقتك رجعوا.'};saveHero();try{SFX.good()}catch(e){}twRender()}
+function rmTake(h){const Z=rmFix(h),q=Z.q;if(q.st!=='none'||Z.at!=='edge')return;q.st='on';q.n=0;Z.msg={t:`«${G('هات','هاتي')} لي خبر 5 سلعوات، وأنا أعرف أنام.» العداد بيعد كل سلعوة {بتوقعها|بتوقعيها} بجد.`};saveHero();try{SFX.tick(820)}catch(e){}twRender()}
+const rmPay=h=>({m:60+15*Math.max(1,h.lvl|0),x:5+Math.max(1,h.lvl|0)});
+function rmTurnIn(h){const Z=rmFix(h),q=Z.q;if(q.st!=='ready'||Z.at!=='edge')return;const R=rmPay(h);q.st='done';q.day=h.nDone|0;q.times++;q.n=0;h.money+=R.m;const L0=h.lvl,ups=gainXP(R.x);
+  h.cnt=h.cnt||{};h.cnt.roamQ=(h.cnt.roamQ|0)+1;Z.msg={t:[`عم عبده {ادّاك|ادّاكي} ${R.m} جنيه و${R.x} خبرة.`,h.lvl>L0?`{طلعت|طلعتي} المستوى ${h.lvl}!`:'']};saveHero();
+  try{SFX.coin&&SFX.coin()}catch(e){}if(q.times===1)try{ach('roam5')}catch(e){}band('','المهمة خلصت',`+${R.m} جنيه · +${R.x} خبرة`,{dur:1600,sound:SFX.good});twRender()}
+function rmLeave(h){const Z=rmFix(h);if(Z.cur&&Z.cur.fought){toast(`${G('خلّص','خلّصي')} القتال الأول.`);try{SFX.meh()}catch(e){}return}Z.on=0;Z.cur=null;Z.msg=null;Z.at=rmZone(Z).start;Z.prev=Z.at;saveHero();try{SFX.page()}catch(e){}twGo('town')}
+const RM={busy:0};
+/* ---------- the fight's end: the encounter is settled with its rewards; a loss sends you back to the edge ---------- */
+{const e0=endFight;endFight=function(won){const R=S.roamFight,C=S.combat,h=S.hero;if(!R||!C||!h||C.enc!=='rm:'+R.uid)return e0.apply(this,arguments);S.roamFight=null;const Z=rmFix(h);
+  if(Z.cur&&Z.cur.uid===R.uid)Z.cur=null;if(!Z.done.includes(R.uid))Z.done.push(R.uid);
+  if(won){const dead=C.foes.filter(f=>f.hp<=0&&!f.fled),sal=dead.filter(f=>rmSalArt(f.art)).length,gone=C.foes.length-dead.length;Z.st.won++;Z.st.kills+=dead.length;
+    const t=[dead.length?(dead.length>1?`${rmNames(dead)} وقعوا.`:`${dead[0].name} ${FF(dead[0],'وقع','وقعت')}.`):`${G('خلّصت','خلّصتي')} من غير ما حد يموت.`];
+    if(gone&&dead.length)t.push(gone>1?`${gone} جريوا.`:'وواحد جري.');
+    if(Z.q.st==='on'&&sal){Z.q.n=Math.min(RM_NEED,Z.q.n+sal);if(Z.q.n>=RM_NEED)Z.q.st='ready';t.push(`مهمة عم عبده: ${Z.q.n} من ${RM_NEED}${Z.q.st==='ready'?` · ${G('ارجع','ارجعي')} له على طرف الغيط`:''}.`)}
+    Z.msg={t};const keep={};C.foes.forEach(f=>{const L=LOOT[f.art];if(L&&!(f.art in keep)){keep[f.art]=L.chest;L.chest=L.chest*RM_CHEST}});
+    try{return e0.apply(this,arguments)}finally{Object.keys(keep).forEach(a=>{LOOT[a].chest=keep[a]})}}   /* the normal win: experience, money, drops, chests (rarer here), and one save with the settlement */
+  const rr=render;render=function(){};try{e0.apply(this,arguments)}catch(e){console.warn(e)}finally{render=rr}
+  S.lost=null;S.combat=null;const lose=Math.min(100,Math.floor(Math.max(0,h.money)*.05));h.money-=lose;h.hp=Math.max(1,Math.ceil(MXH(h)/3));Z.st.lost++;Z.at=rmZone(Z).start;Z.prev=Z.at;
+  Z.msg={bad:1,t:['{وقعت|وقعتي}.. عم عبده {لقاك|لقاكي} على طرف الغيط {وشالك|وشالكي} للمصطبة.',lose?`ضاع منك ${lose} جنيه في الضلمة.`:'']};saveHero();
+  band('',G('وقعت','وقعتي'),'',{color:'red',dur:1600,sound:SFX.down});twGo('roam')}}
+SC.roam_back={art:'fields',chip:'الغيطان',text:'',ch:[],onEnter(){S.screen='roam';S.scene=null;const R=S.roamFight,h=S.hero;if(!R||!h)return;S.roamFight=null;const Z=rmFix(h);
+  if(Z.cur&&Z.cur.uid===R.uid){Z.cur=null;if(!Z.done.includes(R.uid))Z.done.push(R.uid);Z.msg={t:'هربوا قبل ما {تقرب|تقربي}. ولا غنايم ولا تعب.'};saveHero()}}};
+const rmIn=()=>!!(S.roamFight&&S.combat&&S.combat.enc==='rm:'+S.roamFight.uid);
+/* «💬 كلام» in the fields: everything but giving up */
+{const t0=tkCan;tkCan=function(){if(rmIn()){const C=S.combat,h=S.hero;if(!C||!h||C.tutorial)return false;const up=tkUp(C);return up.length>0&&!up.some(tkBoss)}return t0.apply(this,arguments)}}
+{const s0=tkSheet;tkSheet=function(){const r=s0.apply(this,arguments);return rmIn()?String(r).replace(/<button class="it tk[^"]*" data-tk="surr"[\s\S]*?<\/button>/,''):r}}
+{const d0=tkDo;tkDo=function(k){if(rmIn()&&k==='surr')return;return d0.apply(this,arguments)}}
+/* the talk button's line: no giving up here */
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{if(rmIn()){const sm=view.querySelector('.tk-act small');if(sm&&/استسلم/.test(sm.textContent))sm.textContent=sm.textContent.replace(/، أو استسلمي?$/,'').replace(/^(.*)، /,'$1، أو ')}}catch(e){}return r}}
+/* mercy in the fields gives reputation at most twice a town day (it would be farmed with effort) */
+{const a0=addRep;addRep=function(n){try{const h=S.hero;if(rmIn()&&h&&n>0){const Z=rmFix(h),d=h.nDone|0;if(!Z.rep||Z.rep.d!==d)Z.rep={d,n:0};if(Z.rep.n>=2)return;Z.rep.n++}}catch(e){}return a0.apply(this,arguments)}}
+{const r0=N_resume;N_resume=function(){S.roamFight=null;return r0.apply(this,arguments)}}
+/* a night ends the trip (the fields wait at the edge) */
+{const nb=N_begin;N_begin=function(){S.roamFight=null;try{const h=S.hero,Z=h&&rmFix(h);if(Z&&Z.on){Z.on=0;Z.cur=null;Z.at=rmZone(Z).start;Z.prev=Z.at}}catch(e){}return nb.apply(this,arguments)}}
+/* ---------- the screen ---------- */
+SCREENS.roam=function(){const h=S.hero;if(!h){S.screen='title';return render()}const Z=rmFix(h);
+  if(h.night){if(Z.on){Z.on=0;Z.cur=null;Z.at=rmZone(Z).start;Z.prev=Z.at;saveHero()}view.innerHTML=`${twTop(G('اخرج للصيد','اخرجي للصيد'))}<div class="tw rm"><div class="card bg-none">عندك ليلة متسابة. ${G('كمّلها','كمّليها')} أو ${G('خلّصها','خلّصيها')} الأول، وبعدين ${G('اطلع','اطلعي')} الغيطان.</div></div>`;twBack();return}
+  rmStart(h);const R=rmZone(Z),P=rmPt(Z),c=Z.cur,ef=effNow(h),q=Z.q;
+  const ptRow=id=>{const X=R.pts[id],here=id===Z.at,can=!c&&P.links.includes(id);const kinds=X.w?Object.keys(X.w).filter(k=>ROAM_ENCOUNTERS[k]).map(k=>ROAM_ENCOUNTERS[k].n).join('، '):'عم عبده · راحة';
+    return `<button class="rm-pt${here?' here':''}" data-rmgo="${id}" ${can?'':'disabled'}><span class="rm-d d${X.d}">${'●'.repeat(X.d)||'○'}</span><span class="tx"><b>${X.n}</b><small><span>${RM_DANGER[X.d]}</span> · <span>${kinds}</span></small></span><span class="go">${here?'انت هنا':can?G('روح','روحي'):''}</span></button>`};
+  const enc=()=>{const E=ROAM_ENCOUNTERS[c.e];return `<div class="card rm-enc${E.elite?' elite':''}"><div class="rm-foes">${c.foes.map(f=>`<span class="rm-fp">${foeArt(f.art)}</span>`).join('')}</div>
+    <b class="rm-en">${rmNames(c.foes)}${E.elite?' <span class="rm-el">نخبة</span>':''}</b><div class="rm-say">${E.say}</div>
+    <div class="rm-bt"><button class="btn" id="rmF">⚔ أقاتل</button>${c.fought?`<div class="rm-q">القتال ده بدأ: لازم يخلص</div>`:`<button class="btn ghost" id="rmA">🤫 أتسحّب بالراحة <small>(خفة)</small></button><button class="btn ghost" id="rmB" ${ef<1?'disabled':''}>↩ أرجع لـ${R.pts[Z.prev&&Z.prev!==Z.at?Z.prev:R.start].n} <small>(1 مجهود)</small></button>`}</div></div>`};
+  const qBox=()=>{if(Z.at!=='edge')return q.st==='on'||q.st==='ready'?`<div class="rm-q">مهمة عم عبده: <b>${q.n} من ${RM_NEED}</b> سلعوة${q.st==='ready'?` · ${G('ارجع','ارجعي')} له`:''}</div>`:'';
+    const pay=rmPay(h);const says=q.st==='none'?`«السلعوة كلت فراخي ونص الغيط. ${G('وقّع','وقّعي')} لي 5 سلعوات، وليك ${pay.m} جنيه و${pay.x} خبرة.»`:q.st==='on'?`«لسه ${RM_NEED-q.n}.. السلعوة بتطلع بالليل في الدرة، والكبيرة عند الترعة.»`:q.st==='ready'?`«وقّعتهم بجد؟ ${G('تعالى خد','تعالي خدي')} حقك.»`:`«تسلم إيدك. ${G('تعالى','تعالي')} بكرة يمكن ألاقي لك شغل تاني.»`;
+    return `${twNpcHTML('abdo',T(says))}<div class="rm-bt">${q.st==='none'?`<button class="btn" id="rmQ">${G('حاضر، هوقّعهم','حاضر، هوقّعهم')}</button>`:q.st==='ready'?`<button class="btn" id="rmQ">${G('خد حقك','خدي حقك')} · ${pay.m} جنيه</button>`:q.st==='on'?`<div class="rm-q">العداد: <b>${q.n} من ${RM_NEED}</b></div>`:''}
+      <button class="btn ghost" id="rmR">☕ ${G('ارتاح','ارتاحي')} شوية <small>(1 مجهود: صحتك وطاقتك ترجع)</small></button></div>`};
+  view.innerHTML=`${twTop(R.n)}<div class="tw rm">
+    <div class="card rm-hd"><div class="art rm-art" style="height:100px">${scenery(R.art)}<div class="fade"></div></div><div class="rm-hx"><b>${P.n}</b><small class="d${P.d}">${RM_DANGER[P.d]}</small></div><div class="rm-tx">${P.txt}</div></div>
+    <div class="rm-st"><span>❤️ ${h.hp}/${MXH(h)}</span><span>💧 مجهود ${ef}/${EFF_MAX}</span><span>💰 ${h.money}</span></div>
+    ${Z.msg?`<div class="card rm-msg${Z.msg.bad?' bad':''}">${(Array.isArray(Z.msg.t)?Z.msg.t:[Z.msg.t]).filter(Boolean).map(x=>`<span>${T(x)}</span>`).join(' ')}</div>`:''}
+    ${c?enc():P.w?`<button class="btn rm-s" id="rmS" ${ef<1?'disabled':''}>🔍 ${G('دوّر هنا','دوّري هنا')} <small>${ef<1?`المجهود خلص · اللي جاي بعد ${rmWait(h)}`:'1 مجهود'}</small></button>`:qBox()}
+    ${c||!P.w?'':qBox()}
+    <div class="label rm-l">${c?G('مش هتقدر تتحرك قبل ما تخلص','مش هتقدري تتحركي قبل ما تخلصي'):G('تروح فين؟','تروحي فين؟')}</div>
+    <div class="rm-map">${R.order.map(ptRow).join('')}</div>
+    <button class="btn ghost rm-home" id="rmH" ${c&&c.fought?'disabled':''}>🏠 ${G('ارجع البلد','ارجعي البلد')}</button></div>`;
+  const b=$('#back');if(b)b.onclick=()=>rmLeave(h);
+  view.querySelectorAll('[data-rmgo]').forEach(x=>x.onclick=()=>rmGo(h,x.dataset.rmgo));
+  const on=(id,f)=>{const x=$('#'+id);if(x)x.onclick=f};
+  on('rmS',()=>rmSearch(h));on('rmF',()=>{ac();rmFight(h)});on('rmA',()=>rmAvoid(h));on('rmB',()=>rmBack(h));on('rmR',()=>rmRest(h));on('rmH',()=>rmLeave(h));
+  on('rmQ',()=>q.st==='none'?rmTake(h):rmTurnIn(h))};
+/* ---------- the town ---------- */
+function rmArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#121a22"/><rect x="118" y="10" width="12" height="12" fill="#e8dca0"/><rect y="58" width="160" height="32" fill="#2a2416"/>
+  ${[0,1,2,3,4,5,6,7,8].map(i=>`<rect x="${2+i*18}" y="${30+(i%3)*5}" width="3" height="${32-(i%3)*5}" fill="#5f7a32"/><rect x="${i*18}" y="${28+(i%3)*5}" width="7" height="5" fill="#8a7a3a"/>`).join('')}
+  <rect x="62" y="50" width="4" height="3" fill="#f3c14d"/><rect x="70" y="50" width="4" height="3" fill="#f3c14d"/><rect x="100" y="60" width="3" height="2" fill="#f0a090"/><rect x="106" y="60" width="3" height="2" fill="#f0a090"/></svg>`}
+{const pa=placeArt;placeArt=function(id){if(id==='roam')return rmArt();return pa.apply(this,arguments)}}
+TW_EXTRA.push(h=>{const Z=rmFix(h),q=Z.q;const s=h.night?'بعد الليلة المتسابة':Z.on?`${G('انت','انتي')} عند ${rmPt(Z).n}`:q.st==='ready'?`المهمة خلصت: عم عبده ${G('مستنيك','مستنيكي')}`:q.st==='on'?`سلعوات ${q.n} من ${RM_NEED}`:'من غير مغامرة · سلعوة وديابة';
+  return {id:'roam',go:'roam',n:G('اخرج للصيد','اخرجي للصيد'),w:'الغيطان بالليل',s}});
+{const g=(typeof TW_GROUPS!=='undefined'?TW_GROUPS:[]).find(x=>x.big);if(g&&!g.go.includes('roam'))g.go.push('roam')}
+ACH.push({id:'roam5',n:'صياد الغيطان',d:'{تخلّص|تخلّصي} مهمة «5 سلعوات» لعم عبده',r:25});
+{const st=document.createElement('style');st.textContent=`
+.tw-sec.big .tw-grid>.tw-tile{grid-column:1/-1}
+.rm .rm-hd{padding:0;overflow:hidden}.rm-art{height:96px;position:relative}.rm-hx{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 14px 0}.rm-hx b{font-size:18px}
+.rm-hx small{font-size:12px;font-weight:800;padding:1px 8px;border-radius:9px;background:#a6e3a026;color:#a6e3a0}.rm-hx small.d1{background:#e0b25a26;color:var(--gold2)}.rm-hx small.d2{background:#f0a09026;color:#f0a090}.rm-hx small.d3{background:#d0483b40;color:#ff9a8a}
+.rm-tx{padding:4px 14px 12px;font-size:13.5px;color:var(--dim);line-height:1.7}.rm-st{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;font-size:12.5px;color:var(--mute);margin:8px 0}
+.rm-msg{font-size:14px;line-height:1.7;border-color:#a6e3a055}.rm-msg.bad{border-color:#f0a09088;color:#f6c0b0}.rm-s{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%}.rm-s small,.rm-bt small{font-size:11.5px;opacity:.8;font-weight:400}
+.rm-enc{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}.rm-enc.elite{border-color:#ff9a8a}.rm-foes{display:flex;gap:8px;justify-content:center}.rm-fp{width:84px;height:84px;display:flex;align-items:center;justify-content:center}.rm-fp svg{width:100%;height:100%}
+.rm-en{font-size:17px}.rm-el{font-size:11px;padding:1px 7px;border-radius:9px;background:#d0483b40;color:#ff9a8a;vertical-align:middle}.rm-say{font-size:13.5px;color:var(--dim);line-height:1.7}
+.rm-bt{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:4px}.rm-bt .btn{min-height:48px;width:100%;margin:0}.rm-q{font-size:13px;color:var(--gold2);text-align:center;margin:6px 0}
+.rm-l{margin:14px 0 6px}.rm-map{display:flex;flex-direction:column;gap:6px}.rm-pt{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 12px;border-radius:12px;border:1px solid var(--line);background:#0003;color:var(--ink);font:inherit;text-align:start;width:100%}
+.rm-pt .tx{flex:1;display:flex;flex-direction:column;min-width:0}.rm-pt .tx small{color:var(--mute);font-size:11.5px}.rm-pt .go{font-size:12px;color:var(--gold2);white-space:nowrap}.rm-pt.here{border-color:var(--gold2);background:#e0b25a14}.rm-pt.here .go{color:#a6e3a0}
+.rm-pt:disabled:not(.here){opacity:.5}.rm-d{width:30px;text-align:center;font-size:9px;letter-spacing:1px;color:#a6e3a0}.rm-d.d1{color:var(--gold2)}.rm-d.d2{color:#f0a090}.rm-d.d3{color:#ff7a6a}.rm-home{margin-top:14px;width:100%;min-height:48px}`;document.head.appendChild(st)}
+/* English (p2c/p80): the words of this screen */
+L10N({'الغيطان':'The fields','طرف الغيط':'Edge of the fields','غيطان الدرة':'Corn fields','الساقية القديمة':'The old waterwheel','آخر الغيط عند الترعة':'Far end by the canal',
+  'أمان':'Safe','خطر قليل':'Low danger','خطر متوسط':'Medium danger','خطر كبير':'High danger','اخرج للصيد':'Go hunting','اخرجي للصيد':'Go hunting','الغيطان بالليل':'The fields at night',
+  'من غير مغامرة · سلعوة وديابة':'No adventure · salawas and wolves','بعد الليلة المتسابة':'After the saved night','انت هنا':'You are here','روح':'Go','روحي':'Go',
+  'تروح فين؟':'Where to?','تروحي فين؟':'Where to?','مش هتقدر تتحرك قبل ما تخلص':'Deal with this first','مش هتقدري تتحركي قبل ما تخلصي':'Deal with this first',
+  '1 مجهود':'1 effort','(1 مجهود)':'(1 effort)','القتال ده بدأ: لازم يخلص':'This fight has started: finish it','نخبة':'Elite','سلعوة':'Salawa','سلعوة كبيرة':'Big salawa','ديب':'Wolf','خنزير بري':'Wild boar','(خفة)':'(Agility)','المهمة خلصت':'Errand done',
+  'عم عبده · راحة':'Uncle Abdo · rest',
+  'آخر بيت في البلد ورا ضهرك، والغيطان قدامك. عم عبده قاعد على المصطبة.':'The last house of the village is behind you and the fields ahead. Uncle Abdo sits on his bench.',
+  'عيدان الدرة أطول منك، والهوا بيحركها كأن فيها حد.':'The corn is taller than you, and the wind moves it as if someone were inside.',
+  'ساقية خشب واقفة من سنين، والطين حواليها عليه آثار رجلين كتير.':'A wooden waterwheel, still for years; the mud around it is full of tracks.',
+  'الترعة ساكتة، والبوص عالي. هنا الوحوش أكبر.':'The canal is quiet and the reeds are high. The beasts are bigger here.',
+  'عينين بتلمع في الضلمة، وصوت خربشة بين العيدان.':'Eyes shine in the dark, and something scratches between the stalks.',
+  'عوا قريب.. وحاجة رمادي بتلف حواليك.':'A howl nearby.. and something grey circles you.',
+  'خنزير بري بيحفر في الطين، ورفع راسه وبينفخ.':'A wild boar digs in the mud, then lifts its head and snorts.',
+  'سلعوة كبيرة قد العجل، في رجلها أثر فخ قديم. شافتك قبل ما تشوفها.':'A salawa as big as a calf, an old trap scar on her leg. She saw you first.','سلعوة، ديب':'Salawa, wolf','سلعوة، ديب، خنزير بري':'Salawa, wolf, wild boar','سلعوة، خنزير بري، سلعوة كبيرة':'Salawa, wild boar, big salawa'},
+  [[/^🔍 دوّري? هنا$/,'🔍 Search here'],[/^دورتي? بين العيدان\.\. مفيش غير الهوا\.$/,'You searched the stalks.. only the wind.'],[/^الأرض فيها آثار، بس اللي سابها مشي من بدري\.$/,'Tracks in the mud, but whoever left them is long gone.'],
+   [/^سكوت\. حتى الضفادع ساكتة\.$/,'Silence. Even the frogs are quiet.'],[/^رجعتي? لـ(.+) من غير ما حد ياخد باله\.$/,(m,a)=>`You went back to ${L10N_W.get(a)||a} unseen.`],[/^اتسحّبتي? بالراحة من غير ما (ياخدوا بالهم|ياخد باله|تاخد بالها)\.$/,'You slipped away unseen.'],
+   [/^بس اتخربشتي? في البوص \(−2 صحة\)\.$/,'But the reeds scratched you (−2 health).'],[/^(.+) (شافوك|شافك|شافتك)!$/,(m,a)=>L10N_W.has(a)?`${L10N_W.get(a)} saw you!`:/^\d+ (سلعوات|ديابة)$/.test(a)?`${a.replace('سلعوات','salawas').replace('ديابة','wolves')} saw you!`:m],
+   [/^وقعتي?\.\. عم عبده لقاكي? على طرف الغيط وشالكي? للمصطبة\.$/,'You fell.. Uncle Abdo found you at the edge and carried you to his bench.'],[/^ضاع منك (\d+) جنيه في الضلمة\.$/,'You lost $1 pounds in the dark.'],
+   [/^قعدتي? جنب عم عبده وشربتي? شاي\. صحتك وطاقتك رجعوا\.$/,'You had tea with Uncle Abdo. Health and energy are back.'],[/^«هاتي? لي خبر 5 سلعوات، وأنا أعرف أنام\.» العداد بيعد كل سلعوة بتوقعي?ها بجد\.$/,'«Bring down 5 salawas, then I can sleep.» Only real kills count.'],
+   [/^عم عبده ادّاكي? (\d+) جنيه و(\d+) خبرة\.$/,'Uncle Abdo gave you $1 pounds and $2 experience.'],[/^طلعتي? المستوى (\d+)!$/,'Level $1!'],[/^هربوا قبل ما تقربي?\. ولا غنايم ولا تعب\.$/,'They ran before you got close. No loot, no sweat.'],
+   [/^خلّصتي? من غير ما حد يموت\.$/,'Done, and nobody died.'],[/^وواحد جري\.$/,'One ran off.'],[/^(\d+) جريوا\.$/,'$1 ran off.'],
+   [/^مهمة عم عبده: (\d+) من (\d+)( · ارجعي? له على طرف الغيط)?\.$/,(m,a,b,c)=>`Uncle Abdo's errand: ${a} of ${b}${c?' · go back to him at the edge':''}.`],[/^سلعوة · ارجعي? له$/,'salawas · go back to him'],
+   [/^«السلعوة كلت فراخي ونص الغيط\. وقّعي? لي 5 سلعوات، وليك (\d+) جنيه و(\d+) خبرة\.»$/,'«Salawas ate my chickens and half the field. Bring down 5 for me: $1 pounds and $2 experience.»'],
+   [/^«لسه (\d+)\.\. السلعوة بتطلع بالليل في الدرة، والكبيرة عند الترعة\.»$/,'«$1 more.. they come out in the corn, and the big one by the canal.»'],[/^«وقّعتهم بجد؟ تعالي? خدي? حقك\.»$/,'«You really got them? Come take your due.»'],
+   [/^«تسلم إيدك\. تعالي? بكرة يمكن ألاقي لك شغل تاني\.»$/,'«Bless your hands. Come back tomorrow, I may have more work.»'],[/^مفيش مجهود\. اللي جاي بعد ([\d:]+)(، أو كُلي? حاجة)?\.$/,'No effort left. Next in $1.'],
+   [/^خلّصي? القتال الأول\.$/,'Finish the fight first.'],[/^محتاجة? مجهود تجري بيه\. قاتلي? أو اتسحّبي?\.$/,'You need effort to run. Fight or sneak away.'],[/^انتي? مرتاحة? خلاص\.$/,'You are rested already.'],
+   [/^المهمة خلصت: عم عبده مستنيكي?$/,'Errand done: Uncle Abdo is waiting'],[/^عندك ليلة متسابة\..*$/,'You have a saved night. Finish it first, then go out to the fields.'],[/^(.+) (وقع|وقعت)\.$/,(m,a)=>L10N_W.has(a)?`${L10N_W.get(a)} fell.`:m],[/^(\d+) (سلعوات|ديابة) وقعوا\.$/,(m,n,k)=>`${n} ${k==='سلعوات'?'salawas':'wolves'} fell.`],[/^المجهود خلص · اللي جاي بعد ([\d:]+)$/,'No effort left · next in $1'],
+   [/^مهمة عم عبده:$/,'Uncle Abdo\'s errand:'],[/^(\d+) من (\d+)$/,'$1 of $2'],[/^لقيتي? (.+)$/,(m,x)=>/[؀-ۿ]/.test(x)?m:`Found ${x}`],[/^⚔ أقاتل$/,'⚔ Fight'],[/^🤫 أتسحّب بالراحة$/,'🤫 Sneak away'],[/^↩ أرجع لـ(.+)$/,'↩ Go back'],[/^🏠 ارجعي? البلد$/,'🏠 Back to the village'],
+   [/^☕ ارتاحي? شوية$/,'☕ Rest a while'],[/^\(1 مجهود: صحتك وطاقتك ترجع\)$/,'(1 effort: health and energy back)'],[/^❤️ (\d+)\/(\d+)$/,'❤️ $1/$2'],[/^💧 مجهود (\d+)\/(\d+)$/,'💧 Effort $1/$2'],
+   [/^(انتي?) عند (.+)$/,(m,a,b)=>'At: '+(L10N_W.get(b)||b)],[/^سلعوات (\d+) من (\d+)$/,'Salawas $1 of $2'],[/^مهمة عم عبده: (\d+) من (\d+)/,'Uncle Abdo\'s errand: $1 of $2'],[/^العداد: (\d+) من (\d+)$/,'Count: $1 of $2'],
+   [/^حاضر، هوقّعهم$/,'Deal, I\'ll get them'],[/^خدي? حقك · (\d+) جنيه$/,'Hand in · $1 pounds'],[/^(\d+) (سلعوات|ديابة)$/,(m,n,k)=>`${n} ${k==='سلعوات'?'salawas':'wolves'}`]]);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
