@@ -4786,6 +4786,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.15.3',d:'13 أكتوبر',add:[],fix:['أدوار المنجم: {تقدر|تقدري} {تختار|تختاري} أكتر من معدن مع بعض، ويطلعلك الأدوار اللي فيها كلهم، وجنب كل دور نسبة كل معدن فيه، والدور اللي نسبته أعلى عليه نجمة','«خاماتي» في المنجم بقى فيها بحث، وبقى فيه «خاماتي» في الصيد والزراعة كمان','العيش: زرار «اخبز بسرعة» (بعد أول خَبزة) بيطلّع رغيفين «عادي» من غير لعب، واللعب بيطلّع العيش بدرجات من بايظ لحد تحفة، والتحفة ساعات بتزوّد رغيف','الحرف: «؟ الخامات جاية منين» بقى سطر صغير تحت الكارت بدل ما ياخد مكان بين الزراير']},
 {v:'6.15.2',d:'13 أكتوبر',add:[],fix:['المنجم: «خليني في الدور ده» طلع فوق «اللي طلع معاك المرة دي» وبقى أوضح، وجنبه زرار «خاماتي» بيوريك معاك كام من كل صخرة (الأساسية والعروق) في الشنطة والمخزن','زرار «؟» بقى في كل الحرف: الحداد والخياط والطبخ والعطارة ووصفات الجرنال ومراحل الورش، وبيقولك كل خامة جاية منين','أدوار المنجم: تحت كل دور سطر «عروق جانبية» فيه الخامات اللي بتطلع من العروق في الدور ده (الجبس مثلًا من الدور 1 لـ5)، وفلتر المعادن بقى بيدور فيها كمان']},
 {v:'6.15.1',d:'13 أكتوبر',add:[],fix:['السبايك عند الحداد: بدل «ناقصك حاجة» بقت تقولك ناقصك إيه بالظبط (الخامة وعددها، أو الفلوس)','زرار «؟» جنب كل سبيكة بيقولك كل خامة فيها جاية منين (المنجم من أنهي دور، الترعة، الغيط، أو عم حسن)','أدوار المنجم: فوق الأدوار فيه صف المعادن، {دوس|دوسي} على المعدن اللي {بتدور|بتدوري} عليه والأدوار اللي فيه بس هي اللي تفضل','فلاتر الإنجازات (الأنواع، «خلصتها / لسه»، والبحث) بقت بتخفي فعلًا الإنجازات اللي مش داخلة في الفلتر']},
 {v:'6.15',d:'13 أكتوبر',add:['البلد بقت خريطة مرسومة: {دوس|دوسي} على أي مكان {وتروحله|وتروحيله}، والسما بتتغير مع الساعة. فيه طريق من البلد للخلا على طول، والدهاليز بوابة على الخريطة. وكل الأماكن لسه موجودة في قايمة «كل الأماكن» تحت','الخلا كبرت: مكانين جداد «المستنقع» (من مستوى 5، زعيمه «غولة البرك») و«الخرابة» (من مستوى 9، زعيمها «كبش الرصد»)، و«مأوى الوحوش» بقى مكان على الخريطة. وبطلك نفسه هو اللي بيمشي على الخريطة','جوه كل مكان في الخلا النقط بقت مرسومة على رسمة المكان بدل القايمة، {وبتمشي|وبتمشي} من نقطة لنقطة','خامات جديدة بتطلع من المنجم والترعة والغيط، وسبايك بتتصهر عند عم حسن (برونز، نحاس أصفر، بلاطة حجر، حديد سوستة)','كل ورشة بقى ليها 8 مراحل ({ترقّيها|ترقّيها} بفلوس وخامات): الحداد، الخياط، الطباخة، المنجم، الصيد، الغيط والعطار. كل مرحلة بتديك حاجة صغيرة واضحة. المراحل اللي لسه ماجاش وقتها مكتوب عليها «قريب»'],fix:[]},
@@ -41946,6 +41947,15 @@ L10NG({'إزاي بتتحسب؟':'How is it worked out?','النتيجة بتت�
 /* ---------- 6.15.1 (Twister 01:11): the mine's floor picker gets an ore filter ----------
    A row of the ores found on the floors you reached; tap one and only the floors where it comes stay; tap it again for all.
    Watches for p9b's floor sheet (mnPick is in a closed scope), file untouched. */
+/* 6.15.3 (Twister 02:17): the chance of each chosen ore on each floor.
+   p9b's MN_BANDS lives inside the mine screen's own scope, so its weights are mirrored here (keep in step with p9b.js:389):
+   a rock's ore is drawn by these weights (stone gets lighter as the mining level grows); gems and enhancement stones are rare
+   extra finds, shown as «نادر». Side veins (CR_MINE, p115) are a chance per rock broken, on top. */
+const MN_W=[[2,{stone:50,copper:35,iron:15}],[5,{stone:30,copper:20,coal:28,iron:22}],[7,{stone:22,iron:45,coal:18,silver:15}],[10,{stone:22,iron:28,silver:25,gold:25}],
+  [13,{stone:22,silver:45,gold:18,coal:15}],[16,{stone:40,silver:25,gold:35}],[19,{stone:25,iron:25,gold:30,silver:20}],[20,{stone:22,gold:48,silver:30}]];
+function mfPct(n,k){try{const h=S.hero,L=lifeLvl(h,'mine'),B=(MN_W.find(x=>n<=x[0])||MN_W[MN_W.length-1])[1];
+    if(B[k]!=null){const w=Object.entries(B).map(([kk,v])=>[kk,kk==='stone'?v*Math.max(.4,1-.05*L):v]),t=w.reduce((a,x)=>a+x[1],0);return Math.round(w.find(x=>x[0]===k)[1]/t*100)}
+    let lo=1;for(const b of CR_MINE){if(n>=lo&&n<=b.to)return b.w[k]?Math.round(b.w[k]*1000)/10:null;lo=b.to+1}}catch(e){}return null}
 function mfAdd(d){const L=d&&d.querySelector('.mn-fls');if(!L||d.querySelector('.mf-row'))return;
     /* the floor's ores, read from its own line of names (p9b's mnFlOres is not reachable from here) */
     const N2K={};Object.keys(MAT).forEach(k=>{try{N2K[resN(k)]=k}catch(e){}});/* 6.15.2 (Twister 01:35): each floor also lists its side veins (CR_MINE, p115), and the filter knows them */
@@ -41957,16 +41967,23 @@ function mfAdd(d){const L=d&&d.querySelector('.mn-fls');if(!L||d.querySelector('
     L.insertAdjacentHTML('beforebegin',`<div class="tw-sm mf-l">${rfxT(['بتدور على إيه؟','Looking for?'])}</div><div class="mf-row">${all.map(k=>`<button class="mf-ch" data-ore="${k}" title="${resN(k)}">${twMat(k,22)}<small>${resN(k)}</small></button>`).join('')}</div>`);
     /* a mouse wheel scrolls the row sideways (desktop); fingers scroll it natively */
     {const R=d.querySelector('.mf-row');if(R)R.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&R.scrollWidth>R.clientWidth){e.preventDefault();R.scrollLeft+=(getComputedStyle(R).direction==='rtl'?-1:1)*e.deltaY}},{passive:false})}
-    let on='';d.querySelectorAll('[data-ore]').forEach(c=>c.onclick=()=>{on=on===c.dataset.ore?'':c.dataset.ore;
-      d.querySelectorAll('[data-ore]').forEach(x=>x.classList.toggle('on',x.dataset.ore===on));
-      bs.forEach(b=>{b.hidden=!!on&&!ores(b).includes(on)});try{SFX.tick&&SFX.tick(on?800:500)}catch(e){}})}
+    /* 6.15.3 (Twister 02:16): more than one ore at a time: the floors that have every chosen one */
+    const on=new Set();d.querySelectorAll('[data-ore]').forEach(c=>c.onclick=()=>{const k=c.dataset.ore;if(on.has(k))on.delete(k);else on.add(k);c.classList.toggle('on',on.has(k));
+      let n=0;bs.forEach(b=>{const o=ores(b);b.hidden=on.size>0&&![...on].every(x=>o.includes(x));if(!b.hidden)n++});
+      let z=d.querySelector('.mf-none');if(!z){L.insertAdjacentHTML('beforebegin','<div class="tw-sm mf-none" hidden></div>');z=d.querySelector('.mf-none')}
+      /* the chance of each chosen ore next to each floor, and the best floor marked */
+      let best=null,bv=-1;bs.forEach(b=>{let p=b.querySelector('.mf-pct');if(!on.size||b.hidden){if(p)p.remove();b.classList.remove('mf-best');return}
+        const fl=+b.dataset.fl,vals=[...on].map(k=>[k,mfPct(fl,k)]);if(!p){(b.querySelector('.tx')||b).insertAdjacentHTML('beforeend','<small class="mf-pct"></small>');p=b.querySelector('.mf-pct')}
+        p.innerHTML=vals.map(([k,v])=>`${resN(k)} ${v==null?rfxT(['نادر','rare']):'<bdi dir="ltr">'+v+'%</bdi>'}`).join(' · ');const sc=Math.min(...vals.map(([,v])=>v==null?0:v));b.classList.remove('mf-best');if(sc>bv){bv=sc;best=b}});
+      if(best&&bv>0)best.classList.add('mf-best');
+      z.hidden=!(on.size&&!n);z.textContent=rfxT(['مفيش دور فيه كل المعادن دي مع بعض','No floor has all of these together']);try{SFX.tick&&SFX.tick(on.has(k)?800:500)}catch(e){}})}
 /* mnPick lives in p9b's closed scope: watch for its sheet instead */
 {const A=document.getElementById('app');if(A&&typeof MutationObserver==='function')new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1&&n.id==='twSh'&&n.querySelector('.mn-fls'))try{mfAdd(n)}catch(e){console.warn(e)}}}).observe(A,{childList:true})}
 (function(){const s=document.createElement('style');s.textContent=`
 .mf-l{margin-top:6px;flex-shrink:0}.mf-row{display:flex;flex-wrap:nowrap;gap:6px;padding:4px 2px 10px;flex-shrink:0;min-height:62px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#e0b65a33 transparent}.mf-row::-webkit-scrollbar{height:6px}.mf-row::-webkit-scrollbar-thumb{background:#e0b65a55;border-radius:3px}
 .mf-ch{flex:0 0 auto;min-width:56px;min-height:48px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px;border-radius:10px;border:1px solid #6b5a43;background:transparent;color:#d8c7a6;font:inherit}
 .mf-ch small{font-size:.7em;white-space:nowrap}.mf-ch.on{background:#e0b65a;color:#2a1f12;border-color:#e0b65a}
-.mn-fls [data-fl][hidden]{display:none!important}.mf-v{display:block;opacity:.75;color:#9fd0c8}`;document.head.appendChild(s)})();
+.mn-fls [data-fl][hidden]{display:none!important}.mf-pct{display:block;color:#ffd36a;font-weight:700}.mn-fls .mf-best{border-color:#ffd36a!important;box-shadow:0 0 0 2px #ffd36a55}.mn-fls .mf-best .mf-pct:after{content:' ★'}.mf-v{display:block;opacity:.75;color:#9fd0c8}`;document.head.appendChild(s)})();
 L10NG({'بتدور على إيه؟':'Looking for?'});
 
 /* ---------- 6.15.1 (Twister 01:14): «؟» on every alloy: where each of its materials comes from ----------
@@ -41981,7 +41998,7 @@ function crFromTxt(k){const L=[];try{
   if(typeof CR_SHOP!=='undefined'&&CR_SHOP.includes(k))L.push(rfxT(['عم حسن بيبيعها جاهزة (أغلى)','Uncle Hassan sells it ready (pricier)']));
   if(!L.length&&typeof TW_SRC!=='undefined'&&TW_SRC[k])L.push(EN&&typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[TW_SRC[k]]||TW_SRC[k])}catch(e){}
   return L.length?L.join(' · '):rfxT(['لسه مش معروف','not known yet'])}
-{const r0=crAlloyRow;crAlloyRow=function(h,k){let s=r0.apply(this,arguments);try{s=s.replace(/<button class="tw-act cr" data-alloy=/,`<button class="cr-from" data-alfrom="${k}" aria-label="${rfxT(['جاية منين؟','Where from?'])}">؟</button><button class="tw-act cr" data-alloy=`)}catch(e){}return s}}
+/* (6.15.3: the «؟» of alloys is now the same small line as every other craft, from mfMark) */
 document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.target.closest('[data-alfrom]');if(!b)return;ev.stopPropagation();try{
   const k=b.dataset.alfrom,c=CR_CAT[k],h=S.hero;if(!c)return;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   const rows=Object.keys(c.need||{}).map(m=>`<div class="tw-row"><div class="ic">${twMat(m,32)}</div><div class="tx"><b>${resN(m)} ×${c.need[m]} <small>${rfxT(['عندك','you have'])} ${(h.res[m]||0)}</small></b><small>${crFromTxt(m)}</small></div></div>`).join('');
@@ -41989,18 +42006,21 @@ document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.
     <div class="tw-sm">${rfxT(['وكمان','and'])} ${crFee(k)} ${rfxT(['جنيه للسبك','coins to smelt'])}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
   app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}catch(e){console.warn(e)}},true);
 (function(){const s=document.createElement('style');s.textContent=`.cr-from{flex:0 0 auto;width:44px;min-height:44px;margin-inline-end:6px;border-radius:50%;border:1px solid #6b5a43;background:transparent;color:#e0b65a;font:inherit;font-weight:700;font-size:1.1em}`;document.head.appendChild(s)})();
-L10NG({'جاية منين؟':'Where from?'});
+L10NG({'جاية منين؟':'Where from?','الخامات جاية منين':'where the materials come from'});
 
 /* ---------- 6.15.2 (Twister 01:36): the «؟» on every craft that needs materials, not only the alloys ----------
    After each draw of a town screen, a «؟» goes before each make button whose recipe is known: the smith and the tailor
    (data-cr → GEAR craft), the cook (data-cook → TW_REC), the herbalist (data-ath → AT_REC), the newspaper recipes
    (data-jr → JR_REC), and the workshop stages (data-wkbuy → WK_ST). Tapping it opens the same «where from» sheet. */
-const MF_KIND={cr:k=>GEAR[k]&&GEAR[k].craft,cook:k=>TW_REC[k]&&TW_REC[k].need,ath:k=>AT_REC[k]&&AT_REC[k].need,jr:k=>JR_REC[k]&&JR_REC[k].need,
+const MF_KIND={alloy:k=>CR_CAT[k]&&CR_CAT[k].need,cr:k=>GEAR[k]&&GEAR[k].craft,cook:k=>TW_REC[k]&&TW_REC[k].need,ath:k=>AT_REC[k]&&AT_REC[k].need,jr:k=>JR_REC[k]&&JR_REC[k].need,
   wkbuy:k=>{const s=WK_ST.find(x=>x.id===k);return s&&s.need}};
 const mfNeed=(t,k)=>{try{const n=MF_KIND[t]&&MF_KIND[t](k);return n&&Object.keys(n).length?n:null}catch(e){return null}};
-const mfName=(t,k)=>{try{return t==='cr'?GEAR[k].n:t==='wkbuy'?(typeof wkSN==='function'?wkSN(WK_ST.find(x=>x.id===k)):''):(ITEMS[k]&&ITEMS[k].name)||''}catch(e){return ''}};
-function mfMark(){try{Object.keys(MF_KIND).forEach(t=>view.querySelectorAll(`[data-${t}]`).forEach(b=>{if(b.previousElementSibling&&b.previousElementSibling.classList.contains('cr-from'))return;
-    const k=b.dataset[t];if(!mfNeed(t,k))return;b.insertAdjacentHTML('beforebegin',`<button class="cr-from" data-mfrom="${t}|${k}" aria-label="${rfxT(['جاية منين؟','Where from?'])}">؟</button>`)}))}catch(e){console.warn(e)}}
+const mfName=(t,k)=>{try{return t==='alloy'?resN(k):t==='cr'?GEAR[k].n:t==='wkbuy'?(typeof wkSN==='function'?wkSN(WK_ST.find(x=>x.id===k)):''):(ITEMS[k]&&ITEMS[k].name)||''}catch(e){return ''}};
+/* 6.15.3 (Twister 02:20): a small «؟ الخامات جاية منين» line at the bottom of the card/row (inside «ناقصك…» on gear cards), never between buttons */
+function mfMark(){try{Object.keys(MF_KIND).forEach(t=>view.querySelectorAll(`[data-${t}]`).forEach(b=>{const k=b.dataset[t];if(!mfNeed(t,k))return;
+    const box=b.closest('.tw-it,.tw-row,.wk-st,.wk-card,.card')||b.parentElement;if(!box||box.querySelector(`[data-mfrom="${t}|${k}"]`))return;
+    const html=`<button class="cr-from-l" data-mfrom="${t}|${k}"><b>؟</b> ${rfxT(['الخامات جاية منين','where the materials come from'])}</button>`;
+    const miss=box.querySelector(':scope > .tw-miss');if(miss)miss.insertAdjacentHTML('beforeend',' '+html);else box.insertAdjacentHTML('beforeend',`<div class="cr-from-w">${html}</div>`)}))}catch(e){console.warn(e)}}
 function mfSheet(title,need){const h=S.hero;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
   const rows=Object.keys(need).map(m=>`<div class="tw-row"><div class="ic">${twMat(m,32)}</div><div class="tx"><b>${MAT[m]?resN(m):m} ×${need[m]} <small>${rfxT(['عندك','you have'])} ${(h.res[m]||0)}</small></b><small>${crFromTxt(m)}</small></div></div>`).join('');
   d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${title}<small>${rfxT(['كل حاجة جاية منين','where each thing comes from'])}</small></div><div class="col">${rows}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
@@ -42015,24 +42035,53 @@ document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.
    in the bag and in the storage, so a collector knows where they stand. */
 const mnMyKeys=()=>{const s=new Set();try{Object.keys(TW_SRC).forEach(k=>{if(MAT[k]&&/المنجم/.test(TW_SRC[k]))s.add(k)})}catch(e){}
   try{CR_MINE.forEach(b=>Object.keys(b.w).forEach(k=>{if(MAT[k])s.add(k)}))}catch(e){}return [...s]};
-function mnMySheet(){const h=S.hero;if(!h)return;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
-  const ks=mnMyKeys().map(k=>({k,b:(h.res&&h.res[k])|0,o:(h.overR&&h.overR[k])|0})).sort((a,b)=>(b.b+b.o)-(a.b+a.o));
+/* 6.15.3 (Twister 02:29): the same «خاماتي» list for fishing and farming */
+const MY_KEYS={mine:mnMyKeys,
+  fish:()=>{const s=new Set();Object.keys(MAT).forEach(k=>{const M=MAT[k];if(M&&(M.fish||k==='goldfish')&&!M.junk)s.add(k)});try{Object.keys(CR_CANAL).forEach(k=>{if(MAT[k])s.add(k)})}catch(e){}return [...s]},
+  farm:()=>{const s=new Set();try{Object.keys(CROPS).forEach(k=>{if(MAT[k])s.add(k)})}catch(e){}try{Object.keys(CR_FARM).forEach(k=>{if(MAT[k])s.add(k)})}catch(e){}['egg','milk','wool','honey','flour'].forEach(k=>{if(MAT[k])s.add(k)});return [...s]}};
+const MY_T={mine:['خاماتي من المنجم','My mine materials','الأساسية والعروق الجانبية','floor rocks and side veins'],fish:['خاماتي من الصيد','My catch','السمك وحاجات الترعة','fish and canal finds'],farm:['خاماتي من الزراعة','My farm goods','المحاصيل وحاجات الغيط','crops and field finds']};
+function mnMySheet(kind){kind=MY_KEYS[kind]?kind:'mine';const h=S.hero;if(!h)return;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  const ks=MY_KEYS[kind]().map(k=>({k,b:(h.res&&h.res[k])|0,o:(h.overR&&h.overR[k])|0})).sort((a,b)=>(b.b+b.o)-(a.b+a.o));
   const rows=ks.map(x=>`<div class="tw-row${x.b+x.o?'':' mm-0'}"><div class="ic">${twMat(x.k,30)}</div><div class="tx"><b>${resN(x.k)} <span class="mm-n">${x.b+x.o}</span></b><small>${rfxT(['الشنطة','bag'])} ${x.b} · ${rfxT(['المخزن','storage'])} ${x.o}</small></div></div>`).join('');
-  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${rfxT(['خاماتي من المنجم','My mine materials'])}<small>${rfxT(['الأساسية والعروق الجانبية','floor rocks and side veins'])}</small></div><div class="col mm-list">${rows}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
-  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}
-function mnTweak(){if(S.screen!=='mine')return;const r=document.getElementById('gxRocks'),lbl=r&&r.closest('.gx-lbl');if(!lbl)return;
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${rfxT([MY_T[kind][0],MY_T[kind][1]])}<small>${rfxT([MY_T[kind][2],MY_T[kind][3]])}</small></div><input id="mmQ" class="mm-q" type="search" autocomplete="off" placeholder="${rfxT(['دوّر على خامة','Search a material'])}"><div class="col mm-list">${rows}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}
+  const q=d.querySelector('#mmQ');if(q)q.oninput=()=>{const v=q.value.trim().toLowerCase();d.querySelectorAll('.mm-list .tw-row').forEach(r=>{r.hidden=!!v&&r.textContent.toLowerCase().indexOf(v)<0})}}
+function myBtnAt(kind,anchor){if(!anchor||document.getElementById('my_'+kind))return;anchor.insertAdjacentHTML('beforebegin',`<button class="mn-my" id="my_${kind}">${twMat(kind==='fish'?'bolti':'ful',22)} ${rfxT(['خاماتي','My materials'])}<small>${rfxT(kind==='fish'?['معاك كام من كل سمكة','how many of each fish you hold']:['معاك كام من كل محصول','how many of each crop you hold'])}</small></button>`);document.getElementById('my_'+kind).onclick=()=>mnMySheet(kind)}
+function mnTweak(){if(S.screen==='fish'){const w=document.getElementById('gxWorth');myBtnAt('fish',w&&w.closest('.gx-lbl'));return}
+  if(S.screen==='farm'){myBtnAt('farm',view.querySelector('.tw-lbl')||document.getElementById('fmAll'));return}
+  if(S.screen!=='mine')return;const r=document.getElementById('gxRocks'),lbl=r&&r.closest('.gx-lbl');if(!lbl)return;
   const st=document.getElementById('mnStay');if(st&&st.nextElementSibling!==lbl&&!(st.nextElementSibling&&st.nextElementSibling.id==='mnMy'&&st.nextElementSibling.nextElementSibling===lbl))lbl.before(st);
-  if(!document.getElementById('mnMy')){lbl.insertAdjacentHTML('beforebegin',`<button class="mn-my" id="mnMy">${twMat('stone',22)} ${rfxT(['خاماتي','My materials'])}<small>${rfxT(['معاك كام من كل صخرة','how many of each rock you hold'])}</small></button>`);document.getElementById('mnMy').onclick=mnMySheet}
+  if(!document.getElementById('mnMy')){lbl.insertAdjacentHTML('beforebegin',`<button class="mn-my" id="mnMy">${twMat('stone',22)} ${rfxT(['خاماتي','My materials'])}<small>${rfxT(['معاك كام من كل صخرة','how many of each rock you hold'])}</small></button>`);document.getElementById('mnMy').onclick=()=>mnMySheet('mine')}
   const my=document.getElementById('mnMy');if(st&&my&&st.nextElementSibling!==my)st.after(my)}
 {let q=0;if(view&&typeof MutationObserver==='function')new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;try{mnTweak()}catch(e){console.warn(e)}})}).observe(view,{childList:true,subtree:true})}
 (function(){const s=document.createElement('style');s.textContent=`
 #mnStay{border:2px solid #e0b65a!important;font-size:1.02em;margin:8px 0 6px}#mnStay.on{background:#e0b65a22}
 .mn-my{display:flex;flex-direction:column;align-items:center;width:100%;min-height:48px;margin:0 0 8px;border-radius:12px;border:1px solid #6b5a43;background:transparent;color:#f3e6cf;font:inherit}
-.mn-my small{opacity:.75;font-size:.78em}.mm-0{opacity:.5}.mm-n{color:#e0b65a;margin-inline-start:6px}`;document.head.appendChild(s)})();
-L10NG({'خاماتي':'My materials','معاك كام من كل صخرة':'how many of each rock you hold','خاماتي من المنجم':'My mine materials','الأساسية والعروق الجانبية':'floor rocks and side veins','الشنطة':'bag','المخزن':'storage'});
+.mn-my small{opacity:.75;font-size:.78em}.mm-q{width:100%;box-sizing:border-box;min-height:44px;margin:0 0 8px;padding:8px 12px;border-radius:10px;border:1px solid #6b5a43;background:#1d1812;color:#f3e6cf;font:inherit}.mm-list .tw-row[hidden],.mf-none[hidden]{display:none!important}.mm-0{opacity:.5}.mm-n{color:#e0b65a;margin-inline-start:6px}`;document.head.appendChild(s)})();
+L10NG({'معاك كام من كل سمكة':'how many of each fish you hold','معاك كام من كل محصول':'how many of each crop you hold','خاماتي من الصيد':'My catch','السمك وحاجات الترعة':'fish and canal finds','خاماتي من الزراعة':'My farm goods','المحاصيل وحاجات الغيط':'crops and field finds','دوّر على خامة':'Search a material','مفيش دور فيه كل المعادن دي مع بعض':'No floor has all of these together','خاماتي':'My materials','معاك كام من كل صخرة':'how many of each rock you hold','خاماتي من المنجم':'My mine materials','الأساسية والعروق الجانبية':'floor rocks and side veins','الشنطة':'bag','المخزن':'storage'});
 /* review: the «؟» on gear cards (2-column .tw-two grid) takes its own row; on workshop stages it sits small at the side */
-(function(){const s=document.createElement("style");s.textContent=`.tw-two>.cr-from{grid-column:1/-1;justify-self:start;width:44px;min-height:44px;border-radius:50%;margin:0}
-[data-mfrom^="wkbuy|"]{display:block;margin:6px 0 6px auto}`;document.head.appendChild(s)})();
+(function(){const s=document.createElement("style");s.textContent=`.cr-from-w{flex-basis:100%;width:100%;margin-top:4px}.cr-from-l{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:2px 10px;border-radius:999px;border:1px solid #6b5a43;background:transparent;color:#e0b65a;font:inherit;font-size:.82em}.cr-from-l b{font-size:1.1em}.tw-miss .cr-from-l{margin-inline-start:6px;vertical-align:middle}
+`;document.head.appendChild(s)})();
+
+/* ---------- 6.15.3 (Twister 02:22): bread gets «اخبز بسرعة» and grades ----------
+   Played: the loaves come with a grade from the work, like every craft: بايظ (burnt) 1, عادي 2, كويس 3, ممتاز 4, تحفة 5 loaves,
+   and an «تحفة» bake once in a while gives one more. Quick («اخبز بسرعة», after your first real bake): always «عادي», 2 loaves,
+   no experience (like every quick make). Bread stays a plain material in the recipes; the grade is how many loaves it gives. */
+const BR_Q=[1,2,3,4,5];
+const brGrade=g=>g.burnt?0:(()=>{const s=Math.max(0,Math.min(1,+g.score||0));return s<.35?1:s<.6?2:s<.8?3:4})();
+brBake=async function(btn,quick){const h=S.hero;if(!h||TWN.busy||(h.res.flour||0)<BR_FLOUR)return;if(quick&&!(h.made&&h.made.bread_bake))return;
+  TWN.busy=1;h.res.flour-=BR_FLOUR;crPend(h,{flour:BR_FLOUR},null,0);let g={score:.5,none:1};
+  if(!quick){try{g=await qPlay('bread',h,{tier:0,name:'عيش بلدي',icon:twMat('bread',64)})}finally{TWN.busy=0}}else{TWN.busy=0}   /* review: no spQuick here (no XP on quick anyway; it has no time window in p110) */
+  const q=quick?1:g.none?2:brGrade(g),n=g.none&&!quick?3:BR_Q[q]+(q===4&&Math.random()<.25?1:0);   /* no mini-game at all (tests): 3 loaves as before */
+  addRes(h,'bread',n);crDone(h);if(!quick){lifeXP(h,'cook',1+((+g.score||0)>=.78?1:0));h.made=h.made||{};h.made.bread_bake=1}saveHero();twRender();
+  try{SFX.heal()}catch(e){}toast(`${qQChip(q,1)} ${q===0?`الفرن حرق أغلبه، و${G('لحقت','لحقتي')} رغيف واحد`:`عيش ${FQN[q]}`} · ${twI('+'+n)} عيش`)};
+{const r0=brRowsHTML;brRowsHTML=function(h){let s=r0.apply(this,arguments);try{const fl=h.res.flour||0,ok=fl>=BR_FLOUR,made=!!(h.made&&h.made.bread_bake);
+    s=s.replace(/(<button class="tw-buy" id="brBake"[^>]*>[^<]*<\/button>)/,`<div class="br-btns">$1<button class="tw-buy br-q" id="brQuick" ${ok&&made?'':'disabled'}>${G('اخبز بسرعة','اخبزي بسرعة')}<small>${made?'«عادي» · 2 عيش':'بعد أول خَبزة'}</small></button></div>`);
+    s=s.replace('بيطلّعوا من رغيف لـ5، على حسب','بيطلّعوا من رغيف لـ5 (بايظ لحد تحفة)، على حسب')}catch(e){console.warn(e)}return s}}
+{const b0=brBind;brBind=function(){const r=b0.apply(this,arguments);const q=$('#brQuick');if(q)q.onclick=()=>brBake(q,1);return r}}
+(function(){const s=document.createElement('style');s.textContent=`.br-btns{display:flex;flex-direction:column;gap:6px}.br-btns .tw-buy{min-height:44px}`;document.head.appendChild(s)})();
+L10NG({'{اخبز|اخبزي} بسرعة':'Bake quickly','بعد أول خَبزة':'after your first bake','«عادي» · 2 عيش':'«Plain» · 2 bread'});
+L10N({},[[/^(\d+) دقيق بيطلّعوا من رغيف لـ(\d+) \(بايظ لحد تحفة\)، على حسب (?:عجنك|عجنِك) وخَبزك · معاك (\d+) عيش$/,'$1 flour make 1 to $2 loaves (ruined to masterpiece), by your kneading and baking · you have $3 bread']]);
 /* ==========================================================================
    سرداب 6.15 (R10, owner IDs C21 C25 C37 C38 C56): the craft data base and the 8-stage workshops (p115.js)
    - CR_CAT: the material and alloy catalog: C37 (64 materials and resources), C38 (20 alloys) and the C21 base
