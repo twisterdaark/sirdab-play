@@ -4786,6 +4786,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.14.1',d:'13 أكتوبر',add:['تخصص أسطوري جديد في خط «الخطيب»: «الدبلوماسي». بيتفتح باختبار: قتالات {تخلّصها|تخلّصيها} بالكلام، ونصاب {تكشفه|تكشفيه}، وزعيم {تغلبه|تغلبيه}'],fix:['لو نزلت نسخة جديدة وانت {بتلعب|بتلعبي} على الموقع، بتطلعلك رسالة تعمل ريفريش عشان {تكمل|تكملي} عليها، وبطلك بيتسيّف الأول']},
 {v:'6.14',d:'12 أكتوبر',add:['القدرات بقت بتكبر من الاستعمال: كل ما {تستعمل|تستعملي} قدرة في قتال حقيقي بتقرب لمستواها الجاي (لحد 4 مرات في القتال الواحد). مستوى البطل مبقاش بيدي نقط، والنقط اللي كانت {معاك|معاكي} بقت «ورق تدريب»: الورقة بتقرّب قدرة نص المسافة لمستواها الجاي، مرة في اليوم لكل قدرة. مستوياتك القديمة زي ما هي',
   'تخصصات جديدة: «الخطيب» و«شيخ الكلام» (من القتالات اللي {بتخلّصها|بتخلّصيها} بالكلام)، «الساحر الكبير» و«الساحر الأعظم»، «سيد السيف»، «ضلّ الموت»، «فارس النور»، «صاحب المقابر»، «صاحب الخيالات»',
   '«مروّض الوحوش» و«حارس العهد»: تخصص جديد بيتفتح بالأفعال مش بالحظ: {تعفي|تعفي} عن أنواع وحوش مختلفة، {تأكّل|تأكّلي} وحوش جعانة {يساعدوك|يساعدوكي}، ويبقى عندك وحش في المأوى',
@@ -25419,6 +25420,23 @@ SPK_ADD('khayal',[
   {n:'تلات نسخ',c:2,ico:'smoke',shield:1,heal:2,d:'تلات نسخ منك: أول ضربة بتتمص، وصحة +2'},
   {n:'دوخة',c:2,roll:'ذكاء',tgt:1,ico:'storm',dmg:h=>rnd(4)+2,skip:1,d:'الوحش بيدوخ ويفوّت دوره'}]);
 
+/* 6.14.1 (Twister 00:18): the orator line's legend, «الدبلوماسي» */
+SP_ADD({id:'diplo',ev:'talk',r:'legend',m:'الدبلوماسي',f:'الدبلوماسية',px:SP_OGX(['O','Q'],OG_SCROLL),
+  need:h=>h.lvl>=10&&ogTalk(h)>=40&&spCnt(h,'scamSpot')>=3,
+  hint:'العمدة: «فيه ناس بتخلّص الحرب بكلمتين، وتطلع كسبانة من الناحيتين.»',
+  st:{'حضور':4,'حكمة':2},hp:2,
+  start:(h,C)=>{try{const f=C.foes.find(x=>x.hp>0&&!x.boss);if(f&&Math.random()<.25){fxOn(f.fx=f.fx||{},'skip',{n:1});setTimeout(()=>{const el=$('#foe'+f.id);if(el)floatAt(el,FF(f,'بيسمعك','بتسمعك'),'#f3c14d','',20)},400)}}catch(e){}},
+  d:['حضور +4 · حكمة +2 · صحة +2','أول القتال، وحش ممكن يقف يسمعك ويفوّت دوره (25%)','كلمتك بتوقّف الوحوش كلها، وبتقوّي اللي معاك']});
+SPK_ADD('diplo',[
+  {n:'معاهدة',c:3,roll:'حضور',all:1,ico:'warcry',dmg:h=>rnd(2),skip:1,weak:1,d:'الوحوش كلها بتفوّت دورها، وضربتها الجاية بتبقى نص'},
+  {n:'شرط على الطاولة',c:2,roll:'حضور',tgt:1,ico:'shadow',dmg:h=>rnd(6)+4,weak:1,d:'كلام تقيل: ضرر، والوحش ضربته الجاية نص'},
+  {n:'كلمة الصلح',c:2,ico:'raise',heal:5,shield:1,sharp:{a:3,n:3},d:'صحة +5، أول ضربة بتتمص، وضرباتك الـ3 الجايين +3'}]);
+SPT.diplo={days:7,steps:[{t:'{خلّص|خلّصي} 6 قتالات بالكلام',k:'talkWin',n:6},{t:'{اكشف|اكشفي} نصاب في البنك أو البورصة',k:'scamSpot',n:1},{t:'{اكسب|اكسبي} قتال زعيم',k:'sp_boss',n:1}]};
+L10NG({'الدبلوماسي':'The diplomat','الدبلوماسية':'The diplomat','العمدة: «فيه ناس بتخلّص الحرب بكلمتين، وتطلع كسبانة من الناحيتين.»':'The mayor: «Some people end a war with two words, and come out winning on both sides.»',
+  'حضور +4 · حكمة +2 · صحة +2':'Presence +4 · Wisdom +2 · Health +2','أول القتال، وحش ممكن يقف يسمعك ويفوّت دوره (25%)':'At the start of a fight, a foe may stop to listen and miss its turn (25%)',
+  'كلمتك بتوقّف الوحوش كلها، وبتقوّي اللي معاك':'Your word stops every foe and lifts your side','معاهدة':'Treaty','الوحوش كلها بتفوّت دورها، وضربتها الجاية بتبقى نص':'Every foe misses its turn, and its next hit is halved',
+  'شرط على الطاولة':'Terms on the table','كلام تقيل: ضرر، والوحش ضربته الجاية نص':'Heavy words: damage, and the foe\'s next hit is halved','كلمة الصلح':'Word of peace',
+  '{خلّص|خلّصي} 6 قتالات بالكلام':'End 6 fights by talking','{اكشف|اكشفي} نصاب في البنك أو البورصة':'Catch a swindler at the bank or the exchange','بيسمعك':'Listening','بتسمعك':'Listening'});
 /* the trials of the hidden and legendary ones */
 Object.assign(SPT,{
   sahira:{days:7,steps:[{t:'{اكسب|اكسبي} 15 قتال',k:'sp_win',n:15},{t:'{اكسب|اكسبي} 3 قتالات قدام 3 وحوش أو أكتر',k:'sp_many',n:3},{t:'{اكسب|اكسبي} قتالين زعيم',k:'sp_boss',n:2}]},
@@ -41604,6 +41622,29 @@ const rfxNm=id=>{try{return (GEAR[id]&&(GEAR[id].n||GEAR[id].name))||(ITEMS[id]&
 @keyframes rfxP{0%{opacity:1;transform:translate(0,0)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 60px))}}
 @media (prefers-reduced-motion: reduce){.rfx-burst{display:none}}`;document.head.appendChild(s)})();
 
+/* ---------- 6.14.1 (Twister 00:18): a newer version is up → ask for a refresh ----------
+   Only on the website (http/https). Every 3 minutes, and when the tab comes back, the page reads the live page itself
+   (no cache) and compares the first NEWS version there with this one. If the live one is newer, a box covers the game:
+   «نسخة جديدة نزلت» with one button that saves and reloads. Nothing is lost: the hero is saved first, and nights are saved
+   at every stop as before. */
+const UPD={busy:0,shown:0};
+const updNum=v=>String(v||'').split('.').map(x=>+x||0).reduce((a,x,i)=>a+x*Math.pow(1000,3-i),0);
+const updBusyGame=()=>{try{return !!(S.combat||(typeof CO==='object'&&CO&&CO.code))}catch(e){return false}};   /* review: never over a fight or a live co-op room; ask again after */
+async function updCheck(){if(UPD.busy||UPD.shown||updBusyGame()||!/^https?:$/.test(location.protocol))return;UPD.busy=1;
+  try{const r=await fetch(location.origin+location.pathname+'?u='+Date.now(),{cache:'no-store'});if(!r.ok)return;const t=await r.text();
+    const m=t.match(/const NEWS=\[\s*\{v:'([\d.]+)'/);if(m&&updNum(m[1])>updNum(NEWS[0].v))updShow(m[1])}catch(e){}finally{UPD.busy=0}}
+function updShow(v){if(UPD.shown)return;UPD.shown=1;const d=document.createElement('div');d.id='updBox';d.className='upd-bg';
+  d.innerHTML=`<div class="upd-pn"><div class="upd-ic">✨</div><b>${rfxT(['نسخة جديدة نزلت','A new version is out'])} <bdi dir="ltr">${esc(v)}</bdi></b>
+    <p>${T(rfxT(['اعمل ريفريش عشان {تكمل|تكملي} على النسخة الجديدة. بطلك متسيّف.','Refresh to keep playing on the new version. Your hero is saved.']))}</p>
+    <button class="btn" id="updGo">${rfxT(['حدّث دلوقتي','Refresh now'])}</button></div>`;
+  document.body.appendChild(d);d.querySelector('#updGo').onclick=()=>{try{if(typeof N_on==='function'&&N_on()&&typeof N_save==='function')N_save();else saveHero()}catch(e){try{saveHero()}catch(x){}}location.reload()}}
+setTimeout(updCheck,60000);setInterval(updCheck,180000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')updCheck()});
+(function(){const s=document.createElement('style');s.textContent=`
+.upd-bg{position:fixed;inset:0;z-index:100000;background:rgba(10,8,14,.82);display:flex;align-items:center;justify-content:center;padding:16px}
+.upd-pn{max-width:340px;width:100%;background:#2a2118;border:2px solid #e0b65a;border-radius:14px;padding:18px;text-align:center;color:#f3e6cf}
+.upd-pn .upd-ic{font-size:34px}.upd-pn b{display:block;font-size:1.15em;margin:6px 0}.upd-pn p{margin:0 0 14px;opacity:.9}.upd-pn .btn{width:100%;min-height:48px}`;document.head.appendChild(s)})();
+
 /* ---------- 6.14 R04 · C05 titles + C06 achievements ----------
    C05: 12 more titles (3 fight, 3 smith/tailor, 2 mine/fish, 2 farm/cook, 2 town), hard but measurable, read from h.cnt like
    the old ones (written «(c.X||0)>=N» so the profile's progress bar reads them). Every title owned keeps its small gift, but
@@ -41833,7 +41874,7 @@ I18NA([SP.tamer,SP.tamer2],{tamer:{m:'Beast tamer',f:'Beast tamer'},tamer2:{m:'K
 Object.assign(SPF,{tame:{n:'إيد هادية',c:1,roll:'حكمة',tgt:1,ico:'cheer',dmg:h=>rnd(3)+Math.ceil(h.lvl/2),weak:1,d:'ضربة هادية: الوحش ضربته الجاية نص'},
   talk:{n:'كلمة في الصميم',c:1,roll:'حضور',tgt:1,ico:'shadow',dmg:h=>rnd(3)+Math.ceil(h.lvl/2),weak:1,d:'كلمة في الوش: ضرر، وضربته الجاية نص'},
   sahirk:SPF.ramad,sahira:SPF.ramad,qobour:SPF.ramad,khayal:SPF.ramad,sayf:SPF.dam,mawt:SPF.zell,nour:SPF.tariqa});
-['tamer','tamer2','khatib','khatib2','sahirk','sahira','sayf','mawt','nour','qobour','khayal'].forEach(id=>{const o=SP[id];if(!o||!SPK[id])return;SPK[id]=SPK[id].filter(s=>!s.first);const x=Object.assign({},spfOf(o)),s={id:'sp_'+id+'_f',lv:1,cost:x.c,n:x.n,d:x.d,roll:x.roll,tgt:x.tgt?1:0,spx:x,first:1};
+['tamer','tamer2','khatib','khatib2','diplo','sahirk','sahira','sayf','mawt','nour','qobour','khayal'].forEach(id=>{const o=SP[id];if(!o||!SPK[id])return;SPK[id]=SPK[id].filter(s=>!s.first);const x=Object.assign({},spfOf(o)),s={id:'sp_'+id+'_f',lv:1,cost:x.c,n:x.n,d:x.d,roll:x.roll,tgt:x.tgt?1:0,spx:x,first:1};
   SKD[s.id]=spkUp(x);if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[x.ico]||SKI.bash;SPK[id].unshift(s)});
 /* English for the «on the way» lines of the tamer and the 6.14 lines (in front of p95's general rule, which would leave them) */
 L10N_R.unshift(
