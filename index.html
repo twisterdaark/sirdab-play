@@ -4786,6 +4786,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.15.1',d:'13 أكتوبر',add:[],fix:['السبايك عند الحداد: بدل «ناقصك حاجة» بقت تقولك ناقصك إيه بالظبط (الخامة وعددها، أو الفلوس)','زرار «؟» جنب كل سبيكة بيقولك كل خامة فيها جاية منين (المنجم من أنهي دور، الترعة، الغيط، أو عم حسن)','أدوار المنجم: فوق الأدوار فيه صف المعادن، {دوس|دوسي} على المعدن اللي {بتدور|بتدوري} عليه والأدوار اللي فيه بس هي اللي تفضل','فلاتر الإنجازات (الأنواع، «خلصتها / لسه»، والبحث) بقت بتخفي فعلًا الإنجازات اللي مش داخلة في الفلتر']},
 {v:'6.15',d:'13 أكتوبر',add:['البلد بقت خريطة مرسومة: {دوس|دوسي} على أي مكان {وتروحله|وتروحيله}، والسما بتتغير مع الساعة. فيه طريق من البلد للخلا على طول، والدهاليز بوابة على الخريطة. وكل الأماكن لسه موجودة في قايمة «كل الأماكن» تحت','الخلا كبرت: مكانين جداد «المستنقع» (من مستوى 5، زعيمه «غولة البرك») و«الخرابة» (من مستوى 9، زعيمها «كبش الرصد»)، و«مأوى الوحوش» بقى مكان على الخريطة. وبطلك نفسه هو اللي بيمشي على الخريطة','جوه كل مكان في الخلا النقط بقت مرسومة على رسمة المكان بدل القايمة، {وبتمشي|وبتمشي} من نقطة لنقطة','خامات جديدة بتطلع من المنجم والترعة والغيط، وسبايك بتتصهر عند عم حسن (برونز، نحاس أصفر، بلاطة حجر، حديد سوستة)','كل ورشة بقى ليها 8 مراحل ({ترقّيها|ترقّيها} بفلوس وخامات): الحداد، الخياط، الطباخة، المنجم، الصيد، الغيط والعطار. كل مرحلة بتديك حاجة صغيرة واضحة. المراحل اللي لسه ماجاش وقتها مكتوب عليها «قريب»'],fix:[]},
 {v:'6.14.1',d:'13 أكتوبر',add:['تخصص أسطوري جديد في خط «الخطيب»: «الدبلوماسي». بيتفتح باختبار: قتالات {تخلّصها|تخلّصيها} بالكلام، ونصاب {تكشفه|تكشفيه}، وزعيم {تغلبه|تغلبيه}'],fix:['لو نزلت نسخة جديدة وانت {بتلعب|بتلعبي} على الموقع، بتطلعلك رسالة تعمل ريفريش عشان {تكمل|تكملي} عليها، وبطلك بيتسيّف الأول']},
 {v:'6.14',d:'12 أكتوبر',add:['القدرات بقت بتكبر من الاستعمال: كل ما {تستعمل|تستعملي} قدرة في قتال حقيقي بتقرب لمستواها الجاي (لحد 4 مرات في القتال الواحد). مستوى البطل مبقاش بيدي نقط، والنقط اللي كانت {معاك|معاكي} بقت «ورق تدريب»: الورقة بتقرّب قدرة نص المسافة لمستواها الجاي، مرة في اليوم لكل قدرة. مستوياتك القديمة زي ما هي',
@@ -41747,7 +41748,7 @@ function achPanel4(h){kAllFix(h);const done=ACH.filter(a=>h.ach[a.id]).length;
     <div class="a4-c"><button data-k="" class="on">${A4(['كل الأنواع','All kinds'])}</button>${ACH_CATS.map(([k,n])=>{const L=ACH.filter(a=>achCat(a)===k),g=L.filter(a=>h.ach[a.id]).length;return L.length?`<button data-k="${k}">${A4(n)} <small>${g}/${L.length}</small></button>`:''}).join('')}</div></div>
   <div class="card a4-list">${ACH.map(row).join('')}</div><div class="pf-note a4-none" hidden>${A4(['مفيش إنجاز بالاسم ده','No achievement by that name'])}</div>`}
 function achBind4(){const p=$('#ppan');if(!p||!p.querySelector('.a4-list'))return;let F='all',K='',Q='';
-  const go=()=>{let n=0;p.querySelectorAll('.a4r').forEach(r=>{const y=(F==='all'||r.dataset.on===F)&&(!K||r.dataset.c===K)&&(!Q||r.dataset.s.indexOf(Q)>=0);r.hidden=!y;if(y)n++});const z=p.querySelector('.a4-none');if(z)z.hidden=n>0};
+  const go=()=>{let n=0;p.querySelectorAll('.a4r').forEach(r=>{const y=(F==='all'||r.dataset.on===F)&&(!K||r.dataset.c===K)&&(!Q||r.dataset.s.indexOf(Q)>=0);r.hidden=!y;if(y)n++});const z=p.querySelector('.a4-none');if(z)z.hidden=n>0;const L=p.querySelector('.a4-list');if(L)L.hidden=n===0};
   const q=p.querySelector('#a4Q');if(q)q.oninput=()=>{Q=q.value.trim().toLowerCase();go()};
   p.querySelectorAll('.a4-f button').forEach(b=>b.onclick=()=>{F=b.dataset.f;p.querySelectorAll('.a4-f button').forEach(x=>x.classList.toggle('on',x===b));go()});
   p.querySelectorAll('.a4-c button').forEach(b=>b.onclick=()=>{K=b.dataset.k;p.querySelectorAll('.a4-c button').forEach(x=>x.classList.toggle('on',x===b));go()})}
@@ -41760,7 +41761,8 @@ function achBind4(){const p=$('#ppan');if(!p||!p.querySelector('.a4-list'))retur
 .a4-f,.a4-c{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 .a4-f button,.a4-c button{flex:0 0 auto;min-height:36px;padding:4px 12px;border-radius:999px;border:1px solid #6b5a43;background:transparent;color:#d8c7a6;font:inherit;font-size:.85em}
 .a4-f button.on,.a4-c button.on{background:#e0b65a;color:#2a1f12;border-color:#e0b65a}
-.a4-c small{opacity:.7}`;document.head.appendChild(s)})();
+.a4-c small{opacity:.7}
+.a4r[hidden],.a4-none[hidden],.a4-list[hidden]{display:none!important}`;document.head.appendChild(s)})();
 
 /* ---------- 6.14 R04 · C81 «القدرات بتكبر بالاستعمال» ----------
    A move (class move or specialisation move, everything in skillsOf) no longer goes up by spending points: it grows by being
@@ -41932,6 +41934,55 @@ thb=h=>h&&h.hidden&&h.hidden.thabat&&h.hp>0&&h.hp<=MXH(h)/3?[0,2,3,4][hidR(h,'th
     const sum=rfxT(['النتيجة بتتحسب إزاي؟','How is the result read?']);const keep=[...E.querySelectorAll('.streak')];const inner=[near?near.outerHTML:'',txt.map(n=>esc(n.textContent)).join(' ')].filter(Boolean).join('');
     E.innerHTML='';keep.forEach(k=>E.appendChild(k));E.insertAdjacentHTML('beforeend',`<details class="dm-why dx-why"><summary>${sum}</summary><div>${inner}</div></details>`)}catch(e){}finally{busy=0}}).observe(E,{childList:true})}}
 L10NG({'إزاي بتتحسب؟':'How is it worked out?','النتيجة بتتحسب إزاي؟':'How is the result read?'});
+
+/* ---------- 6.15.1 (Twister 01:10): the alloy button says what is missing ----------
+   «ناقصك حاجة» on an alloy (acc2's p116, wrapped here, file untouched) becomes «ناقصك: 1 قصدير · 5 جنيه». */
+{const r0=crAlloyRow;crAlloyRow=function(h,k){let s=r0.apply(this,arguments);try{const c=CR_CAT[k];if(!c||crSmeltLock(h,k))return s;
+  const miss=Object.keys(c.need||{}).filter(m=>(h.res[m]||0)<c.need[m]).map(m=>`${c.need[m]-(h.res[m]||0)} ${resN(m)}`),fee=crFee(k);
+  if(h.money<fee)miss.push(`${fee-h.money} ${rfxT(['جنيه','coins'])}`);if(!miss.length)return s;
+  const was=rfxT(['ناقصك حاجة','something missing']);s=s.replace(`<small>${was}</small>`,`<small class="cr-miss">${rfxT(['ناقصك: ','Missing: '])}${miss.join(' · ')}</small>`)}catch(e){console.warn(e)}return s}}
+
+/* ---------- 6.15.1 (Twister 01:11): the mine's floor picker gets an ore filter ----------
+   A row of the ores found on the floors you reached; tap one and only the floors where it comes stay; tap it again for all.
+   Watches for p9b's floor sheet (mnPick is in a closed scope), file untouched. */
+function mfAdd(d){const L=d&&d.querySelector('.mn-fls');if(!L||d.querySelector('.mf-row'))return;
+    /* the floor's ores, read from its own line of names (p9b's mnFlOres is not reachable from here) */
+    const N2K={};Object.keys(MAT).forEach(k=>{try{N2K[resN(k)]=k}catch(e){}});const ores=b=>{const t=(b.querySelector('small')||{}).textContent||'';return t.split('، ').map(x=>N2K[x.trim()]).filter(Boolean)};
+    const bs=[...L.querySelectorAll('[data-fl]')],all=[];bs.forEach(b=>ores(b).forEach(k=>{if(!all.includes(k))all.push(k)}));if(all.length<2)return;
+    L.insertAdjacentHTML('beforebegin',`<div class="tw-sm mf-l">${rfxT(['بتدور على إيه؟','Looking for?'])}</div><div class="mf-row">${all.map(k=>`<button class="mf-ch" data-ore="${k}" title="${resN(k)}">${twMat(k,22)}<small>${resN(k)}</small></button>`).join('')}</div>`);
+    let on='';d.querySelectorAll('[data-ore]').forEach(c=>c.onclick=()=>{on=on===c.dataset.ore?'':c.dataset.ore;
+      d.querySelectorAll('[data-ore]').forEach(x=>x.classList.toggle('on',x.dataset.ore===on));
+      bs.forEach(b=>{b.hidden=!!on&&!ores(b).includes(on)});try{SFX.tick&&SFX.tick(on?800:500)}catch(e){}})}
+/* mnPick lives in p9b's closed scope: watch for its sheet instead */
+{const A=document.getElementById('app');if(A&&typeof MutationObserver==='function')new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1&&n.id==='twSh'&&n.querySelector('.mn-fls'))try{mfAdd(n)}catch(e){console.warn(e)}}}).observe(A,{childList:true})}
+(function(){const s=document.createElement('style');s.textContent=`
+.mf-l{margin-top:6px}.mf-row{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.mf-ch{flex:0 0 auto;min-width:56px;min-height:48px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px;border-radius:10px;border:1px solid #6b5a43;background:transparent;color:#d8c7a6;font:inherit}
+.mf-ch small{font-size:.7em;white-space:nowrap}.mf-ch.on{background:#e0b65a;color:#2a1f12;border-color:#e0b65a}
+.mn-fls [data-fl][hidden]{display:none!important}`;document.head.appendChild(s)})();
+L10NG({'بتدور على إيه؟':'Looking for?'});
+
+/* ---------- 6.15.1 (Twister 01:14): «؟» on every alloy: where each of its materials comes from ----------
+   Read from the game's own source lists (TW_SRC, CR_MINE floors, CR_CANAL fishing level, CR_SHOP); acc2's files untouched. */
+function crFromTxt(k){const L=[];try{
+  if(typeof CR_MINE!=='undefined'){let lo=1;const fl=[];CR_MINE.forEach(b=>{if(b.w&&b.w[k])fl.push([lo,b.to]);lo=b.to+1});
+    if(fl.length){const run=[];fl.forEach(([x,y])=>{const p=run[run.length-1];if(p&&p[1]+1===x)p[1]=y;else run.push([x,y])});const t=run.map(([x,y])=>x===y?''+x:x+'–'+y).join('، ');   /* review: separate bands stay separate («1–2، 6–7») */
+    L.push(rfxT([`المنجم، عروق جانبية وانت بتكسر الصخر (الدور ${t})`,`the mine, side veins while breaking rock (floors ${t.replace(/، /g,', ')})`]))}}
+  if(typeof CR_CANAL!=='undefined'&&CR_CANAL[k])L.push(rfxT([`الترعة وانت بتصطاد (صيد مستوى ${CR_CANAL[k][1]})`,`the canal while fishing (fishing level ${CR_CANAL[k][1]})`]));
+  if(typeof CR_FARM!=='undefined'&&CR_FARM[k])L.push(rfxT(['الغيط وقت الحصاد','the field at harvest']));
+  if(typeof CR_CAT!=='undefined'&&CR_CAT[k]&&CR_CAT[k].need)L.push(rfxT(['بتتسبك هنا عند الحداد','smelted right here at the smith']));
+  if(typeof CR_SHOP!=='undefined'&&CR_SHOP.includes(k))L.push(rfxT(['عم حسن بيبيعها جاهزة (أغلى)','Uncle Hassan sells it ready (pricier)']));
+  if(!L.length&&typeof TW_SRC!=='undefined'&&TW_SRC[k])L.push(EN&&typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[TW_SRC[k]]||TW_SRC[k])}catch(e){}
+  return L.length?L.join(' · '):rfxT(['لسه مش معروف','not known yet'])}
+{const r0=crAlloyRow;crAlloyRow=function(h,k){let s=r0.apply(this,arguments);try{s=s.replace(/<button class="tw-act cr" data-alloy=/,`<button class="cr-from" data-alfrom="${k}" aria-label="${rfxT(['جاية منين؟','Where from?'])}">؟</button><button class="tw-act cr" data-alloy=`)}catch(e){}return s}}
+document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.target.closest('[data-alfrom]');if(!b)return;ev.stopPropagation();try{
+  const k=b.dataset.alfrom,c=CR_CAT[k],h=S.hero;if(!c)return;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  const rows=Object.keys(c.need||{}).map(m=>`<div class="tw-row"><div class="ic">${twMat(m,32)}</div><div class="tx"><b>${resN(m)} ×${c.need[m]} <small>${rfxT(['عندك','you have'])} ${(h.res[m]||0)}</small></b><small>${crFromTxt(m)}</small></div></div>`).join('');
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${resN(k)}<small>${rfxT(['كل حاجة جاية منين','where each thing comes from'])}</small></div><div class="col">${rows}</div>
+    <div class="tw-sm">${rfxT(['وكمان','and'])} ${crFee(k)} ${rfxT(['جنيه للسبك','coins to smelt'])}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}catch(e){console.warn(e)}},true);
+(function(){const s=document.createElement('style');s.textContent=`.cr-from{flex:0 0 auto;width:44px;min-height:44px;margin-inline-end:6px;border-radius:50%;border:1px solid #6b5a43;background:transparent;color:#e0b65a;font:inherit;font-weight:700;font-size:1.1em}`;document.head.appendChild(s)})();
+L10NG({'جاية منين؟':'Where from?'});
 /* ==========================================================================
    سرداب 6.15 (R10, owner IDs C21 C25 C37 C38 C56): the craft data base and the 8-stage workshops (p115.js)
    - CR_CAT: the material and alloy catalog: C37 (64 materials and resources), C38 (20 alloys) and the C21 base
