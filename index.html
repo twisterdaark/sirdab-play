@@ -4534,6 +4534,8 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.95',d:'12 أكتوبر',add:['بنك البلد بقى محتاج حساب: قبل الخزنة والودايع والاستثمارات {تفتح|تفتحي} حساب عند أستاذ فوزي مرة واحدة. التمن 1500 جنيه + 200 لكل مستوى + 2% من الفلوس اللي {معاك|معاكي}. الحساب ليه رقم، وبتاعك على طول',
+  'لو {كنت|كنتي} {بتتعامل|بتتعاملي} مع البنك قبل كده (فلوس في الخزنة، وديعة، استثمار، أو أي حاجة في الدفتر) حسابك مفتوح ببلاش'],fix:[]},
 {v:'5.94',d:'12 أكتوبر',add:['«{اخرج|اخرجي} للصيد» في الدهاليز: {تطلع|تطلعي} الغيطان من غير مغامرة. أربع أماكن متوصلة ببعض: طرف الغيط، غيطان الدرة، الساقية القديمة، وآخر الغيط عند الترعة. كل ما {تبعد|تبعدي} الخطر بيزيد',
   '«{دوّر|دوّري} هنا» بمجهود واحد: ممكن تطلع لك سلعوة أو ديب أو خنزير بري، أو أعشاب، أو ولا حاجة. قدام أي وحش {تقاتل|تقاتلي}، أو {تتسحّب|تتسحّبي} برمية خفة، أو {ترجع|ترجعي} من مكان ما {جيت|جيتي} بمجهود. القتال اللي يبدأ لازم يخلص، حتى لو اللعبة اتقفلت. وعند الترعة ممكن تطلع «سلعوة كبيرة» أقوى وغنايمها أحسن',
   'القتال هو نفس القتال: الخبرة والفلوس والصناديق بتيجي من غير أي مهمة. «💬 كلام» شغال، إلا الاستسلام. والسمعة من العفو في الغيطان مرتين في اليوم بالكتير',
@@ -25523,7 +25525,7 @@ SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
     ${B.inv.length?`<div class="tw-lbl">استثماراتك</div><div class="col">${B.inv.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه مع ${x.who||BK_REAL.who}</b><small>${h.nDone>=x.at?'رجعت!':'فاضل '+bkNights(x.at-h.nDone)} · المكسب ${x.g}</small></div>${h.nDone>=x.at?bkBtn(`data-bki="${x.id}"`,G('خد','خدي'),`${x.a+x.g} جنيه`):''}</div>`).join('')}</div>`:''}
     ${B.rec.length?`<div class="tw-lbl">فلوس من النصابين</div><div class="col">${B.rec.map(x=>`<div class="tw-row"><div class="tx"><b>${x.a} جنيه</b><small>${h.nDone>=x.at?'أستاذ فوزي مسكه!':'أستاذ فوزي بيدوّر عليه.. فاضل '+bkNights(x.at-h.nDone)}</small></div>${h.nDone>=x.at?bkBtn(`data-bkr="${x.id}"`,G('خد','خدي'),`${x.a} جنيه`):''}</div>`).join('')}</div>`:''}
     <div class="tw-lbl">الدفتر</div>
-    <div class="card bk-log">${B.log.length?B.log.slice().reverse().slice(0,12).map(x=>`<div class="bkl"><span>#${x.id} ${T(BK_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'?'neg':'pos'}">${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'?'−':'+'}${x.a}</b></div>`).join(''):'<small>لسه مفيش حركات</small>'}</div></div>`;
+    <div class="card bk-log">${B.log.length?B.log.slice().reverse().slice(0,12).map(x=>`<div class="bkl"><span>#${x.id} ${T(BK_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'||x.k==='ac'?'neg':'pos'}">${x.k==='scam'||x.k==='in'||x.k==='fd'||x.k==='inv'||x.k==='pl'||x.k==='ac'?'−':'+'}${x.a}</b></div>`).join(''):'<small>لسه مفيش حركات</small>'}</div></div>`;
   twBack();
   const on=(sel,fn)=>view.querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
   on('[data-bkp]',b=>bkPut(b.dataset.bkp));on('[data-bkt]',b=>bkTake(b.dataset.bkt));on('[data-bkf]',b=>bkFdOpen(b.dataset.bkf,TWN.bkT|0));on('[data-bktm]',b=>{TWN.bkT=+b.dataset.bktm;twRender()});on('[data-bkpp]',b=>{TWN.bkP=b.dataset.bkpp;twRender()});on('[data-bkpa]',b=>bkPlanOpen(TWN.bkP||'shop',b.dataset.bkpa));on('[data-bkpl]',b=>bkPlanClaim(+b.dataset.bkpl));
@@ -26752,7 +26754,7 @@ const LS_ALL=[
   {id:'night',c:'fight',n:'الليلة الطويلة',k:'مغامرة ليلة فصل',goal:'{تفهم|تفهمي} الليلة',steps:['الليلة فيها كذا محطة، وكل محطة ليها كروت.','لو {خرجت|خرجتي} الليلة بتتحفظ و{تكمّلها|تكمّليها} بعدين.'],act:'read',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
   {id:'enh',c:'craft',n:'التعزيز',k:'تعزيز حجر سلاح عم حسن',goal:'تقوّي قطعة',steps:['عم حسن بيعزّز القطع بالأحجار.','كل خطوة أصعب من اللي قبلها، والبرادة بتساعد.'],act:'go',go:'smith',btn:'روح عم حسن',lock:h=>h.lvl<3?'بيتفتح في المستوى 3':''},
   {id:'spec',c:'fight',n:'التخصصات',k:'تخصص نادر أسطوري',goal:'{تعرف|تعرفي} التخصصات',steps:['ساعات {وانت بتشتغل يطلعلك|وانتي بتشتغلي يطلعلكي} تخصص جديد.','كل تخصص بيغيّر حركاتك.'],act:'go',go:'spec',btn:'افتح التخصصات',lock:h=>h.lvl<5?'بيتفتح في المستوى 5':''},
-  {id:'money',c:'bag',n:'البنك والبورصة',k:'بنك وديعة خزنة بورصة أسهم',goal:'{تشغّل|تشغّلي} فلوسك',steps:['البنك: خزنة أمان ووديعة مكسبها مضمون.','البورصة: أسهم بتطلع وتنزل، وممكن {تخسر|تخسري}.'],act:'go',go:'bank',btn:'روح البنك',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
+  {id:'money',c:'bag',n:'البنك والبورصة',k:'بنك وديعة خزنة بورصة أسهم',goal:'{تشغّل|تشغّلي} فلوسك',steps:['البنك: {تفتح|تفتحي} حساب مرة واحدة، وبعدها خزنة أمان ووديعة مكسبها مضمون.','البورصة: أسهم بتطلع وتنزل، وممكن {تخسر|تخسري}.'],act:'go',go:'bank',btn:'روح البنك',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''},
   {id:'cafe',c:'friends',n:'القهوة',k:'قهوة طاولة دومينو باصرة سيجة كورة',goal:'{تلعب|تلعبي} مع ناس القهوة',steps:['طاولة ومحبوسة ودومينو وباصرة وسيجة.','ودي أو على فلوس، والماتش على التلفزيون.'],act:'go',go:'cafe',btn:'روح القهوة',lock:h=>(h.nDone|0)<1?'بيتفتح من تاني يوم في البلد':''}];
 const LS={q:'',f:'all',open:'',r:null};
 const lsLock=(h,L)=>L.lock?L.lock(h):'';
@@ -28226,12 +28228,12 @@ L10N({'الغيطان':'The fields','طرف الغيط':'Edge of the fields','غ
   [[/^🔍 دوّري? هنا$/,'🔍 Search here'],[/^دورتي? بين العيدان\.\. مفيش غير الهوا\.$/,'You searched the stalks.. only the wind.'],[/^الأرض فيها آثار، بس اللي سابها مشي من بدري\.$/,'Tracks in the mud, but whoever left them is long gone.'],
    [/^سكوت\. حتى الضفادع ساكتة\.$/,'Silence. Even the frogs are quiet.'],[/^رجعتي? لـ(.+) من غير ما حد ياخد باله\.$/,(m,a)=>`You went back to ${L10N_W.get(a)||a} unseen.`],[/^اتسحّبتي? بالراحة من غير ما (ياخدوا بالهم|ياخد باله|تاخد بالها)\.$/,'You slipped away unseen.'],
    [/^بس اتخربشتي? في البوص \(−2 صحة\)\.$/,'But the reeds scratched you (−2 health).'],[/^(.+) (شافوك|شافك|شافتك)!$/,(m,a)=>L10N_W.has(a)?`${L10N_W.get(a)} saw you!`:/^\d+ (سلعوات|ديابة)$/.test(a)?`${a.replace('سلعوات','salawas').replace('ديابة','wolves')} saw you!`:m],
-   [/^وقعتي?\.\. عم عبده لقاكي? على طرف الغيط وشالكي? للمصطبة\.$/,'You fell.. Uncle Abdo found you at the edge and carried you to his bench.'],[/^ضاع منك (\d+) جنيه في الضلمة\.$/,'You lost $1 pounds in the dark.'],
+   [/^وقعتي?\.\. عم عبده لقاكي? على طرف الغيط وشالكي? للمصطبة\.$/,'You fell.. Uncle Abdo found you at the edge and carried you to his bench.'],[/^ضاع منك (\d+) جنيه في الضلمة\.$/,'You lost $1 coins in the dark.'],
    [/^قعدتي? جنب عم عبده وشربتي? شاي\. صحتك وطاقتك رجعوا\.$/,'You had tea with Uncle Abdo. Health and energy are back.'],[/^«هاتي? لي خبر 5 سلعوات، وأنا أعرف أنام\.» العداد بيعد كل سلعوة بتوقعي?ها بجد\.$/,'«Bring down 5 salawas, then I can sleep.» Only real kills count.'],
-   [/^عم عبده ادّاكي? (\d+) جنيه و(\d+) خبرة\.$/,'Uncle Abdo gave you $1 pounds and $2 experience.'],[/^طلعتي? المستوى (\d+)!$/,'Level $1!'],[/^هربوا قبل ما تقربي?\. ولا غنايم ولا تعب\.$/,'They ran before you got close. No loot, no sweat.'],
+   [/^عم عبده ادّاكي? (\d+) جنيه و(\d+) خبرة\.$/,'Uncle Abdo gave you $1 coins and $2 experience.'],[/^طلعتي? المستوى (\d+)!$/,'Level $1!'],[/^هربوا قبل ما تقربي?\. ولا غنايم ولا تعب\.$/,'They ran before you got close. No loot, no sweat.'],
    [/^خلّصتي? من غير ما حد يموت\.$/,'Done, and nobody died.'],[/^وواحد جري\.$/,'One ran off.'],[/^(\d+) جريوا\.$/,'$1 ran off.'],
    [/^مهمة عم عبده: (\d+) من (\d+)( · ارجعي? له على طرف الغيط)?\.$/,(m,a,b,c)=>`Uncle Abdo's errand: ${a} of ${b}${c?' · go back to him at the edge':''}.`],[/^سلعوة · ارجعي? له$/,'salawas · go back to him'],
-   [/^«السلعوة كلت فراخي ونص الغيط\. وقّعي? لي 5 سلعوات، وليك (\d+) جنيه و(\d+) خبرة\.»$/,'«Salawas ate my chickens and half the field. Bring down 5 for me: $1 pounds and $2 experience.»'],
+   [/^«السلعوة كلت فراخي ونص الغيط\. وقّعي? لي 5 سلعوات، وليك (\d+) جنيه و(\d+) خبرة\.»$/,'«Salawas ate my chickens and half the field. Bring down 5 for me: $1 coins and $2 experience.»'],
    [/^«لسه (\d+)\.\. السلعوة بتطلع بالليل في الدرة، والكبيرة عند الترعة\.»$/,'«$1 more.. they come out in the corn, and the big one by the canal.»'],[/^«وقّعتهم بجد؟ تعالي? خدي? حقك\.»$/,'«You really got them? Come take your due.»'],
    [/^«تسلم إيدك\. تعالي? بكرة يمكن ألاقي لك شغل تاني\.»$/,'«Bless your hands. Come back tomorrow, I may have more work.»'],[/^مفيش مجهود\. اللي جاي بعد ([\d:]+)(، أو كُلي? حاجة)?\.$/,'No effort left. Next in $1.'],
    [/^خلّصي? القتال الأول\.$/,'Finish the fight first.'],[/^محتاجة? مجهود تجري بيه\. قاتلي? أو اتسحّبي?\.$/,'You need effort to run. Fight or sneak away.'],[/^انتي? مرتاحة? خلاص\.$/,'You are rested already.'],
@@ -28239,7 +28241,53 @@ L10N({'الغيطان':'The fields','طرف الغيط':'Edge of the fields','غ
    [/^مهمة عم عبده:$/,'Uncle Abdo\'s errand:'],[/^(\d+) من (\d+)$/,'$1 of $2'],[/^لقيتي? (.+)$/,(m,x)=>/[؀-ۿ]/.test(x)?m:`Found ${x}`],[/^⚔ أقاتل$/,'⚔ Fight'],[/^🤫 أتسحّب بالراحة$/,'🤫 Sneak away'],[/^↩ أرجع لـ(.+)$/,'↩ Go back'],[/^🏠 ارجعي? البلد$/,'🏠 Back to the village'],
    [/^☕ ارتاحي? شوية$/,'☕ Rest a while'],[/^\(1 مجهود: صحتك وطاقتك ترجع\)$/,'(1 effort: health and energy back)'],[/^❤️ (\d+)\/(\d+)$/,'❤️ $1/$2'],[/^💧 مجهود (\d+)\/(\d+)$/,'💧 Effort $1/$2'],
    [/^(انتي?) عند (.+)$/,(m,a,b)=>'At: '+(L10N_W.get(b)||b)],[/^سلعوات (\d+) من (\d+)$/,'Salawas $1 of $2'],[/^مهمة عم عبده: (\d+) من (\d+)/,'Uncle Abdo\'s errand: $1 of $2'],[/^العداد: (\d+) من (\d+)$/,'Count: $1 of $2'],
-   [/^حاضر، هوقّعهم$/,'Deal, I\'ll get them'],[/^خدي? حقك · (\d+) جنيه$/,'Hand in · $1 pounds'],[/^(\d+) (سلعوات|ديابة)$/,(m,n,k)=>`${n} ${k==='سلعوات'?'salawas':'wolves'}`]]);
+   [/^حاضر، هوقّعهم$/,'Deal, I\'ll get them'],[/^خدي? حقك · (\d+) جنيه$/,'Hand in · $1 coins'],[/^(\d+) (سلعوات|ديابة)$/,(m,n,k)=>`${n} ${k==='سلعوات'?'salawas':'wolves'}`]]);
+
+/* ---------- 5.95: حساب في البنك (Twister 04:47: «عشان تستعمل البنك لازم تفتح حساب بنكي بردو، وخليه غالي بس مش أوي، عشان نخليه ليه قيمه») ----------
+   The bank's safe, deposits, investments and the man at its door wait until the hero opens an account with أستاذ فوزي. Opening costs
+   BK_AC_BASE + BK_AC_LVL a level + BK_AC_RICH of the money in hand, rounded to 50, paid once (at level 1 about 1700, at level 10 with
+   100 000 in hand about 5500). Heroes who already used the bank (money in the safe, a deposit, an investment, a ledger line) have it
+   open for free. The account has a number and the day it was opened, and it never closes: the money in it is always yours. It can't be
+   opened while a night is saved (like a deposit). Stored in h.bank.ac = {no, d, fee, old}. */
+const BK_AC_BASE=1500,BK_AC_LVL=200,BK_AC_RICH=.02;
+const bkAcPrice=h=>Math.max(BK_AC_BASE,Math.round((BK_AC_BASE+BK_AC_LVL*Math.max(1,h.lvl|0)+BK_AC_RICH*Math.max(0,h.money|0))/50)*50);
+const bkAcNo=()=>`${1000+Math.floor(Math.random()*9000)}-${100000+Math.floor(Math.random()*900000)}`;
+/* the account, if there is one; an old hero who already used the bank gets it here (once, saved) */
+function bkAc(h){if(!h)return null;const B=bkFix(h);if(B.ac&&typeof B.ac==='object'&&B.ac.no)return B.ac;
+  if(B.v>0||B.fds.length||B.pl.length||B.inv.length||B.rec.length||B.log.length){B.ac={no:bkAcNo(),d:B.log.length&&B.log[0].n!=null?B.log[0].n|0:h.nDone|0,fee:0,old:1};return B.ac}return null}
+function bkAcOpen(){const h=S.hero;if(!h||bkAc(h))return;if(bkInNight(h)){toast(`عندك ليلة متسابة: الحساب بعد ما الليلة تخلص.`);return}
+  const p=bkAcPrice(h);if(h.money<p){toast(`ناقصك ${p-h.money} جنيه.`);try{SFX.meh()}catch(e){}return}
+  bkMove(h,-p);const B=bkFix(h);B.ac={no:bkAcNo(),d:h.nDone|0,fee:p};bkLog(h,'ac',p,B.ac.no);saveHero();try{SFX.coin&&SFX.coin()}catch(e){}
+  band('بنك البلد','حساب جديد',`رقم حسابك \u2066${B.ac.no}\u2069`,{dur:2000,sound:SFX.good});twRender()}
+/* nothing moves in without an account (taking out and claiming stay open: only an old account can have money in) */
+{const p0=bkPut;bkPut=function(){if(!bkAc(S.hero))return;return p0.apply(this,arguments)}}
+{const f0=bkFdOpen;bkFdOpen=function(){if(!bkAc(S.hero))return;return f0.apply(this,arguments)}}
+{const l0=bkPlanOpen;bkPlanOpen=function(){if(!bkAc(S.hero))return;return l0.apply(this,arguments)}}
+{const d0=bkDeal;bkDeal=function(yes){if(yes&&!bkAc(S.hero))return;return d0.apply(this,arguments)}}
+BK_LOGN.ac='{فتحت|فتحتي} حساب';
+/* the screen: no account → the open-an-account counter; with one → the bank as before, with the account line on top */
+{const s0=SCREENS.bank;SCREENS.bank=function(){const h=S.hero;if(!h){S.screen='title';return render()}const A=bkAc(h);
+  if(A){const r=s0.apply(this,arguments);try{const st=view.querySelector('.tw-stk');if(st&&!$('#bkAc'))st.insertAdjacentHTML('beforebegin',`<div class="tw-sm bk-ac" id="bkAc">🏦 حسابك رقم <b translate="no"><bdi dir="ltr">${A.no}</bdi></b> · من اليوم ${(A.d|0)+1}</div>`)}catch(e){}return r}
+  const p=bkAcPrice(h),need=Math.max(0,p-h.money),night=bkInNight(h);
+  view.innerHTML=`${twTop('بنك البلد')}<div class="tw bk">
+    ${twNpcHTML('fawzy',`${G('أهلًا يا أستاذ','أهلًا يا أستاذة')}. البنك ده مش أي حد يتعامل فيه: ${G('افتح','افتحي')} حساب الأول، وبعدها فلوسك في أمان وبتكسب.`)}
+    <div class="card bk-open"><div class="bk-oh"><b>${G('افتح','افتحي')} حساب</b><span class="bk-op">${p} جنيه</span></div>
+      <ul class="bk-ul"><li>الخزنة: ${G('حط','حطي')} و${G('اسحب','اسحبي')} في أي وقت ببلاش</li><li>لحد ${BK_FD_MAXN} ودايع بمكسب مضمون</li><li>استثمارات البنك، مكسبها وخسارتها مكتوبين قبل ما ${G('تدفع','تدفعي')}</li><li>أستاذ فوزي بيحذرك من النصابين اللي على الباب</li></ul>
+      <div class="tw-sm">بتتدفع مرة واحدة. الحساب بتاعك على طول، والفلوس اللي فيه محفوظة. التمن بيزيد مع مستواك ومع الفلوس اللي ${G('معاك','معاكي')}.</div>
+      ${night?`<div class="tw-miss">عندك ليلة متسابة: الحساب بعد ما الليلة تخلص.</div>`:''}
+      <button class="btn${need||night?' bk-no':''}" id="bkAcGo">${need?`ناقصك ${need} جنيه`:`${G('افتح','افتحي')} الحساب · ${p} جنيه`}</button></div></div>`;
+  twBack();const b=$('#bkAcGo');if(b)b.onclick=()=>bkAcOpen()}}
+/* the town tile: the price until it is open; no bell for the man at the door before that */
+TW_EXTRA.forEach((f,i)=>{TW_EXTRA[i]=function(h){const t=f.apply(this,arguments);try{if(t&&t.id==='bank'&&!bkAc(h)){t.s=`${G('افتح','افتحي')} حساب: ${bkAcPrice(h)} جنيه`;t.bell=0}}catch(e){}return t}});
+{const st=document.createElement('style');st.textContent=`.bk-open{display:flex;flex-direction:column;gap:8px}.bk-oh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.bk-oh b{font-size:18px}
+.bk-op{font-weight:800;color:var(--gold2);font-size:17px}.bk-ul{margin:0;padding-inline-start:20px;font-size:13.5px;line-height:1.8;color:var(--dim)}.bk-open .btn{min-height:50px;width:100%;margin:4px 0 0}.bk-ac{text-align:center;margin:4px 0 8px;color:var(--mute)}.bk-open .btn.bk-no{opacity:.55;filter:saturate(.4)}`;document.head.appendChild(st)}
+L10N({'حساب جديد':'New account','بتتدفع مرة واحدة. الحساب بتاعك على طول، والفلوس اللي فيه محفوظة. التمن بيزيد مع مستواك ومع الفلوس اللي معاك.':'Paid once. The account is yours for good, and the money in it is safe. The price grows with your level and the money you carry.',
+  'بتتدفع مرة واحدة. الحساب بتاعك على طول، والفلوس اللي فيه محفوظة. التمن بيزيد مع مستواك ومع الفلوس اللي معاكي.':'Paid once. The account is yours for good, and the money in it is safe. The price grows with your level and the money you carry.',
+  'عندك ليلة متسابة: الحساب بعد ما الليلة تخلص.':'You have a saved night: the account after it ends.'},
+  [[/^افتحي? حساب$/,'Open an account'],[/^افتحي? الحساب · (\d+) جنيه$/,'Open the account · $1 coins'],[/^افتحي? حساب: (\d+) جنيه$/,'Open an account: $1 coins'],[/^ناقصك (\d+) جنيه\.?$/,'$1 coins short'],
+   [/^الخزنة: حطي? واسحبي? في أي وقت ببلاش$/,'The safe: put in and take out any time, free'],[/^لحد (\d+) ودايع بمكسب مضمون$/,'Up to $1 deposits with a sure gain'],[/^استثمارات البنك، مكسبها وخسارتها مكتوبين قبل ما تدفعي?$/,'The bank\'s investments, gain and loss written before you pay'],
+   [/^أستاذ فوزي بيحذرك من النصابين اللي على الباب$/,'Mr Fawzy warns you about the swindlers at the door'],[/^🏦 حسابك رقم$/,'🏦 Account no.'],[/^· من اليوم (\d+)$/,'· since day $1'],[/^فتحتي? حساب$/,'Opened an account'],[/^رقم حسابك (.+)$/,'Account no. $1'],
+   [/^أهلًا يا أستاذة?\. البنك ده مش أي حد يتعامل فيه: افتحي? حساب الأول، وبعدها فلوسك في أمان وبتكسب\.$/,'Welcome. Not just anyone banks here: open an account first, then your money is safe and earns.']]);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
