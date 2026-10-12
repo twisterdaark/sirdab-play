@@ -1985,11 +1985,14 @@ function combat(){
 }
 async function say(t,k,wait){if(!S.combat)return;S.combat.log.push({t:T(t),k});if(S.screen==='combat')combat();await sleep(wait===undefined?PACE:wait)}
 function hurtFoe(f,d,o){o=o||{};
+  /* 5.93 (C86): «أوقف الضربة» — a blow (a crit or a poison tick too) that would kill a foe who can be spared stops short: he yields and runs */
+  const C0=S.combat;if(C0&&C0.hold&&f.hp>0&&d>=f.hp&&typeof tkHoldOk==='function'&&tkHoldOk(f)){d=f.hp;f.fled=1;f.yielded=1;f.out='spared'}
   f.hp=Math.max(0,f.hp-d);const soft=o.fx==='poison';
   const go=()=>{const el=$('#foe'+f.id);if(!el)return;cls(el,'hit');setBar(el,'f'+f.id,f.hp/f.max*100);const hn=el.querySelector('.hpn');if(hn)hn.textContent=f.hp+'/'+f.max;
     floatAt(el,'-'+d,soft?'#9be07a':o.crit?'#ffd36a':'#ffb3a3',o.crit?'crit':'',Math.min(46,22+d*2));
     if(soft){SFX.drip();vib(20)}else{shake();vib(o.crit?[60,30,120]:60);SFX.hit(d>=6?.8:1)}
-    if(f.hp<=0)setTimeout(()=>{const e2=$('#foe'+f.id);if(e2)e2.classList.add('die');pop(e2,['#ff8a7a','#f0b090','#fff3b0','#6a2a22'],40);SFX.boom();SFX.foeDie(f.art);vib([40,30,40])},220)};
+    if(f.hp<=0&&f.yielded){setTimeout(()=>{const e2=$('#foe'+f.id);if(e2)e2.classList.add('fledf');floatAt(e2,FF(f,'استسلم','استسلمت'),'#a6e3a0','',22)},220)}
+    else if(f.hp<=0)setTimeout(()=>{const e2=$('#foe'+f.id);if(e2)e2.classList.add('die');pop(e2,['#ff8a7a','#f0b090','#fff3b0','#6a2a22'],40);SFX.boom();SFX.foeDie(f.art);vib([40,30,40])},220)};
   if(o.fx==='magic'){burst($('#meCard'),$('#foe'+f.id),'#8cc4ff',46);SFX.magic();setTimeout(go,520)}
   else if(o.fx==='bolt'){burst($('#meCard'),$('#foe'+f.id),'#ffe36a',30);setTimeout(go,380)}
   else if(o.fx==='storm'){burst($('#meCard'),$('#foe'+f.id),'#ff7a3a',44);setTimeout(go,480)}
@@ -2055,7 +2058,7 @@ async function strike(f,r,kind,name){
     if(C.combo>=2)comboAt(C.combo)}
   if(mc){ach('master');if(S.run)S.run.masters=(S.run.masters||0)+1}if(C.combo===3)ach('combo');
   if(C.combo===2&&!h.ach.combo&&C.foes.some(x=>x.hp>0))toast(`كمان ضربة ناجحة = إنجاز «3 ورا بعض»`);
-  if(fullHp&&f.hp<=0&&!C.tutorial){floatAt($('#foe'+f.id),'ضربة واحدة!','#ffd36a','crit',30);ach('oneshot')}
+  if(fullHp&&f.hp<=0&&!f.yielded&&!C.tutorial){floatAt($('#foe'+f.id),'ضربة واحدة!','#ffd36a','crit',30);ach('oneshot')}
   /* weapon skills work on the normal attack (and on the thief's special, it's a stab too) */
   if(!sp&&r.tier!=='fail'){
     if(full&&ws==='cleave'){const o=C.foes.find(x=>x.hp>0&&x!==f&&!(x.X&&x.X.gone));if(o)await extraHit(o,`${WS_N.cleave} وصل لـ${o.name}`,0,0,.5)}}
@@ -4531,6 +4534,13 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.93',d:'12 أكتوبر',add:['في القتال زرار «💬 كلام» (مش مع الزعيم، ومش في التدريب). كل وحش ليه طبعه: فوق الوحش بيبان «متردد» أو «خايف» أو «رافض الصلح»، والصحة القليلة لوحدها عمرها ما بتخلي وحش شرس يستسلم',
+  '«أوقف الضربة»: وهو شغّال، الضربة اللي كانت هتموّت وحش ينفع يتسامح (حتى الضربة الحظ أو السم) بتقف قبل الموت: بيستسلم ويجري، من غير غنايم، وسمعتك +2',
+  '«أعفي عنه» لو الوحش «خايف»: يجري، ومفيش غنايم منه، وسمعتك +3. «أفاوضهم» مع اللي بيتكلموا بس (الناس والعفاريت) برمية حضور: ينجح كامل يمشوا {وتاخد|وتاخدي} نص خبرتهم، نص نص يطلبوا فلوس، فشل يضيع دورك',
+  '«أرمي له أكل»: الوحوش اللي بتاكل لحمة (الكلاب والديابة والسلعوة) {بتاخد|بتاخدي} منها سمكة أو أكلة سمك. لو خايف أو متردد ياكل ويمشي، ولو شرس ياكل ويكمّل. «أستسلم» لو صحتك 40% أو أقل: ياخدوا 40% من اللي {كسبته|كسبتيه} الليلة والليلة تكمل',
+  '«مأوى الوحوش» على طرف الغيطان في البلد: أول وحش ممكن يعاهدك هو «سلعوة صغيرة» {هتقابلها|هتقابليها} في الغيطان بالليل. الثقة بتتبني على كذا ليلة (تفكها من الفخ، تشاركها أكلك، تحميها)، والأكل لوحده أو العفو لوحده عمره ما يعمل عهد',
+  'في المأوى {بتشوف|بتشوفي} صورتها واسمها (وتقدر {تغيّره|تغيّريه}) وطبعها وأكلها المفضل والألفة والقدرات. {تاخدها معاك|تاخديها معاكي} في الليالي مكان الرفيق (مش دور زيادة، والوحوش مش أضعف وهي {معاك|معاكي})، أو تحرس الغيط من الغربان من ألفة 3، أو {تسيبها|تسيبيها} حرة. الألفة بتزيد مع كل قتال {تكسبه|تكسبيه} وهي {معاك|معاكي} (لحد 3 في الليلة). المأوى بيشيل 2'],
+ fix:['الجرنال بقى أغلى: 60 جنيه + 15 لكل مستوى + 1% من فلوسك. القديم اللي ما {اشتريتوش|اشتريتيهوش} لسه بنص التمن','الفلوس والخبرة والسمعة اللي بتيجي من غير قتل بتتحسب مرة واحدة لكل مواجهة، حتى لو اللعبة اتقفلت واتفتحت']},
 {v:'5.92.1',d:'12 أكتوبر',add:[],fix:['اللي {مختار|مختارة} English: اللعبة بتفتح بالإنجليزي ومن الشمال لليمين من أول لحظة، من غير ما العربي يظهر الأول','رجوع حفظ من جوجل أو من نسخة احتياطية مابقاش يرجّع اللغة للعربي: اللغة إعداد الموبايل نفسه','كلام البطل في الشاشة الأولى بقى بالإنجليزي في English']},
 {v:'5.92',d:'12 أكتوبر',add:['«صندوق الزيادة»: اللي {بتكسبه|بتكسبيه} من صندوق أو كارت وقسمه في الشنطة مليان مش بيتباع من وراك تاني. بيروح الصندوق في البلد، {وتاخده|وتاخديه} من الشنطة لما يبقى فيه مكان، أو {تبيعه|تبيعيه} بنص تمنه. بيشيل لحد 30 حاجة',
   'الشنطة بقت تابين: «الحاجات» و«الخامات». الخامات متقسمة (معادن، أحجار كريمة، تعزيز، سمك، زرع وأكل، أعشاب، من الوحوش)، وكل خامة مكتوب بتدخل في إيه وعم رمضان بياخدها بكام النهارده',
@@ -23322,7 +23332,7 @@ FXD.burn={c:'#ff8f3a',i:'rage'};
 
 /* ----- where gems come from ----- */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;
-  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');if(Math.random()<(boss?.1:.02)){const k=pick(Object.keys(GEMS));addRes(h,k,1);(C.mats=C.mats||[]).push({k,n:1});
+  try{if(won&&C&&!C.tutorial&&!C.peace&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');if(Math.random()<(boss?.1:.02)){const k=pick(Object.keys(GEMS));addRes(h,k,1);(C.mats=C.mats||[]).push({k,n:1});
     setTimeout(()=>band('حجر نادر!',GEMS[k].n,T(GEMS[k].d),{dur:2600,sound:SFX.sparkle||SFX.fanfare}),900)}}}catch(x){console.warn(x)}
   return e0.apply(this,arguments)}}
 /* عم رمضان has a gem now and then: a 3-hour window, about one in three */
@@ -23949,7 +23959,7 @@ function spCost(h,at){const o=spOn(h);let m=o&&o.cost&&o.cost[at]||1;if(at==='sm
   try{if(!quick&&h&&h===S.hero&&!S.combat&&(k==='smith'||k==='tailor'||k==='cook'||k==='farm'||k==='mine'||k==='fish'||k==='attar'))spEvent(h,k,Math.min(2,.5+.25*(n||1)))}catch(e){console.warn(e)}return r}}
 /* a hard fight you win: a boss, three foes or more, or you end it under a third of your health */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let hard=0;
-  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');hard=boss?1.5:(C.foes.length>=3||h.hp<MXH(h)/3)?1:0}}catch(e){}
+  try{if(won&&C&&!C.tutorial&&!C.peace&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');hard=boss?1.5:(C.foes.length>=3||h.hp<MXH(h)/3)?1:0}}catch(e){}
   const r=e0.apply(this,arguments);try{if(hard)spEvent(h,'fight',hard)}catch(e){console.warn(e)}return r}}
 /* what you made with your own hands (I.by is your name) hits harder or guards better while you hold a craft class */
 /* 5.72 (Twister): the bonus is shown wherever the piece is (spOwnChip), and rings, necklaces and charms get it too (health) */
@@ -24384,7 +24394,7 @@ SP_CH.push((h,C)=>{const o=spOn(h);return o&&o.ev==='fist'&&spBare(h)?['fist','�
 FXD.fist={c:'#f3c14d',i:'rage'};
 /* counting: a fight won with no weapon in your hand, then the chance (stronger after a hard one) */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let c=null;
-  try{if(won&&C&&!C.tutorial&&h&&spBare(h)){c={boss:C.foes.some(f=>f.boss||f.art==='nadaha'),low:h.hp<MXH(h)/3,many:C.foes.length>=3}}}catch(e){}
+  try{if(won&&C&&!C.tutorial&&!C.peace&&h&&spBare(h)){c={boss:C.foes.some(f=>f.boss||f.art==='nadaha'),low:h.hp<MXH(h)/3,many:C.foes.length>=3}}}catch(e){}
   const r=e0.apply(this,arguments);
   if(c)try{const k=h.cnt;k.fist_win=(k.fist_win||0)+1;if(c.boss)k.fist_boss=(k.fist_boss||0)+1;if(c.low)k.fist_low=(k.fist_low||0)+1;
     spEvent(h,'fist',c.boss?1.5:(c.low||c.many)?1:.6);if(typeof spTrialTick==='function')spTrialTick(h)}catch(e){console.warn(e)}return r}}
@@ -24570,7 +24580,7 @@ function spCelebrateSoon(h,o){const go=()=>{if(S.combat||document.getElementById
 {const b0=bump;bump=function(){const r=b0.apply(this,arguments);try{spTrialTick(S.hero)}catch(e){}return r}}
 /* the fight counters, read before the fight is closed */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let c=null;
-  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha'),low=h.hp<MXH(h)/3,many=C.foes.length>=3;c={boss,low,many}}}catch(e){}
+  try{if(won&&C&&!C.tutorial&&!C.peace&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha'),low=h.hp<MXH(h)/3,many=C.foes.length>=3;c={boss,low,many}}}catch(e){}
   const r=e0.apply(this,arguments);
   if(c)try{const k=h.cnt;k.sp_win=(k.sp_win||0)+1;if(c.boss)k.sp_boss=(k.sp_boss||0)+1;if(c.low)k.sp_low=(k.sp_low||0)+1;if(c.many)k.sp_many=(k.sp_many||0)+1;if(c.low||c.many)k.sp_hard=(k.sp_hard||0)+1;
     if(c.boss)spRelicDrop(h);spTrialTick(h)}catch(e){console.warn(e)}return r}}
@@ -24936,7 +24946,7 @@ function atGot(h,k,n){addRes(h,k,n||1);AT_GOT[k]=(AT_GOT[k]||0)+(n||1);clearTime
     else if(k==='mine'&&typeof spFloor==='function'&&spFloor()>=5&&Math.random()<.08)atGot(h,'shih',1)}}catch(e){console.warn(e)}return r}}
 /* the flower sometimes stays behind after a hard fight */
 {const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;let ch=0;
-  try{if(won&&C&&!C.tutorial&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');ch=boss?.25:(C.foes.length>=3||h.hp<MXH(h)/3)?.08:.02}}catch(e){}
+  try{if(won&&C&&!C.tutorial&&!C.peace&&h){const boss=C.foes.some(f=>f.boss||f.art==='nadaha');ch=boss?.25:(C.foes.length>=3||h.hp<MXH(h)/3)?.08:.02}}catch(e){}
   const r=e0.apply(this,arguments);
   try{if(ch&&Math.random()<ch){addRes(h,'bloom',1);saveHero();setTimeout(()=>toast(`<span style="color:#d9cbff">${G('لقيت','لقيتي')} زهرة الغيطان</span><br><small>نابتة مكان القتال</small>`),1600)}}catch(e){}
   return r}}
@@ -27207,7 +27217,8 @@ if(typeof PXP_NPC!=='undefined')PXP_NPC.saeed={look:{name:'عم سعيد',g:'m',
 function jrFix(h){let J=h.jr;if(!J||typeof J!=='object')J=h.jr={};if(!J.rec||typeof J.rec!=='object')J.rec={};if(!Array.isArray(J.hs))J.hs=[];J.seen=J.seen==null?-1:J.seen|0;J.lr=J.lr==null?-99:J.lr|0;
   if(!Array.isArray(J.ar))J.ar=[];if(J.today&&J.today.paid==null)J.today.paid=J.seen===J.today.d?1:0;return J}
 const JR_KEEP=14;
-const jrPrice=h=>Math.min(50,15+2*Math.max(0,((h&&h.lvl)|0)-1));
+/* 5.93 (Twister 03:38: «رخيص جدا جدا»): 60 + 15 a level + 1% of the money you carry, no cap, to the nearest 5 */
+const jrPrice=h=>Math.max(5,Math.round((60+15*Math.max(1,(h&&h.lvl)|0)+.01*Math.max(0,+(h&&h.money)||0))/5)*5);
 const jrOldPrice=h=>Math.ceil(jrPrice(h)/2);
 const jrUnread=h=>!!h&&jrFix(h).seen!==(h.nDone|0);
 function jrRnd(h,d){let s=2166136261;const k=`${h.name}|${h.cls}|${h.g}|${d}`;for(let i=0;i<k.length;i++){s^=k.charCodeAt(i);s=Math.imul(s,16777619)}
@@ -27480,7 +27491,8 @@ const CM_COST=h=>cmFee(h).n;
 const cmX=v=>`×${String(Math.round(v*100)/100)}`;
 function cmFeeWhy(h){const f=cmFee(h);if(f.first)return `<div class="cm-fee"><b>أول ليلة ${G('ليك','ليكي')}: ببلاش</b></div>`;return `<div class="cm-fee"><span>مستوى <bdi dir="ltr">${f.L}</bdi>: <bdi dir="ltr">${f.base}</bdi></span><span>«${f.an}» <bdi dir="ltr">${cmX(f.am)}</bdi></span><span>سمعتك <bdi dir="ltr">${cmX(f.rm)}</bdi></span>${f.rich?`<span>فلوسك <bdi dir="ltr">+${f.rich}</bdi></span>`:''}<b>= <bdi dir="ltr">${f.n}</bdi> جنيه</b></div>`}
 const CM_FR_MAX=2,PK_MAX=2,CM_SOLO_HP=.75,CM_SOLO_DMG=.8,CM={pkSync:()=>{}};
-const cmMode=h=>h&&['solo','town','friend'].includes(h.compMode)?h.compMode:h&&!((h.nights|0)>0)?'town':'solo';
+const cmBeast=h=>typeof crActive==='function'?crActive(h):null;   /* 5.93 (C88): a creature from the shelter, p88.js */
+const cmMode=h=>h&&(['solo','town','friend'].includes(h.compMode)||(h.compMode==='beast'&&cmBeast(h)))?h.compMode:h&&!((h.nights|0)>0)?'town':'solo';
 const cmFrUsed=h=>{const u=h&&h.palUse;return u&&u.d===(h.nDone|0)?u.n|0:0};
 const cmLive=h=>!!(h&&h.pal&&h.pal.live);
 const soloNow=()=>!!(typeof N_on==='function'&&N_on()&&S.night&&S.night.solo);
@@ -27567,7 +27579,7 @@ const cmRevFix=s=>String(s).replace(/بس رفيقك \S+ بقزازة صحيان
 {const t0=toast;toast=function(html){if(soloNow()&&cmGhostOn()&&cmTalks(html)){html=cmStrip(cmRevFix(html));if(!String(html).trim())return}return t0.call(this,html)}}
 {const ao=applyOutcome;applyOutcome=function(){const r=ao.apply(this,arguments);try{if(soloNow()&&cmGhostOn()){if(RES&&RES.extra&&cmTalks(RES.extra))RES.extra=cmStrip(cmRevFix(RES.extra));cmFixView()}}catch(e){}return r}}
 /* fights alone: the monsters have 25% less health and hit 20% softer (alone nobody takes half the blows for you), and nothing in a fight is offered for a companion who isn't there */
-{const sc=startCombat;startCombat=function(foes,win,tut){const solo=!tut&&soloNow()&&Array.isArray(foes);if(solo)foes=foes.map(f=>Object.assign({},f,{hp:Math.max(1,Math.round((f.hp|0)*CM_SOLO_HP))}));
+{const sc=startCombat;startCombat=function(foes,win,tut){const solo=!tut&&soloNow()&&!(typeof crBeastIn==='function'&&crBeastIn())&&Array.isArray(foes);if(solo)foes=foes.map(f=>f.cmS?f:Object.assign({},f,{hp:Math.max(1,Math.round((f.hp|0)*CM_SOLO_HP)),cmS:1}));
     const r=sc.call(this,foes,win,tut);
     /* and they hit 20% softer (rounded up or down by chance, so a 2 is sometimes a 1) */
     try{if(solo&&S.combat&&Array.isArray(S.combat.foes))S.combat.foes.forEach(g=>{if(typeof g.dmg==='number'&&g.dmg>0){const v=g.dmg*CM_SOLO_DMG;g.dmg=Math.max(1,Math.floor(v)+(Math.random()<v%1?1:0))}})}catch(e){}return r}}
@@ -27583,18 +27595,19 @@ const cmRevFix=s=>String(s).replace(/بس رفيقك \S+ بقزازة صحيان
       S.comp=mode==='solo'?cmGhost(h):mode==='town'?compFor0(h):compFor(h)}catch(e){console.warn(e)}}
     const r=nb.apply(this,arguments);try{const N=S.night;if(!on||!N)return r;
       if(mode==='solo'){N.solo=1;if(N.perks)N.perks=N.perks.filter(p=>p!=='comp')}else N.cm=mode;N_save()}catch(e){console.warn(e)}finally{S.cmGo=null}return r}}
-{const nr=N_resume;N_resume=function(){const r=nr.apply(this,arguments);try{if(S.night&&S.night.solo){S.comp=cmGhost(S.hero);N_save()}}catch(e){}return r}}
+{const nr=N_resume;N_resume=function(){const r=nr.apply(this,arguments);try{if(S.night&&S.night.solo&&!(S.combat&&S.comp&&S.comp.beast)){S.comp=cmGhost(S.hero);N_save()}}catch(e){}return r}}
 /* the setup screen */
 function cmOpt(h,m){const on=cmMode(h)===m,cost=CM_COST(h),used=cmFrUsed(h);
+  if(m==='beast'){const b=cmBeast(h);if(!b)return '';return `<button class="cm-o${on?' on':''}" data-cm="beast" role="radio" aria-checked="${on}"><span class="cm-ic pt">${foeArt(CR_SP[b.sp].art)}</span><span class="tx"><b translate="no">${esc(b.name)}</b><small>من مأوى الوحوش · ببلاش · صحة ${b.health}/${crMax(b)}</small></span></button>`}
   if(m==='solo')return `<button class="cm-o${on?' on':''}" data-cm="solo" role="radio" aria-checked="${on}"><span class="cm-ic">🧍</span><span class="tx"><b>لوحدك</b><small>ببلاش · الوحوش أضعف شوية</small></span></button>`;
   if(m==='town'){const c=compFor0(h),poor=h.money<cost;return `<button class="cm-o${on?' on':''}${poor?' poor':''}" data-cm="town" role="radio" aria-checked="${on}"><span class="cm-ic pt">${(()=>{try{return portrait(c,'cmt')}catch(e){return '🧑'}})()}</span><span class="tx"><b>${esc(c.name)}</b><small>رفيق من البلد · ${cost?`<bdi dir="ltr">${cost}</bdi> جنيه`:'ببلاش أول ليلة'}${poor?' · فلوسك مش مكفية':''}</small></span></button>`}
   const p=h.pal&&!h.pal.live?h.pal:null,left=CM_FR_MAX-used;
   return `<button class="cm-o${on?' on':''}${left<=0?' poor':''}" data-cm="friend" role="radio" aria-checked="${on}"><span class="cm-ic">👥</span><span class="tx"><b>${p?esc(p.n):'بطل صاحبك'}</b><small>${p?`بطل صاحبك · مستوى ${p.l|0} · `:`${G('اختار','اختاري')} من صحابك · `}فاضل <bdi dir="ltr">${Math.max(0,left)}</bdi> من ${CM_FR_MAX} النهارده</small></span>${p?`<span class="cm-ch" data-cmch="1">${G('غيّر','غيّري')}</span>`:''}</button>`}
-function cmWhy(h){const m=cmMode(h);return m==='solo'?`مفيش حد يحارب ${G('معاك','معاكي')} ولا يشيل ${G('معاك','معاكي')}، بس الوحوش صحتها أقل 25% وضربها أخف 20%. الكروت اللي محتاجة رفيق مش هتطلع.`
+function cmWhy(h){const m=cmMode(h);if(m==='beast'){const b=cmBeast(h);return `<span translate="no">${esc(b.name)}</span> ${b.g==='f'?'بتحارب':'بيحارب'} ${G('معاك','معاكي')} في القتال مكان الرفيق (مش دور زيادة). الحكاية نفسها بتمشيها لوحدك، والوحوش مش أضعف. الألفة بتزيد مع كل قتال تكسبوه سوا (لحد 3 في الليلة).`}return m==='solo'?`مفيش حد يحارب ${G('معاك','معاكي')} ولا يشيل ${G('معاك','معاكي')}، بس الوحوش صحتها أقل 25% وضربها أخف 20%. الكروت اللي محتاجة رفيق مش هتطلع.`
   :m==='town'?`${esc(compFor0(h).name)} ${coGx(compFor0(h))('بيحارب','بتحارب')} ${G('معاك','معاكي')} طول الليلة. الأجرة بتتدفع مرة واحدة أول ما الليلة تبدأ، وبتغلى مع مستواك والمغامرة وفلوسك، وبترخص لو سمعتك حلوة.${cmFeeWhy(h)}`
   :`بطل صاحبك ${G('بيلعب معاك','بيلعب معاكي')} كأنه رفيق (مش لايف). ${CM_FR_MAX} ليالي في اليوم بالكتير لكل الأبطال.`}
 function cmCan(h){const m=cmMode(h);if(m==='town'&&h.money<CM_COST(h))return `فلوسك مش مكفية لأجرة ${compFor0(h).name}`;if(m==='friend'){if(!h.pal)return G('اختار بطل صاحبك الأول','اختاري بطل صاحبك الأول');if(cmFrUsed(h)>=CM_FR_MAX)return `خلصت ليالي الصحاب النهارده (${CM_FR_MAX} من ${CM_FR_MAX})`}return ''}
-function cmHTML(h){return `<div class="label cm-l">مين ${G('معاك','معاكي')} الليلة؟</div><div class="cm" role="radiogroup">${['solo','town','friend'].map(m=>cmOpt(h,m)).join('')}</div><div class="cm-why" id="cmWhy">${cmWhy(h)}</div>`}
+function cmHTML(h){return `<div class="label cm-l">مين ${G('معاك','معاكي')} الليلة؟</div><div class="cm" role="radiogroup">${['solo','town','friend','beast'].map(m=>cmOpt(h,m)).join('')}</div><div class="cm-why" id="cmWhy">${cmWhy(h)}</div>`}
 {const s0=SCREENS.setup;SCREENS.setup=function(){CM.pkSync=()=>{};S.cmGo=null;const r=s0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='setup'||!h)return r;
     /* C10: the saved night goes up, between the dice and the hero card */
     const res=$('#nRes'),warn=view.querySelector('.nwarn'),hl=[...view.querySelectorAll('.label')].find(l=>/^بطل/.test(l.textContent.trim()));
@@ -27604,10 +27617,10 @@ function cmHTML(h){return `<div class="label cm-l">مين ${G('معاك','معا
     if(pl&&pk.length){let on=Object.keys(h.perkOn||{}).filter(id=>h.perkOn[id]&&H_PERKS.some(p=>p.id===id&&h.perks[id]));if(on.length>PK_MAX){on.slice(PK_MAX).forEach(id=>h.perkOn[id]=0);saveHero();on=on.slice(0,PK_MAX);pk.forEach(b=>{const o=!!h.perkOn[b.dataset.pk];b.classList.toggle('on',o);b.setAttribute('aria-pressed',o)})}
       const cnt=()=>H_PERKS.filter(p=>h.perks[p.id]&&h.perkOn[p.id]).length;
       /* «رفيق جامد» is no use alone: switched off and greyed while «لوحدك» is picked */
-      CM.pkSync=()=>{const b=view.querySelector('[data-pk="comp"]');if(!b)return;const na=cmMode(h)==='solo';if(na&&h.perkOn.comp){h.perkOn.comp=0;saveHero();b.classList.remove('on');b.setAttribute('aria-pressed',false)}
-        b.classList.toggle('cm-na',na);let n=b.querySelector('.cm-nat');if(na&&!n)b.querySelector('.tx').insertAdjacentHTML('beforeend',`<small class="cm-nat">مش هيفرق ${G('وانت','وانتي')} لوحدك</small>`);if(!na&&n)n.remove();const k=$('#pkN');if(k)k.textContent=`${cnt()}/${PK_MAX}`};
+      CM.pkSync=()=>{const b=view.querySelector('[data-pk="comp"]');if(!b)return;const na=['solo','beast'].includes(cmMode(h));if(na&&h.perkOn.comp){h.perkOn.comp=0;saveHero();b.classList.remove('on');b.setAttribute('aria-pressed',false)}
+        b.classList.toggle('cm-na',na);let n=b.querySelector('.cm-nat');if(na&&!n)b.querySelector('.tx').insertAdjacentHTML('beforeend',`<small class="cm-nat">${cmMode(h)==='beast'?'مش هيفرق مع الوحش':`مش هيفرق ${G('وانت','وانتي')} لوحدك`}</small>`);if(!na&&n)n.remove();const k=$('#pkN');if(k)k.textContent=`${cnt()}/${PK_MAX}`};
       pl.insertAdjacentHTML('beforeend',` <span class="pk-n" id="pkN">${cnt()}/${PK_MAX}</span>`);
-      pk.forEach(b=>b.onclick=()=>{const id=b.dataset.pk,on2=!h.perkOn[id];if(on2&&id==='comp'&&cmMode(h)==='solo'){toast(`«${H_PERKS.find(p=>p.id==='comp').n}» محتاج رفيق: ${G('اختار','اختاري')} رفيق من البلد أو بطل صاحبك`);cls(b,'shake');try{SFX.meh()}catch(e){}return}
+      pk.forEach(b=>b.onclick=()=>{const id=b.dataset.pk,on2=!h.perkOn[id];if(on2&&id==='comp'&&['solo','beast'].includes(cmMode(h))){toast(`«${H_PERKS.find(p=>p.id==='comp').n}» محتاج رفيق: ${G('اختار','اختاري')} رفيق من البلد أو بطل صاحبك`);cls(b,'shake');try{SFX.meh()}catch(e){}return}
         if(on2&&cnt()>=PK_MAX){toast(`خانتين بس: ${G('اقفل','اقفلي')} واحدة الأول`);cls(b,'shake');try{SFX.meh()}catch(e){}return}
         h.perkOn[id]=on2?1:0;saveHero();b.classList.toggle('on',on2);b.setAttribute('aria-pressed',on2);try{SFX.tick(on2?950:520)}catch(e){}vib(15);const n=$('#pkN');if(n)n.textContent=`${cnt()}/${PK_MAX}`})}
     /* C08: who comes along (a live friend from a co-op room stays as it was) */
@@ -27760,6 +27773,286 @@ SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 .mt-sum{margin:4px 2px 2px}.mt-row .tx small{line-height:1.6}`;document.head.appendChild(st)}
 L10N({'الحاجات':'Things','📦 صندوق الزيادة':'📦 Overflow box','صندوق الزيادة':'Overflow box','الشنطة مليانة':'The bag is full','الشنطة قربت تتملي':'The bag is almost full','فيه مكان':'There is room','ما يتباعش':"Can't be sold"},
   [[/^الخامات ?(\d*)$/,'Materials $1'],[/^شايلة? (\d+) من (\d+)$/,'Carrying $1 of $2']]);
+
+/* ---------- 5.93 / R06b / C86: العفو والاستسلام والمفاوضة (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
+   A fifth button in a fight, «💬 كلام» (only in a night, not in training, not against a boss, not in a live room with friends).
+   Every kind of foe has its own rules (TK_SP, C92): can it be spared, fed, talked to; is it fierce. Low health alone never makes a foe give up.
+   On every foe card a mood shows: «متردد» (2/3 health or less), «خايف» (1/3 or less), «رافض الصلح» (a fierce one that won't yield).
+   - «أوقف الضربة» (a switch, free): while on, a blow that would kill a foe who can be spared stops short (crits and poison too, in
+     hurtFoe, p8.js): he yields and runs. Outcome «spared», +2 سمعة.
+   - «أعفي عنه»: a foe that can be spared and is «خايف» runs off. Outcome «spared», +3 سمعة. Uses the turn.
+   - «أفاوضهم» (once a fight, only when every foe left can talk: people and afreets): a حضور roll as hard as the toughest defence +1
+     a foe. Full: they leave («pacified») with half their experience. Part: they want money (about twice what they carry). Fail: lost turn.
+   - «أرمي له أكل» (once a foe, C92): a beast that eats meat takes a fish or a fish dish from the bag. A scared or unsure one eats and goes
+     («pacified»); a fierce one eats and keeps fighting. People, afreets, ghosts and things don't take it. The food is used once.
+   - «أستسلم»: at 40% health or less you give up: they take 40% of what you made this night (at least 10), −2 سمعة, the night goes on.
+   Outcomes: killed / spared / fled / pacified (bonded comes from the shelter, p88.js). Anything not killed leaves no loot and no
+   kill count (endFight only counts foes that didn't flee). Every fight has an encounter id (kept with the saved fight), and peaceful
+   experience and reputation are given once per encounter (h.encDone), so a reload can't repeat them. */
+const TK_SURR=.4;
+const TK_SP_RX=[
+  [/(^|_)(sal|dog|cur|wolf|hyena|fox|weasel|hound)$/,{spare:1,feed:1}],
+  [/(^|_)(boar|ox|camel|ram|lion|grey|white)$/,{spare:1,fierce:1,feed:1}],
+  [/(^|_)(snake|viper|scorp|rat|beetle|bat|bats|crow|vulture|catfish|spider)$/,{spare:1}],
+  [/(^|_)(thief|ghafir|digger|bandit|smug|hunter|broker|soldier|servant|cook|chief|boy|cutter|awad|pick|keeper)$/,{spare:1,talk:1}],
+  [/(^|_)(afreet|jinn|tafreet|wafreet)$/,{talk:1}]];
+function tkSp(f){const a=String((f&&f.art)||'');for(const [rx,o] of TK_SP_RX)if(rx.test(a))return o;return {}}
+const tkBoss=f=>!!(f&&(f.boss||f.art==='nadaha'||(typeof X_boss==='function'&&X_boss(f))));
+const tkUp=C=>C.foes.filter(f=>f.hp>0&&!f.fled);
+const tkR=f=>f.hp/Math.max(1,f.max||f.hp);
+function tkMood(f){if(!f||f.hp<=0||f.fled||tkBoss(f))return '';const s=tkSp(f),r=tkR(f);if(!s.spare&&!s.talk)return '';
+  if(s.fierce)return r<=1/3?'رافض الصلح':'';if(!s.spare)return r<=2/3?FF(f,'متردد','مترددة'):'';return r<=1/3?FF(f,'خايف','خايفة'):r<=2/3?FF(f,'متردد','مترددة'):''}
+const tkScared=f=>{const s=tkSp(f);return !!(s.spare&&!s.fierce&&!tkBoss(f)&&f.hp>0&&!f.fled&&tkR(f)<=1/3)};
+function tkHoldOk(f){const s=tkSp(f);return !!(s.spare&&!s.fierce&&!tkBoss(f))}
+function tkCan(){const C=S.combat,h=S.hero;if(!C||!h||C.tutorial||!(typeof N_on==='function'&&N_on()))return false;if(typeof coLive==='function'&&coLive())return false;
+  const up=tkUp(C);return up.length>0&&!up.some(tkBoss)}
+const tkSpareOf=C=>{const t=C.foes[C.tgt];return tkScared(t)?t:tkUp(C).find(tkScared)||null};
+const tkTalkers=C=>tkUp(C).every(f=>tkSp(f).talk);
+const tkPrice=(h,C)=>{const L=Math.max(1,h.lvl|0);return Math.max(10,Math.round(tkUp(C).reduce((a,f)=>{const X=LOOT[f.art]||LOOT.dummy;return a+(X.m[0]+X.m[1])},0)*(1+.15*(L-1))/5)*5)};
+const tkDC=C=>{const up=tkUp(C);return Math.max(0,...up.map(f=>f.def||0))+Math.max(0,up.length-1)};
+const tkEarned=h=>{const N=S.night;return N&&typeof N.m0==='number'?Math.max(0,h.money-N.m0):0};
+const tkSurrLoss=h=>Math.min(h.money,Math.max(10,Math.floor(tkEarned(h)*.4)));
+/* C92: what a beast eats — raw fish from the bag of materials, or a fish dish */
+const TK_MEAT_RAW=['bolti','qarmout','bisaria','bouri','bayad','shrimp'],TK_MEAT_DISH=['grilled','qdish','seniya','bisfry','eelgrill'];
+const tkMeat=h=>{const r=TK_MEAT_RAW.find(k=>(h.res[k]||0)>0);if(r)return {raw:1,k:r};const d=TK_MEAT_DISH.find(k=>(h.bag[k]||0)>0);return d?{raw:0,k:d}:null};
+const tkMeatN=x=>x?(x.raw?resN(x.k):ITEMS[x.k].name):'';
+const tkFeedOf=C=>{const t=C.foes[C.tgt],ok=f=>f&&f.hp>0&&!f.fled&&!f.fed&&!tkBoss(f)&&tkSp(f).feed;return ok(t)?t:tkUp(C).find(ok)||null};
+/* the encounter: one id per fight, kept with a saved fight; peaceful rewards are settled once per id */
+/* a night's id: made once when the night starts and saved with it (N.tl is rewritten on every save, so it can't be an id) */
+function nightId(){const N=S.night,h=S.hero;if(!N)return '';if(!N.nid)N.nid='n'+((h&&h.nights)|0)+'_'+Date.now().toString(36);return N.nid}
+{const nb=N_begin;N_begin=function(){const r=nb.apply(this,arguments);try{if(S.night){nightId();N_save()}}catch(e){}return r}}
+function encDone(h,k){h.encDone=Array.isArray(h.encDone)?h.encDone:[];if(h.encDone.includes(k))return true;h.encDone.push(k);if(h.encDone.length>300)h.encDone=h.encDone.slice(-300);return false}
+{const sc=startCombat;startCombat=function(foes,win,tut){const N=S.night,enc=N&&N.fight&&N.fight.enc?N.fight.enc:(N?`${nightId()}:${N.card||S.scene||''}:${N.stop|0}:${(N.encN=(N.encN|0)+1)}`:'x'+Date.now());
+  const r=sc.apply(this,arguments);try{if(S.combat){S.combat.enc=enc;if(N&&N.fight){N.fight.enc=enc;N_save()}}}catch(e){}return r}}
+/* outcomes: a foe that went down and didn't yield, flee or leave was killed */
+let TK_XP=0;
+{const e0=endFight;endFight=function(won){const C=S.combat;try{if(C&&won&&C.foes.length&&C.foes.every(f=>f.fled||f.out&&f.out!=='killed'))C.peace=1}catch(e){}TK_XP=(C&&C.tkXP)|0;try{if(C)C.foes.forEach(f=>{if(!f.out)f.out=f.fled?'fled':f.hp<=0?'killed':'';const h=S.hero;if(h&&f.out&&f.out!=='killed'&&f.out!==''){h.cnt=h.cnt||{};h.cnt[f.out]=(h.cnt[f.out]||0)+1}})}catch(e){}try{return e0.apply(this,arguments)}finally{TK_XP=0}}}
+/* the experience from a deal shows on the loot screen with its level-ups (in a night with a sign, p14 counts it through gainXP) */
+{const lo=SCREENS.loot||loot;SCREENS.loot=function(){const L=S.loot;try{if(L&&!L.anim&&!L.gift&&TK_XP>0&&!L.tkX){L.tkX=1;const n=TK_XP;TK_XP=0;const om=typeof L_fx!=='undefined'&&L_fx;const ups=gainXP(n);if(!om)L.xp=(L.xp|0)+n;L.ups=(L.ups||[]).concat(ups||[]);saveHero()}}catch(e){console.warn(e)}return lo.apply(this,arguments)}}
+/* the log names what really happened to a foe who yielded */
+{const s0=say;say=function(t){const C=S.combat;if(C&&typeof t==='string')C.foes.forEach(f=>{if(!f.yielded||f.ySaid||!f.name)return;const a=`${f.name} ${FF(f,'وقع','وقعت')}`;if(!t.includes(a))return;f.ySaid=1;
+    t=t.split(`${a} من السم`).join(`${f.name} ${FF(f,'استسلم من وجع السم وجري','استسلمت من وجع السم وجريت')}`).split(a).join(`${f.name} ${FF(f,'استسلم وجري','استسلمت وجريت')}`)});arguments[0]=t;return s0.apply(this,arguments)}}
+/* a foe who yields from «أوقف الضربة»: +2 سمعة once */
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const was=f&&f.yielded;const r=h0.apply(this,arguments);try{const C=S.combat,h=S.hero;if(f&&f.yielded&&!was&&C&&h){if(!encDone(h,`${C.enc}:y${f.id}`))addRep(2,`{وقّفت|وقّفتي} الضربة عن ${f.name}`);if(S.run)S.run.spared=(S.run.spared||0)+1}}catch(e){}return r}}
+{const x0=X_hit;X_hit=function(f,v,col){const C=S.combat,h=S.hero;if(!(C&&C.hold&&f&&f.hp>0&&v>=f.hp&&tkHoldOk(f)))return x0.apply(this,arguments);
+  const d=f.hp;f.hp=0;f.fled=1;f.yielded=1;f.out='spared';try{const el=$('#foe'+f.id);if(el){cls(el,'hit');setBar(el,'f'+f.id,0);const hn=el.querySelector('.hpn');if(hn)hn.textContent='0/'+f.max;floatAt(el,'-'+d,col||'#ffb3a3','',22);SFX.hit(1)}
+    setTimeout(()=>{const e2=$('#foe'+f.id);if(e2)e2.classList.add('fledf');floatAt(e2,FF(f,'استسلم','استسلمت'),'#a6e3a0','',22)},220);
+    if(h&&!encDone(h,`${C.enc}:y${f.id}`))addRep(2,`{وقّفت|وقّفتي} الضربة عن ${f.name}`);if(S.run)S.run.spared=(S.run.spared||0)+1}catch(e){console.warn(e)}}}
+function tkSheet(){const C=S.combat,h=S.hero,MX=MXH(h),sp=tkSpareOf(C),low=h.hp<=Math.floor(MX*TK_SURR),up=tkUp(C),one=up.length===1,fd=tkFeedOf(C),meat=tkMeat(h),talk=tkTalkers(C);
+  const row=(id,t,s,ok,why,cls)=>`<button class="it tk${cls?' '+cls:''}" data-tk="${id}" ${ok?'':'disabled'}><span style="flex:1"><b>${t}</b><small>${s}${!ok&&why?`<span class="why"> · ${why}</span>`:''}</small></span></button>`;
+  const holdOk=up.some(tkHoldOk);
+  return `<div class="sheet tks"><div class="h">كلام · من غير ضرب</div>
+    ${row('hold',`✋ أوقف الضربة: ${C.hold?'شغّال':'مطفي'}`,`وهو شغّال، الضربة اللي كانت هتموّت وحش ينفع يتسامح بتقف قبل الموت: بيستسلم ويجري، من غير غنايم (سمعة +2)`,holdOk,'مفيش حد هنا بيستسلم',C.hold?'on':'')}
+    ${row('spare',sp?`أعفي عن ${sp.name}`:'أعفي عن حد',sp?`${sp.name} ${FF(sp,'خايف','خايفة')}: ${FF(sp,'هيجري','هتجري')} ومش ${G('هتاخد','هتاخدي')} ${FF(sp,'منه','منها')} حاجة (سمعة +3)`:'لما وحش ينفع يتسامح يبقى «خايف»',!!sp,'مفيش حد خايف دلوقتي')}
+    ${row('talk',one?FF(up[0],'أفاوضه','أفاوضها'):'أفاوضهم',`بتعتمد على حضور · ${talk?`لو ${G('نجحت','نجحتي')} ${one?FF(up[0],'يمشي','تمشي'):'يمشوا'} من غير غنايم، ولو نص نص ${one?FF(up[0],'هيطلب','هتطلب'):'هيطلبوا'} حوالي ${tkPrice(h,C)} جنيه`:'بس مع اللي بيتكلموا: الناس والعفاريت'}`,talk&&!C.tkTalk,C.tkTalk?G('جرّبت مرة في القتال ده','جرّبتي مرة في القتال ده'):'اللي قدامك ما بيتكلمش')}
+    ${row('feed',fd?`أرمي ${tkMeatN(meat)||'أكل'} لـ${fd.name}`:'أرمي أكل',fd?(meat?`${tkSp(fd).fierce?`${FF(fd,'هياكل','هتاكل')} وممكن ${FF(fd,'يكمّل','تكمّل')} عليك`:`لو ${FF(fd,'متردد أو خايف','مترددة أو خايفة')} ${FF(fd,'هياكل ويمشي','هتاكل وتمشي')}`} · سمك أو أكلة سمك من شنطتك`:''):'الوحوش اللي بتاكل لحمة بس',!!(fd&&meat),fd?`مفيش سمك ولا أكلة سمك ${G('معاك','معاكي')}`:'مفيش وحش هنا بياكل من إيدك')}
+    ${row('surr','أستسلم',`لو صحتك ${Math.round(TK_SURR*100)}% أو أقل: ${one?FF(up[0],'هياخد','هتاخد'):'هياخدوا'} ${tkSurrLoss(h)} جنيه من اللي ${G('كسبته','كسبتيه')} الليلة ${one?FF(up[0],'ويسيبك','وتسيبك'):'ويسيبوك'}، والليلة تكمل (سمعة −2)`,low,`صحتك لسه فوق ${Math.round(TK_SURR*100)}%`)}
+    <button class="btn ghost small" id="bagX">رجوع</button></div>`}
+{const b0=bagSheet;bagSheet=function(){const C=S.combat;if(C&&C.bag==='talk')return tkSheet();return b0.apply(this,arguments)}}
+{const h0=heroAct;heroAct=async function(a){const C=S.combat;if(a==='talk'){if(!C||C.busy||C.phase!=='me'||!tkCan())return;ac();C.bag='talk';return combat()}return h0.apply(this,arguments)}}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{const C=S.combat;if(!C||S.screen!=='combat')return r;
+    /* the moods on the foe cards */
+    C.foes.forEach(f=>{const m=tkMood(f),el=view.querySelector('#foe'+f.id);if(!m||!el||el.querySelector('.tk-mood'))return;el.insertAdjacentHTML('beforeend',`<span class="tk-mood${/رافض/.test(m)?' no':/خايف/.test(m)?' sc':''}">${m}</span>`)});
+    const acts=view.querySelector('.acts');
+    if(acts&&!C.bag&&!C.picking&&tkCan()&&!acts.querySelector('[data-a="talk"]')){const dis=C.busy||C.phase!=='me';
+      acts.insertAdjacentHTML('beforeend',`<button class="act tk-act${C.hold?' hold':''}" data-a="talk" ${dis?'disabled':''}><b>💬 كلام${C.hold?' · ✋':''}</b><small>${C.hold?'الضربة متوقفة قبل الموت · ':''}${G('اعفى','اعفي')}، ${G('فاوض','فاوضي')}، ${G('أكّل','أكّلي')}، أو ${G('استسلم','استسلمي')}</small></button>`);
+      acts.querySelector('[data-a="talk"]').onclick=()=>heroAct('talk')}
+    view.querySelectorAll('[data-tk]').forEach(b=>b.onclick=()=>tkDo(b.dataset.tk))}catch(e){console.warn(e)}return r}}
+/* the ways out */
+async function tkDo(k){const C=S.combat,h=S.hero;if(!C||C.busy||C.phase!=='me'||!tkCan())return;ac();const one=tkUp(C).length===1;
+  if(k==='hold'){C.hold=!C.hold;try{SFX.tick(C.hold?950:520)}catch(e){}C.bag=null;combat();return}
+  if(k==='talk'){if(C.tkTalk||!tkTalkers(C))return;C.bag=null;combat();const r=await rollCheck('حضور',{label:one?`تفاوض ${tkUp(C)[0].name}`:'تفاوض',cancel:true,dc:tkDC(C)});if(r.cancel){combat();return}
+    C.tkTalk=1;C.busy=true;const leave=()=>tkUp(C).forEach(f=>{f.hp=0;f.fled=1;f.out='pacified'});
+    if(r.tier==='full'){const xp=Math.max(1,Math.floor(tkUp(C).reduce((a,f)=>a+((LOOT[f.art]||LOOT.dummy).xp||0),0)/2)),fst=tkUp(C)[0];leave();
+      try{SFX.good()}catch(e){}await say(one?`{اتكلمت|اتكلمتي} بهدوء، و${fst.name} ${FF(fst,'سابك ومشي','سابتك ومشيت')}.`:'{اتكلمت|اتكلمتي} بهدوء، وهما بصوا لبعض ومشيوا.','good',1100);
+      if(!encDone(h,`${C.enc}:talk`))C.tkXP=xp;if(S.run)S.run.talked=(S.run.talked||0)+1;band('','اتفقتوا','',{dur:1000,sound:false});await sleep(900);C.busy=false;endFight(true);return}
+    if(r.tier==='part'){const p=tkPrice(h,C),fst=tkUp(C)[0];if(h.money>=p){h.money-=p;leave();try{SFX.coin&&SFX.coin()}catch(e){}
+        await say(`«{هات|هاتي} ${p} جنيه {وعدّي|وعدّي}.» {دفعت|دفعتي}، ${one?FF(fst,'ومشي','ومشيت'):'ومشيوا'}.`,'good',1200);if(S.run)S.run.talked=(S.run.talked||0)+1;band('','دفعت وعدّيت','',{dur:1000,sound:false});await sleep(900);C.busy=false;endFight(true);return}
+      await say(`«${p} جنيه.. {معاكش|معاكيش}؟ يبقى مفيش كلام.»`,'bad',1100);return afterHero()}
+    await say(one?`${tkUp(C)[0].name} ${FF(tkUp(C)[0],'ضحك','ضحكت')} في وشك.. وجه دوره.`:'ضحكوا في وشك.. وجه دورهم.','bad',1000);return afterHero()}
+  if(k==='spare'){const f=tkSpareOf(C);if(!f)return;C.bag=null;C.busy=true;f.hp=0;f.fled=1;f.out='spared';combat();try{SFX.good()}catch(e){}
+    if(!encDone(h,`${C.enc}:s${f.id}`))addRep(3,`{عفيت|عفيتي} عن ${f.name}`);if(S.run)S.run.spared=(S.run.spared||0)+1;
+    await say(`{نزّلت|نزّلتي} إيدك، و${f.name} ${FF(f,'بصلك وجري','بصتلك وجريت')}. (سمعة +3)`,'good',1100);
+    if(C.foes.every(x=>x.hp<=0)){band('','خلصت','',{dur:1000,sound:false});await sleep(800);endFight(true);return}return afterHero()}
+  if(k==='feed'){const f=tkFeedOf(C),m=tkMeat(h);if(!f||!m)return;C.bag=null;C.busy=true;f.fed=1;if(m.raw)h.res[m.k]=Math.max(0,(h.res[m.k]||0)-1);else h.bag[m.k]=Math.max(0,(h.bag[m.k]||0)-1);saveHero();
+    const s=tkSp(f),calm=!s.fierce&&tkR(f)<=2/3;try{SFX.tick&&SFX.tick(700)}catch(e){}
+    if(calm){f.hp=0;f.fled=1;f.out='pacified';combat();await say(`{رميت|رميتي} ${tkMeatN(m)} لـ${f.name}. ${FF(f,'شمّه وخده في بقه وجري','شمّته وخدته في بقها وجريت')}.`,'good',1100);if(S.run)S.run.fed=(S.run.fed||0)+1;
+      if(C.foes.every(x=>x.hp<=0)){band('','هدي','',{dur:1000,sound:false});await sleep(800);endFight(true);return}return afterHero()}
+    combat();await say(`${f.name} ${FF(f,'كل','كلت')} ${tkMeatN(m)} في لقمتين.. ${s.fierce?FF(f,'ورجع عليك أشرس','ورجعت عليك أشرس'):FF(f,'ولسه مش واثق فيك','ولسه مش واثقة فيك')}.`,'bad',1100);return afterHero()}
+  if(k==='surr'){const MX=MXH(h);if(h.hp>Math.floor(MX*TK_SURR))return;C.bag=null;C.busy=true;const lose=tkSurrLoss(h),names=tkUp(C).map(f=>f.name);h.money-=lose;
+    if(!encDone(h,`${C.enc}:surr`))addRep(-2,`{استسلمت|استسلمتي} لـ${names[0]}`);if(S.run)S.run.surr=(S.run.surr||0)+1;h.cnt=h.cnt||{};h.cnt.surr=(h.cnt.surr||0)+1;try{SFX.down&&SFX.down()}catch(e){}
+    S.tkSurr={lose,who:names.join(' و'),one:names.length===1,g:FF(tkUp(C)[0],'m','f')};S.combat=null;h.hp=Math.max(1,h.hp);
+    const N=S.night;if(N){N.fight=null;N.res=1}saveHero();if(typeof N_save==='function')N_save();S.screen='story';goto('tk_surr')}}
+SC.tk_surr={art:'night',chip:()=>{try{return typeof N_chip==='function'?N_chip():'الليل'}catch(e){return 'الليل'}},
+  text:()=>{const X=S.tkSurr||{lose:0,who:'',one:1,g:'m'};return `{رميت|رميتي} سلاحك على الأرض {ورفعت|ورفعتي} إيدك. ${X.who} ${X.one?(X.g==='f'?'قربت وفتّشت جيوبك':'قرب وفتّش جيوبك'):'قربوا وفتّشوا جيوبك'}، ${X.lose?`${X.one?(X.g==='f'?'وخدت':'وخد'):'وخدوا'} ${X.lose} جنيه، `:''}${X.one?(X.g==='f'?'وسابتك':'وسابك'):'وسابوك'} {قاعد|قاعدة} في التراب.<div class="note" style="color:#f0a090">${X.lose?`−${X.lose} جنيه · `:''}سمعة −2</div>`},
+  ch:()=>[{t:'أقوم وأكمل طريقي',go:()=>{S.tkSurr=null;goto('next')}}]};
+{const st=document.createElement('style');st.textContent=`.tk-act{grid-column:1/3;min-height:44px}.tk-act b{font-size:15px}.tk-act.hold{border-color:#a6e3a0}.tks .it{min-height:56px}.tks .it small .why{color:#f0a090}.tks .it.on{border-color:#a6e3a0;background:#a6e3a01a}
+.tk-mood{display:inline-block;margin-top:3px;font-size:10.5px;font-weight:800;padding:0 7px;border-radius:9px;background:#e0b25a26;color:var(--gold2)}.tk-mood.sc{background:#a6e3a026;color:#a6e3a0}.tk-mood.no{background:#d0483b33;color:#f0a090}`;document.head.appendChild(st)}
+L10N({'أرمي أكل':'Throw food','أعفي عن حد':'Spare someone','أستسلم':'Give up','كلام · من غير ضرب':'Talk · no fighting','اتفقتوا':'A deal','دفعت وعدّيت':'Paid and passed','هدي':'Calmed','رافض الصلح':'Won\'t yield','خايف':'Afraid','خايفة':'Afraid','متردد':'Unsure','مترددة':'Unsure'},[[/^أفاوضه?م?$|^أفاوضها$/,'Negotiate'],[/^أرمي (.+) لـ(.+)$/,'Throw $1 to $2'],[/^أعفي عن (.+)$/,'Spare $1'],[/^أستسلم$/,'Give up']]);
+
+/* ---------- 5.93 / C88 (MVP) + C92/C93/C94 basics: مأوى الوحوش (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
+   The shelter is a place on the edge of the village by the fields where the monsters you made a true bond with live. It is NOT a rest
+   stop for the hero. This first version has one creature that can bond, «السلعوة الصغيرة», through three events in الغيطان on three
+   different nights (C94: trust is built step by step, never from one meal or one spare):
+     1. «سلعوة صغيرة في الفخ» — free her (trust +1), or give her fish first and then free her (+2; C92: fish yes, bread no).
+     2. «السلعوة الصغيرة ورا ضهرك» — share fish (+1; C93: the first time she may grab it and run, a saved roll, no trust lost), protect
+        her from wolves (+2 after the fight is won), or send her away (the chain ends).
+     3. «العهد» — with trust 3+ from at least two kinds of help, she comes to the shelter (outcome «bonded»), or you let her go free.
+   Each creature is its own record (h.crt.list, schema CR_V): uid (from the encounter that started it, so a reload or a restored save
+   can never make a second one), sp, variant, origin, owner, name, bondXP, bondLevel, health, trait, status, assign.
+   Room: 2 in the shelter, 1 active (C88 test values). Jobs: in the shelter / «معاك في الليالي» (the companion slot, never an extra
+   turn: in a fight it takes the companion's place; outside fights the night is played as «لوحدك») / «تحرس الغيط» (no crows land),
+   never two at once. Set free only after a second tap. Nothing is lost while the player is away; health comes back by the next
+   town day. It is not a bag item and can't be sold. */
+const CR_V=1,CR_MAX=2,CR_BOND=[0,5,12,22,35];
+const CR_SP={sal_cub:{n:'سلعوة صغيرة',art:'sal',g:'f',food:'سمك نيّ',traits:['خجولة','فضولية','عنيدة'],names:['زيتونة','سمسمة','لولا','كراملّة'],
+  hp:L=>8+4*L,abil:[[1,'بتعض {معاك|معاكي} في القتال (مكان الرفيق)'],[2,'صحتها بتزيد مع الألفة'],[3,'بتحرس الغيط: الغربان ما بتقربش'],[5,'ألفة كاملة: صحتها في أعلاها']]}};
+const crLv=c=>{let L=1;CR_BOND.forEach((x,i)=>{if((c.bondXP|0)>=x)L=i+1});return Math.min(CR_BOND.length,L)};
+const crNext=c=>{const L=crLv(c);return L>=CR_BOND.length?null:CR_BOND[L]};
+const crMax=c=>CR_SP[c.sp].hp(crLv(c));
+function crtFix(h){if(!h)return {list:[],pend:{}};let X=h.crt;if(!X||typeof X!=='object'||Array.isArray(X))X=h.crt={};X.v=CR_V;
+  if(!Array.isArray(X.list))X.list=[];const seen={};X.list=X.list.filter(c=>{if(!c||!c.uid||!CR_SP[c.sp]||seen[c.uid])return false;seen[c.uid]=1;return true}).slice(0,CR_MAX);
+  X.list.forEach(c=>{c.bondXP=Math.max(0,c.bondXP|0);c.bondLevel=crLv(c);c.health=Math.max(0,Math.min(crMax(c),c.health==null?crMax(c):c.health|0));if(!['rest','comp','farm'].includes(c.assign))c.assign='rest'});
+  /* one active companion and one farm guard at most */
+  let a=0,f=0;X.list.forEach(c=>{if(c.assign==='comp'&&a++)c.assign='rest';if(c.assign==='farm'&&f++)c.assign='rest'});
+  if(!X.pend||typeof X.pend!=='object')X.pend={};if(!Array.isArray(X.done))X.done=[];if(!h.hid)h.hid='h'+Math.random().toString(36).slice(2,10);return X}
+const crActive=h=>crtFix(h).list.find(c=>c.assign==='comp')||null;
+const crGuard=h=>crtFix(h).list.find(c=>c.assign==='farm')||null;
+const CRG=(c,m,f)=>c&&c.g==='f'?f:m;
+/* the bond chain for the salawa cub */
+const crP=h=>{const X=crtFix(h);const P=X.pend.sal_cub=X.pend.sal_cub&&typeof X.pend.sal_cub==='object'?X.pend.sal_cub:{};P.trust=P.trust|0;P.kinds=P.kinds||{};return P};
+const crNightId=()=>S.night?nightId():'';
+const crHas=h=>crtFix(h).list.some(c=>c.sp==='sal_cub');
+const crClosed=h=>{const P=crP(h);return !!(P.gone||P.freed||P.dead||crHas(h))};
+function crTrust(h,n,kind,key){const P=crP(h),X=crtFix(h);if(X.done.includes(key))return 0;X.done.push(key);if(X.done.length>200)X.done=X.done.slice(-200);P.trust+=n;P.kinds[kind]=1;P.last=crNightId();saveHero();return n}
+/* C93: a roll kept with the encounter, so a reload gives the same answer */
+function crRoll(h,key,p){const P=crP(h);P.rolls=P.rolls||{};if(P.rolls[key]==null)P.rolls[key]=Math.random()<p?1:0;saveHero();return !!P.rolls[key]}
+const crMeat=h=>typeof tkMeat==='function'?tkMeat(h):null;
+const crUseMeat=(h,m)=>{if(m.raw)h.res[m.k]=Math.max(0,(h.res[m.k]||0)-1);else h.bag[m.k]=Math.max(0,(h.bag[m.k]||0)-1)};
+const crWolf=()=>({name:'ديب جعان',art:'g_wolf',hp:6,dmg:2});
+addCards('ghitan',[
+ {id:'g_cub1',type:'people',stars:2,title:'سلعوة صغيرة في الفخ',teaser:'عيا رفيع بيطلع من بين الدرة',w:3,req:()=>{const h=S.hero;return !!h&&!crClosed(h)&&!crP(h).e1},
+  scene:{art:'fields',chip:'غيطان الدرة',text:()=>`عيا رفيع بيطلع من بين عيدان الدرة. {قربت|قربتي}.. <b>سلعوة صغيرة</b> قد القطة، رجلها الورانية في فخ حديد صدي، والدم ناشف على الفرو. شافتك، {وكشّرت|وكشّرت} سنانها الصغيرة وهي بتترعش.`,
+   ch:()=>{const h=S.hero,m=crMeat(h);return [
+    {t:'أفك الفخ بالراحة',stat:'خفة',res:{
+      full:()=>{crP(h).e1=1;crTrust(h,1,'save',crNightId()+':c1');return {tier:'full',t:'{فكيت|فكيتي} الفك الحديد شبر شبر. السلعوة الصغيرة سحبت رجلها، {وبصتلك|وبصتلك} لحظة طويلة.. وجريت في الدرة. (الثقة +1)',go:'next'}},
+      part:()=>{crP(h).e1=1;crTrust(h,1,'save',crNightId()+':c1');return {tier:'part',hp:-2,t:'الفخ اتفك، بس عضتك في صباعك قبل ما تجري. عضة صغيرة.. بس بتوجع. (الثقة +1)',go:'next'}},
+      fail:{t:'الفخ اتقفل تاني على إيدك وعلى رجلها. صرخت، وعضتك جامد. يمكن تلاقيها تاني ليلة تانية.',hp:-3,go:'next'}}},
+    m&&{t:`أرمي لها ${tkMeatN(m)} الأول، وبعدين أفك الفخ`,sub:`${G('هتستعمل','هتستعملي')} ${tkMeatN(m)}`,res:()=>{crUseMeat(h,m);crP(h).e1=1;crTrust(h,2,'feed',crNightId()+':c1');
+      return {tier:'full',t:'نطت على الأكل ونسيت الفخ خالص. {فكيته|فكيتيه} وهي بتاكل، وما {اتعضّتش|اتعضّتيش}. لما خلصت، لحست إيدك مرة وجريت. (الثقة +2)',go:'next'}}},
+    (h.res.bread||0)>0&&{t:'أرمي لها حتة عيش',sub:'عيش من شنطة الخامات',res:{tier:'plain',t:'شمّت العيش ولفّت وشها. السلعوة ما بتاكلش عيش.. والعيش لسه {معاك|معاكي}.',go:'next'}},
+    {t:'أسيبها وأكمل',ghost:1,res:{tier:'plain',t:'{سبتها|سبتيها} في الفخ. العيا فضل وراك لحد ما الدرة غطّته.',go:'next'}},
+    {t:'أخلص عليها',sub:'سلعوة.. حتى لو صغيرة',res:()=>{crP(h).dead=1;saveHero();return {tier:'fail',rep:[-5,'{موّت|موّتي} سلعوة صغيرة متكتفة'],t:'ضربة واحدة. العيا سكت، والدرة رجعت ساكتة.',go:'next'}}}
+   ].filter(Boolean)}}},
+ {id:'g_cub2',type:'people',stars:2,title:'حد ماشي ورا ضهرك',teaser:'خطوات صغيرة بتقف كل ما الدرة تسكت',w:3,req:()=>{const h=S.hero;if(!h||crClosed(h))return false;const P=crP(h);return !!P.e1&&!P.e2&&P.trust>=1&&P.last!==crNightId()},
+  scene:{art:'fields',chip:'غيطان الدرة',text:()=>`خطوات صغيرة ورا ضهرك، بتقف لما {تقف|تقفي}. {لفيت|لفيتي}: <b>السلعوة الصغيرة</b> اللي {فكيتها|فكيتيها} من الفخ. رجلها لسه بتعرج، وبطنها لازقة في ضهرها من الجوع.`,
+   ch:()=>{const h=S.hero,m=crMeat(h),k=crNightId()+':c2';return [
+    m&&{t:`أشاركها ${tkMeatN(m)}`,sub:`${G('هتستعمل','هتستعملي')} ${tkMeatN(m)}`,res:()=>{crUseMeat(h,m);const P=crP(h);
+      if(P.trust<2&&crRoll(h,k,.35)){saveHero();return {tier:'part',t:'خطفت الأكل من إيدك وجريت قبل ما {تلحق|تلحقي} {تقول|تقولي} حاجة. يمكن ترجع.. ويمكن لأ.',go:'next'}}
+      P.e2=1;crTrust(h,1,'feed',k);return {tier:'full',t:'أكلت جنبك وهي بتبصلك كل لقمة. لما خلصت، قعدت قريب.. مش قريب أوي. (الثقة +1)',go:'next'}}},
+    (h.res.bread||0)>0&&{t:'أرمي لها رغيف عيش',res:{tier:'plain',t:'شمّت الرغيف ولفّت وشها تاني. اللي في عينيها مش زعل.. ده جوع لحاجة تانية.',go:'next'}},
+    {t:'أحميها من الديابة اللي بتشم ريحتها',sub:'قتال',res:{tier:'plain',t:'من ورا الدرة طلع ديب جعان، وعينه على السلعوة الصغيرة. {وقفت|وقفتي} قدامها.',fight:[crWolf(),crWolf()],go:'g_cub2_won'}},
+    {t:'أطردها',res:()=>{crP(h).gone=1;saveHero();return {tier:'plain',t:'{خبطت|خبطتي} الأرض برجلك. جريت، ووقفت بعيد بصّت وراها.. ومشيت.',go:'next'}}},
+    {t:'أسيبها تمشي ورايا',ghost:1,res:{tier:'plain',t:'{سبتها|سبتيها}. فضلت ماشية ورا ضهرك شوية، وبعدين الدرة خدتها.',go:'next'}}
+   ].filter(Boolean)}},
+  more:{won:{art:'fields',chip:'غيطان الدرة',onEnter:()=>{const h=S.hero,P=crP(h);P.e2=1;crTrust(h,2,'protect',crNightId()+':c2w')},
+    text:()=>'الديابة جريت. السلعوة الصغيرة طلعت من ورا رجلك، ولحست الجرح اللي في إيدك. (الثقة +2)',ch:()=>[{t:'أكمل',go:'next'}]}}},
+ {id:'g_cub3',type:'people',stars:3,title:'عينين بتستناك',teaser:'حد مستنيك على طرف الغيط',w:4,req:()=>{const h=S.hero;if(!h||crClosed(h))return false;const P=crP(h);return !!P.e2&&!P.e3&&P.trust>=3&&Object.keys(P.kinds).length>=2&&P.last!==crNightId()},
+  scene:{art:'fields',chip:'طرف الغيط',text:()=>{const h=S.hero,full=crtFix(h).list.length>=CR_MAX;return `على طرف الغيط، <b>السلعوة الصغيرة</b> قاعدة مستنياك. رجلها خفّت، وعينيها مش خايفة. لما {قربت|قربتي}، ما جريتش.`+(full?`<div class="note" style="color:#f0a090">مأوى الوحوش مليان (${CR_MAX} من ${CR_MAX}).</div>`:'')},
+   ch:()=>{const h=S.hero,full=crtFix(h).list.length>=CR_MAX,P=crP(h);return [
+    !full&&{t:'أمد إيدي وأقولها تيجي معايا',sub:'عهد: هتعيش في مأوى الوحوش في البلد',res:()=>{const c=crBond(h,'sal_cub',`${crNightId()}:g_cub`);P.e3=1;saveHero();
+      return {tier:'full',t:`حطت راسها تحت إيدك. من النهارده <b>${c?esc(c.name):'السلعوة الصغيرة'}</b> بتاعتك، ومستنياك في مأوى الوحوش على طرف البلد.`,go:'next'}}},
+    {t:'أسيبها حرة',res:()=>{P.freed=1;saveHero();return {tier:'plain',rep:[2,'{سبت|سبتي} سلعوة صغيرة حرة'],t:'{شاورت|شاورتي} لها على الغيطان. بصتلك.. وجريت في الضلمة. حرة.',go:'next'}}},
+    full&&{t:'أكمل طريقي (المأوى مليان)',ghost:1,res:{tier:'plain',t:'{سبتها|سبتيها} مستنية. يمكن لما يبقى في المأوى مكان.',go:'next'}}
+   ].filter(Boolean)}}}
+]);
+/* the bond: one creature per encounter, never twice */
+function crBond(h,sp,origin){const X=crtFix(h),D=CR_SP[sp],uid='c_'+sp+'_'+origin;if(X.list.some(c=>c.uid===uid)||X.list.length>=CR_MAX)return null;
+  const c={uid,sp,variant:'base',origin,owner:h.hid,name:pick(D.names),g:D.g,bondXP:0,bondLevel:1,health:D.hp(1),trait:pick(D.traits),status:'ok',assign:X.list.some(x=>x.assign==='comp')?'rest':'comp',t:Date.now()};
+  X.list.push(c);h.cnt=h.cnt||{};h.cnt.bonded=(h.cnt.bonded|0)+1;saveHero();try{ach&&ach('bond')}catch(e){}return c}
+/* health comes back by the next town day (nothing is ever lost while away) */
+function crHeal(h){const X=crtFix(h),d=h.nDone|0;X.list.forEach(c=>{if(c.hd!==d){c.hd=d;c.health=crMax(c);c.status='ok'}})}
+/* ---------- the shelter screen ---------- */
+SCREENS.maawa=function(){const h=S.hero;if(!h){S.screen='title';return render()}const X=crtFix(h);crHeal(h);saveHero();
+  const card=c=>{const D=CR_SP[c.sp],L=crLv(c),nx=crNext(c),mx=crMax(c),job={rest:'في المأوى',comp:G('معاك في الليالي','معاكي في الليالي'),farm:'بتحرس الغيط'}[c.assign];
+    const conf=CR.conf===c.uid;
+    return `<div class="card cr-c" data-cr="${c.uid}"><div class="cr-top"><span class="cr-pic">${foeArt(D.art)}</span><div class="cr-tx"><b translate="no">${esc(c.name)}</b><small>${D.n} · ${c.trait} · ${CRG(c,'بيحب','بتحب')} ${D.food}</small>
+        <small>${CRG(c,'المستوى','المستوى')} ${L} · صحة ${c.health}/${mx}</small></div><button class="cr-ren" data-crn="${c.uid}" aria-label="غيّر الاسم">✏️</button></div>
+      <div class="cr-row"><span>الثقة والألفة</span><b>${'★'.repeat(L)}${'☆'.repeat(CR_BOND.length-L)}</b></div>
+      <div class="bg-bar"><i style="width:${nx?Math.round(((c.bondXP|0)-CR_BOND[L-1])/(nx-CR_BOND[L-1])*100):100}%"></i></div><small class="cr-nx">${nx?`${(c.bondXP|0)-CR_BOND[L-1]} من ${nx-CR_BOND[L-1]} للمستوى ${L+1} · الألفة بتزيد مع كل قتال ${G('تكسبه','تكسبيه')} ${CRG(c,'وهو','وهي')} ${G('معاك','معاكي')} (لحد 3 في الليلة)`:'أعلى ألفة'}</small>
+      <div class="cr-ab">${D.abil.map(([l,t])=>`<span class="${L>=l?'on':''}">${L>=l?'✓':'🔒 '+l} ${T(t)}</span>`).join('')}</div>
+      <div class="cr-row"><span>المهمة دلوقتي</span><b>${job}</b></div>
+      <div class="cr-bt">${c.assign!=='comp'?`<button class="tw-buy" data-cra="comp:${c.uid}">${G('خدها معاك','خديها معاكي').replace('ها',CRG(c,'ه','ها'))}</button>`:''}
+        ${c.assign!=='rest'?`<button class="tw-buy" data-cra="rest:${c.uid}">${G(CRG(c,'رجّعه','رجّعها'),CRG(c,'رجّعيه','رجّعيها'))} المأوى</button>`:''}
+        ${c.assign!=='farm'&&L>=3?`<button class="tw-buy" data-cra="farm:${c.uid}">${CRG(c,'يحرس الغيط','تحرس الغيط')}</button>`:''}
+        <button class="tw-buy sell${conf?' warn':''}" data-crf="${c.uid}">${conf?G('متأكد؟','متأكدة؟')+' '+CRG(c,'مش هيرجع','مش هترجع'):G(CRG(c,'سيبه حر','سيبها حرة'),CRG(c,'سيبيه حر','سيبيها حرة'))}</button></div></div>`};
+  const P=crP(h),hint=crClosed(h)?'':P.e2?'السلعوة الصغيرة بتستناك على طرف الغيط في ليلة جاية.':P.e1?'السلعوة الصغيرة اللي {فكيتها|فكيتيها} ممكن تقابلك تاني في الغيطان.':'';
+  view.innerHTML=`${twTop('مأوى الوحوش')}<div class="tw cr">
+    ${twNpcHTML('abdo',T(`«المأوى ده على طرف الغيط. الوحش اللي يعاهدك بجد يعيش هنا. ما {بتشتريهوش|بتشتريهوش} ولا {بتبيعه|بتبيعيه}.»`))}
+    <div class="card cr-how"><b>${X.list.length} من ${CR_MAX}</b> في المأوى · واحد بس ${G('تاخده معاك','تاخديه معاكي')} في الليالي (مكان الرفيق، مش دور زيادة) · واحد ممكن يحرس الغيط. الإطعام لوحده أو العفو لوحده عمره ما يعمل عهد: الثقة بتتبني على كذا ليلة.</div>
+    ${X.list.length?`<div class="col">${X.list.map(card).join('')}</div>`:`<div class="card bg-none">المأوى فاضي. مش كل وحش بيتروّض، وأول عهد بيبدأ من الغيطان بالليل.${hint?`<br><small>${T(hint)}</small>`:''}</div>`}
+  </div>`;
+  twBack();
+  view.querySelectorAll('[data-cra]').forEach(b=>b.onclick=()=>{const v=b.dataset.cra,i=v.indexOf(':');crAssign(h,v.slice(i+1),v.slice(0,i))});
+  view.querySelectorAll('[data-crf]').forEach(b=>b.onclick=()=>crFree(h,b.dataset.crf));
+  view.querySelectorAll('[data-crn]').forEach(b=>b.onclick=()=>crRename(h,b.dataset.crn))};
+const CR={conf:null};
+function crAssign(h,uid,a){const X=crtFix(h),c=X.list.find(x=>x.uid===uid);if(!c||!['rest','comp','farm'].includes(a))return;if(h.night&&(a==='comp'||c.assign==='comp')){toast(`عندك ليلة متسابة: ${G('غيّر','غيّري')} بعد ما الليلة تخلص`);return}
+  if(a==='farm'&&crLv(c)<3)return;X.list.forEach(x=>{if(x!==c&&x.assign===a&&a!=='rest')x.assign='rest'});c.assign=a;if(a==='comp')h.compMode='beast';else if(h.compMode==='beast'&&!crActive(h))h.compMode='solo';
+  CR.conf=null;saveHero();try{SFX.tick(820)}catch(e){}twRender()}
+function crFree(h,uid){const X=crtFix(h),c=X.list.find(x=>x.uid===uid);if(!c)return;if(h.night&&c.assign==='comp'){toast(`عندك ليلة متسابة: بعد ما الليلة تخلص`);return}
+  if(CR.conf!==uid){CR.conf=uid;try{SFX.meh()}catch(e){}return twRender()}CR.conf=null;X.list=X.list.filter(x=>x.uid!==uid);if(h.compMode==='beast'&&!crActive(h))h.compMode='solo';
+  h.cnt=h.cnt||{};h.cnt.crFreed=(h.cnt.crFreed|0)+1;saveHero();toast(`${esc(c.name)} ${CRG(c,'رجع','رجعت')} الغيطان حر${CRG(c,'','ة')}.`);twRender()}
+function crRename(h,uid){const c=crtFix(h).list.find(x=>x.uid===uid);if(!c)return;const el=view.querySelector(`[data-cr="${uid}"] .cr-tx b`);if(!el)return;
+  el.outerHTML=`<span class="cr-in"><input id="crName" maxlength="14" value="${esc(c.name)}" aria-label="الاسم"><button class="tw-buy" id="crOk">تمام</button></span>`;const i=$('#crName');i.focus();
+  $('#crOk').onclick=()=>{const v=String(i.value||'').replace(/[<>{}|]/g,'').trim().slice(0,14);if(v){c.name=v;saveHero()}twRender()}}
+/* ---------- the town: a place by the fields ---------- */
+function crArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges"><rect width="160" height="90" fill="#1d2414"/><rect y="62" width="160" height="28" fill="#3a3220"/>
+  ${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${4+i*20}" y="${36+(i%2)*4}" width="3" height="28" fill="#8ab04a"/><rect x="${2+i*20}" y="${32+(i%2)*4}" width="7" height="6" fill="#c9a54a"/>`).join('')}
+  <rect x="52" y="40" width="56" height="26" fill="#6a4a2a"/><rect x="48" y="34" width="64" height="8" fill="#8a5a2a"/><rect x="72" y="50" width="16" height="16" fill="#2a1a10"/>
+  <rect x="76" y="56" width="3" height="3" fill="#f3c14d"/><rect x="82" y="56" width="3" height="3" fill="#f3c14d"/></svg>`}
+{const pa=placeArt;placeArt=function(id){if(id==='maawa')return crArt();return pa.apply(this,arguments)}}
+TW_EXTRA.push(h=>{const X=crtFix(h),a=crActive(h);return {id:'maawa',go:'maawa',n:'مأوى الوحوش',w:'على طرف الغيطان',s:X.list.length?`${X.list.length} من ${CR_MAX}${a?` · ${esc(a.name)} ${G('معاك','معاكي')}`:''}`:'فاضي لسه'}});
+{const g=(typeof TW_GROUPS!=='undefined'?TW_GROUPS:[]).find(x=>x.go.includes('farm'));if(g&&!g.go.includes('maawa'))g.go.splice(g.go.indexOf('farm')+1,0,'maawa')}
+/* the farm guard: no crows while she watches */
+{const f0=farmTick;farmTick=function(){const h=S.hero;try{if(h&&crGuard(h)){FARM.next=Date.now()+60000;if(FARM.crow>=0){const P=h.farm&&h.farm.p;if(P&&P[FARM.crow])P[FARM.crow].cr=0;FARM.crow=-1}}}catch(e){}return f0.apply(this,arguments)}}
+{const fm=SCREENS.farm;if(fm)SCREENS.farm=function(){const r=fm.apply(this,arguments);try{const h=S.hero,g=h&&crGuard(h),top=view.querySelector('.tw');if(g&&top&&!$('#crGuard'))top.insertAdjacentHTML('afterbegin',`<div class="tw-sm" id="crGuard" style="color:#a6e3a0">🐾 <span translate="no">${esc(g.name)}</span> ${CRG(g,'بيحرس','بتحرس')} الغيط: الغربان ما بتقربش.</div>`)}catch(e){}return r}}
+/* ---------- in the night: the creature takes the companion's place in fights only ---------- */
+function crComp(h){const c=crActive(h);if(!c)return null;const D=CR_SP[c.sp],mx=crMax(c);return {name:c.name,g:c.g,beast:1,art:D.art,crUid:c.uid,hp:Math.max(1,Math.min(mx,c.health|0)),max:mx,cls:''}}
+{const p0=portrait;portrait=function(c){if(c&&c.beast)return `<span class="cr-pt">${foeArt(c.art)}</span>`;return p0.apply(this,arguments)}}
+/* a night with her: N.beast holds her uid for the whole night (N.solo stays 1, so the story is «لوحدك»). Only fights have her, and
+   foes are not made weaker then (p83 asks crBeastIn). A fight saved and resumed keeps her as she was in it (the saved companion). */
+function crBeastIn(){const N=S.night,h=S.hero;return !!(N&&N.beast&&h&&crtFix(h).list.some(c=>c.uid===N.beast))}
+{const sc=startCombat;startCombat=function(foes,win,tut){try{if(!tut&&crBeastIn()&&!(S.comp&&S.comp.beast&&S.comp.crUid===S.night.beast)){const b=crComp(S.hero);if(b)S.comp=b}}catch(e){console.warn(e)}return sc.apply(this,arguments)}}
+/* out of a fight she goes back to waiting: her health is written on her record and the stand-in takes the slot again */
+function crBack(h){const c0=S.comp;if(!h||!c0||!c0.beast)return false;const c=crtFix(h).list.find(x=>x.uid===c0.crUid);if(c)c.health=Math.max(1,Math.min(crMax(c),c0.hp|0));
+  S.comp=S.night?(typeof cmGhost==='function'?cmGhost(h):S.comp):compFor(h);if(S.night&&h.night&&h.night.N===S.night)h.night.comp=S.comp;return true}
+{const e0=endFight;endFight=function(won){const h=S.hero,N=S.night;try{if(S.comp&&S.comp.beast&&h){if(won&&N)N.crF=(N.crF|0)+1;crBack(h);saveHero()}}catch(e){console.warn(e)}return e0.apply(this,arguments)}}
+/* any other way out of a fight (giving up, running) is caught on the next draw */
+{const r0=render;render=function(){try{if(S.comp&&S.comp.beast&&!S.combat&&S.hero&&crBack(S.hero)){if(S.night&&typeof N_save==='function')N_save();else saveHero()}}catch(e){console.warn(e)}return r0.apply(this,arguments)}}
+/* she bites, she doesn't hit */
+{const s0=say;say=function(t){const c=S.comp;if(c&&c.beast&&typeof t==='string'){t=t.split(`${c.name} ${CRG(c,'ضرب','ضربت')}`).join(`${c.name} ${CRG(c,'عض','عضت')}`).split(`${CRG(c,'حاول','حاولت')} ${CRG(c,'يضرب','تضرب')}`).join(`${CRG(c,'حاول','حاولت')} ${CRG(c,'يعض','تعض')}`);arguments[0]=t}return s0.apply(this,arguments)}}
+/* resting in the night (camp, a rest card) rests her too, like a companion */
+{const a0=applyOutcome;applyOutcome=function(o){try{const h=S.hero,N=S.night;if(o&&typeof o==='object'&&o.heal>0&&N&&N.beast&&h){const c=crtFix(h).list.find(x=>x.uid===N.beast);if(c){const mx=crMax(c);c.health=Math.min(mx,(c.health|0)+Math.ceil(o.heal/MXH(h)*mx))}}}catch(e){}return a0.apply(this,arguments)}}
+/* the bond grows only from fights won together: up to 3 a night, given once a night (an empty night gives nothing) */
+function crNightEnd(h){const N=S.night;if(!h||!N||!N.beast||N.crGiven)return;N.crGiven=1;const c=crtFix(h).list.find(x=>x.uid===N.beast);const n=Math.min(3,N.crF|0);if(!c||n<=0){saveHero();return}
+  if(!encDone(h,`${nightId()}:bond`)){const L0=crLv(c);c.bondXP=(c.bondXP|0)+n;c.bondLevel=crLv(c);if(c.bondLevel>L0)setTimeout(()=>{try{toast(`${esc(c.name)}: الألفة بقت ${c.bondLevel} ★`)}catch(e){}},600)}saveHero()}
+{const l0=N_lossScreen;N_lossScreen=function(){try{crNightEnd(S.hero)}catch(e){}return l0.apply(this,arguments)}}
+{const x0=N_clear;N_clear=function(){try{crNightEnd(S.hero)}catch(e){}return x0.apply(this,arguments)}}
+if(typeof N_home==='function'){const h0=N_home;N_home=function(){try{crNightEnd(S.hero)}catch(e){}return h0.apply(this,arguments)}}
+/* the companion choice (p83): «وحشك» uses the companion's slot; the story is played as «لوحدك» and only fights have her.
+   Her health comes back by the next town day before a night starts. */
+{const nb=N_begin;N_begin=function(){const h=S.hero,beast=S.cmGo==='beast'&&h&&crActive(h);if(beast){S.cmGo='solo';crHeal(h)}const r=nb.apply(this,arguments);
+    try{if(beast&&S.night){S.night.beast=beast.uid;N_save()}}catch(e){}return r}}
+ACH.push({id:'bond',n:'أول عهد',d:'وحش يعاهدك ويعيش في مأوى الوحوش',r:30});
+{const st=document.createElement('style');st.textContent=`
+.cr-c{display:flex;flex-direction:column;gap:6px}.cr-top{display:flex;gap:10px;align-items:center}.cr-pic{width:64px;height:64px;flex:none;border-radius:12px;background:#0004;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cr-pic svg{width:60px;height:60px}.cr-tx{flex:1;display:flex;flex-direction:column;min-width:0}.cr-tx b{font-size:17px}.cr-tx small{color:var(--mute);font-size:12px;line-height:1.6}
+.cr-ren{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:#0003;font-size:18px}.cr-row{display:flex;justify-content:space-between;gap:8px;font-size:13px}.cr-row b{color:var(--gold2)}
+.cr-nx{color:var(--mute);font-size:11.5px;line-height:1.6}.cr-ab{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--dim)}.cr-ab .on{color:#a6e3a0}
+.cr-bt{display:flex;flex-wrap:wrap;gap:6px}.cr-bt .tw-buy{min-height:44px;flex:1 1 40%}.cr-in{display:flex;gap:6px}.cr-in input{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:#0004;color:var(--ink);font:inherit;padding:0 10px}
+.cr-pt{display:flex;width:100%;height:100%;align-items:center;justify-content:center}.cr-pt svg{width:100%;height:100%}`;document.head.appendChild(st)}
+L10N({'مأوى الوحوش':'Monster shelter','على طرف الغيطان':'At the edge of the fields','فاضي لسه':'Empty for now','الثقة والألفة':'Trust and bond','المهمة دلوقتي':'Job now','في المأوى':'In the shelter','بتحرس الغيط':'Guards the field','سلعوة صغيرة':'Little salawa','الحداد، الخياط، العطارة، الطباخة، الغيط، مأوى الوحوش، المنجم، الترعة':'Smith, tailor, herbalist, cook, field, monster shelter, mine, canal'});
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
@@ -27921,6 +28214,8 @@ document.addEventListener('input',e=>{const t=e.target;if(t&&(t.tagName==='TEXTA
 
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"الصوت كله": "All sound", "الموسيقى": "Music", "علو الموسيقى": "Music volume", "علو الأصوات": "Effects volume"});
+/* 5.93: a folded town group lists its places «أ، ب، ج». A new place used to leave the whole line Arabic; when every name is known it is put together in English (last rule, so it never hides another one) */
+L10N({},[[/^[^،]+(?:، [^،]+)+$/,s=>{const p=s.split('، ').map(x=>L10N_W.get(x.trim()));return p.every(v=>v!=null)?p.join(', '):s}]]);
 
 render();
 })();
