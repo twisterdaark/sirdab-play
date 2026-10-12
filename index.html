@@ -4527,6 +4527,9 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.92',d:'12 أكتوبر',add:['«صندوق الزيادة»: اللي {بتكسبه|بتكسبيه} من صندوق أو كارت وقسمه في الشنطة مليان مش بيتباع من وراك تاني. بيروح الصندوق في البلد، {وتاخده|وتاخديه} من الشنطة لما يبقى فيه مكان، أو {تبيعه|تبيعيه} بنص تمنه. بيشيل لحد 30 حاجة',
+  'الشنطة بقت تابين: «الحاجات» و«الخامات». الخامات متقسمة (معادن، أحجار كريمة، تعزيز، سمك، زرع وأكل، أعشاب، من الوحوش)، وكل خامة مكتوب بتدخل في إيه وعم رمضان بياخدها بكام النهارده',
+  'فوق الشنطة «{شايل|شايلة} كام من كام»: كل الأقسام متجمعة في رقم واحد وشريط، {وتعرف|وتعرفي} على طول الشنطة فيها مكان ولا لأ'],fix:[]},
 {v:'5.91',d:'12 أكتوبر',add:['قبل الليلة {بتختار|بتختاري} «مين {معاك|معاكي} الليلة؟»: لوحدك ببلاش والوحوش صحتها أقل 25% وضربها أخف 20% (والكروت اللي محتاجة رفيق مش بتطلع)، أو رفيق من البلد بأجرة، أو بطل صاحبك (ليلتين في اليوم بالكتير)',
   'أجرة رفيق البلد بتتحسب من مستواك والمغامرة (النداهة ×1 لحد سوق العفاريت ×2.3) وسمعتك (الحلوة خصم لحد 20%، الوحشة زيادة لحد 60%) و3% من فلوسك، وكل جزء مكتوب تحت الاختيار',
   '«جرنال البلد» بقى بفلوس: 15 جنيه، وبيزيد شوية مع المستوى. تحته «الجرانيل القديمة»: جرنال كل يوم {لعبت|لعبتي} فيه حتى لو ما {قريتوش|قريتيهوش}، آخر 14 يوم. اللي {اشتريته|اشتريتيه} ببلاش، واللي لأ بنص التمن، ووصفته لسه تتحفظ',
@@ -4907,8 +4910,8 @@ SCREENS.news=function(){view.scrollTop=0;store('sirdab.newsSeen',NEWS[0].v);
   view.innerHTML=`<div class="top"><button class="ib" id="back">رجوع</button><h2>الجديد في اللعبة</h2><span style="width:40px"></span></div>
   <div class="col news">${NEWS.map((n,i)=>`<div class="card news-v${i?'':' now'}">
     <div class="news-h"><b>نسخة ${n.v}</b><small>${n.d}</small>${i?'':'<span class="tag">دلوقتي</span>'}</div>
-    ${n.add.length?`<div class="news-k">اتضاف</div><ul>${li(n.add)}</ul>`:''}
-    ${n.fix.length?`<div class="news-k fx">اتعدّل</div><ul>${li(n.fix)}</ul>`:''}</div>`).join('')}
+    ${(n.add||[]).length?`<div class="news-k">اتضاف</div><ul>${li(n.add)}</ul>`:''}
+    ${(n.fix||[]).length?`<div class="news-k fx">اتعدّل</div><ul>${li(n.fix)}</ul>`:''}</div>`).join('')}
   <button class="btn" id="newsOk">تمام</button></div>`;
   const out=()=>{S.screen=NEWS_FROM||'title';render()};$('#back').onclick=out;$('#newsOk').onclick=out};
 /* a button on the title screen opens it again */
@@ -27650,6 +27653,100 @@ function satLabel(){const h=S.hero;if(!h)return;view.querySelectorAll('[data-s]'
     satLabel();view.querySelectorAll('.qty').forEach(q=>{q.addEventListener('click',()=>setTimeout(satLabel,0));const v=q.querySelector('.qin');if(v){v.addEventListener('input',()=>setTimeout(satLabel,0));v.addEventListener('change',()=>setTimeout(satLabel,0))}})}catch(e){console.warn(e)}return r}}
 {const st=document.createElement('style');st.textContent=`.sat-note{margin:2px 2px 8px;line-height:1.7}.sat-f{display:block;color:#f0a090;font-size:11.5px}`;document.head.appendChild(st)}
 L10N({},[[/^بـ(\d+) جنيه الواحدة$/,'$1 coins each'],[/^النهارده بـ(\d+) جنيه الواحدة/,'Today $1 coins each']]);
+
+/* ---------- 5.92 / C07: الشنطة ----------
+   - Nothing you win is sold behind your back any more. When a bag section is full, a chest or a card that gives you a bag item puts
+     it in «صندوق الزيادة» at home (h.over, up to OV_MAX things). The result says so. In the town's bag you take it («خده») when there
+     is room, or sell it to عم رمضان for half, the old price. Only when the box itself is full is a thing sold, and the line says so.
+   - «الشيل»: the bag's sections added up into one number at the top of the bag («شايل 9 من 21»), with a bar, so you see at once
+     how loaded you are. Each section still has its own room (5.67).
+   - The bag has two tabs: «الحاجات» (food, potions and the other sections, the overflow box, your gear) and «الخامات»: everything
+     else you carry, grouped (معادن، أحجار كريمة، تعزيز، سمك، زرع وأكل، أعشاب، من الوحوش، تانية), each with what it goes into and what
+     عم رمضان pays for one today. */
+const OV_MAX=30;
+function ovFix(h){if(!h)return {};let O=h.over;if(!O||typeof O!=='object'||Array.isArray(O))O=h.over={};Object.keys(O).forEach(k=>{O[k]=Math.max(0,Math.floor(+O[k]||0));if(!O[k]||!ITEMS[k])delete O[k]});return O}
+const ovCount=h=>Object.values(ovFix(h)).reduce((a,n)=>a+n,0);
+const itFem=k=>/ة$/.test(String((ITEMS[k]&&ITEMS[k].name)||'').split(' ')[0]);   /* جرعة، قزازة، شعلة… */
+const ovHalf=k=>Math.round(((ITEMS[k]&&ITEMS[k].price)|0)/2);
+/* a bag item that has no room: into the box, or (box full) sold for half. Returns the line to show. */
+function ovPut(h,k){const O=ovFix(h);if(ovCount(h)<OV_MAX){O[k]=(O[k]||0)+1;return {box:1,t:`قسم «${bagSec(k).n}» في الشنطة مليان: ${ITEMS[k].name} ${itFem(k)?'راحت':'راح'} «صندوق الزيادة» في البلد`}}
+  const p=ovHalf(k);h.money+=p;return {box:0,t:`الشنطة وصندوق الزيادة مليانين: ${G('بعت','بعتي')} ${ITEMS[k].name} بـ${p} جنيه`}}
+/* the chest */
+{const a0=applyChest;applyChest=function(c){const h=S.hero,full=!!(c&&!c.r&&!c.gear&&c.k&&ITEMS[c.k]&&h&&bagFull(h,c.k)),m0=h?h.money:0;const r=a0.apply(this,arguments);
+    try{if(full){h.money=m0;const x=ovPut(h,c.k);c.sub=T(x.t);c.over=x.box;c.label=`${itemIcon(c.k,34)}<div>${c.title}</div><small style="color:var(--gold2)">${c.sub}</small>`;saveHero()}}catch(e){console.warn(e)}return r}}
+/* a card or the camp */
+{const ao=applyOutcome;applyOutcome=function(o,tier,c){const h=S.hero;let k=null;
+    try{const frees=o&&o.use&&ITEMS[o.use]&&(h.bag[o.use]||0)>0&&o.item&&ITEMS[o.item]&&bagSec(o.use).id===bagSec(o.item).id;   /* using one from the same section first makes room */
+    if(o&&typeof o==='object'&&o.item&&ITEMS[o.item]&&h&&bagFull(h,o.item)&&!frees){k=o.item;o=Object.assign({},o,{item:null});arguments[0]=o}}catch(e){k=null}
+    const r=ao.apply(this,arguments);
+    if(k)try{const x=ovPut(h,k),note=T(`<div class="note" style="color:var(--gold2)">📦 ${x.t}</div>`);saveHero();
+      if(RES){RES.extra=(RES.extra||'')+note;const el=view.querySelector('.res');if(el)el.insertAdjacentHTML('beforeend',note)}else toast(note)}catch(e){console.warn(e)}
+    return r}}
+/* taking from the box / selling it */
+function ovTake(k,btn){const h=S.hero,O=ovFix(h);if(!h||!(O[k]>0))return;if(h.night){toast(`عندك ليلة متسابة: ${G('خد','خدي')} من الصندوق بعد ما الليلة تخلص`);cls(btn,'shake');try{SFX.meh()}catch(e){}return}let n=0;while(O[k]>0&&!bagFull(h,k)){O[k]--;h.bag[k]=(h.bag[k]||0)+1;n++}
+  if(!O[k])delete O[k];if(!n){toast(bagFullTxt(h,k));cls(btn,'shake');try{SFX.meh()}catch(e){}return}saveHero();try{SFX.reg()}catch(e){}toast(`${G('خدت','خدتي')} ${n} ${ITEMS[k].name}`);twRender()}
+function ovSell(k,btn){const h=S.hero,O=ovFix(h);if(!h||!(O[k]>0))return;const key='ov:'+k;if(TWN.conf!==key){TWN.conf=key;try{SFX.meh()}catch(e){}return twRender()}
+  TWN.conf=null;const n=O[k],v=ovHalf(k)*n;delete O[k];h.money+=v;saveHero();try{SFX.reg()}catch(e){}if(v){floatAt(btn,twI('+'+v)+' جنيه','#f3d48f','',20);twMoneyFly(btn,v)}twRender()}
+function ovHTML(h){const O=ovFix(h),ks=Object.keys(O);if(!ks.length)return '';
+  return `<div class="tw-lbl">📦 صندوق الزيادة <small>${ovCount(h)} من ${OV_MAX} · حاجات ${G('كسبتها','كسبتيها')} والشنطة كانت مليانة</small></div>
+  <div class="col ov-box">${ks.map(k=>{const it=ITEMS[k],cf=TWN.conf==='ov:'+k,room=!bagFull(h,k);
+    return `<div class="card bg-row ov-row"><span class="ic">${itemIcon(k,34)||''}</span><div class="tx"><b>${it.name}${O[k]>1?` <span class="n">×${O[k]}</span>`:''}</b><small>${room?`فيه مكان في قسم «${bagSec(k).n}»`:`قسم «${bagSec(k).n}» مليان (${bagCount(h,k)} من ${bagCap(h,k)})`}</small></div>
+      <div class="ov-bt"><button class="tw-buy" data-ovt="${k}" ${room?'':'disabled'}>${G('خده','خديه')}</button><button class="tw-buy sell${cf?' warn':''}" data-ovs="${k}">${cf?G('متأكد؟','متأكدة؟'):G('بيع','بيعي')}<small>${ovHalf(k)*O[k]} جنيه</small></button></div></div>`}).join('')}</div>`}
+/* «الشيل»: every section added up */
+function carryNow(h){const seen={};let used=0,cap=0;
+  const add=k=>{const s=bagSec(k);if(seen[s.id])return;seen[s.id]=1;used+=bagCount(h,k);cap+=bagCap(h,k)};
+  add('foul');BAG_SEC.filter(x=>!x.food).forEach(s=>{if(ITEMS[s.ks[0]])add(s.ks[0])});Object.keys(BAG_MAX).forEach(k=>{if(ITEMS[k]&&k!=='amulet')add(k)});
+  Object.keys(h.bag||{}).forEach(k=>{if((h.bag[k]||0)>0&&ITEMS[k]&&k!=='amulet')add(k)});return {used,cap}}
+function carryHTML(h){const {used,cap}=carryNow(h),p=Math.min(100,Math.round(used/Math.max(1,cap)*100)),o=ovCount(h);
+  return `<div class="card cr-carry"><div class="cr-top"><b>${BAG_ICO} ${G('شايل','شايلة')} <bdi dir="ltr">${used}</bdi> من <bdi dir="ltr">${cap}</bdi></b><small>${p>=100?'الشنطة مليانة':p>=75?'الشنطة قربت تتملي':'فيه مكان'}</small></div>
+    <div class="bg-bar${p>=100?' full':''}"><i style="width:${p}%"></i></div><small class="cr-how">كل قسم ليه مكانه: لو قسم اتملا، التاني لسه فيه مكان. اللي ${G('تكسبه','تكسبيه')} وقسمه مليان بيروح «صندوق الزيادة» ومش بيتباع.${o?` <b style="color:var(--gold2)">في الصندوق دلوقتي ${o}.</b>`:''}</small></div>`}
+/* the materials tab */
+const MAT_GRP=[['⛏️ معادن وحجارة',k=>['stone','copper','iron','silver','gold','steel','coal','turq','emerald'].includes(k)],['💎 أحجار كريمة',k=>MAT[k].gem],['✨ تعزيز',k=>MAT[k].enh||MAT[k].ea],
+  ['🐟 سمك',k=>MAT[k].fish],['🌾 زرع وأكل',k=>(typeof CROPS!=='undefined'&&CROPS[k])||['flour','bread','egg','milk','barsim'].includes(k)],['🌿 أعشاب',k=>MAT[k].herb],['🐺 من الوحوش',k=>['salskin','salfang','horn','hair'].includes(k)],['📦 تانية',()=>true]];
+function matTabHTML(h){const ks=bagRes(h);if(!ks.length)return `<div class="card bg-none">مفيش خامات. المنجم والترعة والغيط والمغامرات بيطلّعوا خامات.</div>`;
+  const done={},tot=bagSum(ks.map(k=>h.res[k]));let out=`<div class="tw-sm mt-sum">${G('معاك','معاكي')} <bdi dir="ltr">${tot}</bdi> حتة في ${ks.length} نوع. الخامات مالهاش حد في الشنطة.</div>`;
+  MAT_GRP.forEach(([n,f])=>{const g=ks.filter(k=>!done[k]&&f(k));if(!g.length)return;g.forEach(k=>done[k]=1);
+    out+=`<div class="tw-lbl">${n} <small>${bagSum(g.map(k=>h.res[k]))}</small></div><div class="col mt-g">${g.map(k=>{const M=MAT[k],R=RARE[M.tier||0],u=twUses(k),now=typeof satNow==='function'&&M.p?satNow(h,k):twSellP(k);
+      return `<div class="card bg-row mt-row" style="--rc:${R.c}"><span class="ic">${twMat(k,32)}</span><div class="tx"><b${M.tier?` style="color:${R.c}"`:''}>${M.n} <span class="n">×${h.res[k]}</span></b>
+        <small>${M.junk?'ما يتباعش':M.p?`عم رمضان بياخدها بـ${now} جنيه النهارده`:''}${u.length?` · بتدخل في: ${u.slice(0,3).join('، ')}${u.length>3?'…':''}`:''}</small></div></div>`}).join('')}</div>`});
+  return out+`<button class="btn ghost" data-bgo="market">${G('بيع','بيعي')} عند عم رمضان</button>`}
+/* the bag screen, with its two tabs */
+SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
+  const tab=TWN.bagTab==='mats'?'mats':'items';const e=effNow(h),full=e>=EFF_MAX,add=Math.min(5,EFF_MAX-e),fs=bagFoods(h),gs=bagGear(h),rs=bagRes(h);
+  const worn=id=>Object.values(h.eq||{}).includes(id);
+  const row=(ic,name,n,sub,act,c)=>`<div class="card bg-row"${c?` style="--rc:${c}"`:''}><span class="ic">${ic}</span><div class="tx"><b${c?` style="color:${c}"`:''}>${name}${n>1?` <span class="n">×${n}</span>`:''}</b>${sub?`<small>${sub}</small>`:''}</div>${act||''}</div>`;
+  const lbl=(t,cap)=>`<div class="tw-lbl">${t}${cap?`<small>${cap}</small>`:''}</div>`;
+  let body='';
+  if(tab==='items'){const food=fs.map(k=>row(twFood(k,34),ITEMS[k].name,h.bag[k],T(ITEMS[k].info()),`<button class="bg-eat" data-beat="${k}" ${full?'disabled':''}>${G('كُل','كُلي')}${full?'':`<small>${twN(add)} مجهود</small>`}</button>`)).join('');
+    const gear=gs.map(id=>{const g=GEAR[id],R=RARE[g.tier]||RARE[0];return row(twGear(id,34),g.n,h.gear[id],`${SLOTS[g.slot]}${worn(id)?` · <span class="ok">${g.slot==='weapon'?G('ماسكه','ماسكاه'):G('لابسه','لابساه')}</span>`:''}`,'',R.c)}).join('');
+    body=`${carryHTML(h)}${ovHTML(h)}
+    ${(h.bagLvl||0)<BAGUPS.length?`<div class="card bg-how">شنطة أكبر بتكبّر الأقسام كلها، عند عم فتحي الخياط. <button class="btn ghost small" data-bgo="tailor">${G('روح','روحي')} لعم فتحي</button></div>`:''}
+    ${lbl('أكل',bagSpace(h,'foul'))}${bagBar(h,'foul')}
+    ${food||`<div class="card bg-none">مفيش أكل في الشنطة. أم سيد بتبيع أكل وبتطبخ. <button class="btn ghost small" data-bgo="cook">${G('روح','روحي')} لأم سيد</button></div>`}
+    ${full&&fs.length?`<div class="tw-sm" style="color:#a6e3a0">مجهودك مليان. خلّي الأكل للقتال.</div>`:''}
+    ${bagSecsHTML(h,row,lbl)}
+    ${gs.length?lbl('عدّة')+gear+`<button class="btn ghost" data-bgo="gear">${G('البس','البسي')} من عدّتي</button>`:''}`}
+  else body=matTabHTML(h);
+  view.innerHTML=`${twTop('الشنطة')}<div class="tw">
+    <div class="card">${twEffHTML(h,0)}</div>
+    <div class="tw-tabs bg-tabs"><button data-btab="items" class="${tab==='items'?'on':''}">الحاجات${ovCount(h)?' 📦':''}</button><button data-btab="mats" class="${tab==='mats'?'on':''}">الخامات <small>${rs.length}</small></button></div>
+    ${body}</div>`;
+  twBack();
+  view.querySelectorAll('[data-btab]').forEach(b=>b.onclick=()=>{if(TWN.bagTab===b.dataset.btab)return;TWN.bagTab=b.dataset.btab;TWN.conf=null;try{SFX.tick(800)}catch(e){}twRender()});
+  view.querySelectorAll('[data-beat]').forEach(b=>b.onclick=()=>twEat(b.dataset.beat,b));
+  view.querySelectorAll('[data-bgo]').forEach(b=>b.onclick=()=>{SFX.bell();twGo(b.dataset.bgo)});
+  view.querySelectorAll('[data-ovt]').forEach(b=>b.onclick=()=>ovTake(b.dataset.ovt,b));
+  view.querySelectorAll('[data-ovs]').forEach(b=>b.onclick=()=>ovSell(b.dataset.ovs,b));
+  twTick()};
+/* the town's bag button says when something waits in the box */
+{const b0=bagLine;bagLine=function(h){const s=b0.apply(this,arguments),o=ovCount(h);return o?`${s} · 📦 ${o} في صندوق الزيادة`:s}}
+{const st=document.createElement('style');st.textContent=`
+.bg-tabs{margin:6px 0 4px}.bg-tabs small{font-size:11px;opacity:.75}
+.cr-carry{display:flex;flex-direction:column;gap:6px}.cr-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.cr-top b{display:flex;align-items:center;gap:6px;font-size:16px}.cr-top small{color:var(--mute)}.cr-how{color:var(--mute);line-height:1.7}
+.ov-row{flex-wrap:wrap}.ov-bt{display:flex;gap:6px;margin-inline-start:auto}.ov-bt .tw-buy{min-height:44px;min-width:64px}
+.mt-sum{margin:4px 2px 2px}.mt-row .tx small{line-height:1.6}`;document.head.appendChild(st)}
+L10N({'الحاجات':'Things','📦 صندوق الزيادة':'📦 Overflow box','صندوق الزيادة':'Overflow box','الشنطة مليانة':'The bag is full','الشنطة قربت تتملي':'The bag is almost full','فيه مكان':'There is room','ما يتباعش':"Can't be sold"},
+  [[/^الخامات ?(\d*)$/,'Materials $1'],[/^شايلة? (\d+) من (\d+)$/,'Carrying $1 of $2']]);
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
