@@ -617,6 +617,7 @@ function L10N(words,rules){Object.keys(words||{}).forEach(k=>L10N_W.set(k,words[
 function L10NG(map){Object.keys(map||{}).forEach(k=>{const en=map[k];[1,2].forEach(i=>L10N_W.set(k.replace(/\{([^{}|]*)\|([^{}]*)\}/g,(x,a,b)=>i===1?a:b).trim(),en))})}
 function l10nStr(s){if(typeof s!=='string')return null;const t=s.trim();if(t==='‹')return s.replace('‹','›');if(!t||!/[؀-ۿ]/.test(t))return null;let o=L10N_W.get(t);
   if(o==null)for(const [re,to] of L10N_R){re.lastIndex=0;if(re.test(t)){re.lastIndex=0;o=t.replace(re,to);break}}
+  if((o==null||o===t)&&/[\u2066\u2069]/.test(t)){const r=l10nStr(t.replace(/[\u2066\u2069]/g,''));if(r!=null)return s.replace(t,r)}   /* 6.13: numbers wrapped in direction marks: try once more without the marks */
   return o==null||o===t?null:s.replace(t,o)}
 
 /* ---------- data ---------- */
@@ -2447,14 +2448,14 @@ function end(){
 }
 
 /* 6.05 (R03b): the fight screen in English (the frame, the buttons and the training tips; the log lines come with each place) */
-L10N({'قتال':'Fight','دورك':'Your turn','دور الأعداء':'The foes\' turn','قدرات':'Skills','من غير طاقة':'No energy','بتستهلك طاقة':'Uses energy','مفيش حاجة تنفع دلوقتي':'Nothing usable now','الشنطة فاضية':'The bag is empty',
+L10N({'قتال':'Fight','دورك':'Your turn','دور الأعداء':'The foes\' turn','قدرات':'Skills','من غير طاقة':'Free (no energy)','بتستهلك طاقة':'Uses energy','مفيش حاجة تنفع دلوقتي':'Nothing usable now','الشنطة فاضية':'The bag is empty',
   'استخبى':'Hide','استخبي':'Hide','العدو يبقى أصعب يعوّرك المرة دي':'Harder for the foe to hurt you this turn','سجل القتال':'Fight log','رفيقك، بيلعب لوحده':'Your companion, plays alone','رفيقتك، بتلعب لوحدها':'Your companion, plays alone',
   'وقع':'Down','وقعت':'Down','وقعتي':'Down','هرب':'Fled','هربت':'Fled','هتضرب مين؟':'Hit whom?','هتضربي مين؟':'Hit whom?','دوس على العدو':'tap the foe','دوسي على العدو':'tap the foe',
   'اختار حركة من تحت.':'Pick a move below.','اختاري حركة من تحت.':'Pick a move below.','دوس على حركة':'Tap a move','دوسي على حركة':'Tap a move','. الزرار الدهبي':'. The gold button','«قدرات»':'«Skills»',
   'فيه قدرات تخصصك، وكل قدرة بتستهلك':'holds your class skills, and each one uses','طاقة':'energy','. ولو قدامك أكتر من عدو، هتختار تضرب مين.':'. With more than one foe, you choose whom to hit.','. ولو قدامك أكتر من عدو، هتختاري تضربي مين.':'. With more than one foe, you choose whom to hit.',
   'دلوقتي':'Now','دور الفزّاعة':'it\'s the scarecrow\'s turn','السجل':'log','تحت.':'below.','مش وقتها دلوقتي':'not now','رجوع':'Back','اقفل الشنطة':'Close the bag','اقفلي الشنطة':'Close the bag','الشنطة · اختار حاجة':'Bag · pick something','الشنطة · اختاري حاجة':'Bag · pick something'},
   [[/^صحة (\d+)\/(\d+)$/,'Health $1/$2'],[/^(\d+) (?:حاجات|حاجة)$/,'$1 things'],[/^حاجة واحدة$/,'one thing'],[/^حاجتين$/,'two things'],[/^صحة (\d+)$/,'Health $1'],[/^طاقة$/,'Energy'],[/^بتستهلك (\d+) طاقة$/,'Uses $1 energy'],[/^مستوى (\d+)$/,'Level $1'],[/^(.+) على مين؟$/,(m,n)=>`${l10nStr(n)||n} on whom?`],
-   [/^قدامك (.+)\. (?:اختار|اختاري) (?:هتعمل|هتعملي) إيه\.$/,(m,a)=>`Facing you: ${a.split(' و').map(x=>l10nStr(x)||x).join(' and ')}. Choose what to do.`],
+   [/^قدامك (.+)\. (?:اختار|اختاري) (?:هتعمل|هتعملي) إيه\.$/,(m,a)=>`Facing you: ${xNames(a).map(x=>l10nStr(x)||x).join(' and ')}. Choose what to do.`],
    [/^\. هترمي نرد عشان (?:تتفادى|تتفادي)\.\. رقم كبير = (?:مش هتتعور|مش هتتعوري)\. الأعداء ممكن يضربوا (?:انت|انتي) أو (?:رفيقك|رفيقتك)\.$/,'. You roll to dodge.. a high number means no hurt. Foes may hit you or your companion.'],
    [/^(?:كمّل|كمّلي) لحد ما الفزّاعة تقع\. في$/,'Keep going until the scarecrow falls. The'],[/^جرعات (?:تشربها|تشربيها) أو تديها ل(?:رفيقك|رفيقتك)\. وكل اللي حصل مكتوب في$/,'has potions to drink or give your companion. Everything that happened is in the'],
    [/^الفزّاعة وقعت! (.+): «كده (?:انت فاهم|انتي فاهمة) القتال\.»$/,(m,n)=>`The scarecrow is down! ${l10nStr(n)||n}: «Now you know how to fight.»`],
@@ -4750,9 +4751,42 @@ const PF_HPIC={
   titles:()=>`<div class="pf-hname"><b>${S.hero?esc(S.hero.name):'كريم'}</b><div class="pf-ttl lg">${G('صياد الترعة','صيادة الترعة')}</div></div>`,
   hidden:()=>`<div class="pf-hhid">${PFI.eye}<span>صفة مخفية اتفتحت!</span></div>`
 };
+/* 6.10 (R03b): the hero's page in English — the head, every tab, stats, skills, trades, titles, achievements, the bag */
+L10NG({'(الرقم ده بيتزوّد على النرد لما {تعمل|تعملي} حاجة بتعتمد على الصفة)':'(this number is added to the dice when you do something that uses the stat)','✎ {عدّل الشكل|عدّلي الشكل}':'✎ Edit looks',
+  '(اتفتحتلك من اللي {عملته|عملتيه}، وشغالة على طول)':'(opened by what you did, and always on)','بتأثر على الأسعار وكلام الناس {معاك|معاكي}':'affects prices and how people talk to you',
+  '(في القتال {دوس|دوسي} «قدرات» {واختار|واختاري})':'(in a fight, tap «Skills» and pick)','{اختار|اختاري} اللقب اللي يظهر تحت اسمك. مزايا ألقابك كلها شغالة مع بعض.':'Pick the title shown under your name. All your titles\' perks work together.',
+  'لسه ما {خدتش|خدتيش} ولا لقب. الألقاب بتيجي من اللي {بتعمله|بتعمليه}، وكل لقب ليه ميزة صغيرة بتفضل {معاك|معاكي} على طول.':'No titles yet. Titles come from what you do, and each gives a small perk that stays with you for good.',
+  'ألقاب لسه {هتاخدها|هتاخديها}':'Titles still to earn','{اختاره|اختاريه}':'Choose','العدّة اللي {لابسها|لابساها}':'Gear you\'re wearing','عدّة تانية {معاك|معاكي}':'Other gear you have',
+  'لسه ما {جرّبتش|جرّبتيش} ولا شغلانة. في البلد {تقدر|تقدري} {تنقّب|تنقّبي} {وتصطاد|وتصطادي} {وتطبخ|وتطبخي} {وتعمل|وتعملي} حاجات بإيدك، وكل ما {تشتغل|تشتغلي} {بتبقى|بتبقي} أشطر.':'You haven\'t tried a trade yet. In the village you can mine, fish, cook and make things by hand, and the more you work the better you get.',
+  'كل ما {تشتغل|تشتغلي} في شغلانة بتكبر وتطلع مستوى، لحد المستوى 10.':'The more you work at a trade, the more it grows, up to level 10.',
+  'بتكبر لما {تنقّب|تنقّبي} في المنجم':'Grows as you mine','بتكبر لما {تصطاد|تصطادي} من الترعة':'Grows as you fish the canal','بتكبر لما {تطبخ|تطبخي} أكل في البلد':'Grows as you cook in the village',
+  'بتكبر لما {تعمل|تعملي} حاجة بإيدك عند الحداد':'Grows as you make things by hand at the smith','بتكبر لما {تعمل|تعملي} حاجة بإيدك عند الخياط':'Grows as you make things by hand at the tailor',
+  'عضلاتك. بتنفع في الضرب بالسيف والشيل والكسر.':'Your muscles. For sword blows, carrying and breaking.','سرعتك. بتنفع في التفادي من الضرب والتسلل، وبتزوّد فرصة «ضربة المعلّم» في القتال.':'Your speed. For dodging, sneaking, and it raises the chance of a «master strike» in fights.',
+  'جسمك بيستحمل قد إيه. بتنفع في الكروت اللي فيها وجع أو تعب أو برد، وإنك {تفضل|تفضلي} {ماسك|ماسكة} لحد ما الحاجة تتعمل. الصحة بتزيد من المستويات والعدّة، مش من التحمّل.':'How much your body can take. For cards with pain, tiredness or cold, and for holding on until a thing is done. Health grows from levels and gear, not from endurance.',
+  'مخك. بتنفع في السحر وإنك {تفهم|تفهمي} الحاجات المعقدة.':'Your mind. For magic and understanding hard things.','{بتاخد|بتاخدي} بالك من اللي {حواليك|حواليكي} وأعصابك هادية. بتنفع في العلاج وإنك ما {تنخدعش|تنخدعيش}.':'You notice what\'s around you and keep calm. For healing and not being fooled.',
+  'كلامك مسموع والناس بتصدقك. بتنفع في الإقناع والفصال والتخويف.':'People listen and believe you. For persuading, haggling and scaring.','{ادخل|ادخلي} بحساب جوجل من الإعدادات عشان يبقى {ليك|ليكي} كود صحاب.':'Sign in with Google in the settings to get a friend code.',
+  '{دوس|دوسي} على أي خانة عشان {تلبس|تلبسي} أو {تقلع|تقلعي}.':'Tap any slot to wear or take off.'});
+L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدراتي':'Skills','شغلانات':'Trades','ألقابي':'Titles','إنجازات':'Achievements','شنطتي':'My bag','من تخصصك':'from your class','من المستويات':'from levels','من العدّة والألقاب':'from gear and titles',
+  'على النرد':'on the dice','من النرد':'off the dice','من غير زيادة':'no bonus','فرصة ضربة المعلّم دلوقتي':'master strike chance now','صفات مخفية':'Hidden stats','أرقامك في القتال':'Your fight numbers','أقصى صحة':'max health','للقدرات':'for skills',
+  'كل ضربة بتجيلك':'on every blow at you','على ضربتك':'on your hit','ضربة المعلّم':'Master strike','الضرر +50%':'damage +50%','العفاريت':'Afreets','بتعوّرك أقل':'hurt you less','فلوس القتال':'Fight money','من الألقاب':'from titles','الأسعار':'Prices',
+  'أرخص عند الكل':'cheaper everywhere','الحالة':'Status','الفلوس':'Money','السمعة':'Reputation','كل قدرات تخصصك مفتوحة.':'All your class skills are open.','على طول':'Always','من غير نرد':'no dice','من سلاحك':'From your weapon','دي آخر مستوى':'This is the top level',
+  'ظاهر':'Shown','من غير لقب تحت اسمي':'No title under my name','سمعتك دلوقتي':'Your reputation now','تذكار':'Keepsake','الخامات':'Materials','فاضية':'Empty','القدرة الجاية:':'Next skill:','خبرة.':'XP.','نردين':'Two dice','نرد 20':'d20','منها':'of which','من غير تمن':'with no price',
+  'الصعوبة بتكبر إزاي؟':'How does difficulty grow?','مفيش نقط قدرة':'No skill points','نقطة قدرة واحدة':'One skill point','نقطتين قدرة':'Two skill points','أعلى مستوى ✦':'Top level ✦','كود الصحاب':'Friend code','انسخه':'Copy','ضيف':'Add','كود صاحبك':'Your friend\'s code',
+  'الكود اتنسخ':'Code copied','الكود 6 حروف وأرقام.':'The code is 6 letters and digits.','ده كودك انت!':'That\'s your own code!','ده كودك انتي!':'That\'s your own code!','ده موجود عندك.':'You already have it.','صاحبك اتضاف. أبطاله هيظهروا في «رفيق الليلة».':'Friend added. Their heroes will show in «Tonight\'s companion».'},
+  [[/^التخصص: (.+) · (ولد|بنت) · (.+)$/,(m,c,g,a)=>`Class: ${l10nStr(c)||c} · ${g==='ولد'?'boy':'girl'} · ${(l10nStr(a)||a).toLowerCase()}`],[/^التخصص المكتسب:$/,'Specialisation:'],[/^(?:\(اتفتحتلك)/,m=>m],
+   [/^فاضلك (\d+) خبرة (?:وتطلع|وتطلعي) المستوى (\d+)$/,'$1 XP to level $2'],[/^خبرة (?:وتطلع|وتطلعي) المستوى (\d+)$/,'XP to level $1'],[/^خبرة (?:وتطلع|وتطلعي) مستوى (\d+)$/,'XP to level $1'],[/^المستوى الجاي: (.+)$/,'Next level: $1'],[/^الميزة: (.+)$/,'Perk: $1'],
+   [/^ألقابك \((\d+)\)$/,'Your titles ($1)'],[/^الإنجازات$/,'Achievements'],[/^· (\d+) جنيه$/,'· $1 coins'],[/^في المستوى (\d+)\. فاضلك$/,'at level $1. Need'],[/^قدرات ال(.+)$/,(m,c)=>/[A-Za-z]/.test(c)?`${c} skills`:m],
+   [/^(\d+) نقط قدرة$/,'$1 skill points'],[/^كل مستوى (?:بيديك|بيديكي) نقطة\. المستوى 3 و5 بيغيّروا القدرة نفسها، وعم زكريا الرحّال بيبيع نقط لو (?:قابلته|قابلتيه) في الليل\.$/,'Each level gives you a point. Levels 3 and 5 change the skill itself, and Uncle Zakaria the wanderer sells points if you meet him at night.'],
+   [/^مستوى (\d+): (.+)$/,(m,l,d)=>{const r=l10nStr(d);return `Level ${l}: ${r||d}`}],[/^علّيها · (نقطة|نقطتين|\d+ نقط)$/,(m,a)=>`Raise it · ${a==='نقطة'?'1 point':a==='نقطتين'?'2 points':a.replace(' نقط',' points')}`],[/^(?:محتاج|محتاجة) مستوى (\d+)$/,'Needs level $1'],
+   [/^صعوبة الكروت دلوقتي:$/,'Card difficulty now:'],[/^جاية من مستواك بس\. في كل كارت: (النردين|النرد) \+ الصفة − (\d+)\. (10 أو أكتر نجاح، 7 لـ9 نجاح بتمن\.|15 أو أكتر نجاح، 10 لـ14 نجاح بتمن\.)$/,(m,d,n,r)=>`From your level only. On every card: ${d==='النردين'?'the two dice':'the die'} + the stat − ${n}. ${/^10/.test(r)?'10 or more is a success, 7 to 9 a success at a price.':'15 or more is a success, 10 to 14 a success at a price.'}`],
+   [/^الصعوبة (?:هنا )?(?:\d+: \d+ )?جاية من مستواك \($/,'Difficulty comes from your level ('],[/^الصعوبة جاية من مستواك \($/,'Difficulty comes from your level ('],
+   [/^\)، مش من الحكاية ولا المكان ولا الحظ\.([\s\S]*)$/,(m,r)=>{const t=r.replace(/ كل ما (?:تكبر|تكبري) الكروت بتصعب شوية، وصفاتك وعدّتك هما اللي بيعادلوها\.\s*النرد نفسه ما بيتغيرش: الصعوبة بتتطرح من المجموع بس\.\s*$/,'');if(t.trim()==='ومنها')return '), not from the story, the place or luck. Of it,';return /[؀-ۿ]/.test(t)?m:'), not from the story, the place or luck. As you grow, cards get a little harder, and your stats and gear balance them. The dice never change: the difficulty is only taken off the total.'}],   /* 6.12: «… ومنها» when a part follows (p96) */
+   [/^(?:ضفت|ضفتي) (صاحب واحد|صاحبين|\d+ صحاب)\. أبطالهم بيظهروا في «رفيق الليلة»\.$/,(m,n)=>`You added ${n==='صاحب واحد'?'1 friend':n==='صاحبين'?'2 friends':n.replace(' صحاب',' friends')}. Their heroes show in «Tonight's companion».`],
+   [/^(?:ابعت|ابعتي) الكود لصاحبك، (?:وضيف|وضيفي) كوده هنا\.$/,'Send the code to your friend, and add theirs here.']]);
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.10',d:'12 أكتوبر',add:['أغلب اللعبة بقت بالإنجليزي للي مختار English: صفحة البطل (صفاتك، القدرات بمستوياتها، الشغلانات، الألقاب، الإنجازات، الشنطة)، التخصصات كلها بقدراتها واختباراتها، القتال كله (سجل القتال، النرد والصعوبة جاية منين، نقط الضعف واللي العدو ناوي عليه، حيل الكبار، الغنايم والصناديق)، أسامي كل الوحوش، قايمة المغامرات وشاشة التجهيز وآخر الليلة، والأحجار النادرة. كلام حكايات الليالي نفسه لسه بالعربي، وده جاي في نسخة لوحده'],fix:['القتال بقى فيه 4 زراير بس: ضربتك، «قدرات»، الشنطة، و«اتصرّف». «اتصرّف» بيفتح الاستخباية والراحة والكلام. ولما النداهة تنده، زرار «اتصرّف» بينوّر و«فوق!» أول حاجة جواه','للي مختار English: سطر الضربة بيقول ليه عملت أقل (لابس درع، بيحمي نفسه، جلده تخين)، وإشعارات البلد بقت بالإنجليزي']},
 {v:'6.09',d:'12 أكتوبر',add:['للي مختار English: المنجم والترعة وعم رجب العطّار بقوا بالإنجليزي وانت {بتلعب|بتلعبي}، وورقة الشغل اللي بتظهر قبل أي صنعة، وكل الألقاب'],
  fix:['فتح الحساب في البنك بقى بتمن ثابت للكل: 2500 جنيه، مهما كان مستواك أو الفلوس اللي {معاك|معاكي}']},
 {v:'6.08',d:'12 أكتوبر',add:['للي مختار English: الغيط كله بقى بالإنجليزي (الأرض، التقاوي، العدّة، الفراخ والجاموسة، صندوق التقاوي والحصّادة)، وكل شجرة شغلانة بفروعها وروابطها وطرقها']},
@@ -19983,6 +20017,21 @@ addCards('rare',[
 .sk-lv{display:inline-block;font-size:11px;font-weight:800;color:#d9cbff;margin-inline-end:6px}
 .sk-lvb{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:#b9a0ff;color:#1a1030;font-size:11px;font-weight:800;vertical-align:2px;margin-inline-start:4px}
 `;document.head.appendChild(st)}
+/* 6.10 (R03b): what each skill level adds, in English (class skills, the two new classes, and the levels specialisation moves share) */
+L10NG({'ضرر +1':'Damage +1','30% كل عدو يدوخ (ضربته الجاية نص)':'30% each foe is dazed (its next hit halved)','ضرر +2':'Damage +2','بتلف لفتين: التانية بنص الضرر':'Two spins: the second at half damage',
+  'بتضرب نفس العدو ضربة كمان':'Hits the same foe once more','بتضرب كل اللي في المكان، والباقيين بضرر أقل شوية':'Hits everyone there, the others for a bit less','النار بتولّع في العدو: 2 كل دور لمدة دورين':'The foe catches fire: 2 a turn for two turns',
+  'النار بتنزل على كل الأعداء، والباقيين بضرر أقل شوية':'Fire falls on every foe, the others for a bit less','علاج +1':'Healing +1','وكمان +3 صحة كل دور لمدة دورين':'and +3 health a turn for two turns','علاج +2':'Healing +2','العلاج ×1.5':'Healing ×1.5',
+  '15% من غير طاقة':'15% costs no energy','ضربهم بيخف 2 بدل 1':'their hits drop by 2 instead of 1','30% من غير طاقة':'30% costs no energy','وكمان بترجعلك 4 صحة':'and you get 4 health back','العدو بيفوّت دورين':'the foe loses two turns',
+  'بتخبط كل الأعداء':'bashes every foe','صحة +5 بدل +3':'Health +5 instead of +3','صحة +7':'Health +7','صحة +9':'Health +9','صحة +12':'Health +12','بيشتغل تحت 55% من صحتك':'works below 55% of your health','تحت 60%':'below 60%','تحت 65%':'below 65%',
+  'تحت 70%، والضربة ×3':'below 70%, and the hit ×3','فلوس أكتر 25%':'25% more money','الخامات بتطلع ضعف':'double the materials','فلوس أكتر 50%':'50% more money','فلوس ضعف':'double the money','الدخان بيصد ضربتين':'the smoke stops two blows',
+  'الدخان بيصد 3 ضربات':'the smoke stops 3 blows','السم 3 كل دور':'poison 3 a turn','السم 4 أدوار':'poison for 4 turns','السم 4 كل دور':'poison 4 a turn','بتسمّم كل الأعداء':'poisons every foe','25% كمان لو {نجحت|نجحتي} نص':'25% also on a half success',
+  'بتشتغل كمان لو {نجحت|نجحتي} نص':'also works on a half success','الضربة التانية +2':'the second hit +2','35% ضربة تالتة':'35% a third hit','الدرع بيمص ضربتين':'the shield soaks two blows','كل ضربة يمصها بترجعلك 2 صحة':'each blow it soaks gives you 2 health',
+  '30% كل عدو يدوخ':'30% each foe is dazed','الضرر ×1.5':'damage ×1.5','لو {نجحت|نجحتي} كامل: 3 أدوار':'on a full success: 3 turns','بتجمّد كل الأعداء':'freezes every foe','ضرر +4':'Damage +4','النار بتفضل: 1 كل دور لمدة دورين':'the fire stays: 1 a turn for two turns',
+  'بطاقة واحدة بس':'for just one energy','ضربة رفيقك +3':'your companion\'s hit +3','ضربة رفيقك +4':'your companion\'s hit +4','+1 على العفاريت':'+1 on afreets','+2 على العفاريت':'+2 on afreets','+3 على العفاريت':'+3 on afreets',
+  'الضرر ×2.2 بدل ×1.7':'damage ×2.2 instead of ×1.7','بيقوم بـ3/4 صحته':'gets up with 3/4 health','بيقوم بصحته كلها':'gets up with full health','4 كل دور بدل 3':'4 a turn instead of 3','4 أدوار':'4 turns','5 كل دور':'5 a turn','5 أدوار':'5 turns',
+  '+3 بدل +2':'+3 instead of +2','بيفوّت دور زيادة':'loses one more turn','النار بتحرق أكتر':'the fire burns more','السم دور زيادة':'poison one more turn','بيصد ضربة زيادة':'stops one more blow','الصحة بترجع دور زيادة':'health comes back one more turn',
+  'ضربة متسقية زيادة':'one more tempered hit','والوحش ضربته الجاية نص':'and the beast\'s next hit is halved','ضرر +2 كمان':'Damage +2 more','علاج +2 كمان':'Healing +2 more','وأول ضربة {عليك|عليكي} مش هتيجي':'and the first blow at you misses','ضرر +3':'Damage +3','علاج +3':'Healing +3','بطاقة أقل بواحدة':'costs one less energy'});
+L10N({'المستوى':'Level'},[[/^مستوى (\d+)$/,'Level $1']]);   /* «✓ …» lines go through the p8b rule (it also keeps a trailing number) */
 /* ---------- burdens: a bad choice keeps costing you for the rest of the night ----------
    N.bur={hunted,cursed,wounded,hAct}. Planted by applyOutcome (theft, very evil deeds, a bad fall),
    saved with S.night, shown as a strip on every stop. */
@@ -27965,7 +28014,7 @@ if(LANG===null){if(HEROES.length)store('sirdab.lang','ar');else S.screen='lang'}
     ok.insertAdjacentHTML('beforebegin',`<button class="setrow" id="stLang"><span>اللغة · Language</span><span class="st-lg">${EN?FLAG_UK:FLAG_EG}<b>${EN?'English':'العربية'}</b>${EN?'›':'‹'}</span></button>`);
     d.querySelector('#stLang').onclick=()=>{d.remove();S.langFrom=S.screen==='lang'?'title':S.screen;S.screen='lang';render()}}catch(e){console.warn(e)}}}
 /* English: left-to-right, class names, and the screen words swapped as they draw */
-let L10N_FLUSH=()=>{};
+let L10N_FLUSH=()=>{},L10N_SWEEP=()=>{};   /* 6.12: L10N_SWEEP translates the whole page again (the last part calls it, once every part's words exist) */
 const CLS_EN={'محارب':'Warrior','حرامي':'Thief','ساحر':'Mage','معالج':'Healer','مصارع':'Wrestler','ابن البلد':'Local'};
 if(EN){document.documentElement.lang='en';document.documentElement.dir='ltr';document.documentElement.classList.add('en');
   {const c0=clsF;clsF=function(c){return CLS_EN[c]||c0.apply(this,arguments)}}
@@ -27983,6 +28032,7 @@ if(EN){document.documentElement.lang='en';document.documentElement.dir='ltr';doc
   const root=document.body||document.getElementById('app');one(root);
   const MO=new MutationObserver(handle);MO.observe(root,{childList:true,subtree:true,characterData:true});
   L10N_FLUSH=()=>{try{handle(MO.takeRecords())}catch(e){}};
+  L10N_SWEEP=()=>{try{one(document.body)}catch(e){}};
   try{document.title='Sirdab'}catch(e){}}
 /* words used everywhere */
 L10N({'رجوع':'Back','تمام':'OK','غيّر رأيك':'Change my mind','غيّري رأيك':'Change my mind','خده':'Take it','الإعدادات':'Settings','ازاي ألعب':'How to play','ازاي ألعب؟':'How to play?',
@@ -29219,6 +29269,713 @@ L10N({'✋ أوقف الضربة: شغّال':'✋ Hold the blow: on','✋ أو�
    [/^· صحتك لسه فوق (\d+)%$/,'· your health is still above $1%'],
    [/^(?:الضربة متوقفة قبل الموت · )?(?:اعفى|اعفي)، (?:فاوض|فاوضي)، (?:أكّل|أكّلي)، أو (?:استسلم|استسلمي)$/,'spare, negotiate, feed, or give up']]);
 
+/* ---------- 6.11 (R03b, English pass 7): التخصصات in English ----------
+   Every specialisation's name, what it gives, the town hints, its three moves (and the shared first move), the trial steps and the
+   relics; then the screen, the offer, the celebration and the trial. Only shown in English (p2c.js); after p60 and p63 so every
+   specialisation and move exists. Names stay Arabic in the data (saved heroes and code read them); the text layer swaps them. */
+L10NG({
+  /* names */
+  'الحداد':'The Smith','الحدادة':'The Smith','أسطى الحدادين':'Master of the smiths','وريث الحداد الأول':'Heir of the first smith','وريثة الحداد الأول':'Heir of the first smith',
+  'الخياط':'The Tailor','الخياطة':'The Tailor','الطباخ':'The Cook','الطباخة':'The Cook','الفلاح الأسطوري':'The legendary farmer','الفلاحة الأسطورية':'The legendary farmer',
+  'صاحب الصنعة':'Master of every craft','صاحبة الصنعة':'Master of every craft','سيد الظل':'Lord of shadows','سيدة الظل':'Lady of shadows','محارب الدم':'Blood warrior','محاربة الدم':'Blood warrior',
+  'ساحر الرماد':'Ash mage','ساحرة الرماد':'Ash mage','شيخ الطريقة':'Sheikh of the order','شيخة الطريقة':'Sheikha of the order','المنقّب':'The Prospector','المنقّبة':'The Prospector',
+  'صاحب العِرق':'Keeper of the vein','صاحبة العِرق':'Keeper of the vein','الصياد':'The Fisher','الصيادة':'The Fisher','ريّس المركب':'Boat captain','ريّسة المركب':'Boat captain',
+  'اللي رجع من الترعة':'Back from the canal','اللي رجعت من الترعة':'Back from the canal','معلّم التفصيل':'Master tailor','معلّمة التفصيل':'Master tailor',
+  'طباخ الأفراح':'Wedding cook','طباخة الأفراح':'Wedding cook','ابن الغيط':'Son of the field','بنت الغيط':'Daughter of the field','الفتوّة':'The Tough',
+  'صاحب القبضة':'Master of the fist','صاحبة القبضة':'Master of the fist','سيد النَّفَس':'Lord of breath','سيدة النَّفَس':'Lady of breath','العطّار':'The Herbalist','العطّارة':'The Herbalist',
+  'الحكيم':'The Sage','الحكيمة':'The Sage','طبيب السراية':'Palace doctor','طبيبة السراية':'Palace doctor',
+  'ملحمي':'Epic','خفي':'Hidden','سري':'Secret','نادر':'Rare','أسطوري':'Legendary',
+  /* what each one gives */
+  'كل الصفات +1':'Every stat +1',
+  'الشغل عند الحداد بيطلع أجود':'Work at the smith comes out better',
+  'السلاح اللي {عملته|عملتيه} بإيدك: ضرر +1 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2':'A weapon you made by hand: damage +1 · armour: hits drop by 1 · helmet: health +2',
+  'الشغل عند الحداد أجود بكتير، وتمنه أقل 20%':'Work at the smith comes out much better, and costs 20% less',
+  'السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2 · الدرع: الضربة بتقل 1 · الخوذة: صحة +2':'A weapon you made by hand: damage +2 · armour: hits drop by 1 · helmet: health +2',
+  '{بتعرف|بتعرفي} تعمل «شاكوش الأسطى»':'You can make «the master\'s hammer»',
+  'الشغل عند الحداد عمره ما بيبوظ، وتمنه أقل 30%':'Work at the smith never goes wrong, and costs 30% less',
+  'السلاح اللي {عملته|عملتيه} بإيدك: ضرر +2، ومرة من كل 10 بيضرب ضربة زيادة · الدرع: الضربة بتقل 2':'A weapon you made by hand: damage +2, and one time in 10 it strikes once more · armour: hits drop by 2',
+  '{بتعرف|بتعرفي} تعمل «سيف الجد الأول» و«درع الجد الأول»':'You can make «the first ancestor\'s sword» and «the first ancestor\'s armour»',
+  'الشغل عند الخياط أجود، وتمنه أقل 15%':'Work at the tailor comes out better, and costs 15% less',
+  'الهدوم اللي {عملتها|عملتيها} بإيدك: الصديري الضربة بتقل 1 زيادة · العمة صحة +2':'Clothes you made by hand: the vest takes 1 more off a hit · the turban health +2',
+  'الأكل اللي {بتطبخه|بتطبخيه} أجود':'The food you cook comes out better','الأكل بيرجّع صحة ومجهود أكتر بالربع':'Food gives back a quarter more health and effort',
+  'الزرع بيطلع أسرع بكتير (وقته ×0.7)':'Crops grow much faster (time ×0.7)','مرة من كل 3 المحصول بيطلع الضعف':'One time in 3 the harvest comes out double',
+  'كل الحرف أجود بكتير، والشغل عند الحداد والخياط أرخص 30%':'Every craft comes out much better, and work at the smith and the tailor is 30% cheaper',
+  'أي حاجة {عملتها|عملتيها} بإيدك: السلاح ضرر +1 · الدرع الضربة بتقل 1':'Anything you made by hand: weapon damage +1 · armour takes 1 off a hit',
+  'اللي {بتخلّص|بتخلّصي} عليه ممكن يقوم ضلّ {ماشي وراك|ماشي وراكي} طول الليلة (اتنين، وتلاتة من مستوى 9)':'Whoever you finish off may rise as a shadow that follows you all night (two, and three from level 9)',
+  'كل ضلّ بيضرب مرة بعد دورك':'Every shadow strikes once after your turn',
+  'ضرر +1 لكل خُمس صحة {خسرته|خسرتيه}':'Damage +1 for every fifth of your health you lost','ضرر +2 على اللي صحته تحت النص':'Damage +2 on anyone below half health',
+  'كل وحش {بتوقعه|بتوقعيه} بيرجّعلك صحة':'Every foe you drop gives you health back',
+  'ضربتك ممكن تولّع في الوحش (بيتحرق كل دور، دورين)':'Your hit may set the foe on fire (it burns every turn, for two turns)','ضرر +2 على اللي بيتحرق':'Damage +2 on anyone burning',
+  'كل قتال بيبدأ {وانت|وانتي} ورفيقك بترجعوا 2 صحة كل دور، 3 أدوار':'Every fight starts with you and your companion getting 2 health a turn, for 3 turns',
+  'ضرر +3 على العفاريت والأرواح':'Damage +3 on afreets and spirits',
+  'الفاس بتشيل 1 زيادة من كل صخرة':'The pick takes 1 more off every rock',
+  'إيدك بتستحمل: 3 ضربات برا الشق بمجهود بدل 2 · ضربة معلّم أكتر':'Your hands hold up: 3 strikes off the crack for one effort instead of 2 · more master strikes',
+  'الخام بيطلع أغلى ساعات (نحاس بدل حجر، حديد بدل نحاس…)':'Ore sometimes comes out finer (copper instead of stone, iron instead of copper…)',
+  'النزلة للدور اللي تحت بتبان أكتر، والفيروز والزمرد الضعف':'The way down to the next floor shows more often, and turquoise and emerald come double',
+  '3 ضربات برا الشق بمجهود بدل 2':'3 strikes off the crack for one effort instead of 2',
+  'الفاس بتشيل 1 زيادة، وساعات الصخرة بتتفتح من ضربة':'The pick takes 1 more, and sometimes a rock opens in one strike',
+  'مرة من كل 10 الصخرة ببلاش':'One time in 10 a rock is free','إيدك ما بتتعبش: 4 ضربات برا الشق بمجهود':'Your hands never tire: 4 strikes off the crack for one effort',
+  'السمكة بتستناك أكتر قبل ما تهرب':'The fish waits longer for you before it gets away',
+  'حتة الشد في المعركة مع السمكة أوسع، والسمك الكبير بيطلع أكتر':'The pull zone in the fight with the fish is wider, and big fish come more often',
+  'مرة من كل 7 بتطلع سمكتين':'One time in 7 two fish come up','مرة من كل 10 الرمية ببلاش':'One time in 10 a cast is free','حتة الشد أوسع، والصناديق بتطلع أكتر':'The pull zone is wider, and chests come up more often',
+  'سمكة الدهب بتطلع الضعف، والسمك الكويس أكتر':'Goldfish come twice as often, and good fish more often','ضربك في العفاريت والأرواح +3':'Your hits on afreets and spirits +3',
+  'الشغل عند الخياط أجود بكتير، وتمنه أقل الربع':'Work at the tailor comes out much better, and costs a quarter less','الهدوم اللي {عملتها|عملتيها} بإيدك بتحميك أكتر':'Clothes you made by hand guard you more',
+  'الأكل اللي {بتطبخه|بتطبخيه} أجود بكتير':'The food you cook comes out much better','الأكل بيرجّع صحة ومجهود أكتر بـ40%':'Food gives back 40% more health and effort',
+  'الزرع بيطلع أسرع (وقته ×0.85)':'Crops grow faster (time ×0.85)',
+  '{وانت|وانتي} بإيدك الفاضية (من غير سلاح): ضرر +2':'With your bare hands (no weapon): damage +2','{وانت|وانتي} بإيدك الفاضية: ضرر +4':'With your bare hands: damage +4',
+  'ضربة الإيد الفاضية ممكن تلخبط الوحش فيفوّت دوره (15%)':'A bare-hand hit may rattle the foe so it loses its turn (15%)',
+  '{وانت|وانتي} بإيدك الفاضية: ضرر +6، وكل قتال بيبدأ {وانت|وانتي} {بترجع|بترجعي} 2 صحة كل دور، 3 أدوار':'With your bare hands: damage +6, and every fight starts with you getting 2 health a turn, for 3 turns',
+  'ضربة الإيد الفاضية ممكن تلخبط الوحش فيفوّت دوره (20%)':'A bare-hand hit may rattle the foe so it loses its turn (20%)',
+  'الجرع اللي {بتشربها|بتشربيها} {وبترميها|وبترميها} أقوى بـ30%':'Potions you drink and throw are 30% stronger','الأعشاب عند عم رجب أرخص 20%':'Herbs at Uncle Ragab\'s are 20% cheaper',
+  'الجرع أقوى بـ50%':'Potions are 50% stronger','مرة من كل 3 الهون بيطلّع جرعة زيادة':'One time in 3 the mortar gives one more potion','الأعشاب عند عم رجب أرخص الربع':'Herbs at Uncle Ragab\'s are a quarter cheaper',
+  'الجرع أقوى الضعف':'Potions are twice as strong','نص المرات الهون بيطلّع جرعة زيادة':'Half the time the mortar gives one more potion',
+  'أول كل قتال {بترجع|بترجعي} 2 صحة كل دور، 3 أدوار':'At the start of every fight you get 2 health a turn, for 3 turns',
+  /* the town's hints */
+  'عم حسن: «جدي كان بيقول إن الحداد الأول ساب علامته في كل تحفة اتعملت بعده.»':'Uncle Hassan: «My grandfather used to say the first smith left his mark on every masterpiece made after him.»',
+  'عم صابر: «فيه فلاح زمان كانت الأرض بتطلع له قبل ما يزرع.»':'Uncle Saber: «There was a farmer long ago, the land would grow for him before he even sowed.»',
+  'عجوز الجبل: «اللي إيده تعرف الحديد والقماش والنار، الصنعة كلها بتسمع كلامه.»':'The mountain elder: «Whoever\'s hands know iron, cloth and fire — every craft listens to them.»',
+  'عم شاكر: «فيه حرامية بيمشوا في الضلمة، ووراهم ضلّ ناس ماتوا على إيديهم.»':'Uncle Shaker: «Some thieves walk in the dark with the shadows of people who died by their hands behind them.»',
+  'عم حسن: «فيه ناس الدم بيصحّيهم. كل ما يتعوّروا، يضربوا أجمد.»':'Uncle Hassan: «Some people wake up at the sight of blood. The more they get hurt, the harder they hit.»',
+  'عجوز الجبل: «فيه سحرة بيكلموا النار، والنار بترد عليهم.»':'The mountain elder: «Some mages talk to fire, and the fire answers them.»',
+  'العمدة: «فيه ناس قلبهم نضيف، والعفاريت بتتلم أول ما يدخلوا.»':'The mayor: «Some people have a clean heart, and the afreets go quiet the moment they walk in.»',
+  'عجوز الجبل: «اللي ينزل لقاع الجبل ويفضل يكسر هناك، الجبل بيوريه عِرقه.»':'The mountain elder: «Whoever goes down to the mountain\'s bottom and keeps breaking there, the mountain shows them its vein.»',
+  'عم صابر: «فيه واحد النداهة نادته ومشي وراها لحد الترعة.. ورجع. من يومها السمك بيجيله لوحده.»':'Uncle Saber: «The Naddaha called a man once, and he followed her all the way to the canal.. and came back. Since that day the fish come to him on their own.»',
+  'عم شاكر: «فيه ناس بتحارب بإيدها الفاضية، ونَفَسها أطول من الليل.»':'Uncle Shaker: «Some people fight with their bare hands, and their breath lasts longer than the night.»',
+  'عم رجب: «كان فيه طبيب في السراية زمان، الجرعة من إيده كانت بتقوّم اللي واقع.»':'Uncle Ragab: «There was a doctor at the palace long ago; a potion from his hand would get the fallen back on their feet.»',
+  /* trial steps */
+  '{اعمل|اعملي} 3 حاجات «تحفة» عند الحداد':'Make 3 «masterpiece» things at the smith','{اكسب|اكسبي} قتال زعيم':'Win a boss fight','{اسبك|اسبكي} فولاذ 3 مرات':'Smelt steel 3 times',
+  '{احصد|احصدي} 60 محصول':'Harvest 60 crops','{اطبخ|اطبخي} 8 أكلات بإيدك':'Cook 8 dishes by hand','{اكسب|اكسبي} 5 قتالات':'Win 5 fights',
+  '{اعمل|اعملي} 5 حاجات عند الحداد':'Make 5 things at the smith','{اعمل|اعملي} 5 حاجات عند الخياط':'Make 5 things at the tailor','{اطبخ|اطبخي} 5 أكلات':'Cook 5 dishes',
+  '{اكسب|اكسبي} 10 قتالات':'Win 10 fights','{اكسب|اكسبي} 3 قتالات صعبة (3 وحوش أو صحتك تحت التلت)':'Win 3 hard fights (3 foes, or your health under a third)',
+  '{اكسب|اكسبي} 5 قتالات وصحتك تحت التلت':'Win 5 fights with your health under a third','{اكسب|اكسبي} 3 قتالات قدام 3 وحوش أو أكتر':'Win 3 fights against 3 foes or more',
+  '{اكسب|اكسبي} 8 قتالات':'Win 8 fights','{اكسر|اكسري} 60 صخرة':'Break 60 rocks','{اكسر|اكسري} 10 صخرات في الدور 15 أو أعمق':'Break 10 rocks on floor 15 or deeper',
+  '{اكسب|اكسبي} 15 قتال بإيدك الفاضية':'Win 15 fights with your bare hands','{اكسب|اكسبي} 3 قتالات بإيدك الفاضية وصحتك تحت التلت':'Win 3 fights with your bare hands and your health under a third',
+  '{اكسب|اكسبي} قتال زعيم بإيدك الفاضية':'Win a boss fight with your bare hands','{اصطاد|اصطادي} 40 سمكة':'Catch 40 fish','{اصطاد|اصطادي} سمكة دهب أو تعبان مية':'Catch a goldfish or a water snake',
+  '{اعمل|اعملي} 15 جرعة':'Make 15 potions','{استعمل|استعملي} 10 جرع في القتال':'Use 10 potions in fights',
+  /* relics */
+  'دفتر الحداد الأول':'The first smith\'s notebook','دفتر قديم بخط إيد، فيه سر الحديد اللي ما بيصدّيش':'An old handwritten notebook, with the secret of iron that never rusts',
+  'فانوس من غير نار':'A lantern with no flame','فانوس بينوّر ضلمة بدل النور':'A lantern that sheds darkness instead of light',
+  'قبضة نحاس مكسورة':'A broken copper knuckle','لسه سخنة، كأن حد كان لابسها من شوية':'Still warm, as if someone was wearing it a moment ago',
+  'بذرة سودا':'A black seed','بذرة تقيلة كأنها حجر، وبتتحرك لوحدها في الإيد':'A seed heavy as a stone, and it moves on its own in your hand',
+  'هون نحاس قديم':'An old copper mortar','هون صغير، ريحة الأعشاب اللي فيه عمرها ما راحت':'A small mortar; the smell of the herbs in it never went away',
+  /* the moves */
+  'خبطة شاكوش':'Hammer blow','خبطة تقيلة بالسلاح على وحش واحد':'A heavy blow with your weapon on one foe','ضربة السندان':'Anvil strike','ضربة تقيلة بالسلاح: ضرر عالي، والوحش بيفوّت دوره':'A heavy hit with your weapon: high damage, and the foe loses its turn',
+  'سن السلاح':'Whetstone','ضرباتك الـ3 الجاية +2، ورفيقك ضربته الجاية أكيد':'Your next 3 hits +2, and your companion\'s next hit lands for sure','درع على السريع':'Quick shield',
+  'أول ضربة تيجي {فيك|فيكي} بتتمص، و{انت|انتي} ورفيقك بترجعوا 3 صحة':'The first blow at you is soaked, and you and your companion get 3 health back',
+  'ضربة الأسطى':'The master\'s strike','ضرر عالي، والوحش ضربته الجاية بتبقى نص':'High damage, and the foe\'s next hit is halved','تسقية':'Tempering','ضرباتك الـ3 الجاية +3، ورفيقك ضربته الجاية أكيد':'Your next 3 hits +3, and your companion\'s next hit lands for sure',
+  'شاكوش على الكل':'Hammer for all','بتضرب كل الوحوش مرة واحدة':'Hits every foe at once','نار الجد الأول':'The first ancestor\'s fire','أقوى ضربة عندك، والوحش بيولّع دورين':'Your strongest hit, and the foe burns for two turns',
+  'علامة الجد':'The ancestor\'s mark','ضرباتك الـ4 الجاية +4، وأول ضربة {عليك|عليكي} بتتمص، ورفيقك ضربته أكيد':'Your next 4 hits +4, the first blow at you is soaked, and your companion\'s hit lands for sure',
+  'السندان الأكبر':'The great anvil','بتضرب كل الوحوش، وكلهم بيفوّتوا دورهم':'Hits every foe, and they all lose their turn',
+  'شكة دبوس':'Pin prick','شكة سريعة، والوحش بينزف 1 كل دور، دورين':'A quick prick, and the foe bleeds 1 a turn, for two turns','إبرة في العين':'Needle in the eye','ضربة سريعة، والوحش ضربته الجاية بتبقى نص':'A quick hit, and the foe\'s next hit is halved',
+  'ترقيع سريع':'Quick patch','أول ضربة {عليك|عليكي} بتتمص، و{انت|انتي} ورفيقك بترجعوا 4 صحة':'The first blow at you is soaked, and you and your companion get 4 health back','خيط يربط':'Binding thread','بتربط الوحش: بيفوّت دورين':'You tie the foe up: it loses two turns',
+  'رشة شطة':'Chili pinch','شطة في عين الوحش: ضرر، وبيولّع دور':'Chili in the foe\'s eye: damage, and it burns for a turn','لقمة سخنة':'Hot bite','{انت|انتي} ورفيقك بترجعوا صحة على طول':'You and your companion get health back right away',
+  'زيت مغلي':'Boiling oil','الوحش بيتحرق ضرر ودورين نار':'The foe takes burn damage and two turns of fire','سفرة للكل':'A spread for all','الفريق كله بيرجع 3 صحة كل دور، 3 أدوار':'The whole team gets 3 health a turn, for 3 turns',
+  'ضربة منجل':'Sickle strike','ضربة منجل، وبترجّعلك 1 صحة':'A sickle strike, and it gives you 1 health back','فاس في الأرض':'Hoe in the ground','الأرض بتتهز تحت كل الوحوش، وكل وحش بيرجّعلك 1 صحة':'The ground shakes under every foe, and each foe gives you 1 health back',
+  'بركة الغيط':'Blessing of the field','جذور':'Roots','جذور بتمسك الوحش: بيفوّت دورين ويتسمم':'Roots grab the foe: it loses two turns and is poisoned',
+  'لمسة المعلّم':'The master\'s touch','ضربة مظبوطة، وضربتينك الجايين +1':'A precise hit, and your next two hits +1','إيد الصنايعي':'The craftsman\'s hand','ضرباتك الـ3 الجاية +3، وأول ضربة {عليك|عليكي} بتتمص':'Your next 3 hits +3, and the first blow at you is soaked',
+  'طبق ورا طبق':'Dish after dish','{انت|انتي} ورفيقك بترجعوا صحة كتير':'You and your companion get a lot of health back','شغل المعلّمين':'Masters\' work','ضربة كبيرة: نار، والوحش ضربته الجاية نص':'A big hit: fire, and the foe\'s next hit is halved',
+  'خنجر في الضلمة':'Dagger in the dark','طعنة من حيث ما يشوفش':'A stab from where it can\'t see','طعنة من الضل':'Stab from the shadow','ضرر ×1.5، و×2 على اللي صحته تحت النص':'Damage ×1.5, and ×2 on anyone below half health',
+  'جيش الضل':'Shadow army','ضلالك بيضربوا مرتين دلوقتي، ولو مفيش، ضلّك {انت|انتي} بيقوم يحارب {معاك|معاكي}':'Your shadows strike twice now, and if there are none, your own shadow rises to fight with you',
+  'تغطية الضلمة':'Cover of darkness','أول ضربتين {عليك|عليكي} مش هييجوا':'The first two blows at you miss',
+  'ضربة مجنونة':'Mad strike','ضربة تقيلة، وأقوى بـ2 لو صحتك تحت النص':'A heavy hit, 2 stronger if your health is below half','فوران الدم':'Boiling blood','{بتدفع|بتدفعي} شوية صحة، والضرر بيكبر كل ما صحتك تقل':'You pay a little health, and the damage grows the lower your health is',
+  'عطش':'Thirst','الضرر اللي {بتعمله|بتعمليه} بيرجعلك صحة':'The damage you deal comes back to you as health','صرخة الدم':'Blood cry','الوحوش كلها {عليك|عليكي}، ضرباتك الـ3 الجاية +2، ورفيقك ضربته أكيد':'Every foe turns on you, your next 3 hits +2, and your companion\'s hit lands for sure',
+  'شرارة على وحش: ضرر، وبيولّع دور':'A spark on a foe: damage, and it burns for a turn','رماد ونار':'Ash and fire','كل الوحوش بتولّع':'Every foe catches fire','نفخة لهب':'Breath of flame','ضرر عالي، و+4 على اللي بيتحرق':'High damage, and +4 on anyone burning',
+  'حيطة نار':'Wall of fire','أول ضربتين {عليك|عليكي} بيتمصوا':'The first two blows at you are soaked',
+  'لمسة نور':'Touch of light','حضرة':'Gathering','طرد':'Banishing','ضرر، والضعف على العفاريت والأرواح، والعفريت بيفوّت دوره':'Damage, double on afreets and spirits, and the afreet loses its turn',
+  'دعوة صافية':'A pure prayer','لو رفيقك واقع بيقوم بنص صحته، ولو واقف {انت|انتي} وهو بترجعوا 6 صحة':'If your companion is down he gets up with half his health; if he\'s standing, you both get 6 health back',
+  'حتة صخر':'Chunk of rock','حتة صخر تقيلة على وحش واحد':'A heavy chunk of rock on one foe','ضربة فاس':'Pick strike','ضربة تقيلة، والوحش ضربته الجاية بتبقى نص':'A heavy hit, and the foe\'s next hit is halved',
+  'طوب على راسهم':'Bricks on their heads','بتهد الحيطة عليهم: كل الوحوش بتتضرب وبتفوّت دورها':'You bring the wall down on them: every foe is hit and loses its turn','جلد صخر':'Rock skin',
+  'شق في الدرع':'Crack in the armour','بتلاقي الشق فيه: ضرر، ضربته الجاية نص، وضرباتك الـ3 الجاية +2':'You find its crack: damage, its next hit halved, and your next 3 hits +2',
+  'لمبة الجبل':'Mountain lamp','نور في عينيهم: أول ضربة {عليك|عليكي} مش هتيجي، ورفيقك ضربته أكيد، وصحة +3 ليكم':'Light in their eyes: the first blow at you misses, your companion\'s hit lands for sure, and health +3 for you both',
+  'انهيار':'Cave-in','السقف بيقع عليهم: ضرر على الكل، وكلهم بيفوّتوا دورهم':'The roof falls on them: damage to all, and they all lose their turn',
+  'عِرق الدهب':'Vein of gold','ضربة كبيرة، والضرر بيرجعلك صحة':'A big hit, and the damage comes back to you as health','الجبل بيحمي':'The mountain shields',
+  'أول ضربتين {عليك|عليكي} بيتمصوا، و{انت|انتي} ورفيقك بترجعوا 5 صحة':'The first two blows at you are soaked, and you and your companion get 5 health back',
+  'الأرض بتتشق تحتهم: ضرر على الكل، وبيفوّتوا دورين':'The ground splits under them: damage to all, and they lose two turns',
+  'رمية سنارة':'Rod cast','السنارة بتشبك في الوحش: ضرر، وضربته الجاية نص':'The hook catches the foe: damage, and its next hit is halved','شبكة':'Net','بترمي الشبكة عليه: بيفوّت دورين':'You throw the net over it: it loses two turns',
+  'حربة':'Harpoon','طعنة بحربة الصيد: ضرر عالي':'A stab with the fishing harpoon: high damage','سمك مشوي':'Grilled fish',
+  'ضربة مجداف':'Oar strike','ضربة بالمجداف: ضرر، والوحش بيفوّت دوره':'A hit with the oar: damage, and the foe loses its turn','نداء المركب':'The boat\'s call','رفيقك ضربته أكيد، ضرباتك الـ3 الجاية +2، والفريق بيرجع 2 كل دور':'Your companion\'s hit lands for sure, your next 3 hits +2, and the team gets 2 a turn',
+  'موجة':'Wave','موجة بتخبطهم كلهم: ضرر، وضربتهم الجاية نص':'A wave hits them all: damage, and their next hit is halved',
+  'صوت من المية':'A voice from the water','كلهم ضربتهم الجاية نص، والعفاريت بيفوّتوا دورهم':'All their next hits are halved, and the afreets lose their turn','جرّ للقاع':'Drag to the bottom','ضرر كبير، وبيتسمم، و+3 على العفاريت':'Big damage, it is poisoned, and +3 on afreets',
+  'مية الترعة':'Canal water','الفريق بيرجع 3 صحة كل دور، وأول ضربة {عليك|عليكي} مش هتيجي':'The team gets 3 health a turn, and the first blow at you misses',
+  'غرزة في الجرح':'Stitch in the wound','{انت|انتي} ورفيقك بترجعوا 5 صحة، وأول ضربة {عليك|عليكي} بتتمص':'You and your companion get 5 health back, and the first blow at you is soaked',
+  'قماشة على عينه':'Cloth over its eyes','بيفوّت دورين، وضربته الجاية نص':'It loses two turns, and its next hit is halved','إبر طايرة':'Flying needles','إبر على كل الوحوش: ضرر وسم':'Needles at every foe: damage and poison',
+  'حلة على النار':'Pot on the fire','عزومة':'Feast','صحة +3 دلوقتي، والفريق كله بيرجع 4 كل دور، 3 أدوار':'Health +3 now, and the whole team gets 4 a turn, for 3 turns','مغرفة':'Ladle','خبطة بالمغرفة: ضرر، والوحش بيفوّت دوره':'A whack with the ladle: damage, and the foe loses its turn',
+  'شرشرة':'Scythe','ضربة بالشرشرة: ضرر عالي':'A scythe strike: high damage','قلة مية':'Water jug','الوحوش كلها {عليك|عليكي}، وأول ضربة بتتمص':'Every foe turns on you, and the first blow is soaked',
+  'لكمة سريعة':'Quick punch','لكمة بإيدك الفاضية على وحش واحد':'A bare-hand punch at one foe','بوكس في الوش':'Punch in the face','ضربة بالإيد سريعة ورخيصة، وأقوى من غير سلاح':'A quick, cheap hand strike, stronger without a weapon',
+  'كتف في كتف':'Shoulder to shoulder','رجل في البطن':'Kick in the gut','ضربة تقيلة، والوحش بيفوّت دوره':'A heavy hit, and the foe loses its turn',
+  'قبضة الحديد':'Iron fist','ضربة جامدة، والوحش ضربته الجاية بتبقى نص':'A hard hit, and the foe\'s next hit is halved','رجل الجمل':'Camel kick','لفّة برجلك بتضرب كل الوحوش':'A spinning kick that hits every foe',
+  'نَفَس الحديد':'Iron breath','{بتاخد|بتاخدي} نَفَس: صحة +4، وضرباتك الـ3 الجاية +2':'You take a breath: health +4, and your next 3 hits +2',
+  'الكف اللي ما بيترد':'The slap that can\'t be returned','أقوى ضربة عندك، والوحش بيفوّت دوره':'Your strongest hit, and the foe loses its turn','سبع أنفاس':'Seven breaths',
+  '{انت|انتي} ورفيقك بترجعوا 3 صحة كل دور، 3 أدوار، وضرباتك الـ3 الجاية +3':'You and your companion get 3 health a turn for 3 turns, and your next 3 hits +3',
+  'الضربة الساكتة':'The silent blow','كل الوحوش بتتهز وبتفوّت دورها':'Every foe is shaken and loses its turn',
+  'حفنة عشب':'Handful of herbs','عشب مطحون في وش الوحش: ضرر، وضربته الجاية نص':'Ground herbs in the foe\'s face: damage, and its next hit is halved','رشة نعناع':'Mint sprinkle','بخور مُر':'Bitter incense',
+  'ريحة تقيلة في وش الوحش: ضرر، وضربته الجاية نص':'A heavy smell in the foe\'s face: damage, and its next hit is halved','جرعة على الماشي':'Potion on the go','لبخة':'Poultice','دخان الشيح':'Wormwood smoke','زيت حار':'Hot oil',
+  'إيد الطبيب':'The doctor\'s hand','{انت|انتي} ورفيقك بترجعوا صحة كتير قوي':'You and your companion get a great deal of health back','ترياق للكل':'Antidote for all','الفريق كله بيرجع 5 صحة كل دور، 3 أدوار':'The whole team gets 5 health a turn, for 3 turns',
+  'سم في الكاس':'Poison in the cup','ضربة كبيرة، والوحش بيتسمم 3 أدوار':'A big hit, and the foe is poisoned for 3 turns'});
+/* «قوة +1» (one stat line; « · » joins them, p8b) */
+{const ST={'قوة':'Strength','خفة':'Agility','تحمّل':'Endurance','ذكاء':'Intellect','حكمة':'Wisdom','حضور':'Presence','صحة':'Health'};
+  L10N({},[[/^(قوة|خفة|تحمّل|ذكاء|حكمة|حضور|صحة) ([+−]\d+)$/,(m,s,n)=>`${ST[s]} ${n}`]])}
+/* the «في الطريق» line: what is still missing («حدادة مستوى 4 (دلوقتي 1) و6 حاجات تعملها عند الحداد (0/6)») */
+{const TR={'حدادة':'Smithing','خياطة':'Tailoring','طبخ':'Cooking','تنقيب':'Mining','صيد':'Fishing','زراعة':'Farming','عطارة':'Herbalism'};
+  const TH=[[/^حاجات (?:تعملها|تعمليها) عند الحداد$/,'things made at the smith'],[/^حاجات «ممتاز» أو أحسن$/,()=>`«${(l10nStr('ممتاز')||'Excellent').toLowerCase()}» things or better`],
+    [/^حاجات (?:تعملها|تعمليها) عند الخياط$/,'things made at the tailor'],[/^حاجة عند الخياط$/,'things at the tailor'],[/^(?:أكلات|أكلة)$/,'dishes'],[/^صخرة(?: (?:تكسرها|تكسريها))?$/,'rocks broken'],
+    [/^سمكة$/,'fish'],[/^محصول$/,'crops'],[/^(?:قتالات (?:تكسبها|تكسبيها)|قتال (?:تكسبه|تكسبيه)) بإيدك الفاضية$/,'fights won with your bare hands'],[/^جرعة(?: (?:تعملها|تعمليها))?$/,'potions']];
+  L10N({},[[/^(?:(حدادة|خياطة|طبخ|تنقيب|صيد|زراعة|عطارة) )?مستوى (\d+) \(دلوقتي (\d+)\) و(\d+) (.+?) \((\d+\/\d+)\)$/,(m,t,a,b,n,x,p)=>{
+    const f=TH.find(r=>r[0].test(x));if(!f)return m;const th=typeof f[1]==='function'?f[1]():f[1];return `${t?TR[t]+' level':'Level'} ${a} (now ${b}) and ${n} ${th} (${p})`}]])}
+/* the screen, the sheet, the offer, the trial, the relics, the celebration (p56/90_ui, 95_trials, 96_titles, p59, p78) */
+const spDaysEn=t=>{const one=x=>{let m;if(x==='يوم')return '1 day';if(x==='يومين')return '2 days';if(m=x.match(/^(\d+) (?:أيام|يوم)$/))return m[1]+' days';
+    if(x==='ساعة')return '1 hour';if(x==='ساعتين')return '2 hours';if(m=x.match(/^(\d+) (?:ساعات|ساعة)$/))return m[1]+' hours';if(x==='أقل من ساعة')return 'less than an hour';return null};
+  const r=String(t).split(' و').map(one);return r.every(Boolean)?r.join(' and '):null};
+const SP_RX='نادر|ملحمي|خفي|أسطوري|سري',spRarEn=r=>(l10nStr(r)||r).toLowerCase(),spNmEn=x=>l10nStr(x)||x;
+L10NG({'القتال':'Combat','أشطر شغلانة':'Best trade','القدرات':'Skills','الشغلانات':'Trades','الألقاب':'Titles',
+  '«القتال» هو نوعك في القتال، و«الشغلانات» شغل إيدك في البلد، و«التخصص» بيتفتح من الاتنين.':'«Combat» is your fighting class, «Trades» are your handiwork in town, and a «Specialisation» opens from both.',
+  'تخصص واحد في المرة. الحرفة والقتال بيفتحوا التخصصات. الفرصة بتيجي {وانت شغال|وانتي شغالة} في الحرفة أو بعد قتال صعب، ومش كل مرة.':'One specialisation at a time. Crafts and fights open them. The chance comes while you work at a craft or after a hard fight, and not every time.',
+  '{لسه ما اتخصصتش|لسه ما اتخصصتيش}.':'Not specialised yet.','في الطريق':'On the way','لسه مستخبي':'Still hidden','تخصصك':'Your specialisation',
+  'محدش هيقولك عليهم. {اشتغل|اشتغلي} و{حارب|حاربي}، ويمكن ييجي يوم وتلاقي الفرصة قدامك.':'Nobody will tell you about them. Work and fight, and one day you may find the chance in front of you.',
+  'تخصصك الأساسي':'Your class','{غيّر|غيّري} تخصصك':'Change your class','{سيب|سيبي} التخصص':'Leave the specialisation',
+  '{وانت معاك|وانتي معاكي} تخصص، مفيش فرصة لتخصص تاني، غير اللي أعلى منه في نفس الشغلانة. لو {عايز|عايزة} {تدوّر|تدوّري} على حاجة تانية {سيبه|سيبيه} الأول.':'While you hold a specialisation there is no chance of another, except one above it in the same trade. If you want to look for something else, leave it first.',
+  '{متأكد؟ مش هيرجع غير بشغل|متأكدة؟ مش هيرجع غير بشغل}':'Sure? It only comes back with more work','{متأكد؟ مش هيرجع تاني|متأكدة؟ مش هيرجع تاني}':'Sure? It won\'t come back',
+  '{متأكد؟ اللي معاك مش هيرجع|متأكدة؟ اللي معاكي مش هيرجع}':'Sure? The one you hold won\'t come back',
+  '{بيديك|بيديكي} إيه':'What it gives you','قدراتك في القتال':'Your fight skills','بيبقوا مكان كل قدرات تخصصك الأساسي، حتى الأولى. {بتكبّرهم|بتكبّريهم} بنقط القدرة من البروفايل.':'They take the place of all your class skills, even the first one. You raise them with skill points from your profile.',
+  'ده تخصصك دلوقتي.':'This is your specialisation now.','بييجي إزاي':'How it comes',
+  '{وانت شغال|وانتي شغالة} عند الحداد':'while you work at the smith','{وانت شغال|وانتي شغالة} عند الخياط':'while you work at the tailor','{وانت بتطبخ|وانتي بتطبخي}':'while you cook',
+  '{وانت بتحصد|وانتي بتحصدي} في الغيط':'while you harvest in the field','{وانت بتكسر|وانتي بتكسري} صخر في المنجم':'while you break rocks in the mine','{وانت بتصطاد|وانتي بتصطادي}':'while you fish',
+  'بعد قتال صعب {تكسبه|تكسبيه}':'after a hard fight you win','بعد قتال {تكسبه|تكسبيه} بإيدك الفاضية ({شيل|شيلي} السلاح من «عدّتي»)':'after a fight you win with your bare hands (take the weapon off in «My gear»)',
+  '{وانت بتدق|وانتي بتدقي} في الهون':'while you pound in the mortar',
+  '{استنى|استني}…':'Wait…','حاجة جديدة اتفتحت':'Something new opened up','خطوة لقدام':'A step forward','حاجة كانت مستخبية':'Something that was hidden','حاجة ناس قليلة أوي بتوصلها':'Something very few people reach','سر':'A secret',
+  'حاجة جديدة…':'Something new…','خطوة لقدام…':'A step forward…','حاجة كانت مستخبية…':'Something that was hidden…','حاجة ناس قليلة أوي بتوصلها…':'Something very few people reach…','سر…':'A secret…',
+  '{أقبل|أقبلي}':'Accept','{أرفض|أرفضي}':'Decline','{متأكد؟ مش هترجع|متأكدة؟ مش هترجع}':'Sure? It won\'t come back','لو {رفضت|رفضتي}، الفرصة دي مش هترجع تاني.':'If you decline, this chance won\'t come back.',
+  'التخصص ده مش بيتاخد بزرار. {عدّي|عدّي} الاختبار ده في وقته وهو ليك. لو الوقت خلص الفرصة تروح للأبد، ومش {هتخسر|هتخسري} حاجة تانية.':'This specialisation isn\'t taken with a button. Pass this trial in time and it\'s yours. If time runs out the chance is gone for good, and you lose nothing else.',
+  '{ابدأ الاختبار|ابدأي الاختبار}':'Start the trial','اختبار شغال':'Trial running','{سيب|سيبي} الاختبار':'Leave the trial','{متأكد؟ الفرصة هتروح|متأكدة؟ الفرصة هتروح}':'Sure? The chance will be gone',
+  'الفرصة دي راحت':'That chance is gone','آثار القدامى':'Relics of the ancients','خلّص الاختبار اللي شغال الأول':'Finish the running trial first','{افتح الاختبار|افتحي الاختبار}':'Open the trial',
+  'أثر من القدامى':'A relic of the ancients','بيفتح اختبار تخصص.. في شاشة «التخصصات»':'Opens a specialisation trial.. on the «Specialisations» screen',
+  'تخصص جديد!':'New specialisation!','يلا بينا!':'Let\'s go!','{تخصصك اتغيّر|تخصصك اتغيّر}':'Your class changed','قدراتك الجديدة مستنياك':'Your new skills are waiting',
+  '{متأكد؟ الفلوس مش هترجع|متأكدة؟ الفلوس مش هترجع}':'Sure? The money won\'t come back'});
+L10N({},[
+  [new RegExp(`^(?:(\\d+) تخصصات|تخصص) (${SP_RX})$`),(m,n,r)=>n?`${n} ${spRarEn(r)} specialisations`:`${(l10nStr(r)||r)} specialisation`],
+  [/^محتاج (\d+) جنيه \(معاك (\d+)\)\.?$/,'You need $1 coins (you have $2)'],[/^(\d+) جنيه · مرة في الأسبوع$/,'$1 coins · once a week'],
+  [/^لازم (?:توصل|توصلي) المستوى (\d+) \((?:انت|انتي) دلوقتي (\d+)\)\.?$/,'You need to reach level $1 (you are $2 now)'],[/^(?:خلّص|خلّصي) الاختبار اللي شغال الأول\.?$/,'Finish the running trial first'],
+  [/^(?:غيّرت|غيّرتي) تخصصك قريب\. تقدر تاني بعد (.+?)\.?$/,(m,d)=>`You changed your class recently. You can again in ${spDaysEn(d)||d}`],
+  [/^(?:رفضته|رفضتيه) قبل كده: فرصته بترجع بعد (\d+) مرة شغل كمان$/,'You turned it down before: its chance comes back after $1 more tries of work'],
+  [/^فرصته بترجع بعد (\d+) مرة شغل كمان\.$/,'Its chance comes back after $1 more tries of work.'],
+  [/^راحوا ومش راجعين: (.+)$/,(m,a)=>'Gone for good: '+a.split('، ').map(spNmEn).join(', ')],
+  [/^قدراتك في القتال بتتغير: (.+) مكان كل قدرات تخصصك الأساسي$/,(m,a)=>`Your fight skills change: ${a.split('، ').map(spNmEn).join(', ')} take the place of all your class skills`],
+  [/^من مستوى (\d+) · (\d+) طاقة(?: · عندك مستوى (\d+))?$/,(m,a,b,c)=>`From level ${a} · ${b} energy${c?` · you have level ${c}`:''}`],
+  [/^لما الشروط تكمل، الفرصة بتيجي (.+)، ومش كل مرة\.$/,(m,a)=>{const p=a.split(' أو ').map(x=>l10nStr(x));return p.every(Boolean)?`When the conditions are met, the chance comes ${p.join(' or ')}, and not every time.`:m}],
+  [/^«(.+)» (?:هيكبر ويبقى|هتكبر وتبقى) «(.+)»$/,(m,a,b)=>`«${spNmEn(a)}» grows into «${spNmEn(b)}»`],
+  [/^(?:هتسيب|هتسيبي) «(.+)»(، وفرصته مش هترجع غير بشغل من جديد|، ومش هيرجع تاني)\.$/,(m,a,b)=>`You leave «${spNmEn(a)}»${/بشغل/.test(b)?', and its chance comes back only with new work':', and it won\'t come back'}.`],
+  [/^لو (?:نجحت|نجحتي)، (?:هتسيب|هتسيبي) «(.+)»\.$/,(m,a)=>`If you pass, you leave «${spNmEn(a)}».`],
+  [/^لو (?:رفضت|رفضتي)، مش هيستناك: فرصته هترجع بس بعد (\d+) مرة شغل كمان\.$/,'If you decline, it won\'t wait for you: its chance comes back only after $1 more tries of work.'],
+  [/^اختبار التحول · (.+)$/,(m,d)=>`Trial of change · ${spDaysEn(d)||d}`],
+  [/^بدأ اختبار «(.+)»$/,(m,a)=>`The trial of «${spNmEn(a)}» began`],[/^قدامك (.+) · الخطوات في «التخصصات»$/,(m,d)=>`You have ${spDaysEn(d)||d} · the steps are under «Specialisations»`],
+  [/^فاضل ((?:\d+ )?(?:يوم|يومين|أيام|ساعة|ساعتين|ساعات)(?: و.+)?|أقل من ساعة)$/,(m,d)=>{const e=spDaysEn(d);return e?`${e} left`:m}],
+  [/^اختبار «(.+)» (خلص وقته|سبته|سبتيه)$/,(m,a,w)=>w==='خلص وقته'?`The trial of «${spNmEn(a)}» ran out of time`:`You left the trial of «${spNmEn(a)}»`],
+  [/^اختبار «(.+)» شغال$/,(m,a)=>`Trial of «${spNmEn(a)}» running`],
+  [new RegExp(`^بيفتح اختبار «(.+)» \\((${SP_RX})\\)$`),(m,a,r)=>`Opens the trial of «${spNmEn(a)}» (${spRarEn(r)})`],
+  [/^فرصته كانت 1 من ([\d,]+)$/,'Its chance was 1 in $1'],
+  [/^\+(\d+) من تخصص «(.+)»$/,(m,n,a)=>`+${n} from the specialisation «${spNmEn(a)}»`],[/^قدرات «(.+)»$/,(m,a)=>`«${spNmEn(a)}» skills`],
+  [/^رجعلك (\d+) نقطة قدرة$/,'$1 skill points came back'],[/^«(.+)» راح$/,(m,a)=>`«${spNmEn(a)}» is gone`],
+  [/^(?:بقيت|بقيتي) مستوى (\d+)$/,'You reached level $1'],
+  [/^(?:بقيت|بقيتي) (.+)$/,(m,a)=>{const r=/[؀-ۿ]/.test(a)?l10nStr(a):a;return r&&Object.values(CLS_EN).includes(r)?`You became ${/^[AEIOU]/.test(r)?'an':'a'} ${r}`:m}],   /* a class (p59's band) */
+  [/^(?:انت|انتي) دلوقتي (.+)$/,(m,a)=>{const r=/[؀-ۿ]/.test(a)?l10nStr(a):a;return r?`You're now: ${r}`:m}],
+  [/^طريق صعب: (\d+) جنيه، ومرة واحدة في الأسبوع\. صفات تخصصك القديم ونموّها بيتشالوا ويتحط مكانهم بتوع التخصص الجديد، وكل اللي (?:كسبته|كسبتيه) غير كده بيفضل\. نص نقط القدرة اللي (?:صرفتها|صرفتيها) على قدراتك القديمة بس هي اللي بترجع\.$/,
+    'A hard road: $1 coins, and once a week. Your old class\'s stats and their growth are taken away and the new class\'s put in their place; everything else you earned stays. Only half the skill points you spent on your old skills come back.'],
+  [/^تخصصك «(.+)» بتاع (.+) بس: لو (?:غيّرت|غيّرتي) تخصصك هيروح ومش هيرجع\.$/,(m,a,c)=>`Your specialisation «${spNmEn(a)}» is for a ${(spNmEn(c)).toLowerCase()} only: if you change your class it goes and won't come back.`],
+  [/^(?:هبقى) (.+) · (\d+) جنيه$/,(m,a,n)=>{const r=/[؀-ۿ]/.test(a)?l10nStr(a):a;return r?`I'll be a ${r.toLowerCase()} · ${n} coins`:m}]]);
+/* why a hit did less (p11 X_calc): «(لابس درع)», «(بيحمي نفسه ولابس درع)», and «(وقع)» */
+const X_WHY_EN={'بيحمي نفسه':'guarding','بتحمي نفسها':'guarding','لابس درع':'armoured','لابسة درع':'armoured','جلده تخين':'thick hide','جلدها تخين':'thick hide','وقع':'down','وقعت':'down'};
+const xWhyEn=w=>{const p=String(w).split(' و').map(x=>X_WHY_EN[x.trim()]);return p.every(Boolean)?p.join(' and '):null};
+/* the notes p11 adds after a hit on many («(Wolf: -1 بس، عشان لابس درع، Boar كان مختفي)») */
+const xNoteEn=t=>{const p=t.split(/، (?!عشان)/).map(x=>{let m;if(m=x.match(/^(.+): -(\d+) بس، عشان (.+)$/)){const w=xWhyEn(m[3]);return w?`${spNmEn(m[1])}: only -${m[2]}, because ${w}`:null}
+    if(m=x.match(/^(.+) (?:كان مختفي|كانت مختفية)$/))return `${spNmEn(m[1])} was hidden`;return null});return p.every(Boolean)?p.join(', '):null};
+/* in the fight: the floats, the chips, and what a specialisation move did («<move>: <part> · <part>») */
+L10N({'ضلّه قام!':'A shadow rose!','ضلّ':'Shadow','ولّع!':'On fire!','ولّعت!':'On fire!','اتلخبط!':'Rattled!','اتلخبطت!':'Rattled!','إيد فاضية':'Bare hands','درع لضربتين':'Shield for two blows','درع لضربة':'Shield for a blow','ضلّك قام':'Your shadow rose'},
+  [[/^(\d+) ضلال$/,'$1 shadows'],[/^الدم \+(\d+)$/,'Blood +$1'],[/^سلاح متسقي \+(\d+)$/,'Tempered weapon +$1'],[/^(?:دفعت|دفعتي) (\d+) صحة$/,'You paid $1 health'],
+   [/^الفريق بيرجع (\d+) كل دور$/,'The team gets $1 a turn'],[/^ضرباتك الجاية \+(\d+)$/,'Your next hits +$1'],[/^كلهم (?:عليك|عليكي)$/,'They all turn on you'],[/^الضلال ضربوا (\d+) مرات$/,'The shadows struck $1 times'],
+   [/^([^·:()]+?) -(\d+)((?: \([^()]+\))+)$/,(m,n,d,g)=>{const p=[...g.matchAll(/\(([^()]+)\)/g)].map(x=>xWhyEn(x[1]));return p.every(Boolean)?`${spNmEn(n)} -${d} ${p.map(x=>'('+x+')').join(' ')}`:m}],[/^ضربة حظ! (.+)$/,(m,a)=>{const r=/[؀-ۿ]/.test(a)?l10nStr(a):a;return r?`Lucky hit! ${r}`:m}],
+   [/^ضلّ (.+) (?:قام|قامت) وبقى ماشي (?:وراك|وراكي)\.$/,(m,a)=>`The shadow of ${spNmEn(a)} rose and now follows you.`],
+   [/^ضلّ (.+) ضرب (.+): -(\d+)$/,(m,a,b,d)=>`The shadow of ${spNmEn(a)} hit ${spNmEn(b)}: -${d}`],
+   [/^(?:رجعتلك|رجعلك) (?:(\d+) نقط قدرة|نقطتين قدرة|نقطة قدرة)$/,(m,n)=>`${n||(/نقطتين/.test(m)?2:1)} skill point${n||/نقطتين/.test(m)?'s':''} came back`],
+   [/^اللي (?:صرفتها|صرفتيها) على أول قدرة في تخصصك القديم\. تخصصك دلوقتي ليه أول قدرة بتاعته\.$/,'The ones you spent on the first skill of your old class. Your specialisation now has its own first skill.']]);
+/* a companion's name (the one with you now) */
+const spCompNm=a=>{try{const L=[S.comp].concat(typeof coAls==='function'?coAls():[]).filter(Boolean).map(x=>x.name);return L.includes(a)}catch(e){return false}};
+L10N({},[[/^([^:·]+) (?:ضربته|ضربتها) الجاية أكيد$/,(m,a)=>spCompNm(a)||!/[؀-ۿ]/.test(a)||l10nStr(a)?`${spNmEn(a)}'s next hit lands for sure`:m],
+  [/^([^:·]+) (?:قام|قامت)$/,(m,a)=>spCompNm(a)?`${spNmEn(a)} got up`:m]]);
+/* «<move name>: …» — only the specialisation moves' own names (a narrow list), each part on its own */
+{const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),N=[...new Set(Object.values(SPK).flat().map(s=>s.n))].filter(x=>/[؀-ۿ]/.test(x)).sort((a,b)=>b.length-a.length);
+  if(N.length)L10N({},[[new RegExp('^('+N.map(esc).join('|')+'): (.+)$'),(m,a,b)=>{let nt='';const q=b.match(/^(.*) \(([^()]*(?:بس، عشان|مختفي)[^()]*)\)$/);if(q){nt=xNoteEn(q[2]);if(!nt)return m;b=q[1];nt=` (${nt})`}
+    const p=b.split(' · ').map(x=>/[؀-ۿ]/.test(x)?l10nStr(x):x);return p.every(x=>x!=null)?`${l10nStr(a)||a}: ${p.join(' · ')}${nt}`:m}],
+    [new RegExp('^('+N.map(esc).join('|')+') ما جتش\\.$'),(m,a)=>`${l10nStr(a)||a} missed.`]])}
+L10N({},[[/^([A-Za-z][^؀-ۿ·]*) (?:وقع|وقعت)$/,'$1 is down']]);   /* «Wolf وقع» (a foe's English name, then the Arabic word) */
+
+/* ---------- 6.12 (R03b, English pass 8): the fight's own words (p11: weak points, traits, what a foe is about to do, knockdowns,
+   the free turn, «علقة» and «تثبيت», thrown things, the bosses' tricks, the two help topics) ---------- */
+const xNm=a=>{a=String(a);return /[؀-ۿ]/.test(a)?(l10nStr(a)||a):a};
+const xTurnsEn=t=>t==='دور'||t==='دور واحد'?'1 turn':t==='دورين'?'2 turns':(t.match(/^(\d+) أدوار$/)||[])[1]?t.replace(/ أدوار$/,' turns'):null;
+const xCallEn=a=>xNm(a).replace(/^The call$/,'the call');
+L10NG({
+  /* weak points */
+  'ملح':'Salt','حديد':'Iron','نار':'Fire','بخور':'Incense','خرزة زرقا':'Blue bead','شعلة':'Torch',
+  'بالملح':'with salt','بالحديد':'with iron','بالنار':'with fire','بالبخور':'with incense','بالخرزة الزرقا':'with the blue bead',
+  'ملح!':'Salt!','حديد!':'Iron!','نار!':'Fire!','بخور!':'Incense!','خرزة زرقا!':'Blue bead!',
+  'ارمي كيس ملح من الشنطة':'Throw a bag of salt from your bag','{اضرب|اضربي} بسلاح حديد: سيف الحديد، أو الخنجر':'Hit with an iron weapon: the iron sword or the dagger',
+  'ارمي شعلة من الشنطة، أو كورة النار وعاصفة النار بتوع الساحر':'Throw a torch from your bag, or the mage\'s fireball and firestorm',
+  '{ولّع|ولّعي} بخور، أو نور المعالج بعد ما يتعلم «طرد الجن»':'Light incense, or the healer\'s light once they learn «Exorcism»',
+  '{البس|البسي} الخرزة الزرقا، وضربتك العادية تبقى بيها':'Wear the blue bead, and your plain hit carries it',
+  /* traits */
+  'تخين':'Thick','تخينة':'Thick','مراية':'Mirror','سريع':'Fast','سريعة':'Fast','بيختفي':'Vanishes','بتختفي':'Vanishes',
+  'كل ضربة سلاح {بتيجي فيه|بتيجي فيها} بتقل 2، والسحر بيعدّي':'Every weapon hit on it drops by 2; magic goes through','الضربة الأقل من 5 بتبقى 1، إلا بنقطة {ضعفه|ضعفها}':'A hit under 5 becomes 1, unless it hits its weak point',
+  'نص سحر الساحر بيرجع عليه':'Half of a mage\'s magic bounces back at them','ساعات {بيضرب|بتضرب} مرتين في {دوره|دورها}':'Sometimes hits twice in its turn',
+  'ساعات {بيختفي|بتختفي} دور، ومحدش يقدر {يضربه|يضربها}':'Sometimes vanishes for a turn, and nobody can hit it',
+  /* what it is about to do */
+  'واقع':'Down','واقعة':'Down','مختفي':'Hidden','مختفية':'Hidden','ضربتين جامدين':'Two heavy hits','ضربة جامدة':'Heavy hit','بيحمي نفسه':'Guarding','بتحمي نفسها':'Guarding',
+  'هينده':'Will call','هتنده':'Will call','هيخطف':'Will snatch','هتخطف':'Will snatch','هيهجم جري':'Will charge','هتهجم جري':'Will charge','هينده حد':'Will call help','هتنده حد':'Will call help',
+  'ضربتين':'Two hits','ضربة':'Hit','النداء':'The call','عفريت صغير':'Little afreet','ضعفه':'Weak to','ضعفها':'Weak to','مدوّخة':'Weakened',
+  /* floats and banners */
+  'مش باين!':'Not there!','مش باينة!':'Not there!','وقع!':'Down!','وقعت!':'Down!','لسه واقعة':'Still down','قام!':'Up!','قامت!':'Up!','اتكعبلت!':'Tripped!','اتكعبلتي!':'Tripped!',
+  'سريع!':'Fast!','سريعة!':'Fast!','فوقت!':'Snapped out!','فوقتي!':'Snapped out!','فلت!':'Free!','فلتت!':'Free!','هرب!':'Ran!','هربت!':'Ran!',
+  'دور ببلاش!':'Free turn!','العدو على الأرض: {اضرب|اضربي} تاني':'The foe is down: hit again','كلهم على الأرض!':'They\'re all down!','{اختار|اختاري}: علقة ولا تثبيت':'Choose: beat-down or shakedown',
+  '{اختار|اختاري} حركة كمان.':'Pick another move.','ولا':'or','علقة':'Beat-down','علقة!':'Beat-down!','تثبيت':'Shakedown','دفع وهرب!':'Paid up and ran!','دفعت وهربت!':'Paid up and ran!','دفعوا وهربوا!':'Paid up and ran!',
+  'الخبطة الأولى!':'The first blow!','{فوق!|فوقي!}':'Snap out!','مفيش حد باين تضربه دلوقتي':'Nobody in sight to hit now','مفيش حد باين {تضربه|تضربيه} دلوقتي.':'Nobody in sight to hit now.',
+  '{انت|انتي} لسه {ماشي|ماشية} ورا الصوت.. دورك راح.':'You\'re still following the voice.. your turn is gone.','الصوت لسه في ودانك.. ما {فوقتش|فوقتيش}.':'The voice is still in your ears.. you didn\'t snap out of it.',
+  '{حط الشمع في ودانك|حطي الشمع في ودانك}':'Put the wax in your ears','هيوجع شوية بس':'Will only hurt a little','ضربة الحظ':'a lucky hit','مخطوف':'Held','مخطوفة':'Held',
+  /* the market's «للقتال» list and the new things */
+  'موجود على طول':'Always in stock','صوت النداهة يبقى أصعب يشدك، وفي القتال {بتقطع|بتقطعي} بيه ندهتها':'The Naddaha\'s voice pulls you less, and in a fight it cuts off her call',
+  'ضربتك العادية بتوقّع اللي بيخاف من الخرزة الزرقا':'Your plain hit knocks down anyone who fears the blue bead'});
+L10N({},[
+  [/^: (.+)$/,(m,a)=>{const r=l10nStr(a);return r?': '+r:m}],
+  [/^فاضل (دور|دورين|\d+ أدوار)$/,(m,a)=>`${xTurnsEn(a)} left`],
+  [/^موجود على طول · (?:معاك|معاكي) (\d+)$/,'Always in stock · you have $1'],
+  /* the log line for what a foe is about to do */
+  [/^(.+) (?:اختفى|اختفت)! مش (?:هتعرف|هتعرفي) (?:تضربه|تضربها) الدور ده\.$/,(m,a)=>`${xNm(a)} vanished! You can't hit it this turn.`],
+  [/^(.+) (?:بيجهّز|بتجهّز) ضربة جامدة( \(مرتين\))?\.$/,(m,a,t)=>`${xNm(a)} is winding up a heavy hit${t?' (twice)':''}.`],
+  [/^(.+) (?:بيحمي نفسه|بتحمي نفسها): ضربك (?:فيه|فيها) الدور ده نص\.$/,(m,a)=>`${xNm(a)} is guarding: your hits on it are halved this turn.`],
+  [/^(.+) (?:بيبصلك|بتبصلك)\.\. (?:هيبدأ|هتبدأ) (.+)\.$/,(m,a,c)=>`${xNm(a)} is staring at you.. about to start ${xCallEn(c)}.`],
+  [/^(.+) (?:عينه|عينها) على (.+)\.\. (?:ناوي يخطف|ناوية تخطف)(?:ه|ها)\.$/,(m,a,c)=>`${xNm(a)} has an eye on ${xNm(c)}.. about to snatch them.`],
+  [/^(.+) (?:بيحفر في الأرض برجله\.\. ناوي يهجم|بتحفر في الأرض برجلها\.\. ناوية تهجم) (?:عليك|عليكي) جري\. (?:استخبى|استخبي)!\.$/,(m,a)=>`${xNm(a)} is pawing the ground.. about to charge at you. Hide!`],
+  [/^(.+) (?:بيبص|بتبص) حوالي(?:ه|ها)\.\. (?:ناوي ينده|ناوية تنده) حد (?:يساعده|يساعدها)\.$/,(m,a)=>`${xNm(a)} looks around.. about to call for help.`],
+  [/^(.+) (?:سريع|سريعة): (?:هيضرب|هتضرب) مرتين\.$/,(m,a)=>`${xNm(a)} is fast: it will hit twice.`],
+  /* knockdowns */
+  [/^(.+) (?:وقع|وقعت) على الأرض! \((.+)\) (?:هيفوّت دوره|هتفوّت دورها) الجاي\.$/,(m,a,w)=>{const y=xWhyK(w);return y?`${xNm(a)} went down! (${y}) It loses its next turn.`:m}],
+  [/^(.+) وقعوا على الأرض! \((.+)\) هيفوّتوا دورهم الجاي\.$/,(m,a,w)=>{const y=xWhyK(w);return y?`${xNames(a).map(xNm).join(' and ')} went down! (${y}) They lose their next turn.`:m}],
+  [/^المراية رجّعت السحر (?:عليك|عليكي): -(\d+) صحة\.$/,'The mirror threw the magic back at you: -$1 health.'],
+  /* your companion */
+  [/^(.+) (?:مخطوف|مخطوفة) في إيد (.*)\.\. (?:مش قادر يساعدك|مش قادرة تساعدك)\.$/,(m,a,b)=>`${xNm(a)} is held by ${xNm(b)}.. they can't help you.`],
+  [/^(.+) (?:بياخد نفسه|بتاخد نفسها) بعد العلقة\.$/,(m,a)=>`${xNm(a)} catches their breath after the beat-down.`],
+  [/^(.+) (?:بيدوّر|بتدوّر) حوالي(?:ه|ها)\.\. مفيش حد باين (?:يضربه|تضربه)\.$/,(m,a)=>`${xNm(a)} looks around.. nobody in sight to hit.`],
+  [/^([^:·]+) (?:مخطوف|مخطوفة)$/,(m,a)=>spCompNm(a)?`${xNm(a)} is held`:m],
+  [/^في إيد (.*?)(?: · (?:اضرب|اضربي)(?:ه|ها) (.+))?$/,(m,a,w)=>{const y=w?w.split(' أو ').map(x=>l10nStr(x)):[];return y.every(Boolean)?`In the hands of ${xNm(a)}${w?` · hit it ${y.join(' or ')}`:''}`:m}],
+  /* a foe's turn */
+  [/^(.+) لسه (?:واقع|واقعة) على الأرض\.$/,(m,a)=>`${xNm(a)} is still down.`],
+  [/^(.+) (?:قام|قامت) من على الأرض\.\. بس (?:ضيّع|ضيّعت) (?:دوره|دورها)\.$/,(m,a)=>`${xNm(a)} got up.. but lost its turn.`],
+  [/^(.+) (?:ظهر|ظهرت) تاني!$/,(m,a)=>`${xNm(a)} is back!`],
+  [/^(.+) (?:واقف يحمي نفسه|واقفة تحمي نفسها) وما (?:هجمش|هجمتش)\.$/,(m,a)=>`${xNm(a)} stands guarding and doesn't attack.`],
+  [/^(.+) (?:نازل|نازلة) بضربة جامدة (?:عليك|عليكي)!( (?:انت|انتي) (?:مستخبي|مستخبية): هتبقى نص\.)?$/,(m,a,g)=>`${xNm(a)} brings a heavy hit down on you!${g?' You\'re hiding: it\'ll be halved.':''}`],
+  [/^(.+) (?:نازل|نازلة) بضربة جامدة على (.+)!$/,(m,a,b)=>`${xNm(a)} brings a heavy hit down on ${xNm(b)}!`],
+  [/^ضربة جامدة من (.+)\.\. (?:اتفادى|اتفادي)!$/,(m,a)=>`A heavy hit from ${xNm(a)}.. dodge!`],
+  [/^(?:اتكعبلت|اتكعبلتي)! (.+) (?:لحق|لحقت) (?:يضربك|تضربك) تاني!$/,(m,a)=>`You tripped! ${xNm(a)} hits you again!`],
+  [/^(.+) (?:بيضرب|بتضرب) تاني\.\. (?:قوم|قومي)!$/,(m,a)=>`${xNm(a)} strikes again.. get up!`],
+  [/^(.+) (?:سريع|سريعة): ضربة كمان (?:عليك|عليكي)!$/,(m,a)=>`${xNm(a)} is fast: another hit at you!`],
+  [/^(.+) (?:سريع|سريعة): ضربة كمان على (.+)!$/,(m,a,b)=>`${xNm(a)} is fast: another hit at ${xNm(b)}!`],
+  [/^ضربة تانية من (.+)\.\. (?:اتفادى|اتفادي)!$/,(m,a)=>`A second hit from ${xNm(a)}.. dodge!`],
+  /* the free turn and the big choice */
+  [/^(.+) (?:واقع|واقعة)!$/,(m,a)=>`${xNm(a)} is down!`],
+  [/^(?:(.+) (?:واقع|واقعة) على الأرض|كلهم على الأرض)! (?:اختار|اختاري):$/,(m,a)=>`${a?`${xNm(a)} is down`:'They\'re all down'}! Choose:`],
+  [/^(?:(.+) على الأرض|كلهم على الأرض)! (?:اختار|اختاري):$/,(m,a)=>`${a?`${xNm(a)} is down`:'They\'re all down'}! Choose:`],
+  [/^(?:(?:انت|انتي) و(.+) تنزلوا ضرب|(?:تنزل|تنزلي) ضرب لوحدك): (.+)$/,(m,c,o)=>{const O={'هيتعوّر جامد':'it gets badly hurt','هتتعوّر جامد':'it gets badly hurt','لو تعبان يخلص، ولو لأ يتعوّر جامد':'if it\'s worn out it\'s finished, if not it gets badly hurt',
+      'لو تعبانة تخلص، ولو لأ تتعوّر جامد':'if it\'s worn out it\'s finished, if not it gets badly hurt','اللي تعبان يخلص، والباقي يتعوّر جامد':'the worn-out ones are finished, the rest get badly hurt'}[o];return O?`${c?`You and ${xNm(c)} lay into them`:'You lay into them alone'}: ${O}`:m}],
+  [/^(.+) مش (?:بيخاف|بتخاف) من التهديد$/,(m,a)=>`${xNm(a)} isn't afraid of threats`],
+  [/^(يدفع|تدفع|يدفعوا) (\d+) جنيه( وحاجة كمان)? (?:ويهرب|وتهرب|ويهربوا) · من غير خبرة$/,(m,w,n,x)=>`${w==='يدفعوا'?'They pay':'It pays'} ${n} coins${x?' and something more':''} and ${w==='يدفعوا'?'run':'runs'} · no experience`],
+  [/^علقة! (?:(?:انت|انتي) و(.+) نزلتوا|(?:نزلت|نزلتي)) ضرب: (.+?)(?: · (.+)!)?$/,(m,c,l,d)=>`Beat-down! ${c?`You and ${xNm(c)} laid`:'You laid'} into them: ${l.split('، ').map(x=>x.replace(/^(.+) -(\d+)$/,(q,n,v)=>`${xNm(n)} -${v}`)).join(', ')}${d?' · '+d.split('، ').map(x=>x.replace(/^(.+) (?:خلص|خلصت)$/,(q,n)=>`${xNm(n)} is finished`)).join(', ')+'!':''}`],
+  [/^\+(\d+) جنيه و(.+)$/,(m,n,a)=>`+${n} coins and ${xNm(a)}`],
+  [/^(?:وقفت|وقفتي) فوق (?:راس (.+)|راسهم): «اللي (?:معاك|معاكي|معاكم)!» (?:(?:ساب|سابت)|سابوا) (\d+) جنيه(?: و(.+?))? (?:وهرب|وهربت|وهربوا)\.$/,(m,a,n,k)=>`You stood over ${a?xNm(a):'them'}: «Hand it over!» ${a?'It':'They'} left ${n} coins${k?` and ${xNm(k)}`:''} and ran.`],
+  [/^(?:ثبّتهم|ثبّتيهم): (\d+) جنيه(?: و(.+?))?، من غير خبرة$/,(m,n,k)=>`Shakedown: ${n} coins${k?` and ${xNm(k)}`:''}, no experience`],
+  /* thrown things */
+  [/^(?:ولّعه|ولّعيه) في وش (.+)$/,(m,a)=>`Light it in ${xNm(a)}'s face`],[/^(?:ارميه|ارميها) على (.+)$/,(m,a)=>`Throw it at ${xNm(a)}`],
+  [/^نقطة ضعف(?:ه|ها): (?:هيقع|هتقع) على الأرض( \(بس (?:هو واقع|هي واقعة) أصلاً\))?$/,(m,b)=>`Its weak point: it'll go down${b?' (but it\'s already down)':''}`],
+  [/^هيقطع (.+)$/,(m,a)=>`Breaks ${xCallEn(a)}`],[/^(?:بيكره|بتكره) الملح: هيوجع جامد$/,'Hates salt: it will hurt a lot'],[/^(?:هتفوق|هتفوقي) من (.+)$/,(m,a)=>`You snap out of ${xCallEn(a)}`],
+  [/^((?:ولّعت|ولّعتي) البخور في وش|(?:رميت|رميتي) الشعلة على|(?:رميت|رميتي) الملح على) (.+?): -(\d+)( \([^()!]+\))?( · نقطة ضعف(?:ه|ها)!| \((?:بيكره|بتكره) الملح!\))?( · (.+) (?:وقع|وقعت)!)?$/,(m,v,a,d,w,x,dn,dnn)=>{
+    const V=/البخور/.test(v)?'You lit the incense in':/الشعلة/.test(v)?'You threw the torch at':'You threw the salt at';const y=w?xWhyEn(w.slice(2,-1)):'';if(w&&!y)return m;
+    return `${V} ${xNm(a)}${/البخور/.test(v)?'\'s face':''}: -${d}${y?` (${y})`:''}${x?(/نقطة/.test(x)?' · its weak point!':' (it hates salt!)'):''}${dn?` · ${xNm(dnn)} is down!`:''}`}],
+  /* the call */
+  [/^(?:فوق|فوقي) من (.+)!$/,(m,a)=>`Snap out of ${xCallEn(a)}!`],
+  [/^بتعتمد على (.+): لو (?:نجحت|نجحتي) كامل (?:هتفوق|هتفوقي) من (.+) · فاضل (دور واحد|دورين|\d+ أدوار)$/,(m,s,c,t)=>`Uses ${xNm(s)}: on a full success you snap out of ${xCallEn(c)} · ${xTurnsEn(t)} left`],
+  [/^(?:بعدت|بعدتي) الصوت شوية: (.+) لسه شغال، بس فاضل (دور|دورين|\d+ أدوار)\.$/,(m,c,t)=>`You pushed the voice away a little: ${xCallEn(c)} goes on, but with ${xTurnsEn(t)} left.`],
+  [/^(.+) (?:بدأ|بدأت) (.+)\.\. بس (?:(الشمع اللي في ودانك سدّ الصوت)|(.+) حمتك): ما (?:أثّرش فيك|أثّرش فيكي)\.$/,(m,a,c,w,n)=>`${xNm(a)} started ${xCallEn(c)}.. but ${w?'the wax in your ears blocked the sound':`${xNm(n)} protected you`}: it had no effect on you.`],
+  [/^(.+) بدأت تنده اسمك: «(.+)\.\. \2\.\.»\. فاضل (دور واحد|دورين|\d+ أدوار) قبل ما (?:رجليك|رجليكي) يمشوا لوحدهم\. (?:دوس|دوسي) «(?:فوق|فوقي)!»$/,(m,a,n,t)=>`${xNm(a)} started calling your name: «${n}.. ${n}..». You have ${xTurnsEn(t)} before your feet walk on their own. Press «Snap out!»`],
+  [/^(.+) (?:بدأ|بدأت) (.+)، وحاجة بتشدك (?:ناحيته|ناحيتها)\. فاضل (دور واحد|دورين|\d+ أدوار)\. (?:دوس|دوسي) «(?:فوق|فوقي)!»$/,(m,a,c,t)=>`${xNm(a)} started ${xCallEn(c)}, and something pulls you toward it. ${xTurnsEn(t)} left. Press «Snap out!»`],
+  [/^(.+) (?:زعّق|زعّقت) باسمك: «(.+)!» (?:فوقت|فوقتي) من (.+)\.$/,(m,a,n,c)=>`${xNm(a)} shouted your name: «${n}!» You snapped out of ${xCallEn(c)}.`],
+  [/^(?:حطيت|حطيتي) الشمع في ودانك: (?:فوقت|فوقتي) من (.+)\.$/,(m,c)=>`You put the wax in your ears: you snapped out of ${xCallEn(c)}.`],
+  [/^الملح جه في وش(?:ه|ها): (.+) اتقطع و(?:فوقت|فوقتي) من \1\.$/,(m,c)=>`The salt hit its face: ${xCallEn(c)} broke off and you snapped out of it.`],
+  [/^(.+) (?:اتوجع|اتوجعت) من نقطة ضعف(?:ه|ها): (.+) اتقطع و(?:فوقت|فوقتي) من \2\.$/,(m,a,c)=>`${xNm(a)} was hurt on its weak point: ${xCallEn(c)} broke off and you snapped out of it.`],
+  [/^(?:هزيت|هزيتي) راسك جامد و(?:فوقت|فوقتي) من (.+)!$/,(m,c)=>`You shook your head hard and snapped out of ${xCallEn(c)}!`],
+  [/^(?:رجليك|رجليكي) مشيت لوحدها ناحية المية\.\. -(\d+) صحة، (?:وهتضيّع|وهتضيّعي) دورك الجاي\.$/,'Your feet walked on their own toward the water.. -$1 health, and you lose your next turn.'],
+  [/^(?:مشيت|مشيتي) (?:ناحيته|ناحيتها) من غير ما (?:تحس|تحسي)\.\. -(\d+) صحة، (?:وهتضيّع|وهتضيّعي) دورك الجاي\.$/,'You walked toward it without noticing.. -$1 health, and you lose your next turn.'],
+  /* snatch, charge, summon */
+  [/^(.+) (?:مد|مدت) إيد(?:ه|ها) (?:وخطف|وخطفت) (.+)! (?:مش هيقدر يساعدك|مش هتقدر تساعدك)(?: لحد ما (?:تضرب|تضربي)(?:ه|ها) (.+))?\.$/,(m,a,c,w)=>{const y=w?w.split(' أو ').map(x=>l10nStr(x)):[];return y.every(Boolean)?`${xNm(a)} reached out and snatched ${xNm(c)}! They can't help you${w?` until you hit it ${y.join(' or ')}`:''}.`:m}],
+  [/^(.+) (?:اتوجع|اتوجعت) (?:وساب|وسابت) (.+)! (?:رجع|رجعت) القتال\.$/,(m,a,c)=>`${xNm(a)} got hurt and let go of ${xNm(c)}! Back in the fight.`],
+  [/^(.+) (?:عض|عضت) إيد (.+) (?:وفلت|وفلتت)! (?:رجع|رجعت) القتال\.$/,(m,c,a)=>`${xNm(c)} bit ${xNm(a)}'s hand and broke free! Back in the fight.`],
+  [/^(.+) (?:فلت|فلتت) (?:ورجع|ورجعت) القتال\.$/,(m,c)=>`${xNm(c)} broke free and is back in the fight.`],
+  [/^(.+) (?:جري|جريت) (?:عليك|عليكي) بكل قوت(?:ه|ها)!( (?:انت|انتي) (?:مستخبي|مستخبية): الضربتين هيبقوا نص\.)?$/,(m,a,g)=>`${xNm(a)} charged at you with all its might!${g?' You\'re hiding: both blows will be halved.':''}`],
+  [/^(.+) (?:لف|لفت) (?:وجاي|وجاية) تاني!$/,(m,a)=>`${xNm(a)} turned and is coming again!`],
+  [/^(.+) (?:جاي|جاية) (?:عليك|عليكي) جري\.\. (?:اتفادى|اتفادي)!$/,(m,a)=>`${xNm(a)} is charging at you.. dodge!`],
+  [/^(.+) (?:زعّق|زعّقت)، و(.+) (?:طلع|طلعت) من الضلمة (?:يساعد|تساعد)(?:ه|ها)!$/,(m,a,b)=>`${xNm(a)} shouted, and ${xNm(b)} came out of the dark to help!`]]);
+/* «(<weak point>: نقطة ضعفه)» or «(ضربة الحظ)» in a knockdown line */
+const xWhyK=w=>{if(w==='ضربة الحظ')return 'a lucky hit';const m=w.match(/^(.+): نقطة ضعف(?:ه|ها)$/);return m?`${xNm(m[1])}: its weak point`:null};
+/* tap a foe: what it fears, its traits, what it's about to do — built in English (the Arabic one is cut into many small pieces) */
+{const i0=X_info;X_info=function(f){if(!EN)return i0.apply(this,arguments);const wk=X_weak(f),tr=(f.traits||[]).filter(t=>X_TR[t]);SFX.tick(900);
+  const L=[`<b>${f.name}</b>: ${xNm(X_intTxt(f))}`];
+  if(wk.length)L.push(`Fears ${wk.map(k=>`<b style="color:${X_WK[k].c}">${xNm(X_WK[k].n)}</b> (${xNm(T(X_WK[k].how))})`).join(', ')}`);else L.push('No weak point: just hit it');
+  tr.forEach(t=>L.push(`<b style="color:${X_TR[t].c}">${xNm(FF(f,X_TR[t].m,X_TR[t].f))}</b>: ${xNm(X_tx(X_TR[t].d,f))}`));toast(L.join('<br>'))}}
+/* the first fight's coach line (also cut into pieces) */
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{if(EN){const x=view.querySelector('.xcoach>div:last-child');if(x&&!x.dataset.en){x.dataset.en=1;
+  x.innerHTML='See the small icons under the beast\'s name? Those are its <b>weak points</b>. Hit it with one and land a full success, and it <b>goes down</b> and you get a <b>free turn</b>. Tap the beast to see what to hit it with.'}}}catch(e){}return r}}
+/* the two help topics in «القتال» */
+{const H=HELP.filter(t=>t.g==='القتال'&&(t.h==='نقط الضعف والوقعة'||t.h==='العدو ناوي على إيه، وصفاته'));
+  if(H.length===2){const o={a:H[0],b:H[1]};
+    I18N(o,{a:{h:'Weak points and knockdowns',p:`<span class="xhp">${Object.keys(X_WK).map(k=>`<span style="--c:${X_WK[k].c}"><i>${X_ico(X_WK[k].i,22)}</i>${{salt:'Salt',iron:'Iron',fire:'Fire',incense:'Incense',bead:'Blue bead'}[k]}</span>`).join('')}</span>`,
+      b:'Every beast has <b>weak points</b> from the old tales: the small icons under its name. Tap the beast in a fight to see what to hit it with.<br>'
+        +'<b>Salt:</b> throw a bag of salt from your bag.<br><b>Iron:</b> hit with an iron weapon: the iron sword or the dagger.<br><b>Fire:</b> throw a torch from your bag, or the mage\'s fireball and firestorm.<br><b>Incense:</b> light incense, or the healer\'s light once they learn «Exorcism».<br><b>Blue bead:</b> wear the blue bead, and your plain hit carries it.'
+        +'<br><b>Knockdown:</b> hit a beast on its weak point with a full success and it goes down and loses its next turn, and you get a <b>free turn</b> right away. A lucky hit knocks any beast down too, except the big ones like the Naddaha. One free turn per round.'
+        +'<br><b>Beat-down or shakedown:</b> if everyone in front of you is down at once, you choose: a <b>beat-down</b> (you and your companion lay into them: the worn-out ones are finished and the rest get badly hurt) or a <b>shakedown</b> (they leave money and run, with no experience, and never with the big ones).'
+        +'<br><b>Watch out:</b> beasts do this too. If you trip on a dodge (the lowest number on the die) and the hit lands, the foe hits again at once. «Hide» stops that.'},
+      b:{h:'What a foe is about to do, and its traits',p:`<span class="xhp">${['hit','heavy','guard','call'].map(k=>`<span style="--c:${X_IN[k].c}"><i style="color:${X_IN[k].c}">${X_ico(X_IN[k].i,22)}</i>${{hit:'Hit',heavy:'Heavy hit',guard:'Guarding',call:'Trick'}[k]}</span>`).join('')}</span>`,
+      b:'Above each foe it says <b>what it will do</b> on its next turn, with a short line in the log:<br><b>Hit:</b> a plain hit.<br><b>Heavy hit:</b> much stronger than a plain one. «Hide» makes the dodge easier and halves it.<br><b>Guarding:</b> your hits on it are halved this turn, except on its weak point. Hit someone else or use something from your bag.<br>'
+        +'<b>Trick:</b> the big ones have tricks. The Naddaha calls your name: you have a few turns to snap out of it with the «Snap out!» button, wax or salt, or your companion shouts your name. The Ghoula snatches your companion until you hit her weak point. Abu Rigl Maslukha charges you with two blows in a row, and «Hide» halves them. And some call someone to help them.<br>'
+        +'<b>Traits</b> (under the name):<br><b>Armour:</b> every weapon hit on it drops by 2; magic goes through.<br><b>Thick:</b> a hit under 5 becomes 1, unless it hits its weak point.<br><b>Mirror:</b> half of a mage\'s magic bounces back at them.<br><b>Fast:</b> sometimes hits twice in its turn.<br><b>Vanishes:</b> sometimes vanishes for a turn, and nobody can hit it.'}})}}
+
+/* ---------- the fight log and the spoils (p8: what you, your companion and the foes do; the loot screen, chests, the level-up band) ---------- */
+const WS_EN={'الشومة':'The club','السيف':'The sword','الخنجر':'The dagger'};
+const xDown=p=>{const L=p.replace(/!$/,'').split('، ').map(x=>{let m=x.match(/^(.+) (?:وقع|وقعت)$/);if(m)return `${xNm(m[1])} is down`;m=x.match(/^(.+) (?:استسلم|استسلمت)( من وجع السم)? (?:وجري|وجريت)$/);return m?`${xNm(m[1])} gave up${m[2]?' from the poison':''} and ran`:null});return L.every(Boolean)?L.join(', ')+'!':null};
+const xHitPart=p=>{let m;
+  if(m=p.match(/^(.+?) جت في (.+?): -(\d+)((?: \([^()]+\))*)$/)){const w=[...m[4].matchAll(/\(([^()]+)\)/g)].map(x=>x[1]==='طرد الجن'?'Exorcism':xWhyEn(x[1]));if(w.some(x=>!x))return null;
+    const nm=xNm(m[1]);return `${/ hit$/i.test(nm)?nm:nm+' hit'} ${m[2]==='كل الأعداء'?'every foe':xNm(m[2])}: -${m[3]}${w.map(x=>` (${x})`).join('')}`}
+  if(/ (?:وقع|وقعت|وجري|وجريت)!$/.test(p))return xDown(p);
+  if(m=p.match(/^(الشومة|السيف|الخنجر) (?:دوّخته|دوّختها): (?:ضربته|ضربتها) الجاية نص$/))return `${WS_EN[m[1]]} dazed it: its next hit is halved`;
+  if(m=p.match(/^(الشومة|السيف|الخنجر) (?:سمّمه|سمّمها): -1 كل دور 3 أدوار$/))return `${WS_EN[m[1]]} poisoned it: -1 a turn for 3 turns`;
+  if(/ جت في /.test(p))return null;   /* a story line with «جت في» is not a hit line (and must not come back here) */
+  return /[؀-ۿ]/.test(p)?l10nStr(p):p};
+const xPre=s=>s.replace(/ضربة حظ! /g,'Lucky hit! ').replace(/ضربة معلّم! /g,'Master strike! ').replace(/غضب ×(3|2\.5)! /g,'Rage ×$1! ').replace(/ضربة زيادة ببلاش: /g,'Free extra hit: ');
+const xExtraWhy=w=>{let m;if(w==='ضربة مرتدة')return 'Counter-hit';if(w==='ضربتين ورا بعض')return 'Double strike';if(w==='وتالتة!')return 'And a third!';if(m=w.match(/^(الشومة|السيف|الخنجر) ضرب تاني$/))return `${WS_EN[m[1]]} struck again`;
+  if(m=w.match(/^(الشومة|السيف|الخنجر) وصل لـ(.+)$/))return `${WS_EN[m[1]]} reached ${xNm(m[2])}`;return null};
+const xParts=s=>{let nt='';const q=s.match(/^(.*) \(([^()]*(?:بس، عشان|مختفي)[^()]*)\)$/);if(q){nt=xNoteEn(q[2]);if(!nt)return null;s=q[1];nt=` (${nt})`}
+  const p=s.split(' · ').map(xHitPart);return p.every(x=>x!=null)?p.join(' · ')+nt:null};
+const xHealGot=g=>{if(g==='الصحة كاملة')return 'health is full';const p=g.split(' و').map(x=>{let m;if(m=x.match(/^⁦?\+(\d+)⁩? صحة (?:ليك|ليكي)$/))return `+${m[1]} health for you`;
+    if(m=x.match(/^⁦?\+(\d+)⁩? لـ(.+)$/))return `+${m[1]} for ${xNm(m[2])}`;return null});return p.every(Boolean)?p.join(' and '):null};
+const xFeed=(s,item)=>{/* «<companion> <item>»: the companion's name is the part we know */const w=s.split(' ');for(let i=1;i<w.length;i++){const c=w.slice(0,i).join(' ');if(spCompNm(c)||c===(S.comp&&S.comp.name))return [c,w.slice(i).join(' ')]}return null};
+L10NG({'هيبة':'Awe','هربوا كلهم!':'They all ran!','من غير ولا ضربة':'Without a single blow','{كُل انت|كُلي انتي}':'Eat it yourself','{اشربها انت|اشربيها انتي}':'Drink it yourself',
+  'استسلم':'Yielded','استسلمت':'Yielded','مدوّخ!':'Dazed!','مدوّخة!':'Dazed!','اتسمم!':'Poisoned!','اتسممت!':'Poisoned!','ضربة واحدة!':'One hit!','وتالتة!':'And a third!','ضربتين ورا بعض!':'Double strike!',
+  'الشومة!':'The club!','السيف!':'The sword!','الخنجر!':'The dagger!','ضربة زيادة!':'Extra hit!','ضربة الحظ ادتك ضربة ببلاش':'Your lucky hit gave you a free blow','متشجع!':'Cheered!','متشجعة!':'Cheered!',
+  'اتفاديت!':'Dodged!','اتفاديتي!':'Dodged!','اتمصت!':'Soaked!','اتفادى!':'Dodged!','اتفادت!':'Dodged!','وقعت..':'You fell..','وقعتي..':'You fell..','خلصت!':'It\'s over!','قاضية!':'Knockout!',
+  'دورك. {اختار|اختاري} حركة.':'Your turn. Pick a move.','{اتفاديت|اتفاديتي} الضربة!':'You dodged the hit!','{شربت|شربتي} قزازة الصحيان: صحتك رجعت كلها.':'You drank the waking bottle: all your health is back.',
+  'كمان ضربة ناجحة = إنجاز «3 ورا بعض»':'One more good hit = the «3 in a row» achievement','مستوى جديد':'New level','نقطة قدرة جديدة':'a new skill point',
+  'بعد القتال':'After the fight','المواجهة':'The showdown','الغنايم':'The spoils','انتصرت!':'You won!','انتصرتي!':'You won!','خبرة':'Experience','فلوس':'Money',
+  '{افتح الصندوق الأول|افتحي الصندوق الأول}':'Open the chest first','{دوس عشان تفتحه|دوسي عشان تفتحيه}':'Tap to open','عادي..':'Normal..','كويس..':'Good..','نادر..':'Rare..',
+  'صرة دهب قديمة':'An old purse of gold','تنفع عند الحداد والخياط في البلد':'Useful at the smith and the tailor in the village','{لبستها على طول|لبستيها على طول}':'You put it on right away','هتلاقيها مع حاجاتك':'You\'ll find it with your things',
+  '{خده|خديه}':'Take it','حاجة نادرة أوي. عم حسن الحداد يقدر يعمل منها قلادة':'Something very rare. Uncle Hassan the smith can make a necklace from it',
+  'هدية النهارده':'Today\'s gift','رجوع للقايمة':'Back to the menu',
+  /* exact lines: an earlier «لقيت …» rule would catch them first */
+  '{لقيت|لقيتي} صندوق!':'You found a chest!','{لقيت|لقيتي} صندوقين!':'You found two chests!','{لقيت|لقيتي} حاجات تنفع الحداد والخياط':'You found things for the smith and the tailor'});
+L10N({},[
+  [/^((?:ضربة حظ! |ضربة معلّم! |غضب ×(?:3|2\.5)! |ضربة زيادة ببلاش: )*)(.+? جت في .+?: -\d+.*)$/,(m,a,b)=>{const r=xParts(b);return r?xPre(a)+r:m}],
+  [/^(ضربتين ورا بعض|وتالتة!|(?:الشومة|السيف|الخنجر) ضرب تاني|(?:الشومة|السيف|الخنجر) وصل لـ.+?): -(\d+) في (.+?)(?: · (.+))?$/,(m,w,d,t,dn)=>{const y=xExtraWhy(w),z=dn?xDown(dn):'';return y&&z!=null?`${y}: -${d} on ${xNm(t)}${dn?' · '+z:''}`:m}],
+  [/^(?:الشومة|السيف|الخنجر) (?:ضرب تاني|وصل لـ.+)!$/,m=>{const y=xExtraWhy(m.slice(0,-1));return y?y+'!':m}],
+  [/^(.+) (?:داخل|داخلة) القتال (?:متعور|متعورة): (?:صحته|صحتها) (\d+) من (\d+)(?: (?:ومدروخ|ومدروخة) أول (\d+ أدوار|دور))?\.$/,(m,a,h,x,t)=>`${xNm(a)} enters the fight hurt: health ${h} of ${x}${t?`, and dazed for the first ${t==='دور'?'turn':t.replace(' أدوار',' turns')}`:''}.`],
+  [/^(.+) (?:شاف هيبتك واترعب وهرب|شافت هيبتك واترعبت وهربت)!$/,(m,a)=>`${xNm(a)} saw your presence, got scared and ran!`],
+  [/^صحتك (\d+)\/(\d+)$/,'Your health $1/$2'],[/^(?:أكّل|أكّلي) (.+)$/,(m,a)=>spCompNm(a)?`Feed ${xNm(a)}`:m],[/^اديها لـ(.+)$/,(m,a)=>`Give it to ${xNm(a)}`],[/^(?:صحته|صحتها) (\d+)\/(\d+)$/,'Health $1/$2'],
+  [/^صحّي (.+)$/,(m,a)=>`Wake ${xNm(a)}`],[/^(?:هيقوم|هتقوم) بنص (?:صحته|صحتها)$/,'Gets up with half their health'],[/^صحتك ترجع كلها \((\d+)\)$/,'All your health comes back ($1)'],
+  [/^بيشتغلوا لوحدهم: (.+)$/,(m,a)=>'Work on their own: '+a.split('، ').map(x=>x.replace(/^(.+) ×(\d+)$/,(q,n,k)=>`${xNm(n)} ×${k}`)).join(', ')],
+  [/^كومبو ×(\d+)$/,'Combo ×$1'],
+  [/^(.+) (?:استخبى|استخبت)\. التفادي الجاي أسهل\.$/,(m,a)=>`${xNm(a)} takes cover. The next dodge is easier.`],[/^(.+) (?:ضرب|ضربت) في الهوا!$/,(m,a)=>`${xNm(a)} hit the air!`],
+  [/^(.+) (متجمّد|متجمّدة|مدروخ|مدروخة|متلخبط|متلخبطة) (?:ومقدرش يرد|ومقدرتش ترد)\.$/,(m,a,s)=>`${xNm(a)} is ${/متجمّد/.test(s)?'frozen':/مدروخ/.test(s)?'dazed':'confused'} and couldn't strike back.`],
+  [/^(.+) (?:رد|ردت) (?:عليك|عليكي): -(\d+) صحة\.$/,(m,a,d)=>`${xNm(a)} struck back: -${d} health.`],
+  [/^ضربتك جت، بس (.+) (?:لحق|لحقت) (?:يخربشك|تخربشك): -1 صحة\.$/,(m,a)=>`Your hit landed, but ${xNm(a)} scratched you back: -1 health.`],
+  [/^(.+?): ((?:⁦?\+\d+⁩? صحة (?:ليك|ليكي))?(?: و)?(?:⁦?\+\d+⁩? لـ.+)?|الصحة كاملة)\.$/,(m,a,g)=>{const r=g&&xHealGot(g);return r?`${xNm(a)}: ${r}.`:m}],
+  [/^(.+) ما نفعتش المرة دي\.$/,(m,a)=>`${xNm(a)} didn't work this time.`],
+  [/^(.+) (كل|كلت|شرب|شربت) (.+): ⁦?\+(\d+)⁩? صحة\.$/,(m,a,v,it,n)=>`${xNm(a)} ${/^ك/.test(v)?'ate':'drank'} ${xNm(it)}: +${n} health.`],
+  [/^(?:اديت|اديتي) (.+): ⁦?\+(\d+)⁩? صحة\.$/,(m,a,n)=>{const q=xFeed(a);return q?`You gave ${xNm(q[0])} ${xNm(q[1])}: +${n} health.`:m}],
+  [/^(?:صحّيت|صحّيتي) (.+)! (?:قام|قامت) بنص (?:صحته|صحتها)\.$/,(m,a)=>`You woke ${xNm(a)}! They got up with half their health.`],
+  [/^(?:رميت|رميتي) ملح على (.+?): -(\d+)( \((?:بيكره|بتكره) الملح!\))?(?: · (.+))?$/,(m,a,d,s,dn)=>{const z=dn?xDown(dn):'';return z==null?m:`You threw salt at ${xNm(a)}: -${d}${s?' (it hates salt!)':''}${dn?' · '+z:''}`}],
+  [/^(.+) (?:عالجك|عالجتك): ⁦?\+(\d+)⁩? صحة\.$/,(m,a,n)=>`${xNm(a)} healed you: +${n} health.`],[/^(.+) (?:عالج نفسه|عالجت نفسها): ⁦?\+(\d+)⁩? صحة\.$/,(m,a,n)=>`${xNm(a)} healed themselves: +${n} health.`],
+  [/^(من التشجيع: )?(.+?) (?:ضرب|ضربت|عض|عضت) (.+?): -(\d+)((?: \([^()]+\))*)(?: · (.+))?$/,(m,c,a,t,d,g,dn)=>{const z=dn?xDown(dn):'';const w=[...g.matchAll(/\(([^()]+)\)/g)].map(x=>/^\+\d+$/.test(x[1])?x[1]:xWhyEn(x[1]));return z==null||w.some(x=>!x)?m:`${c?'Cheered on: ':''}${xNm(a)} ${/ (?:عض|عضت) /.test(m)?'bit':'hit'} ${xNm(t)}: -${d}${w.map(x=>` (${x})`).join('')}${dn?' · '+z:''}`}],
+  [/^(.+) (?:حاول|حاولت) (?:يضرب|تضرب|يعض|تعض) (.+)\.\. بس ما جتش\.$/,(m,a,t)=>`${xNm(a)} tried to ${/يعض|تعض/.test(m)?'bite':'hit'} ${xNm(t)}.. but missed.`],
+  [/^(.+) (?:بيهجم|بتهجم) (?:عليك|عليكي)!$/,(m,a)=>`${xNm(a)} attacks you!`],[/^(.+) (?:بيهجم|بتهجم) (?:عليك|عليكي)\.\. (?:اتفادى|اتفادي)!$/,(m,a)=>`${xNm(a)} attacks you.. dodge!`],
+  [/^(.+) (?:بيهجم|بتهجم) على (.+)!$/,(m,a,c)=>`${xNm(a)} attacks ${xNm(c)}!`],
+  [/^الدخان (?:غطّاك|غطّاكي): (.+) (?:ضرب|ضربت) في الهوا!$/,(m,a)=>`The smoke covered you: ${xNm(a)} hit the air!`],[/^الدرع السحري مص ضربة (.+) كلها!$/,(m,a)=>`The magic shield soaked all of ${xNm(a)}'s hit!`],
+  [/^(?:(?:اتفاديت|اتفاديتي) نص الضربة|الضربة جت (?:فيك|فيكي)): -(\d+) صحة\.(?: \(خفّت عشان (.+)\))?$/,(m,d,w)=>{const y=w?w.split(' و').map(x=>x==='صرخة الحرب'?'the war cry':x==='لقبك'?'your title':/^مدوّخة?$/.test(x)?'it was dazed':xNm(x)):[];
+    return `${/نص/.test(m)?'You dodged half the hit':'The hit landed'}: -${d} health.${w?` (lighter because of ${y.join(' and ')})`:''}`}],
+  [/^(.+?) (?:ضرب|ضربت) (.+?): -(\d+) صحة\.( \((?:مدوّخ|مدوّخة): الضربة نص\))?(?: (.+) (?:وقع|وقعت)!)?$/,(m,a,c,d,w,dn)=>`${xNm(a)} hit ${xNm(c)}: -${d} health.${w?' (dazed: half the hit)':''}${dn?` ${xNm(dn)} is down!`:''}`],
+  [/^(.+) (?:اتفادى|اتفادت) الضربة\.$/,(m,a)=>`${xNm(a)} dodged the hit.`],
+  [/^بس (.+) (?:صحّاك|صحّاكي|صحّتك) بقزازة صحيان$/,(m,a)=>`but ${xNm(a)} woke you with a waking bottle`],
+  [/^(?:وقعت|وقعتي)! بس (.+) (?:صحّاك|صحّاكي|صحّتك) بقزازة صحيان: صحتك بقت (\d+)\.$/,(m,a,n)=>`You fell! But ${xNm(a)} woke you with a waking bottle: your health is now ${n}.`],
+  /* the level-up band (« · » joins the parts) */
+  [/^(?:طلعت|طلعتي) المستوى (\d+)$/,'You reached level $1'],[/^صحتك بقت (\d+)$/,'Your health is now $1'],[/^طاقتك بقت (\d+)$/,'Your energy is now $1'],[/^ضربة المعلّم (\d+)%$/,'Master strike $1%'],
+  [/^قدرة جديدة: (.+)$/,(m,a)=>'New skill: '+a.split('، ').map(xNm).join(', ')],
+  /* the spoils */
+  [/^من غير ما (?:تستعمل|تستعملي) حاجة من الشنطة$/,'Without using anything from your bag'],[/^منهم (\d+)% زيادة عشان لقبك$/,'$1% of it extra for your title'],[/^(\d+) من (\d+) للمستوى الجاي$/,'$1 of $2 to the next level'],
+  [/^(?:لقيت|لقيتي) حاجات تنفع الحداد والخياط$/,'You found things for the smith and the tailor'],[/^(?:لقيت|لقيتي) (صندوقين|صندوق)!$/,(m,a)=>a==='صندوق'?'You found a chest!':'You found two chests!'],
+  [/^(.+)، اتباعت بـ(\d+) جنيه$/,(m,a,n)=>{const r=l10nStr(a);return r?`${r}, sold for ${n} coins`:m}],[/^ومعاها (\d+) جنيه$/,'and $1 coins with it'],
+  [/^كل يوم فيه صندوق (?:مستنيك|مستنياكي)\. (?:افتحه|افتحيه) (?:وشوف|وشوفي) حظك\.$/,'Every day a chest is waiting for you. Open it and see your luck.']]);
+
+/* ---------- the dice (p5 rollCheck, p76 the sum and the chances), and a few more fight lines (p9c, p20, p22, p83) ---------- */
+L10NG({'بتعتمد على':'Uses','{معاك|معاكي} ميزة':'You have advantage','ميزة':'advantage','صعوبة':'difficulty','نجاح':'Success','بتمن':'At a price','مانفعتش':'Failed','نحس!':'Bad luck!',
+  '{نجحت!|نجحتي!}':'Success!','{نجحت.. بس فيه تمن|نجحتي.. بس فيه تمن}':'Success.. at a price','حظك جابها':'Your luck did it','النردين':'The dice',
+  '{دوس|دوسي} على النرد {وسيبه|وسيبيه}، أو {دوس|دوسي} مطوّل {وسيب|وسيبي} عشان رمية قوية':'Tap the die and let go, or hold it down and let go for a strong throw','قوة الرمية للشكل بس، الرقم بييجي بالحظ':'The throw\'s strength is just for show; the number comes by luck',
+  '{سيب في أي وقت عشان ترمي|سيبي في أي وقت عشان ترمي}':'Let go any time to throw',
+  'نجاح: من 10 وطالع · نجاح بتمن: من 7 لـ9 · مانفعتش: أقل من 7':'Success: 10 and up · success at a price: 7 to 9 · fail: under 7','نجاح: من 15 وطالع · نجاح بتمن: من 10 لـ14 · مانفعتش: أقل من 10':'Success: 15 and up · success at a price: 10 to 14 · fail: under 10',
+  'الرقم ده دقة الوحش أو حمايته. بيكبر مع مستواك عشان الوحوش بتقوى مع {البطل|البطلة}، مش من حظك ولا من النرد.':'This number is the foe\'s accuracy or guard. It grows with your level because foes grow stronger with the hero, not from your luck or the dice.',
+  'الرقم ده دقة الوحش أو حمايته. بيكبر مع مستواك عشان الوحوش بتقوى مع {البطل|البطلة}، مش من حظك ولا من النرد. ومنها':'This number is the foe\'s accuracy or guard. It grows with your level because foes grow stronger with the hero, not from your luck or the dice. Of it,',
+  'من اللعنة اللي {عليك|عليكي} الليلة دي.':'comes from the curse on you tonight.','ضربة مرتدة!':'Counter-hit!',
+  'بس {فوقت|فوقتي} بقزازة الصحيان اللي في شنطتك':'but you came to with the waking bottle in your bag'});
+L10N({},[
+  [/^\(([^()]+)\)( ·)?$/,(m,a,d)=>{const r=l10nStr(a);return r?`(${r})${d||''}`:m}],
+  [/^صعوبة (\d+)$/,'Difficulty $1'],[/^(?:معاك|معاكي) ميزة: رمينا (3 نرد وأخدنا أعلى اتنين|نردين وأخدنا الأعلى بس)$/,(m,a)=>/3/.test(a)?'Advantage: we rolled 3 dice and kept the top two':'Advantage: we rolled two dice and kept the higher'],
+  [/^([\d +]+) من النرد$/,'$1 from the dice'],[/^([+−])(\d+) عشان (.+)$/,(m,s,n,a)=>`${s}${n} for ${xNm(a)}`],[/^−(\d+) صعوبة$/,'−$1 difficulty'],
+  [/^كان ناقصك (\d+) بس عشان (?:تنجح|تنجحي)( من غير تمن)?!$/,(m,n,p)=>`You were only ${n} short of ${p?'a clean success':'success'}!`],[/^نجاح ورا نجاح ×(\d+)$/,'Success after success ×$1'],
+  [/^الصعوبة (\d+) جاية منين؟$/,'Where does difficulty $1 come from?'],
+  [/^([^·:]+) على ([^؀-ۿ·:]+)$/,(m,a,b)=>{const x=/[؀-ۿ]/.test(a)?l10nStr(a):a;return x?`${x} on ${b}`:m}],   /* «<move> على <foe>» (the roll's label); only an English foe name, so other «… على …» lines are left alone */
+  [/^(.+) لسه (?:مدروخ|مدروخة)\.\. (?:مقدرش يهجم|مقدرتش تهجم) الدور ده\.$/,(m,a)=>`${xNm(a)} is still dazed.. can't attack this turn.`],
+  [/^(?:الناس اللي وراك كترت|اللي بيطاردوك سبقوك): الوحوش هنا أقوى من العادي\.$/,m=>`${/كترت/.test(m)?'More people are after you':'Your hunters got here first'}: the beasts here are stronger than usual.`],
+  [/^(?:وقعت|وقعتي)! بس (?:شربت|شربتي) قزازة الصحيان اللي في شنطتك: صحتك بقت (\d+)\.$/,'You fell! But you drank the waking bottle in your bag: your health is now $1.']]);
+L10N({},[[/^ضربة مرتدة: -(\d+) في (.+?)(?: · (.+))?$/,(m,d,t,dn)=>{const z=dn?xDown(dn):'';return z==null?m:`Counter-hit: -${d} on ${xNm(t)}${dn?' · '+z:''}`}]]);
+/* «Facing you: …» and other name lists: a foe's name may hold « و» itself («كبير ولاد عواد»), so the fight's own names are matched first */
+function xNames(a){try{const C=S.combat;if(C){const N=C.foes.map(f=>f.name).filter(Boolean),out=[];let s=a;while(s){const n=N.filter(x=>s===x||s.startsWith(x+' و')).sort((p,q)=>q.length-p.length)[0];if(!n)break;out.push(n);s=s.slice(n.length).replace(/^ و/,'')}if(!s&&out.length)return out}}catch(e){}return a.split(' و')}
+/* the rest of «الصعوبة جاية منين؟» outside a fight (p76 rcWhy): «الصعوبة هنا 5: 4 جاية من مستواك (…)، … ومنها 1 زيادة عشان دي مش شغلانتك. …» */
+const RC_TAIL=/\s*كل ما (?:تكبر|تكبري) الكروت بتصعب شوية، وصفاتك وعدّتك هما اللي بيعادلوها\.\s*النرد نفسه ما بيتغيرش: الصعوبة بتتطرح من المجموع بس\.\s*$/,RC_TAIL_EN=' As you grow, cards get a little harder, and your stats and gear balance them. The dice never change: the difficulty is only taken off the total.';
+L10N({'الصعوبة هنا':'Difficulty here','جاية من مستواك (':'comes from your level ('},[
+  [/^(زيادة عشان دي مش شغلانتك|أقل عشان دي شغلانتك)\.([\s\S]*)$/,(m,a,r)=>{const t=r.replace(RC_TAIL,''),w=/مش/.test(a)?'more because this isn\'t your trade.':'less because this is your trade.';return t.trim()==='ومنها'?`${w} Of it,`:t.trim()?m:w+(RC_TAIL.test(r)?RC_TAIL_EN:'')}],
+  [/^من اللعنة اللي (?:عليك|عليكي) الليلة دي\.([\s\S]*)$/,(m,r)=>r.trim()&&!RC_TAIL.test(r)?m:'comes from the curse on you tonight.'+(RC_TAIL.test(r)?RC_TAIL_EN:'')]]);
+
+/* ---------- 6.13 (R03b, English pass 9): the night — every foe's name, then the night's own frame ----------
+   Foe names are written in the cards in Arabic (and saved that way in the hunting log), so the text layer swaps them; people keep
+   their plain Egyptian names, spelled in English. */
+L10N({
+  'أبو رجل مسلوخة':'Abu Rigl Maslukha','أبو كيس':'The Sack Man','أسد الفسقية':'The fountain lion','أشرف':'Ashraf','أمين المخازن':'The storekeeper','ابن عم صالح':'Uncle Saleh\'s nephew','ابن عمه':'His cousin',
+  'ابن عواد':'Awad\'s son','ابن عواد الصغير':'Awad\'s youngest','التايه':'The lost one','التور المغمّي':'The blindfolded ox','الحرامي الكبير':'The big thief','الحية أم راسين':'The two-headed snake',
+  'الديب الأغبر':'The grey wolf','الرصد':'The guardian spirit','الصندوق العضاض':'The biting chest','الضبع':'The hyena','الضبعة':'The she-hyena','الضيف اللي بحوافر':'The guest with hooves',
+  'العرسة':'The weasel','العروسة':'The doll','العقربة':'The scorpion','الغريب':'The stranger','الغول':'The ghoul','الغولة':'The Ghoula','القرينة':'The Qarina','القطرب':'The Qutrub',
+  'الكبش الأسود':'The black ram','المارد':'The Marid','المعلم صبحي':'Master Sobhy','المعلم صبري':'Master Sabry','الملبوس':'The possessed','النسناس':'The Nasnas','النشال أبو رجل معزة':'The goat-legged pickpocket',
+  'الهامة':'The Hama','الهانم':'The Hanem','بياع المرايات':'The mirror seller','بياعة الأصوات':'The voice seller','تمثال':'Statue','تمثال حارس':'Guardian statue','جرة الصريخ':'The screaming jar',
+  'جرو الضبعة':'The she-hyena\'s cub','جمل هايج':'Raging camel','حارس الفوانيس':'The lantern keeper','حرامي':'Thief','حرامي سلك':'Wire thief','حرامي ملثم':'Masked thief','حفّار':'Digger',
+  'حنش أسود':'Black snake','خدام الكبير':'The boss\'s servant','خدام الهانم':'The Hanem\'s servant','خدامة الهانم':'The Hanem\'s maid','خفاش':'Bat','خفير':'Watchman','خفير المقاول':'The contractor\'s watchman',
+  'خيالك':'Your double','درع الباشا':'The Pasha\'s armour','ديب أعور':'One-eyed wolf','ديب جعان':'Hungry wolf','راجل ملثم':'Masked man','راجل من رجالة عم صالح':'One of Uncle Saleh\'s men','رجب':'Ragab',
+  'روح الخدامة':'The maid\'s ghost','روح حسنين':'Hassanein\'s ghost','ساكنة البيت':'The one who lives in the house','سرب وطاويط':'A swarm of bats','سمسار الطريق':'The road broker','شبح الحجّار':'The stonecutter\'s ghost',
+  'صاحب الصدى':'Master of the echo','صاحب المركب':'The boat owner','صاحب الميزان':'Master of the scales','صاحبة الخاتم':'The ring\'s owner','صبي السمسار':'The broker\'s boy','صبي بنبوت':'Boy with a staff',
+  'صبي سمسار':'Broker\'s boy','صرخة محبوسة':'A trapped scream','صياد كنوز':'Treasure hunter','ضبع شاب':'Young hyena','ضل من غير صاحب':'A shadow with no owner','ضل هربان':'A runaway shadow',
+  'عسكري الباشا':'The Pasha\'s soldier','عفريت':'Afreet','عفريت البير':'Afreet of the well','عفريت الجميزة':'Afreet of the sycamore','عفريت الزوبعة':'Whirlwind afreet','عفريت الساقية':'Afreet of the waterwheel',
+  'عفريت الصدى':'Echo afreet','عفريت الطوب':'Brick afreet','عفريت الغيط':'Field afreet','عفريت الفرن':'Oven afreet','عفريت القطة':'Cat afreet','عفريت الكنز':'Treasure afreet','عقرب أصفر':'Yellow scorpion',
+  'عم بيومي الغريق':'Uncle Bayoumi the drowned','عم ربيع البواب':'Uncle Rabie the doorman','عم رشاد':'Uncle Rashad','عنكبوتة المخزن':'The storeroom spider','غراب البين':'The crow of parting','غرقانة':'Drowned woman',
+  'غفير الخرابة':'Watchman of the ruin','فار السرداب':'Cellar rat','فاروق السمسار':'Farouk the broker','فوزي الدجال':'Fawzy the charlatan','قرموط كبير':'Big catfish','كبير الحرامية':'Chief of the thieves',
+  'كبير الديابة':'Leader of the wolves','كبير السوق':'The market boss','كبير العيلة':'Head of the family','كبير المهربين':'Chief of the smugglers','كبير ولاد عواد':'The eldest of Awad\'s sons','كلب الخرابة':'Dog of the ruin',
+  'كلب السراية':'The palace dog','كلب سعران':'Rabid dog','كلب شارد':'Stray dog','مجدي الصياد':'Magdy the hunter','مدحت':'Medhat','مضبوع قديم':'An old hyena-struck man','مقامر أعور':'One-eyed gambler',
+  'مقامر من الجن':'A jinn gambler','ممدوح الصياد':'Mamdouh the hunter','منقّب':'Prospector','مهرّب':'Smuggler','نبيل الحرامي':'Nabil the thief','وطواط':'Bat','ونيس':'Wanis'});
+/* a «مسعور» foe (night 6+) and a boss's shadow (night 5+), p14 */
+const xBare=r=>r.replace(/^(?:The|An?) /,'');
+L10N({},[[/^(.+?) (?:ال)?(?:مسعور|مسعورة)$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:/^Rabid /.test(r)?r:`Rabid ${xBare(r).replace(/^Rabid /,'')}`}],[/^ضل (.+)$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`Shadow of ${r.replace(/^(The|An?) /,x=>x.toLowerCase())}`}]]);
+
+/* ---------- the adventures, the setup screen, numbered nights and tonight's omen ---------- */
+L10NG({
+  /* adventures and their places */
+  'مغارة الضبع':'The Hyena\'s Cave','سوق العفاريت':'The Afreet Market',
+  'الكفر':'The village','الغيطان':'The fields','الترعة':'The canal','الجنينة':'The garden','السراية':'The palace','السرداب':'The cellar','الدرب':'The trail','المحاجر':'The quarries','المغارة':'The cave',
+  'البلد القديمة':'The old village','الدهاليز':'The Passages',
+  'المغرب':'Sunset','بالليل':'Night','نص الليل':'Midnight','آخر الليل':'Before dawn',
+  'تلات شباب مشيوا ورا صوت ست عند الترعة وما رجعوش.':'Three young men followed a woman\'s voice to the canal and never came back.',
+  'سراية الباشا المقفولة من سبعين سنة نوّرت لوحدها. الغفير دخل يشوف وما طلعش.':'The Pasha\'s palace, locked for seventy years, lit up on its own. The watchman went in to look and never came out.',
+  'تلات شغيلة من المحاجر قاموا بالليل ومشيوا ورا ضبعة في الجبل، ومحدش فيهم بص وراه.':'Three quarry workers got up in the night and followed a she-hyena into the mountain, and none of them looked back.',
+  'مصطفى ابن عم صابر باع اسمه وصوته وضله في سوق العفاريت، والسوق بيقفل مع صياح الديك.':'Mostafa, Uncle Saber\'s son, sold his name, his voice and his shadow at the Afreet Market, and the market closes when the rooster crows.',
+  'الشباب لسه عند الترعة..':'The young men are still at the canal..','عم رجب وسعيد لسه جوه السراية..':'Uncle Ragab and Saeed are still inside the palace..','الشغيلة لسه في المغارة..':'The workers are still in the cave..','حاجات مصطفى لسه في السوق..':'Mostafa\'s things are still at the market..',
+  'كل مغامرة ليلة طويلة في 3 أماكن، وفي آخر كل مكان مواجهة كبيرة. الليلة بتتحفظ بعد كل محطة.':'Every adventure is a long night in 3 places, with a big showdown at the end of each. The night is saved after every stop.',
+  'جديدة':'New','العب مع صحابك لايف':'Play live with your friends','محتاج حساب جوجل':'Needs a Google account',
+  /* the setup screen */
+  'الليلة':'The night','{هتلعب|هتلعبي} بأنهي نرد؟':'Which dice will you play with?','نردين عاديين':'Two plain dice','أسهل وأهدى. أحسن لأول مرة.':'Easier and calmer. Best for a first time.',
+  'نرد 20 وجه':'A 20-sided die','النتايج بتفرق أكتر من رمية للتانية.':'Results swing more from one roll to the next.','بطلك':'Your hero','بطلتك':'Your hero','{ابدأ|ابدأي} المغامرة':'Start the adventure',
+  'ليلة جديدة':'New night','الطالع بيتغيّر كل يوم.':'The omen changes every day.','الليلة 1: الليلة العادية. كل ليلة بعدها أصعب، ومكسبها أكبر.':'Night 1: the ordinary night. Every night after it is harder, and pays more.',
+  '{اختار|اختاري} الليلة':'Choose the night','أصعب.. ومكسبها أكبر':'Harder.. and pays more','دي آخر ليلة وأصعب ليلة.':'This is the last and hardest night.',
+  '{متأكد|متأكدة}؟ الليلة المتسابة هتضيع':'Sure? The saved night will be lost','{دوس|دوسي} تاني عشان {تبدأ|تبدأي} ليلة جديدة من الأول':'Tap again to start a new night from the beginning',
+  /* omens */
+  'بدر':'Full moon','خماسين':'Khamasin wind','ليلة ساكتة':'A quiet night','ليلة عفاريت':'A night of afreets','ليلة برد':'A cold night','ليلة سعد':'A lucky night',
+  'الكروت النادرة بتطلع ضعف':'Rare cards come up twice as often','التسلل أصعب: الخفة −1 في الكروت':'Sneaking is harder: Agility −1 on cards',
+  'القمر بدر الليلة. الحاجات الغريبة هتطلعلك كتير.. بس النور هيفضحك لو {حاولت تستخبى|حاولتي تستخبي}.':'The moon is full tonight. Strange things will come your way a lot.. but the light will give you away if you try to hide.',
+  'فلوس الكروت +30%':'Card money +30%','ضربك في القتال أصعب 1':'Your hits in fights are 1 harder',
+  'ريح الخماسين جاية بالتراب. التراب هيدخل عينك {وانت بتضرب|وانتي بتضربي}، بس الرزق هيجري وراك.':'The Khamasin wind is coming with dust. It will get in your eyes as you strike, but fortune will run after you.',
+  'قتال أقل، وناس ومقايضة أكتر':'Fewer fights, more people and trading','خبرة القتال −20%':'Fight experience −20%',
+  'الليلة ساكتة. الوحوش نايمة والناس صاحية.. بس اللي ما بيحاربش ما بيتعلمش.':'The night is quiet. The beasts sleep and the people are awake.. but whoever doesn\'t fight doesn\'t learn.',
+  'فلوس القتال ضعف':'Double fight money','قتال أكتر في الكروت':'More fights in the cards','العفاريت طالعة الليلة كلها. اللي يقف قدامهم يكسب كتير.. لو فضل واقف.':'The afreets are all out tonight. Whoever stands up to them gains a lot.. if they stay standing.',
+  'الراحة بترجّع صحة أكتر بالنص':'Resting gives back half again as much health','صحة الوحوش +2':'Beasts\' health +2',
+  'البرد هيقرص عضمك الليلة، والنار هتدفيك أكتر من أي ليلة. بس الوحوش جلدها تخين.':'The cold will bite your bones tonight, and the fire will warm you more than any night. But the beasts have thick hides.',
+  'الخبرة +25%':'Experience +25%','الرمية اللي تبوظ بتوجع 1 زيادة':'A roll that goes wrong hurts 1 more',
+  'نجمك عالي الليلة، {هتتعلم|هتتعلمي} كتير. بس عين الحسود {عليك|عليكي}، والوقعة هتوجع.':'Your star is high tonight; you\'ll learn a lot. But the evil eye is on you, and a fall will hurt.',
+  /* harder nights */
+  'كل وحش ليه صفة زيادة: درع أو سرعة':'Every beast has an extra trait: armour or speed','الراحة والاستراحة بيرجّعوا صحة أقل':'Resting and rest stops give back less health',
+  'حيل الوحوش الكبيرة بتيجي أسرع':'The big beasts\' tricks come sooner','آخر وحش كبير جايب ضله معاه، وأتقل':'The last big beast brings its shadow along, and is tougher','كروت ★★★ أكتر':'More ★★★ cards',
+  'وحشين «مسعورين» في كل قتال، ضعفهم متغيّر':'Two «rabid» beasts in every fight, with changed weak points','وحش «مسعور» في كل قتال، ضعفه متغيّر':'A «rabid» beast in every fight, with a changed weak point',
+  'كل وحش بياخد صفة زيادة: درع أو سرعة':'Every beast takes an extra trait: armour or speed','الراحة والاستراحة بيرجّعوا صحة أقل، وصناديق الوحوش الكبيرة أحسن درجة':'Resting and rest stops give back less health, and the big beasts\' chests are one grade better',
+  'كروت ★★★ أكتر، ووحش «مسعور» في كل قتال ضعفه متغيّر':'More ★★★ cards, and a «rabid» beast in every fight with a changed weak point','وحشين مسعورين في كل قتال':'Two rabid beasts in every fight',
+  '«ليلة برد»: جلد الوحوش تخين الليلة، صحتهم +2.':'«A cold night»: the beasts\' hides are thick tonight, health +2.','«خماسين»: التراب في عينك، ضربك أصعب 1.':'«Khamasin wind»: dust in your eyes, your hits are 1 harder.',
+  '«ليلة عفاريت»: الفلوس اتضاعفت':'«A night of afreets»: the money doubled','«ليلة ساكتة»: خبرة القتال أقل':'«A quiet night»: less fight experience','«ليلة سعد»: خبرة +25%':'«A lucky night»: experience +25%','−1 من «بدر»':'−1 from «Full moon»',
+  '«ليلة برد»: الراحة أكتر':'«A cold night»: more rest','«ليلة برد»: النار بتدفي أكتر':'«A cold night»: the fire warms more','«ليلة سعد»: عين الحسود، وجعتك 1 زيادة':'«A lucky night»: the evil eye, it hurt you 1 more',
+  'سهّار الليالي':'Night owl','سهّارة الليالي':'Night owl','{تكسب|تكسبي} الليلة 5 في أي مغامرة':'Win night 5 in any adventure','الليل بيخاف منه':'The night fears him','الليل بيخاف منها':'The night fears her','{تكسب|تكسبي} الليلة 10 في أي مغامرة':'Win night 10 in any adventure',
+  'الليلة: محطات وكروت':'The night: stops and cards','الأساسيات':'The basics','الليالي وطالع الليلة':'The nights and tonight\'s omen',
+  /* أم عطية الودعية (the shell reader on the road) */
+  'أم عطية الودعية':'Umm Attiya the shell reader','بتضرب الودع على حصيرة جنب الحيطة':'Casting shells on a mat by the wall','أسمع طالعي منها':'Hear my omen from her','أدفعلها ترمي الودع تاني':'Pay her to cast the shells again',
+  'أدفع أكتر وأختار طالعي بنفسي':'Pay more and pick my own omen','أقرا الودع بنفسي':'Read the shells myself',
+  '{مسكت|مسكتي} الودع {ورميته|ورميتيه} زي ما هي بتعمل، فوقع كومتين. أم عطية بصّتلك باستغراب: «إيدك خفيفة.. {اختار|اختاري}.»':'You grabbed the shells and cast them like she does, and they fell in two heaps. Umm Attiya looked at you, surprised: «You have a light hand.. choose.»',
+  'الودع وقع من إيدك على الأرض واتفرفط. أم عطية زعقت: «الودع مش لعبة!» وخدت منك حق الصينية.':'The shells fell from your hand and scattered. Umm Attiya shouted: «Shells aren\'t a toy!» and charged you for the tray.',
+  'أخطف صرّتها وأجري':'Snatch her purse and run','{مدّيت|مدّيتي} إيدك وهي بتبص في الودع، {وخطفت|وخطفتي} الصرة من حجرها {وجريت|وجريتي}. ما حسّتش بحاجة.':'You reached out while she stared at the shells, snatched the purse from her lap and ran. She felt nothing.',
+  '{سرقت|سرقتي} ست عجوزة':'You robbed an old woman','{خطفت|خطفتي} الصرة، بس هي لحقت تمسك طرف هدومك وتفّت على الودع: «طالعك اتقلب!»':'You snatched the purse, but she caught the edge of your clothes and spat on the shells: «Your omen just turned!»',
+  'مسكت إيدك قبل ما {توصل|توصلي}، وضوافرها دخلت في لحمك. «طالعك اتقلب!» ورمت الودع في وشك.':'She caught your hand before it got there, and her nails dug into your flesh. «Your omen just turned!» and she threw the shells in your face.',
+  '{مدّيت|مدّيتي} إيدك على ست عجوزة':'You raised your hand to an old woman','أسيبها وأكمّل طريقي':'Leave her and go on my way','أم عطية لمّت الودع في صرّتها.':'Umm Attiya gathered the shells into her purse.','طالعي يفضل زي ما هو':'My omen stays as it is'});
+L10N({},[
+  [/^صحة الوحوش \+(\d+)%(?:، وضربهم \+(\d+))?$/,(m,a,b)=>`Beasts' health +${a}%${b?`, and their hits +${b}`:''}`],
+  [/^المكسب في الآخر: فلوس وخبرة \+(\d+)%(، وصناديق الوحوش الكبيرة أحسن درجة)?$/,(m,a,b)=>`Reward at the end: money and experience +${a}%${b?', and the big beasts\' chests one grade better':''}`],
+  [/^طالع الليلة: (.+)$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`Tonight's omen: ${r}`}],[/^طالع الليلة دلوقتي:$/,'Tonight\'s omen now:'],
+  [/^(.+)\.\. (?:ضعفها|ضعفه) مش زي ما (?:انت فاكر|انتي فاكرة)\.$/,(m,a)=>`${xNm(a)}.. its weak point isn't what you think.`],[/^(.+) طالع من الضلمة!$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`${r} comes out of the dark!`}],
+  [/^(.+) (?:نده|ندهت) على ضل تاني من الضلمة!$/,(m,a)=>`${xNm(a)} called another shadow out of the dark!`],
+  [/^«خماسين»: الفلوس زادت (\d+)$/,'«Khamasin wind»: the money grew by $1'],
+  [/^الليلة (\d+) · طالع الليلة$/,'Night $1 · tonight\'s omen'],[/^اتفتحت الليلة (\d+)$/,'Night $1 is open'],[/^الليلة (\d+)$/,'Night $1'],
+  [/^مكسب الليلة: فلوس وخبرة \+(\d+)%$/,'Tonight\'s reward: money and experience +$1%'],[/^أعلى ليلة مفتوحة (\d+)\.$/,'The highest open night is $1.'],
+  [/^(?:اكسب|اكسبي) الليلة دي (?:وتفتح|وتفتحي) الليلة (\d+)\.$/,'Win this night and night $1 opens.'],
+  [/^أم عطية الودعية قاعدة على حصيرة جنب الحيطة، وقدامها صينية فيها ودع\. «(?:تعالى|تعالي) يا (?:ابني|بنتي)\. الليلة ليها طالع، (?:وانت ماشي|وانتي ماشية) فيه من غير ما (?:تعرف|تعرفي)\.»$/,'Umm Attiya the shell reader sits on a mat by the wall, a tray of shells in front of her. «Come here, child. The night has an omen, and you\'re walking in it without knowing.»'],
+  [/^أم عطية رمت الودع على الصينية وبصّت فيه كتير\. «(.+)»$/,(m,a)=>{const r=l10nStr(a);return r?`Umm Attiya cast the shells on the tray and stared at them a long time. «${r}»`:m}],
+  [/^(\d+) جنيه · طالع جديد بالحظ$/,'$1 coins · a new omen by luck'],[/^(\d+) جنيه · (?:تختار|تختاري) من طالعين$/,'$1 coins · choose from two omens'],
+  [/^الودع وقع على الصينية بشكل غريب\. أم عطية ضحكت: «طالعك اتقلب يا (?:ابني|بنتي)\.\. بقى (.+)\.»$/,(m,a)=>`The shells fell on the tray in a strange way. Umm Attiya laughed: «Your omen just turned, child.. it's ${xLc(xNm(a))} now.»`],
+  [/^الودع قدامك كومتين، وأم عطية مستنياك (?:تختار|تختاري):$/,'Two heaps of shells in front of you, and Umm Attiya waits for you to choose:'],[/^آخد «(.+)»$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`Take «${r}»`}],
+  [/^أم عطية لمّت الكومة التانية في صرّتها\. «خلاص\.\. الليلة (.+)\.»$/,(m,a)=>`Umm Attiya gathered the other heap into her purse. «That's it.. tonight is ${xLc(xNm(a))}.»`],[/^أفضل على «(.+)»$/,(m,a)=>`Stay with «${xNm(a)}»`],
+  [/^أم عطية هزّت راسها: «اللي (?:تشوفه|تشوفيه)\.\. (.+) (?:معاك|معاكي) للصبح\.»$/,(m,a)=>`Umm Attiya nodded: «As you like.. ${xNm(a)} is with you till morning.»`],
+  [/^ضرب الوحوش \+1( كمان)?$/,(m,k)=>`Beasts' hits +1${k?' more':''}`],
+  /* the setup screen's hero card and the saved night */
+  [/^مغامرة «(.+)»$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`The adventure «${r}»`}],[/^من المستوى (\d+)$/,'From level $1'],[/^(?:كسبتها|كسبتيها) (مرة|مرتين|\d+ مرات)$/,(m,a)=>`Won ${a==='مرة'?'once':a==='مرتين'?'twice':a.replace(' مرات',' times')}`],
+  [/^(?:كمّل|كمّلي) الليلة:?$/,'Continue the night'],[/^صحة (\d+) · طاقة (\d+)$/,'Health $1 · energy $2'],[/^الشنطة: (.+)$/,(m,a)=>a==='فاضية'?'Bag: empty':'Bag: '+a.split('، ').map(x=>x.replace(/^(.+) ×(\d+)$/,(q,n,k)=>`${xNm(n)} ×${k}`)).join(', ')],
+  [/^(?:لابس|لابسة): (.+)$/,(m,a)=>'Wearing: '+a.split('، ').map(xNm).join(', ')],[/^السمعة: (.+)$/,(m,a)=>{const r=l10nStr(a);return r?`Reputation: ${r}`:m}],
+  [/^عندك ليلة متسابة في مغامرة «(.+)» \((.+)\)\. لو (?:بدأت|بدأتي) دي، اللي فاتت هتضيع\.$/,(m,a,w)=>{const r=l10nStr(w)||w;return `You have a saved night in «${xNm(a)}» (${r}). If you start this one, the old one is lost.`}],
+  [/^(.+) · (البداية|الاستراحة|استراحة)$/,(m,a,b)=>`${xNm(a)} · ${b==='البداية'?'the start':'the rest'}`],[/^(.+) · المحطة (\d+) من (\d+)$/,(m,a,n,t)=>`${xNm(a)} · stop ${n} of ${t}`],
+  [/^(كارت واحد|كارتين|\d+ كروت|\d+ كارت)$/,(m,a)=>a==='كارت واحد'?'1 card':a==='كارتين'?'2 cards':a.replace(/ (?:كروت|كارت)$/,' cards')]]);
+/* «مين معاك الليلة؟» (p83): the four choices and why */
+L10NG({'رفيق من البلد ·':'Village companion ·','بطل صاحبك {بيلعب معاك|بيلعب معاكي} كأنه رفيق (مش لايف). 2 ليالي في اليوم بالكتير لكل الأبطال.':'Your friend\'s hero plays with you as a companion (not live). At most 2 nights a day for all heroes.',
+  'ببلاش أول ليلة':'Free on the first night','فلوسك مش مكفية':'Not enough money','أول ليلة {ليك|ليكي}: ببلاش':'Your first night: free','جنيه':'coins',
+  '{اختار بطل صاحبك الأول|اختاري بطل صاحبك الأول}':'Choose your friend\'s hero first','ليلة مع صاحب':'A night with a friend','صاحبك يلعب الرفيق لايف من موبايله':'Your friend plays the companion live from their phone',
+  'مفيش حد يحارب {معاك|معاكي} ولا يشيل {معاك|معاكي}، بس الوحوش صحتها أقل 25% وضربها أخف 20%. الكروت اللي محتاجة رفيق مش هتطلع.':'Nobody fights or carries with you, but beasts have 25% less health and hit 20% lighter. Cards that need a companion won\'t come up.'});
+L10N({},[
+  [/^(?:اختار|اختاري) من صحابك · فاضل$/,'Choose from your friends · left:'],[/^بطل صاحبك · مستوى (\d+) · فاضل$/,'Your friend\'s hero · level $1 · left:'],[/^من (\d+) النهارده$/,'of $1 today'],
+  [/^من مأوى الوحوش · ببلاش · صحة (\d+)\/(\d+)$/,'From the beast shelter · free · health $1/$2'],
+  [/^(.+) (?:بيحارب|بتحارب) (?:معاك|معاكي) طول الليلة\. الأجرة بتتدفع مرة واحدة أول ما الليلة تبدأ، وبتغلى مع مستواك والمغامرة وفلوسك، وبترخص لو سمعتك حلوة\.$/,(m,a)=>`${xNm(a)} fights by your side all night. The fee is paid once when the night starts; it grows with your level, the adventure and your money, and drops if your name is good.`],
+  [/^(?:بيحارب|بتحارب) (?:معاك|معاكي) في القتال مكان الرفيق \(مش دور زيادة\)\. الحكاية نفسها بتمشيها لوحدك، والوحوش مش أضعف\. الألفة بتزيد مع كل قتال تكسبوه سوا \(لحد 3 في الليلة\)\.$/,'fights with you in place of the companion (not an extra turn). You walk the story itself alone, and beasts aren\'t weaker. The bond grows with every fight you win together (up to 3 a night).'],
+  [/^فلوسك مش مكفية لأجرة (.+)$/,(m,a)=>{const r=xNm(a);return /[؀-ۿ]/.test(r)?m:`Not enough money for ${r}'s fee`}],[/^خلصت ليالي الصحاب النهارده \((\d+) من (\d+)\)$/,'Friends\' nights are used up for today ($1 of $2)'],
+  [/^«(.+)» محتاج رفيق: (?:اختار|اختاري) رفيق من البلد أو بطل صاحبك$/,(m,a)=>`«${xNm(a)}» needs a companion: pick a village companion or a friend's hero`],
+  [/^= ?(\d+)? ?جنيه$/,(m,n)=>n?`= ${n} coins`:'coins']]);
+/* the Naddaha's own setup text (p8) and a night's length */
+L10NG({'تلات شباب مشيوا ورا صوت ست عند الترعة وما رجعوش. طريق، ووحوش، وناس {تساعدهم|تساعديهم} أو {تأذيهم|تأذيهم}، و3 مواجهات كبيرة. ليلة طويلة، حوالي نص ساعة، وبتتحفظ بعد كل محطة.':
+  'Three young men followed a woman\'s voice to the canal and never came back. A road, beasts, and people you can help or harm, and 3 big showdowns. A long night, about half an hour, saved after every stop.'});
+/* ---------- the end of a night: won (stars, goals, the report) or lost (p8, p10) ---------- */
+L10NG({'أعداء وقعوا':'Foes down','ضربات حظ':'Lucky hits','أعلى كومبو':'Best combo','صناديق':'Chests','محطة':'Stops','دقيقة':'Minutes','{العب|العبي} المغامرة تاني':'Play the adventure again',
+  'رقم قياسي جديد!':'New record!','{وقعت|وقعتي}.. والليلة خلصت':'You fell.. and the night is over','الليلة خلصت':'The night is over','الخبرة':'Experience','الفلوس':'Money',
+  '{وصلت|وصلتي} لحد':'You got as far as','{ارجع البلد|ارجعي البلد}':'Back to the village','القايمة':'Menu',
+  'الفلوس في جيبك':'The money in your pocket','الفجر طلع.. ناقص واحد':'Dawn came.. one short','الفجر طلع':'Dawn came','الشباب رجعوا كلهم':'All the young men came back','{ما وقعتش|ما وقعتيش} ولا مرة':'You never fell',
+  'ضربة حظ، أو 3 ضربات ورا بعض':'A lucky hit, or 3 hits in a row',
+  /* the goals with their mark (the list rule in p8b would split them at «،») */
+  '✓ ضربة حظ، أو 3 ضربات ورا بعض':'✓ A lucky hit, or 3 hits in a row','○ ضربة حظ، أو 3 ضربات ورا بعض':'○ A lucky hit, or 3 hits in a row','ومع اللقب:':'And with the title:','رمية ودع ببلاش':'a free shell reading','عند أم عطية':'from Umm Attiya',
+  '{رجعت|رجعتي} الكفر لوحدك مع الفجر، والصرة تقيلة في جيبك. الأمهات واقفين على الترعة بيندهوا على ولادهم.. ومحدش بيرد.':'You came back to the village alone at dawn, the purse heavy in your pocket. The mothers stand at the canal calling their sons.. and nobody answers.',
+  'اتنين بس من الشباب رجعوا مع أول ضوء. أم التالت قعدت على الشط لحد الضهر. العمدة {إداك|إداكي} 200 جنيه وما بصش في عينك.':'Only two of the young men came back at first light. The third one\'s mother sat on the bank until noon. The mayor gave you 200 coins and didn\'t look you in the eye.',
+  'النداهة هديت ورجعت لمكانها، والتلات شباب رجعوا الكفر مع أول ضوء، مبلولين ومش فاكرين حاجة. الكفر كله طلع {يستقبلك|يستقبلك}، والعمدة {سلّمك|سلّمك} الفلوس.':'The Naddaha calmed down and went back to her place, and the three young men came back to the village at first light, soaked and remembering nothing. The whole village came out to meet you, and the mayor handed you the money.',
+  'النداهة اختفت في المية، والتلات شباب رجعوا الكفر مع أول ضوء، مبلولين ومش فاكرين حاجة. الكفر كله طلع {يستقبلك|يستقبلك}، والعمدة {سلّمك|سلّمك} الفلوس.':'The Naddaha vanished into the water, and the three young men came back to the village at first light, soaked and remembering nothing. The whole village came out to meet you, and the mayor handed you the money.'});
+L10N({},[
+  [/^(نجمة واحدة|نجمتين|\d+ نجوم)$/,(m,a)=>a==='نجمة واحدة'?'1 star':a==='نجمتين'?'2 stars':a.replace(' نجوم',' stars')],
+  [/^(?:بطلك|بطلتك) (?:اتحفظ|اتحفظت) · السمعة:$/,'Your hero is saved · Reputation:'],[/^· أحسن نتيجة (?:ليك|ليكي): (.+)$/,(m,a)=>{const r=l10nStr(a);return r?`· Your best: ${r}`:m}],
+  [/^(كارت|كروت) (?:لعبتها|لعبتيها)$/,'Cards played'],
+  [/^(?:رجعت|رجعتي) الكفر لوحدك مع الفجر، والصرة تقيلة في جيبك\. الأمهات واقفين على الترعة بيندهوا على ولادهم\.\. ومحدش بيرد\. (.+) ما (?:رجعش|رجعتش) (?:معاك|معاكي)\. محدش في الكفر عرف اللي حصل\.\. لسه\.$/,(m,a)=>`You came back to the village alone at dawn, the purse heavy in your pocket. The mothers stand at the canal calling their sons.. and nobody answers. ${xNm(a)} didn't come back with you. Nobody in the village knows what happened.. yet.`],
+  [/^\+?(\d+) \(فضلت (?:معاك|معاكي)\)$/,'+$1 (you kept it)'],
+  [/^(?:كسبت|كسبتي) (\d+) جنيه الليلة دي، ونصهم راح \((\d+) جنيه\)\.$/,'You earned $1 coins tonight, and half of it is gone ($2 coins).'],
+  [/^ما (?:كسبتش|كسبتيش) فلوس زيادة الليلة دي، فمفيش حاجة راحت\.$/,'You earned no extra money tonight, so nothing was lost.'],
+  [/^الدنيا ضلمت، و(.+) (?:شالك ورجّعك|شالكي ورجّعكي|شالتك ورجّعتك|شالتكي ورجّعتكي) البلد قبل الفجر\. (.+?) (?:تقدر|تقدري) (?:تحاول|تحاولي) تاني في ليلة جديدة\.$/,(m,a,l)=>{const r=l10nStr(l);return r?`Everything went dark, and ${xNm(a)} carried you back to the village before dawn. ${r} You can try again in a new night.`:m}]]);
+L10N({},[[/^الدنيا ضلمت، (?:وفوقت|وفوقتي) على أول البلد قبل الفجر، مش (?:فاكر|فاكرة) (?:رجعت|رجعتي) إزاي\. (.+?) (?:تقدر|تقدري) (?:تحاول|تحاولي) تاني في ليلة جديدة\.$/,(m,l)=>{const r=l10nStr(l);return r?`Everything went dark, and you came to at the edge of the village before dawn, not remembering how you got back. ${r} You can try again in a new night.`:m}]]);   /* the same, alone (p83) */
+/* the other adventures' setup text (HTML with a bold word, so the whole text is swapped in English) */
+I18N(ADVS,{pasha:{blurb:'The Pasha\'s palace at the edge of the village has been locked for seventy years. Last night its lights came on by themselves, and Uncle Ragab the watchman and Saeed, his nephew, went in to look and never came out. They say under the palace is a cellar with the Pasha\'s gold, and a <b>guardian spirit</b> on it. 3 places, 3 big showdowns, and a long night saved after every stop.'},
+  dabe:{blurb:'The mountain elder came to the village himself: three quarry workers got up in the middle of the night and followed a <b>she-hyena</b> toward the great cave, eyes open and seeing nothing. People say whoever is hyena-struck only wakes up when their blood flows. 3 places, 3 big showdowns, and a long night saved after every stop.'},
+  souq:{blurb:'Nadia, Mostafa\'s sister, knocked on your door at night. Her brother was in debt, and he heard that in the ruin of the old inn an <b>Afreet Market</b> opens one night a year, buying anything except money. He went and sold his name, his voice and his shadow, and came back sitting like a wall: he doesn\'t speak, he has no shadow in the light, and nobody at home remembers his name but her. If the market closes when the rooster crows, what was sold won\'t come back. 3 places, 3 big showdowns, and a long night saved after every stop.'}});
+/* the end screens' add-ons: the theft when you fall (p22), the stories you took (p15), the leaderboard line (p26) */
+L10NG({'{ما خدتش|ما خدتيش} حواديت المرة دي':'You took no stories this time','+ رمية ودع ببلاش عند أم عطية':'+ a free shell reading from Umm Attiya','الترتيب ›':'Leaderboard ›',
+  '{ادخل بحسابك عشان تظهر في الترتيب ›|ادخلي بحسابك عشان تظهري في الترتيب ›}':'Sign in to show up on the leaderboard ›','الليلة دي':'tonight'});
+const xCntEn=(a,one,two,many)=>{if(a===one)return 1;if(a===two)return 2;const m=a.match(/^(\d+) /);return m?+m[1]:null};
+L10N({},[
+  [/^-(\d+) جنيه$/,'-$1 coins'],[/^-(\d+) \(راحت\)$/,'-$1 (gone)'],
+  [/^(?:وانت واقع|وانتي واقعة) اتسرق منك: (\d+) جنيه((?: و.+?)?)\.( والخبرة اللي (?:خدتها|خدتيها) الليلة دي راحت\.)? خلي بالك من صحتك المرة الجاية\.$/,(m,n,its,x)=>{
+    const L=its?its.slice(2).split(' و').map(s=>{const q=s.match(/^(\d+) (.+)$/);return q?`${q[1]} ${xNm(q[2])}`:xNm(s)}):[];return `While you were down you were robbed of ${n} coins${L.length?', '+L.join(', '):''}.${x?' And the experience you gained tonight is gone.':''} Watch your health next time.`}],
+  [/^(?:خدت|خدتي) (حدوتة واحدة|حدوتتين|\d+ حواديت|\d+ حدوتة)$/,(m,a)=>{const n=xCntEn(a,'حدوتة واحدة','حدوتتين');return `You took ${n} ${n===1?'story':'stories'}`}],
+  [/^(?:خدت|خدتي)$/,'You took'],[/^(حواديت|حدوتة)$/,'stories'],
+  [/^(محطة واحدة|محطتين|\d+ محطات|\d+ محطة|مواجهة ×3|مواجهتين ×3|\d+ مواجهات ×3|الفوز \+\d+|«ليلة سودا» ×2|لقبك \+\d+)$/,(m,a)=>{
+    let q;if(q=a.match(/^(?:محطة واحدة|محطتين|(\d+) (?:محطات|محطة))$/)){const n=a==='محطة واحدة'?1:a==='محطتين'?2:+q[1];return `${n} ${n===1?'stop':'stops'}`}
+    if(q=a.match(/^(?:مواجهة|مواجهتين|(\d+) مواجهات) ×3$/)){const n=/^مواجهة /.test(a)?1:/^مواجهتين/.test(a)?2:+q[1];return `${n} ${n===1?'showdown':'showdowns'} ×3`}
+    if(q=a.match(/^الفوز \+(\d+)$/))return `the win +${q[1]}`;if(a==='«ليلة سودا» ×2')return '«A black night» ×2';if(q=a.match(/^لقبك \+(\d+)$/))return `your title +${q[1]}`;return m}],
+  [/^«خبرة أكتر»: \+?(\d+) خبرة$/,'«More experience»: +$1 experience'],
+  [/^(\d+) نقطة$/,'$1 points'],[/^(·? ?)(?:أحسن ليك|أحسن ليكي) (\d+)$/,'$1your best $2'],[/^(·? ?)(?:أحسن ليلة ليك|أحسن ليلة ليكي) الأسبوع ده$/,'$1your best night this week']]);
+/* ---------- rare gems (p48): the market's offer, setting one, the fight effects ---------- */
+L10NG({'ياقوتة نار':'Fire ruby','زمردة دم':'Blood emerald','كهرمانة رعد':'Thunder amber','لولية البحر':'Sea pearl','عين القط':'Cat\'s eye',
+  'ضربتك ممكن تولّع في الوحش: بيتحرق 2 كل دور، دورين':'Your hit may set the foe on fire: it burns 2 a turn, for two turns','كل ضربة {بتضربها|بتضربيها} بترجّعلك 1 صحة':'Every hit you land gives you 1 health back',
+  'ساعات بتنزل مع ضربتك رعدة: ضرر +3':'Sometimes thunder falls with your hit: damage +3','اللي يضربك بياخد 1 ضرر':'Whoever hits you takes 1 damage','ضربة المعلّم بتيجي أسهل: +6%':'Master strikes come easier: +6%',
+  'بيتحرق':'Burning','بتتحرق':'Burning','رعدة! +3':'Thunder! +3','اللولية ردّت!':'The pearl struck back!','حجر نادر!':'A rare gem!','حجر نادر':'A rare gem','{اشتريتها|اشتريتيها}':'Bought',
+  '{غيّر الحجر|غيّري الحجر}':'Change the gem','{ركّب حجر|ركّبي حجر}':'Set a gem'});
+L10N({},[
+  [/^حاجة نادرة · بتمشي بعد (ساعة|ساعتين|\d+ ساعات)$/,(m,a)=>`Something rare · gone in ${a==='ساعة'?'1 hour':a==='ساعتين'?'2 hours':a.replace(' ساعات',' hours')}`],
+  [/^بتتركّب في (السلاح|الدرع أو الراس|الخاتم أو القلادة أو التميمة)$/,(m,a)=>'Set into '+({'السلاح':'the weapon','الدرع أو الراس':'the armour or the head','الخاتم أو القلادة أو التميمة':'the ring, the necklace or the charm'})[a]],
+  [/^(\d+) أحجار تنفع$/,'$1 gems that fit'],[/^الحجر القديم \((.+)\) هيتكسر\.$/,(m,a)=>`The old gem (${xNm(a)}) will break.`],
+  [/^(?:اشتريت|اشتريتي) (ياقوتة نار|زمردة دم|كهرمانة رعد|لولية البحر|عين القط)$/,(m,a)=>`You bought ${xNm(a)}`],[/^(?:ركّبه|ركّبيه) عند عم حسن أو عم فتحي$/,'Have it set at Uncle Hassan\'s or Uncle Fathy\'s'],
+  [/^(?:ركّبتها|ركّبتيها) في (.+)$/,(m,a)=>`You set it into ${xNm(a)}`],[/^(ياقوتة نار|زمردة دم|كهرمانة رعد|لولية البحر|عين القط) اتكسرت$/,(m,a)=>`${xNm(a)} broke`],
+  [/^النار بتاكل في (.+): -(\d+)(?: · (.+) (?:وقع|وقعت) من الحرق!| \(النار طفت\))?$/,(m,a,d,dn)=>`The fire eats at ${xLc(xNm(a))}: -${d}${dn?` · ${xNm(dn)} burned down!`:/طفت/.test(m)?' (the fire went out)':''}`]]);
+/* 6.13 review: more foe names (written inside helper calls), more omen and night lines, the paid shell readings */
+L10N({'كبير الكلاب':'Leader of the dogs','الناضورجي':'The lookout','وطواط كبير':'Big bat','خدام تاني':'Another servant','ديب كبير':'Big wolf','طوبة ماشية':'A walking brick','كبير الخرابة':'Master of the ruin',
+  'كلب جعان':'Hungry dog','لعّيب الكوبايات':'The cup-game trickster','صبي الفوانيس':'The lantern boy','حارس الزفة':'The procession guard','طبّال الزفة':'The procession drummer','ضل تاني هربان':'Another runaway shadow'});
+const xLc=r=>String(r).replace(/^(The|An?) /,x=>x.toLowerCase());
+L10NG({'{كسبت|كسبتي} آخر ليلة وأصعب ليلة!':'You won the last and hardest night!','الليلة دي ·':'tonight ·'});
+L10N({},[
+  [/^أعلى ليلة مفتوحة (\d+)\. (?:اكسب|اكسبي) الليلة \1 (?:وتفتح|وتفتحي) الليلة (\d+)\.$/,'The highest open night is $1. Win night $1 and night $2 opens.'],
+  [/^الليلة (\d+) مفتوحة$/,'Night $1 open'],[/^المحطة (\d+) من (\d+)$/,'stop $1 of $2'],[/^اتفتحت الليلة (\d+)!$/,'Night $1 is open!'],[/^الليلة (\d+):$/,'Night $1:'],
+  [/^الليلة (\d+): (الراحة أقل|الاستراحة بترجّع صحة أقل)$/,(m,n,a)=>`Night ${n}: ${a==='الراحة أقل'?'less rest':'rest stops give back less health'}`],
+  [/^صحة الوحوش \+(\d+)%(?:، وضربهم \+(\d+))?((?:، .+?)*)\.$/,(m,a,b,r)=>{const p=r?r.slice(2).split('، ').map(x=>l10nStr(x)):[];return p.every(Boolean)?`Beasts' health +${a}%${b?`, and their hits +${b}`:''}${p.map(x=>', '+x.charAt(0).toLowerCase()+x.slice(1)).join('')}.`:m}],
+  [/^أم عطية لمّت الودع وهزّته في إيديها ورمته تاني\. «(.+) راح\.\. وجالك (.+)\.»$/,(m,a,b)=>`Umm Attiya gathered the shells, shook them in her hands and cast them again. «${xNm(a)} is gone.. and you got ${xLc(xNm(b))}.»`],
+  [/^أم عطية قسمت الودع كومتين ونفخت فيهم\. «دي (.+)، ودي (.+)\. (?:اختار|اختاري) (?:انت|انتي)\.»$/,(m,a,b)=>`Umm Attiya split the shells into two heaps and blew on them. «This one is ${xLc(xNm(a))}, and this one ${xLc(xNm(b))}. You choose.»`],
+  [/^\.\. ولا$/,'.. or']]);
+
+
+/* ---------- 6.14 (TW-F4, Twister 2026-10-12 13:38): at most 4 fight buttons ----------
+   The fight had up to 6 buttons (your hit, «قدرات», the bag, «استخبى», «ارتاح», «💬 كلام») and a 7th during the Naddaha's call.
+   Now there are 4: your hit, «قدرات», the bag, and «اتصرّف», which opens a sheet with hiding, resting and talking (and «فوق!» first
+   while a call is running: the button glows then). Every move keeps its own button and handler, they are only moved into the sheet,
+   so nothing about what they do changes. */
+const X4_MORE=['def','rest','talk'];
+function x4Sheet(C){return C&&C.more&&!C.busy&&C.phase==='me'&&!C.bag&&!C.picking}
+function x4(){const C=S.combat;if(!C||S.screen!=='combat')return;const acts=view.querySelector('.acts');if(!acts||acts.classList.contains('xbig'))return;
+  const dis=C.busy||C.phase!=='me';if(dis)C.more=0;
+  const ex=X4_MORE.map(a=>acts.querySelector(`.act[data-a="${a}"]`)).filter(Boolean),wake=acts.querySelector('#xWake');
+  if(!ex.length&&!wake)return;
+  if(x4Sheet(C)){const sh=document.createElement('div');sh.className='sheet xmore';sh.id='xMore';
+    sh.innerHTML=`<div class="h">${G('اتصرّف','اتصرّفي')}</div>`;if(wake)sh.appendChild(wake);ex.forEach(b=>sh.appendChild(b));
+    const bk=document.createElement('button');bk.className='btn ghost small';bk.id='xMoreX';bk.textContent='رجوع';bk.onclick=()=>{C.more=0;combat()};sh.appendChild(bk);
+    acts.replaceWith(sh);try{sh.scrollIntoView({block:'nearest'})}catch(e){}return}
+  ex.forEach(b=>b.remove());if(wake)wake.remove();
+  const ok=ex.filter(b=>!b.disabled),nm={def:G('استخبى','استخبي'),rest:G('ارتاح','ارتاحي'),talk:G('اتكلم','اتكلمي')};
+  /* on the foes' turn every button is grey, so the list names them all (review 6.10) */
+  const list=(dis?ex:ok).map(b=>nm[b.dataset.a]);let sm=wake?(wake.querySelector('small')||{}).textContent||'':list.length?(list.length>1?list.slice(0,-1).join('، ')+' أو '+list[list.length-1]:list[0]):'مفيش حاجة تنفع دلوقتي';
+  /* «أوقف الضربة» used to show on the talk button only; that button is inside the sheet now, so the 4th button carries it (review 6.10) */
+  const hold=!!(C.hold&&ex.some(b=>b.dataset.a==='talk'));if(hold&&!wake)sm='الضربة متوقفة قبل الموت · '+sm;
+  const b=document.createElement('button');b.className='act more'+(wake?' xcall':'')+(hold?' hold':'');b.dataset.a='more';if(dis||(!ok.length&&!wake))b.disabled=true;
+  b.innerHTML=`<b>${wake?G('فوق!','فوقي!')+' · ':''}${G('اتصرّف','اتصرّفي')}${hold?' · ✋':''}</b><small>${esc(sm)}</small><span class="cost free">${wake?'الصوت بيشدك':'من غير طاقة'}</span>`;
+  b.onclick=()=>{if(b.disabled)return;C.more=1;try{SFX.tick&&SFX.tick(820)}catch(e){}combat()};acts.appendChild(b)}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{x4()}catch(e){(window.__xErr=window.__xErr||[]).push('x4: '+(e&&e.message))}return r}}
+/* a move picked from the sheet closes it */
+{const h0=heroAct;heroAct=async function(a){const C=S.combat;if(C&&X4_MORE.includes(a))C.more=0;return h0.apply(this,arguments)}}
+{const w0=X_wake;X_wake=async function(){const C=S.combat;if(C)C.more=0;return w0.apply(this,arguments)}}
+{const st=document.createElement('style');st.textContent=`
+.acts .act.more{border-style:dashed}.acts .act.more b{color:#e9dcc4}
+.acts .act.more.xcall{border-style:solid;border-color:#7fe0ff;background:linear-gradient(180deg,#0d4560,#06283a);box-shadow:0 0 14px #39c6ff55;animation:xwk 1.3s ease-in-out infinite}
+.acts .act.more.hold{border-style:solid;border-color:#a6e3a0}.acts .act.more.xcall b{color:#d8f6ff}.acts .act.more.xcall small{color:#9fe6ff}
+.sheet.xmore{display:flex;flex-direction:column;gap:8px}.sheet.xmore .act{width:100%;margin:0;grid-column:auto;min-height:56px}.sheet.xmore #xMoreX{margin-top:2px}`;document.head.appendChild(st)}
+L10NG({'اتصرّف':'More moves','اتصرّفي':'More moves','الصوت بيشدك':'The voice pulls you'});
+L10N({},[[/^(?:الضربة متوقفة قبل الموت · )?(?:استخبى|استخبي|ارتاح|ارتاحي|اتكلم|اتكلمي)(?:، (?:ارتاح|ارتاحي|اتكلم|اتكلمي))*(?: أو (?:ارتاح|ارتاحي|اتكلم|اتكلمي))?$/,m=>{const hd=/^الضربة متوقفة/.test(m);m=m.replace(/^الضربة متوقفة قبل الموت · /,'');const E={'استخبى':'hide','استخبي':'hide','ارتاح':'rest','ارتاحي':'rest','اتكلم':'talk','اتكلمي':'talk'};const w=m.split(/، | أو /).map(x=>E[x]);
+  const t=w.length>1?w.slice(0,-1).join(', ')+' or '+w[w.length-1]:w[0];return (hd?'Killing blow held · ':'')+t.charAt(0).toUpperCase()+t.slice(1)}],
+  [/^(?:اتصرّف|اتصرّفي) · ✋$/,'More moves · ✋'],[/^مفيش حاجة تنفع دلوقتي$/,'Nothing works right now'],
+  [/^(?:فوق!|فوقي!) · (?:اتصرّف|اتصرّفي)$/,'Snap out! · More moves']]);
+
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
    the game's styles and code load (p1.html), so the first frame already has the right direction. In English, every render translates
@@ -29409,7 +30166,7 @@ I18N(GEAR,{shuma:{info:'«Stunning blow»: on a full success, the foe\'s next hi
   if(G.size)L10N({},[[new RegExp('^([+−]) ('+rx(G)+')$'),(m,s,a)=>`${s} ${l10nStr(a)||a}`]])}
 
 /* 6.08: a tree link's needs «○ اسم 2» / «✓ اسم» (last rule) */
-L10N({},[[/^([○✓✦]) (.+?)( \d+)?$/,(m,s,n,d)=>{const r=l10nStr(n);return r?`${s} ${r}${d||''}`:m}]]);
+L10N({},[[/^([○✓✦]) (.+?)( \d+)?$/,(m,s,n,d)=>{const w=d&&l10nStr(n+d);if(w)return `${s} ${w}`;const r=l10nStr(n);return r?`${s} ${r}${d||''}`:m}]]);   /* 6.10: a whole line ending in a number (a skill level «✓ … بدل 3») first */
 /* 6.09 (R03b): every title in English (here, after every part that adds titles: p3b, p56/96_titles, p60) */
 {const H='Comes with a hidden specialisation',L='Comes with a legendary specialisation';
 I18NA(TITLES,{savior:{m:'Savior of the farmers',f:'Savior of the farmers',how:'Bring the young men back 3 times',b:'Presence +1'},salhunter:{m:'Salawa hunter',f:'Salawa hunter',how:'Drop 10 salawas',b:'Agility +1'},
@@ -29429,6 +30186,12 @@ I18NA(TITLES,{savior:{m:'Savior of the farmers',f:'Savior of the farmers',how:'B
   t_boss:{m:'Nightmare of the big ones',f:'Nightmare of the big ones',how:'Drop 10 big ones while specialised',b:'Your hits +1'},t_edge:{m:'Back from the edge',f:'Back from the edge',how:'Win 10 fights with low health',b:'Health +3'},
   t_spec3:{m:'Jack of all trades',f:'Jack of all trades',how:'3 different specialisations over time',b:'Presence +1'},t_tabib:{m:'Palace doctor',f:'Palace doctor',how:H,b:'Health +3 · potions 10% stronger'},
   t_brew3:{m:'Herbalist of the quarter',f:'Herbalist of the quarter',how:'Make 50 potions',b:'Potions 10% stronger'}})}
+/* 6.10 (R03b): «<skill or move> مستوى 3» (the band when a skill goes up), last so every narrower «… مستوى N» rule wins first */
+L10N({},[[/^(.+) مستوى (\d+)$/,(m,n,d)=>{const r=l10nStr(n);return r?`${r} · Level ${d}`:m}]]);
+/* 6.11: a town notice «<tile>: <what's new>» (p39) when both halves have English; last, so every narrower «X: Y» rule wins first */
+L10N({},[[/^([^:·«»]+): ([^·]+)$/,(m,a,b)=>{const x=l10nStr(a),y=l10nStr(b);return x&&y?`${x}: ${y}`:m}]]);
+/* 6.12: the page's own HTML (the dice's «تمام», …) was translated when p80 started, before later parts added their words: once more now */
+if(EN)L10N_SWEEP();
 
 render();
 })();
