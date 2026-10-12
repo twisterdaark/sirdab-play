@@ -10,6 +10,10 @@
 </head>
 <body>
 <title>سرداب</title>
+<script id="langBoot">/* 5.92.1: the saved language and its direction are set on the page before anything is drawn, so an English player never sees Arabic first */
+(function(){var d=document.documentElement,v=null;try{v=JSON.parse(localStorage.getItem('sirdab.lang')||'null')}catch(e){}
+if(v==='en'){d.lang='en';d.dir='ltr';d.classList.add('en');document.title='Sirdab'}else{d.lang='ar';d.dir='rtl';d.classList.remove('en')}})();</script>
+<style>html.en #app{direction:ltr}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Reem+Kufi:wght@500;700&family=Amiri:wght@400;700&display=swap">
 <style>
 /* Layout: one phone-sized column; art band on top, story text, choices near the thumb. Deliberately single dark candlelit look. */
@@ -4527,6 +4531,7 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'5.92.1',d:'12 أكتوبر',add:[],fix:['اللي {مختار|مختارة} English: اللعبة بتفتح بالإنجليزي ومن الشمال لليمين من أول لحظة، من غير ما العربي يظهر الأول','رجوع حفظ من جوجل أو من نسخة احتياطية مابقاش يرجّع اللغة للعربي: اللغة إعداد الموبايل نفسه','كلام البطل في الشاشة الأولى بقى بالإنجليزي في English']},
 {v:'5.92',d:'12 أكتوبر',add:['«صندوق الزيادة»: اللي {بتكسبه|بتكسبيه} من صندوق أو كارت وقسمه في الشنطة مليان مش بيتباع من وراك تاني. بيروح الصندوق في البلد، {وتاخده|وتاخديه} من الشنطة لما يبقى فيه مكان، أو {تبيعه|تبيعيه} بنص تمنه. بيشيل لحد 30 حاجة',
   'الشنطة بقت تابين: «الحاجات» و«الخامات». الخامات متقسمة (معادن، أحجار كريمة، تعزيز، سمك، زرع وأكل، أعشاب، من الوحوش)، وكل خامة مكتوب بتدخل في إيه وعم رمضان بياخدها بكام النهارده',
   'فوق الشنطة «{شايل|شايلة} كام من كام»: كل الأقسام متجمعة في رقم واحد وشريط، {وتعرف|وتعرفي} على طول الشنطة فيها مكان ولا لأ'],fix:[]},
@@ -19423,13 +19428,16 @@ Object.assign(PXI_G,{
 
 /* ---------- backup: every «sirdab.*» save in one file or one code, to bring the heroes back on any phone ---------- */
 const BK_PRE='SRDB1:';
-function bkData(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('sirdab.')===0)o[k]=localStorage.getItem(k)}}catch(e){}
-  Object.keys(MEM).forEach(k=>{if(k.indexOf('sirdab.')===0&&!(k in o))o[k]=MEM[k]});return o}
+/* 5.92.1: settings of this phone (the game's language, the sign-in reminder) are not part of a hero's save: a backup or the cloud copy
+   never carries them, and loading one never changes them */
+const BK_DEV=['sirdab.lang','sirdab.signAsk'];
+function bkData(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('sirdab.')===0&&!BK_DEV.includes(k))o[k]=localStorage.getItem(k)}}catch(e){}
+  Object.keys(MEM).forEach(k=>{if(k.indexOf('sirdab.')===0&&!BK_DEV.includes(k)&&!(k in o))o[k]=MEM[k]});return o}
 const bkCode=()=>BK_PRE+btoa(unescape(encodeURIComponent(JSON.stringify({v:1,t:Date.now(),d:bkData()}))));
 function bkParse(txt){try{txt=String(txt||'').trim();if(txt.indexOf(BK_PRE)===0)txt=decodeURIComponent(escape(atob(txt.slice(BK_PRE.length).replace(/\s+/g,''))));
   const j=JSON.parse(txt),d=j&&j.d;if(!d||!d['sirdab.heroes'])return null;const hs=JSON.parse(d['sirdab.heroes']);if(!Array.isArray(hs))return null;return {d,n:hs.length,names:hs.map(h=>h&&h.name).filter(Boolean),t:j.t}}catch(e){return null}}
-function bkApply(P){try{Object.keys(localStorage).filter(k=>k.indexOf('sirdab.')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
-  Object.keys(P.d).forEach(k=>{if(k.indexOf('sirdab.')!==0)return;MEM[k]=P.d[k];try{localStorage.setItem(k,P.d[k])}catch(e){}});setTimeout(()=>location.reload(),600)}
+function bkApply(P){try{Object.keys(localStorage).filter(k=>k.indexOf('sirdab.')===0&&!BK_DEV.includes(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
+  Object.keys(P.d).forEach(k=>{if(k.indexOf('sirdab.')!==0||BK_DEV.includes(k))return;MEM[k]=P.d[k];try{localStorage.setItem(k,P.d[k])}catch(e){}});setTimeout(()=>location.reload(),600)}
 function bkOpen(box){const hs=HEROES.filter(Boolean),B=document.createElement('div');B.className='bk';
   B.innerHTML=`<div class="bk-t">النسخة الاحتياطية بتحفظ ${hs.length?`أبطالك (${hs.map(h=>esc(h.name)).join('، ')})`:'لعبتك'} وكل حاجتهم في ملف أو كود. ${G('ابعته','ابعتيه')} لنفسك على الواتساب أو الإيميل، ولو الموبايل اتمسح أو ${G('غيّرته','غيّرتيه')} ${G('ترجّعهم','ترجّعيهم')} من هنا.</div>
     <div class="bk-r"><button class="btn" id="bkFile">احفظ في ملف</button><button class="btn ghost" id="bkCopy">انسخ الكود</button></div>
@@ -27358,19 +27366,24 @@ if(LANG===null){if(HEROES.length)store('sirdab.lang','ar');else S.screen='lang'}
     ok.insertAdjacentHTML('beforebegin',`<button class="setrow" id="stLang"><span>اللغة · Language</span><span class="st-lg">${EN?FLAG_UK:FLAG_EG}<b>${EN?'English':'العربية'}</b>${EN?'›':'‹'}</span></button>`);
     d.querySelector('#stLang').onclick=()=>{d.remove();S.langFrom=S.screen==='lang'?'title':S.screen;S.screen='lang';render()}}catch(e){console.warn(e)}}}
 /* English: left-to-right, class names, and the screen words swapped as they draw */
+let L10N_FLUSH=()=>{};
 const CLS_EN={'محارب':'Warrior','حرامي':'Thief','ساحر':'Mage','معالج':'Healer','مصارع':'Wrestler','ابن البلد':'Local'};
 if(EN){document.documentElement.lang='en';document.documentElement.dir='ltr';document.documentElement.classList.add('en');
   {const c0=clsF;clsF=function(c){return CLS_EN[c]||c0.apply(this,arguments)}}
   /* names people typed are never translated: anything under translate="no", and any text that is one of the heroes' names */
   const own=t=>{const v=t.trim();return !!v&&HEROES.some(x=>x&&String(x.name||'').trim()===v)};
-  const skip=n=>{const e=n.nodeType===1?n:n.parentElement;return !!(e&&e.closest&&e.closest('[translate="no"]'))};
+  const skip=n=>{const e=n.nodeType===1?n:n.parentElement;return !!(e&&e.closest&&e.closest('[translate="no"],script,style,noscript'))};
   const tx=x=>{if(skip(x)||own(x.nodeValue))return;const t=l10nStr(x.nodeValue);if(t!=null)x.nodeValue=t};
   const one=n=>{if(n.nodeType===3){tx(n);return}
     if(n.nodeType!==1)return;['aria-label','placeholder','title'].forEach(a=>{const v=n.getAttribute&&n.getAttribute(a);if(v){const t=l10nStr(v);if(t!=null)n.setAttribute(a,t)}});
     if(skip(n))return;const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let x;while(x=w.nextNode()){if(x.nodeType===3){tx(x)}
       else['aria-label','placeholder','title'].forEach(a=>{const v=x.getAttribute(a);if(v){const t=l10nStr(v);if(t!=null)x.setAttribute(a,t)}})}};
-  const root=document.getElementById('app')||document.body;one(root);
-  new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')one(m.target);else m.addedNodes.forEach(one)}}).observe(root,{childList:true,subtree:true,characterData:true});
+  /* 5.92.1: the whole page is watched (boxes added outside the game column too), and a drawn screen is translated in the same step it is
+     drawn (L10N_FLUSH after every render, p87.js), not one moment later */
+  const handle=ms=>{for(const m of ms){if(m.type==='characterData')one(m.target);else m.addedNodes.forEach(one)}};
+  const root=document.body||document.getElementById('app');one(root);
+  const MO=new MutationObserver(handle);MO.observe(root,{childList:true,subtree:true,characterData:true});
+  L10N_FLUSH=()=>{try{handle(MO.takeRecords())}catch(e){}};
   try{document.title='Sirdab'}catch(e){}}
 /* words used everywhere */
 L10N({'رجوع':'Back','تمام':'OK','غيّر رأيك':'Change my mind','غيّري رأيك':'Change my mind','خده':'Take it','الإعدادات':'Settings','ازاي ألعب':'How to play','ازاي ألعب؟':'How to play?',
@@ -27747,6 +27760,24 @@ SCREENS.bag=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 .mt-sum{margin:4px 2px 2px}.mt-row .tx small{line-height:1.6}`;document.head.appendChild(st)}
 L10N({'الحاجات':'Things','📦 صندوق الزيادة':'📦 Overflow box','صندوق الزيادة':'Overflow box','الشنطة مليانة':'The bag is full','الشنطة قربت تتملي':'The bag is almost full','فيه مكان':'There is room','ما يتباعش':"Can't be sold"},
   [[/^الخامات ?(\d*)$/,'Materials $1'],[/^شايلة? (\d+) من (\d+)$/,'Carrying $1 of $2']]);
+
+/* ---------- 5.92.1: no Arabic before English on opening ----------
+   The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
+   the game's styles and code load (p1.html), so the first frame already has the right direction. In English, every render translates
+   what it drew before it returns (L10N_FLUSH, p80.js); this wrapper is the outermost one, so nothing drawn by an inner wrapper waits
+   for the next moment. */
+{const r0=render;render=function(){const r=r0.apply(this,arguments);if(EN)L10N_FLUSH();return r}}
+/* the hero's idle lines on the title screen came up in Arabic for a moment in English: they have their own English lines now */
+const TS_SAY_EN=['Come on, the night is long.','The Naddaha is waiting for me.. and I won\'t answer.','Ready. Bring the dice.','The village sleeps, and I\'m awake.','Not scared.. maybe a little.',
+  'Let me sort out my gear first.','This dark won\'t eat me.','If you hear someone call my name.. don\'t answer.','Umm Sayed made beans. I\'ll eat and go.',
+  'Uncle Hassan says this weapon holds. We\'ll see.','The moon is big tonight.. not a good sign.','Every night I go out and come back. So far.','Why are you looking at me like that?',
+  'If I fall, pick me up.','These monsters think they\'re scary.','I could use a glass of tea from Uncle Saber\'s.','Stop pushing me!','The bag is heavy.. and still empty.',
+  'I heard something shines in the canal.','I\'m no hero.. I just can\'t sit at home.'];
+{const s0=tsSay;tsSay=function(h){if(!EN)return s0.apply(this,arguments);const L=TS_SAY_EN.slice(),add=x=>L.push(x);
+  if((h.kills||0)>=50)add('Over fifty monsters down. Still counting.');if((h.money||0)>=2000)add('Lots of money on me.. maybe the players\' market.');else if((h.money||0)<50)add('Empty pockets.. I need a night out.');
+  add((h.lvl||1)>=10?'Nobody in the village got this far.':`Level ${h.lvl||1}.. and rising.`);
+  const CL={'ساحر':'The fire in my hand is waiting.','حرامي':'Nobody saw me.. right?','محارب':'Bring me your biggest monster.','معالج':'If anyone gets hurt, I\'m here.'};if(CL[h.cls])add(CL[h.cls]);
+  return pick(L)}}
 
 /* ---------- master hit: rare strong hit, more likely with خفة ---------- */
 function critChance(h){const v=(typeof ST==='function'?ST(h,'خفة'):h.st['خفة'])||0;let c=.05+.03*v;if(h.hidden&&h.hidden.hazz)c+=.04;if(h.cls==='حرامي')c+=.01*((h.lvl||1)-1);return Math.max(.02,Math.min(.35,c))}
