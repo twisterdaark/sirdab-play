@@ -4786,6 +4786,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.15.2',d:'13 أكتوبر',add:[],fix:['المنجم: «خليني في الدور ده» طلع فوق «اللي طلع معاك المرة دي» وبقى أوضح، وجنبه زرار «خاماتي» بيوريك معاك كام من كل صخرة (الأساسية والعروق) في الشنطة والمخزن','زرار «؟» بقى في كل الحرف: الحداد والخياط والطبخ والعطارة ووصفات الجرنال ومراحل الورش، وبيقولك كل خامة جاية منين','أدوار المنجم: تحت كل دور سطر «عروق جانبية» فيه الخامات اللي بتطلع من العروق في الدور ده (الجبس مثلًا من الدور 1 لـ5)، وفلتر المعادن بقى بيدور فيها كمان']},
 {v:'6.15.1',d:'13 أكتوبر',add:[],fix:['السبايك عند الحداد: بدل «ناقصك حاجة» بقت تقولك ناقصك إيه بالظبط (الخامة وعددها، أو الفلوس)','زرار «؟» جنب كل سبيكة بيقولك كل خامة فيها جاية منين (المنجم من أنهي دور، الترعة، الغيط، أو عم حسن)','أدوار المنجم: فوق الأدوار فيه صف المعادن، {دوس|دوسي} على المعدن اللي {بتدور|بتدوري} عليه والأدوار اللي فيه بس هي اللي تفضل','فلاتر الإنجازات (الأنواع، «خلصتها / لسه»، والبحث) بقت بتخفي فعلًا الإنجازات اللي مش داخلة في الفلتر']},
 {v:'6.15',d:'13 أكتوبر',add:['البلد بقت خريطة مرسومة: {دوس|دوسي} على أي مكان {وتروحله|وتروحيله}، والسما بتتغير مع الساعة. فيه طريق من البلد للخلا على طول، والدهاليز بوابة على الخريطة. وكل الأماكن لسه موجودة في قايمة «كل الأماكن» تحت','الخلا كبرت: مكانين جداد «المستنقع» (من مستوى 5، زعيمه «غولة البرك») و«الخرابة» (من مستوى 9، زعيمها «كبش الرصد»)، و«مأوى الوحوش» بقى مكان على الخريطة. وبطلك نفسه هو اللي بيمشي على الخريطة','جوه كل مكان في الخلا النقط بقت مرسومة على رسمة المكان بدل القايمة، {وبتمشي|وبتمشي} من نقطة لنقطة','خامات جديدة بتطلع من المنجم والترعة والغيط، وسبايك بتتصهر عند عم حسن (برونز، نحاس أصفر، بلاطة حجر، حديد سوستة)','كل ورشة بقى ليها 8 مراحل ({ترقّيها|ترقّيها} بفلوس وخامات): الحداد، الخياط، الطباخة، المنجم، الصيد، الغيط والعطار. كل مرحلة بتديك حاجة صغيرة واضحة. المراحل اللي لسه ماجاش وقتها مكتوب عليها «قريب»'],fix:[]},
 {v:'6.14.1',d:'13 أكتوبر',add:['تخصص أسطوري جديد في خط «الخطيب»: «الدبلوماسي». بيتفتح باختبار: قتالات {تخلّصها|تخلّصيها} بالكلام، ونصاب {تكشفه|تكشفيه}، وزعيم {تغلبه|تغلبيه}'],fix:['لو نزلت نسخة جديدة وانت {بتلعب|بتلعبي} على الموقع، بتطلعلك رسالة تعمل ريفريش عشان {تكمل|تكملي} عليها، وبطلك بيتسيّف الأول']},
@@ -41947,19 +41948,25 @@ L10NG({'إزاي بتتحسب؟':'How is it worked out?','النتيجة بتت�
    Watches for p9b's floor sheet (mnPick is in a closed scope), file untouched. */
 function mfAdd(d){const L=d&&d.querySelector('.mn-fls');if(!L||d.querySelector('.mf-row'))return;
     /* the floor's ores, read from its own line of names (p9b's mnFlOres is not reachable from here) */
-    const N2K={};Object.keys(MAT).forEach(k=>{try{N2K[resN(k)]=k}catch(e){}});const ores=b=>{const t=(b.querySelector('small')||{}).textContent||'';return t.split('، ').map(x=>N2K[x.trim()]).filter(Boolean)};
-    const bs=[...L.querySelectorAll('[data-fl]')],all=[];bs.forEach(b=>ores(b).forEach(k=>{if(!all.includes(k))all.push(k)}));if(all.length<2)return;
+    const N2K={};Object.keys(MAT).forEach(k=>{try{N2K[resN(k)]=k}catch(e){}});/* 6.15.2 (Twister 01:35): each floor also lists its side veins (CR_MINE, p115), and the filter knows them */
+    const vein=n=>{try{let lo=1,B=null;for(const x of CR_MINE){if(n>=lo&&n<=x.to){B=x;break}lo=x.to+1}return B?Object.keys(B.w).filter(k=>MAT[k]):[]}catch(e){return []}};
+    const ores=b=>{const t=(b.querySelector('small')||{}).textContent||'';return t.split('، ').map(x=>N2K[x.trim()]).filter(Boolean).concat((b.dataset.vein||'').split(',').filter(Boolean))};
+    const bs=[...L.querySelectorAll('[data-fl]')],all=[];
+    bs.forEach(b=>{const v=vein(+b.dataset.fl);if(!v.length)return;b.dataset.vein=v.join(',');const tx=b.querySelector('.tx')||b;
+      tx.insertAdjacentHTML('beforeend',`<small class="mf-v">${rfxT(['عروق جانبية: ','Side veins: '])}${v.map(k=>resN(k)).join('، ')}</small>`)});bs.forEach(b=>ores(b).forEach(k=>{if(!all.includes(k))all.push(k)}));if(all.length<2)return;
     L.insertAdjacentHTML('beforebegin',`<div class="tw-sm mf-l">${rfxT(['بتدور على إيه؟','Looking for?'])}</div><div class="mf-row">${all.map(k=>`<button class="mf-ch" data-ore="${k}" title="${resN(k)}">${twMat(k,22)}<small>${resN(k)}</small></button>`).join('')}</div>`);
+    /* a mouse wheel scrolls the row sideways (desktop); fingers scroll it natively */
+    {const R=d.querySelector('.mf-row');if(R)R.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&R.scrollWidth>R.clientWidth){e.preventDefault();R.scrollLeft+=(getComputedStyle(R).direction==='rtl'?-1:1)*e.deltaY}},{passive:false})}
     let on='';d.querySelectorAll('[data-ore]').forEach(c=>c.onclick=()=>{on=on===c.dataset.ore?'':c.dataset.ore;
       d.querySelectorAll('[data-ore]').forEach(x=>x.classList.toggle('on',x.dataset.ore===on));
       bs.forEach(b=>{b.hidden=!!on&&!ores(b).includes(on)});try{SFX.tick&&SFX.tick(on?800:500)}catch(e){}})}
 /* mnPick lives in p9b's closed scope: watch for its sheet instead */
 {const A=document.getElementById('app');if(A&&typeof MutationObserver==='function')new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType===1&&n.id==='twSh'&&n.querySelector('.mn-fls'))try{mfAdd(n)}catch(e){console.warn(e)}}}).observe(A,{childList:true})}
 (function(){const s=document.createElement('style');s.textContent=`
-.mf-l{margin-top:6px}.mf-row{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.mf-l{margin-top:6px;flex-shrink:0}.mf-row{display:flex;flex-wrap:nowrap;gap:6px;padding:4px 2px 10px;flex-shrink:0;min-height:62px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#e0b65a33 transparent}.mf-row::-webkit-scrollbar{height:6px}.mf-row::-webkit-scrollbar-thumb{background:#e0b65a55;border-radius:3px}
 .mf-ch{flex:0 0 auto;min-width:56px;min-height:48px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px;border-radius:10px;border:1px solid #6b5a43;background:transparent;color:#d8c7a6;font:inherit}
 .mf-ch small{font-size:.7em;white-space:nowrap}.mf-ch.on{background:#e0b65a;color:#2a1f12;border-color:#e0b65a}
-.mn-fls [data-fl][hidden]{display:none!important}`;document.head.appendChild(s)})();
+.mn-fls [data-fl][hidden]{display:none!important}.mf-v{display:block;opacity:.75;color:#9fd0c8}`;document.head.appendChild(s)})();
 L10NG({'بتدور على إيه؟':'Looking for?'});
 
 /* ---------- 6.15.1 (Twister 01:14): «؟» on every alloy: where each of its materials comes from ----------
@@ -41983,6 +41990,49 @@ document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.
   app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}catch(e){console.warn(e)}},true);
 (function(){const s=document.createElement('style');s.textContent=`.cr-from{flex:0 0 auto;width:44px;min-height:44px;margin-inline-end:6px;border-radius:50%;border:1px solid #6b5a43;background:transparent;color:#e0b65a;font:inherit;font-weight:700;font-size:1.1em}`;document.head.appendChild(s)})();
 L10NG({'جاية منين؟':'Where from?'});
+
+/* ---------- 6.15.2 (Twister 01:36): the «؟» on every craft that needs materials, not only the alloys ----------
+   After each draw of a town screen, a «؟» goes before each make button whose recipe is known: the smith and the tailor
+   (data-cr → GEAR craft), the cook (data-cook → TW_REC), the herbalist (data-ath → AT_REC), the newspaper recipes
+   (data-jr → JR_REC), and the workshop stages (data-wkbuy → WK_ST). Tapping it opens the same «where from» sheet. */
+const MF_KIND={cr:k=>GEAR[k]&&GEAR[k].craft,cook:k=>TW_REC[k]&&TW_REC[k].need,ath:k=>AT_REC[k]&&AT_REC[k].need,jr:k=>JR_REC[k]&&JR_REC[k].need,
+  wkbuy:k=>{const s=WK_ST.find(x=>x.id===k);return s&&s.need}};
+const mfNeed=(t,k)=>{try{const n=MF_KIND[t]&&MF_KIND[t](k);return n&&Object.keys(n).length?n:null}catch(e){return null}};
+const mfName=(t,k)=>{try{return t==='cr'?GEAR[k].n:t==='wkbuy'?(typeof wkSN==='function'?wkSN(WK_ST.find(x=>x.id===k)):''):(ITEMS[k]&&ITEMS[k].name)||''}catch(e){return ''}};
+function mfMark(){try{Object.keys(MF_KIND).forEach(t=>view.querySelectorAll(`[data-${t}]`).forEach(b=>{if(b.previousElementSibling&&b.previousElementSibling.classList.contains('cr-from'))return;
+    const k=b.dataset[t];if(!mfNeed(t,k))return;b.insertAdjacentHTML('beforebegin',`<button class="cr-from" data-mfrom="${t}|${k}" aria-label="${rfxT(['جاية منين؟','Where from?'])}">؟</button>`)}))}catch(e){console.warn(e)}}
+function mfSheet(title,need){const h=S.hero;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  const rows=Object.keys(need).map(m=>`<div class="tw-row"><div class="ic">${twMat(m,32)}</div><div class="tx"><b>${MAT[m]?resN(m):m} ×${need[m]} <small>${rfxT(['عندك','you have'])} ${(h.res[m]||0)}</small></b><small>${crFromTxt(m)}</small></div></div>`).join('');
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${title}<small>${rfxT(['كل حاجة جاية منين','where each thing comes from'])}</small></div><div class="col">${rows}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}
+document.addEventListener('click',ev=>{const b=ev.target&&ev.target.closest&&ev.target.closest('[data-mfrom]');if(!b)return;ev.stopPropagation();
+  const [t,k]=b.dataset.mfrom.split('|'),n=mfNeed(t,k);if(n)try{mfSheet(mfName(t,k),n)}catch(e){console.warn(e)}},true);
+{let q=0;if(view&&typeof MutationObserver==='function')new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;mfMark()})}).observe(view,{childList:true,subtree:true})}
+
+/* ---------- 6.15.2 (Twister 01:46): the mine screen ----------
+   «خليني في الدور ده» moves up, right above «اللي طلع معاك المرة دي», and stands out (it was at the bottom, easy to miss).
+   «خاماتي» next to it opens a sheet: every mine material (the floors' rocks and the side veins) with how many you hold,
+   in the bag and in the storage, so a collector knows where they stand. */
+const mnMyKeys=()=>{const s=new Set();try{Object.keys(TW_SRC).forEach(k=>{if(MAT[k]&&/المنجم/.test(TW_SRC[k]))s.add(k)})}catch(e){}
+  try{CR_MINE.forEach(b=>Object.keys(b.w).forEach(k=>{if(MAT[k])s.add(k)}))}catch(e){}return [...s]};
+function mnMySheet(){const h=S.hero;if(!h)return;twSheetX();const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  const ks=mnMyKeys().map(k=>({k,b:(h.res&&h.res[k])|0,o:(h.overR&&h.overR[k])|0})).sort((a,b)=>(b.b+b.o)-(a.b+a.o));
+  const rows=ks.map(x=>`<div class="tw-row${x.b+x.o?'':' mm-0'}"><div class="ic">${twMat(x.k,30)}</div><div class="tx"><b>${resN(x.k)} <span class="mm-n">${x.b+x.o}</span></b><small>${rfxT(['الشنطة','bag'])} ${x.b} · ${rfxT(['المخزن','storage'])} ${x.o}</small></div></div>`).join('');
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${rfxT(['خاماتي من المنجم','My mine materials'])}<small>${rfxT(['الأساسية والعروق الجانبية','floor rocks and side veins'])}</small></div><div class="col mm-list">${rows}</div><button class="btn small" data-x="1">${rfxT(['اقفل','Close'])}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}}
+function mnTweak(){if(S.screen!=='mine')return;const r=document.getElementById('gxRocks'),lbl=r&&r.closest('.gx-lbl');if(!lbl)return;
+  const st=document.getElementById('mnStay');if(st&&st.nextElementSibling!==lbl&&!(st.nextElementSibling&&st.nextElementSibling.id==='mnMy'&&st.nextElementSibling.nextElementSibling===lbl))lbl.before(st);
+  if(!document.getElementById('mnMy')){lbl.insertAdjacentHTML('beforebegin',`<button class="mn-my" id="mnMy">${twMat('stone',22)} ${rfxT(['خاماتي','My materials'])}<small>${rfxT(['معاك كام من كل صخرة','how many of each rock you hold'])}</small></button>`);document.getElementById('mnMy').onclick=mnMySheet}
+  const my=document.getElementById('mnMy');if(st&&my&&st.nextElementSibling!==my)st.after(my)}
+{let q=0;if(view&&typeof MutationObserver==='function')new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;try{mnTweak()}catch(e){console.warn(e)}})}).observe(view,{childList:true,subtree:true})}
+(function(){const s=document.createElement('style');s.textContent=`
+#mnStay{border:2px solid #e0b65a!important;font-size:1.02em;margin:8px 0 6px}#mnStay.on{background:#e0b65a22}
+.mn-my{display:flex;flex-direction:column;align-items:center;width:100%;min-height:48px;margin:0 0 8px;border-radius:12px;border:1px solid #6b5a43;background:transparent;color:#f3e6cf;font:inherit}
+.mn-my small{opacity:.75;font-size:.78em}.mm-0{opacity:.5}.mm-n{color:#e0b65a;margin-inline-start:6px}`;document.head.appendChild(s)})();
+L10NG({'خاماتي':'My materials','معاك كام من كل صخرة':'how many of each rock you hold','خاماتي من المنجم':'My mine materials','الأساسية والعروق الجانبية':'floor rocks and side veins','الشنطة':'bag','المخزن':'storage'});
+/* review: the «؟» on gear cards (2-column .tw-two grid) takes its own row; on workshop stages it sits small at the side */
+(function(){const s=document.createElement("style");s.textContent=`.tw-two>.cr-from{grid-column:1/-1;justify-self:start;width:44px;min-height:44px;border-radius:50%;margin:0}
+[data-mfrom^="wkbuy|"]{display:block;margin:6px 0 6px auto}`;document.head.appendChild(s)})();
 /* ==========================================================================
    سرداب 6.15 (R10, owner IDs C21 C25 C37 C38 C56): the craft data base and the 8-stage workshops (p115.js)
    - CR_CAT: the material and alloy catalog: C37 (64 materials and resources), C38 (20 alloys) and the C21 base
