@@ -4534,6 +4534,18 @@ const PF_HPIC={
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.00',d:'12 أكتوبر',add:['مش كل الوحوش بتحفظ الجميل: الضبع والتعلب والعرسة والتعابين والحرامية والمهربين ممكن يعملوا نفسهم بيجروا لما {تعفي|تعفي} عنهم، ويلفوا يعضوك أو يضربوك من ورا ضربة واحدة (عمرها ما بتوقّعك، والدرع السحري بيوقفها). بعدها نَفَسه بيتقطع الدور ده، والمرة الجاية العفو بيمشي',
+  'الضبع والتعلب والعرسة والسلعوة والفيران ممكن يخطفوا الأكل من إيدك ويكمّلوا القتال',
+  'اللي يغدر بيك مرة {بتفتكره|بتفتكريه}: فوقه بيبان «غدّار»، وورقة «💬 كلام» بتحذرك. والوحوش اللي طبعها أمينة (زي الكلاب والديابة) عمرها ما بتغدر',
+  'الفرصة بتتحسب مرة واحدة لكل مواجهة وبتتحفظ، فقفل اللعبة وفتحها مش بيغيرها'],fix:['القرموط في الترعة بقى أهدى شوية (ضربه أخف، بس جلده تخين)']},
+{v:'5.99',d:'12 أكتوبر',add:['الوحش اللي من «مأوى الوحوش» وشغلانته «معاك» بيطلع معاك الصيد كمان: مكان الرفيق (مش دور زيادة)، والوحوش مش أضعف وهو معاك. صحته بتتحفظ بين القتالات، وبترجع كاملة كل يوم بلد جديد أو لما {ترتاح|ترتاحي} عند طرف المكان',
+  'كل قتال {تكسبه|تكسبيه} في الصيد وهو معاك الألفة +1، لحد 3 في اليوم. ولو بيحرس الغيط بيفضل في البيت'],fix:[]},
+{v:'5.98',d:'12 أكتوبر',add:[],fix:['تعزيز الخواتم والسلاسل والأحجبة كان مش بيدي حاجة: دلوقتي كل خطوة بتزود الصحة 1، والصفة (أو الروح) بتزيد 1 كل 3 خطوات. اللي {عززته|عززتيه} قبل كده بياخد حقه على طول',
+  'في الليالي الأونلاين: صاحبك اللي ما رماش زهره في 30 ثانية بتترمي له رمية بنفس القواعد (النرد بتاع الليلة، صفته، الصعوبة، والميزة) بدل رمية عشوائية',
+  'لما {تخرج|تخرجي} من أوضة أونلاين، أبطال الأوضة القديمة ما بيظهروش في الأوضة الجاية']},
+{v:'5.97',d:'12 أكتوبر',add:['«الجبل» من المستوى 7: سفح الجبل، المدق الصخري، مغارة الخفافيش، وقمة الضباع. وحوش «مغارة الضبع» بنقط ضعفها وطباعها: ديابة سريعة، رخم، خنافس العضم، خفافيش، عقارب، طريشة، ضباع، وتعبان أبو قرون. و«الضبع الأعرج» نخبة',
+  'عجوز الجبل عند السفح عايز 4 ضباع (الأعرج بيتحسب)، وأول مرة ليها إنجاز «صياد الجبل». وفي المغارة حجارة وحديد، وعلى القمة شيح الجبل',
+  'زعيم الجبل «الضبع الأبيض» على القمة مرة في اليوم: روح بتختفي، وملحها بيوجعها'],fix:[]},
 {v:'5.96',d:'12 أكتوبر',add:['«الصيد» بقى قسم لوحده في البلد، تحت الدهاليز على طول',
   '«الترعة» من المستوى 4: شط الترعة، البوص، الكوبري الخشب، والهويس القديم. فيها حناشات وضباع وقراميط وعفريت المية والغرقان، و«قرموط عجوز» نخبة. {بتروح|بتروحي} لها من طرف الغيط ببلاش',
   'أم سيد على الشط عايزة 3 قراميط كبار (القرموط العجوز بيتحسب)، وأول مرة ليها إنجاز «صياد الترعة»',
@@ -5773,9 +5785,10 @@ function qView(id,I){const g=GEAR[id];if(!g)return null;if(!I)return g;const v=O
   const mv=(x,d)=>{x=x||0;return Math.max(x>0?1:0,x+d)};
   if(dq){if(m==='hp')v.hp=mv(v.hp,dq*2);else if(m.slice(0,3)==='st:'){const s=m.slice(3);v.st[s]=mv(v.st[s],dq)}else v[m]=mv(v[m],dq)}
   /* 5.49: a step adds less than before: weapon +6 and armour +5 at +10 */
-  if(I.e){if(g.slot==='weapon')v.dmg=(v.dmg||0)+Math.ceil(I.e*.6);else if(g.slot==='armor'||g.slot==='head')v.armor=(v.armor||0)+Math.ceil(I.e/2)}
-  /* v5.37: rings, necklaces and charms grow their main number: health +1 a step, a stat or spirit +1 every 3 steps */
-  else if(I.e){const k=Math.floor(I.e/3);if(m==='hp')v.hp=(v.hp||0)+I.e;else if(m==='spirit')v.spirit=(v.spirit||0)+k;else if(m.slice(0,3)==='st:'&&k){const s=m.slice(3);v.st[s]=(v.st[s]||0)+k}}
+  if(I.e){if(g.slot==='weapon')v.dmg=(v.dmg||0)+Math.ceil(I.e*.6);else if(g.slot==='armor'||g.slot==='head')v.armor=(v.armor||0)+Math.ceil(I.e/2);
+  /* v5.37: rings, necklaces and charms grow their main number: health +1 a step, a stat or spirit +1 every 3 steps
+     (5.98 / B32: this branch hung off the wrong «if» and never ran, so their steps gave nothing) */
+  else{const k=Math.floor(I.e/3);if(m==='hp')v.hp=(v.hp||0)+I.e;else if(m==='spirit')v.spirit=(v.spirit||0)+k;else if(m.slice(0,3)==='st:'&&k){const s=m.slice(3);v.st[s]=(v.st[s]||0)+k}}}
   if((I.t||[]).includes('khafif'))v.st['خفة']=(v.st['خفة']||0)+(I.e>=4?2:1);
   Object.keys(v.st).forEach(k=>{if(!v.st[k])delete v.st[k]});if(!Object.keys(v.st).length)delete v.st;
   v.n=g.n+(I.e?` +${I.e}`:'');v.q=I.q;v.e=I.e;v.tr=I.t||[];v.inst=I;v.id=id;return v}
@@ -21993,6 +22006,8 @@ const coGx=a=>(m,f)=>a&&a.g==='f'?f:m;
 
 /* the friends after the first one: their own health in the fight */
 CO.al={};CO.alC=null;
+/* 5.98 / B28: leaving a room forgets its friends' fighters, so the next room never shows the old ones */
+{const s0=coStop;coStop=function(){const r=s0.apply(this,arguments);CO.al={};CO.alC=null;return r}}
 function coAlOf(x){const h=S.hero;let a=CO.al[x.u];
   if(!a){const r=CO.xs.find(y=>y.u===x.u),p=coJ(r&&r.gp)||{};
     a=palComp(h,{n:p.n||x.n||'',g:p.g==='f'?'f':'m',c:p.c||'',l:p.l|0,hp:(p.hp|0)||MXH(h),lk:p.lk||'{}'});a.u=x.u;a.k='a'+Object.keys(CO.al).length;CO.al[x.u]=a}
@@ -22069,8 +22084,15 @@ function coRlDraw(){if(CO.role!=='host')return;const old=$('#coRl');if(old)old.r
 {const rc=rollCheck;rollCheck=function(stat,opt){const p=rc.apply(this,arguments);try{if(coRollOn()){opt=opt||{};
     const R=CO.rl={id:Date.now().toString(36),st:stat,dc:opt.dc|0,adv:opt.adv?1:0,dz:S.dice||'',t0:Date.now(),res:{}};
     p.then(x=>{if(CO.rl!==R)return;if(!x||x.cancel){CO.rl=null;coRlDraw();setTimeout(coPublish,60);return}coRollRes(coMe(),x.tier,x.total)});
-    setTimeout(()=>{if(CO.rl!==R)return;coPlayers().forEach(q=>{if(q.u!==coMe()&&!R.res[q.u]){const s=rnd(6)+rnd(6);coRollRes(q.u,s>=10?"full":s>=7?"part":"fail",null)}})},30000);
+    setTimeout(()=>{if(CO.rl!==R)return;coPlayers().forEach(q=>{if(q.u!==coMe()&&!R.res[q.u]){const x=coBotRoll(q,R);coRollRes(q.u,x.t,null)}})},30000);
     coRlDraw();setTimeout(coPublish,150)}}catch(e){}return p}}
+/* 5.98 / B29: a friend who didn't roll in 30 s gets an automatic roll with the same rules as a real one: the dice of the night,
+   their stat, the roll's difficulty and advantage, a lucky/unlucky pair (it used to be a flat 2d6 with nothing added) */
+function coBotRoll(q,R){const two=R.dz==='2d6',one=()=>two?rnd(6)+rnd(6):rnd(20);let f=two?[rnd(6),rnd(6)]:[rnd(20)];
+  if(R.adv){if(two){const a=[f[0],f[1],rnd(6)].sort((x,y)=>y-x);f=[a[0],a[1]]}else f=[Math.max(f[0],rnd(20))]}
+  const mod=(q&&typeof q.st==='function'?q.st(R.st):0)|0,total=f.reduce((a,b)=>a+b,0)+mod-(R.dc|0);
+  let t=two?(total>=10?'full':total>=7?'part':'fail'):(total>=15?'full':total>=10?'part':'fail');
+  if(two?(f[0]===6&&f[1]===6):f[0]===20)t='full';if(two?(f[0]===1&&f[1]===1):f[0]===1)t='fail';return {t,n:total}}
 function coRollRead(){const R=CO.rl;if(!R||R.over||CO.role!=='host')return;const Rm=CO.room;
   const raw=[[Rm&&Rm.g,Rm&&Rm.ans]].concat((CO.xs||[]).map(x=>[x.u,x.ans]));
   for(const [u,s] of raw){const a=coJ(s);if(u&&a&&a.id==='r:'+R.id&&!R.res[u]&&['full','part','fail'].includes(a.t))coRollRes(u,a.t,a.n|0)}}
@@ -27987,12 +28009,12 @@ function crBond(h,sp,origin){const X=crtFix(h),D=CR_SP[sp],uid='c_'+sp+'_'+origi
 function crHeal(h){const X=crtFix(h),d=h.nDone|0;X.list.forEach(c=>{if(c.hd!==d){c.hd=d;c.health=crMax(c);c.status='ok'}})}
 /* ---------- the shelter screen ---------- */
 SCREENS.maawa=function(){const h=S.hero;if(!h){S.screen='title';return render()}const X=crtFix(h);crHeal(h);saveHero();
-  const card=c=>{const D=CR_SP[c.sp],L=crLv(c),nx=crNext(c),mx=crMax(c),job={rest:'في المأوى',comp:G('معاك في الليالي','معاكي في الليالي'),farm:'بتحرس الغيط'}[c.assign];
+  const card=c=>{const D=CR_SP[c.sp],L=crLv(c),nx=crNext(c),mx=crMax(c),job={rest:'في المأوى',comp:G('معاك في الليالي والصيد','معاكي في الليالي والصيد'),farm:'بتحرس الغيط'}[c.assign];
     const conf=CR.conf===c.uid;
     return `<div class="card cr-c" data-cr="${c.uid}"><div class="cr-top"><span class="cr-pic">${foeArt(D.art)}</span><div class="cr-tx"><b translate="no">${esc(c.name)}</b><small>${D.n} · ${c.trait} · ${CRG(c,'بيحب','بتحب')} ${D.food}</small>
         <small>${CRG(c,'المستوى','المستوى')} ${L} · صحة ${c.health}/${mx}</small></div><button class="cr-ren" data-crn="${c.uid}" aria-label="غيّر الاسم">✏️</button></div>
       <div class="cr-row"><span>الثقة والألفة</span><b>${'★'.repeat(L)}${'☆'.repeat(CR_BOND.length-L)}</b></div>
-      <div class="bg-bar"><i style="width:${nx?Math.round(((c.bondXP|0)-CR_BOND[L-1])/(nx-CR_BOND[L-1])*100):100}%"></i></div><small class="cr-nx">${nx?`${(c.bondXP|0)-CR_BOND[L-1]} من ${nx-CR_BOND[L-1]} للمستوى ${L+1} · الألفة بتزيد مع كل قتال ${G('تكسبه','تكسبيه')} ${CRG(c,'وهو','وهي')} ${G('معاك','معاكي')} (لحد 3 في الليلة)`:'أعلى ألفة'}</small>
+      <div class="bg-bar"><i style="width:${nx?Math.round(((c.bondXP|0)-CR_BOND[L-1])/(nx-CR_BOND[L-1])*100):100}%"></i></div><small class="cr-nx">${nx?`${(c.bondXP|0)-CR_BOND[L-1]} من ${nx-CR_BOND[L-1]} للمستوى ${L+1} · الألفة بتزيد مع كل قتال ${G('تكسبه','تكسبيه')} ${CRG(c,'وهو','وهي')} ${G('معاك','معاكي')} (لحد 3 في الليلة، و3 في اليوم في الصيد)`:'أعلى ألفة'}</small>
       <div class="cr-ab">${D.abil.map(([l,t])=>`<span class="${L>=l?'on':''}">${L>=l?'✓':'🔒 '+l} ${T(t)}</span>`).join('')}</div>
       <div class="cr-row"><span>المهمة دلوقتي</span><b>${job}</b></div>
       <div class="cr-bt">${c.assign!=='comp'?`<button class="tw-buy" data-cra="comp:${c.uid}">${G('خدها معاك','خديها معاكي').replace('ها',CRG(c,'ه','ها'))}</button>`:''}
@@ -28065,7 +28087,7 @@ ACH.push({id:'bond',n:'أول عهد',d:'وحش يعاهدك ويعيش في م�
 .cr-nx{color:var(--mute);font-size:11.5px;line-height:1.6}.cr-ab{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--dim)}.cr-ab .on{color:#a6e3a0}
 .cr-bt{display:flex;flex-wrap:wrap;gap:6px}.cr-bt .tw-buy{min-height:44px;flex:1 1 40%}.cr-in{display:flex;gap:6px}.cr-in input{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:#0004;color:var(--ink);font:inherit;padding:0 10px}
 .cr-pt{display:flex;width:100%;height:100%;align-items:center;justify-content:center}.cr-pt svg{width:100%;height:100%}`;document.head.appendChild(st)}
-L10N({'مأوى الوحوش':'Monster shelter','على طرف الغيطان':'At the edge of the fields','فاضي لسه':'Empty for now','الثقة والألفة':'Trust and bond','المهمة دلوقتي':'Job now','في المأوى':'In the shelter','بتحرس الغيط':'Guards the field','سلعوة صغيرة':'Little salawa','الحداد، الخياط، العطارة، الطباخة، الغيط، مأوى الوحوش، المنجم، الترعة':'Smith, tailor, herbalist, cook, field, monster shelter, mine, canal'});
+L10N({'مأوى الوحوش':'Monster shelter','على طرف الغيطان':'At the edge of the fields','فاضي لسه':'Empty for now','الثقة والألفة':'Trust and bond','المهمة دلوقتي':'Job now','في المأوى':'In the shelter','معاك في الليالي والصيد':'With you at night and hunting','معاكي في الليالي والصيد':'With you at night and hunting','بتحرس الغيط':'Guards the field','سلعوة صغيرة':'Little salawa','الحداد، الخياط، العطارة، الطباخة، الغيط، مأوى الوحوش، المنجم، الترعة':'Smith, tailor, herbalist, cook, field, monster shelter, mine, canal'});
 
 /* ---------- 5.94 / N15.A + 5.96 / N15.B part 1: الصيد الحر (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
    From the town («اخرج للصيد» in الدهاليز) the hero goes hunting without starting an adventure. Each area (ROAM_ZONES) is a few
@@ -28113,7 +28135,7 @@ const ROAM_ENCOUNTERS={sal:{n:'سلعوة',art:'sal',hp:8,dmg:2,fem:1,two:[0,.15
   salbig:{n:'سلعوة كبيرة',art:'rm_salbig',hp:14,dmg:3,fem:1,elite:1,two:[0,0,0,0],say:'سلعوة كبيرة قد العجل، في رجلها أثر فخ قديم. شافتك قبل ما {تشوفها|تشوفيها}.'},
   snake:{n:'حنش',art:'t_snake',hp:7,dmg:2,two:[0,.2,.3,.3],say:'حاجة بتزحف بين البوص، وصوت فحيح قريب من رجلك.'},
   hyena:{n:'ضبع',art:'t_hyena',hp:8,dmg:2,two:[0,.1,.2,.2],say:'ضحكة ضبع في الضلمة.. وريحة وحشة.'},
-  catfish:{n:'قرموط',art:'t_catfish',hp:11,dmg:3,two:[0,0,.15,.2],say:'شنبات طويلة طالعة من المية، وبُق قد الطبق.'},
+  catfish:{n:'قرموط',art:'t_catfish',hp:10,dmg:2,traits:['thick'],two:[0,0,.15,.2],say:'شنبات طويلة طالعة من المية، وبُق قد الطبق.'},
   wafreet:{n:'عفريت المية',art:'t_wafreet',hp:10,dmg:3,spirit:1,two:[0,0,0,0],say:'المية بتغلي من غير نار، وحد بيضحك من تحتها.'},
   sunk:{n:'غرقان',art:'t_sunk',hp:10,dmg:3,spirit:1,two:[0,0,0,.2],say:'إيد مبلولة طالعة من الهويس، وبعدها كتف، وبعدها وش من غير عينين.'},
   catbig:{n:'قرموط عجوز',art:'rm_catbig',hp:18,dmg:4,elite:1,two:[0,0,0,0],say:'قرموط قد العجل، على ضهره شبك قديم متقطع. المية اتهزّت لما اتحرك.'},
@@ -28151,15 +28173,48 @@ const rmWPick=w=>{const k=Object.keys(w),t=k.reduce((a,x)=>a+w[x],0);let r=Math.
 /* the foes of an encounter, fixed when it is rolled (saved with it): danger adds health and a little hit; alone they have less health
    (their hit is softened after the level, when the fight starts) */
 function rmFoes(e,d){const E=ROAM_ENCOUNTERS[e],n=1+(Math.random()<(E.two[d]||0)?1:0),hp=Math.max(1,Math.round(E.hp*(1+.12*Math.max(0,d-1))*CM_SOLO_HP)),dmg=E.dmg+(d>=3&&!E.boss?1:0);
-  return Array.from({length:n},()=>{const f={name:E.n,art:E.art,hp,dmg};if(E.fem)f.fem=1;if(E.spirit)f.spirit=1;if(E.boss)f.boss=1;if(E.weak)f.weak=E.weak.slice();return f})}
+  return Array.from({length:n},()=>{const f={name:E.n,art:E.art,hp,dmg};if(E.fem)f.fem=1;if(E.spirit)f.spirit=1;if(E.boss)f.boss=1;if(E.weak)f.weak=E.weak.slice();if(E.traits)f.traits=E.traits.slice();return f})}
 const RM_PL={'سلعوة':'سلعوات','ديب':'ديابة','حنش':'حناشات','ضبع':'ضباع','قرموط':'قراميط','غرقان':'غرقانين'};
 /* English plurals for «2 ضباع» etc. */
 const RM_PL_EN={'سلعوات':'salawas','ديابة':'wolves','حناشات':'snakes','ضباع':'hyenas','قراميط':'catfish','غرقانين':'drowned ones'};
 const rmEnN=a=>{if(L10N_W.has(a))return L10N_W.get(a);const m=/^(\d+) (.+)$/.exec(a);return m&&RM_PL_EN[m[2]]?`${m[1]} ${RM_PL_EN[m[2]]}`:null};
 const rmNames=foes=>foes.length>1?`${foes.length} ${RM_PL[foes[0].name]||foes[0].name}`:foes[0].name;
 const rmBossUp=(h,Z)=>{const B=rmZone(Z).boss;return !!B&&Z.boss[Z.zone]!==(h.nDone|0)};
+/* ---------- 5.97 / N15.B part 2: الجبل (from level 7) ----------
+   سفح الجبل (safe; عجوز الجبل, rest, the way to the other areas) / المدق الصخري / مغارة الخفافيش / قمة الضباع (elite «الضبع الأعرج»,
+   boss «الضبع الأبيض» once a town day). The beasts are the ones of «مغارة الضبع», with their weak points and traits (fire, salt,
+   iron; fast, armour, vanish). Errand «4 ضباع» (the lame one counts). Herbs: شيح الجبل; stones and a little iron in the cave. */
+ROAM_ZONES.jabal={n:'الجبل',art:'mc_camp',start:'foot',order:['foot','path','cave','ridge'],lvl:7,
+  q:{id:'hy4',need:4,npc:'oldman',who:'عجوز الجبل',f:0,arts:['ma_hyena','rm_lame'],units:'ضباع',ach:'roam_mtn',pay:L=>({m:100+20*L,x:7+L}),
+    offer:p=>`«الضباع بتنزل على غنمي كل ليلة. ${G('وقّع','وقّعي')} لي 4 منهم، {وليك|وليكي} ${p.m} جنيه و${p.x} خبرة.»`,on:n=>`«لسه ${n}.. الضباع فوق عند القمة، وساعات في المغارة.»`,
+    ready:()=>`«الغنم هتنام النهارده. ${G('تعالى خد','تعالي خدي')} حقك.»`,done:()=>`«الجبل ما بينساش اللي يحميه. ${G('تعالى','تعالي')} بكرة.»`,
+    take:()=>`«4 ضباع، والأعرج لو {قابلته|قابلتيه} يتحسب.» العداد بيعد كل ضبع {بتوقعه|بتوقعيه} بجد.`,yes:'حاضر، هوقّعهم',
+    rest:'{قعدت|قعدتي} جنب عجوز الجبل قدام النار. صحتك وطاقتك رجعوا.',fell:'{وقعت|وقعتي}.. عجوز الجبل {لقاك|لقاكي} على المدق {وشالك|وشالكي} للسفح.'},
+  boss:{at:'ridge',e:'white'},
+  pts:{foot:{n:'سفح الجبل',d:0,links:['path'],txt:'أول الجبل، ونار صغيرة جنب خيمة عجوز الجبل. الغنم مربوطة وخايفة.'},
+    path:{n:'المدق الصخري',d:1,art:'m_quarry',links:['foot','cave','ridge'],w:{mwolf:5,vulture:3,beetle:3,res:3,none:3},res:[['shih',1,1]],txt:'مدق ضيق بين الصخر، والهوا بيصفّر فيه.'},
+    cave:{n:'مغارة الخفافيش',d:2,art:'m_cave',links:['path','ridge'],w:{bat:4,scorp:3,viper:3,mhyena:2,res:3,none:2},res:[['stone',1,3],['iron',1,1]],txt:'مغارة ريحتها عطنة، والسقف بيتحرك من كتر الخفافيش.'},
+    ridge:{n:'قمة الضباع',d:3,art:'mc_bones',links:['path','cave'],w:{mhyena:5,hviper:3,lame:2,res:2,none:2},res:[['shih',1,2]],rare:['bloom',.05],txt:'قمة عريانة، وعضم أبيض في كل حتة. الضباع بتضحك تحت.'}}};
+Object.assign(ROAM_ENCOUNTERS,{
+  mwolf:{n:'ديب',art:'ma_wolf',hp:7,dmg:2,weak:['fire'],traits:['fast'],two:[0,.25,.3,.35],say:'ديب الجبل أنحف وأسرع، وعينه ما بتنزلش من عليك.'},
+  vulture:{n:'رخمة',art:'mc_vulture',hp:7,dmg:2,fem:1,weak:['fire'],traits:['fast'],two:[0,.2,.2,.2],say:'رخمة بتلف فوق راسك، ونازلة.'},
+  beetle:{n:'خنفسة العضم',art:'mc_beetle',hp:5,dmg:2,fem:1,weak:['fire'],traits:['armor'],two:[0,.3,.3,.3],say:'خنفسة قد الكف، ضهرها زي العضم، طالعة من بين الصخر.'},
+  bat:{n:'خفاش كبير',art:'mb_bat',hp:5,dmg:2,weak:['fire'],traits:['fast'],two:[0,.3,.4,.4],say:'جناحات بتخبط في وشك في الضلمة.'},
+  scorp:{n:'عقربة سودا',art:'ma_scorp',hp:6,dmg:3,fem:1,weak:['fire'],traits:['armor'],two:[0,0,.2,.2],say:'ديل أسود مرفوع، وصوت طقطقة على الصخر.'},
+  viper:{n:'طريشة',art:'ma_viper',hp:6,dmg:3,fem:1,weak:['fire','iron'],traits:['fast'],two:[0,0,0,0],say:'طريشة ملفوفة على الصخرة، وراسها مستعد.'},
+  mhyena:{n:'ضبع',art:'ma_hyena',hp:9,dmg:2,weak:['fire','salt'],traits:['thick'],two:[0,0,.2,.3],say:'ضحكة ضبع.. وبعدها ضحكة تانية أقرب.'},
+  hviper:{n:'تعبان أبو قرون',art:'mb_viper',hp:8,dmg:3,weak:['fire'],traits:['fast'],two:[0,0,0,0],say:'تعبان ليه قرنين، بيزحف بالجنب على الرملة.'},
+  lame:{n:'الضبع الأعرج',art:'rm_lame',hp:16,dmg:3,elite:1,weak:['fire','salt'],traits:['thick'],two:[0,0,0,0],say:'ضبع كبير بيعرج على رجل، وبقيت الضباع بتوسع له.'},
+  white:{n:'الضبع الأبيض',art:'rm_white',hp:26,dmg:4,spirit:1,boss:1,weak:['salt'],traits:['vanish'],two:[0,0,0,0],say:'ضبع أبيض زي القمر، رجليه مش لامسة الأرض. القمة كلها سكتت.'}});
+Object.defineProperty(FOE_ART_X,'rm_lame',rmTint('mc_lame','brightness(.85) saturate(1.2)'));
+Object.defineProperty(FOE_ART_X,'rm_white',rmTint('mc_white','drop-shadow(0 0 4px #e8f0ff)'));
+Object.assign(LOOT,{rm_lame:{xp:8,m:[35,60],chest:.6},rm_white:{xp:16,m:[110,160],chest:1}});
+Object.assign(FOE_DROPS,{rm_lame:[['stone',.6]]});
+TK_SP_RX.unshift([/(^|_)lame$/,{spare:1,feed:1}]);
+Object.assign(RM_PL,{'رخمة':'رخم','خنفسة العضم':'خنافس','خفاش كبير':'خفافيش','عقربة سودا':'عقارب'});Object.assign(RM_PL_EN,{'رخم':'vultures','خنافس':'beetles','خفافيش':'bats','عقارب':'scorpions'});
+ACH.push({id:'roam_mtn',n:'صياد الجبل',d:'{تخلّص|تخلّصي} مهمة «4 ضباع» لعجوز الجبل',r:35});
 /* ---------- the actions ---------- */
-function rmStart(h){const Z=rmFix(h);if(Z.on)return Z;Z.on=1;Z.at=rmZone(Z).start;Z.prev=Z.at;Z.cur=null;Z.msg=null;Z.st.trips++;h.hp=Math.max(1,Math.min(MXH(h),h.hp|0));saveHero();return Z}
+function rmStart(h){const Z=rmFix(h);if(Z.on)return Z;try{if(typeof crHeal==='function')crHeal(h)}catch(e){}Z.on=1;Z.at=rmZone(Z).start;Z.prev=Z.at;Z.cur=null;Z.msg=null;Z.st.trips++;h.hp=Math.max(1,Math.min(MXH(h),h.hp|0));saveHero();return Z}
 function rmGo(h,id){const Z=rmFix(h),P=rmPt(Z);if(!Z.on||Z.cur||!P.links.includes(id)||!rmZone(Z).pts[id])return;Z.prev=Z.at;Z.at=id;Z.msg=null;saveHero();try{SFX.page()}catch(e){}twRender()}
 /* to another area: only from a safe first point, free */
 function rmZoneGo(h,z){const Z=rmFix(h);if(!Z.on||Z.cur||!rmAtStart(Z)||z===Z.zone||!rmUnlocked(h,z))return;Z.zone=z;Z.at=ROAM_ZONES[z].start;Z.prev=Z.at;Z.msg={t:`{وصلت|وصلتي} ${ROAM_ZONES[z].n}.`};saveHero();try{SFX.page()}catch(e){}view.scrollTop=0;twRender()}
@@ -28180,12 +28235,17 @@ async function rmAvoid(h){const Z=rmFix(h),c=Z.cur;if(!c||c.fought||RM.busy)retu
     if(r.tier==='full'||r.tier==='part'){Z.cur=null;Z.st.avoid++;const many=c.foes.length>1,f0=c.foes[0];let t=`{اتسحّبت|اتسحّبتي} بالراحة من غير ما ${many?'ياخدوا بالهم':FF(f0,'ياخد باله','تاخد بالها')}.`;
       if(r.tier==='part'){h.hp=Math.max(1,h.hp-2);t=[t,'بس {اتخربشت|اتخربشتي} في البوص (−2 صحة).']}Z.msg={t};saveHero();return twRender()}
     Z.msg={bad:1,t:`${rmNames(c.foes)} ${c.foes.length>1?'شافوك':FF(c.foes[0],'شافك','شافتك')}!`};saveHero();RM.busy=0;return rmFight(h)}finally{RM.busy=0}}
-function rmFight(h){const Z=rmFix(h),c=Z.cur;if(!c||S.combat)return;S.roamFight={uid:c.uid,e:c.e,z:Z.zone};S.comp=cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;
+/* 5.99: the creature from «مأوى الوحوش» that is «معاك» comes hunting too (in the companion's place, never an extra turn); then the
+   foes are not made weaker for being alone */
+const rmBeast=h=>typeof crComp==='function'&&!h.night?crComp(h):null;
+function rmFight(h){const Z=rmFix(h),c=Z.cur;if(!c||S.combat)return;S.roamFight={uid:c.uid,e:c.e,z:Z.zone};const bst=rmBeast(h);S.comp=bst||cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;
   if(!c.fought){c.fought=1;saveHero()}   /* once it starts it has to be finished: a reload brings it back with only «أقاتل» */
-  startCombat(JSON.parse(JSON.stringify(c.foes)),'roam_back',false);const C=S.combat;if(!C)return;C.enc='rm:'+c.uid;C.rm=1;   /* C.rm: a field boss is not a story boss for relics, trials, gems and herbs (p48/p56/p60) */
-  C.foes.forEach(g=>{if(typeof g.dmg==='number'&&g.dmg>0){const v=g.dmg*CM_SOLO_DMG;g.dmg=Math.max(1,Math.floor(v)+(Math.random()<v%1?1:0))}});if(S.screen==='combat')try{combat()}catch(e){}}   /* drawn again now that it is known as a field fight («💬 كلام») */
-function rmRest(h){const Z=rmFix(h);if(!Z.on||!rmAtStart(Z)||Z.cur)return;if(h.hp>=MXH(h)&&h.energy>=MXE(h)){toast(`${G('انت','انتي')} ${G('مرتاح','مرتاحة')} خلاص.`);return}
-  if(!useEff(h)){toast(`مفيش مجهود. اللي جاي بعد ${rmWait(h)}.`);try{SFX.meh()}catch(e){}return}h.hp=MXH(h);h.energy=MXE(h);Z.msg={t:rmQD(Z).rest};saveHero();try{SFX.good()}catch(e){}twRender()}
+  const fo=JSON.parse(JSON.stringify(c.foes));if(bst)fo.forEach(f=>{f.hp=Math.max(1,Math.round(f.hp/CM_SOLO_HP))});
+  startCombat(fo,'roam_back',false);const C=S.combat;if(!C)return;C.enc='rm:'+c.uid;C.rm=1;C.rmBeast=bst?bst.crUid:null;   /* C.rm: a field boss is not a story boss for relics, trials, gems and herbs (p48/p56/p60) */
+  if(!bst)C.foes.forEach(g=>{if(typeof g.dmg==='number'&&g.dmg>0){const v=g.dmg*CM_SOLO_DMG;g.dmg=Math.max(1,Math.floor(v)+(Math.random()<v%1?1:0))}});if(S.screen==='combat')try{combat()}catch(e){}}   /* drawn again now that it is known as a field fight («💬 كلام») */
+function rmRest(h){const Z=rmFix(h);if(!Z.on||!rmAtStart(Z)||Z.cur)return;const cr=typeof crActive==='function'&&!h.night?crActive(h):null,crHurt=!!(cr&&cr.health<crMax(cr));if(h.hp>=MXH(h)&&h.energy>=MXE(h)&&!crHurt){toast(`${G('انت','انتي')} ${G('مرتاح','مرتاحة')} خلاص.`);return}
+  if(!useEff(h)){toast(`مفيش مجهود. اللي جاي بعد ${rmWait(h)}.`);try{SFX.meh()}catch(e){}return}h.hp=MXH(h);h.energy=MXE(h);if(cr)cr.health=crMax(cr);   /* she rests too */
+  Z.msg={t:rmQD(Z).rest};saveHero();try{SFX.good()}catch(e){}twRender()}
 function rmTake(h){const Z=rmFix(h),q=Z.q;if(q.st!=='none'||!rmAtStart(Z))return;q.st='on';q.n=0;Z.msg={t:rmQD(Z).take()};saveHero();try{SFX.tick(820)}catch(e){}twRender()}
 const rmPay=(h,z)=>ROAM_ZONES[z||'ghitan'].q.pay(Math.max(1,h.lvl|0));
 function rmTurnIn(h){const Z=rmFix(h),q=Z.q,D=rmQD(Z);if(q.st!=='ready'||!rmAtStart(Z))return;const R=rmPay(h,Z.zone);q.st='done';q.day=h.nDone|0;q.times++;q.n=0;h.money+=R.m;const L0=h.lvl,ups=gainXP(R.x);
@@ -28198,8 +28258,9 @@ const RM={busy:0};
   if(Z.cur&&Z.cur.uid===R.uid)Z.cur=null;if(!Z.done.includes(R.uid))Z.done.push(R.uid);const boss=C.foes.some(f=>f.boss);
   if(won){const D=rmQD(Z),q=Z.q,dead=C.foes.filter(f=>f.hp<=0&&!f.fled),cnt=dead.filter(f=>D.arts.includes(f.art)).length,gone=C.foes.length-dead.length;Z.st.won++;Z.st.kills+=dead.length;
     if(boss&&dead.some(f=>f.boss)){Z.boss[Z.zone]=h.nDone|0;Z.st.boss++}
+    let bondUp='';try{if(C.rmBeast&&typeof crtFix==='function'){const cr=crtFix(h).list.find(x=>x.uid===C.rmBeast),d=h.nDone|0;if(cr&&crLv(cr)<CR_BOND.length){if(!cr.fb||cr.fb.d!==d)cr.fb={d,n:0};if(cr.fb.n<3){cr.fb.n++;const L0=crLv(cr);cr.bondXP=(cr.bondXP|0)+1;cr.bondLevel=crLv(cr);bondUp=cr.bondLevel>L0?`${cr.name}: الألفة بقت ${cr.bondLevel} ★`:`${cr.name}: الألفة +1`}}}}catch(e){}
     const t=[dead.length?(dead.length>1?`${rmNames(dead)} وقعوا.`:`${dead[0].name} ${FF(dead[0],'وقع','وقعت')}.`):`${G('خلّصت','خلّصتي')} من غير ما حد يموت.`];
-    if(gone&&dead.length)t.push(gone>1?`${gone} جريوا.`:'وواحد جري.');
+    if(gone&&dead.length)t.push(gone>1?`${gone} جريوا.`:'وواحد جري.');if(bondUp)t.push(bondUp);
     if(q.st==='on'&&cnt){q.n=Math.min(D.need,q.n+cnt);if(q.n>=D.need)q.st='ready';t.push(`مهمة ${D.who}: ${q.n} من ${D.need}${q.st==='ready'?` · ${G('ارجع','ارجعي')} ${D.f?'لها':'له'} عند ${rmZone(Z).pts[rmZone(Z).start].n}`:''}.`)}
     Z.msg={t};const keep={};if(!boss)C.foes.forEach(f=>{const L=LOOT[f.art];if(L&&!(f.art in keep)){keep[f.art]=L.chest;L.chest=L.chest*RM_CHEST}});
     try{return e0.apply(this,arguments)}finally{Object.keys(keep).forEach(a=>{LOOT[a].chest=keep[a]})}}   /* the normal win: experience, money, drops, chests (rarer here, a boss keeps its own), and one save with the settlement */
@@ -28239,7 +28300,7 @@ SCREENS.roam=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
     return `<div class="label rm-l">أماكن تانية للصيد</div><div class="rm-map">${L.map(z=>{const X=ROAM_ZONES[z],ok=rmUnlocked(h,z);return `<button class="rm-pt rm-z" data-rmz="${z}" ${ok?'':'disabled'}><span class="rm-d">🧭</span><span class="tx"><b>${X.n}</b><small>${ok?Object.values(X.pts).map(p=>p.n).slice(1).join('، '):`من المستوى ${X.lvl}`}</small></span><span class="go">${ok?G('روح','روحي'):'🔒'}</span></button>`}).join('')}</div>`};
   view.innerHTML=`${twTop(R.n)}<div class="tw rm">
     <div class="card rm-hd"><div class="art rm-art" style="height:100px">${scenery(P.art||R.art)}<div class="fade"></div></div><div class="rm-hx"><b>${P.n}</b><small class="d${P.d}">${RM_DANGER[P.d]}</small></div><div class="rm-tx">${P.txt}</div></div>
-    <div class="rm-st"><span>❤️ ${h.hp}/${MXH(h)}</span><span>💧 مجهود ${ef}/${EFF_MAX}</span><span>💰 ${h.money}</span></div>
+    <div class="rm-st"><span>❤️ ${h.hp}/${MXH(h)}</span><span>💧 مجهود ${ef}/${EFF_MAX}</span><span>💰 ${h.money}</span></div>${(()=>{const b=rmBeast(h);return b?`<div class="rm-q rm-bst">🐾 <span translate="no">${esc(b.name)}</span> <span>${G('معاك','معاكي')} · صحت${b.g==='f'?'ها':'ه'} ${b.hp}/${b.max}</span></div>`:''})()}
     ${Z.msg?`<div class="card rm-msg${Z.msg.bad?' bad':''}">${(Array.isArray(Z.msg.t)?Z.msg.t:[Z.msg.t]).filter(Boolean).map(x=>`<span>${T(x)}</span>`).join(' ')}</div>`:''}
     ${c?enc():P.w?`<button class="btn rm-s" id="rmS" ${ef<1?'disabled':''}>🔍 ${G('دوّر هنا','دوّري هنا')} <small>${ef<1?`المجهود خلص · اللي جاي بعد ${rmWait(h)}`:'1 مجهود'}</small></button>`:qBox()}
     ${bossBox()}${c||!P.w?'':qBox()}
@@ -28259,7 +28320,8 @@ function rmArt(){return `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid
 {const pa=placeArt;placeArt=function(id){if(id==='roam')return rmArt();return pa.apply(this,arguments)}}
 TW_EXTRA.push(h=>{const Z=rmFix(h),q=Z.q,D=rmQD(Z),rz=Object.keys(ROAM_ZONES).find(z=>Z.qs[z].st==='ready');
   const s=h.night?'بعد الليلة المتسابة':Z.on?`${G('انت','انتي')} عند ${rmPt(Z).n}`:rz?`المهمة خلصت: ${ROAM_ZONES[rz].q.who} ${G('مستنيك','مستنيكي')}`:q.st==='on'?`${D.units} ${q.n} من ${D.need}`:'من غير مغامرة · سلعوة وديابة';
-  return {id:'roam',go:'roam',n:G('اخرج للصيد','اخرجي للصيد'),w:rmUnlocked(h,'tera')?'الغيطان والترعة':'الغيطان بالليل',s}});
+  const zs=Object.keys(ROAM_ZONES).filter(z=>rmUnlocked(h,z)).map(z=>ROAM_ZONES[z].n);
+  return {id:'roam',go:'roam',n:G('اخرج للصيد','اخرجي للصيد'),w:zs.length>1?zs.join('، '):'الغيطان بالليل',s}});
 /* 5.96 (Twister 07:07): hunting is its own section right under الدهاليز, not inside it (it is the other way to play) */
 {const G0=typeof TW_GROUPS!=='undefined'?TW_GROUPS:[];G0.forEach(g=>{const i=g.go.indexOf('roam');if(i>=0)g.go.splice(i,1)});if(!G0.some(g=>g.id==='hunt')){const i=G0.findIndex(x=>x.big);G0.splice(i+1,0,{id:'hunt',n:'الصيد',go:['roam'],big:1,sm:'من غير مغامرة'})}}
 ACH.push({id:'roam5',n:'صياد الغيطان',d:'{تخلّص|تخلّصي} مهمة «5 سلعوات» لعم عبده',r:25},{id:'roam_cat',n:'صياد الترعة',d:'{تخلّص|تخلّصي} مهمة «3 قراميط» لأم سيد',r:30});
@@ -28303,11 +28365,12 @@ L10N({'الغيطان':'The fields','طرف الغيط':'Edge of the fields','غ
    [/^«لسه (\d+)\.\. السلعوة بتطلع بالليل في الدرة، والكبيرة عند الترعة\.»$/,'«$1 more.. they come out in the corn, and the big one by the canal.»'],[/^«وقّعتهم بجد؟ تعالي? خدي? حقك\.»$/,'«You really got them? Come take your due.»'],
    [/^«تسلم إيدك\. تعالي? بكرة يمكن ألاقي لك شغل تاني\.»$/,'«Bless your hands. Come back tomorrow, I may have more work.»'],[/^مفيش مجهود\. اللي جاي بعد ([\d:]+)(، أو كُلي? حاجة)?\.$/,'No effort left. Next in $1.'],
    [/^خلّصي? القتال الأول\.$/,'Finish the fight first.'],[/^محتاجة? مجهود تجري بيه\. قاتلي? أو اتسحّبي?\.$/,'You need effort to run. Fight or sneak away.'],[/^انتي? مرتاحة? خلاص\.$/,'You are rested already.'],
-   [/^المهمة خلصت: عم عبده مستنيكي?$/,'Errand done: Uncle Abdo is waiting'],[/^عندك ليلة متسابة\..*$/,'You have a saved night. Finish it first, then go out to the fields.'],[/^(.+) (وقع|وقعت)\.$/,(m,a)=>L10N_W.has(a)?`${L10N_W.get(a)} fell.`:m],[/^(\d+ (?:سلعوات|ديابة|حناشات|ضباع|قراميط|غرقانين)) وقعوا\.$/,(m,a)=>rmEnN(a)?`${rmEnN(a)} fell.`:m],[/^المجهود خلص · اللي جاي بعد ([\d:]+)$/,'No effort left · next in $1'],
+   [/^المهمة خلصت: عم عبده مستنيكي?$/,'Errand done: Uncle Abdo is waiting'],[/^عندك ليلة متسابة\..*$/,'You have a saved night. Finish it first, then go out to the fields.'],[/^(.+) (وقع|وقعت)\.$/,(m,a)=>L10N_W.has(a)?`${L10N_W.get(a)} fell.`:m],[/^(\d+ (?:سلعوات|ديابة|حناشات|ضباع|قراميط|غرقانين|رخم|خنافس|خفافيش|عقارب)) وقعوا\.$/,(m,a)=>rmEnN(a)?`${rmEnN(a)} fell.`:m],[/^المجهود خلص · اللي جاي بعد ([\d:]+)$/,'No effort left · next in $1'],
    [/^مهمة عم عبده:$/,'Uncle Abdo\'s errand:'],[/^(\d+) من (\d+)$/,'$1 of $2'],[/^لقيتي? (.+)$/,(m,x)=>/[؀-ۿ]/.test(x)?m:`Found ${x}`],[/^⚔ أقاتل$/,'⚔ Fight'],[/^🤫 أتسحّب بالراحة$/,'🤫 Sneak away'],[/^↩ أرجع لـ(.+)$/,'↩ Go back'],[/^🏠 ارجعي? البلد$/,'🏠 Back to the village'],
    [/^☕ ارتاحي? شوية$/,'☕ Rest a while'],[/^\(1 مجهود: صحتك وطاقتك ترجع\)$/,'(1 effort: health and energy back)'],[/^❤️ (\d+)\/(\d+)$/,'❤️ $1/$2'],[/^💧 مجهود (\d+)\/(\d+)$/,'💧 Effort $1/$2'],
    [/^(انتي?) عند (.+)$/,(m,a,b)=>'At: '+(L10N_W.get(b)||b)],[/^سلعوات (\d+) من (\d+)$/,'Salawas $1 of $2'],[/^مهمة عم عبده: (\d+) من (\d+)/,'Uncle Abdo\'s errand: $1 of $2'],[/^العداد: (\d+) من (\d+)$/,'Count: $1 of $2'],
    [/^حاضر، هوقّعهم$/,'Deal, I\'ll get them'],[/^خدي? حقك · (\d+) جنيه$/,'Hand in · $1 coins'],[/^(\d+) (سلعوات|ديابة)$/,(m,n,k)=>`${n} ${k==='سلعوات'?'salawas':'wolves'}`]]);
+const RM_WHO_EN={'عم عبده':'Uncle Abdo','أم سيد':'Umm Sayed','عجوز الجبل':'The mountain elder'};
 /* 5.96: English for الترعة, the bosses and moving between areas */
 L10N({'الصيد':'Hunting','من غير مغامرة':'No adventure','الترعة':'The canal','شط الترعة':'Canal bank','البوص':'The reeds','الكوبري الخشب':'Wooden bridge','الهويس القديم':'Old lock','الغيطان والترعة':'The fields and the canal','أماكن تانية للصيد':'Other hunting grounds',
   'حنش':'Snake','ضبع':'Hyena','قرموط':'Catfish','عفريت المية':'Water afreet','غرقان':'Drowned one','قرموط عجوز':'Old catfish','أم السلعوات':'Mother of salawas','الغريق':'The drowned man','زعيم':'Boss',
@@ -28320,15 +28383,32 @@ L10N({'الصيد':'Hunting','من غير مغامرة':'No adventure','التر
   'المية عند الهويس وقفت. واحد طالع منها لابس هدوم من زمان، وكله طحالب.':'The water at the lock went still. A man rises from it in old clothes, all weeds.'},
   [[/^⚠ واجهي? (.+)$/,(m,a)=>`⚠ Face ${L10N_W.get(a)||a}`],[/^(.+) (وقع|وقعت) النهارده\. (هيرجع|هترجع) بكرة\.$/,(m,a)=>`${L10N_W.get(a)||a} fell today. Back tomorrow.`],[/^من المستوى (\d+)$/,'From level $1'],
    [/^وصلتي? (.+)\.$/,(m,a)=>`You reached ${L10N_W.get(a)||a}.`],[/^الزعيم محتاج 2 مجهود\. اللي جاي بعد ([\d:]+)\.$/,'The boss needs 2 effort. Next in $1.'],
-   [/^مهمة (عم عبده|أم سيد): (\d+) من (\d+)( · ارجعي? (له|لها) عند (.+))?\.$/,(m,w,a,b,c,x,p)=>`${w==='أم سيد'?'Umm Sayed':'Uncle Abdo'}'s errand: ${a} of ${b}${c?` · go back to ${w==='أم سيد'?'her':'him'} at the ${L10N_W.get(p)||p}`:''}.`],
-   [/^مهمة أم سيد:$/,'Umm Sayed\'s errand:'],[/^(قراميط|سلعوات)( · ارجعي? (له|لها))?$/,(m,k,c,x)=>`${k==='قراميط'?'catfish':'salawas'}${c?` · go back to ${x==='لها'?'her':'him'}`:''}`],[/^قراميط (\d+) من (\d+)$/,'Catfish $1 of $2'],
-   [/^(\d+ (سلعوات|ديابة|حناشات|ضباع|قراميط|غرقانين))$/,(m,a)=>rmEnN(a)||m],
+   [/^مهمة (عم عبده|أم سيد|عجوز الجبل): (\d+) من (\d+)( · ارجعي? (له|لها) عند (.+))?\.$/,(m,w,a,b,c,x,p)=>`${RM_WHO_EN[w]}'s errand: ${a} of ${b}${c?` · go back to ${w==='أم سيد'?'her':'him'} at the ${L10N_W.get(p)||p}`:''}.`],[/^مهمة عجوز الجبل:$/,'The mountain elder\'s errand:'],
+   [/^مهمة أم سيد:$/,'Umm Sayed\'s errand:'],[/^(قراميط|سلعوات|ضباع)( · ارجعي? (له|لها))?$/,(m,k,c,x)=>`${RM_PL_EN[k]}${c?` · go back to ${x==='لها'?'her':'him'}`:''}`],[/^(قراميط|ضباع) (\d+) من (\d+)$/,(m,k,a,b)=>`${RM_PL_EN[k][0].toUpperCase()+RM_PL_EN[k].slice(1)} ${a} of ${b}`],
+   [/^(\d+ (سلعوات|ديابة|حناشات|ضباع|قراميط|غرقانين|رخم|خنافس|خفافيش|عقارب))$/,(m,a)=>rmEnN(a)||m],
    [/^أم سيد ادّتكي? (\d+) جنيه و(\d+) خبرة\.$/,'Umm Sayed gave you $1 coins and $2 experience.'],[/^المهمة خلصت: أم سيد مستنيكي?$/,'Errand done: Umm Sayed is waiting'],
    [/^قعدتي? جنب أم سيد على الشط وكلتي? لقمة\. صحتك وطاقتك رجعوا\.$/,'You ate a bite with Umm Sayed on the bank. Health and energy are back.'],[/^وقعتي?\.\. صيادين لقوكي? في المية ورجعوكي? لشط الترعة\.$/,'You fell.. fishermen pulled you out and brought you back to the bank.'],
    [/^«القراميط الكبيرة بتقطع شبك ابني كل ليلة\. هاتي? لي 3 منهم، وليكي? (\d+) جنيه و(\d+) خبرة\.»$/,'«The big catfish tear my son\'s nets every night. Bring me 3: $1 coins and $2 experience.»'],
    [/^«لسه (\d+)\.\. القرموط بيطلع عند الكوبري والهويس\.»$/,'«$1 more.. they come up by the bridge and the lock.»'],[/^«الشبك هيرتاح أخيرًا\. تعالي? خدي? حقك\.»$/,'«The nets can rest at last. Come take your due.»'],
    [/^«ربنا يكرمك\. عدّي عليّا بكرة\.»$/,'«Bless you. Come by tomorrow.»'],[/^«3 قراميط كبار، مش أي سمكة\.» العداد بيعد كل قرموط بتوقعي?ه بجد\.$/,'«3 big catfish, not just any fish.» Only real kills count.'],
    [/^كل السلعوات اللي وقعتي?ها كانت عيالها\. واقفة على حافة الترعة ومستنياكي?\.$/,'Every salawa you brought down was her child. She waits at the canal\'s edge.']]);
+/* 5.97: English for الجبل */
+L10N({'الجبل':'The mountain','سفح الجبل':'Mountain foot','المدق الصخري':'Rocky path','مغارة الخفافيش':'Bat cave','قمة الضباع':'Hyena ridge','عجوز الجبل · راحة':'The mountain elder · rest',
+  'رخمة':'Vulture','خنفسة العضم':'Bone beetle','خفاش كبير':'Big bat','عقربة سودا':'Black scorpion','طريشة':'Viper','تعبان أبو قرون':'Horned snake','الضبع الأعرج':'The lame hyena','الضبع الأبيض':'The white hyena',
+  'أول الجبل، ونار صغيرة جنب خيمة عجوز الجبل. الغنم مربوطة وخايفة.':'The foot of the mountain; a small fire by the elder\'s tent. The sheep are tied and scared.',
+  'مدق ضيق بين الصخر، والهوا بيصفّر فيه.':'A narrow path between rocks; the wind whistles through it.','مغارة ريحتها عطنة، والسقف بيتحرك من كتر الخفافيش.':'A musty cave; the ceiling moves with bats.',
+  'قمة عريانة، وعضم أبيض في كل حتة. الضباع بتضحك تحت.':'A bare ridge with white bones everywhere. Hyenas laugh below.','ديب الجبل أنحف وأسرع، وعينه ما بتنزلش من عليك.':'The mountain wolf is thinner and faster, and never takes its eyes off you.',
+  'رخمة بتلف فوق راسك، ونازلة.':'A vulture circles over your head, coming down.','خنفسة قد الكف، ضهرها زي العضم، طالعة من بين الصخر.':'A beetle the size of a hand, its back like bone, crawls out of the rocks.',
+  'جناحات بتخبط في وشك في الضلمة.':'Wings beat at your face in the dark.','ديل أسود مرفوع، وصوت طقطقة على الصخر.':'A black tail raised, and clicking on the rock.','طريشة ملفوفة على الصخرة، وراسها مستعد.':'A viper coiled on the rock, head ready.',
+  'ضحكة ضبع.. وبعدها ضحكة تانية أقرب.':'A hyena laughs.. then another, closer.','تعبان ليه قرنين، بيزحف بالجنب على الرملة.':'A snake with two horns slides sideways on the sand.',
+  'ضبع كبير بيعرج على رجل، وبقيت الضباع بتوسع له.':'A big hyena limping on one leg; the others make way for him.','ضبع أبيض زي القمر، رجليه مش لامسة الأرض. القمة كلها سكتت.':'A hyena white as the moon, its feet off the ground. The whole ridge went quiet.'},
+  [[/^«الضباع بتنزل على غنمي كل ليلة\. وقّعي? لي 4 منهم، وليكي? (\d+) جنيه و(\d+) خبرة\.»$/,'«Hyenas come down on my sheep every night. Bring down 4 for me: $1 coins and $2 experience.»'],
+   [/^«لسه (\d+)\.\. الضباع فوق عند القمة، وساعات في المغارة\.»$/,'«$1 more.. they are up on the ridge, sometimes in the cave.»'],[/^«الغنم هتنام النهارده\. تعالي? خدي? حقك\.»$/,'«The sheep will sleep tonight. Come take your due.»'],
+   [/^«الجبل ما بينساش اللي يحميه\. تعالي? بكرة\.»$/,'«The mountain never forgets who guards it. Come back tomorrow.»'],[/^«4 ضباع، والأعرج لو قابلتي?ه يتحسب\.» العداد بيعد كل ضبع بتوقعي?ه بجد\.$/,'«4 hyenas, and the lame one counts if you meet him.» Only real kills count.'],
+   [/^قعدتي? جنب عجوز الجبل قدام النار\. صحتك وطاقتك رجعوا\.$/,'You sat by the fire with the mountain elder. Health and energy are back.'],[/^وقعتي?\.\. عجوز الجبل لقاكي? على المدق وشالكي? للسفح\.$/,'You fell.. the mountain elder found you on the path and carried you down.'],
+   [/^عجوز الجبل ادّاكي? (\d+) جنيه و(\d+) خبرة\.$/,'The mountain elder gave you $1 coins and $2 experience.'],[/^المهمة خلصت: عجوز الجبل مستنيكي?$/,'Errand done: the mountain elder is waiting'],[/^ضباع (\d+) من (\d+)$/,'Hyenas $1 of $2']]);
+/* 5.99: English for the creature on a hunt */
+L10N({},[[/^معاكي? · صحت(ها|ه) (\d+)\/(\d+)$/,'with you · health $2/$3'],[/^(.+): الألفة \+1$/,'$1: bond +1'],[/^(.+): الألفة بقت (\d) ★$/,'$1: bond is now $2 ★']]);
 
 /* ---------- 5.95: حساب في البنك (Twister 04:47: «عشان تستعمل البنك لازم تفتح حساب بنكي بردو، وخليه غالي بس مش أوي، عشان نخليه ليه قيمه») ----------
    The bank's safe, deposits, investments and the man at its door wait until the hero opens an account with أستاذ فوزي. Opening costs
@@ -28375,6 +28455,48 @@ L10N({'حساب جديد':'New account','بتتدفع مرة واحدة. الح�
    [/^الخزنة: حطي? واسحبي? في أي وقت ببلاش$/,'The safe: put in and take out any time, free'],[/^لحد (\d+) ودايع بمكسب مضمون$/,'Up to $1 deposits with a sure gain'],[/^استثمارات البنك، مكسبها وخسارتها مكتوبين قبل ما تدفعي?$/,'The bank\'s investments, gain and loss written before you pay'],
    [/^أستاذ فوزي بيحذرك من النصابين اللي على الباب$/,'Mr Fawzy warns you about the swindlers at the door'],[/^🏦 حسابك رقم$/,'🏦 Account no.'],[/^· من اليوم (\d+)$/,'· since day $1'],[/^فتحتي? حساب$/,'Opened an account'],[/^رقم حسابك (.+)$/,'Account no. $1'],
    [/^أهلًا يا أستاذة?\. البنك ده مش أي حد يتعامل فيه: افتحي? حساب الأول، وبعدها فلوسك في أمان وبتكسب\.$/,'Welcome. Not just anyone banks here: open an account first, then your money is safe and earns.']]);
+
+/* ---------- 6.00 / C93 part 2 + C92 part 2: الغدر (spec: docs/ai/SPEC_C86_C96_N15.md) ----------
+   The world doesn't always pay mercy back. Some kinds have a nature (TK_NAT, by their drawing's last word):
+   - lie: when spared («أعفي عنه») it may fake running and bite from behind: one hit on you (never below 1 health), it comes back
+     still «خايف» and the fight goes on; it has used its trick, so sparing it again works. Hyenas, foxes, weasels, snakes and the
+     thieves, bandits, smugglers and brokers.
+   - snatch: when fed it may grab the food and keep fighting even when unsure (hyenas, foxes, weasels, the salawa, rats).
+   Each chance is rolled once per encounter and foe and saved with the hero (h.tkr), so reloading can't change it. Mercy is never
+   punished for sure: an honest kind (dogs, wolves, boars, …) always keeps its word. After it happens once, that kind shows
+   «غدّار» on its card and the sheet warns (h.tkKnow: what you remember of each kind, C93 memoryOfActions). */
+const TK_NAT_RX=[[/(^|_)(hyena|fox|weasel)$/,{lie:.3,snatch:.3}],[/(^|_)(snake|viper)$/,{lie:.25}],[/(^|_)(thief|bandit|smug|broker)$/,{lie:.25}],[/(^|_)(sal|rat)$/,{snatch:.25}]];
+function tkNat(f){const a=String((f&&f.art)||'');for(const [rx,o] of TK_NAT_RX){const m=rx.exec(a);if(m)return Object.assign({k:m[2]},o)}return null}
+/* a chance kept with the hero: the same encounter, foe and kind of trick always gives the same answer */
+function tkRoll(h,key,p){h.tkr=h.tkr&&typeof h.tkr==='object'&&!Array.isArray(h.tkr)?h.tkr:{};if(!(key in h.tkr)){h.tkr[key]=Math.random()<p?1:0;const K=Object.keys(h.tkr);if(K.length>200)K.slice(0,K.length-200).forEach(k=>delete h.tkr[k]);saveHero()}return h.tkr[key]===1}   /* 1 = it will, 0 = it won't, 2 = it already did */
+const tkUsed=(h,key)=>{if(h.tkr&&h.tkr[key]===1)h.tkr[key]=2};
+const tkKnown=(h,f)=>{const n=tkNat(f);return !!(n&&h&&h.tkKnow&&h.tkKnow[n.k])};
+function tkLearn(h,f){const n=tkNat(f);if(!n||!h)return;h.tkKnow=h.tkKnow&&typeof h.tkKnow==='object'?h.tkKnow:{};h.tkKnow[n.k]=1}
+{const d0=tkDo;tkDo=async function(k){const C=S.combat,h=S.hero;if(!C||!h||C.busy||C.phase!=='me'||!tkCan())return d0.apply(this,arguments);
+  try{
+    if(k==='spare'){const f=tkSpareOf(C),n=f&&tkNat(f);
+      if(f&&n&&n.lie&&!f.tkLied&&tkRoll(h,`${C.enc}:${f.id}:lie`,n.lie)){f.tkLied=1;tkUsed(h,`${C.enc}:${f.id}:lie`);C.bag=null;C.busy=true;ac();combat();try{SFX.meh()}catch(e){}
+        await say(`{نزّلت|نزّلتي} إيدك، و${f.name} ${FF(f,'عمل نفسه بيجري','عملت نفسها بتجري')}..`,'',900);
+        /* one sneaky hit, never the last point of health, and a magic shield stops it; then it is out of breath and skips its turn this round */
+        const people=!!tkSp(f).talk,sh=!!(C.me&&C.me.shield),d=sh?0:Math.max(0,Math.min(Math.max(1,f.dmg|0),h.hp-1));if(d)hurtMe(d);if(sh){if((C.me.shield.n||1)>1)C.me.shield.n--;else delete C.me.shield}f.fx=f.fx||{};f.fx.skip={n:1,daze:1,t:Date.now()};
+        const first=!tkKnown(h,f);tkLearn(h,f);saveHero();combat();
+        const hit=d?`..${FF(f,'ولف','ولفت')} ${people?FF(f,'ضربك','ضربتك'):FF(f,'عضك','عضتك')} من ورا! -${d} صحة.`:sh?`..${FF(f,'ولف','ولفت')} عليك من ورا، بس الدرع ${FF(f,'وقفه','وقفها')}.`:`..${FF(f,'ولف','ولفت')} عليك من ورا، بس {لحقت|لحقتي} {تبعد|تبعدي}.`;
+        await say(`${hit} ${first?`${FF(f,'طلع غدّار','طلعت غدّارة')}. `:''}${FF(f,'لسه خايف','لسه خايفة')} ${FF(f,'ونَفَسه اتقطع','ونَفَسها اتقطع')} الدور ده، والمرة الجاية ${FF(f,'مش هيلعبها','مش هتلعبها')} تاني.`,'bad',1300);
+        return afterHero()}}
+    if(k==='feed'){const f=tkFeedOf(C),m=tkMeat(h),n=f&&tkNat(f),s=f&&tkSp(f);
+      if(f&&m&&n&&n.snatch&&s&&!s.fierce&&tkR(f)<=2/3&&tkRoll(h,`${C.enc}:${f.id}:snatch`,n.snatch)){tkUsed(h,`${C.enc}:${f.id}:snatch`);C.bag=null;C.busy=true;ac();f.fed=1;
+        if(m.raw)h.res[m.k]=Math.max(0,(h.res[m.k]||0)-1);else h.bag[m.k]=Math.max(0,(h.bag[m.k]||0)-1);const first=!tkKnown(h,f);tkLearn(h,f);saveHero();combat();try{SFX.meh()}catch(e){}
+        await say(`${f.name} ${FF(f,'خطف','خطفت')} ${tkMeatN(m)} من إيدك ${FF(f,'وبلعه','وبلعته')}.. ${FF(f,'ورجع','ورجعت')} ${FF(f,'يبصلك','تبصلك')} زي ما ${FF(f,'كان','كانت')}.${first?` ${FF(f,'طلع غدّار','طلعت غدّارة')}.`:''}`,'bad',1300);
+        return afterHero()}}
+  }catch(e){console.warn(e)}
+  return d0.apply(this,arguments)}}
+/* what you remember: «غدّار» on the card, and a warning on the sheet */
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{const C=S.combat,h=S.hero;if(!C||!h||S.screen!=='combat')return r;
+    C.foes.forEach(f=>{if(f.hp<=0||f.fled||!tkKnown(h,f))return;const el=view.querySelector('#foe'+f.id);if(!el||el.querySelector('.tk-liar'))return;el.insertAdjacentHTML('beforeend',`<span class="tk-mood no tk-liar">${FF(f,'غدّار','غدّارة')}</span>`)})}catch(e){}return r}}
+{const s0=tkSheet;tkSheet=function(){let r=s0.apply(this,arguments);try{const C=S.combat,h=S.hero,sp=C&&tkSpareOf(C),fd=C&&tkFeedOf(C);
+    if(sp&&tkKnown(h,sp)&&(tkNat(sp)||{}).lie)r=String(r).replace(/(data-tk="spare"[\s\S]*?\(سمعة \+3\))/,`$1<span class="why"> · ${FF(sp,'غدّار','غدّارة')}: ممكن ${FF(sp,'يعمل نفسه بيجري','تعمل نفسها بتجري')}</span>`);
+    if(fd&&tkKnown(h,fd)&&(tkNat(fd)||{}).snatch)r=String(r).replace(/(data-tk="feed"[\s\S]*?<small>)/,`$1<span class="why">${FF(fd,'ممكن يخطف الأكل ويكمّل','ممكن تخطف الأكل وتكمّل')} · </span>`)}catch(e){}return r}}
+L10N({'غدّار':'Treacherous','غدّارة':'Treacherous'},[[/^· غدّارة?: ممكن (يعمل نفسه بيجري|تعمل نفسها بتجري)$/,'· treacherous: may fake running'],[/^ممكن (يخطف الأكل ويكمّل|تخطف الأكل وتكمّل) ·$/,'may grab the food and keep fighting ·']]);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
