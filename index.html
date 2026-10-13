@@ -3621,7 +3621,7 @@ function matFB(k,w){w=w||28;const M=MAT[k]||{c:'#888'},c=M.c;
   const sh={copper:'#ffc080',iron:'#dde4ea',silver:'#ffffff'}[k]||'#fff',dk={copper:'#6a3010',iron:'#30363c',silver:'#6a7580'}[k]||'#333';
   return `<svg viewBox="0 0 40 40" width="${w}"><path d="M5 26 Q4 15 13 11 Q20 6 28 10 Q37 14 35 25 Q33 34 21 34 Q8 35 5 26Z" fill="${c}" stroke="${dk}" stroke-width="1.6"/><path d="M11 16 Q16 11 24 12" stroke="${sh}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/><circle cx="27" cy="24" r="2.4" fill="${dk}" opacity=".35"/><circle cx="15" cy="26" r="1.8" fill="${dk}" opacity=".3"/>${k==='silver'?'<path d="M31 4 l1.2 3.4 l3.4 1.2 l-3.4 1.2 l-1.2 3.4 l-1.2 -3.4 l-3.4 -1.2 l3.4 -1.2Z" fill="#fff"/>':''}</svg>`}
 function fishFB(k,w){w=Math.round(w||120);
-  if(k==='shoe')return `<svg viewBox="0 0 120 72" width="${w}"><path d="M14 46 Q10 30 26 26 L84 22 Q108 20 110 36 Q112 50 94 52 L30 56 Q16 57 14 46Z" fill="#6a5a4a" stroke="#2a2018" stroke-width="2"/><path d="M20 45 Q60 41 104 39" stroke="#0004" stroke-width="2" fill="none"/><path d="M44 27 Q53 8 71 25" stroke="#c0453a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M58 22 L60 44" stroke="#c0453a" stroke-width="4"/><path d="M30 54 Q28 62 32 69 M37 55 Q39 63 35 70" stroke="#4f7a44" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="97" cy="58" r="2.4" fill="#9fd0e8"/><circle cx="103" cy="65" r="1.6" fill="#9fd0e8"/></svg>`;
+  if(k==='shoe')return fgShoeArt(w);   /* 6.21 C67: the old slipper is the pixel sprite of p134 */
   const F={
     bolti:{c:'#8fa4a0',d:'#465a56',e:[22,32],g:36,body:'M10 36 Q24 10 62 11 Q90 13 98 36 Q90 59 62 61 Q24 62 10 36Z',tail:'M94 36 L117 16 Q109 36 117 56Z',fin:'M30 15 L36 4 L42 13 L48 3 L54 12 L60 3 L66 12 L72 6 L78 17Z',x:'<g stroke="#465a56" stroke-width="3" opacity=".3"><path d="M46 16 V56 M60 13 V59 M74 15 V57"/></g>'},
     qarmout:{c:'#6a5e54',d:'#2f2a26',e:[17,36],g:30,body:'M6 40 Q10 26 30 24 L88 28 Q102 32 106 40 Q102 48 88 50 L30 54 Q10 54 6 40Z',tail:'M102 40 Q114 28 118 30 Q112 40 118 50 Q114 52 102 40Z',fin:'M40 26 Q66 14 96 29Z',x:'<path d="M9 43 Q0 52 4 64 M9 37 Q1 29 4 17 M14 46 Q9 56 15 66" stroke="#2f2a26" stroke-width="1.8" fill="none" stroke-linecap="round"/>'},
@@ -3955,7 +3955,7 @@ function fsLoop(){const ov=document.getElementById('fshOv');if(!ov){FS.raf=0;ret
   const tx=own?300-20*FS.bend:FG.tip[0],ty=own?62+32*FS.bend:FG.tip[1],cx=366-4*FS.bend,cy=178+10*FS.bend,hx=tx+Math.sin(now/640)*(own?2.5:1.5),hy=ty+(own?20:8)-FS.top;let x,y;
   if(b.m==='fly'||b.m==='reel'){const k=Math.min(1,(now-b.t0)/b.d),e=b.m==='fly'?1-Math.pow(1-k,1.6):k*k*(3-2*k),x1=b.m==='fly'?FG.fx:hx,y1=b.m==='fly'?FG.fy:hy;
     x=b.x0+(x1-b.x0)*e;y=b.y0+(y1-b.y0)*e-Math.sin(Math.PI*k)*b.arc;if(k>=1)FS.b={m:b.m==='fly'?'float':'hang'}}
-  else if(b.m==='float'){x=FG.fx+Math.sin(now/1300)*1.5;y=FG.fy+Math.sin(now/620)*1.3+FS.dip}
+  else if(b.m==='float'){FS.sx=(FS.sx||0)+((FS.sxT||0)-(FS.sx||0))*(FS.sxK||.12);x=FG.fx+Math.sin(now/1300)*1.5+FS.sx;y=FG.fy+Math.sin(now/620)*1.3+FS.dip}   /* 6.21: FS.sx = a sideways pull on the float (p133 bite patterns) */
   else if(b.m==='fight'){x=FG.fx+(FS.fx||0)*40+Math.sin(now/95)*1.6;y=FG.fy+6+Math.sin(now/70)*1.4+FS.dip*.4}
   else{x=hx;y=hy}
   FS.bx=x;FS.by=y;E.bob.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
@@ -3996,20 +3996,23 @@ async function fsCast(){const h=S.hero;if(FS.ph!=='idle'&&FS.ph!=='done')return;
   const pfr=(treeLink(h,'fish','crown')?.15:0)+tf(h,'fish','free'),fr=pfr>0&&effNow(h)>=1&&Math.random()<pfr;FS.fr=fr;
   if(!fr&&!useEff(h)){gxTired();fsBtn();return}
   if(!fr&&effNow(h)>=1&&Math.random()<tf(h,'fish','cost2'))useEff(h);
+  try{fgCast(h)}catch(e){console.warn(e)}   /* 6.21: one bait per cast (p134) */
   saveHero();if(fr){effUI();floatAt($('#gxEffN'),'ببلاش!','#b4f0c2','',18)}else gxSpent();FS.n++;const tok=++FS.tok;fsPh('cast');SFX.cast();vib(15);fsSay('هوب!');
+  /* 6.21 (p133): the catch is picked at the cast (place, rod, bait, level, time) so its bite pattern can shape the wait and the bite */
+  const P=FS.pk=typeof fcCastPick==='function'?fcCastPick(h,rollFish):null,X=(P&&P.x)||{};FS.sx=FS.sxT=0;FS.sxK=0;
   FS.b={m:'fly',t0:performance.now(),d:560,x0:FS.bx,y0:FS.by,arc:110};
   await sleep(560);if(tok!==FS.tok)return;
   SFX.splash(.7);fsRipple(2,1);pop(fsBobEl(),SPL,12);FS.dv+=3;
   fsPh('wait');fsSay(`${G('استنى','استني')}.. لما العوامة تغطس جامد ${G('شد','شدي')}`);
   await bandsDone();if(tok!==FS.tok)return;
-  const wait=1500+Math.random()*3500,nn=Math.floor(Math.random()*4),ts=Array.from({length:nn},()=>400+Math.random()*(wait-900)).sort((a,b)=>a-b);let t=0;
-  for(const x of ts){await sleep(x-t);t=x;if(tok!==FS.tok)return;FS.dv+=2.4;SFX.plop(.45);fsRipple(1);vib(8);if(Math.random()<.6)fsSay(T(pick(NIB)))}
+  const wait=(1500+Math.random()*3500)*(X.wm||1),nn=X.nn?X.nn[0]+Math.floor(Math.random()*(X.nn[1]-X.nn[0]+1)):Math.floor(Math.random()*4),ts=Array.from({length:nn},()=>({t:400+Math.random()*(wait-900)})).concat(X.ev?X.ev(wait):[]).sort((a,b)=>a.t-b.t);let t=0;
+  for(const x of ts){await sleep(x.t-t);t=x.t;if(tok!==FS.tok)return;if(x.f){x.f(fsRipple,fsSay);continue}FS.dv+=2.4;SFX.plop(.45);fsRipple(1);vib(8);if(Math.random()<.6)fsSay(T(pick(NIB)))}
   await sleep(wait-t);if(tok!==FS.tok)return;
-  fsPh('bite');FS.biteAt=performance.now();FS.dipT=17;FS.dv+=7;FS.bendT=1;SFX.bite();vib([70,30,70]);fsRipple(3,1);pop(fsBobEl(),SPL,18);fsSay(G('شد!!','شدي!!'),'bite');
-  await sleep(fsWin(h));if(tok!==FS.tok)return;
+  fsPh('bite');FS.biteAt=performance.now();FS.dipT=X.dip!=null?X.dip:17;if(X.bite)X.bite();FS.dv+=7;FS.bendT=1;SFX.bite();vib([70,30,70]);fsRipple(3,1);pop(fsBobEl(),SPL,18);fsSay(G('شد!!','شدي!!'),'bite');
+  await sleep(fsWin(h)*(X.win||1));if(tok!==FS.tok)return;
   fsFail('late')}
 function fsTap(){if(FS.ph==='wait'){if(bandBusy()){fsSay(T('لسه.. ما {تشدش|تشديش}'));FS.dv+=1;return}fsFail('early')}else if(FS.ph==='bite')fsHook()}
-function fsFail(why){const tok=++FS.tok;fsPh('fail');FS.dipT=0;FS.bendT=0;FS.dv-=4;vib(60);fsRipple(1);
+function fsFail(why){const tok=++FS.tok;fsPh('fail');FS.dipT=0;FS.sxT=0;FS.bendT=0;FS.dv-=4;vib(60);fsRipple(1);
   if(why==='early'){SFX.miss();fsSay(T('{استعجلت|استعجلتي}، السمكة هربت'),'bad');gxSay('fish',SAYX.early,.5)}
   else{SFX.aww();fsSay('السمكة أكلت الطُعم وهربت','bad');gxSay('fish',SAYX.late,.5)}
   setTimeout(()=>{if(tok!==FS.tok)return;FS.b={m:'reel',t0:performance.now(),d:650,x0:FS.bx,y0:FS.by,arc:30};SFX.reel(.5)},450);
@@ -4041,6 +4044,7 @@ function reelStep(R,dt,hold){if(R.end)return R;const M=R.M,s=dt/1000;R.t+=dt;
   else{if(M.jump&&Math.random()<M.jump*s){R.burst=200;R.bv=(Math.random()<.5?-1:1)*M.ja*(.6+.4*Math.random())/.2;R.ev.push('jump')}
     else if(M.pull&&Math.random()<M.pull*s){R.burst=320;R.bv=-M.pa/.32;R.ev.push('pull')}
     const d=R.tg-R.fy,des=Math.sign(d)*M.spd*Math.min(1,Math.abs(d)/.1);R.fv+=(des-R.fv)*Math.min(1,s*7);R.fy+=R.fv*s}
+  if(M.fx)M.fx(R,s,dt);   /* 6.21: a species' own move (p133 patterns: pull up, double jump, false surge) */
   if(R.fy<.03){R.fy=.03;R.burst=0}if(R.fy>.97){R.fy=.97;R.burst=0}
   /* the catch meter */
   const inz=R.fy>=R.zy&&R.fy<=R.zy+R.zh;if(inz)R.ent=1;else if(R.ent)R.left=1;R.inz=inz;
@@ -4073,9 +4077,9 @@ function fsFight(k,tok){const h=S.hero,R=reelNew(h,k),st=$('#gxStage'),V=gxVisit
       if(e==='jump'){sfx('splash',.4);fsRipple(1,1);FS.dv+=3}
       else if(e==='pull'){sfx('fsTug',1);vib(25);FS.dv+=4}
       else if(e==='chest'){SFX.sparkle();fsSay('صندوق! خلّيه جوّه الأخضر شوية..','good')}
-      else if(e==='chestGot'){const n=20+Math.floor(Math.random()*31)+4*lifeLvl(h,'fish'),c=$('#fsC');h.money+=n;saveHero();R.chestN=n;
-        SFX.coin&&SFX.coin(1.2);SFX.sparkle();vib([20,20,40]);if(c){pop(c,['#ffd36a','#fff3b0','#a86a32'],22);floatAt(c,`+${n} جنيه`,'#ffd36a','crit',26);c.classList.add('got');setTimeout(()=>c.remove(),520)}
-        fsSay(`${G('خدت','خدتي')} الصندوق! ${num(n,'+')} جنيه`,'good');ach('f_chest');gxSay('fish',SAYX.chest,.6)}
+      else if(e==='chestGot'){const c=$('#fsC'),L=fgChestGot(h);R.chestL=L;   /* 6.21 C68: materials, never money (p134), saved before it shows */
+        SFX.sparkle();vib([20,20,40]);if(c){pop(c,['#ffd36a','#fff3b0','#a86a32'],22);floatAt(c,fgLootTxt(L),'#ffd36a','crit',20);c.classList.add('got');setTimeout(()=>c.remove(),520)}
+        fsSay(fgChestLine(L),'good');ach('f_chest');gxSay('fish',SAYX.chest,.6)}
       else if(e==='chestGone'){const c=$('#fsC');if(c){c.style.transition='opacity .4s';c.style.opacity=0;setTimeout(()=>c.remove(),420)}say0()}}
     if(R.end){fsFightEnd(k,R);return}
     requestAnimationFrame(step)};
@@ -4086,13 +4090,14 @@ function fsEscape(k){const tok=++FS.tok;fsPh('fail');FS.dipT=0;FS.bendT=0;FS.dv-
   fsSay(k==='goldfish'?'سمكة الدهب فلتت!':`ال${MAT[k].n} فلت!`,'bad');gxSay('fish',SAYX.escape,.6);
   setTimeout(()=>{if(tok!==FS.tok)return;FS.b={m:'reel',t0:performance.now(),d:650,x0:FS.bx,y0:FS.by,arc:30};SFX.reel(.5)},450);
   setTimeout(()=>{if(tok===FS.tok)fsPh('idle')},1150)}
-function fsHook(){fsCommit();const h=S.hero,rt=performance.now()-FS.biteAt,k=rollFish(h);
+function fsHook(){fsCommit();const h=S.hero,rt=performance.now()-FS.biteAt,k=FS.pk&&FS.pk.k&&MAT[FS.pk.k]?FS.pk.k:rollFish(h);FS.pk=null;FS.sxT=0;
   if(REEL[k]){const tok=++FS.tok;SFX.reel(.7);vib([20,20,40]);FS.dv+=5;fsRipple(2,1);pop(fsBobEl(),SPL,14);fsFight(k,tok);return}
   fsLand(k,{rt})}
 /* the fish is out: saved now; xp, counters, titles and achievements are committed once: when the card is
    put away, on the next cast, on leaving, or 1.6 s after the card, so their bands never hide the card */
-function fsLand(k,o){o=o||{};fsCommit();const h=S.hero,V=gxVisit('fish'),tok=++FS.tok,M=MAT[k],t=tierOf(k),n=o.two||(!M.junk&&Math.random()<tf(h,'fish','two'))?2:1,xp=1+t+(n-1),first=!M.junk&&!(h.cnt.fish||0);
-  addRes(h,k,n);V.n[k]=(V.n[k]||0)+n;saveHero();
+function fsLand(k,o){o=o||{};fsCommit();const h=S.hero,V=gxVisit('fish'),tok=++FS.tok,M=MAT[k],t=tierOf(k),n=M.rescue?1:o.two||(!M.junk&&Math.random()<tf(h,'fish','two'))?2:1,xp=1+t+(n-1),first=!M.junk&&!(h.cnt.fish||0);
+  /* 6.21: a rescue creature is let go, never kept (p133 fcLanded gives its line and small reward and fills the guide) */
+  if(!M.rescue)addRes(h,k,n);V.n[k]=(V.n[k]||0)+n;if(typeof fcLanded==='function')try{fcLanded(h,k,n)}catch(e){console.warn(e)}saveHero();
   fsPh('reel');SFX.reel();vib([20,20,20]);FS.dipT=0;FS.dv-=6;FS.bendT=1.3;fsRipple(2,1);pop(fsBobEl(),SPL,16);
   fsSay(o.fight?(n>1?'سمكتين مرة واحدة!':k==='goldfish'?G('غلبتها!','غلبتيها!'):G('غلبته!','غلبتيه!')):`${G('شدّيت','شدّيتي')}! ردّ فعلك ${((o.rt||0)/1000).toFixed(2)} ثانية`,'good');
   FS.b={m:'reel',t0:performance.now(),d:600,x0:FS.bx,y0:FS.by,arc:50};
@@ -4109,7 +4114,7 @@ function fsLand(k,o){o=o||{};fsCommit();const h=S.hero,V=gxVisit('fish'),tok=++F
     FS.bendT=0;fsCard(k,xp,first,n);if(k==='goldfish'){flash('#f3c14d');shake()}fsGoal();fsPh('done');
     const f=FS.pend;setTimeout(()=>{if(FS.pend===f)fsCommit()},1600)},600)}
 function fsCard(k,xp,first,n){n=n||1;const M=MAT[k],t=tierOf(k),R=RARE[t],w=$('#fshCard'),junk=M.junk;
-  w.innerHTML=`<div class="fsh-card${junk?' wig':''}" style="--rc:${junk?'#9a8a78':R.c}">${t?'<div class="rays"></div>':''}<div class="ic">${AR.fish(k,170)}</div><div class="rn">${junk?'كركبة':R.n}</div><div class="nm">${M.n}${n>1?` <span style="color:var(--gold2)">${num(n,'×')}</span>`:''}</div><div class="sub">${junk?'مالوش تمن':`التمن ${M.p} جنيه${n>1?' للواحدة':''}`} · ${num(xp,'+')} خبرة صيد</div></div>`;
+  w.innerHTML=`<div class="fsh-card${junk?' wig':''}" style="--rc:${junk?'#9a8a78':R.c}">${t?'<div class="rays"></div>':''}<div class="ic">${AR.fish(k,170)}</div><div class="rn">${junk?'كركبة':R.n}</div><div class="nm">${M.n}${n>1?` <span style="color:var(--gold2)">${num(n,'×')}</span>`:''}</div><div class="sub">${(typeof fcSub==='function'&&fcSub(k,n,xp))||`${junk?'مالوش تمن':`التمن ${M.p} جنيه${n>1?' للواحدة':''}`} · ${num(xp,'+')} خبرة صيد`}</div></div>`;
   const c=w.firstChild;
   if(junk){SFX.meh();fsSay('طلعلك شبشب قديم.. مبروك؟');gxSay('fish',SAYX.shoe)}
   else{SFX.catch(t);SFX.splash(.5);fsSay(n>1?`${G('اصطدت','اصطدتي')} اتنين ${M.n} مرة واحدة!`:`${G('اصطدت','اصطدتي')} ${M.n}!`,'good');pop(c,[R.c,'#ffffff'],t>=2?60:22);if(k==='goldfish')gxSay('fish',SAYX.gold);else if(first)gxSay('fish',SAYX.firstFish);else if(k==='bouri')gxSay('fish',SAYX.bouri,.7);else gxSay('fish',null,.2)}
@@ -4788,6 +4793,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.21',d:'13 أكتوبر',add:['«الخلا» بقت أوسع: سهم يمين وسهم شمال (والسحب) ينقلوك بين البحر والنهر والخلا والصحرا','11 مكان صيد جديد: الفرع العميق، بِرك المستنقع، أرض الفيضان، البحيرة، المصب، الساحل، خلجان الصخر، مغارة المية، البحر البعيد، الواحة، والمية القديمة. كل مكان بيتفتح بمستوى الصيد أو بمشوار لعم سيد، والبعيد منهم بتروحه بالمركب بتذكرة','149 كائن جديد في المية: سمك وقشريات وحاجات غريبة، كل واحد ليه مكانه ووقته والطعم اللي بيحبه وطريقة عض مختلفة (يخطف، يستنى، يشد لفوق، ينقر مرتين…). وفيه كائنات {بتنقذها|بتنقذيها} وترجّعها المية','«دليل الصيد»: كل اللي {اصطدته|اصطدتيه} في كل مكان، وأكبر وزن، ومكافأة أول مرة. وعم سيد عنده طلبات صيد كل يوم','صنارات: تدريب، بوص، حديد، والصياد المحترف. كل صنارة بتدّيك وقت شد أطول وبتطلّع سمك أندر','طعم: دود، عجين، حتة سمك، طعم لامع، صدف، وطعم دهبي نادر. {بتختار|بتختاري} الطعم قبل الرمية، وكل سمكة ليها طعمها','مصايد: شبكة وقفص {بتسيبهم|بتسيبيهم} في المية وترجع تلاقي فيهم سمك','السمكة الدهب بقى ليها لازمة: حوض في البيت بيدّيك مجهود كل يوم، أو {تبدلها|تبدليها} عند عم سيد بطعم دهبي'],fix:['صناديق الصيد مابقتش بتدّي فلوس: بتدّي بطارخ وطحالب وعشبة الترعة، والبطارخ ليها «عجة بطارخ» عند أم سيد','الشبشب اللي بيطلع في السنارة اترسم بيكسل']},
 {v:'6.20',d:'13 أكتوبر',add:['أم سيد: 33 أكلة وشربة جديدة من خضار الغيط والسمك وبيض البط والعسل واللبن (بصارة، أم علي، صيادية، سوبيا، حلبة باللبن…). فيه أكلات بتدفّي في ليلة البرد، وأكلات بتوقف النزيف في الخناقة','سمك من غير عيش: السمك المشوي والبساريا المقلية والتعابين المشوية مابقوش محتاجين عيش، واتضاف «قرموط مشوي» و«بوري سنجاري»','شاشة الطبخ بقت مترتبة بالمستوى وفيها فلاتر (اللي حاجتها كاملة، سمك، أكل بيتي، حلو وشرب)، والوصفات البعيدة عن مستواك مطوية','العطارة: 84 عشبة جديدة بتتلقّط من الغيطان وشط الترعة والمستنقع والجبل، ومن رملة الخرابة، ومن جوه المنجم، والنادر منها لما {توصل|توصلي} لعطارة 10','68 وصفة عطارة جديدة: شربات ودهانات وبخور وعطور. كل واحدة ليها أثر حقيقي مرة واحدة: مجهود يرجع، ميني جيم أسهل، حصاد أحسن، صيد أحسن، أول ضربة في الخناقة الجاية تتصد، زيادة في رمية، خصم في البلد، خبرة زيادة، أو المنجم يوريك السكة. أثر واحد شغال في نفس الوقت','عدّة العطار: 16 أداة (سلة، قفاز، مقص، عدسة، هون، مدق، وعاء خلط، مغرفة، رف تجفيف…) بتتعمل عند عم رجب، واحدة في إيدك من كل نوع','«طلبات الناس» عند عم رجب: 12 حكاية لناس من البلد محتاجين وصفة معينة، بتاخد عليها فلوس وخبرة وسمعة وحاجة زيادة (حكاية لسيرتك، مكان جديد في الخلا، صبغة عند الحلاق، سماد…)، و4 طلبات بتتكرر كل يوم'],fix:['قسم العيش عند أم سيد لسه موجود، والأكلات اللي بجودة غير «عادي» من الغيط الجديد بقت بتتشال في الشنطة صح']},
 {v:'6.19',d:'13 أكتوبر',add:['الغيط كبر: 10 محاصيل جديدة (خيار، جزر، شعير، بطاطس، باذنجان، فلفل، توم، قمح، سمسم، فراولة) بتتفتح مع مستوى الزراعة، وليها 9 أكلات جديدة عند أم سيد','حيوانات جديدة في الغيط: بط وغنم ومعز وخلية عسل، بيدوا بيض بط وصوف وعسل وشمع وسماد. الحيوان {اللي بتأكّله|اللي بتأكّليه} بيدّي، ومفيش حيوان بيموت وانت غايب','سماد بأنواع: العادي، والعضوي اللي {بتعمله|بتعمليه} من السماد والبرسيم في ركن الكمبوست، والسريع','عمال للغيط (سعيد، أم هاني، محروس) من مستوى زراعة 3: {بتأجّرهم|بتأجّريهم} بأجرة يومية يسقوا ويحصدوا ويأكلوا الحيوانات','الوحش اللي في المأوى ممكن {تخليه|تخليه} يحرس الغيط: بياكل وجبة في اليوم، وبيطرد ابن آوى من الفراخ، وبيلاقيلك حاجة كل يوم','مراحل ورشة الغيط من 4 لـ7 اتفتحت'],fix:['تغيير ساعة الموبايل مابقاش بيطلّع الزرع على طول، والأرز لسه بحدوده عشان مايبقاش مربح زيادة']},
 {v:'6.18',d:'13 أكتوبر',add:['البلد اترسمت من جديد برسم أنضف من غير مربعات: أرضية ناعمة، ومباني أحلى، وكل مبنى عليه يافطة بأيقونة تعرف منها هو إيه. لو {وقفت|وقفتي} بالماوس أو {دوست|دوستي} مطوّل على مبنى بيكبر واسمه يبان','سهم يمين وسهم شمال ينقلوك بين مناطق البلد (والسحب لسه شغال). ولو {دوست|دوستي} على مبنى على طرف الشاشة الخريطة بتتحرك لحد ما يبان كله','الحداد: وصفات ومعدات جديدة (خنجر النهر، النصل الأزرق، معطف الحديد الأزرق…)، وخامات جديدة من عروق المنجم الجانبية في الأدوار من 8 لـ20','عدّة الصنايعية: لكل شغلانة عدّة ليها (فاس، منجل، كشتبان…) بتساعدك فيها بس. فيه عدّة ببلاش للتدريب وعدّة أحسن بتتعمل عند الحداد','جودتين جداد نادرين قوي: «بديع» و«أعجوبة» للي {بيعمل|بتعمل} حاجة بإيده بمستوى عالي وتحفة. وكل حتة عليها ندرتها، وكارت الصنعة بيقارنها باللي {لابسه|لابساه}'],fix:['لو {عملت|عملتي} نفس الوصفة كتير ورا بعض الخبرة بتقل شوية، وبترجع مع الوقت أو لما {تعمل|تعملي} حاجة تانية','علامة «1» بتاعة البنك والبورصة بقت بتبان على المبنى في الخريطة كمان، وأيقونات الخلا الصغيرة بقت أكبر وأسهل في الدوس']},
@@ -47010,6 +47016,1692 @@ AP_IDS.forEach(id=>{const t=AP_T[id];try{PXI_D[id]=P20_rc(P20_grid(16,AP_PX[t.fa
 .ap-pn .h{flex-direction:column;align-items:flex-start;gap:2px}
 .ap-sl i{opacity:.35;filter:grayscale(1)}
 .ap-got{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:14px;background:#7fe07a14;border:1px solid #7fe07a55}.ap-got b{color:#a6e3a0;font-size:14px}.ap-got p{margin:0;font-size:13px;line-height:1.6}.ap-got small{font-size:12px;color:#ffd36a;font-weight:800}
+`;document.head.appendChild(st)})();
+
+/* ---------- 6.21 (R14, Twister 03:34): «الخلا» grows to the left and the right: the water and the desert ----------
+   Twister: «الخلا» should get bigger to the left and the right, with arrows like the town (6.18, p117/p125). Everything that was
+   on the map stays where it was, in the middle; the water side is on the left (west in the picture), the desert on the right.
+   - The map is one wide strip (KX: west KX.W + the old KH_W + east KX.E art pixels, the same height KH_H). The old picture and its
+     pins keep their art coordinates (x 0…KH_W); the west side has x < 0, the east side x > KH_W. Pins, the hero and his walk use
+     kxL(x) (percent of the strip) instead of x/KH_W. The view pans: arrows like the town's (one district each: البحر, النهر,
+     الخلا, الصحرا), drag/swipe, and a place tapped near the edge slides into view.
+   - The two sides are drawn in the 6.18 art (p125: flat colour, outlines, a light from the top left, no dither; a warm night
+     tint 'kx' so they sit beside the old night picture), every place has a painted sign with its own icon on a post, and its
+     name grows when you point at it or hold it.
+   - The water places (doc C19/C40/C57; zone ids of the R14 contract): canal = the old «صيد السمك» pin (unchanged), deep, marsh,
+     flood, lake, estuary, cave, and by boat from the estuary coast, reef, farsea; on the desert side oasis and ancient. FZ_PL
+     lists them: fish level (fl), an errand of a fisherman (er: catches made at another place), a boat ticket (tk, paid once a
+     trip; a trip ends when you leave the place). Locked places say what opens them.
+   - A place has its own screen (SCREENS.fzone): its picture, a one-line mood, what opens it, what the fish level opens there
+     (from p133's MAT fields fz/fl when they exist) and «اصطاد هنا», which sets S.fishZone and opens the old fishing game
+     (SCREENS.fish); its back button comes back to the place. Leaving the place (the map, the town, the title) sets S.fishZone
+     back to 'canal'; fishing opened any other way is the canal.
+   h.fz (new, old saves get it on first use): {v, c:{zone: catches made there}, ok:{zone:1} (an errand done), trip:{z,d}|null,
+   st:{trips,paid}}. */
+const KX={W:200,E:110,busy:0,held:'',drag:0,tgt:null,toZone:0,base:null};
+KX.T=KX.W+KH_W+KX.E;
+const KX_D=[{id:'sea',x0:-200,w:100,n:['البحر','Sea']},{id:'river',x0:-100,w:100,n:['النهر','River']},{id:'mid',x0:0,w:KH_W,n:['الخلا','Wilds']},{id:'desert',x0:KH_W,w:110,n:['الصحرا','Desert']}];
+const kxL=x=>(x+KX.W)/KX.T*100,kxT=y=>y/KH_H*100;
+if(S.fishZone==null)S.fishZone='canal';
+/* the fishermen who give the small errands */
+const FZ_WHO={sayed:['عم سيد','Uncle Sayed'],awad:['عم عواد','Uncle Awad']};
+/* the water places. x,y: art pixels on the wide map (west < 0, east > KH_W); fl: fish level; er: {z: where, n: catches, who};
+   tk: the boat ticket (from the estuary, once a trip); need: another place that must be open first; m: the mood line; ico: its sign */
+const FZ_PL=[
+  {z:'deep',x:-74,y:108,fl:2,ico:'deep',n:['الفرع العميق','The deep branch'],m:['المية هنا غويطة وساكتة، والسمك الكبير بيعدّي من تحت.','Deep, quiet water; the big fish pass underneath.'],
+    links:['fz_flood','fz_lake','fz_estuary'],via:{fz_flood:[[-58,124],[-66,114]],fz_lake:[[-68,96],[-60,84]],fz_estuary:[[-80,128],[-90,146]]}},
+  {z:'marsh',x:-26,y:182,fl:3,ico:'marsh',n:['بِرك المستنقع','The marsh pools'],m:['مية سودا بين البوص، وكل شوية فقاعة طالعة من الطين.','Black water between the reeds, a bubble rising from the mud now and then.'],
+    links:['farm','fz_flood'],via:{farm:[[-12,188],[0,193]],fz_flood:[[-32,164],[-40,148]]}},
+  {z:'flood',x:-44,y:132,fl:3,ico:'flood',n:['أرض الفيضان','The floodland'],m:['الغيطان غرقانة لحد الركبة، والسمك بيعوم بين عيدان الدرة.','The fields are under water to the knee; fish swim between the corn stalks.'],links:['fz_deep','fz_marsh']},
+  {z:'lake',x:-50,y:72,fl:4,er:{z:'deep',n:5,who:'sayed'},ico:'lake',n:['البحيرة','The lake'],m:['بحيرة واسعة تحت التلال، والقمر نايم على وشها.','A wide lake under the hills, the moon asleep on its face.'],links:['fz_deep']},
+  {z:'estuary',x:-108,y:160,fl:4,er:{z:'lake',n:6,who:'sayed'},ico:'estuary',n:['المصب','The river mouth'],m:['النهر بيقابل البحر هنا، والمية نصها حلو ونصها مالح.','The river meets the sea here; half the water is sweet, half is salt.'],
+    links:['fz_deep','fz_cave','fz_coast','fz_reef','fz_farsea'],via:{fz_cave:[[-100,178]],fz_coast:[[-130,182],[-150,200]],fz_reef:[[-126,150],[-144,138]],fz_farsea:[[-122,140],[-152,96]]}},
+  {z:'cave',x:-104,y:196,fl:7,need:'estuary',ico:'cave',n:['مغارة المية','The water cave'],m:['مغارة في الصخر المية بتدخلها وتطلع، وجوه حاجة بتنوّر.','A cave in the rock where the sea goes in and out, and something inside glows.']},
+  {z:'coast',x:-164,y:212,fl:5,tk:60,need:'estuary',ico:'coast',n:['الساحل','The coast'],m:['رملة بيضا ومنارة قديمة، والموج بيجيب حاجات من بعيد.','White sand and an old lighthouse; the waves bring things from far away.'],boat:1},
+  {z:'reef',x:-156,y:128,fl:6,tk:120,need:'estuary',ico:'reef',n:['خلجان الصخر','The reef coves'],m:['صخر ومرجان تحت مية صافية، والسمك ألوان.','Rock and coral under clear water, and fish of every colour.'],boat:1},
+  {z:'farsea',x:-176,y:66,fl:8,tk:220,need:'estuary',ico:'farsea',n:['البحر البعيد','The far sea'],m:['مفيش أرض في أي ناحية. المية سودا، وتحتها حاجات كبيرة.','No land on any side. The water is black, and big things move beneath.'],boat:1},
+  {z:'oasis',x:170,y:140,fl:6,ico:'oasis',n:['الواحة','The oasis'],m:['عين مية في نص الرملة، ونخل، وخيمة عم عواد.','A spring in the middle of the sand, palms, and Uncle Awad\'s tent.'],
+    links:['herbs','fz_ancient'],via:{herbs:[[150,132],[126,128],[112,128]],fz_ancient:[[188,160],[200,182]]}},
+  {z:'ancient',x:210,y:202,fl:10,er:{z:'oasis',n:5,who:'awad'},ico:'ancient',n:['المية القديمة','The ancient water'],m:['معبد مدفون في الرمل، وفي قلبه مية محدش يعرف بتيجي منين.','A temple buried in the sand, with water at its heart that comes from nobody knows where.']}];
+const FZ_ID=z=>'fz_'+z;
+const fzP=z=>FZ_PL.find(Q=>Q.z===z)||null;
+const fzNm=Q=>EN?Q.n[1]:Q.n[0];
+/* ---------- h.fz ---------- */
+function fzFix(h){if(!h)return null;let F=h.fz;if(!F||typeof F!=='object'||Array.isArray(F))F=h.fz={};F.v=1;
+  if(!F.c||typeof F.c!=='object'||Array.isArray(F.c))F.c={};if(!F.ok||typeof F.ok!=='object'||Array.isArray(F.ok))F.ok={};
+  if(F.trip&&(typeof F.trip!=='object'||!fzP(F.trip.z)))F.trip=null;if(F.trip===undefined)F.trip=null;
+  if(!F.st||typeof F.st!=='object')F.st={};F.st.trips=Math.max(0,F.st.trips|0);F.st.paid=Math.max(0,F.st.paid|0);return F}
+const fzLv=h=>{try{return lifeLvl(h,'fish')|0}catch(e){return 1}};
+/* is an errand done (once done it stays done) */
+function fzErrOk(h,Q){if(!Q.er)return true;const F=fzFix(h);if(F.ok[Q.z])return true;if((F.c[Q.er.z]|0)>=Q.er.n){F.ok[Q.z]=1;return true}return false}
+/* why a place is closed: null when open, else {s: short (on the pin), t: the whole line (the toast and the place screen)} */
+function fzWhy(h,Q){const L=fzLv(h);
+  if(L<Q.fl)return {s:ae(`مستوى صيد ${Q.fl}`,`Fishing level ${Q.fl}`),t:ae(`${fzNm(Q)}: ${G('محتاج','محتاجة')} مستوى صيد ${Q.fl} (${G('انت','انتي')} ${L})`,`${fzNm(Q)}: needs fishing level ${Q.fl} (you have ${L})`),k:'lv'};
+  if(Q.need){const N=fzP(Q.need);if(N&&fzWhy(h,N))return {s:ae(`${fzNm(N)} الأول`,`${fzNm(N)} first`),t:ae(`${fzNm(Q)}: ${G('افتح','افتحي')} ${fzNm(N)} الأول`,`${fzNm(Q)}: open ${fzNm(N)} first`),k:'need'}}
+  if(Q.er&&!fzErrOk(h,Q)){const E=Q.er,W=fzP(E.z),c=Math.min(E.n,fzFix(h).c[E.z]|0),who=FZ_WHO[E.who]||FZ_WHO.sayed,wn=W?fzNm(W):'';
+    return {s:`🎣 <bdi dir="ltr">${c}/${E.n}</bdi> ${ae('من','at')} ${wn}`,t:ae(`${who[0]}: «${G('هات','هاتي')} لي ${E.n} سمكات من ${wn} ${G('وافتح','وافتحي')} لك ${fzNm(Q)}.» (${c} من ${E.n})`,`${who[1]}: «Bring me ${E.n} fish from ${wn} and I'll open ${fzNm(Q)} for you.» (${c} of ${E.n})`),k:'er'}}
+  return null}
+const fzOpen=(h,Q)=>!fzWhy(h,Q);
+/* the trip: paid once, good until you leave the place (or the town day turns before you come back) */
+function fzTripOk(h,Q){if(!Q.tk)return true;const T=fzFix(h).trip;return !!(T&&T.z===Q.z&&T.d===klDay(h))}
+function fzTripEnd(h){const F=fzFix(h);if(F&&F.trip){F.trip=null;return 1}return 0}
+/* a catch made while fishing at a place counts there (the errands read it) */
+{const b0=bump;bump=function(k,n){const r=b0.apply(this,arguments);try{const h=S.hero,z=S.fishZone;if(h&&k==='fish'&&z&&z!=='canal'&&S.fzAt&&fzP(z)){const F=fzFix(h);F.c[z]=(F.c[z]|0)+(n||1);
+    FZ_PL.forEach(Q=>{if(Q.er&&Q.er.z===z&&!F.ok[Q.z]&&F.c[z]>=Q.er.n){F.ok[Q.z]=1;const who=FZ_WHO[Q.er.who]||FZ_WHO.sayed;
+      setTimeout(()=>{try{band(`✓ ${ae(who[0],who[1])}`,fzNm(Q),ae(`المهمة خلصت: ${fzNm(Q)} ${fzLv(h)>=Q.fl?'مفتوحة لك':'هتتفتح لما مستوى الصيد يبقى '+Q.fl}`,`Errand done: ${fzNm(Q)} ${fzLv(h)>=Q.fl?'is open to you':'opens at fishing level '+Q.fl}`),{dur:2200,sound:()=>{try{SFX.reveal(2)}catch(e){}}})}catch(e){}},1700)}});
+    saveHero()}}catch(e){console.warn(e)}return r}}
+/* ---------- the places on the map of «الخلا» ---------- */
+FZ_PL.forEach(Q=>{const id=FZ_ID(Q.z);
+  KH_ADD({id,kind:'fz',scr:'fzone',x:Q.x,y:Q.y,lvl:1,n:Q.n,em:'🎣',icon:'fish',kx:Q.x<0?'w':'e',fz:Q.z,boat:Q.boat,links:(Q.links||[]).slice(),via:Q.via||{},
+    open:h=>fzOpen(h,Q),go:(h,P)=>fzGo(h,P),seen0:()=>false,fog:[0,0],st:h=>fzSt(h,Q)})});
+/* the boat lanes leave from the estuary; khRoute walks them like any path */
+function fzSt(h,Q){const w=fzWhy(h,Q);if(w)return {t:w.s};if(Q.tk)return {t:fzTripOk(h,Q)?`✓ ${ae('في رحلة','On a trip')}`:`⛵ <bdi dir="ltr">${Q.tk}</bdi> ${ae('ج','EGP')}`};
+  const n=fzFix(h).c[Q.z]|0;return {t:n?`🐟 <bdi dir="ltr">${n}</bdi>`:ae(`مستوى ${Q.fl}+`,`Level ${Q.fl}+`)}}
+
+/* ---------- 6.21: the two new sides of «الخلا», drawn like the 6.18 town (p125 helpers: taGrid, taSvg, taPalm, taPool…) ----------
+   A warm night tint ('kx') so the land sits beside the old night picture in the middle; the sky, the far hills and every water
+   are hand-picked night colours (hex keys are never tinted), so the sea stays blue; lanterns, the lighthouse, the fire and the old
+   water glow (TA_GLOW), light the ground around them (taPool) and leave a broken reflection on the water.
+   West grid: KX.W × KH_H (local x = map x + KX.W); east grid: KX.E × KH_H (local x = map x − KH_W). */
+TA_TINT.kx=[[.56,.44,.41],[6,3,9]];
+Object.assign(TA_C,{sd:'#e6c68e',sdL:'#f7e1b2',sdD:'#c9a46a',sdS:'#a7834f',md:'#7a5a3c',mdD:'#553c28',cl:'#ef7a62',clL:'#ffa98a',GW:'#5fd6e8',GWL:'#c9f7ff',FF:'#d8ff7a'});
+['GW','GWL','FF'].forEach(k=>TA_GLOW.add(k));
+/* night water, by depth; T/TL: the clear water of the reef and the oasis */
+const KW={S:'#141d44',D:'#1a2a5a',M:'#223a70',L:'#2f5190',H:'#4467a8',F:'#a9c4e6',T:'#1f5f78',TL:'#3a8ea6',TH:'#6cc0d0'};
+const KW_SET=new Set(Object.values(KW));
+const kxWet=k=>!!k&&(KW_SET.has(k)||/^GW/.test(k));
+const KX_SKY=['#1f1420','#1b1d3b','#20254b','#262d59'];
+function kxSky(g,r,y1){const K=taK();const b=[0,10,24,36];b.forEach((y,i)=>K.rc(g,0,y,g.w,(b[i+1]||y1)-y,KX_SKY[i]));
+  for(let i=0;i<Math.round(g.w/5);i++){const x=Math.floor(r()*g.w),y=Math.floor(r()*(y1-10));K.sp(g,x,y,r()<.15?'#93afe2':r()<.5?'#5a72b4':'#3d4b88')}}
+/* a stroke of discs along a smooth curve; only over cells that pass the test (a bank only on land) */
+function kxStroke(g,pts,rad,k,test){const K=taK(),P=khCR(pts,.5);P.forEach((p,i)=>{const t=i/(P.length-1||1),R=typeof rad==='function'?rad(t,p):rad;
+  if(!test)return K.el(g,p[0],p[1],R,R*.9,k);for(let y=Math.floor(p[1]-R);y<=p[1]+R;y++)for(let x=Math.floor(p[0]-R);x<=p[0]+R;x++){if(x<0||y<0||x>=g.w||y>=g.h)continue;const dx=(x+.5-p[0])/R,dy=(y+.5-p[1])/(R*.9);if(dx*dx+dy*dy<=1&&test(g.d[y*g.w+x]))g.d[y*g.w+x]=k}});return P}
+function kxRip(g,r,n,x0,y0,w,h,on,k){const K=taK();for(let i=0;i<n;i++){const x=x0+Math.floor(r()*w),y=y0+Math.floor(r()*h),L=2+Math.floor(r()*4);if(on.includes(g.d[y*g.w+x])&&on.includes(g.d[y*g.w+x+L-1]))K.rc(g,x,y,L,1,k)}}
+/* a lamp's light broken on the water below it */
+function kxRef(g,x,y,n){const K=taK();for(let j=0;j<n;j++){const yy=y+j*2,w=Math.max(1,4-j)+(j%2);if(kxWet(g.d[yy*g.w+x]))K.rc(g,x-Math.floor(w/2)+(j%2?1:0),yy,w,1,j<2?'LTL':'LT')}}
+function kxReeds(g,r,x0,x1,yb,hm){const K=taK();for(let x=x0;x<x1;x+=1+Math.floor(r()*3)){const h=3+Math.floor(r()*hm);K.rc(g,x,yb-h,1,h,r()<.5?'gnD':'gn');if(r()<.45){K.rc(g,x,yb-h-2,1,2,'wd');K.sp(g,x,yb-h-2,'wdL')}}}
+function kxBush(g,x,y,s){const K=taK();[[-s*.6,0,s*.7],[s*.5,.2,s*.65],[0,-s*.45,s*.75]].forEach(([dx,dy,R])=>K.el(g,x+dx,y+dy,R+1,R*.85+1,'ol'));[[-s*.6,0,s*.7],[s*.5,.2,s*.65],[0,-s*.45,s*.75]].forEach(([dx,dy,R])=>K.el(g,x+dx,y+dy,R,R*.85,'gnD'));K.el(g,x-s*.35,y-s*.7,s*.4,s*.3,'gn');K.sp(g,x-s*.5,y-s*.85,'gnL');K.sp(g,x+s*.4,y-s*.1,'gn')}
+function kxLamp(g,x,y){const K=taK();K.rc(g,x,y,1,6,'ol');K.rc(g,x-1,y-3,3,3,'ol');K.sp(g,x,y-2,'LTL');K.sp(g,x,y-3,'LT')}
+function kxBoat(g,x,y,w,sail,k){const K=taK();k=k||'wd';K.pl(g,[[x-1,y-1],[x+w+1,y-1],[x+w-2,y+3],[x+2,y+3]],'ol');K.pl(g,[[x,y],[x+w,y],[x+w-2.5,y+2.5],[x+2.5,y+2.5]],k);K.rc(g,x+1,y,w-1,1,k+'L');
+  if(sail){const m=x+Math.round(w*.45);K.rc(g,m,y-sail,1,sail,'ol');K.pl(g,[[m+1,y-sail],[m+1,y-1],[m+sail*.75,y-1]],'wh');K.ln(g,m+1,y-sail,m+sail*.75,y-1,'whD');K.pl(g,[[m,y-sail+1],[m,y-2],[m-sail*.45,y-2]],'crD')}}
+function kxRock(g,x,y,w,h,k){const K=taK();k=k||'rk';K.el(g,x,y,w+1,h+1,'ol',y+1);K.el(g,x,y,w,h,k,y);K.el(g,x-w*.3,y-h*.4,w*.45,h*.4,k+'L');K.rc(g,x-w+1,y,2*w-1,1,k+'D')}
+function kxHouse(g,x,yb,w,h,k,N){const K=taK();taBox(g,x,yb-h,w,h,k||'mb');taFlat(g,x,yb-h,w,k||'mb');K.rc(g,x+2,yb-5,3,5,'ol');K.rc(g,x+2,yb-4,3,4,'wdD');
+  if(w>8){K.rc(g,x+w-5,yb-h+2,3,3,'ol');K.rc(g,x+w-4,yb-h+3,1,1,N?'LT':'gl')}if(N){K.rc(g,x+3,yb-4,1,4,'LT')}}
+function kxHut(g,x,yb,w,h,k){const K=taK();taBox(g,x,yb-h,w,h,k||'mb');K.pl(g,[[x-2,yb-h],[x+w/2,yb-h-6],[x+w+2,yb-h]],'ol');K.pl(g,[[x-1,yb-h-.5],[x+w/2,yb-h-5],[x+w+1,yb-h-.5]],'cp');K.ln(g,x,yb-h-1,x+w/2,yb-h-5,'cpL');
+  K.rc(g,x+2,yb-5,3,5,'ol');K.rc(g,x+2,yb-4,3,4,'LT');K.sp(g,x+2,yb-4,'LTL')}
+function kxNets(g,x,yb,w){const K=taK();K.rc(g,x,yb-7,1,7,'wdD');K.rc(g,x+w,yb-7,1,7,'wdD');K.rc(g,x,yb-7,w+1,1,'wd');for(let i=1;i<w;i++){K.rc(g,x+i,yb-6,1,3+((i*7)%3),i%2?'sn':'snD')}}
+function kxPath(g,pts,water){const K=taK();let acc=0,last=null;pts.forEach(p=>{if(last)acc+=Math.hypot(p[0]-last[0],p[1]-last[1]);last=p;if(acc<(water?3.4:2.8))return;acc=0;const x=Math.round(p[0]),y=Math.round(p[1]);
+  if(x<1||y<1||x>=g.w-1||y>=g.h-1)return;const wet=kxWet(g.d[y*g.w+x]);if(water){if(wet)K.rc(g,x,y,2,1,KW.F)}else if(!wet){K.sp(g,x,y+1,'ol');K.sp(g,x,y,'stL')}})}
+/* the links drawn on a side: every link with one end on this side, through khSeg (the path the hero walks); none near a sign */
+function kxPaths(g,side,ox){const done=new Set();KH_PLACES.forEach(A=>{if(A.kx!==side)return;A.links.forEach(id=>{const B=khP(id),key=[A.id,id].sort().join('|');if(!B||done.has(key))return;done.add(key);
+  const pts=khSeg(A.id,id).map(p=>[p[0]+ox,p[1]]).filter(p=>Math.hypot(p[0]-A.x-ox,p[1]-A.y)>5&&Math.hypot(p[0]-B.x-ox,p[1]-B.y)>5);kxPath(g,pts,!!(A.boat||B.boat))})})}
+/* ================= the west: the river, the lake, the floodland, the marsh, the river mouth and the sea ================= */
+const kxXc=y=>{const a=90+3*Math.sin(y*.09)+2*Math.sin(y*.031);return y<196?a:90+3*Math.sin(17.64)+2*Math.sin(6.076)+(y-196)*.62};
+const KX_RIV=[[124,64],[119,80],[117,96],[115,112],[108,126],[98,140],[88,148],[78,151],[66,153]];
+const KX_CAN=[[201,83],[186,86],[168,90],[150,94],[132,97],[117,98]];
+function kxWest(){const K=taK(),W=KX.W,H=KH_H,g=taGrid(W,H),r=K.rng('kx_west');
+  kxSky(g,r,48);
+  /* far hills over the land, the middle's own night blues, fading out over the sea */
+  for(let x=36;x<W;x++){const f=Math.max(0,Math.min(1,(x-36)/40)),y1=Math.round(45-f*(12-3*Math.sin(x*.06)-2*Math.sin(x*.17+1))),y2=Math.round(46-f*(5-2.5*Math.sin(x*.09+2)-1.5*Math.sin(x*.23)));
+    K.rc(g,x,y1,1,H-y1,'#1b1d3b');K.rc(g,x,y2,1,H-y2,'#232a52')}
+  /* the sea: deep by the horizon, lighter near the shore; the land: dark earth, sand along the shore */
+  for(let y=45;y<H;y++){const xc=kxXc(y);for(let x=0;x<W;x++){const d=xc-x+1.6*Math.sin(y*.35+x*.08);
+    if(x<xc){g.d[y*W+x]=y<52?KW.S:d<3?KW.L:d<12?KW.M:d<40&&y>70?KW.D:KW.S}else{const yt=50+2*Math.sin(x*.11)+1.2*Math.sin(x*.29);if(y>=yt)g.d[y*W+x]=x-xc<5+1.5*Math.sin(y*.4)?'sd':'grS'}}}
+  K.rc(g,0,45,Math.ceil(kxXc(45)),1,'#3d4b88');
+  for(let y=46;y<H;y++){const x=Math.floor(kxXc(y));if(y%4!==1)K.sp(g,x-1,y,KW.F);K.sp(g,x,y,'sdL')}
+  kxRip(g,r,150,0,48,96,H-48,[KW.M,KW.D,KW.S],KW.L);kxRip(g,r,40,0,48,92,H-48,[KW.S,KW.D],KW.H);kxRip(g,r,60,0,48,96,H-48,[KW.S,KW.D],KW.M);
+  /* the earth: lighter patches, grass, stones */
+  for(let i=0;i<46;i++){const x=Math.floor(r()*W),y=54+Math.floor(r()*(H-54)),a=3+r()*7,b=1.5+r()*2.5;for(let yy=Math.floor(y-b);yy<=y+b;yy++)for(let xx=Math.floor(x-a);xx<=x+a;xx++){if(xx<0||xx>=W||yy<0||yy>=H)continue;const dx=(xx-x)/a,dy=(yy-y)/b;if(dx*dx+dy*dy<=1&&g.d[yy*W+xx]==='grS')g.d[yy*W+xx]='grD'}}
+  for(let i=0;i<300;i++){const x=Math.floor(r()*W),y=52+Math.floor(r()*(H-52)),k=g.d[y*W+x];if(k!=='grS'&&k!=='grD')continue;const q=r();
+    if(q<.5){K.sp(g,x,y,'gsD');K.sp(g,x-1,y-1,'gs');K.sp(g,x+1,y-1,'gs');K.sp(g,x,y-1,'gsL')}else if(q<.75)K.rc(g,x,y,2+Math.floor(r()*3),1,'grS_');else if(q<.88){K.sp(g,x,y,'gr');K.sp(g,x+1,y,'grL')}else K.sp(g,x,y,['rd','au','wh'][Math.floor(r()*3)])}
+  /* the lake under the hills, the river out of it to the sea, the canal from the middle joining it */
+  const land=k=>!kxWet(k);
+  K.el(g,152,57,33,12.5,'mdD');K.el(g,152,57,31.5,11,KW.M);K.el(g,154,55,22,7,KW.D);K.el(g,157,54,11,3.5,KW.S);K.rc(g,126,51,8,1,KW.L);K.rc(g,170,60,6,1,KW.L);
+  kxStroke(g,KX_RIV,t=>2.8+t*6,'mdD',land);kxStroke(g,KX_CAN,4.8,'mdD',land);
+  kxStroke(g,KX_RIV,t=>1.8+t*5.6,KW.M);kxStroke(g,KX_CAN,3.9,KW.M);kxStroke(g,KX_RIV.slice(2,6),t=>1+t*2.2,KW.D);
+  kxRip(g,r,110,60,44,140,120,[KW.M,KW.D],KW.L);
+  for(let y=74;y<96;y++)for(let x=176;x<W;x++){const k=g.d[y*W+x];if(!KW_SET.has(k))continue;g.d[y*W+x]=x>=190?(k===KW.L?'#29305f':'#1b1d3b'):(k===KW.L?KW.M:KW.D)}
+  /* sand bars at the mouth; the deep pool of the branch */
+  /* night fishermen out on the sea: small boats with a lantern, a line of net floats */
+  [[30,168,7],[58,92,6]].forEach(([x,y,w])=>{kxBoat(g,x,y,w,0,'wd');K.rc(g,x+2,y-4,1,4,'ol');K.sp(g,x+2,y-5,'LT');kxRef(g,x+2,y+4,3)});
+  for(let i=0;i<9;i++)K.sp(g,52+i*3,176+Math.round(Math.sin(i*.8)*1.5),'au');
+  K.el(g,115,110,5,2.4,KW.S);K.rc(g,112,109,3,1,KW.D);
+  /* the lake: reeds, lilies, a rowing boat, the jetty and its lantern */
+  kxReeds(g,r,121,134,66,4);kxReeds(g,r,168,184,63,4);kxReeds(g,r,174,186,52,3);
+  [[134,52],[140,59],[170,57],[127,57],[164,50]].forEach(([x,y])=>{K.el(g,x,y,1.8,1,'gnD');K.sp(g,x,y-1,'rdL')});
+  K.rc(g,137,60,3,12,'ol');K.rc(g,138,60,1,11,'wd');for(let y=61;y<70;y+=2)K.rc(g,135,y,7,1,'wdD');K.rc(g,135,60,7,1,'wdL');kxLamp(g,142,62);kxBoat(g,124,62,8,0,'wd');kxRef(g,142,66,0);
+  /* the deep branch: a pier out over the deep pool, a moored boat, a lantern */
+  K.rc(g,107,104,13,3,'ol');K.rc(g,107,104,13,1,'wdL');K.rc(g,107,105,13,1,'wd');[108,112,116].forEach(x=>K.rc(g,x,107,1,4,'wdD'));kxLamp(g,109,98);kxRef(g,109,108,4);kxBoat(g,104,112,8,0,'wd');
+  K.rc(g,120,98,1,6,'wdD');K.ln(g,120,98,112,94,'wd');K.ln(g,112,94,110,104,KW.F);
+  /* the wooden bridge where the path to the lake crosses the canal */
+  K.rc(g,131,89,7,14,'ol');K.rc(g,132,90,5,12,'wd');for(let y=90;y<102;y+=2)K.rc(g,132,y,5,1,'wdL');K.rc(g,131,88,1,15,'wdD');K.rc(g,137,88,1,15,'wdD');
+  /* the floodland: fields under water, corn standing in it, a water wheel, palms in the water */
+  for(let j=0;j<4;j++){const y=114+j*7,x0=170-j*3,w=26+j*2;K.rc(g,x0-1,y-1,w+2,7,'mdD');K.rc(g,x0,y,w,5,KW.M);K.rc(g,x0,y,w,1,KW.L);for(let x=x0+1;x<x0+w;x+=3){K.rc(g,x,y-2,1,4,'gnD');K.sp(g,x,y-3,'au');K.sp(g,x,y+3,KW.D)}}
+  taPalm(g,192,140,12,-.2);taPalm(g,160,146,10,.25);
+  {const cx=182,cy=104;for(let a=0;a<6.28;a+=.22)K.sp(g,cx+Math.cos(a)*5,cy+Math.sin(a)*5,'wd');K.ln(g,cx-5,cy,cx+5,cy,'wdD');K.ln(g,cx,cy-5,cx,cy+5,'wdD');K.ln(g,cx-4,cy-4,cx+4,cy+4,'wdD');K.el(g,cx,cy,1.4,1.4,'au');K.rc(g,cx-1,cy+5,3,4,'wdD');K.rc(g,cx-4,cy+8,9,2,'mdD')}
+  /* the fishermen's hamlet between the cliffs and the marsh: houses, nets drying, a lane */
+  kxHouse(g,116,188,12,9,'mb',1);kxHouse(g,132,192,10,8,'pl',1);kxHouse(g,112,204,11,8,'pl',1);kxNets(g,128,204,8);taPalm(g,146,198,11,-.2);
+  taPool(g,121,190,8,4);taPool(g,135,194,7,4);
+  /* the marsh pools (they go on into the middle's marsh), reeds, fireflies, a heron */
+  [[150,170,13,5],[180,168,9,3.5],[168,196,12,4],[194,186,7,3],[150,208,8,3]].forEach(([x,y,a,b],i)=>{K.el(g,x,y,a+1.4,b+1.2,'mdD');K.el(g,x,y,a,b,i===0?KW.S:KW.D);K.rc(g,x-a/2,y-1,a*.6,1,KW.M);K.el(g,x+a*.3,y+b*.2,a*.25,b*.3,KW.S)});
+  kxReeds(g,r,136,150,166,6);kxReeds(g,r,160,172,192,5);kxReeds(g,r,186,199,182,5);kxReeds(g,r,142,154,206,4);kxReeds(g,r,174,186,165,4);
+  [[146,162],[160,182],[190,176],[178,200],[196,198],[152,214],[166,172]].forEach(([x,y])=>K.sp(g,x,y,'FF'));
+  K.rc(g,164,166,1,4,'ol');K.el(g,165,164,2,1.6,'wh');K.ln(g,166,163,169,162,'au');K.sp(g,164,163,'ol');
+  /* the river mouth: the boatman's hut and lamp on the bank, a long jetty into the water, the felucca */
+  kxHut(g,100,158,11,8,'mb');kxLamp(g,114,151);
+  K.rc(g,80,147,3,13,'ol');K.rc(g,81,147,1,12,'wd');for(let y=148;y<159;y+=2)K.rc(g,79,y,5,1,'wdL');kxBoat(g,66,147,11,11,'wd');kxLamp(g,84,145);kxRef(g,84,150,3);
+  /* the cliffs south of the mouth and the water cave in them */
+  K.pl(g,[[80,170],[92,166],[100,172],[102,186],[98,204],[84,206],[78,192]],'ol');K.pl(g,[[81,171],[91,167],[99,173],[101,186],[97,203],[85,205],[79,192]],'rk');
+  K.pl(g,[[81,171],[91,167],[93,170],[85,175],[81,184]],'rkL');K.ln(g,96,178,99,194,'rkD');K.ln(g,92,176,94,190,'rkD');
+  K.el(g,86,197,6,6.5,'ol',201);K.el(g,86,197,5,5.5,'#120c1a',201);K.rc(g,81,199,11,3,KW.S);K.rc(g,82,199,9,1,'GW');K.sp(g,86,194,'GWL');K.sp(g,83,196,'GW');K.sp(g,89,195,'GW');
+  /* the reef: rocks and coral in clear water */
+  K.el(g,26,116,17,9,KW.T);K.el(g,26,116,12.5,6.5,KW.TL);K.rc(g,18,113,5,1,KW.TH);[[20,112,4,2.5],[32,120,5,3],[14,121,3,2],[36,110,3,2]].forEach(([x,y,w,h])=>kxRock(g,x,y,w,h));
+  [[24,119,'cl'],[28,113,'pu'],[16,116,'rd'],[38,116,'cl']].forEach(([x,y,k])=>{K.rc(g,x,y-3,1,3,k);K.sp(g,x-1,y-2,k);K.sp(g,x+1,y-3,k);K.sp(g,x,y-4,k+'L')});
+  for(let i=0;i<12;i++){const a=r()*6.28;K.rc(g,26+Math.cos(a)*16,116+Math.sin(a)*8.5,2,1,KW.F)}
+  /* the far sea: a buoy with a light, a ship far away on the horizon */
+  K.rc(g,11,58,3,5,'ol');K.rc(g,12,59,1,4,'rd');K.rc(g,10,63,5,1,'ol');K.sp(g,12,57,'LT');kxRef(g,12,65,3);
+  K.rc(g,44,42,14,3,'#151a33');K.rc(g,46,38,2,4,'#151a33');K.rc(g,52,37,2,5,'#151a33');K.sp(g,47,41,'LT');K.sp(g,55,43,'LT');
+  /* the coast: a sand island, the old lighthouse, a hut, palms and beached boats */
+  K.el(g,30,216,34,15,'sdD');K.el(g,30,215,32,13.5,'sd');K.el(g,22,212,16,6,'sdL');for(let a=-1.5;a<1.6;a+=.06)K.sp(g,30+Math.cos(a+3.14)*34,216+Math.sin(a+3.14)*15,KW.F);
+  {const x=56,yb=212;K.rc(g,x-3,yb-22,7,22,'ol');for(let j=0;j<20;j++)K.rc(g,x-2,yb-21+j,5,1,(j>>2)%2?'rd':'wh');K.rc(g,x-2,yb-21,1,20,'whL');K.rc(g,x-4,yb-25,9,3,'ol');K.rc(g,x-2,yb-28,5,3,'ol');K.rc(g,x-1,yb-27,3,2,'LTL');K.rc(g,x-3,yb-24,7,1,'snD');
+    for(let i=0;i<5;i++)K.rc(g,x-14-i*4,yb-26+i,3,1,'LTL')}
+  kxHut(g,12,212,10,7,'pl');taPalm(g,6,222,12,.2);taPalm(g,46,224,10,-.25);kxBoat(g,22,222,9,0,'tl');kxBoat(g,64,202,8,8,'rd');
+  /* bushes, palms, stones on the land */
+  [[104,72,3],[112,84,2.5],[150,78,3],[176,74,2.5],[190,98,3],[128,124,2.5],[140,150,3],[186,156,2.5],[118,168,2.5],[198,120,2]].forEach(([x,y,s])=>kxBush(g,x,y,s));
+  [[132,138,2,1.4],[156,160,2.4,1.5],[104,96,2,1.3],[176,214,2.4,1.5]].forEach(([x,y,w,h])=>kxRock(g,x,y,w,h));
+  taPalm(g,194,152,12,-.2);taPalm(g,106,214,13,.2);taPalm(g,124,226,10,-.2);taPalm(g,192,222,11,-.25);taPalm(g,104,62,9,.15);taPalm(g,184,128,10,-.15);
+  /* the light of the lamps on the ground */
+  taPool(g,142,64,9,5);taPool(g,109,101,9,5);taPool(g,114,154,10,6);taPool(g,56,192,22,14);taPool(g,84,148,6,4);taPool(g,86,199,7,4);taPool(g,102,155,8,4);
+  kxPaths(g,'w',KX.W);
+  return g}
+/* ================= the east: the mountain's foot, the dunes, the dry bed of the old canal, the oasis, the old water ================= */
+function kxDune(g,x,y,a,b){const K=taK();for(let i=-a;i<=a;i++){const u=i/a,top=Math.round(y-b*Math.sqrt(Math.max(0,1-u*u))),cr=x+a*.25*(1-u*u);
+    for(let yy=top;yy<=y+1;yy++){const xx=x+i;if(xx<0||xx>=g.w||yy<0||yy>=g.h)continue;g.d[yy*g.w+xx]=xx>cr?'sdS_':'sdD'}}
+  for(let i=-a;i<=a;i++){const u=i/a,top=Math.round(y-b*Math.sqrt(Math.max(0,1-u*u)));K.sp(g,x+i,top,'sdL')}
+  for(let j=0;j<b;j++){const xx=Math.round(x+a*.25*(1-((j/b))**2)-j*.15);K.sp(g,xx,Math.round(y-b+j+1),'sd')}}
+function kxEast(){const K=taK(),W=KX.E,H=KH_H,g=taGrid(W,H),r=K.rng('kx_east');
+  kxSky(g,r,64);
+  /* the mountain of the middle comes down here */
+  K.pl(g,[[-1,21],[8,24],[18,31],[28,38],[40,48],[54,56],[66,62],[-1,66]],'#29305f');K.pl(g,[[-1,21],[8,24],[18,31],[14,34],[4,30],[-1,30]],'#3d4b88');K.ln(g,0,21,18,31,'#5a72b4');K.ln(g,18,31,40,48,'#3d4b88');
+  [[6,40,7],[20,46,6],[34,54,6]].forEach(([x,y,w])=>{K.rc(g,x,y,w,1,'#1b1d3b');K.rc(g,x+1,y-1,w-3,1,'#3d4b88')});
+  for(let x=0;x<W;x++){const y=Math.round(52+3*Math.sin(x*.07+1)+2*Math.sin(x*.19));K.rc(g,x,y,1,8,'#232a52')}
+  /* a sandstone table hill far off */
+  K.pl(g,[[70,58],[76,46],[100,45],[106,58]],'ol');K.pl(g,[[71,58],[77,47],[99,46],[105,58]],'mb');K.rc(g,77,47,22,1,'mbL');K.rc(g,74,52,28,1,'mbD');K.pl(g,[[96,47],[99,46],[105,58],[100,58]],'mbD');
+  /* the sand */
+  for(let y=56;y<H;y++)for(let x=0;x<W;x++){const yt=58+2*Math.sin(x*.12)+1.5*Math.sin(x*.31);if(y>=yt)g.d[y*W+x]='sdS'}
+  for(let i=0;i<40;i++){const x=Math.floor(r()*W),y=64+Math.floor(r()*(H-64));for(let j=0;j<5;j++)K.sp(g,x+j,y+Math.round(Math.sin(j*1.3)),'sdS_')}
+  [[28,96,26,9],[92,84,22,8],[100,150,20,9],[18,176,24,8],[64,226,34,10],[104,214,16,7],[50,160,14,5]].forEach(([x,y,a,b])=>kxDune(g,x,y,a,b));
+  for(let i=0;i<120;i++){const x=Math.floor(r()*W),y=60+Math.floor(r()*(H-60)),k=g.d[y*W+x];if(k==='sdS'||k==='sdD')K.rc(g,x,y,1+Math.floor(r()*2),1,r()<.5?'sdS_':'sdD')}
+  /* the canal of the middle runs dry: a little water, then a cracked bed winding to the oasis */
+  const bed=[[-1,74],[10,78],[20,86],[26,98],[36,108],[46,118]];kxStroke(g,bed,t=>4.4-t*1.4,'mdD');kxStroke(g,bed,t=>3.6-t*1.4,'md');kxStroke(g,bed.slice(0,2),3.4,KW.D);K.rc(g,1,73,5,1,KW.M);
+  {const p=khCR(bed,.5);for(let i=0;i<26;i++){const q=p[10+Math.floor(r()*(p.length-11))];K.ln(g,q[0]-1.5,q[1]-1,q[0]+1,q[1]+1.5,'mdD')}}
+  [[8,66,3,2],[64,100,4,2.5],[102,122,3,2],[12,140,5,3],[106,182,4,2.5],[46,184,3,2],[78,64,3,2]].forEach(([x,y,w,h])=>kxRock(g,x,y,w,h,'mb'));
+  /* bones, a dead tree */
+  K.rc(g,30,132,4,1,'whD');K.sp(g,29,131,'whD');K.sp(g,34,131,'whD');K.el(g,36,131,1.5,1.2,'whD');K.sp(g,36,131,'ol');
+  K.rc(g,96,104,1,8,'wdD');K.ln(g,96,106,92,101,'wdD');K.ln(g,96,105,100,100,'wdD');K.ln(g,100,100,102,101,'wdD');
+  /* the oasis: a pool of clear water, grass, palms, عم عواد's tent and fire, camels */
+  K.el(g,56,126,23,10.5,'gsD');K.el(g,56,125,21,9,'gs');for(let i=0;i<20;i++){const a=r()*6.28;K.sp(g,56+Math.cos(a)*19,125+Math.sin(a)*8,'gsL')}
+  K.el(g,56,127,15,5.5,'mdD');K.el(g,56,127,14,4.6,KW.T);K.el(g,54,126,9,2.4,KW.TL);K.rc(g,47,128,4,1,KW.TH);K.rc(g,60,125,3,1,KW.TH);
+  [[36,124,13,.25],[74,120,14,-.25],[68,138,10,-.2],[42,138,11,.2],[82,131,9,-.3],[30,131,8,.2]].forEach(([x,y,h,l])=>taPalm(g,x,y,h,l));
+  K.pl(g,[[76,113],[85,104],[94,113]],'ol');K.pl(g,[[77,112.5],[85,105],[93,112.5]],'wdD');for(let x=78;x<93;x+=3)K.ln(g,x,112,85,105,'rd');K.rc(g,83,109,4,4,'ol');K.rc(g,84,110,2,3,'LT');
+  K.rc(g,97,113,3,1,'wdD');K.sp(g,98,111,'FR');K.sp(g,97,112,'FRD');K.sp(g,99,112,'FR');K.sp(g,98,110,'FRL');
+  [[16,150],[26,154]].forEach(([x,y])=>{K.el(g,x,y,4,2.2,'wdD');K.rc(g,x-3,y,1,4,'wdD');K.rc(g,x+2,y,1,4,'wdD');K.el(g,x-1,y-2.5,1.6,1.4,'wdD');K.rc(g,x+3,y-4,1,4,'wdD');K.el(g,x+4,y-5,1.6,1,'wdD')});
+  /* the ancient water: a temple half under the sand, columns, steps down to a pool that glows, a stone head */
+  {const x=64,y=190;K.rc(g,x-20,y-22,40,4,'ol');K.rc(g,x-19,y-21,38,2,'sn');K.rc(g,x-19,y-21,38,1,'snL');
+    [x-17,x-9,x+6,x+14].forEach(c=>{K.rc(g,c-1,y-18,5,16,'ol');K.rc(g,c,y-18,3,15,'sn');K.rc(g,c,y-18,1,15,'snL');K.rc(g,c+2,y-18,1,15,'snD');for(let j=y-16;j<y-3;j+=4)K.rc(g,c,j,3,1,'snD')});
+    K.rc(g,x-24,y-4,48,3,'sdS');K.el(g,x,y+3,13,5,'ol');K.el(g,x,y+3,12,4,'snD');K.el(g,x,y+3,9,2.8,'GW');K.el(g,x-1,y+2.5,5,1.2,'GWL');
+    for(let j=0;j<3;j++)K.rc(g,x-8+j*2,y-2+j,16-j*4,1,'snS');kxDune(g,x-24,y+4,8,4);kxDune(g,x+24,y-4,8,5);K.rc(g,x+19,y-24,6,3,'sd');
+}
+  [[14,206],[44,214],[96,226],[30,194],[100,96]].forEach(([x,y])=>{K.rc(g,x,y-3,1,3,'wdD');K.ln(g,x,y-2,x-2,y-4,'wdD');K.ln(g,x,y-2,x+2,y-5,'wdD');K.sp(g,x-3,y-5,'wd')});
+  [[88,216,3,2],[24,222,2.5,1.6],[60,206,2,1.4]].forEach(([x,y,w,h])=>kxRock(g,x,y,w,h,'mb'));
+  taPool(g,85,111,10,6);taPool(g,98,112,8,5);taPool(g,64,193,18,9);
+  kxPaths(g,'e',-KH_W);
+  return g}
+/* the two pictures, once (they don't change with the hero) */
+function kxSides(){if(KX.base)return KX.base;let w='',e='';
+  try{w=taSvg(kxWest(),'kx',`class="kx-side kx-w" preserveAspectRatio="none" style="left:0;width:${(KX.W/KX.T*100).toFixed(4)}%"`)}catch(err){console.warn(err)}
+  try{e=taSvg(kxEast(),'kx',`class="kx-side kx-e" preserveAspectRatio="none" style="left:${((KX.W+KH_W)/KX.T*100).toFixed(4)}%;width:${(KX.E/KX.T*100).toFixed(4)}%"`)}catch(err){console.warn(err)}
+  return KX.base={w,e}}
+/* a place's own picture on its screen: the part of its side around it */
+function kxCrop(Q){const S2=kxSides(),west=Q.x<0,src=west?S2.w:S2.e,ox=west?KX.W:-KH_W,cx=Q.x+ox,cy=Q.y,w=64,h=30,gw=west?KX.W:KX.E;
+  const x0=Math.max(0,Math.min(gw-w,Math.round(cx-w/2))),y0=Math.max(0,Math.min(KH_H-h,Math.round(cy-h*.62)));
+  const m=/<svg[^>]*>([\s\S]*)<\/svg>/.exec(src);return m?`<svg viewBox="${x0} ${y0} ${w} ${h}" shape-rendering="crispEdges" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${m[1]}</svg>`:''}
+/* the signs: an 11×11 board with its icon on a short post (11×14) */
+const KX_ICO={
+  deep:['bBbBbBbBb','BBBBBBBBB','.........','..SSSS..S','.SSSSSS.S','SkSSSSSSS','.SSSSSS.S','..SSSS..S','.........'],
+  marsh:['.w..w..w.','.w..w..w.','.G..G..G.','.G.GG.GG.','GG.G..G..','.G.G.GG..','.GGG.G...','BBBBBBBBB','bBBbBBbBB'],
+  flood:['.G.G.G.G.','.G.G.G.G.','.A.A.A.A.','.G.G.G.G.','bBbBbBbBb','BBBBBBBBB','.G.G.G.G.','bBbBbBbBb','BBBBBBBBB'],
+  lake:['.....OO..','...OOOOO.','..OkOOO.O','...OOOOO.','.....OO..','.........','bb.bbb.bb','BBBBBBBBB','BBBBBBBBB'],
+  estuary:['....k....','....kW...','....kWW..','....kWWW.','....kkkk.','wwwwwwwww','.wwwwwww.','bBBbBBbBB','BBBBBBBBB'],
+  coast:['.........','...AAA...','..AaAaA..','.AaAaAaA.','.AaAaAaA.','..AAAAA..','...kkk...','DDDDDDDDD','BBBBBBBBB'],
+  reef:['.R...R...','.R.R.R.R.','.RRR.RRR.','..R...R..','..RRRRR..','....R....','....R....','BBBBBBBBB','BBBBBBBBB'],
+  cave:['..kkkkk..','.kSSSSSk.','kSSkkkSSk','kSk...kSk','kSk.t.kSk','kSkTTTkSk','kSTTTTTSk','BBBBBBBBB','bBBbBBbBB'],
+  farsea:['.........','....W....','...WWk...','..WWWk...','.WWWWk...','..wwwww..','.........','BBBBBBBBB','BBBBBBBBB'],
+  oasis:['.GG.GG...','G..GG.GG.','..GwG...G','...w.....','...w.....','...w.....','..www....','DDTTTTTDD','DDDDDDDDD'],
+  ancient:['kkkkkkk..','.WWWWW...','.WkWkW...','.WkWkW..T','.WkWkW.TT','.WkWkW.TT','.WkWkW...','kkkkkkk..','DDDDDDDDD']};
+const KX_IM={k:'ol',B:'bl',b:'blL',W:'wh',G:'gn',g:'gnD',w:'wd',A:'au',a:'auD',Y:'auL',R:'rd',O:'or',S:'snD',s:'sn',T:'tl',t:'tlL',P:'pu',D:'sdD'};
+const KX_SG={};
+function kxSign(ico){if(KX_SG[ico])return KX_SG[ico];const g=taGrid(11,14),K=taK();K.rc(g,1,0,9,11,'ol');K.rc(g,0,1,11,9,'ol');K.rc(g,1,1,9,9,'cr');K.rc(g,4,11,3,3,'ol');K.rc(g,5,11,1,3,'wd');
+  taRow(g,1,1,KX_ICO[ico]||KX_ICO.deep,KX_IM);return KX_SG[ico]=taSvg(g,'m','class="kx-sgi"')}
+
+/* ---------- 6.21: the wide map of «الخلا»: one strip, the old picture in the middle, the arrows, the new pins ---------- */
+/* the old places keep their art x; on the strip they sit at kxL(x) */
+{const p0=khPinHTML;khPinHTML=function(h,P){if(P&&P.kx)return kxPinHTML(h,P);const s=p0.apply(this,arguments);try{return s.replace(/style="left:[\d.\-]+%/,`style="left:${kxL(P.x).toFixed(3)}%`)}catch(e){return s}}}
+/* no fog drawn for the new sides (their pins say «مكان جديد» instead) */
+{const f0=khFog;khFog=function(P){return P&&P.kx?'':f0.apply(this,arguments)}}
+/* the hero's figure: beside his pin on the strip (a new place: left of its sign post) */
+const kxMePos=P=>P.kx?[kxL(P.x-9),kxT(P.y-1)]:[kxL(P.x+(P.lp==='l'?10:-10)),kxT(P.y+(P.lp==='a'?13:5))];
+{const m0=khMeHTML;khMeHTML=function(h){const s=m0.apply(this,arguments);try{const K=khFix(h),P=khP(K.at)||KH_HOME,[x,y]=kxMePos(P);
+  return s.replace(/style="left:[^;"]*;top:[^;"]*"/,`style="left:${x.toFixed(3)}%;top:${y.toFixed(3)}%"`)}catch(e){return s}}}
+/* the old map counted every place for «ابن الخلا»: it stays the old places only */
+{const s0=khSee;khSee=function(h,P,onMap){const K=khFix(h),had=!!K.seen[P.id],r=s0.apply(this,arguments);
+  try{if(!had&&!P.kx&&KH_PLACES.filter(Q=>!Q.kx).every(Q=>K.seen[Q.id]))ach('kh_all')}catch(e){}return r}}
+/* walking on the strip (the same paths, khSeg; the view follows to where you go) */
+khWalk=function(from,to,done){let fin=0;const end=()=>{if(fin)return;fin=1;done()};const me=$('#khMe');
+  if(!me||from===to||!khP(from)||!khP(to)||khRM()||typeof me.animate!=='function')return end();
+  const ids=khRoute(from,to),pts=[];for(let i=0;i+1<ids.length;i++){const s=khSeg(ids[i],ids[i+1]);pts.push(...(i?s.slice(1):s))}
+  if(pts.length<2)return end();let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+  const [x0,y0]=kxMePos(khP(from)),[x1,y1]=kxMePos(khP(to)),fr=[{left:x0+'%',top:y0+'%'}];let acc=0;
+  pts.forEach((p,i)=>{if(i&&i<pts.length-1){acc+=Math.hypot(p[0]-pts[i-1][0],p[1]-pts[i-1][1]);if(acc<1.5)return;acc=0}if(i===0||i===pts.length-1)return;fr.push({left:kxL(Math.round(p[0]))+'%',top:kxT(Math.round(p[1]))+'%'})});
+  fr.push({left:x1+'%',top:y1+'%'});
+  const dur=Math.round(Math.max(420,Math.min(1500,len*6)));me.classList.add('kh-walk');if(khP(to).x<khP(from).x)me.classList.add('kh-flip');
+  const an=me.animate(fr,{duration:dur,easing:'linear',fill:'forwards'});an.onfinish=end;setTimeout(end,dur+500);
+  for(let i=0;i<Math.min(6,Math.floor(dur/220));i++)setTimeout(()=>{try{SFX.tick(330+(i%2)*60)}catch(e){}},i*220)};
+/* ---------- the new pins: a painted sign on a post, the name under it (it grows when pointed at or held) ---------- */
+function kxPinHTML(h,P){const K=khFix(h),Q=fzP(P.fz),why=Q?fzWhy(h,Q):null,seen=!!K.seen[P.id];let c='kx-pin',st='';
+  if(why){c+=' kx-lock';st=`🔒 ${why.s}`}
+  else if(!seen){c+=' kx-new';st=`✦ ${ae('مكان جديد','New place')}`}
+  else{let R={t:''};try{R=P.st?P.st(h,P):R}catch(e){}st=R.t||''}
+  if(K.at===P.id)c+=' kx-here';
+  return `<button class="${c}" data-kh="${P.id}" aria-label="${esc(khNm(P))}" style="left:${kxL(P.x).toFixed(3)}%;top:${kxT(P.y).toFixed(3)}%"><span class="kx-sg">${kxSign(Q?Q.ico:'deep')}${why?'<i class="kx-lk">🔒</i>':''}</span>`+
+    `<span class="kx-lw"><span class="kx-pl"><b>${khNm(P)}</b>${st?`<small>${st}</small>`:''}</span></span></button>`}
+/* ---------- the strip, the arrows, the district on top ---------- */
+function kxArr(){try{return tmArwSvg()}catch(e){return ''}}
+function kxDCur(sc){const S_=sc.clientWidth/KH_W,mx=sc.scrollWidth-sc.clientWidth;if(KX.tgt&&Date.now()-KX.tgt.t<700)return KX.tgt.i;if(sc.scrollLeft<=2)return 0;if(sc.scrollLeft>=mx-2)return KX_D.length-1;
+  const c=(sc.scrollLeft+sc.clientWidth/2)/S_-KX.W;let bi=0,bd=1e9;KX_D.forEach((d,i)=>{const v=Math.abs(d.x0+d.w/2-c);if(v<bd){bd=v;bi=i}});return bi}
+function kxDOn(){const sc=$('#kxScroll'),dn=$('#kxDn');if(!sc||!dn)return;const i=kxDCur(sc),d=KX_D[i];
+  if(dn.dataset.d!==d.id){dn.dataset.d=d.id;dn.textContent=ae(d.n[0],d.n[1]);dn.classList.remove('tm-flash');void dn.offsetWidth;dn.classList.add('tm-flash')}
+  [['kxArL',-1],['kxArR',1]].forEach(([id,s])=>{const a=$('#'+id);if(!a)return;const n=KX_D[i+s];a.disabled=!n;a.querySelector('small').textContent=n?ae(n.n[0],n.n[1]):'';a.setAttribute('aria-label',n?ae(`روح ${n.n[0]}`,`Go to ${n.n[1]}`):'')})}
+/* where a map x lands in the scroll (px) */
+const kxPx=(sc,x)=>(x+KX.W)*sc.clientWidth/KH_W;
+function kxScrollTo(sc,left,smooth){const mx=sc.scrollWidth-sc.clientWidth;left=Math.max(0,Math.min(mx,Math.round(left)));if(Math.abs(left-sc.scrollLeft)<1)return;
+  sc.scrollTo({left,behavior:smooth&&!khRM()?'smooth':'auto'})}
+function kxGoD(i){const sc=$('#kxScroll'),d=KX_D[i];if(!sc||!d)return;try{SFX.page()}catch(e){}KX.tgt={i,t:Date.now()};
+  const left=d.id==='mid'?kxPx(sc,0):kxPx(sc,d.x0+d.w/2)-sc.clientWidth/2;kxScrollTo(sc,left,1);kxDOn()}
+function kxStep(s){const sc=$('#kxScroll');if(!sc)return;const i=kxDCur(sc);if(KX_D[i+s])kxGoD(i+s)}
+/* a pin near the edge (or under an arrow) slides into view */
+const KX_PAD=58;
+function kxShow(el){const sc=$('#kxScroll');if(!sc||!el)return;const R=sc.getBoundingClientRect(),B=el.getBoundingClientRect();let dx=0;
+  if(B.left<R.left+KX_PAD)dx=B.left-R.left-KX_PAD;else if(B.right>R.right-KX_PAD)dx=B.right-R.right+KX_PAD;if(Math.abs(dx)>1){KX.tgt=null;kxScrollTo(sc,sc.scrollLeft+dx,1)}}
+/* the first view: the middle, or the side where the hero stands */
+function kxStart(h,sc){const K=khFix(h),P=khP(K.at);if(P&&P.kx)sc.scrollLeft=Math.round(kxPx(sc,P.x)-sc.clientWidth/2);else sc.scrollLeft=Math.round(kxPx(sc,0))}
+/* holding a new pin (a finger) makes it grow and is not a tap */
+function kxHold(mp){let tm=0,b0=null,x0=0,y0=0;const off=()=>{clearTimeout(tm);tm=0;if(b0){const b=b0;setTimeout(()=>b.classList.remove('kx-hold'),250)}b0=null};
+  mp.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;const b=e.target.closest('.kx-pin');if(!b)return;off();b0=b;x0=e.clientX;y0=e.clientY;
+    tm=setTimeout(()=>{tm=0;if(!b0)return;b0.classList.add('kx-hold');KX.held=b0.dataset.kh;try{SFX.tick(760)}catch(e){}},380)});
+  mp.addEventListener('pointermove',e=>{if(b0&&Math.hypot(e.clientX-x0,e.clientY-y0)>8){clearTimeout(tm);tm=0;if(!b0.classList.contains('kx-hold'))b0=null}});
+  ['pointerup','pointercancel'].forEach(k=>mp.addEventListener(k,off));mp.addEventListener('contextmenu',e=>{if(e.target.closest('.kx-pin'))e.preventDefault()})}
+function kxTapPin(h,el){const id=el.dataset.kh;if(KX.held){const g=KX.held;KX.held='';if(g===id)return}if(KX.drag||KH.busy)return;const P=khP(id);if(!P)return;
+  const Q=fzP(P.fz),why=Q&&fzWhy(h,Q);kxShow(el);if(why){toast(`🔒 ${why.t}`);try{SFX.meh()}catch(e){}cls(el,'kx-no');return}khTap(h,id,el)}
+{const k0=SCREENS.khala;SCREENS.khala=function(){const r=k0.apply(this,arguments);try{const h=S.hero,mp=$('#khMap');if(S.screen!=='khala'||!h||!mp||$('#kxScroll'))return r;
+    const sv=mp.querySelector(':scope>svg');if(!sv)return r;fzFix(h);const sd=kxSides();
+    sv.classList.add('kx-mid');sv.setAttribute('style',`left:${kxL(0).toFixed(4)}%;width:${(KH_W/KX.T*100).toFixed(4)}%;right:auto`);sv.insertAdjacentHTML('beforebegin',sd.w+sd.e);
+    mp.classList.add('kx-map');mp.style.width=(KX.T/KH_W*100).toFixed(4)+'%';
+    const wr=document.createElement('div');wr.className='kx-wrap';wr.id='kxWrap';const av=kxArr();
+    wr.innerHTML=`<div class="kx-view"><div class="kx-scroll" id="kxScroll"></div><span class="tm-dn kx-dn" id="kxDn" aria-live="polite"></span>`+
+      `<button class="tm-arw tm-arL" id="kxArL" data-dir="-1"><span class="tm-ai">${av}</span><small></small></button><button class="tm-arw tm-arR" id="kxArR" data-dir="1"><span class="tm-ai">${av}</span><small></small></button></div>`;
+    mp.replaceWith(wr);const sc=wr.querySelector('#kxScroll');sc.appendChild(mp);
+    ['kx-m1','kx-m2'].forEach((c,i)=>mp.insertAdjacentHTML('beforeend',`<i class="kx-mist ${c}" style="left:${kxL(i?KH_W:0).toFixed(3)}%"></i>`));
+    mp.querySelectorAll('.kx-pin').forEach(b=>b.onclick=()=>kxTapPin(h,b));kxHold(mp);
+    wr.querySelectorAll('.tm-arw').forEach(a=>a.onclick=()=>kxStep(+a.dataset.dir));
+    kxStart(h,sc);KX.tgt=null;KX.drag=0;let raf=0;sc.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;kxDOn()})},{passive:true});
+    /* a mouse drags the map like a finger (a drag is not a tap) */
+    let dn=null;sc.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button)return;dn={x:e.clientX,l:sc.scrollLeft,m:0}});
+    sc.addEventListener('pointermove',e=>{if(!dn)return;const dx=e.clientX-dn.x;if(!dn.m&&Math.abs(dx)>6){dn.m=1;KX.drag=1;KX.tgt=null;sc.classList.add('tm-dragging')}if(dn.m)sc.scrollLeft=dn.l-dx});
+    const up=()=>{if(dn&&dn.m)setTimeout(()=>{KX.drag=0},0);dn=null;sc.classList.remove('tm-dragging')};['pointerup','pointercancel','pointerleave'].forEach(k=>sc.addEventListener(k,up));
+    /* a tap on an old pin near the edge slides it in too */
+    mp.querySelectorAll('.kh-pin').forEach(b=>{const o=b.onclick;b.onclick=function(e){if(KX.drag)return;kxShow(b);return o&&o.call(this,e)}});
+    kxDOn();khClamp()}catch(e){console.warn(e)}return r}}
+
+/* ---------- 6.21: a water place: its screen, the boat, fishing there (S.fishZone), leaving it ---------- */
+function fzGo(h,P){const Q=fzP(P.fz);if(!Q)return;const F=fzFix(h);if(F.trip&&(F.trip.z!==Q.z||F.trip.d!==klDay(h)))F.trip=null;
+  S.fzAt=P.id;S.khVia=null;khFix(h).at=P.id;saveHero();twGo('fzone')}
+/* leaving the place: the trip ends, the fishing place is the canal again; from a boat place you stand at the river mouth */
+function fzLeave(h){const P=khP(S.fzAt),Q=P&&fzP(P.fz);fzTripEnd(h);S.fishZone='canal';if(Q&&Q.boat&&khP('fz_estuary'))khFix(h).at='fz_estuary';S.fzAt=null;saveHero();
+  try{SFX.page()}catch(e){}S.screen='khala';render();view.scrollTop=0}
+function fzBuy(h,Q){if(fzWhy(h,Q)||!Q.tk||fzTripOk(h,Q))return;if(h.money<Q.tk){toast(ae(`التذكرة ${Q.tk} جنيه، ومعاك ${h.money} بس.`,`The ticket is ${Q.tk} EGP; you have ${h.money}.`));try{SFX.meh()}catch(e){}return}
+  const F=fzFix(h);h.money-=Q.tk;F.trip={z:Q.z,d:klDay(h)};F.st.trips++;F.st.paid+=Q.tk;saveHero();S.fzSail=Date.now();
+  try{SFX.coin&&SFX.coin(1)}catch(e){}render();
+  band(`⛵ ${ae('المركب','The boat')}`,fzNm(Q),ae(`المركب طلع من المصب.. الريح ملت الشراع.. ${G('ووصلت','ووصلتي')}.`,'The boat leaves the river mouth.. the wind fills the sail.. and you are there.'),{dur:1900,sound:()=>{try{SFX.splash&&SFX.splash(.5)}catch(e){}}})}
+function fzFish(h,Q){if(fzWhy(h,Q)||(Q.tk&&!fzTripOk(h,Q)))return;S.fishZone=Q.z;S.fzAt=FZ_ID(Q.z);try{SFX.page()}catch(e){}twGo('fish')}
+/* what the fish level opens here: p133's catches (MAT fz/fl) when they exist */
+function fzCatch(z){try{return Object.keys(MAT).filter(k=>{const M=MAT[k];return M&&Array.isArray(M.fz)&&M.fz.includes(z)}).map(k=>({k,M:MAT[k],fl:Math.max(1,MAT[k].fl|0)})).sort((a,b)=>a.fl-b.fl||((a.M.tier|0)-(b.M.tier|0)))}catch(e){return []}}
+const fzMn=M=>{const n=String(M&&M.n||'');if(EN&&/[؀-ۿ]/.test(n)){try{return (typeof L10N_W!=='undefined'&&L10N_W.get(n))||n}catch(e){return n}}return n};
+function fzCatchHTML(h,Q){const C=fzCatch(Q.z),L=fzLv(h);if(!C.length)return `<div class="fz-ci">${ae(`السمك هنا بيكبر كل ما مستوى الصيد يعلى. ${G('ارمي','ارمي')} ${G('وشوف','وشوفي')}.`,'The fish here get bigger as your fishing level grows. Cast and see.')}</div>`;
+  const by={};C.forEach(c=>{(by[c.fl]=by[c.fl]||[]).push(c)});
+  return Object.keys(by).map(Number).sort((a,b)=>a-b).map(l=>`<div class="fz-cl${l>L?' lk':''}"><span class="fz-cv">${l>L?'🔒 ':''}${ae('مستوى','Level')} <bdi dir="ltr">${l}</bdi></span><span class="fz-cn">${by[l].map(c=>`<i class="fz-c${c.M.kind==='rescue'?' rs':c.M.kind==='fantasy'?' fn':''}">${esc(fzMn(c.M))}${c.M.kind==='rescue'?' 🛟':''}</i>`).join('')}</span></div>`).join('')}
+/* the whole ladder of the water: what fish level (and errand, and boat) opens which place */
+function fzLadderHTML(h){const L=fzLv(h),rows=[{n:ae('الترعة','The canal'),fl:1,ok:1,x:''}].concat(FZ_PL.map(Q=>{const w=fzWhy(h,Q),E=Q.er,W2=E&&fzP(E.z);
+    return {n:fzNm(Q),fl:Q.fl,ok:!w,x:[E?`🎣 ${E.n} ${ae('من','from')} ${fzNm(W2)}`:'',Q.tk?`⛵ ${Q.tk} ${ae('ج','EGP')}`:'',Q.x>KH_W?ae('الصحرا','desert'):''].filter(Boolean).join(' · ')}}));
+  return `<details class="fz-ld"><summary>🪜 ${ae('سلم المية: إيه بيفتح إيه','The water ladder: what opens what')} <small>${ae('مستواك','Your level')} <bdi dir="ltr">${L}</bdi></small></summary>`+
+    `<ul>${rows.map(r=>`<li class="${r.ok?'ok':''}"><b>${r.ok?'✓':'🔒'} ${r.n}</b><span>${ae('مستوى صيد','Fishing level')} <bdi dir="ltr">${r.fl}</bdi>${r.x?` · ${r.x}`:''}</span></li>`).join('')}</ul></details>`}
+SCREENS.fzone=function(){const h=S.hero;if(!h){S.screen='title';return render()}const P=khP(S.fzAt),Q=P&&fzP(P.fz);if(!P||!Q){S.fzAt=null;S.screen='khala';return render()}
+  const F=fzFix(h),why=fzWhy(h,Q),trip=fzTripOk(h,Q),ef=effNow(h),n=F.c[Q.z]|0,sail=S.fzSail&&Date.now()-S.fzSail<2500;let me='';try{me=PX.body(h)}catch(e){}
+  let act='';
+  if(why)act=`<div class="fz-lock">🔒 ${why.t}</div>`;
+  else if(Q.tk&&!trip)act=`<div class="fz-say"><b>${ae('الريس حمدان','Captain Hamdan')}:</b> ${ae(`«المركب بيطلع من المصب. التذكرة ${Q.tk} جنيه للرحلة، ${G('وتفضل','وتفضلي')} ${G('تصطاد','تصطادي')} لحد ما ${G('ترجع','ترجعي')}.»`,`«The boat leaves from the river mouth. ${Q.tk} EGP a trip, and you fish until you come back.»`)}</div>`+
+    `<button class="btn fz-go" id="fzTk"${h.money<Q.tk?' disabled':''}>⛵ ${ae(G('اركب المركب','اركبي المركب'),'Take the boat')} · <bdi dir="ltr">${Q.tk}</bdi> ${ae('جنيه','EGP')}</button>${h.money<Q.tk?`<div class="fz-note">${ae(`معاك ${h.money} جنيه بس`,`You only have ${h.money} EGP`)}</div>`:''}`;
+  else act=`${Q.tk?`<div class="fz-ok">✓ ${ae('التذكرة مدفوعة: الرحلة لحد ما ترجع','Ticket paid: the trip lasts until you go back')}</div>`:''}<button class="btn fz-go" id="fzGo">🎣 ${ae(G('اصطاد هنا','اصطادي هنا'),'Fish here')}</button>`;
+  view.innerHTML=`${twTop(fzNm(Q))}<div class="tw fz">
+    <div class="fz-pic${sail?' fz-sail':''}">${kxCrop(Q)}<span class="fz-sg">${kxSign(Q.ico)}</span>${me?`<span class="fz-me">${me}</span>`:''}${sail?'<i class="fz-boat">⛵</i>':''}</div>
+    <div class="fz-hd"><b>${fzNm(Q)}</b><small>${ae(Q.m[0],Q.m[1])}</small></div>
+    <div class="kh-st"><span>🎣 ${ae('مستوى الصيد','Fishing level')} <bdi dir="ltr">${fzLv(h)}</bdi></span><span>💧 ${ae('مجهود','Effort')} <bdi dir="ltr">${ef}/${EFF_MAX}</bdi></span><span>💰 <bdi dir="ltr">${h.money}</bdi></span>${n?`<span>🐟 ${ae('اصطدت هنا','Caught here')} <bdi dir="ltr">${n}</bdi></span>`:''}</div>
+    ${act}
+    <div class="tw-lbl">${ae('إيه بيطلع هنا','What bites here')}</div>${fzCatchHTML(h,Q)}
+    ${fzLadderHTML(h)}
+    <button class="btn ghost fz-map" id="fzMap">🗺 ${ae(G('ارجع للخريطة','ارجعي للخريطة'),'Back to the map')}</button></div>`;
+  bindQ();const b=$('#back');if(b){b.textContent=ae('الخريطة','Map');b.onclick=()=>fzLeave(h)}
+  const m=$('#fzMap');if(m)m.onclick=()=>fzLeave(h);const g=$('#fzGo');if(g)g.onclick=()=>fzFish(h,Q);const t=$('#fzTk');if(t)t.onclick=()=>fzBuy(h,Q)};
+/* fishing at a place: its name on top, its water's colour, and «رجوع» back to the place */
+{const f0=SCREENS.fish;SCREENS.fish=function(){const r=f0.apply(this,arguments);try{const P=S.fzAt&&khP(S.fzAt),Q=P&&fzP(P.fz);if(S.screen!=='fish'||!Q)return r;
+    if(S.fishZone!==Q.z)S.fishZone=Q.z;const h2=view.querySelector('.top h2');if(h2)h2.textContent=fzNm(Q);const st=$('#gxStage');if(st)st.classList.add('fz-w-'+Q.z);
+    const b=$('#back');if(b){b.textContent=ae('رجوع','Back');const ob=b.onclick;b.onclick=function(e){KX.toZone=1;try{if(ob)ob.call(this,e)}catch(err){console.warn(err)}finally{KX.toZone=0}if(S.screen!=='fzone'){S.screen='fzone';render()}view.scrollTop=0}}}catch(e){console.warn(e)}return r}}
+/* leaving: the map, the town, the title or an area end the visit (S.fishZone back to the canal); fishing opened any other way is the canal */
+{const r0=render;render=function(){try{if(KX.toZone&&S.fzAt&&(S.screen==='town'||S.screen==='title'||S.screen==='khala'))S.screen='fzone';
+  const s=S.screen;if(s==='khala'||s==='town'||s==='title'||s==='roam'){if(S.fzAt){const h=S.hero;if(h&&fzTripEnd(h))saveHero()}S.fzAt=null;S.fishZone='canal'}
+  else if(s==='fish'&&!S.fzAt)S.fishZone='canal'}catch(e){}return r0.apply(this,arguments)}}
+
+/* ---------- 6.21: the hint on the map, help, the look ---------- */
+{const k0=SCREENS.khala;SCREENS.khala=function(){const r=k0.apply(this,arguments);try{if(S.screen!=='khala')return r;const t=view.querySelector('.kh-hint');
+  if(t&&!t.querySelector('.kx-hn'))t.insertAdjacentHTML('beforeend',` <span class="kx-hn">${ae(`${G('اسحب','اسحبي')} الخريطة يمين وشمال أو ${G('دوس','دوسي')} على الأسهم: المية على الشمال، والصحرا على اليمين.`,'Drag the map sideways or tap the arrows: the water is on the left, the desert on the right.')}</span>`)}catch(e){}return r}}
+{const H=HELP.find(t=>t.h==='الخلا');if(H){const b0=H.b;H.b=()=>b0()+'<br>'+ae(
+  `<b>المية والصحرا:</b> الخريطة بقت أعرض: ${G('اسحبها','اسحبيها')} أو ${G('دوس','دوسي')} على الأسهم. على الشمال المية: الفرع العميق، برك المستنقع، أرض الفيضان، البحيرة، المصب، مغارة المية، وبالمركب من المصب الساحل وخلجان الصخر والبحر البعيد. على اليمين الصحرا: الواحة والمية القديمة.<br>`+
+  `كل مكان بيفتح بمستوى الصيد، وشوية منها كمان بمهمة صغيرة لعم سيد أو عم عواد (سمك ${G('تصطاده','تصطاديه')} من مكان تاني). المركب بتذكرة كل رحلة، والرحلة بتخلص لما ${G('ترجع','ترجعي')} للخريطة. «سلم المية» في كل مكان بيقول إيه بيفتح إيه.`,
+  `<b>The water and the desert:</b> the map is wider now: drag it or tap the arrows. On the left is the water: the deep branch, the marsh pools, the floodland, the lake, the river mouth, the water cave, and by boat from the river mouth the coast, the reef coves and the far sea. On the right is the desert: the oasis and the ancient water.<br>`+
+  `Each place opens at a fishing level, and a few also need a small errand for Uncle Sayed or Uncle Awad (fish caught somewhere else). The boat takes a ticket each trip, and the trip ends when you go back to the map. «The water ladder» at every place shows what opens what.`)}}
+{const st=document.createElement('style');st.textContent=`
+.kx-wrap{border-radius:6px;overflow:hidden;border:3px solid #46271e;box-shadow:0 0 0 2px #1f1420,0 8px 22px #000a;background:#1b1d3b}
+.kx-view{position:relative}
+.kx-scroll{direction:ltr;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab}
+.kx-scroll::-webkit-scrollbar{display:none}.kx-scroll.tm-dragging{cursor:grabbing;user-select:none}
+.kh-map.kx-map{border:0;border-radius:0;box-shadow:none;max-width:none;direction:ltr}
+.kx-map>svg.kx-side,.kx-map>svg.kx-mid{position:absolute;top:0;bottom:auto;right:auto;height:100%}
+.kx-map .kh-me:not(.kh-me2){width:${(7/KX.T*100).toFixed(3)}%}
+.kx-mist{position:absolute;top:0;bottom:0;width:${(14/KX.T*100).toFixed(3)}%;transform:translateX(-50%);pointer-events:none;z-index:1;background:linear-gradient(90deg,#1f142000,#1f142070 50%,#1f142000)}
+.kx-dn{z-index:6}
+.kx-pin{position:absolute;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0;margin:0;border:0;background:none;color:var(--ink);font:inherit;cursor:pointer;min-width:48px;min-height:44px;
+  transform:translate(-50%,-42px);-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.kx-sg{position:relative;display:block;width:33px;height:42px;transform-origin:50% 100%;transition:transform .16s ease-out,filter .16s;filter:drop-shadow(0 2px 0 #0009)}
+.kx-sg svg{display:block;width:100%;height:100%}
+.kx-lk{position:absolute;top:-7px;right:-9px;font-style:normal;font-size:12px;line-height:1;filter:drop-shadow(0 1px 0 #000)}
+.kx-lw{display:block;transform-origin:50% 0;transition:transform .16s ease-out}
+.kx-pl{display:flex;flex-direction:column;align-items:center;padding:2px 7px 3px;background:#1f1420e8;border:2px solid #74412a;line-height:1.15;white-space:nowrap;direction:${EN?'ltr':'rtl'};
+  clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))}
+.kx-pl b{font-family:var(--display);font-weight:400;font-size:${EN?13:14}px;color:var(--gold2)}.kx-pl small{font-size:10px;font-weight:700;color:var(--mute)}
+.kx-pin.kx-hold{z-index:5}.kx-pin.kx-hold .kx-sg{transform:scale(1.28);filter:brightness(1.12) drop-shadow(0 0 3px #ffe08a)}.kx-pin.kx-hold .kx-lw{transform:scale(1.15)}.kx-pin.kx-hold .kx-pl{border-color:#fff0b0}
+@media (hover:hover){.kx-pin:hover{z-index:5}.kx-pin:hover .kx-sg{transform:scale(1.28);filter:brightness(1.12) drop-shadow(0 0 3px #ffe08a)}.kx-pin:hover .kx-lw{transform:scale(1.15)}.kx-pin:hover .kx-pl{border-color:var(--gold2)}}
+.kx-lock .kx-sg{filter:grayscale(.7) brightness(.62) drop-shadow(0 2px 0 #0009)}.kx-lock .kx-pl{border-color:#46424d}.kx-lock .kx-pl b{color:var(--mute)}.kx-lock .kx-pl small{color:var(--dim)}
+.kx-new .kx-pl{border-color:#c98326}.kx-new .kx-pl small{color:#fff0b0}.kx-here .kx-pl{border-color:var(--gold2)}
+.kx-new .kx-sg:after{content:'';position:absolute;left:50%;top:13px;width:34px;height:34px;margin:-17px 0 0 -17px;border:2px solid #f3c14d;border-radius:50%;animation:khP 1.5s steps(5) infinite;pointer-events:none}
+.kx-pin.kx-no{animation:khNo .32s steps(4)}.kx-pin:active .kx-sg{transform:translateY(1px)}
+.fz{gap:10px}
+.fz-pic{position:relative;width:100%;aspect-ratio:64/30;border-radius:8px;overflow:hidden;border:3px solid #46271e;box-shadow:0 0 0 2px #1f1420,0 6px 16px #0009;background:#1b1d3b}
+.fz-pic>svg{position:absolute;inset:0;display:block;width:100%;height:100%}
+.fz-sg{position:absolute;left:50%;top:62%;width:44px;height:56px;transform:translate(-50%,-100%);filter:drop-shadow(0 2px 0 #0009)}.fz-sg svg{display:block;width:100%;height:100%}
+.fz-me{position:absolute;left:30%;top:62%;width:36px;height:48px;transform:translate(-50%,-92%);filter:drop-shadow(0 1px 0 #000)}.fz-me>svg{display:block;width:100%;height:100%;animation:khBob 1.4s steps(2) infinite}
+.fz-boat{position:absolute;top:40%;left:-12%;font-style:normal;font-size:30px;animation:fzSail 2.2s ease-in-out forwards;filter:drop-shadow(0 2px 0 #000a)}
+@keyframes fzSail{0%{left:-12%;transform:rotate(-4deg)}50%{transform:rotate(4deg)}100%{left:104%;transform:rotate(-2deg)}}
+.fz-hd{display:flex;flex-direction:column;gap:2px;text-align:center}.fz-hd b{font-family:var(--display);font-weight:400;font-size:23px;color:var(--gold2);line-height:1.2}.fz-hd small{font-size:13px;color:var(--mute);line-height:1.5}
+.fz-lock{background:#2a1a1e;border:1px solid #74412a;border-radius:12px;padding:10px 12px;color:#ffcf9a;font-size:13.5px;line-height:1.6;text-align:center}
+.fz-say{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6}.fz-say b{color:var(--gold2)}
+.btn.fz-go{min-height:54px;width:100%;font-size:16px}.btn.fz-map{min-height:48px;width:100%}
+.fz-note{font-size:12.5px;color:#ff9a8a;text-align:center}.fz-ok{font-size:12.5px;color:#a6e3a0;text-align:center}
+.fz-ci{font-size:12.5px;color:var(--dim);text-align:center;line-height:1.6}
+.fz-cl{display:flex;gap:8px;align-items:baseline;padding:5px 2px;border-bottom:1px solid var(--line)}.fz-cv{flex:none;min-width:64px;font-size:12px;font-weight:800;color:var(--gold2)}
+.fz-cn{flex:1;min-width:0}.fz-c{display:inline-block;font-style:normal;font-size:12.5px;padding:1px 8px;margin:2px;border-radius:9px;background:#ffffff14}.fz-c.fn{background:#a578d62e}.fz-c.rs{background:#3a9e5530}
+.fz-cl.lk .fz-c,.fz-cl.lk .fz-cv{opacity:.55}
+.fz-ld{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 10px}.fz-ld>summary{min-height:48px;display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer;color:var(--gold2)}
+.fz-ld>summary small{font-weight:700;color:var(--mute);font-size:11.5px}.fz-ld ul{list-style:none;margin:0;padding:0 0 8px}
+.fz-ld li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;padding:6px 2px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim)}.fz-ld li b{font-weight:800;color:var(--mute)}.fz-ld li.ok b{color:#a6e3a0}
+.fz-w-deep .bg{filter:brightness(.82) saturate(1.15)}.fz-w-marsh .bg{filter:hue-rotate(38deg) brightness(.85) saturate(1.1)}.fz-w-flood .bg{filter:sepia(.3) saturate(1.2)}
+.fz-w-lake .bg{filter:hue-rotate(-12deg) brightness(1.06) saturate(1.2)}.fz-w-estuary .bg{filter:sepia(.18) hue-rotate(-8deg) brightness(1.04)}.fz-w-coast .bg{filter:brightness(1.12) saturate(1.3)}
+.fz-w-reef .bg{filter:hue-rotate(-28deg) saturate(1.5) brightness(1.08)}.fz-w-cave .bg{filter:brightness(.62) hue-rotate(24deg) saturate(1.3)}.fz-w-farsea .bg{filter:brightness(.74) saturate(1.35) hue-rotate(-18deg)}
+.fz-w-oasis .bg{filter:sepia(.35) saturate(1.35) hue-rotate(-12deg) brightness(1.06)}.fz-w-ancient .bg{filter:hue-rotate(150deg) saturate(1.2) brightness(.8)}
+@media (prefers-reduced-motion: reduce){.kx-sg,.kx-lw{transition:none}.kx-new .kx-sg:after,.fz-me>svg,.kx-pin.kx-no{animation:none}.fz-boat{animation:none;display:none}}`;document.head.appendChild(st)}
+/* ==========================================================================
+   سرداب 6.21 (R14, docs C19 + C40 + C57): كتالوج الصيد
+   152 catch entries (20 C19 + 60 C40 + 72 C57) on top of the 4 old fish (بلطي، قرموط، بوري، سمكة دهب). Three C19 entries are
+   creatures the game already had (جمبري = shrimp, أنقليس = eel, بياض نيلي = bayad, all from 5.3's p20.js): they keep their MAT id
+   and only get the new fields, so 149 MAT keys are new.
+   Fields on MAT (contract r14): fz zones, fl fishing level, tier, bt bait tags, kind 'fish'|'sea'|'fantasy'|'rescue'; and here
+   also: en, tod (dawn/day/evening/night or ''), pat (bite pattern), sink, tpl/col/mk (sprite), w [kg lo, hi], cf (cook family).
+   Files: 0x data · 10 sprites · 20 the pick · 25 the patterns in the mini-game · 30 the guide «دليل الصيد» · 40 sinks · 50 English.
+   The picker reads S.fishZone (p132) and h.fgear (p134) only; nothing here writes them.
+   ========================================================================== */
+const FC_ZONES=['canal','deep','marsh','flood','lake','estuary','coast','reef','cave','farsea','oasis','ancient'];
+/* zone names for the guide; p132 owns the places, these are only labels */
+const FC_ZN={canal:['الترعة','The canal'],deep:['الفرع العميق','The deep branch'],marsh:['المستنقع','The marsh'],flood:['أرض الفيضان','The floodland'],
+  lake:['البحيرة','The lake'],estuary:['المصب','The estuary'],coast:['الساحل','The coast'],reef:['الشعاب','The reef'],cave:['مغارة المية','The water cave'],
+  farsea:['البحر البعيد','The far sea'],oasis:['الواحة','The oasis'],ancient:['المية القديمة','The ancient water']};
+const FC_KINDS=['fish','sea','fantasy','rescue'];
+const FC_TODS=['dawn','day','evening','night'];
+const FC_PATS=['quick_bite','patient_hold','reverse_pull','double_tap','false_surge','slow_drift'];
+const FC_SINKS=['cook_family','npc_order','bait_convert','fish_collection','sell','rescue'];
+const FC_BAITS=['worm','dough','small_fish','shiny_lure','shellbait','rare_lure'];
+/* the old canal fish (p9b rollFish): the canal's own roll keeps giving these exactly as before */
+const FC_OLD=['bolti','qarmout','bouri','goldfish','shoe','bisaria','shrimp','bayad','eel'];
+/* the C19 entries that are an existing creature */
+const FC_REUSE={shrimp:'جمبري (C19)',eel:'أنقليس (C19)',bayad:'بياض نيلي (C19)'};
+const FC_CAT={};          /* id → entry (the 152) */
+const FC_LIST=[];         /* ids in doc order */
+const FC_DOC={};          /* id → 'C19' | 'C40' | 'C57' */
+/* price: by tier and fish level, a fantasy creature a little more; a rescue has none (never sold).
+   T0 8–11 · T1 20–28 · T2 50–70 · T3 100–150 (old: بلطي 8, قرموط 15, بوري 20, بياض 40, تعبان مية 70, سمكة دهب 120) */
+const FC_PB=[8,20,50,100];
+const fcPrice=e=>e.kind==='rescue'?0:Math.round(FC_PB[e.tier]*(1+.04*(e.fl-1))*(e.kind==='fantasy'?1.1:1));
+/* row: [id, ar, en, zones, fl, tier, bait tags, kind, tod, pattern, sink, template, colours ADEFM, mark, [kg lo, hi], cook family] */
+function FC_ADD(doc,rows){rows.forEach(r=>{const [id,ar,en,z,fl,tier,bt,kind,tod,pat,sink,tpl,col,mk,w,cf]=r;
+  const e={id,ar,en,fz:z.split(','),fl,tier,bt:bt.split(','),kind,tod:tod||'',pat,sink,tpl,col,mk:mk||'',w,cf:cf||'',doc};
+  if(sink==='oil'){e.sink='bait_convert';e.out='oil'}
+  FC_CAT[id]=e;FC_LIST.push(id);FC_DOC[id]=doc;
+  const M=MAT[id];
+  if(M){Object.assign(M,{fz:e.fz,fl:e.fl,bt:e.bt,kind:e.kind});if(M.tier==null)M.tier=e.tier;e.tier=M.tier||0;e.reuse=1}
+  else{MAT[id]={n:ar,c:PXF_C[col[0]]||'#8fa4a0',p:fcPrice(e),tier:e.tier,fz:e.fz,fl:e.fl,bt:e.bt,kind:e.kind};if(kind!=='rescue')MAT[id].fish=1;else MAT[id].rescue=1}
+  if(kind!=='rescue'&&typeof TW_SRC!=='undefined'&&!TW_SRC[id])TW_SRC[id]=FC_ZN[e.fz[0]][0]});
+  const m={};rows.forEach(r=>{if(!FC_CAT[r[0]].reuse)m[r[0]]={n:r[2]}});I18N(MAT,m)}
+/* the time of day by the town clock (p99 klHr/klPh): dawn 3–6, day 6–16, evening 16–19, night 19–3 */
+function fcTod(h){let H=12;try{H=klHr(h||S.hero)}catch(e){}return H>=3&&H<6?'dawn':H>=6&&H<16?'day':H>=16&&H<19?'evening':'night'}
+const FC_TODN={dawn:['الفجر','dawn'],day:['النهار','day'],evening:['المغرب','evening'],night:['الليل','night']};
+const fcZone=()=>{const z=S&&S.fishZone;return FC_ZONES.includes(z)?z:'canal'};
+const fcGear=h=>{const g=(h&&h.fgear)||{};return {rod:Math.max(0,Math.min(3,g.rod|0)),bait:FC_BAITS.includes(g.bait)?g.bait:''}};
+const fcLv=h=>{try{return lifeLvl(h,'fish')|0||1}catch(e){return 1}};
+/* C19: 20 species (3 of them already in the game: shrimp, eel, bayad). The doc gives a place and a level; tier, bait, pattern
+   and use are set here. Places map to the contract zones (نهر/ترعة → canal, نهر عميق → deep, مصب → estuary, ساحل/شاطئ → coast,
+   كهف مائي → cave, بحر بعيد → farsea; «مصيدة» creatures go where traps make sense). Only the eel has a time in the doc (ليل). */
+FC_ADD('C19',[
+ ['fish_qeshr_bayad','قشر بياض','Nile perch fry','canal',2,0,'small_fish','fish','','patient_hold','cook_family','fish','cgWgT','band',[.3,1.5],'bolti'],
+ ['bayad','بياض نيلي','Nile bayad','canal,deep',3,1,'small_fish,worm','fish','','patient_hold','cook_family','fish','CcWgg','',[1,6],'bayad'],
+ ['fish_shabbout','شبوط','Carp','canal',2,0,'dough','fish','','patient_hold','cook_family','deep','oBYTb','',[.5,3],'bolti'],
+ ['fish_mousa','سمك موسى','Sole','coast',4,1,'shellbait','fish','','slow_drift','cook_family','flat','tTCbT','spots',[.2,1],'bouri'],
+ ['fish_sardine','سردين','Sardine','coast',1,0,'dough','fish','','quick_bite','bait_convert','slim','ljWuK','spots',[.03,.12],''],
+ ['fish_denis','دنيس','Gilt-head bream','coast',4,1,'shellbait','fish','','double_tap','cook_family','deep','cgWyK','band',[.3,1.8],'bouri'],
+ ['fish_qarous','قاروص','Sea bass','coast',5,1,'small_fish','fish','','reverse_pull','npc_order','fish','cgWgK','',[.5,4],''],
+ ['shrimp','جمبري','Shrimp','canal,estuary',2,0,'dough,small_fish','sea','','double_tap','cook_family','shrimp','RrSmm','',[.01,.05],'shrimp'],
+ ['fish_kaboria','كابوريا','Blue crab','estuary,coast',3,1,'small_fish','sea','','double_tap','cook_family','crab','lhLlW','',[.2,.8],'shrimp'],
+ ['eel','أنقليس','Eel','canal,deep,marsh',5,2,'worm','fish','night','false_surge','cook_family','eel','TbCbv','',[.5,3],'eel'],
+ ['fish_bouri_blue','بوري أزرق','Blue mullet','estuary',4,1,'dough','fish','','quick_bite','cook_family','fish','ujWnl','band',[.4,2],'bouri'],
+ ['fish_sinnar_silver','سنار فضي','Silver sinnar','estuary',6,2,'shiny_lure','fantasy','','false_surge','fish_collection','slim','WcWuQ','glow',[.5,2.5],''],
+ ['fish_sea_snail','حلزون البحر','Sea snail','coast',2,0,'worm','sea','','patient_hold','bait_convert','snail','tTCbY','stripes',[.02,.1],''],
+ ['fish_moonfish','سمكة القمر','Moonfish','cave',7,2,'shiny_lure','fantasy','','slow_drift','fish_collection','deep','CcWQY','glow',[1,5],''],
+ ['fish_coral_serpent','ثعبان المرجان','Coral serpent','reef',7,2,'shiny_lure','fantasy','','false_surge','npc_order','eel','RrYmr','stripes',[1,4],''],
+ ['fish_living_pearl','لؤلؤة البحر الحية','Living sea pearl','cave',8,3,'rare_lure','fantasy','','patient_hold','fish_collection','shell','PpWCW','glow',[.1,.4],''],
+ ['fish_small_shark','قرش صغير','Small shark','farsea',8,3,'small_fish','fish','','reverse_pull','npc_order','shark','cgWgj','',[8,30],''],
+ ['fish_river_banner','راية النهر','River banner','deep',6,2,'shiny_lure','fantasy','','reverse_pull','fish_collection','fancy','lhWrR','stripes',[.5,2],''],
+ ['fish_ghost_shrimp','جمبري أشباح','Ghost shrimp','cave',8,2,'shellbait','fantasy','','double_tap','fish_collection','shrimp','WcCQc','glow',[.01,.05],''],
+ ['fish_deep_warden','حارس الأعماق','Warden of the deep','farsea',10,3,'rare_lure','fantasy','','slow_drift','fish_collection','shark','juQhY','crown',[40,120],'']
+]);
+/* C40: 60 new creatures, ids, levels, tiers and bait as in the doc. Zones: river_bank → canal, river_deep → deep, abyss → cave for
+   T2 and farsea for T3 (contract). The doc's use column becomes a sink: طبخة/طبخة مميزة → cook_family; عقد صياد/عقد مطبخ/صنع صنارة/
+   أداة صيد → npc_order (عم سيد's board); طُعم لكائن أكبر → bait_convert; زيت سمك → bait_convert into fish oil; دليل اكتشاف/قصة مصب/
+   حكاية بحرية → fish_collection; بيع → sell (the market only). No time of day in this doc. */
+FC_ADD('C40',[
+ /* الترعة والجداول */
+ ['fish_roach','روش نهري','Roach','canal',1,0,'worm','fish','','quick_bite','cook_family','fish','cgWrr','',[.1,.5],'bolti'],
+ ['fish_rudd','رَود أحمر','Red rudd','canal',1,0,'dough','fish','','patient_hold','npc_order','deep','yoYrr','',[.1,.6],''],
+ ['fish_perch','فرخ نهري','River perch','canal',1,0,'small_fish','fish','','reverse_pull','bait_convert','fish','GqWrz','stripes',[.1,.7],''],
+ ['fish_tench','تنش طيني','Mud tench','canal',1,0,'shiny_lure','fish','','slow_drift','sell','fish','qzGzr','',[.3,1.5],''],
+ ['fish_bream','بريم فضي','Silver bream','canal',1,0,'shellbait','fish','','patient_hold','oil','deep','cgWgg','',[.2,1],''],
+ ['fish_barbel','باربل حجري','Stone barbel','canal',2,0,'worm','fish','','patient_hold','fish_collection','cat','tTCbb','spots',[.3,2],''],
+ ['fish_dace','ديس سريع','Swift dace','canal',2,0,'dough','fish','','quick_bite','cook_family','slim','cgWll','band',[.05,.3],'bolti'],
+ ['fish_gudgeon','جودجون صغير','Little gudgeon','canal',2,0,'small_fish','fish','','double_tap','npc_order','fish','tTCbT','spots',[.02,.1],''],
+ ['fish_river_eel','أنقليس النهر الصغير','Small river eel','canal',2,0,'shiny_lure','fish','','false_surge','npc_order','eel','TbCbv','',[.1,.6],''],
+ ['fish_sand_goby','جوبي الرمل','Sand goby','canal',2,0,'shellbait','fish','','double_tap','fish_collection','fish','CtWtb','spots',[.02,.08],''],
+ ['fish_mudskipper','نطّاط الطين','Mudskipper','canal',3,0,'worm','fish','','reverse_pull','npc_order','cat','tbCTL','spots',[.02,.1],''],
+ ['fish_glass_tetra','تترا زجاجية','Glass tetra','canal',3,0,'dough','fantasy','','quick_bite','fish_collection','fish','QOWLr','glow',[.01,.04],''],
+ /* الفرع العميق */
+ ['fish_nile_lates','بياض كبير','Big Nile perch','deep',3,0,'dough','fish','','reverse_pull','cook_family','fish','cgWgu','',[2,12],'bolti'],
+ ['fish_tigerfish','سمكة النمر','Tigerfish','deep',3,0,'small_fish','fish','','reverse_pull','npc_order','fish','cgWrK','stripes',[.5,4],''],
+ ['fish_needlefish','أبو منقار','Needlefish','deep',3,0,'shiny_lure','fish','','quick_bite','bait_convert','slim','OlWQl','band',[.1,.6],''],
+ ['fish_fresh_saw','منشاري النهر','River sawfish','deep',3,0,'shellbait','fantasy','','false_surge','sell','shark','cgWgW','glow',[2,9],''],
+ ['fish_river_ray','شفنين نهري','River ray','deep',3,0,'worm','fish','','slow_drift','oil','ray','TbtCy','spots',[1,6],''],
+ ['fish_snakehead','رأس الثعبان','Snakehead','deep',4,0,'dough','fish','','false_surge','fish_collection','slim','qzGzK','spots',[.5,3],''],
+ ['fish_freshwater_puffer','نفّاخة النهر','River puffer','deep',4,1,'small_fish','fish','','double_tap','cook_family','puffer','yoYTb','spots',[.1,.6],'qarmout'],
+ ['fish_lungfish','سمكة رئة','Lungfish','deep',4,1,'shiny_lure','fish','','patient_hold','npc_order','eel','tbCTb','spots',[1,5],''],
+ ['fish_paddlefish','مجذاف النهر','Paddlefish','deep',4,1,'shellbait','fish','','slow_drift','npc_order','shark','ijuhi','',[3,15],''],
+ ['fish_butter_cat','سلور زبدة','Butter catfish','deep',4,1,'worm','fish','','patient_hold','fish_collection','cat','YyWoo','',[.5,3],''],
+ ['fish_river_sturgeon','حفش نهري','River sturgeon','deep',5,1,'dough','fish','','slow_drift','npc_order','shark','cgCgg','spots',[5,25],''],
+ ['fish_ghost_koi','كوي شبح','Ghost koi','deep',5,1,'small_fish','fantasy','','false_surge','fish_collection','fancy','WCWQQ','glow',[.5,3],''],
+ /* المصب */
+ ['fish_mullet_red','بوري أحمر','Red estuary mullet','estuary',5,1,'small_fish','fish','','reverse_pull','cook_family','fish','RrWrm','band',[.4,2],'bouri'],
+ ['fish_mullet_grey','بوري رمادي','Grey sea mullet','estuary',5,1,'shiny_lure','fish','','quick_bite','npc_order','fish','cgWgg','band',[.5,2.5],''],
+ ['fish_sand_smelt','رملية لامعة','Sand smelt','estuary',5,1,'shellbait','fish','','quick_bite','bait_convert','slim','CcWlL','band',[.02,.1],''],
+ ['fish_flounder','مفلطح المصب','Estuary flounder','estuary',5,1,'worm','fish','','patient_hold','sell','flat','tTCbo','spots',[.3,2],''],
+ ['fish_seabream_black','شرغوش أسود','Black seabream','estuary',5,1,'dough','fish','','double_tap','oil','deep','jhcij','stripes',[.3,1.5],''],
+ ['fish_grouper_small','وقار صغير','Small grouper','estuary',6,1,'small_fish','fish','','reverse_pull','fish_collection','fish','TbSvB','spots',[1,5],''],
+ ['fish_anchovy','أنشوجة','Anchovy','estuary',6,1,'shiny_lure','fish','','quick_bite','cook_family','slim','ujWQn','band',[.01,.05],'bisaria'],
+ ['fish_shad','رنجة نهرية','River shad','estuary',6,1,'shellbait','fish','','false_surge','npc_order','fish','njWuK','spots',[.3,1.5],''],
+ ['fish_milkfish','سمكة اللبن','Milkfish','estuary',6,1,'worm','fish','','slow_drift','npc_order','slim','CcWQc','',[.5,3],''],
+ ['fish_tilapia_blue','بلطي أزرق','Blue tilapia','estuary',6,1,'dough','fish','','patient_hold','fish_collection','deep','ljuni','stripes',[.3,1.5],''],
+ ['fish_marsh_prawn','روبيان مستنقع','Marsh prawn','estuary,marsh',7,1,'small_fish','sea','','double_tap','npc_order','shrimp','tTSbb','',[.02,.08],''],
+ ['fish_shell_clam','محار طمي','Mud clam','estuary',7,1,'shiny_lure','sea','','patient_hold','fish_collection','shell','tTCbg','stripes',[.05,.3],''],
+ /* الساحل */
+ ['fish_mackerel','ماكريل','Mackerel','coast',7,1,'shiny_lure','fish','','quick_bite','cook_family','slim','qzWzh','stripes',[.3,1.2],'bouri'],
+ ['fish_tuna_small','تونة صغيرة','Small tuna','coast',7,1,'shellbait','fish','','reverse_pull','npc_order','fish','jhCyi','',[2,10],''],
+ ['fish_needle_coral','إبرة المرجان','Coral needle','coast',7,1,'worm','fish','','false_surge','bait_convert','slim','RrYmr','stripes',[.02,.1],''],
+ ['fish_red_mullet','بربوني أحمر','Red mullet','coast',7,1,'dough','fish','','double_tap','sell','cat','RrYym','band',[.1,.6],''],
+ ['fish_jack','سمكة الجاك','Jack','coast',7,1,'small_fish','fish','','reverse_pull','oil','deep','cjWyl','',[1,6],''],
+ ['fish_squid','حبار','Squid','coast',8,1,'shiny_lure','sea','','false_surge','fish_collection','squid','RrSmm','spots',[.2,1.5],''],
+ ['fish_octopus','أخطبوط صغير','Little octopus','coast',8,2,'shellbait','sea','','double_tap','cook_family','octo','rmRmW','spots',[.3,2],'shrimp'],
+ ['fish_cuttle','سبيدج','Cuttlefish','coast',8,2,'worm','sea','','slow_drift','npc_order','squid','tTSbW','stripes',[.3,2],''],
+ ['fish_urchin','قنفذ بحر','Sea urchin','coast',8,2,'dough','sea','','patient_hold','npc_order','urchin','pPPpK','',[.05,.3],''],
+ ['fish_rock_lobster','استاكوزا صخرية','Rock lobster','coast',8,2,'small_fish','sea','','double_tap','fish_collection','cray','rmRBm','spots',[.5,3],''],
+ ['fish_oyster','محار لؤلؤ','Pearl oyster','coast',9,2,'shiny_lure','sea','','patient_hold','npc_order','shell','cgWgW','',[.1,.5],''],
+ ['fish_sea_cucumber','خيار بحر','Sea cucumber','coast',9,2,'shellbait','sea','','slow_drift','fish_collection','slug','TbtvY','spots',[.1,.8],''],
+ /* المغارة (T2) والبحر البعيد (T3) */
+ ['fish_lantern','سمكة الفانوس','Lanternfish','cave',9,2,'shellbait','fish','','slow_drift','cook_family','lure','jhuiY','glow',[.05,.3],'bayad'],
+ ['fish_angelfish_dark','ملاك الأعماق','Deep angelfish','cave',9,2,'worm','fish','','patient_hold','npc_order','deep','jiPpp','stripes',[.2,1],''],
+ ['fish_dragon','سمكة تنين الأعماق','Deep dragonfish','cave',9,2,'dough','fish','','false_surge','bait_convert','slim','phPmr','glow',[.1,.6],''],
+ ['fish_ice_ray','شفنين الجليد','Ice ray','cave',9,2,'small_fish','fantasy','','slow_drift','sell','ray','QOWuW','glow',[1,6],''],
+ ['fish_blue_jelly','قنديل أزرق','Blue jellyfish','cave',9,2,'shiny_lure','sea','','slow_drift','oil','jelly','LlQnW','',[.1,1],''],
+ ['fish_veil_jelly','قنديل الحجاب','Veil jelly','cave',10,2,'shellbait','fantasy','','false_surge','fish_collection','jelly','PpWCP','glow',[.1,1],''],
+ ['fish_crystal_crab','سرطان بلوري','Crystal crab','cave',10,2,'worm','sea','','double_tap','cook_family','crab','QOWLu','glow',[.2,1],'shrimp'],
+ ['fish_ink_eel','أنقليس الحبر','Ink eel','cave',10,2,'dough','fantasy','','false_surge','npc_order','eel','jhuiK','glow',[.5,3],''],
+ ['fish_star_ray','شفنين النجمة','Star ray','farsea',10,3,'small_fish','fish','','slow_drift','npc_order','ray','jhYiY','spots',[3,15],''],
+ ['fish_abyss_seahorse','فرس بحر الأعماق','Deep seahorse','farsea',10,3,'shiny_lure','fish','','slow_drift','fish_collection','horse','PpYpy','glow',[.01,.05],''],
+ ['fish_moon_snail','حلزون قمري','Moon snail','farsea',10,3,'shellbait','sea','','patient_hold','npc_order','snail','CcYgy','glow',[.05,.3],''],
+ ['fish_old_seal','فقمة الحارس','Old guardian seal','farsea',10,3,'worm','rescue','','slow_drift','rescue','seal','cgCgg','',[40,90],'']
+]);
+/* C57: 72 new creatures, every field from the doc (zone, level, tier, bait, time, pattern, type, sink); type real → fish (sea for
+   shellfish), fantasy → fantasy, rescue → rescue (sink rescueCodex = released into the guide only). Floodplain → flood. */
+FC_ADD('C57',[
+ /* واحات ومياه ضحلة · bait worm */
+ ['fish_oasis_sunminnow','بلّورة الواحة','Oasis sun minnow','oasis',1,0,'worm','fish','day','quick_bite','cook_family','slim','YyWoo','',[.01,.05],'bisaria'],
+ ['fish_oasis_reedflicker','لمّاعة الغاب','Reed flicker','oasis',1,0,'worm','fantasy','dawn','patient_hold','npc_order','slim','GqWzY','glow',[.02,.1],''],
+ ['fish_oasis_sandbarb','بارب رملي','Sand barb','oasis',1,0,'worm','fantasy','evening','reverse_pull','bait_convert','fish','StCTB','spots',[.05,.3],''],
+ ['fish_oasis_goldloach','لوتش ذهبي','Golden loach','oasis',1,0,'worm','fantasy','night','double_tap','fish_collection','cat','yoYTo','spots',[.02,.1],''],
+ ['fish_oasis_datefin','زعنفانة البلح','Date fin','oasis',2,0,'worm','fantasy','day','false_surge','cook_family','fish','BbStv','',[.1,.5],'bolti'],
+ ['fish_oasis_bronzecarp','شبوط برونزي','Bronze carp','oasis',2,0,'worm','fantasy','dawn','slow_drift','npc_order','deep','oBYbT','',[.5,2.5],''],
+ ['fish_oasis_spottedgoby','جوبي منقط','Spotted goby','oasis',2,0,'worm','fish','evening','quick_bite','bait_convert','fish','CtWTb','spots',[.02,.08],''],
+ ['fish_oasis_ripplefin','ريشة الموج','Ripple fin','oasis',2,0,'worm','fantasy','night','patient_hold','fish_collection','fancy','LlWQO','stripes',[.05,.3],''],
+ ['fish_oasis_miragecat','سلور السراب','Mirage catfish','oasis',3,1,'worm','fantasy','day','reverse_pull','cook_family','cat','PcWpL','glow',[.5,3],'qarmout'],
+ ['fish_oasis_lotuspike','شوكة اللوتس','Lotus pike','oasis',3,1,'worm','fantasy','dawn','double_tap','npc_order','slim','GqWRr','spots',[.5,2],''],
+ ['fish_oasis_clayshiner','لامع الطين','Clay shiner','oasis',3,1,'worm','fantasy','evening','false_surge','bait_convert','fish','tTYyY','glow',[.05,.2],''],
+ ['fish_oasis_duskbarb','بارب الغروب','Dusk barb','oasis',3,1,'worm','fantasy','night','slow_drift','fish_collection','fish','rmRpy','stripes',[.1,.5],''],
+ /* سهول الفيضان · bait dough */
+ ['fish_flood_silverfin','فضية الفيضان','Flood silverfin','flood',3,0,'dough','fantasy','day','quick_bite','cook_family','slim','cgWCQ','glow',[.03,.15],'bisaria'],
+ ['fish_flood_mottledbream','بريم مرقط','Mottled bream','flood',3,0,'dough','fantasy','dawn','patient_hold','npc_order','deep','tTCgb','spots',[.2,1],''],
+ ['fish_flood_longwhisker','شارب طويل','Long whisker','flood',3,0,'dough','fantasy','evening','reverse_pull','bait_convert','cat','cgCgY','',[.2,1.2],''],
+ ['fish_flood_blueperch','فرخ أزرق','Blue perch','flood',3,0,'dough','fantasy','night','double_tap','fish_collection','fish','ljQhn','stripes',[.1,.6],''],
+ ['fish_flood_rustfin','زعنفانة صدئة','Rust fin','flood',4,1,'dough','fantasy','day','false_surge','cook_family','fish','BbSmr','',[.2,1],'bolti'],
+ ['fish_flood_blacktail','ذيل أسود','Black tail','flood',4,1,'dough','fantasy','dawn','slow_drift','npc_order','fish','cgWhh','',[.2,1.2],''],
+ ['fish_flood_sunstripe','مخطط شمسي','Sun stripe','flood',4,1,'dough','fantasy','evening','quick_bite','bait_convert','fish','YyWoo','stripes',[.05,.3],''],
+ ['fish_flood_mudglider','انزلاقي الطين','Mud glider','flood',4,1,'dough','fantasy','night','patient_hold','fish_collection','eel','tbCvT','spots',[.3,1.5],''],
+ ['fish_flood_grasscarp','شبوط عشبي','Grass carp','flood',5,1,'dough','fish','day','reverse_pull','cook_family','fish','qzGzq','',[1,8],'bolti'],
+ ['fish_flood_dragonfly','سمكة اليعسوب','Dragonfly fish','flood',5,1,'dough','fantasy','dawn','double_tap','npc_order','fancy','OlQPL','glow',[.05,.3],''],
+ ['fish_flood_redeye','عين حمراء','Red eye','flood',5,1,'dough','fantasy','evening','false_surge','bait_convert','fish','cgWrr','eye',[.1,.6],''],
+ ['fish_flood_crownloach','لوتش التاج','Crown loach','flood',5,1,'dough','fantasy','night','slow_drift','fish_collection','cat','yoYrY','crown',[.05,.3],''],
+ /* بردي المستنقعات · bait shellbait */
+ ['fish_marsh_bronzeshell','قوقعة برونزية','Bronze shell','marsh',5,1,'shellbait','fantasy','day','quick_bite','cook_family','shell','oBYbT','stripes',[.05,.3],'shrimp'],
+ ['fish_marsh_moonprawn','جمبري القمر','Moon prawn','marsh',5,1,'shellbait','fantasy','dawn','patient_hold','npc_order','shrimp','CcWQY','glow',[.01,.05],''],
+ ['fish_marsh_papyrusfin','زعنفانة البردي','Papyrus fin','marsh',5,1,'shellbait','fantasy','evening','reverse_pull','bait_convert','slim','GqCzt','stripes',[.1,.6],''],
+ ['fish_marsh_turtleweed','سلحفاة عشب صغيرة','Little weed turtle','marsh',5,1,'shellbait','rescue','night','double_tap','rescue','turtle','qzGtT','',[.5,2],''],
+ ['fish_marsh_shyshrimp','روبيان خجول','Shy shrimp','marsh',6,1,'shellbait','fantasy','day','false_surge','cook_family','shrimp','RrSmR','',[.01,.05],'shrimp'],
+ ['fish_marsh_spottedcray','جراد ماء منقط','Spotted crayfish','marsh',6,1,'shellbait','fantasy','dawn','slow_drift','npc_order','cray','TbtvY','spots',[.05,.3],''],
+ ['fish_marsh_blueclam','محار أزرق','Blue clam','marsh',6,1,'shellbait','fantasy','evening','quick_bite','bait_convert','shell','ljLhQ','stripes',[.05,.2],''],
+ ['fish_marsh_mistminnow','صغيرة الضباب','Mist minnow','marsh',6,1,'shellbait','fantasy','night','patient_hold','fish_collection','slim','cgWuQ','glow',[.01,.05],''],
+ ['fish_marsh_reedcrab','سرطان الغاب','Reed crab','marsh',7,2,'shellbait','fantasy','day','reverse_pull','cook_family','crab','qzGzt','',[.2,1],'shrimp'],
+ ['fish_marsh_inkgoby','جوبي الحبر','Ink goby','marsh',7,2,'shellbait','fantasy','dawn','double_tap','npc_order','fish','jhuiK','spots',[.05,.2],''],
+ ['fish_marsh_thornfin','زعنفانة الشوك','Thorn fin','marsh',7,2,'shellbait','fantasy','evening','false_surge','bait_convert','fancy','qzGzh','stripes',[.2,1],''],
+ ['fish_marsh_amberclam','محار كهرمان','Amber clam','marsh',7,2,'shellbait','fantasy','night','slow_drift','fish_collection','shell','yoYTY','glow',[.05,.3],''],
+ /* البحيرة العميقة · bait small_fish */
+ ['fish_lake_glassbass','قاروص الزجاج','Glass bass','lake',7,1,'small_fish','fantasy','day','quick_bite','cook_family','fish','QOWuW','glow',[.5,3],'bouri'],
+ ['fish_lake_stormpike','رمح العاصفة','Storm pike','lake',7,1,'small_fish','fantasy','dawn','patient_hold','npc_order','slim','nhuiY','stripes',[1,5],''],
+ ['fish_lake_ringedperch','فرخ الحلقات','Ringed perch','lake',7,1,'small_fish','fantasy','evening','reverse_pull','bait_convert','fish','GqWzy','stripes',[.2,1],''],
+ ['fish_lake_paleeel','أنقليس شاحب','Pale eel','lake',7,1,'small_fish','fantasy','night','double_tap','fish_collection','eel','CcWgc','',[.5,2.5],''],
+ ['fish_lake_speckledchar','شار مرقط','Speckled char','lake',8,2,'small_fish','fantasy','day','false_surge','cook_family','fish','jhCyR','spots',[.5,3],'bayad'],
+ ['fish_lake_mossback','ظهر الطحلب','Moss back','lake',8,2,'small_fish','fantasy','dawn','slow_drift','npc_order','fish','qztzG','spots',[1,5],''],
+ ['fish_lake_bronzekoi','كوي برونزي','Bronze koi','lake',8,2,'small_fish','fantasy','evening','quick_bite','bait_convert','fancy','oBYbW','spots',[.5,3],''],
+ ['fish_lake_sapphirefin','زعنفانة الياقوت','Sapphire fin','lake',8,2,'small_fish','fantasy','night','patient_hold','fish_collection','fancy','lhLiQ','glow',[.3,1.5],''],
+ ['fish_lake_goldenbream','بريم ذهبي','Golden bream','lake',9,2,'small_fish','fantasy','day','reverse_pull','cook_family','deep','yoYTY','glow',[.5,2.5],'bayad'],
+ ['fish_lake_silverspike','شوكة فضية','Silver spike','lake',9,2,'small_fish','fantasy','dawn','double_tap','npc_order','slim','cgWjW','spots',[.5,2],''],
+ ['fish_lake_copperjaw','فك نحاسي','Copper jaw','lake',9,2,'small_fish','fantasy','evening','false_surge','bait_convert','cat','BbSvo','',[1,4],''],
+ ['fish_lake_mirrorfish','سمكة المراية','Mirror fish','lake',9,2,'small_fish','fantasy','night','slow_drift','fish_collection','deep','WcWQu','glow',[.5,2],''],
+ /* الشعاب والمياه المالحة · bait shiny_lure */
+ ['fish_reef_butterfly','فراشة البحر','Butterflyfish','reef',9,2,'shiny_lure','fish','day','quick_bite','cook_family','deep','YyWyK','stripes',[.1,.5],'bayad'],
+ ['fish_reef_cardinal','كاردينال البحر','Cardinalfish','reef',9,2,'shiny_lure','fish','dawn','patient_hold','npc_order','fish','rmRmW','stripes',[.02,.1],''],
+ ['fish_reef_tubefish','سمكة الأنبوب','Tubefish','reef',9,2,'shiny_lure','fish','evening','reverse_pull','bait_convert','slim','yoYbr','band',[.02,.1],''],
+ ['fish_reef_sunwrasse','وراس الشمس','Sun wrasse','reef',9,2,'shiny_lure','fantasy','night','double_tap','fish_collection','fish','yrYoG','stripes',[.1,.6],''],
+ ['fish_reef_sailfin','زعنفانة الشراع','Sail fin','reef',10,2,'shiny_lure','fantasy','day','false_surge','cook_family','fancy','lhLyQ','',[1,5],'bayad'],
+ ['fish_reef_embergoby','جوبي الجمرة','Ember goby','reef',10,2,'shiny_lure','fantasy','dawn','slow_drift','npc_order','fish','rmyoY','glow',[.02,.1],''],
+ ['fish_reef_stripedparrot','ببغاء مخطط','Striped parrotfish','reef',10,2,'shiny_lure','fantasy','evening','quick_bite','bait_convert','fish','OlQGq','stripes',[.5,3],''],
+ ['fish_reef_bluedart','السهم الأزرق','Blue dart','reef',10,2,'shiny_lure','fantasy','night','patient_hold','fish_collection','slim','LlWhQ','band',[.1,.5],''],
+ ['fish_reef_spongeshimp','روبيان الإسفنج','Sponge shrimp','reef',10,3,'shiny_lure','fantasy','day','reverse_pull','cook_family','shrimp','yoYBr','spots',[.01,.05],'shrimp'],
+ ['fish_reef_spinyrockcrab','سرطان الصخور الشوكي','Spiny rock crab','reef',10,3,'shiny_lure','fantasy','dawn','double_tap','npc_order','crab','rmRmy','spots',[.3,1.5],''],
+ ['fish_reef_goldstar','نجمة بحر ذهبية','Golden sea star','reef',10,3,'shiny_lure','rescue','evening','false_surge','rescue','star','yoYoY','',[.1,.4],''],
+ ['fish_reef_coralflicker','وميض المرجان','Coral flicker','reef',10,3,'shiny_lure','fantasy','night','slow_drift','fish_collection','fancy','RrWPY','glow',[.1,.5],''],
+ /* مغارات الأعماق الأثرية · bait rare_lure */
+ ['fish_ancient_runefin','زعنفانة الرون','Rune fin','ancient',10,2,'rare_lure','fantasy','day','quick_bite','cook_family','fish','jiuhQ','glow',[.5,3],'bayad'],
+ ['fish_ancient_whispertail','ذيل الهمس','Whisper tail','ancient',10,2,'rare_lure','fantasy','dawn','patient_hold','npc_order','fancy','PpWhC','',[.3,1.5],''],
+ ['fish_ancient_shadowclam','محارة الظل','Shadow clam','ancient',10,2,'rare_lure','fantasy','evening','reverse_pull','bait_convert','shell','ihpjP','glow',[.1,.5],''],
+ ['fish_ancient_clockprawn','روبيان الساعة','Clock prawn','ancient',10,2,'rare_lure','fantasy','night','double_tap','fish_collection','shrimp','yoYbW','stripes',[.01,.05],''],
+ ['fish_ancient_prismray','شفنين المنشور','Prism ray','ancient',10,3,'rare_lure','fantasy','day','false_surge','cook_family','ray','PLWpY','glow',[2,10],'bayad'],
+ ['fish_ancient_inkstone','سمكة حجر الحبر','Inkstone fish','ancient',10,3,'rare_lure','fantasy','dawn','slow_drift','npc_order','fish','gvcbh','spots',[1,6],''],
+ ['fish_ancient_lumigoby','جوبي الضوء','Light goby','ancient',10,3,'rare_lure','fantasy','evening','quick_bite','bait_convert','fish','QOWlY','glow',[.05,.2],''],
+ ['fish_ancient_sundial','سمكة المزولة','Sundial fish','ancient',10,3,'rare_lure','fantasy','night','patient_hold','fish_collection','deep','yoYTK','stripes',[.5,3],''],
+ ['fish_ancient_starseed','بذرة بحر نجومية','Star seed','ancient',10,3,'rare_lure','rescue','day','reverse_pull','rescue','star','QOYLW','',[.05,.2],''],
+ ['fish_ancient_echoeel','أنقليس الصدى','Echo eel','ancient',10,3,'rare_lure','fantasy','dawn','double_tap','npc_order','eel','jhuiQ','stripes',[1,5],''],
+ ['fish_ancient_crystalfin','زعنفانة البلور','Crystal fin','ancient',10,3,'rare_lure','fantasy','evening','false_surge','bait_convert','fancy','QOWuL','glow',[.3,1.5],''],
+ ['fish_ancient_gatekeeper','حارس بوابة الماء','Water-gate keeper','ancient',10,3,'rare_lure','fantasy','night','slow_drift','fish_collection','fish','jiYhy','crown',[20,60],'']
+]);
+/* ---------- pictures: every catch from a few body templates (24x14 art pixels, the p17 32-colour palette, 1-px dark outline,
+   light from the top left). Roles in a template: A body, D back (darker), E belly (light), F fins, K outline, W eye shine,
+   '.' empty. A species gives five palette letters for A D E F M (M = its marks) and a mark style:
+   stripes (bars across the body), band (one line along it), spots, glow (sparkles around, for fantasy ones), crown, eye (red eye).
+   The result goes into PXI_D + PXI_FISH, so fishArt, matIcon, the bag, the market and the catch card draw it like the old fish. */
+const FC_TPL={
+ fish:{r:[
+  '........................',
+  '........KKKK............',
+  '......KKFFFFKK..........',
+  '....KKDDDDDDDDKK....KK..',
+  '...KDDDDDDDDDDDDK..KFFK.',
+  '..KDDWKDDDDDDDDDDKKFFFK.',
+  '.KAAAKKAAAAAAAAAAAKFFK..',
+  'KAAAAAAAAAAAAAAAAAAFK...',
+  '.KAAAAAAAAAAAAAAAAKFFK..',
+  '..KEEEEEEEEEEEEEEKKFFFK.',
+  '...KEEEEEEEEEEEEK..KFFK.',
+  '....KKEEKFFKEEKK....KK..',
+  '......KKKKKKKKK.........',
+  '........................'],st:[8,11,14],bd:7,sp:[[8,4],[12,5],[15,6],[10,8],[14,8],[6,7]],cr:[5,0]},
+ slim:{r:[
+  '........................',
+  '........................',
+  '.........KKKK...........',
+  '.....KKKKFFFFKKKK....KK.',
+  '...KKDDDDDDDDDDDDKK.KFFK',
+  '.KKDWKDDDDDDDDDDDDDKKFFK',
+  'KAAAKKAAAAAAAAAAAAAAFFK.',
+  '.KAAAAAAAAAAAAAAAAAKKFFK',
+  '..KKEEEEEEEEEEEEEEKK.KFK',
+  '....KKKKKKFFKKKKKK....KK',
+  '..........KK............',
+  '........................',
+  '........................',
+  '........................'],st:[7,10,13,16],bd:6,sp:[[7,4],[11,5],[15,4],[9,7],[13,7],[17,6]],cr:[3,0]},
+ deep:{r:[
+  '.......KK...............',
+  '......KFFKK.............',
+  '.....KFFFFFKK...........',
+  '....KDDDDDDDDK......KK..',
+  '...KDDDDDDDDDDK....KFFK.',
+  '..KDWKDDDDDDDDDK..KFFFK.',
+  '.KAAKKAAAAAAAAAAKKFFFK..',
+  'KAAAAAAAAAAAAAAAAAFFK...',
+  '.KAAAAAAAAAAAAAAKKFFFK..',
+  '..KEEEEEEEEEEEEK..KFFFK.',
+  '...KEEEEEEEEEEK....KFFK.',
+  '....KEEEEEEEEK......KK..',
+  '.....KKFFFKKK...........',
+  '.......KKK..............'],st:[6,9,12],bd:7,sp:[[7,4],[11,4],[9,6],[13,7],[6,9],[11,10]],cr:[3,0]},
+ flat:{r:[
+  '........................',
+  '........................',
+  '.....KKKKKKKKKKKK.......',
+  '...KKFFFFFFFFFFFFKK.....',
+  '..KDWKDDDDDDDDDDDDDK.KK.',
+  '.KDDKKDWKDDDDDDDDDDDKFFK',
+  'KDDDDDDKKDDDDDDDDDDDDFFK',
+  'KAAAAAAAAAAAAAAAAAAAAFFK',
+  '.KAAAAAAAAAAAAAAAAAAKFFK',
+  '..KFFFFFFFFFFFFFFFFK.KK.',
+  '...KKKKKKKKKKKKKKKK.....',
+  '........................',
+  '........................',
+  '........................'],st:[9,13,17],bd:7,sp:[[10,5],[14,6],[17,5],[12,8],[16,7],[6,7]],cr:[3,1]},
+ cat:{r:[
+  '........................',
+  '..........KKK...........',
+  '........KKFFFK..........',
+  '.....KKKDDDDDDKKKK...KK.',
+  '...KKDDDDDDDDDDDDDK.KFFK',
+  '..KDWKDDDDDDDDDDDDDKKFFK',
+  '.KAAKKAAAAAAAAAAAAAAFFK.',
+  'KAAAAAAAAAAAAAAAAAAKKFFK',
+  'KKEEEEEEEEEEEEEEEEKK.KFK',
+  'K.KKKEEEEEEEEEKKKK...KK.',
+  'K...KKKFFKKKKK..........',
+  '.K.....KK...............',
+  '........................',
+  '........................'],st:[8,11,14,17],bd:6,sp:[[8,4],[12,4],[16,5],[10,7],[14,7],[6,6]],cr:[3,0]},
+ eel:{r:[
+  '........................',
+  '........................',
+  '..KKKK..................',
+  '.KDWKDKK............KK..',
+  'KAAKKDDDKK.........KDFK.',
+  'KAAAAAAADDKK......KDDFK.',
+  '.KKEEAAAAADDKK...KDDAK..',
+  '...KKEEEAAAADDKKKDDAAK..',
+  '.....KKEEEAAAADDDDAAK...',
+  '.......KKEEEAAAAAAEK....',
+  '.........KKEEEEEEKK.....',
+  '...........KKKKKK.......',
+  '........................',
+  '........................'],st:[6,9,12,15,18],bd:-1,sp:[[5,5],[8,6],[11,7],[14,8],[17,7],[19,5]],cr:[1,0]},
+ shark:{r:[
+  '...........KK...........',
+  '..........KFFK..........',
+  '.........KFFFK..........',
+  '.....KKKKDDDDKKKKK...KK.',
+  '...KKDDDDDDDDDDDDDK.KFFK',
+  '.KKDDDWKDDDDDDDDDDDKFFK.',
+  'KDDDDDKKDDDDDDDDDDDDFK..',
+  'KAAAAAAAAAAAAAAAAAAAFFK.',
+  '.KKEEEEEEEEEEEEEEEAKKFFK',
+  '...KKEEEEEEEEEEEKK..KFFK',
+  '.....KKFFKKKKFKK.....KK.',
+  '......KFK....K..........',
+  '.......K................',
+  '........................'],st:[9,12,15],bd:7,sp:[[9,4],[13,5],[16,4],[11,7],[15,7],[7,6]],cr:[3,0]},
+ fancy:{r:[
+  '......KK................',
+  '.....KFFK.KK............',
+  '.....KFFFKFFK...........',
+  '....KKDDDDDDDK.....KKK..',
+  '...KDDDDDDDDDDK...KFFFK.',
+  '..KDWKDDDDDDDDDK.KFFFFFK',
+  '.KAAKKAAAAAAAAAAKFFFFFK.',
+  'KAAAAAAAAAAAAAAAAFFFFK..',
+  '.KAAAAAAAAAAAAAAKFFFFFK.',
+  '..KEEEEEEEEEEEEK.KFFFFFK',
+  '...KEEEEEEEEEEK...KFFFK.',
+  '....KKEKFKEEKK.....KKK..',
+  '......KFFFK.............',
+  '.......KKK..............'],st:[7,10,13],bd:7,sp:[[7,4],[11,4],[9,7],[13,6],[7,9],[12,9]],cr:[3,0]},
+ lure:{r:[
+  '...KK...................',
+  '..KYYK..................',
+  '..KYYKK.................',
+  '....KK.KKKKK........KK..',
+  '......KDDDDDKK.....KFFK.',
+  '....KKDWKDDDDDKK..KFFFK.',
+  '...KAAAKKAAAAAAAKKFFFK..',
+  '..KAAAAAAAAAAAAAAAFFK...',
+  '.KWKWKWAAAAAAAAAKKFFFK..',
+  '.KAAAAEEEEEEEEEK..KFFFK.',
+  '..KKKEEEEEEEEEK....KFFK.',
+  '.....KKKKFFKKK......KK..',
+  '........KKK.............',
+  '........................'],st:[9,12,15],bd:7,sp:[[9,5],[12,6],[14,7],[10,9],[8,7],[13,9]],cr:[7,1]},
+ puffer:{r:[
+  '......K..K..K...........',
+  '.....KDKKDKKDK..........',
+  '...KKDDDDDDDDDKK........',
+  '..KDDDDDDDDDDDDDK...KK..',
+  '.KDWKDDDDDDDDDDDDK.KFFK.',
+  'KDDKKDDDDDDDDDDDDDKKFFK.',
+  'KAAAAAAAAAAAAAAAAAAFFK..',
+  'KAAAAAAAAAAAAAAAAAAFFK..',
+  'KEEEEEEEEEEEEEEEEEKKFFK.',
+  '.KEEEEEEEEEEEEEEEK..KFFK',
+  '..KEEEEEEEEEEEEEK....KK.',
+  '...KKEEEEEEEEEKK........',
+  '....K.KKKKKKK.K.........',
+  '........................'],st:[6,10,14],bd:7,sp:[[6,3],[10,3],[14,4],[8,6],[12,6],[15,7]],cr:[4,0]},
+ crab:{r:[
+  '........................',
+  '.KK..................KK.',
+  'KFFK................KFFK',
+  'KFKFK..............KFKFK',
+  '.KFFK...KK....KK...KFFK.',
+  '..KFK...KWK..KWK...KFK..',
+  '...KKKKKKKKKKKKKKKKKK...',
+  '....KDDDDDDDDDDDDDDK....',
+  '...KAAAAAAAAAAAAAAAAK...',
+  '..KAAAAAAAAAAAAAAAAAAK..',
+  '..KEEEEEEEEEEEEEEEEEEK..',
+  '.KFKKKKKKKKKKKKKKKKKKFK.',
+  'KFK.KFK.KFK..KFK.KFK.KFK',
+  '.K...K...K....K...K...K.'],st:[7,11,15],bd:9,sp:[[7,8],[11,7],[15,8],[9,9],[13,9],[17,9]],cr:[9,0]},
+ shrimp:{r:[
+  'KK......................',
+  '..KK....................',
+  '....KKKKKKKKK...........',
+  '...KDDDDDDDDDKKK........',
+  '..KDDWKDDDDDDDDDKK......',
+  '.KAAAKKAAAAAAAAAAAK.....',
+  'KAAAAAAAAAAAAAAAAAAK....',
+  '.KKEEEEEEEEEEEEEAAAAK...',
+  '...KFKFKFKFKFKKKEEAAK...',
+  '..KF.KF.KF.KF...KEEAK...',
+  '..K..K..K..K..KKKEEK....',
+  '.............KFFFKK.....',
+  '..............KFFFK.....',
+  '...............KKK......'],st:[7,10,13,16],bd:-1,sp:[[8,4],[11,3],[14,4],[10,6],[14,6],[18,7]],cr:[4,0]},
+ cray:{r:[
+  '........................',
+  'KKK.....................',
+  'KFFK.......KKKK.........',
+  'KFKFK....KKDDDDKK.......',
+  '.KFFKK..KDWKDDDDDKKK....',
+  '..KKAAK.KDKKDDDDDDDDKK..',
+  '....KAAKAAAAAAAAAAAAAAK.',
+  '..KKAAKKEEEEEEEEEEEEEAK.',
+  '.KFFKK..KKEEEEEEEEEEKKFK',
+  'KFKFK....KFKKKKKKKKKFFFK',
+  'KFFK....KF.KF.KF.KF.KFK.',
+  'KKK.....K..K..K..K...K..',
+  '........................',
+  '........................'],st:[11,14,17],bd:-1,sp:[[12,4],[15,5],[18,6],[13,7],[16,7],[11,6]],cr:[10,0]},
+ shell:{r:[
+  '........................',
+  '........KKKKKKKK........',
+  '......KKDDDDDDDDKK......',
+  '.....KDDAADDDDAADDK.....',
+  '....KDAAAAADDAAAAADK....',
+  '...KDAAAAAAAAAAAAAADK...',
+  '..KDAAAAAAAAAAAAAAAADK..',
+  '..KAAAAAAAAAAAAAAAAAAK..',
+  '..KEEEEEEEEEEEEEEEEEEK..',
+  '..KKKKKKKKKKKKKKKKKKKK..',
+  '...KEEEEEEEWKEEEEEEEK...',
+  '....KKKKKKKKKKKKKKKK....',
+  '........................',
+  '........................'],st:[6,9,12,15,18],bd:-1,sp:[[7,5],[11,4],[15,5],[9,7],[13,6],[17,7]],cr:[9,0]},
+ snail:{r:[
+  '........................',
+  '..........KKKKKK........',
+  '........KKDDDDDDKK......',
+  '.......KDDAAAAAADDK.....',
+  '......KDAAKKKKKAADDK....',
+  '..K.K.KDAKDDDDKAAADK....',
+  '..KK.KKDAKDKKDKAAADK....',
+  '...KWKKDAAKDDKAAADDK....',
+  '..KEEEKKDAAKKAAADDK.....',
+  '.KEEEEEEKKDDDDDDKKEK....',
+  'KEEEEEEEEEKKKKKKEEEEK...',
+  '.KKEEEEEEEEEEEEEEEEEEK..',
+  '...KKKKKKKKKKKKKKKKKK...',
+  '........................'],st:[9,12,15],bd:-1,sp:[[9,4],[15,4],[17,6],[16,8],[9,7],[12,3]],cr:[11,0]},
+ ray:{r:[
+  '.........KK.............',
+  '........KDDK............',
+  '.......KDDDDK...........',
+  '......KDDDDDDK..........',
+  '.....KDDDDDDDDK.........',
+  '...KKAAWKAWKAAAKK.......',
+  'KKKAAAAKKAKKAAAAAKKKKKK.',
+  '...KKAAAAAAAAAAAAKFFFFFK',
+  '.....KAAAAAAAAAAK.KKKKK.',
+  '......KEEEEEEEEK........',
+  '.......KEEEEEEK.........',
+  '........KEEEEK..........',
+  '.........KEEK...........',
+  '..........KK............'],st:[-1],bd:-1,sp:[[9,3],[11,4],[8,4],[14,7],[6,7],[12,8]],cr:[8,0]},
+ horse:{r:[
+  '..........KKK...........',
+  '........KKDDDKK.........',
+  '......KKDWKDDDDK........',
+  '.KKKKKDDDKKDDDDK........',
+  'KAAAAAAADDDDDDDK........',
+  '.KKKKKKAAADDDDKFK.......',
+  '.......KAAADDDKFFK......',
+  '........KEEADDDKFK......',
+  '........KEEAADDDK.......',
+  '.........KEEAADDK.......',
+  '..........KEEADK........',
+  '.......KKK.KEADK........',
+  '......KDK..KEDK.........',
+  '.......KKKKKKK..........'],st:[-1],bd:-1,sp:[[11,5],[12,7],[13,9],[10,3],[13,4],[12,8]],cr:[10,0]},
+ jelly:{r:[
+  '........................',
+  '........KKKKKKK.........',
+  '......KKDDDDDDDKK.......',
+  '.....KDDAAAAAAADDK......',
+  '....KDAAAAAAAAAAADK.....',
+  '....KAAWKAAAAWKAAAK.....',
+  '....KAAKKAAAAKKAAAK.....',
+  '....KEEEEEEEEEEEEEK.....',
+  '....KKFKKFKKFKKFKKK.....',
+  '.....KF.KF.KF.KF.K......',
+  '......F..F.KF..F........',
+  '.....K..KF..F.K.........',
+  '......F..K.K..F.........',
+  '.........F..............'],st:[-1],bd:-1,sp:[[7,3],[11,4],[14,3],[9,4],[13,6],[16,5]],cr:[8,0]},
+ squid:{r:[
+  '........................',
+  '....................KK..',
+  '..KK...............KDDK.',
+  '.KFFK.........KKKKKDDDK.',
+  '..KKFKKK...KKKDDDDDDDDK.',
+  '.KFFKKFFKKKDDDDDDDDDDDK.',
+  'KFFFFFFFAAWKAAAAAAAAADK.',
+  '.KFFKKFFKKKKAAAAAAAAAEK.',
+  '..KKFKKK...KKKEEEEEEEEK.',
+  '.KFFK.........KKKKKEEEK.',
+  '..KK...............KEEK.',
+  '....................KK..',
+  '........................',
+  '........................'],st:[13,16,19],bd:-1,sp:[[14,5],[17,4],[19,6],[15,7],[18,7],[20,3]],cr:[11,1]},
+ octo:{r:[
+  '........KKKKKK..........',
+  '......KKDDDDDDKK........',
+  '.....KDDAAAAAADDK.......',
+  '....KDAAAAAAAAAADK......',
+  '....KAAAAAAAAAAAAK......',
+  '....KAAWKAAAWKAAAK......',
+  '....KAAKKAAAKKAAAK......',
+  '.....KEEEEEEEEEEK.......',
+  '...KKFKFKFKFKFKFKKK.....',
+  '..KFFKFKFKFKFKFKFFK.....',
+  '.KFK.KF.KF.KF.KF.KFK....',
+  '.KK..KK.KF.KF.KK..KK....',
+  '.........K..K...........',
+  '........................'],st:[-1],bd:-1,sp:[[7,3],[11,2],[14,3],[9,4],[13,4],[6,4]],cr:[8,0]},
+ urchin:{r:[
+  '.......K..K..K..........',
+  '....K..KK.K.KK..K.......',
+  '.....KKDDKDKDDKK........',
+  '..K.KDDDDDDDDDDDK.K.....',
+  '...KDDDDDDDDDDDDDK......',
+  '.KKDDAAAAAAAAAAADDKK....',
+  '...KAAAAAAAAAAAAAAK.....',
+  '.KKAAAAAWKAAWKAAAAKK....',
+  '...KAAAAKKAAKKAAAAK.....',
+  '..KKEEEEEEEEEEEEEEKK....',
+  '....KEEEEEEEEEEEEK......',
+  '.....KKKKKKKKKKKK.......',
+  '........................',
+  '........................'],st:[-1],bd:-1,sp:[[6,4],[10,3],[14,4],[7,6],[12,6],[16,6]],cr:[8,0]},
+ star:{r:[
+  '..........KK............',
+  '.........KAAK...........',
+  '.........KAAK...........',
+  '........KAAAAK..........',
+  'KKKKKKKKAAAAAAKKKKKKKK..',
+  '.KAAAAAAAAAAAAAAAAAAK...',
+  '...KAAAAWKAAWKAAAAK.....',
+  '.....KAAKKAAKKAAAK......',
+  '.....KAAAAEEAAAAAK......',
+  '....KAAAAKKKKAAAAAK.....',
+  '...KAAAK......KAAAK.....',
+  '..KAAK..........KAAK....',
+  '..KKK............KKK....',
+  '........................'],st:[-1],bd:-1,sp:[[10,2],[11,4],[4,5],[16,5],[5,10],[16,10]],cr:[9,0]},
+ slug:{r:[
+  '........................',
+  '........................',
+  '........................',
+  '....K.K.K.K.K.K.K.......',
+  '...KDKDKDKDKDKDKDKK.....',
+  '..KDDDDDDDDDDDDDDDDKK...',
+  '.KDWKDDDDDDDDDDDDDDDDK..',
+  'KAAKKAAAAAAAAAAAAAAAAAK.',
+  'KAAAAAAAAAAAAAAAAAAAAAK.',
+  '.KEEEEEEEEEEEEEEEEEEEK..',
+  '..KKFKKFKKFKKFKKFKKKK...',
+  '........................',
+  '........................',
+  '........................'],st:[7,11,15,19],bd:-1,sp:[[6,6],[10,5],[14,6],[18,5],[8,8],[16,8]],cr:[3,1]},
+ seal:{r:[
+  '........................',
+  '....KKKKK...............',
+  '...KDDDDDK..............',
+  '..KAWKAAAAK.............',
+  '.KKAKKAAAAAK............',
+  'KDKAAAAAAAAAKKKK........',
+  '.KKEEAAAAAAAADDDKKK.....',
+  '..KEEEAAAAAAAAAADDDKK...',
+  '..KEEEEEAAAAAAAAAAAADK..',
+  '...KFKEEEEEEEEAAAAAAAK..',
+  '..KFFKEEEEEEEEEEEEEEKFK.',
+  '..KKK.KKKKKKKKKKKKKKKFFK',
+  '....................KKK.',
+  '........................'],st:[-1],bd:-1,sp:[[12,6],[15,7],[18,8],[9,5],[13,8],[16,6]],cr:[4,0]},
+ turtle:{r:[
+  '........................',
+  '........KKKKKKKK........',
+  '......KKDDADDADDKK......',
+  '.....KDDAADDAADDADK.....',
+  '....KDAADDAADDAADDDK....',
+  '..KKKDDAADDAADDAADDKK...',
+  '.KAAAKKKKKKKKKKKKKKKFK..',
+  'KAWKAAKEEEEEEEEEEEEKFFK.',
+  'KAKKAAKKKKKKKKKKKKKK.KK.',
+  '.KAAAK.KAAK.....KAAK....',
+  '..KKK..KAAK.....KAAK....',
+  '........KK.......KK.....',
+  '........................',
+  '........................'],st:[-1],bd:-1,sp:[[9,3],[13,3],[11,4],[8,4],[15,4],[16,2]],cr:[1,4]}
+};
+/* where a sparkle goes for «glow» (empty cells only) */
+const FC_GLOW=[[1,1],[22,1],[0,12],[22,12],[12,0],[23,6]];
+function fcSprite(e){const T=FC_TPL[e.tpl]||FC_TPL.fish,col=(e.col+'ggggg').split(''),map={A:col[0],D:col[1],E:col[2],F:col[3]},M=col[4];
+  const g=T.r.map(r=>r.padEnd(24,'.').split(''));
+  const body=c=>c==='A'||c==='D'||c==='E';
+  if(e.mk==='stripes')T.st.forEach(x=>{if(x<0)return;for(let y=0;y<14;y++)if(g[y][x]==='A'||g[y][x]==='D')g[y][x]='M'});
+  if(e.mk==='band'&&T.bd>=0)g[T.bd]=g[T.bd].map((c,x)=>c==='A'&&x>4?'M':c);
+  if(e.mk==='spots')T.sp.forEach(([x,y])=>{if(g[y]&&body(g[y][x]))g[y][x]='M'});
+  if(e.mk==='eye')g.forEach(r=>r.forEach((c,x)=>{if(c==='W')r[x]='M'}));
+  if(e.mk==='glow')FC_GLOW.forEach(([x,y])=>{if(g[y]&&g[y][x]==='.')g[y][x]='M'});
+  if(e.mk==='crown'){const [cx,cy]=T.cr;[[0,0,'M'],[2,0,'M'],[4,0,'M'],[0,1,'M'],[1,1,'M'],[2,1,'M'],[3,1,'M'],[4,1,'M']].forEach(([dx,dy,c])=>{const y=cy+dy,x=cx+dx;if(g[y]&&g[y][x]!==undefined&&(g[y][x]==='.'||g[y][x]==='K'||body(g[y][x])||g[y][x]==='F'))g[y][x]=c})}
+  return '24x14:'+g.map(r=>r.map(c=>c==='M'?M:map[c]||c).join('')).join('/')}
+/* a silhouette for the guide (not caught yet): the outline and the body in two dark blues */
+function fcSil(id){const d=PXI_D[id];if(!d)return '';const i=d.indexOf(':');return d.slice(0,i+1)+d.slice(i+1).replace(/[A-Za-z]/g,c=>c==='K'?'h':'i')}
+FC_LIST.forEach(id=>{const e=FC_CAT[id];if(e.reuse&&PXI_D[id])return;PXI_D[id]=fcSprite(e);PXI_FISH[id]=1});
+/* ---------- picking the catch (p9b fsCast calls fcCastPick at the cast) ----------
+   The place (S.fishZone), the rod (h.fgear.rod gates the tier: rod r catches tiers ≤ r), the bait loaded now (h.fgear.bait: ×3 for a
+   species that likes it), the fishing level (a species needs its level; a little more weight for each level above, up to 5), the
+   town hour (a species with a time: ×2 in its time, ×0.6 outside it) and luck (tree «rare»/«gold», صبر, the rare lure, capped at
+   FC_LUCK_CAP) on tiers 2–3. A rescue creature comes now and then (×0.35).
+   الترعة: the old roll (rollFish) stays exactly as it was for most casts; the new canal species take a small share
+   (FC_CANAL.base, more with a bait they like or a better rod). The old canal fish are not in that share, so their balance holds.
+   Any other place: only its own species, plus an old slipper now and then; a rod too weak for every species there gives junk. */
+const FC_TW=[1,.45,.18,.06],FC_LUCK_CAP=.5,FC_CANAL={base:.1,bait:.12,rod:.03},FC_JUNK=.04;
+function fcLuck(h){let l=0;try{l+=Math.max(0,tf(h,'fish','rare'))+.5*Math.max(0,tf(h,'fish','gold'))}catch(e){}
+  if(h&&h.hidden&&h.hidden.sabr)l+=.1;if(fcGear(h).bait==='rare_lure')l+=.25;try{l+=.03*R3x(treeR(h,'fish','bait'))}catch(e){}
+  return Math.min(FC_LUCK_CAP,Math.max(0,l))}
+const R3x=r=>Math.min(3,Math.max(0,+r||0));
+function fcCands(h,zone,o){o=o||{};const L=o.lv!=null?o.lv:fcLv(h),G=o.gear||fcGear(h),tod=o.tod||fcTod(h),luck=o.luck!=null?o.luck:fcLuck(h),out=[];
+  FC_LIST.forEach(id=>{const e=FC_CAT[id];if(!e.fz.includes(zone)||!MAT[id])return;if(zone==='canal'&&FC_OLD.includes(id))return;
+    if(L<e.fl||e.tier>G.rod)return;
+    let w=FC_TW[e.tier]*(1+.06*Math.min(5,L-e.fl));
+    if(G.bait&&e.bt.includes(G.bait))w*=3;
+    if(e.tod)w*=e.tod===tod?2:.6;
+    if(e.kind==='rescue')w*=.35;
+    if(e.tier>=2)w*=1+luck;
+    out.push({k:id,w})});
+  return out}
+function fcRoll(c){const T=c.reduce((a,x)=>a+x.w,0);let r=Math.random()*T;for(const x of c){r-=x.w;if(r<0)return x.k}return c.length?c[c.length-1].k:null}
+/* the canal's share for new species */
+function fcCanalShare(h,c){const G=fcGear(h);let p=FC_CANAL.base;if(G.bait&&c.some(x=>FC_CAT[x.k].bt.includes(G.bait)))p+=FC_CANAL.bait;if(G.rod>=1)p+=FC_CANAL.rod;return p}
+/* the pick: {k, z, x} (x = the bite pattern's timing, only for a species picked here) */
+function fcPick(h,old,o){o=o||{};const zone=o.zone||fcZone(),c=fcCands(h,zone,o);
+  if(zone==='canal'){if(c.length&&Math.random()<fcCanalShare(h,c))return {k:fcRoll(c),z:zone,neu:1};return {k:old?old(h):'bolti',z:zone}}
+  if(MAT.shoe&&Math.random()<FC_JUNK)return {k:'shoe',z:zone};
+  if(!c.length)return {k:MAT.shoe?'shoe':'bolti',z:zone,weak:1};
+  return {k:fcRoll(c),z:zone,neu:1}}
+function fcCastPick(h,old){const P=fcPick(h,old);try{const e=FC_CAT[P.k];if(P.neu&&e&&typeof fcPatX==='function')P.x=fcPatX(e.pat,P.k)}catch(e){console.warn(e)}
+  if(P.weak)setTimeout(()=>{try{if(S.screen==='fish')toast(ae(`سنارتك ضعيفة على المية دي.. ${G('محتاج','محتاجة')} سنارة أقوى`,'Your rod is too weak for this water.. you need a stronger one'))}catch(e){}},900);
+  return P}
+/* ---------- the six bite patterns in the existing mini-game ----------
+   Wait/bite (fsCast reads P.x): wm = wait ×, nn = nibbles [min,max], win = pull window ×, dip = how deep the float goes (17 today,
+   negative = it pops up), ev = extra moments during the wait, bite = what the float does when it bites. Everything shown is
+   true: a fake tug moves the float sideways (never down) and says so; a first tap says a second one is coming.
+     quick_bite   short wait, 0–1 nibbles, a short window (×0.75)
+     patient_hold long wait, many nibbles, the float stays under longer (×1.6)
+     reverse_pull the float pops UP and slides sideways instead of diving; in the fight its pulls go up, not down
+     double_tap   a first light tap («نقرة») just before the real bite; pulling on it is too early. In the fight its jumps come in pairs
+     false_surge  1–2 sideways tugs of the current during the wait («ده تيار»); in the fight it darts out and straight back (it flashes)
+     slow_drift   the float drifts slowly away during the wait, sinks shallow, a longer window (×1.35); in the fight it moves slowly
+   Fight (REEL[k], tiers 1–3; tier 0 lands at once like بلطي): a base by tier, changed by the pattern; M.fx runs in reelStep. */
+const fcFS=()=>(typeof gxDev!=='undefined'&&gxDev&&gxDev.FS)||{};
+const fcSfx=(n,a)=>{try{const f=SFX[n];if(typeof f==='function')f(a)}catch(e){}};
+const fcVib=p=>{try{if(typeof vib==='function')vib(p)}catch(e){}};
+const FC_BITE={
+  quick_bite:{wm:.55,nn:[0,1],win:.75},
+  patient_hold:{wm:1.3,nn:[2,5],win:1.6,dip:20},
+  reverse_pull:{win:1,dip:-8,bite:()=>{const F=fcFS();F.sxK=.25;F.sxT=(Math.random()<.5?-1:1)*14}},
+  double_tap:{nn:[0,2],win:.9,ev:w=>[{t:Math.max(500,w-650),f:(rip,say)=>{const F=fcFS();F.dv=(F.dv||0)+6;rip(2);fcSfx('plop',.8);fcVib([20,40,20]);
+    say(ae(T('نقرة.. {استنى|استني} التانية'),'A tap.. wait for the second one'))}}]},
+  false_surge:{wm:1.15,nn:[0,2],ev:w=>{const n=Math.random()<.4?2:1,o=[];for(let i=0;i<n;i++){const t=500+Math.random()*Math.max(200,w-1300);
+    o.push({t,f:(rip,say)=>{const F=fcFS();F.sxK=.3;F.sxT=(Math.random()<.5?-1:1)*16;rip(1);fcSfx('plop',.3);say(ae('ده تيار شد العوامة.. مش سمكة','Just the current tugging the float.. not a fish'));
+      setTimeout(()=>{const G2=fcFS();G2.sxT=0},450)}})}return o}},
+  slow_drift:{wm:1.25,win:1.35,dip:12,ev:()=>[{t:250,f:()=>{const F=fcFS();F.sxK=.012;F.sxT=(Math.random()<.5?-1:1)*18}}]}
+};
+function fcPatX(pat){const B=FC_BITE[pat];return B?Object.assign({pat},B):null}
+/* the fight */
+const FC_RB=[null,{fill:.23,drain:.14,lo:.1,hi:.9,tmin:700,tmax:1500,spd:.45,jump:.12,ja:.22,pull:.12,pa:.22},
+  {fill:.21,drain:.16,lo:.06,hi:.94,tmin:550,tmax:1200,spd:.52,jump:.18,ja:.25,pull:.18,pa:.24},
+  {fill:.2,drain:.18,lo:.04,hi:.96,tmin:450,tmax:1000,spd:.58,jump:.22,ja:.28,pull:.22,pa:.26}];
+function fcSurgeFx(){try{const f=document.getElementById('fsFi');if(f){f.classList.remove('fc-sg');void f.offsetWidth;f.classList.add('fc-sg')}}catch(e){}}
+const FC_RX={
+  quick_bite:M=>{M.tmin*=.7;M.tmax*=.7;M.spd*=1.15},
+  patient_hold:M=>{M.spd*=.8;M.fill*=.85;M.drain*=.75;M.tmin*=1.3;M.tmax*=1.3},
+  reverse_pull:M=>{M.rp=M.pull+.3;M.pull=0;M.fx=(R,s)=>{if(R.burst<=0&&Math.random()<M.rp*s){R.burst=320;R.bv=M.pa/.32;R.ev.push('pull')}}},
+  double_tap:M=>{M.jump+=.15;M.fx=(R,s,dt)=>{if(R.burst===200&&!(R.dj>0)){R.dj=230;R.djv=R.bv}
+    else if(R.dj>0){R.dj-=dt;if(R.dj<=0&&R.burst<=0){R.burst=199.9;R.bv=R.djv;R.ev.push('jump')}}}},
+  false_surge:M=>{M.fx=(R,s)=>{if(R.fsT>0){R.fsT-=s*1000;if(R.fsT<=180&&!R.fsB){R.fsB=1;R.bv=-R.bv}}
+    else if(R.burst<=0&&Math.random()<.25*s){R.fsT=360;R.fsB=0;R.burst=360;R.bv=(R.fy>.5?-1:1)*.42/.18;R.ev.push('surge');fcSurgeFx()}}},
+  slow_drift:M=>{M.spd*=.6;M.tmin*=1.6;M.tmax*=1.6;M.drain*=1.1}
+};
+function fcReel(e){const B=FC_RB[e.tier];if(!B)return null;const M=Object.assign({},B,{pat:e.pat});if(FC_RX[e.pat])FC_RX[e.pat](M);return M}
+try{const RL=typeof gxDev!=='undefined'&&gxDev&&gxDev.REEL;if(RL)FC_LIST.forEach(id=>{const e=FC_CAT[id];if(RL[id]||e.kind==='rescue'||!(e.tier>=1))return;RL[id]=fcReel(e)})}catch(e){console.warn(e)}
+{const st=document.createElement('style');st.textContent=`.fs-fish.fc-sg svg{animation:fcSg .36s ease-out}@keyframes fcSg{0%{filter:brightness(2.2) drop-shadow(0 0 5px #fff)}100%{filter:none}}`;document.head.appendChild(st)}
+/* ---------- «دليل الصيد» (fish_collection) ----------
+   h.fdex[k] = {n: caught, w: biggest weight in kg, f: first-catch reward given, r: let go (rescue)}. Every catch rolls a weight in
+   its range (FC_W for the old fish). The first catch of each new species pays once (FC_FIRST by tier, ×2 for a species whose use is
+   the collection); the old fish and the 3 reused ones fill the guide but pay nothing (a hero may have caught them long ago).
+   A rescue creature is never kept: it goes back to the water with a small reward and a line, and only the guide remembers it. */
+const FC_FIRST=[10,20,40,80],FC_FREE=[6,10,16,24];
+const FC_W={bolti:[.2,1.2],qarmout:[.5,4],bouri:[.3,2],goldfish:[.1,.6],bisaria:[.01,.05],shrimp:[.01,.05],bayad:[1,6],eel:[.5,3]};
+const FC_OLDZ=['bolti','qarmout','bouri','goldfish','bisaria'];   /* the canal's old fish not in the 152 */
+const FCX={last:null,tab:null},fcNum=(n,sg)=>`\u2066${sg||''}${n}\u2069`;
+const fcDex=h=>{if(!h.fdex||typeof h.fdex!=='object')h.fdex={};return h.fdex};
+const fcRange=k=>(FC_CAT[k]&&FC_CAT[k].w)||FC_W[k]||null;
+const fcNew=k=>!!(FC_CAT[k]&&!FC_CAT[k].reuse);
+function fcWeigh(k){const R=fcRange(k);if(!R)return 0;const x=R[0]+(R[1]-R[0])*Math.pow(Math.random(),1.6);return Math.round(x*(x<1?1000:100))/(x<1?1000:100)}
+const fcKg=w=>w<1?ae(`${Math.round(w*1000)} جرام`,`${Math.round(w*1000)} g`):ae(`${(+w.toFixed(1))} كيلو`,`${(+w.toFixed(1))} kg`);
+/* the species of every place, in the guide's order: the old canal fish first */
+function fcZoneKeys(z){const a=z==='canal'?FC_OLDZ.slice():[];FC_LIST.forEach(id=>{if(FC_CAT[id].fz.includes(z)&&!a.includes(id))a.push(id)});return a}
+const fcKnown=(h,k)=>{const D=fcDex(h)[k];return !!(D&&(D.n||D.r))||(!FC_CAT[k]||FC_CAT[k].reuse)&&(((h.res||{})[k]|0)>0||((h.overR||{})[k]|0)>0)};
+/* called by p9b fsLand once the fish is out (after addRes, before the save) */
+function fcLanded(h,k,n){const M=MAT[k];if(!M||M.junk)return;const e=FC_CAT[k];if(!e&&!FC_W[k])return;
+  const D=fcDex(h),d=D[k]||(D[k]={n:0,w:0}),w=fcWeigh(k),o={k,w,first:0,big:0,rw:0,free:0};
+  if(M.rescue){d.r=(d.r|0)+1;o.free=FC_FREE[e.tier]||6;h.money+=o.free}else d.n=(d.n|0)+(n||1);
+  if(w>(d.w||0)){o.big=d.w>0;d.w=w}
+  if(fcNew(k)&&!M.rescue&&!d.f){d.f=1;o.first=1;o.rw=(FC_FIRST[e.tier]||10)*(e.sink==='fish_collection'?2:1);h.money+=o.rw}
+  FCX.last=o;
+  if(o.first||o.free)setTimeout(()=>{try{if(o.first&&typeof floatAt==='function'){const c=document.querySelector('#fshCard .fsh-card');if(c)floatAt(c,ae(`أول مرة! +${o.rw} جنيه`,`First one! +${o.rw} coins`),'#ffd36a','crit',22)}
+    if(M.rescue){const say=document.getElementById('fshSay');if(say){say.className='fsh-say good';say.innerHTML=`<span>${fcFreeLine(k)}</span>`}}
+    fcChip(k)}catch(e){}},700);
+  else setTimeout(()=>{try{fcChip(k)}catch(e){}},700);
+  setTimeout(()=>{try{fcRowSync()}catch(e){}},800)}
+/* a rescue's line */
+function fcFreeLine(k){const L={fish_old_seal:['الفقمة بصّتلك شوية.. وغطست في هدوء','The seal looked at you a while.. then slipped under'],
+  fish_marsh_turtleweed:['السلحفاة الصغيرة رجعت بين العشب','The little turtle went back into the weeds'],fish_reef_goldstar:['النجمة رجعت للصخر ولمعت','The star went back to its rock and shone'],
+  fish_ancient_starseed:['البذرة نوّرت ونزلت للقاع','The seed glowed and sank to the bottom']}[k]||['رجع المية سليم','It went back to the water unhurt'];return ae(L[0],L[1])}
+/* the catch card's line (p9b fsCard): price or «let go», the weight, «first one», the fishing xp */
+function fcSub(k,n,xp){const o=FCX.last,M=MAT[k];if(!o||o.k!==k||!M)return '';FCX.last=null;const x=fcNum(xp,'+'),kg=o.w?` · ${fcKg(o.w)}${o.big?ae(' (أكبر واحدة!)',' (your biggest!)'):''}`:'';
+  if(M.rescue)return ae(`رجع المية · ${fcNum(o.free,'+')} جنيه${kg} · ${x} خبرة صيد`,`let go · ${fcNum(o.free,'+')} coins${kg} · ${x} fishing XP`);
+  return ae(`التمن ${M.p} جنيه${n>1?' للواحدة':''}${kg} · ${x} خبرة صيد`,`worth ${M.p} coins${n>1?' each':''}${kg} · ${x} fishing XP`)}
+/* a chip for a species caught this visit that has none (new species, other places) */
+function fcChip(k){const w=document.querySelector('.gx-chips');if(!w||!MAT[k])return;let c=w.querySelector(`.gx-chip[data-r="${k}"]`);const V=gxDev.gxVisit('fish'),n=V.n[k]||0;
+  if(!c){const t=MAT[k].tier||0;w.insertAdjacentHTML('beforeend',`<div class="gx-chip" data-r="${k}" style="--cc:${MAT[k].c}${t?`;border-color:${RARE[t].c}88`:''}"><span class="ic">${twMat(k,26)}</span><b>${n}</b><small>${resN(k)}</small></div>`)}
+  else{c.classList.remove('z');const b=c.querySelector('b');if(b)b.textContent=n}}
+/* the picture: the sprite, or its silhouette when not caught yet */
+function fcArt(k,w,sil){const d=sil?fcSil(k):PXI_D[k];if(!d)return '';const R=sil?PXI_rects(d):PXI_get(k,d),vw=R.w+2,vh=vw*.6;
+  return `<svg class="pxi" viewBox="-1 ${Math.round((R.h-vh)/2*100)/100} ${vw} ${Math.round(vh*100)/100}" width="${w}" height="${Math.round(w*6)/10}" shape-rendering="crispEdges">${R.r}</svg>`}
+const FC_KN={fish:['سمكة','Fish'],sea:['مصيد بحري','Sea catch'],fantasy:['خيالي','Fantasy'],rescue:['إنقاذ','Rescue']};
+const FC_SN={cook_family:['ينفع بدل سمك الطبخ','stands in for cooking fish'],npc_order:['عم سيد بيطلبه','Uncle Sayed asks for it'],bait_convert:['يتعمل طُعم أو زيت','makes bait or oil'],
+  fish_collection:['للدليل · مكافأة أول مرة ×2','for the guide · first reward ×2'],sell:['بيتباع في السوق','sells at the market'],rescue:['بيرجع المية · ما يتباعش وما يتاكلش','goes back to the water · never sold or eaten']};
+const FC_BN={worm:['دود','worm'],dough:['عجينة','dough'],small_fish:['سمكة صغيرة','small fish'],shiny_lure:['طُعم لامع','shiny lure'],shellbait:['طُعم صدف','shell bait'],rare_lure:['طُعم نادر','rare lure']};
+const FC_PN={quick_bite:['بيخطف بسرعة','bites fast'],patient_hold:['بيمسك بالراحة','holds patiently'],reverse_pull:['بيشد لفوق','pulls upward'],
+  double_tap:['بينقر مرتين','taps twice'],false_surge:['يعمل نفسه شادد','fakes a surge'],slow_drift:['بيسحب بالراحة','drifts slowly']};
+const fcT=a=>ae(a[0],a[1]);
+/* every species once (some live in more than one place) */
+function fcAll(h){const s=new Set();FC_ZONES.forEach(z=>fcZoneKeys(z).forEach(k=>s.add(k)));const a=[...s];return [a.filter(k=>fcKnown(h,k)).length,a.length]}
+function fcCount(h,z){const ks=fcZoneKeys(z);return [ks.filter(k=>fcKnown(h,k)).length,ks.length]}
+function fcGuide(z){const h=S.hero;if(!h)return;twSheetX();z=FC_ZONES.includes(z)?z:FCX.tab||fcZone();FCX.tab=z;const D=fcDex(h);
+  const tabs=FC_ZONES.map(x=>{const [a,b]=fcCount(h,x);return `<button class="fc-tab${x===z?' on':''}" data-fz="${x}">${fcT(FC_ZN[x])}<small>${a}/${b}</small></button>`}).join('');
+  const all=fcAll(h);
+  const cells=fcZoneKeys(z).map(k=>{const kn=fcKnown(h,k),d=D[k]||{},e=FC_CAT[k],t=(MAT[k]&&MAT[k].tier)||0;
+    return `<button class="fc-cell${kn?'':' unk'}" data-fk="${k}" style="--rc:${RARE[t].c}">${fcArt(k,72,!kn)}<b>${kn?resN(k):'؟'}</b><small>${kn?(e&&e.kind==='rescue'?ae(`رجّع ${d.r|0}`,`let go ${d.r|0}`):(d.n?ae(`${d.n|0} مرة`,`×${d.n|0}`):ae('اتصادت قبل كده','caught before')))+(d.w?` · ${fcKg(d.w)}`:''):ae(`صيد ${e?e.fl:1}`,`fishing ${e?e.fl:1}`)}</small></button>`}).join('');
+  const d=document.createElement('div');d.className='tw-sh fc-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${ae('دليل الصيد','Fishing guide')}<small>${ae(`${G('عرفت','عرفتي')} ${all[0]} من ${all[1]}`,`${all[0]} of ${all[1]} known`)}</small></div>
+    <div class="fc-tabs">${tabs}</div><div class="fc-det" id="fcDet">${ae(T('{دوس|دوسي} على أي واحدة {تعرف|تعرفي} عنها أكتر. اللي لسه ما {اصطدتهاش|اصطدتيهاش} باينة ضلّ بس.'),'Tap any one to learn more. The ones you haven\'t caught show only as a shadow.')}</div>
+    <div class="fc-grid">${cells}</div><button class="btn small" data-x="1">${ae(G('اقفل','اقفلي'),'Close')}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;try{SFX.page&&SFX.page()}catch(e){}
+  d.querySelectorAll('[data-fz]').forEach(b=>b.onclick=()=>fcGuide(b.dataset.fz));
+  d.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{const det=d.querySelector('#fcDet');if(det)det.innerHTML=fcInfo(h,b.dataset.fk)})}
+function fcInfo(h,k){const e=FC_CAT[k],kn=fcKnown(h,k),M=MAT[k],d=fcDex(h)[k]||{};
+  if(!kn)return `<b>؟</b> ${ae(`لسه ${G('ما اصطدتهاش','ما اصطدتيهاش')}.`,'Not caught yet.')} ${e?ae(`محتاج مستوى صيد ${e.fl} وسنارة ${['تدريب','بوص','حديد','محترف'][Math.min(3,e.tier)]} أو أحسن${e.tod?` · بتطلع أكتر ${FC_TODN[e.tod][0]==='الليل'?'بالليل':'وقت '+FC_TODN[e.tod][0]}`:''}.`,`Needs fishing level ${e.fl} and a ${['training','reed','iron','pro'][Math.min(3,e.tier)]} rod or better${e.tod?` · bites more at ${FC_TODN[e.tod][1]}`:''}.`):''}`;
+  const R=RARE[(M&&M.tier)||0];
+  const bits=[e?fcT(FC_KN[e.kind]):fcT(FC_KN.fish),`<span style="color:${R.c}">${R.n}</span>`];
+  if(e){bits.push(ae(`صيد ${e.fl}`,`fishing ${e.fl}`));bits.push(ae('بيحب ','likes ')+e.bt.map(b=>fcT(FC_BN[b])).join(ae(' أو ',' or ')));if(e.tod)bits.push(fcT(FC_TODN[e.tod]));bits.push(fcT(FC_PN[e.pat]))}
+  const use=e?fcT(FC_SN[e.sink]):ae('بيتباع وبيتطبخ','sells and cooks');
+  return `<b>${resN(k)}</b> · ${bits.join(' · ')}<br>${use}${e&&e.kind!=='rescue'?` · ${ae('التمن','worth')} ${M.p} ${ae('جنيه','coins')}`:''}${d.w?` · ${ae('أكبر واحدة','biggest')} ${fcKg(d.w)}`:''}`}
+{const st=document.createElement('style');st.textContent=`
+.fc-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.fc-tab{min-height:44px;border-radius:12px;border:1px solid var(--line);background:#0004;color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:4px 2px;line-height:1.3}
+.fc-tab small{font-size:11px;color:var(--mute);font-weight:700}.fc-tab.on{border-color:var(--gold);background:#3a2a1a;color:var(--gold2)}
+.fc-det{font-size:13px;line-height:1.7;background:#0005;border-radius:12px;padding:8px 10px;color:var(--ink);min-height:44px}
+.fc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.fc-cell{min-height:96px;border-radius:12px;border:1px solid color-mix(in srgb,var(--rc) 45%,transparent);background:#0004;color:var(--ink);font:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;line-height:1.3}
+.fc-cell svg{width:72px;height:auto}.fc-cell b{font-size:12.5px}.fc-cell small{font-size:11px;color:var(--mute)}
+.fc-cell.unk b{color:var(--mute);font-size:18px}.fc-cell.unk{border-color:var(--line)}
+.fc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.fc-row button{min-height:46px;margin:0;font-size:13px;padding:4px 6px;line-height:1.25}
+`;document.head.appendChild(st)}
+/* ---------- what a catch is for (C57 sinks) ----------
+   cook_family: an edible catch stands in for its family's fish (cf) in a cooking recipe (TW_REC) you are short of. The recipe's own
+     fish are used first, then the cheapest stand-ins; each one is taken once, and an unfinished cook (crPend) gives back exactly
+     what was taken. A stand-in must be worth at least 80% of the fish it replaces, so a cheap catch never makes a dear dish.
+   npc_order: عم سيد's board at the canal: up to 3 orders, a new one each town day for an empty slot, each paid once (money a little
+     over the price + a real item); orders ask only for species you have caught (or the old canal fish).
+   bait_convert: small catches into bait (p134's bait items, found by tag) or into fish oil (reag_fishoil). The rate is set so the
+     result is worth at most 2/3 of what goes in, and at most FC_BCAP a town day.
+   fish_collection: the guide (30_guide.js). sell: the market only. rescue: never kept (p9b fsLand) and refused by addRes here. */
+const FC_FAM=['bisaria','bolti','qarmout','shrimp','bouri','bayad','eel'];
+function fcSubs(fam){const F=MAT[fam];if(!F)return [];return FC_LIST.filter(id=>{const e=FC_CAT[id];return e.cf===fam&&!e.reuse&&e.sink==='cook_family'&&e.kind!=='rescue'&&MAT[id]&&MAT[id].p>=F.p*.8}).sort((a,b)=>MAT[a].p-MAT[b].p)}
+const fcFoodNeed=need=>!!need&&typeof TW_REC!=='undefined'&&Object.keys(TW_REC).some(k=>TW_REC[k].need===need&&ITEMS[k]&&ITEMS[k].kind==='food');
+function fcCover(h,need){const take={},used=[];let ok=true;Object.keys(need).forEach(k=>{const want=need[k],have=(h.res[k]|0);if(have>=want){take[k]=want;return}
+    if(!FC_FAM.includes(k)){ok=false;return}let short=want-Math.max(0,have);if(have>0)take[k]=have;
+    for(const s of fcSubs(k)){if(short<=0)break;const a=Math.min(short,(h.res[s]|0)-(take[s]|0));if(a>0){take[s]=(take[s]|0)+a;short-=a;used.push([k,s])}}
+    if(short>0)ok=false});
+  return {ok,take,used}}
+{const h0=hasRes;hasRes=function(h,need){if(h0.apply(this,arguments))return true;try{return fcFoodNeed(need)&&fcCover(h,need).ok}catch(e){return false}}}
+{const t0=takeRes;takeRes=function(h,need){try{if(fcFoodNeed(need)&&Object.keys(need).some(k=>(h.res[k]|0)<need[k])){const c=fcCover(h,need);
+    if(c.ok){Object.keys(c.take).forEach(k=>h.res[k]=(h.res[k]|0)-c.take[k]);FCX.took={need,take:c.take,t:Date.now()};return}}}catch(e){console.warn(e)}
+  return t0.apply(this,arguments)}}
+{const c0=crPend;crPend=function(h,res){const T=FCX.took;if(T&&T.need===res&&Date.now()-T.t<10000){FCX.took=null;const a=[].slice.call(arguments);a[1]=T.take;return c0.apply(this,a)}return c0.apply(this,arguments)}}
+/* the cook row: a short family fish covered by stand-ins shows green, the button opens, and a line names what goes in */
+{const r0=twRecRow;twRecRow=function(h,k){let s=r0.apply(this,arguments);try{const r=TW_REC[k];if(!r||!h||lifeLvl(h,'cook')<r.lv||bagFull(h,k))return s;
+  if(Object.keys(r.need).every(m=>(h.res[m]|0)>=r.need[m]))return s;const c=fcCover(h,r.need);if(!c.ok||!c.used.length)return s;
+  s=s.replace(`data-cook="${k}" disabled`,`data-cook="${k}"`).replace(/<div class="tw-miss">ناقصك.*?<\/div>/,`<div class="tw-miss fc-sub" style="color:#a6e3a0">${ae('بدل','Instead of')} ${[...new Set(c.used.map(u=>u[0]))].map(resN).join(ae(' و',' and '))}: ${[...new Set(c.used.map(u=>u[1]))].map(x=>`${c.take[x]} ${resN(x)}`).join(ae(' و',', '))}</div>`);
+  c.used.forEach(([fam])=>{s=s.replace(new RegExp(`<span class="tw-nd no">(${twMat(fam,18).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`),'<span class="tw-nd ok">$1')})}catch(e){}return s}}
+
+/* ---------- rescue: never in the bag, the storage, a dish or the market ---------- */
+{const a0=addRes;addRes=function(h,k){if(MAT[k]&&MAT[k].rescue)return;return a0.apply(this,arguments)}}
+
+/* ---------- bait items (p134) found by tag ---------- */
+function fcBaitItem(tag){if(!tag)return null;const keys=['bait_'+tag,'fbait_'+tag,'fb_'+tag];
+  for(const k of keys){if(MAT[k])return {k,res:1};if(typeof ITEMS!=='undefined'&&ITEMS[k])return {k,res:0}}
+  for(const k of Object.keys(MAT)){const M=MAT[k];if(M&&(M.bait===tag||M.baitTag===tag||M.bt===tag))return {k,res:1}}
+  try{for(const k of Object.keys(ITEMS)){const I=ITEMS[k];if(I&&(I.bait===tag||I.baitTag===tag))return {k,res:0}}}catch(e){}return null}
+const fcItemN=b=>b.res?resN(b.k):(ITEMS[b.k].name||b.k);
+const fcItemP=b=>b.res?(MAT[b.k].p|0):((ITEMS[b.k].price|0)||10);
+function fcGive(h,b,n){if(b.res)addRes(h,b.k,n);else{h.bag=h.bag||{};h.bag[b.k]=(h.bag[b.k]|0)+n}}
+
+/* ---------- bait_convert ---------- */
+const FC_BCAP=6;
+function fcConvOut(k){const e=FC_CAT[k];if(e&&e.out==='oil')return MAT.reag_fishoil?{k:'reag_fishoil',res:1,oil:1}:null;
+  const tag=!e?'small_fish':['shell','snail','shrimp','cray','crab'].includes(e.tpl)?'shellbait':e.mk==='glow'?'shiny_lure':'small_fish';const b=fcBaitItem(tag);return b?Object.assign({tag},b):{tag,none:1}}
+function fcConvRate(k,o){const p=Math.max(1,MAT[k].p|0),op=o&&!o.none?Math.max(1,fcItemP(o)):10;return Math.max(2,Math.ceil(op*1.5/p))}
+const fcConvKeys=()=>['bisaria'].concat(FC_LIST.filter(id=>FC_CAT[id].sink==='bait_convert'&&MAT[id]&&!MAT[id].rescue));
+function fcConvLeft(h){const d=klDay(h);if(!h.fcb||h.fcb.d!==d)h.fcb={d,n:0};return Math.max(0,FC_BCAP-(h.fcb.n|0))}
+function fcConvert(h,k){const o=fcConvOut(k);if(!h||!MAT[k]||!o||o.none||fcConvLeft(h)<=0)return false;const n=fcConvRate(k,o);if((h.res[k]|0)<n)return false;
+  h.res[k]-=n;fcGive(h,o,1);h.fcb.n++;saveHero();return {k,n,out:o.k}}
+function fcConvSheet(){const h=S.hero;if(!h)return;twSheetX();const left=fcConvLeft(h),ks=fcConvKeys().filter(k=>(h.res[k]|0)>0);
+  const rows=ks.map(k=>{const o=fcConvOut(k),n=fcConvRate(k,o),can=o&&!o.none&&left>0&&(h.res[k]|0)>=n;
+    const to=!o?ae('مفيش زيت دلوقتي','no oil today'):o.none?ae(`${fcT(FC_BN[o.tag])} (لسه مش في البلد)`,`${fcT(FC_BN[o.tag])} (not in the village yet)`):fcItemN(o);
+    return `<div class="tw-row"><div class="ic">${twMat(k,34)}</div><div class="tx"><b>${n} ${resN(k)} → 1 ${to}</b><small>${ae(G('معاك','معاكي'),'you have')} ${h.res[k]|0}</small></div><button class="tw-buy" data-fcv="${k}" ${can?'':'disabled'}>${ae(G('اعمل','اعملي'),'Make')}</button></div>`}).join('');
+  const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${ae('اعمل طُعم','Make bait')}<small>${ae(`فاضل النهارده ${left} من ${FC_BCAP}`,`${left} of ${FC_BCAP} left today`)}</small></div>
+    <div class="fc-det">${ae('السمك الصغير يتعمل طُعم للكبير، والدهني يتعمل زيت. مش مكسب: اللي بيطلع أرخص من اللي بيدخل.','Small fish become bait for big ones, oily ones become oil. Not for profit: what comes out is worth less than what goes in.')}</div>
+    ${rows||`<div class="fc-det">${ae(`مفيش معاك حاجة تنفع. ${G('اصطاد','اصطادي')} سردين أو بساريا أو أي حاجة مكتوب عليها «يتعمل طُعم» في الدليل.`,'Nothing that works. Catch sardines, bisaria or anything the guide marks «makes bait».')}</div>`}
+    <button class="btn small" data-x="1">${ae(G('اقفل','اقفلي'),'Close')}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
+  d.querySelectorAll('[data-fcv]').forEach(b=>b.onclick=()=>{const r=fcConvert(h,b.dataset.fcv);if(r){fcSfx('coin',.8);toast(ae(`${G('عملت','عملتي')} 1 ${fcItemN(fcConvOut(r.k))}`,`Made 1 ${fcItemN(fcConvOut(r.k))}`))}fcConvSheet()})}
+
+/* ---------- npc_order: عم سيد's board ---------- */
+const FC_OMAX=3,FC_OIT=[['bait:worm',2],['reag_reed',2],['bait:dough',2],['reag_fishoil',1],['wood_bamboo',1],['bait:shiny_lure',1],['gem_jasper',1]];
+function fcOIt(t){const L=FC_OIT.map(([k,n])=>{if(k.indexOf('bait:')===0){const b=fcBaitItem(k.slice(5));return b?[b,n]:null}return MAT[k]?[{k,res:1},n]:null}).filter(Boolean);
+  return L.length?L[Math.min(L.length-1,t*2+Math.floor(Math.random()*2))]:null}
+function fcOPool(h){const a=FC_LIST.filter(id=>{const e=FC_CAT[id];return e.sink==='npc_order'&&e.kind!=='rescue'&&MAT[id]&&fcKnown(h,id)});
+  return a.length>=3?a:a.concat(['bolti','qarmout','bouri'].filter(k=>MAT[k]))}
+function fcOrders(h){if(!h)return [];const d=klDay(h);let O=h.fco;if(!O||typeof O!=='object'||!Array.isArray(O.list))O=h.fco={d:0,seq:0,list:[],got:{},done:0};
+  if(O.d!==d){O.d=d;const pool=fcOPool(h).filter(k=>!O.list.some(o=>o.k===k));let add=O.list.length<FC_OMAX?1:0;if(!O.list.length)add=FC_OMAX;
+    for(let i=0;i<add&&pool.length&&O.list.length<FC_OMAX;i++){const k=pool.splice(Math.floor(Math.random()*pool.length),1)[0],t=(MAT[k].tier|0),n=t>=2?1:t===1?1+Math.floor(Math.random()*2):2+Math.floor(Math.random()*2);
+      const it=fcOIt(t);O.seq++;O.list.push({id:'o'+d+'_'+O.seq,k,n,m:Math.round(MAT[k].p*n*1.3)+5,it:it?{k:it[0].k,res:it[0].res,n:it[1]}:null})}
+    saveHero()}
+  return O.list}
+function fcOrderDo(h,id){const O=h&&h.fco;if(!O)return false;const i=O.list.findIndex(o=>o.id===id);if(i<0||O.got[id])return false;const o=O.list[i];
+  if((h.res[o.k]|0)<o.n)return false;h.res[o.k]-=o.n;h.money+=o.m;if(o.it&&(o.it.res?MAT[o.it.k]:ITEMS[o.it.k]))fcGive(h,o.it,o.it.n);O.got[id]=1;O.done=(O.done|0)+1;O.list.splice(i,1);saveHero();return o}
+function fcOrderDrop(h,id){const O=h&&h.fco;if(!O)return;O.list=O.list.filter(o=>o.id!==id);saveHero()}
+function fcOrderSheet(){const h=S.hero;if(!h)return;twSheetX();const L=fcOrders(h);
+  const rows=L.map(o=>{const have=h.res[o.k]|0,ok=have>=o.n,it=o.it?` + ${o.it.n} ${o.it.res?resN(o.it.k):(ITEMS[o.it.k]||{}).name||''}`:'';
+    return `<div class="tw-row"><div class="ic">${twMat(o.k,34)}</div><div class="tx"><b>${o.n} ${resN(o.k)}</b><small>${ae('الأجرة','pays')} ${o.m} ${ae('جنيه','coins')}${it} · ${ae(G('معاك','معاكي'),'you have')} ${have}</small></div>
+      <div class="fc-ob"><button class="tw-buy" data-fco="${o.id}" ${ok?'':'disabled'}>${ae(G('سلّم','سلّمي'),'Hand in')}</button><button class="btn small ghost" data-fcd="${o.id}">${ae(G('سيبه','سيبيه'),'Skip')}</button></div></div>`}).join('');
+  const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  d.innerHTML=`<div class="bk"></div><div class="pn"><div class="h">${ae('طلبات عم سيد','Uncle Sayed\'s orders')}<small>${ae(`${G('خلّصت','خلّصتي')} ${h.fco.done|0}`,`${h.fco.done|0} done`)}</small></div>
+    <div class="fc-det">${ae(`«${G('هاتلي','هاتيلي')} اللي مكتوب، وأنا أدفع وأزيد حاجة من عندي. كل يوم في البلد بيجيلي طلب جديد.»`,'«Bring me what\'s written and I pay, with a little something extra. A new order comes every village day.»')}</div>
+    ${rows||`<div class="fc-det">${ae('مفيش طلبات دلوقتي. بكره في البلد ييجي طلب.','No orders now. One comes tomorrow in the village.')}</div>`}
+    <button class="btn small" data-x="1">${ae(G('اقفل','اقفلي'),'Close')}</button></div>`;
+  app.appendChild(d);d.querySelector('.bk').onclick=twSheetX;d.querySelector('[data-x]').onclick=twSheetX;
+  d.querySelectorAll('[data-fco]').forEach(b=>b.onclick=()=>{const o=fcOrderDo(h,b.dataset.fco);if(o){fcSfx('coin',1.1);toast(ae(`عم سيد دفعلك ${o.m} جنيه`,`Uncle Sayed paid you ${o.m} coins`))}fcOrderSheet();fcRowSync()});
+  d.querySelectorAll('[data-fcd]').forEach(b=>b.onclick=()=>{fcOrderDrop(h,b.dataset.fcd);fcOrderSheet();fcRowSync()})}
+
+/* ---------- the three buttons on the fishing screen ---------- */
+function fcRowHTML(h){const L=fcOrders(h),ready=L.filter(o=>(h.res[o.k]|0)>=o.n).length,all=fcAll(h);
+  return `<div class="fc-row" id="fcRow"><button class="btn ghost" data-fcg="1">${ae('دليل الصيد','Guide')}<small> ${all[0]}/${all[1]}</small></button><button class="btn ghost" data-fco2="1">${ae('طلبات عم سيد','Orders')}<small> ${ready?'● ':''}${L.length}</small></button><button class="btn ghost" data-fcb="1">${ae('اعمل طُعم','Make bait')}</button></div>`}
+function fcRowBind(){const r=document.getElementById('fcRow');if(!r)return;r.querySelector('[data-fcg]').onclick=()=>fcGuide();r.querySelector('[data-fco2]').onclick=fcOrderSheet;r.querySelector('[data-fcb]').onclick=fcConvSheet}
+function fcRowSync(){const r=document.getElementById('fcRow'),h=S.hero;if(!r||!h)return;r.outerHTML=fcRowHTML(h);fcRowBind()}
+{const s0=SCREENS.fish;SCREENS.fish=function(){const res=s0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='fish')return res;
+  const go=document.getElementById('gxGo');if(go&&!document.getElementById('fcRow')){go.insertAdjacentHTML('afterend',fcRowHTML(h));fcRowBind()}
+  const z=fcZone();if(z!=='canal'){const ks=fcZoneKeys(z);document.querySelectorAll('.gx-chips .gx-chip.z').forEach(c=>{if(!ks.includes(c.dataset.r))c.remove()})}}catch(e){console.warn(e)}return res}}
+{const st=document.createElement('style');st.textContent=`.fc-ob{display:flex;flex-direction:column;gap:4px}.fc-ob .btn{min-height:44px;margin:0;font-size:12px;padding:2px 8px}`;document.head.appendChild(st)}
+/* ---------- English: the names are I18N(MAT) in FC_ADD and every new line is written with ae(); here the place names that
+   TW_SRC shows («… من الواحة») and the zone words on their own ---------- */
+try{FC_ZONES.forEach(z=>{const [a,e]=FC_ZN[z];if(typeof TW_SRC_EN!=='undefined'&&!TW_SRC_EN[a])TW_SRC_EN[a]=e.replace(/^The /,'the ')})}catch(e){}
+{const m={};FC_ZONES.forEach(z=>{const [a,e]=FC_ZN[z];if(z!=='canal')m[a]=e});L10N(m)}
+/* ==========================================================================
+   سرداب 6.21 (R14: C19 gear, C67, C68, C79): عدّة الصيد (p134.js)
+   - h.fgear = {rod:0..3, bait:'<tag>'|'', traps:[…], tOwn:{net,cage}, bowl:{n,d}, tid, v} (the R14 contract: p132 sets
+     S.fishZone, p133 reads h.fgear to pick the catch; only this part writes h.fgear).
+   - Rods: the p126 tool system (one tool in hand per trade). Four rods: صنارة تدريب (tl_fish0, free), قصبة بوص, صنارة حديد,
+     صنارة الصياد المحترف. h.fgear.rod = the tier of the fishing tool in hand (0..3); each rod's fx (zone, win) widens the
+     reel's green zone and the pull window; fgRodMax/fgCanLand say what tier a rod can land (the new species of p133 carry
+     MAT.tier; the old canal fish are always allowed). Made at عم حسن's or bought from عم سيد الصياد.
+   - Baits: six MAT keys bait_<tag>, one taken per cast (fgCast, called from fsCast in p9b), chosen on the fishing screen;
+     a loaded bait with none left is cleared at the next cast with a short line. A bait adds small tree keys (tf) to that cast.
+   - Traps: a net and a cage, set at S.fishZone, back after their time, at most 2 in the water (3 with «صندوق مصايد»),
+     timed on p127's C85 farm clock (ftmShift moves their stamps too), collected once (removed and saved before anything shows).
+   - C67: the old slipper is one pixel sprite everywhere (fishArt, fishFB in p9b, matIcon, the bag's «شبشب طاير»).
+   - C68: the chest in the reel gives materials, never money (fgChestRoll); «بطارخ» goes into «عجة بطارخ» at أم سيد,
+     «طحالب الترعة» into bait dough at أم سيد.
+   - C79: the gold fish: a bowl at home (one fish, fed once a town day = +2 effort) and عم سيد's trade (1 → 3 «طُعم الدهب»).
+   ========================================================================== */
+const FG={cast:'',tab:'bait',tm:0,ask:''};
+const FG_V=1;
+const FG_TAGS=['worm','dough','small_fish','shiny_lure','shellbait','rare_lure'];
+const FG_BK=t=>'bait_'+t;
+/* [ar, en] names; p = price; fx = tree keys added to the cast that uses it (rollFish/reel/fsLand read them through tf) */
+const FG_BAIT={
+  worm:{n:['دود','Worms'],c:'#ff8f73',p:1,fx:{rare:.06},d:['البوري بيقرّب أكتر','mullet bite more often'],
+    src:['الغيط: {احفر|احفري} في الطين (1 مجهود)','the field: dig in the mud (1 effort)']},
+  dough:{n:['عجين','Dough'],c:'#ebe1cc',p:1,fx:{two:.04},d:['4% السمكة تطلع اتنين','4% of catches come in twos'],
+    src:['أم سيد: دقيق (أو دقيق وطحالب)','Umm Sayed: flour (or flour and weed)']},
+  small_fish:{n:['حتت سمك','Fish bits'],c:'#eaae7f',p:2,fx:{big:.3},d:['السمك الكبير بيقرّب أكتر (\u2066+30%\u2069)','big fish bite more often (\u2066+30%\u2069)'],
+    src:['{قطّع|قطّعي} بلطية أو بساريا هنا','cut up a tilapia or sprats here']},
+  shiny_lure:{n:['طُعم لامع','Shiny lure'],c:'#f3c14d',p:6,fx:{big:.2,gold:.3},d:['الكبير \u2066+20%\u2069 · الدهب \u2066+30%\u2069','big fish \u2066+20%\u2069 · gold fish \u2066+30%\u2069'],
+    src:['عم حسن الحداد: نحاس وحديد','Uncle Hassan the smith: copper and iron']},
+  shellbait:{n:['طُعم صدف','Shell bait'],c:'#fffaf0',p:3,fx:{chest:.4},d:['الصندوق بيظهر أكتر (\u2066+40%\u2069)','chests show up more often (\u2066+40%\u2069)'],
+    src:['الشبكة عند الساحل أو المصب، أو عم سيد','a net by the coast or the estuary, or Uncle Sayed']},
+  rare_lure:{n:['طُعم الدهب','Golden lure'],c:'#f3c14d',p:40,fx:{gold:1,big:.3},d:['السمكة الدهب \u2066×2\u2069 · الكبير \u2066+30%\u2069','gold fish \u2066×2\u2069 · big fish \u2066+30%\u2069'],
+    src:['عم سيد: قصاد سمكة دهب','Uncle Sayed: for a gold fish']}};
+const FG_RODS={tl_fish_reed:{t:1,n:['قصبة بوص','Reed rod'],need:{wood_bamboo:2,reag_reed:2},fee:15,lv:1,fx:{zone:.06,win:50},buy:45,flv:1},
+  tl_fish_iron:{t:2,n:['صنارة حديد','Iron rod'],need:{iron:3,wood_bamboo:1,reag_fishoil:1},fee:60,lv:3,fx:{zone:.12,win:100}},
+  tl_fish_pro:{t:3,n:['صنارة الصياد المحترف','Master angler\'s rod'],need:{steel:2,alloy_spring:1,silver:1,reag_fishoil:2},fee:180,lv:6,fx:{zone:.2,win:150},buy:900,flv:6}};
+const FG_TRAP={net:{n:['شبكة','Net'],min:10,p:60,cnt:[2,3],tier:0,bait:0},cage:{n:['قفص','Cage'],min:25,p:140,cnt:[1,2],tier:1,bait:1}};
+const FG_TOWN=2;            /* each trap kind can be owned twice */
+const FG_SHELL=[3,15];      /* عم سيد: 3 shells for 15 */
+const FG_COAST=['coast','estuary','reef'];
+const fgN=x=>ae(x[0],x[1]);
+const fgT=s=>T(s);
+
+/* ---------- materials: the baits, roe and weed ---------- */
+FG_TAGS.forEach(t=>{const B=FG_BAIT[t];MAT[FG_BK(t)]={n:B.n[0],c:B.c,p:B.p,bait:1};});
+MAT.fish_roe={n:'بطارخ',c:'#e0782a',p:6};
+MAT.river_algae={n:'طحالب الترعة',c:'#3a9e55',p:3};
+{const m={};FG_TAGS.forEach(t=>m[FG_BK(t)]={n:FG_BAIT[t].n[1]});m.fish_roe={n:'Fish roe'};m.river_algae={n:'Canal weed'};I18N(MAT,m)}
+/* where each comes from (the bag and the market show it) */
+FG_TAGS.forEach(t=>{const s=FG_BAIT[t].src;const a=s[0].replace(/\{([^|}]*)\|[^}]*\}/g,'$1');TW_SRC[FG_BK(t)]=a;TW_SRC_EN[a]=s[1]});
+TW_SRC.fish_roe='صناديق الترعة';TW_SRC_EN['صناديق الترعة']='the canal\'s chests';
+TW_SRC.river_algae='صناديق الترعة';
+Object.assign(TW_FEM,{bait_small_fish:1});
+/* what each goes into */
+{const u0=twUses;twUses=function(k){const a=u0.apply(this,arguments);try{const add=x=>{if(!a.includes(x))a.push(x)};
+  if(/^bait_/.test(k))add(ae('طُعم للصيد','bait for fishing'));
+  if(k==='river_algae')add(ae('عجين بالطحالب (طُعم)','weed dough (bait)'));
+  if(k==='flour')add(ae('عجين للطُعم','bait dough'));
+  if(k==='bolti'||k==='bisaria')add(ae('حتت سمك (طُعم)','fish bits (bait)'));
+  if(k==='goldfish'){add(ae('حوض السمكة الدهب','the gold fish bowl'));add(ae('طُعم الدهب عند عم سيد','golden lures at Uncle Sayed\'s'))}
+  if((k==='copper'||k==='iron'))add(ae('طُعم لامع','shiny lures'))}catch(e){}return a}}
+
+/* ---------- pixel art (the shared palette; one art pixel = 3 CSS px at 48) ---------- */
+/* C67: the old slipper, a worn blue flip-flop seen from above: the thong torn on one side and sticking up, mud, canal weed, a drop */
+const FG_SHOE='24x16:.10KK/.9KrK/.9KrK/.3K6rK.5K4/..Ku5KrK6u4KK/.Ku6ru7n4uuK/Kuun3rrun13uK/KunnKmnmn14uK/Kjn3grrn9ggn3jK/Kjnng3mrrTnnTn3ggnTnjK/KijTn4jmrrjjTjn4jjiK/.Kij5i3mri3j4iiK/..Ki5K8i4KK/.3K3qK.8qK4QK/.5zqq.8qz..KOK/.5z.qz.8q.3K';
+const FG_PX={
+  bait_worm:['......KK','.....KRRK...KK','..KK.KRtK..KRRK','.KRRKKRK..KRtK','.KRtKKRRK.KRK','..KRRKKRK.KRRK','...KRRKRRK.KRK','..KKKKKKKKKKKKK','.KWcccccccccccK','.KcgggggggggggK','.KqqqqqqqqqqqqK','.KGqGqGqGqGqGzK','.KzzzzzzzzzzzzK','.KcgggggggggggK','.KgggggggggggjK','..KKKKKKKKKKKK'],
+  bait_dough:['','','','.....KKKKK','...KKWWWWCKK','..KWWWWWWWCCK','.KWWCWWWWWWCcK','.KWWWWWWWWCCcK','.KCWWWWWWCCCcK','.KCCWWWWCCCccK','..KCCCCCCCcccK','...KKcccccccK','.....KKKKKKK'],
+  bait_small_fish:['','','','..KKK.....KKK','.KcRRK...KRRcK','KcRsRRK.KRsRRcK','KcRRsRK.KRRsRcK','KccRRRK.KRRRccK','.KcccK...KcccK','..KKK.....KKK','','...KKK..KKK','..KcRRK.KRRcK','..KcsRK.KRscK','...KKK..KKK'],
+  bait_shiny_lure:['.......KK','......KcgK','.......KK','......KYYK','.....KYYyK','....KYWYyoK','....KYYYyoK','....KYWYyoK','....KYYyyoK','.....KYyoK','......KoK','......KcK','....KK.KcK','....KcK.KcK','.....KcccK','......KKK'],
+  bait_shellbait:['','','.....KKKKKK','...KKWCWCWCKK','..KWCWCWCWCWCK','.KWCWCWCWCWCWsK','.KCWCWCWCWCWCsK','.KWCWCWCWCWCssK','..KsWCWCWCWssK','...KssCWCWssK','....KKsssKK','.....KcccK','......KKK'],
+  bait_rare_lure:['..W.......K','.WWW.....KcK','..W.....KYYK','.......KYYYyK','......KYWYYyoK','.KK..KYYYYYyoK','KyyKKYWYYYYyoK','KyYyYYYYYYyyoK','KyyKKYYYYYyooK','.KK..KYYYyyoK','......KyyooK','.......KooK','........KcK','.......KcKcK','........KcK..W','.........K..WWW'],
+  fish_roe:['','','...KKKK..KKKK','..KyooTKKyooTK','.KyYooTTKYooTTK','.KyooooTKooooTK','.KoooooTKooooTK','.KooooTTKoooTTK','.KoooTTTKooTTTK','.KTooTTbKToTTbK','..KTTTbbKTTbbK','...KbbbK.KbbK','....KKK..KKK'],
+  river_algae:['','.....K....K','....KqK..KGK','...KqGK.KqGK..K','...KqzK.KqzK.KGK','..KqGK.KqGK.KqzK','..KqzK.KqzKKqGK','.KqGK.KqGqqGzK','.KqzKKqGzzqzK','..KqqGzqqzGK','.KzGqqzqGqqzK','.KzzqzzqzzzK','..KKzzOzzKK','....KKQKK','.....KOK','......K'],
+  /* the traps and the bowl (pictures only, not materials) */
+  fg_net:['.KK..........KK','KyyK........KyyK','.KKgKgKgKgKgKK','..KcgcgcgcgcgK','..KgcKcgcKcgcK','..KcgcgcgcgcgK','..KgcgcKcgcgcK','..KcgcgcgcgcgK','..KgcKcgcgcKcK','..KcgcgcgcgcgK','..KgcgcgcKcgcK','..KcgcgcgcgcgK','...KgcgcgcgcK','....KgcgcgcK','.....KKKKKK'],
+  fg_cage:['......KKKK','.....KbbbbK','....KK....KK','.KKKKKKKKKKKKKK','.KBbBbBbBbBbBbK','.KBKBKBKBKBKBbK','.KBKBKBKBKBKBbK','.KBKBKcKBKBKBbK','.KBKBKBKBKBKBbK','.KBKBKBKBKBKBbK','.KBKBKBKBKBKBbK','.KBbBbBbBbBbBbK','.KbbbbbbbbbbbbK','.KKKKKKKKKKKKKK'],
+  fg_bowl:['','...KKKKKKKKK','..KcWWWWWWWcK','...KQQQQQQQK','..KQQQQQQQQQK','.KQQOKKOQQQQQK','.KQOKyyKKQQQQK','.KQKyYyyoKQQOK','.KQOKyyoKKQOQK','.KQQOKKKQQQOQK','.KQOQQQQQOQQQK','..KQOQQOQQQQK','...KQQQQQQQK','....KKKKKKK','...KccccccccK','...KKKKKKKKKK']};
+Object.keys(FG_PX).forEach(k=>{PXI_D[k]=P20_grid(16,FG_PX[k])});
+/* the roe dish: the omelette pan recoloured (roe orange on egg) */
+PXI_D.meal_roe_omelet=P20_rc(PXI_D.qdish,{r:'o',R:'y',m:'T',c:'Y',C:'W'});
+/* the new rods: p126's fishing-rod shape in the step's colours (p126 drew its own at load, before these existed) */
+const FG_RODC=[{M:'B',m:'b',H:'v'},{M:'y',m:'o',H:'B'},{M:'c',m:'g',H:'j'},{M:'Q',m:'O',H:'y'}];
+Object.keys(FG_RODS).forEach(id=>{PXI_D[id]=P20_rc(P20_grid(16,TL_PX.fish),FG_RODC[FG_RODS[id].t])});
+/* C67: the slipper. matIcon (p17i reads PXI_D first) and the bag's «شبشب طاير» get the same sprite; the cache is cleared */
+PXI_D.shoe=FG_SHOE;PXI_D.shbshb=FG_SHOE;delete PXI_K.shoe;delete PXI_K.shbshb;
+/* the slipper as a catch (fishArt / fishFB): the sprite with a 1-px margin, as wide as asked */
+function fgShoeArt(w){w=w===undefined?120:w;const R=PXI_get('shoe',FG_SHOE),vw=R.w+2,vh=R.h+2;
+  return `<svg class="pxi" viewBox="-1 -1 ${vw} ${vh}"${w?` width="${Math.round(w)}" height="${Math.round(w*vh/vw)}"`:''} shape-rendering="crispEdges">${R.r}</svg>`}
+{const f0=fishArt;fishArt=function(k,w){if(k==='shoe')return fgShoeArt(w);return f0.apply(this,arguments)}}
+const fgIc=(k,w)=>{try{return PXI_item(k,w||30)}catch(e){return ''}};
+
+/* ---------- the hero's gear ---------- */
+const fgRodOf=h=>{try{return Math.max(0,Math.min(3,tlTier(h,'fish')|0))}catch(e){return 0}};
+function fgFix(h){if(!h||typeof h!=='object')return h;let F=h.fgear;if(!F||typeof F!=='object'||Array.isArray(F))F=h.fgear={};
+  F.rod=fgRodOf(h);if(!FG_TAGS.includes(F.bait))F.bait='';
+  if(!Array.isArray(F.traps))F.traps=[];const seen={};
+  F.traps=F.traps.filter(T=>{if(!T||!FG_TRAP[T.k]||!(T.t0>0)||!(T.d>0)||seen[T.id])return false;seen[T.id]=1;if(typeof T.z!=='string')T.z='canal';return true});
+  if(!F.tOwn||typeof F.tOwn!=='object'||Array.isArray(F.tOwn))F.tOwn={};Object.keys(FG_TRAP).forEach(k=>F.tOwn[k]=Math.max(0,Math.min(FG_TOWN,F.tOwn[k]|0)));
+  if(!F.bowl||typeof F.bowl!=='object'||Array.isArray(F.bowl))F.bowl={n:0,d:-1};F.bowl.n=F.bowl.n?1:0;if(typeof F.bowl.d!=='number')F.bowl.d=-1;
+  F.tid=Math.max(F.tid|0,...F.traps.map(T=>T.id|0),0);F.v=FG_V;return h}
+{const f0=fixHero;fixHero=function(h){return fgFix(f0.apply(this,arguments))}}
+const fgRodMax=h=>fgFix(h).fgear.rod;
+/* a new species (it has places, MAT.fz) needs a rod of its tier; the old canal fish come on any rod */
+const fgCanLand=(h,k)=>{const M=MAT[k];if(!M||!Array.isArray(M.fz))return true;return (M.tier|0)<=fgRodMax(h)};
+
+/* ---------- rods in the p126 tool system ---------- */
+Object.keys(FG_RODS).forEach(id=>{const r=FG_RODS[id];TOOL_CATALOG[id]={id,tr:'fish',t:r.t,n:r.n.slice(),fem:true,need:Object.assign({},r.need),fee:r.fee,lv:r.lv,fx:Object.assign({},r.fx),by:'R14'};
+  TOOL_CATALOG[id].open=Object.keys(r.need).every(k=>rcAvail(k))});
+(HEROES||[]).forEach(h=>{try{tlFix(h);fgFix(h)}catch(e){console.warn(e)}});
+{const m0=tlMake;tlMake=function(h){const r=m0.apply(this,arguments);try{if(r)fgFix(h)}catch(e){}return r}}
+{const u0=tlUse;tlUse=function(h){const r=u0.apply(this,arguments);try{if(r)fgFix(h)}catch(e){}return r}}
+/* عم سيد sells the reed rod and, to a real fisher, the master's rod */
+function fgRodBuy(h,id){const r=FG_RODS[id],t=TOOL_CATALOG[id];if(!h||!r||!r.buy||!t)return null;tlFix(h);
+  if(tlOwn(h,id)||lifeLvl(h,'fish')<(r.flv||1)||h.money<r.buy)return null;
+  h.money-=r.buy;h.tools.own[id]=1;const cur=tlOn(h,'fish');if(!cur||cur.t<=r.t)h.tools.on.fish=id;fgFix(h);saveHero();return t}
+
+/* ---------- baits ---------- */
+const fgHave=(h,t)=>Math.max(0,(h&&h.res&&h.res[FG_BK(t)])|0);
+/* one per cast: called by fsCast (p9b) after the effort is paid, before the save. A loaded bait with none left is cleared here. */
+function fgCast(h){FG.cast='';if(!h)return '';const F=fgFix(h).fgear,t=F.bait;if(!t)return '';
+  if(fgHave(h,t)>0){takeRes(h,{[FG_BK(t)]:1});FG.cast=t;fgBaitUI(h,t);return t}
+  F.bait='';fgBaitUI(h);try{toast(`<span class="fg-toast">${ae(`${FG_BAIT[t].n[0]} خلص · ${G('بترمي','بترمي')} من غير طُعم`,`Out of ${FG_BAIT[t].n[1].toLowerCase()} · casting with no bait`)}</span>`)}catch(e){}
+  return ''}
+/* load a bait (or '' for none); not while a cast is out (the bait on the hook is already chosen) */
+const fgBusy=()=>{try{const p=gxDev&&gxDev.FS&&gxDev.FS.ph;return S.screen==='fish'&&!!p&&p!=='idle'&&p!=='done'}catch(e){return false}};
+function fgLoad(h,t){if(!h)return false;const F=fgFix(h).fgear;if(fgBusy())return false;if(t&&(!FG_BAIT[t]||fgHave(h,t)<1))return false;F.bait=t||'';saveHero();return true}
+/* a bait adds its keys only to the cast that took it, on the fishing screen */
+{const t0=tf;tf=function(h,k,key){const v=t0.apply(this,arguments);try{if(k==='fish'&&FG.cast&&h&&h===S.hero&&S.screen==='fish'){const b=FG_BAIT[FG.cast];if(b&&b.fx[key])return v+b.fx[key]}}catch(e){}return v}}
+/* making baits: cut a small fish (here), dig worms (the field), dough (أم سيد), shiny lures (the smith) */
+const FG_CUT={bolti:[1,3],bisaria:[2,3]};
+function fgCut(h,k){const c=FG_CUT[k];if(!h||!c||(h.res[k]|0)<c[0])return 0;takeRes(h,{[k]:c[0]});addRes(h,FG_BK('small_fish'),c[1]);saveHero();return c[1]}
+function fgDig(h){if(!h||!useEff(h))return 0;const n=2+Math.floor(Math.random()*3);addRes(h,FG_BK('worm'),n);saveHero();return n}
+const FG_DOUGH=[{need:{flour:1},n:3},{need:{flour:1,river_algae:1},n:6}];
+function fgDough(h,i){const d=FG_DOUGH[i];if(!h||!d||!hasRes(h,d.need))return 0;takeRes(h,d.need);addRes(h,FG_BK('dough'),d.n);saveHero();return d.n}
+const FG_LURE={need:{copper:1,iron:1},n:3,lv:2};
+function fgLure(h){if(!h||lifeLvl(h,'smith')<FG_LURE.lv||!hasRes(h,FG_LURE.need))return 0;takeRes(h,FG_LURE.need);addRes(h,FG_BK('shiny_lure'),FG_LURE.n);
+  S.spQuick=Date.now();try{lifeXP(h,'smith',1)}finally{S.spQuick=0}saveHero();return FG_LURE.n}
+
+/* ---------- traps ---------- */
+const fgSlots=h=>{try{return Math.max(2,+wkOwn(h,'fish','traps',2)||2)}catch(e){return 2}};
+const fgClock=h=>{try{if(typeof ftmSync==='function')ftmSync(h)}catch(e){}};
+/* C85: the farm clock moves the trap stamps with the farm's (the phone clock moved forward counts at 1/8, at most 5 min a jump) */
+{const s0=ftmShift;ftmShift=function(h,ms){const r=s0.apply(this,arguments);try{const F=h&&h.fgear;if(F&&ms&&Array.isArray(F.traps)){const now=Date.now();
+  F.traps.forEach(T=>{if(T&&T.t0)T.t0=ms>0?Math.min(T.t0+ms,now):T.t0+ms})}}catch(e){console.warn(e)}return r}}
+const fgLeft=T=>Math.max(0,T.t0+T.d-Date.now());
+const fgFree=(h,k)=>{const F=fgFix(h).fgear;return F.tOwn[k]-F.traps.filter(T=>T.k===k).length};
+/* the bait a cage takes: the loaded one, else the cheapest you have */
+const fgCageBait=h=>{const F=h.fgear;if(F.bait&&fgHave(h,F.bait)>0)return F.bait;return FG_TAGS.filter(t=>t!=='rare_lure').find(t=>fgHave(h,t)>0)||''};
+function fgSet(h,k){const X=FG_TRAP[k];if(!h||!X)return {e:'kind'};const F=fgFix(h).fgear;fgClock(h);
+  if(fgFree(h,k)<1)return {e:'own'};if(F.traps.length>=fgSlots(h))return {e:'full'};
+  let b='';if(X.bait){b=fgCageBait(h);if(!b)return {e:'bait'};takeRes(h,{[FG_BK(b)]:1});if(F.bait===b&&fgHave(h,b)<1&&!fgBusy())F.bait=''}
+  const T={id:++F.tid,k,z:(S.fishZone&&typeof S.fishZone==='string')?S.fishZone:'canal',t0:Date.now(),d:X.min*60000,b};F.traps.push(T);saveHero();return {T}}
+/* what a trap brings: the place's species from p133 (MAT.fz has the place, not a rescue), else the canal's own fish */
+function fgPool(h,T){const z=T.z||'canal',L=lifeLvl(h,'fish'),mx=FG_TRAP[T.k].tier;
+  const P=Object.keys(MAT).filter(k=>{const M=MAT[k];return M&&Array.isArray(M.fz)&&M.fz.includes(z)&&M.kind!=='rescue'&&!M.junk&&(M.tier|0)<=mx&&!(M.fl>L+1)});
+  if(P.length)return P.map(k=>[k,(MAT[k].tier|0)===0?3:1]);
+  const base=T.k==='net'?[['bolti',5],['bisaria',L>=1?4:0],['qarmout',2],['shrimp',L>=2?2:0],['shoe',1]]:[['shrimp',4],['qarmout',3],['bouri',2],['bolti',2]];
+  return base.filter(([k,w])=>w>0&&MAT[k])}
+function fgCatch(h,T,rnd){rnd=rnd||Math.random;const W=fgPool(h,T),[a,b]=FG_TRAP[T.k].cnt,n=a+Math.floor(rnd()*(b-a+1)),tot=W.reduce((s,x)=>s+x[1],0),o={};
+  for(let i=0;i<n&&tot>0;i++){let r=rnd()*tot;const x=W.find(w=>(r-=w[1])<0)||W[W.length-1];o[x[0]]=(o[x[0]]|0)+1}
+  if(T.k==='net'&&FG_COAST.includes(T.z)&&rnd()<.6)o[FG_BK('shellbait')]=(o[FG_BK('shellbait')]|0)+1+Math.floor(rnd()*2);
+  return o}
+/* collected once: the trap leaves the list and the save is written before anything is shown */
+function fgGet(h,id){if(!h)return null;const F=fgFix(h).fgear;fgClock(h);const i=F.traps.findIndex(T=>T.id===id);if(i<0)return null;const T=F.traps[i];if(fgLeft(T)>0)return null;
+  F.traps.splice(i,1);const o=fgCatch(h,T);Object.keys(o).forEach(k=>addRes(h,k,o[k]));
+  S.spQuick=Date.now();try{lifeXP(h,'fish',T.k==='cage'?2:1)}finally{S.spQuick=0}
+  try{bump('fgTrap')}catch(e){}saveHero();return {T,o}}
+function fgBuyTrap(h,k){const X=FG_TRAP[k];if(!h||!X)return false;const F=fgFix(h).fgear;if(F.tOwn[k]>=FG_TOWN||h.money<X.p)return false;h.money-=X.p;F.tOwn[k]++;saveHero();return true}
+function fgBuyShell(h){if(!h||h.money<FG_SHELL[1])return false;h.money-=FG_SHELL[1];addRes(h,FG_BK('shellbait'),FG_SHELL[0]);saveHero();return true}
+
+/* ---------- C68: the reel's chest gives materials, never money ---------- */
+/* 40% weed ×1–3, 35% roe ×1–2, 20% canal herb ×1, 5% a bundle (canal herb ×2 and a golden lure or 3 shell baits) */
+function fgChestRoll(rnd){rnd=rnd||Math.random;const r=rnd();
+  if(r<.40)return [['river_algae',1+Math.floor(rnd()*3)]];
+  if(r<.75)return [['fish_roe',1+Math.floor(rnd()*2)]];
+  if(r<.95)return [['nileh',1]];
+  return [['nileh',2],rnd()<.5?[FG_BK('rare_lure'),1]:[FG_BK('shellbait'),3]]}
+/* one roll per chest, added and saved before the chest is drawn as taken (called from the reel in p9b) */
+function fgChestGot(h){const L=fgChestRoll();if(!h)return L;L.forEach(([k,n])=>addRes(h,k,n));saveHero();return L}
+const fgLootTxt=L=>L.map(([k,n])=>`+${n} ${resN(k)}`).join(EN?', ':' · ');
+const fgChestLine=L=>ae(`${G('خدت','خدتي')} الصندوق! ${fgLootTxt(L)}`,`You got the chest! ${fgLootTxt(L)}`);
+
+/* the roe dish at أم سيد (p129's pattern: a normal TW_REC recipe, the egg pan) */
+ckAdd('meal_roe_omelet',['عجة بطارخ','Roe omelette',{fish_roe:2,egg:1},2,1,11,6,0,'',1,'fish']);
+CK_DISH.meal_roe_omelet='grain';CK_MATF.fish_roe='grain';CK_MATF.river_algae='mint';
+
+/* ---------- C79: the gold fish ---------- */
+const FG_GF_TRADE=3;      /* 1 gold fish → 3 golden lures */
+const FG_BOWL_EFF=2;      /* fed once a town day: +2 effort */
+const fgGold=h=>Math.max(0,(h&&h.res&&h.res.goldfish)|0);
+const fgDay=h=>h.nDone|0;
+/* 'ask' = it would take your last one and you did not say yes yet */
+function fgBowlPut(h,yes){if(!h)return 'no';const F=fgFix(h).fgear;if(F.bowl.n)return 'have';const g=fgGold(h);if(g<1)return 'none';if(g===1&&!yes)return 'ask';
+  takeRes(h,{goldfish:1});F.bowl={n:1,d:-1};saveHero();return 'ok'}
+const fgFood=h=>['worm','dough'].find(t=>fgHave(h,t)>0)||'';
+function fgBowlFeed(h){if(!h)return 'no';const F=fgFix(h).fgear;if(!F.bowl.n)return 'nobowl';if(F.bowl.d===fgDay(h))return 'done';const t=fgFood(h);if(!t)return 'food';
+  takeRes(h,{[FG_BK(t)]:1});F.bowl.d=fgDay(h);try{effNow(h);h.eff.v=Math.min(effMaxOf(h),h.eff.v+FG_BOWL_EFF)}catch(e){}saveHero();return 'ok'}
+function fgTrade(h,yes){if(!h)return 'no';const g=fgGold(h);if(g<1)return 'none';if(g===1&&!yes)return 'ask';
+  takeRes(h,{goldfish:1});addRes(h,FG_BK('rare_lure'),FG_GF_TRADE);saveHero();return 'ok'}
+
+/* ---------- C68 / C19: «صندوق مصايد» (the fishing workshop's stage 5, gated R14) opens: a third trap in the water ---------- */
+{const s=WK_BY.WS_fish_05;if(s){const need=crIsMat('reag_hemp')?{reag_hemp:3,iron:2,reag_reed:3}:{wood_bamboo:4,reag_reed:4,iron:2};
+  Object.assign(s,{need,d:['فخ تالت في المية (3 بدل 2)','A third trap in the water (3 instead of 2)'],own:{traps:3},gate:null})}}
+
+/* ---------- on screen ---------- */
+const fgMM=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
+/* the R14 places by their contract ids (p132 owns the map; these are only the names on a trap) */
+const FG_ZN={canal:['الترعة','The canal'],deep:['الفرع العميق','The deep branch'],marsh:['المستنقع','The marsh'],flood:['أرض الفيضان','The floodland'],lake:['البحيرة','The lake'],
+  estuary:['المصب','The estuary'],coast:['الساحل','The coast'],reef:['الشعاب','The reef'],cave:['مغارة المية','The water cave'],farsea:['البحر البعيد','The far sea'],oasis:['الواحة','The oasis'],ancient:['المية القديمة','The old water']};
+const fgZoneN=z=>fgN(FG_ZN[z]||FG_ZN.canal);
+function fgBaitHTML(h){const F=fgFix(h).fgear,t=F.bait,B=FG_BAIT[t],n=t?fgHave(h,t):0;
+  const st=t?(n?ae(`${B.n[0]} · معاك ${n}`,`${B.n[1]} · ${n} left`):ae(`${B.n[0]} · ${G('آخر واحدة على السنارة','آخر واحدة على السنارة')}`,`${B.n[1]} · the last one is on the hook`)):ae('من غير طُعم','No bait');
+  return `<div class="fg-bt" id="fgBaits"><div class="fg-bh"><b>${ae('الطُعم','Bait')}:</b> <span class="st">${st}</span>${t?`<small>${ae(B.d[0],B.d[1])}</small>`:''}<button class="fg-more" data-fgsh="bait">${ae('منين؟','Where from?')}</button></div>
+    <div class="fg-chips">${FG_TAGS.map(x=>{const c=fgHave(h,x),on=x===t;return `<button class="fg-chip${on?' on':''}${c?'':' z'}" data-fgb="${x}" aria-label="${fgN(FG_BAIT[x].n)}"><span class="ic">${fgIc(FG_BK(x),30)}</span><span class="n">${c}</span><span class="nm">${fgN(FG_BAIT[x].n)}</span></button>`}).join('')}</div></div>`}
+function fgTrapHTML(h){const F=fgFix(h).fgear;fgClock(h);const sl=fgSlots(h),own=F.tOwn.net+F.tOwn.cage;
+  const rows=F.traps.map(T=>{const L=fgLeft(T),X=FG_TRAP[T.k];return `<div class="fg-tr${L?'':' rd'}"><span class="ic">${fgIc('fg_'+T.k,34)}</span><span class="tx"><b>${fgN(X.n)}</b><small>${fgZoneN(T.z)}${T.b?` · ${fgN(FG_BAIT[T.b].n)}`:''}</small></span>
+    ${L?`<span class="tm" data-fgleft="${T.id}">${fgMM(L)}</span>`:`<button class="tw-act cr fg-get" data-fgget="${T.id}"><b>${ae(G('لِمّ','لِمّي'),'Collect')}</b></button>`}</div>`}).join('');
+  const can=k=>fgFree(h,k)>0&&F.traps.length<sl;
+  const setB=k=>F.tOwn[k]?`<button class="tw-act fg-set" data-fgset="${k}" ${can(k)?'':'disabled'}><b>${ae(G('حط','حطي'),'Set')} ${fgN(FG_TRAP[k].n)}</b><small>${FG_TRAP[k].min} ${ae('دقيقة','min')}${FG_TRAP[k].bait?ae(' · بطُعم',' · takes bait'):''}</small></button>`:'';
+  return `<div class="fg-card" id="fgTraps"><div class="fg-ch"><b>${ae('الفخاخ','Traps')}</b><small>${ae(`في المية ${F.traps.length} من ${sl}`,`${F.traps.length} of ${sl} in the water`)}</small></div>
+    ${rows||`<div class="fg-empty">${own?ae(`مفيش فخ في المية. ${G('حط','حطي')} واحد ${G('وكمّل','وكمّلي')} صيد.`,'No trap in the water. Set one and keep fishing.'):ae('معاكش فخاخ. عم سيد بيبيع شبكة وقفص.','You have no traps. Uncle Sayed sells a net and a cage.')}</div>`}
+    <div class="fg-row">${setB('net')}${setB('cage')}<button class="tw-act fg-sayed" data-fgsh="shop"><b>${ae('عم سيد','Uncle Sayed')}</b><small>${ae('صنانير · فخاخ · صدف','rods · traps · shells')}</small></button><button class="tw-act fg-gold" data-fgsh="gold"><span class="gi">${fgIc('fg_bowl',24)}</span><b>${ae('السمكة الدهب','Gold fish')}</b></button></div></div>`}
+function fgBaitUI(h,used){try{const el=$('#fgBaits');if(!el||!h||S.screen!=='fish')return;el.outerHTML=fgBaitHTML(h);if(used){const c=$(`[data-fgb="${used}"] .n`);if(c)floatAt(c,'−1','#f0a090','',16)}}catch(e){console.warn(e)}}
+function fgTrapUI(h){try{const el=$('#fgTraps');if(el&&h)el.outerHTML=fgTrapHTML(h)}catch(e){console.warn(e)}}
+{const s0=SCREENS.fish;SCREENS.fish=function(){FG.cast='';const r=s0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='fish'||!h)return r;fgFix(h);
+    const F=h.fgear;if(F.bait&&fgHave(h,F.bait)<1)F.bait='';
+    const go=$('#gxGo');if(go&&!$('#fgBaits'))go.insertAdjacentHTML('afterend',fgBaitHTML(h));
+    if(!$('#fgTraps')){const tl=view.querySelector('.tl-card'),n=$('#gxNpc');if(tl)tl.insertAdjacentHTML('afterend',fgTrapHTML(h));else if(n)n.insertAdjacentHTML('beforebegin',fgTrapHTML(h));else view.insertAdjacentHTML('beforeend',fgTrapHTML(h))}
+    if(!FG.tm)FG.tm=setInterval(fgTick,1000)}catch(e){console.warn(e)}return r}}
+/* the trap clocks tick on screen; a trap that is ready redraws the card once */
+function fgTick(){const h=S.hero;if(S.screen!=='fish'||!h||!$('#fgTraps')){clearInterval(FG.tm);FG.tm=0;return}
+  let re=false;document.querySelectorAll('[data-fgleft]').forEach(e=>{const T=h.fgear.traps.find(x=>x.id===+e.dataset.fgleft);if(!T){re=true;return}const L=fgLeft(T);if(L<=0)re=true;else e.textContent=fgMM(L)});
+  if(re){fgClock(h);fgTrapUI(h)}}
+/* taps: chips, traps, the sheet (capture, so the stage under it never gets them) */
+document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-fgb],[data-fgset],[data-fgget],[data-fgsh]');if(!b||!S.hero||!view.contains(b))return;
+  e.preventDefault();e.stopPropagation();const h=S.hero;
+  if(b.dataset.fgb){const t=b.dataset.fgb;if(fgBusy()){floatAt(b,ae('بعد الرمية','after this cast'),'#f0a090','',14);return}
+    if(fgHave(h,t)<1){fgSheet('bait',t);return}if(!fgLoad(h,h.fgear.bait===t?'':t))return;try{SFX.tap?SFX.tap():SFX.page()}catch(x){}fgBaitUI(h);return}
+  if(b.dataset.fgset){const r=fgSet(h,b.dataset.fgset);if(r.T){try{SFX.splash&&SFX.splash(.5)}catch(x){}fgTrapUI(h);fgBaitUI(h)}
+    else toast(r.e==='bait'?ae(`القفص محتاج طُعم. ${G('هات','هاتي')} دود أو عجين.`,'The cage needs bait. Get worms or dough.'):r.e==='full'?ae('الفخاخ اللي في المية كفاية','Enough traps in the water'):ae('الفخ ده في المية','That trap is already in the water'));return}
+  if(b.dataset.fgget){const r=fgGet(h,+b.dataset.fgget);if(!r){fgTrapUI(h);return}try{SFX.catch?SFX.catch(1):SFX.coin()}catch(x){}
+    const L=Object.keys(r.o).map(k=>[k,r.o[k]]);band(fgN(FG_TRAP[r.T.k].n),L.length?fgLootTxt(L):ae('فاضي','Empty'),L.length?ae(`${G('لمّيت','لمّيتي')} ال${FG_TRAP[r.T.k].n[0]} · ${G('تقدر','تقدري')} ${G('تحط','تحطي')}${r.T.k==='net'?'ها':'ه'} تاني`,'Collected · you can set it again'):'',{dur:2200,low:1});
+    fgTrapUI(h);fgBaitUI(h);return}
+  if(b.dataset.fgsh){if(fgBusy())return;fgSheet(b.dataset.fgsh)}},true);
+
+/* ---------- the sheet: الطُعم · عم سيد · السمكة الدهب ---------- */
+function fgSheetHTML(h,tab,want){const F=fgFix(h).fgear,tabs=[['bait',ae('الطُعم','Bait')],['shop',ae('عم سيد','Uncle Sayed')],['gold',ae('السمكة الدهب','Gold fish')]];let body='';
+  if(tab==='bait'){body=FG_TAGS.map(t=>{const B=FG_BAIT[t],n=fgHave(h,t);return `<div class="tw-row fg-srow${t===want?' want':''}"><div class="ic">${fgIc(FG_BK(t),40)}</div><div class="tx"><b>${fgN(B.n)} <span class="cnt">${ae('معاك','have')} ${n}</span></b><small>${ae(B.d[0],B.d[1])}</small><small class="src">${ae('منين:','From:')} ${fgT(ae(B.src[0],B.src[1]))}</small></div>
+      ${n?`<button class="tw-act cr" data-fgld="${t}" ${F.bait===t?'disabled':''}><b>${F.bait===t?ae('على السنارة','On the hook'):ae(G('حطه','حطيه'),'Load it')}</b></button>`:''}</div>`}).join('')
+      +`<div class="tw-lbl">${ae('حتت سمك','Fish bits')} <small>${ae('سمكة صغيرة بتتقطّع طُعم للكبيرة','a small fish cut up is bait for big ones')}</small></div>`
+      +Object.keys(FG_CUT).map(k=>{const c=FG_CUT[k],have=h.res[k]|0;return `<div class="tw-row"><div class="ic">${AR_fish(k,44)}</div><div class="tx"><b>${resN(k)} ×${c[0]} → ${fgN(FG_BAIT.small_fish.n)} ×${c[1]}</b><small>${ae('معاك','You have')} ${have}</small></div><button class="tw-act cr" data-fgcut="${k}" ${have>=c[0]?'':'disabled'}><b>${ae(G('قطّع','قطّعي'),'Cut')}</b></button></div>`}).join('')}
+  else if(tab==='shop'){const rod=id=>{const r=FG_RODS[id],t=TOOL_CATALOG[id],own=tlOwn(h,id),lv=lifeLvl(h,'fish')>=(r.flv||1);
+      return `<div class="tw-row"><div class="ic">${fgIc(id,40)}</div><div class="tx"><b style="color:${TL_TC[r.t]}">${fgN(r.n)}</b><small>${tlFxTxt(t)} · ${ae('بتطلّع لحد','lands up to')} «${fgRare(r.t)}»</small>${lv?'':`<small class="no">${ae('صيد مستوى','fishing level')} ${r.flv}</small>`}</div>
+        ${own?`<span class="tl-on">✓ ${ae(G('معاك','معاكي'),'Owned')}</span>`:`<button class="tw-act cr" data-fgrod="${id}" ${lv&&h.money>=r.buy?'':'disabled'}><b>${ae(G('اشتري','اشتري'),'Buy')}</b><small>${r.buy} ${ae('جنيه','coins')}</small></button>`}</div>`};
+    body=`<div class="fg-say">${ae('«الصنارة الحديد والطُعم اللامع عند عم حسن. أنا عندي البوص والفخاخ والصدف.. والمحترفة لصياد يستاهلها.»','«The iron rod and the shiny lures are at Uncle Hassan\'s. I have reed rods, traps and shells.. and the master\'s rod for a fisher who earns it.»')}</div>`
+      +Object.keys(FG_RODS).filter(id=>FG_RODS[id].buy).map(rod).join('')
+      +Object.keys(FG_TRAP).map(k=>{const X=FG_TRAP[k],o=F.tOwn[k];return `<div class="tw-row"><div class="ic">${fgIc('fg_'+k,40)}</div><div class="tx"><b>${fgN(X.n)} <span class="cnt">${ae('معاك','have')} ${o}/${FG_TOWN}</span></b><small>${ae(`بترجع بعد ${X.min} دقيقة بـ${X.cnt[0]}–${X.cnt[1]} سمك${X.bait?' · محتاج طُعم':''}`,`back after ${X.min} min with ${X.cnt[0]}–${X.cnt[1]} catches${X.bait?' · takes bait':''}`)}</small></div>
+        <button class="tw-act cr" data-fgtr="${k}" ${o<FG_TOWN&&h.money>=X.p?'':'disabled'}><b>${ae(G('اشتري','اشتري'),'Buy')}</b><small>${X.p} ${ae('جنيه','coins')}</small></button></div>`}).join('')
+      +`<div class="tw-row"><div class="ic">${fgIc(FG_BK('shellbait'),40)}</div><div class="tx"><b>${fgN(FG_BAIT.shellbait.n)} ×${FG_SHELL[0]}</b><small>${ae('من الساحل','from the coast')} · ${ae('معاك','you have')} ${fgHave(h,'shellbait')}</small></div><button class="tw-act cr" data-fgshell="1" ${h.money>=FG_SHELL[1]?'':'disabled'}><b>${ae(G('اشتري','اشتري'),'Buy')}</b><small>${FG_SHELL[1]} ${ae('جنيه','coins')}</small></button></div>`}
+  else{const g=fgGold(h),ask=FG.ask;const card=(id,title,need,reward,act,done)=>`<div class="fg-gf"><div class="pic">${AR_fish('goldfish',96)}</div><div class="tx"><b>${title}</b>
+      <div class="hv"><span class="${g>=need?'ok':'no'}">${ae('معاك','You have')} ${g}</span> / <span>${ae('المطلوب','Needed')} ${need}</span></div><small class="rw">${reward}</small>
+      ${done||(ask===id?`<div class="fg-ask"><b>${ae('دي آخر سمكة دهب معاك.','This is your last gold fish.')}</b><div class="fg-row"><button class="tw-act cr" data-fgyes="${id}"><b>${ae(G('أيوه، متأكد','أيوه، متأكدة'),'Yes, sure')}</b></button><button class="tw-act" data-fgno="1"><b>${ae('لأ','No')}</b></button></div></div>`
+        :`<button class="tw-act cr fg-go" data-fggf="${id}" ${g>=need?'':'disabled'}><b>${act}</b></button>`)}</div></div>`;
+    const day=F.bowl.d===fgDay(h),food=fgFood(h);
+    const bowl=F.bowl.n?`<div class="fg-gf on"><div class="pic">${fgIc('fg_bowl',96)}</div><div class="tx"><b>${ae('الحوض اللي في البيت','The bowl at home')}</b><small class="rw">${ae(`${G('أكّلها','أكّليها')} مرة كل يوم في البلد (دودة أو حتة عجين): ${G('بترجعلك','بترجعلك')} ${FG_BOWL_EFF} مجهود`,`Feed her once a town day (a worm or some dough): she gives you ${FG_BOWL_EFF} effort`)}</small>
+        <button class="tw-act cr fg-go" data-fgfeed="1" ${day||!food?'disabled':''}><b>${day?ae(G('أكّلتها النهارده','أكّلتيها النهارده'),'Fed today'):food?ae(G('أكّلها','أكّليها'),'Feed her'):ae('محتاج دود أو عجين','Needs worms or dough')}</b>${day?'':`<small>+${FG_BOWL_EFF} ${ae('مجهود','effort')}</small>`}</button></div></div>`
+      :card('bowl',ae('حوض صغير في البيت','A little bowl at home'),1,ae(`السمكة بتعيش في الحوض (ما بتتباعش). ${G('أكّلها','أكّليها')} مرة كل يوم في البلد ${G('وخد','وخدي')} ${FG_BOWL_EFF} مجهود.`,`She lives in the bowl (never sold). Feed her once a town day and get ${FG_BOWL_EFF} effort.`),ae(G('حطها في الحوض','حطيها في الحوض'),'Put her in the bowl'));
+    body=bowl+card('trade',ae('عم سيد يبدّلها','Uncle Sayed trades'),1,ae(`${FG_GF_TRADE} ${FG_BAIT.rare_lure.n[0]}: ${FG_BAIT.rare_lure.d[0]} في ${FG_GF_TRADE} رميات`,`${FG_GF_TRADE} ${FG_BAIT.rare_lure.n[1].toLowerCase()}s: ${FG_BAIT.rare_lure.d[1]} for ${FG_GF_TRADE} casts`),ae(G('بدّل','بدّلي'),'Trade'))
+      +`<small class="fg-note">${ae('السمكة اللي في الحوض أو اللي اتبدّلت ما بتمسحش اللي {اصطدته|اصطدتيه}: العدّاد والتخصص زي ما هم.','A fish in the bowl or traded never takes back what you caught: the count and the specialisation stay.')}</small>`}
+  return `<div class="bk"></div><div class="pn fg-pn"><div class="h">${ae('عدّة الصيد','Fishing gear')}<small>${ae(`الصنارة في إيدك: ${tlN(tlOn(h,'fish')||TOOL_CATALOG.tl_fish0)} · بتطلّع لحد «${fgRare(F.rod)}»`,`Rod in hand: ${tlN(tlOn(h,'fish')||TOOL_CATALOG.tl_fish0)} · lands up to «${fgRare(F.rod)}»`)}</small></div>
+    <div class="fg-tabs">${tabs.map(([k,n])=>`<button class="fg-tab${k===tab?' on':''}" data-fgtab="${k}">${n}</button>`).join('')}</div>
+    <div class="col">${fgT(body)}</div><button class="btn ghost small" data-fgx="1">${ae('رجوع','Back')}</button></div>`}
+const FG_RARE_EN=['Normal','Good','Rare','Legendary'];
+const fgRare=t=>{const i=Math.max(0,Math.min(3,t|0)),r=RARE[i];return EN?FG_RARE_EN[i]:r?r.n:''};
+const AR_fish=(k,w)=>{try{return fishArt(k,w)}catch(e){return fgIc(k,w)}};
+function fgSheet(tab,want){const h=S.hero;if(!h)return;twSheetX();FG.tab=tab||FG.tab||'bait';const d=document.createElement('div');d.className='tw-sh';d.id='twSh';
+  const draw=()=>{d.innerHTML=fgSheetHTML(h,FG.tab,want);bind()};
+  const end=()=>{FG.ask='';d.remove();if(S.screen==='fish'){fgBaitUI(h);fgTrapUI(h)}};
+  const bind=()=>{d.querySelector('.bk').onclick=end;d.querySelector('[data-fgx]').onclick=end;
+    d.querySelectorAll('[data-fgtab]').forEach(b=>b.onclick=()=>{FG.tab=b.dataset.fgtab;FG.ask='';want='';draw()});
+    d.querySelectorAll('[data-fgld]').forEach(b=>b.onclick=()=>{if(fgLoad(h,b.dataset.fgld)){try{SFX.page()}catch(e){}end()}});
+    d.querySelectorAll('[data-fgcut]').forEach(b=>b.onclick=()=>{const n=fgCut(h,b.dataset.fgcut);if(n){floatAt(b,`+${n}`,'#a6e3a0','',18);draw()}});
+    d.querySelectorAll('[data-fgrod]').forEach(b=>b.onclick=()=>{const t=fgRodBuy(h,b.dataset.fgrod);if(!t)return;try{twPay(b,FG_RODS[t.id].buy)}catch(e){}
+      band(LIFE.fish.n,`${ae(G('اشتريت','اشتريتي'),'You bought')} ${tlN(t)}`,`${tlFxTxt(t)} · ${ae('بقت في إيدك',' now in hand')}`,{dur:2000});draw()});
+    d.querySelectorAll('[data-fgtr]').forEach(b=>b.onclick=()=>{const k=b.dataset.fgtr;if(fgBuyTrap(h,k)){try{twPay(b,FG_TRAP[k].p)}catch(e){}draw()}});
+    d.querySelectorAll('[data-fgshell]').forEach(b=>b.onclick=()=>{if(fgBuyShell(h)){try{twPay(b,FG_SHELL[1])}catch(e){}draw()}});
+    const gf=(id,yes)=>{const r=id==='bowl'?fgBowlPut(h,yes):fgTrade(h,yes);if(r==='ask'){FG.ask=id;draw();return}FG.ask='';
+      if(r==='ok'){try{SFX.shimmer?SFX.shimmer():SFX.page()}catch(e){}toast(id==='bowl'?ae('السمكة الدهب في الحوض دلوقتي.','The gold fish is in the bowl now.'):ae(`${G('خدت','خدتي')} ${FG_GF_TRADE} ${FG_BAIT.rare_lure.n[0]}`,`You got ${FG_GF_TRADE} golden lures`))}draw()};
+    d.querySelectorAll('[data-fggf]').forEach(b=>b.onclick=()=>gf(b.dataset.fggf,false));
+    d.querySelectorAll('[data-fgyes]').forEach(b=>b.onclick=()=>gf(b.dataset.fgyes,true));
+    d.querySelectorAll('[data-fgno]').forEach(b=>b.onclick=()=>{FG.ask='';draw()});
+    d.querySelectorAll('[data-fgfeed]').forEach(b=>b.onclick=()=>{if(fgBowlFeed(h)==='ok'){try{SFX.heal()}catch(e){}floatAt(b,`+${FG_BOWL_EFF} ${ae('مجهود','effort')}`,'#a6e3a0','',18);try{gxDev&&gxDev.effUI&&gxDev.effUI()}catch(e){}}draw()});
+    const w=d.querySelector('.want');if(w)setTimeout(()=>w.scrollIntoView({block:'center'}),30)};
+  draw();app.appendChild(d);try{SFX.page()}catch(e){}}
+
+/* ---------- where baits are made: the field (worms), أم سيد (dough), عم حسن (shiny lures) ---------- */
+const fgCardRow=(id,ic,title,sub,btn,dis)=>`<div class="tw-row fg-mk" id="${id}"><div class="ic">${ic}</div><div class="tx"><b>${title}</b><small>${sub}</small></div>${btn.replace('>',` ${dis?'disabled':''}>`)}</div>`;
+{const f0=SCREENS.farm;if(f0)SCREENS.farm=function(){const r=f0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='farm'||!h||$('#fgDig'))return r;
+  view.insertAdjacentHTML('beforeend',`<div class="tw-lbl">${ae('طُعم للصيد','Bait for fishing')}</div><div class="col">${fgCardRow('fgDig',fgIc(FG_BK('worm'),40),ae(`${G('احفر','احفري')} على دود`,'Dig for worms'),ae(`2–4 دود من طين الغيط · معاك ${fgHave(h,'worm')}`,`2–4 worms from the field's mud · you have ${fgHave(h,'worm')}`),`<button class="tw-act cr" data-fgdig="1"><b>${ae(G('احفر','احفري'),'Dig')}</b><small>1 ${ae('مجهود','effort')}</small></button>`,effNow(h)<1)}</div>`)}catch(e){console.warn(e)}return r}}
+{const c0=SCREENS.cook;if(c0)SCREENS.cook=function(){const r=c0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='cook'||!h||$('#fgDough0'))return r;
+  const rows=FG_DOUGH.map((d,i)=>fgCardRow('fgDough'+i,fgIc(FG_BK('dough'),40),i?ae('عجين بالطحالب','Weed dough'):ae('عجين للطُعم','Bait dough'),
+    `${Object.keys(d.need).map(k=>`${d.need[k]} ${resN(k)}`).join(' + ')} → ${d.n} ${fgN(FG_BAIT.dough.n)} · ${ae('معاك','you have')} ${Object.keys(d.need).map(k=>h.res[k]|0).join('/')}`,
+    `<button class="tw-act cr" data-fgdough="${i}"><b>${ae(G('اعجن','اعجني'),'Knead')}</b></button>`,!hasRes(h,d.need))).join('');
+  const html=`<div class="tw-lbl">${ae('عجين للصيد','Dough for fishing')} <small>${ae('أم سيد بتعجنهولك على طول','Umm Sayed kneads it for you at once')}</small></div><div class="col">${rows}</div>`;
+  const br=view.querySelector('.br-col');if(br)br.insertAdjacentHTML('afterend',html);else view.insertAdjacentHTML('beforeend',html)}catch(e){console.warn(e)}return r}}
+{const s0=twSmHTML;twSmHTML=function(h){const s=s0.apply(this,arguments);try{const lv=lifeLvl(h,'smith')>=FG_LURE.lv,ok=hasRes(h,FG_LURE.need);
+  return s+`<div class="tw-lbl">${ae('طُعم لامع','Shiny lures')} <small>${ae('للصيد في المية الغويطة','for fishing deep water')}</small></div><div class="col">${fgCardRow('fgLure',fgIc(FG_BK('shiny_lure'),40),`${fgN(FG_BAIT.shiny_lure.n)} ×${FG_LURE.n}`,
+    lv?`1 ${resN('copper')} + 1 ${resN('iron')} · ${ae('معاك','you have')} ${h.res.copper|0}/${h.res.iron|0}`:`${LIFE.smith.n} ${ae('مستوى','level')} ${FG_LURE.lv}`,`<button class="tw-act cr" data-fglure="1"><b>${ae(G('اعمل','اعملي'),'Make')}</b></button>`,!lv||!ok)}</div>`}catch(e){console.warn(e);return s}}}
+document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-fgdig],[data-fgdough],[data-fglure]');if(!b||!S.hero||b.disabled||(typeof TWN!=='undefined'&&TWN.busy))return;
+  e.preventDefault();e.stopPropagation();const h=S.hero;let n=0,t='';
+  if(b.dataset.fgdig){n=fgDig(h);t='worm';if(!n){toast(ae(G('تعبان','تعبانة')+'. المجهود بيرجع واحدة كل دقيقة.','Tired. Effort comes back one a minute.'));return}}
+  else if(b.dataset.fgdough){n=fgDough(h,+b.dataset.fgdough);t='dough'}
+  else if(b.dataset.fglure){n=fgLure(h);t='shiny_lure'}
+  if(!n)return;try{SFX.page()}catch(x){}toast(`${twI('+'+n)} ${fgN(FG_BAIT[t].n)}`);twRender()},true);
+
+/* ---------- looks ---------- */
+(function(){const st=document.createElement('style');st.textContent=`
+.fg-bt{margin:8px 0 0;padding:8px;border-radius:14px;background:#0003;border:1px solid #ffffff14}
+.fg-bh{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;font-size:13px;margin-bottom:6px}.fg-bh .st{color:var(--gold2,#f3d48f);font-weight:800}
+.fg-bh small{flex-basis:100%;order:3;font-size:12px;color:#a6e3a0}.fg-bh .fg-more{margin-inline-start:auto;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid #ffffff22;background:#ffffff0d;color:var(--ink);font:inherit;font-size:12px;font-weight:800}
+.fg-chips{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.fg-chip{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-height:62px;padding:2px 1px;border-radius:12px;border:1px solid #ffffff1f;background:#ffffff0a;color:var(--ink);font:inherit;cursor:pointer}
+.fg-chip .ic{height:30px;display:grid;place-items:center}.fg-chip .nm{font-size:10px;line-height:1.15;color:var(--mute);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fg-chip .n{position:absolute;top:2px;inset-inline-end:4px;font-size:11px;font-weight:800;color:#fff}
+.fg-chip.on{border-color:#f3c14d;background:#f3c14d26;box-shadow:0 0 0 1px #f3c14d inset}.fg-chip.on .nm{color:#ffe7a6}.fg-chip.z{opacity:.45}
+.fg-card{margin:8px 0 0;padding:8px 10px;border-radius:14px;border:1px solid #45c8dc44;background:linear-gradient(180deg,#14242c,#101a20)}
+.fg-ch{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:4px}.fg-ch b{font-size:14px}.fg-ch small{font-size:12px;color:var(--mute)}
+.fg-tr{display:flex;align-items:center;gap:8px;min-height:48px;padding:2px 0;border-top:1px solid #ffffff10}.fg-tr .ic{flex:0 0 36px;display:grid;place-items:center}
+.fg-tr .tx{flex:1;display:flex;flex-direction:column;min-width:0}.fg-tr .tx small{font-size:12px;color:var(--mute)}.fg-tr .tm{font-weight:800;color:#9fe0ec;font-variant-numeric:tabular-nums;padding:0 6px}
+.fg-tr.rd .tx b{color:#a6e3a0}.fg-get{min-height:44px;min-width:80px}
+.fg-empty{font-size:12px;color:var(--mute);padding:4px 0}
+.fg-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.fg-row .tw-act{flex:1 1 30%;min-height:46px;min-width:0}
+.fg-gold{display:flex;align-items:center;justify-content:center;gap:4px}.fg-gold .gi{display:inline-grid}
+.fg-pn .col{display:flex;flex-direction:column;gap:6px;max-height:56vh;overflow:auto}
+.fg-tabs{display:flex;gap:4px;margin:6px 0}.fg-tab{flex:1;min-height:46px;border-radius:10px;border:1px solid #ffffff22;background:#ffffff0a;color:var(--ink);font:inherit;font-size:13px;font-weight:800}.fg-tab.on{background:#45c8dc33;border-color:#45c8dc}
+.fg-srow{flex-wrap:wrap}.fg-srow .tx small{line-height:1.45}.fg-srow .tx small.src{color:#9fc6ff}.fg-srow .cnt,.fg-pn .cnt{font-size:12px;font-weight:700;color:var(--mute)}.fg-srow.want{box-shadow:0 0 0 2px #f3c14d}
+.fg-pn .tw-act{min-height:46px;min-width:88px}.fg-pn small.no{color:#f0a090}
+.fg-say{font-size:13px;color:#d8cfbf;padding:4px 2px}
+.fg-gf{display:flex;gap:10px;align-items:center;padding:8px;border-radius:12px;background:#ffffff08;border:1px solid #f3c14d33}.fg-gf .pic{flex:0 0 96px;display:grid;place-items:center}
+.fg-gf .tx{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}.fg-gf .hv{font-size:13px;font-weight:800}.fg-gf .hv .ok{color:#a6e3a0}.fg-gf .hv .no{color:#f0a090}
+.fg-gf .rw{font-size:12px;color:#ffe7a6;line-height:1.45}.fg-gf .fg-go{min-height:46px;margin-top:2px}.fg-ask b{font-size:12px;color:#f0a090}
+.fg-note{font-size:11px;color:var(--mute);line-height:1.5;padding:2px}
+.fg-mk .tw-act{min-height:46px;min-width:88px}
 `;document.head.appendChild(st)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
