@@ -3207,9 +3207,9 @@ SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
   Object.keys(byG).forEach(b=>trs.push(`<div class="tw-sm q-by">صنعة إيد ${esc(b)}: ${byG[b].join('، ')}</div>`));
   const wears=QDUR.map(s=>qOn(h,s)).filter(Boolean);
   view.innerHTML=`${twTop('عدّتي')}<div class="tw">
-    <div class="tw-doll"><div class="sd">${['weapon','armor','head'].map(slotB).join('')}</div>
+    <div class="tw-doll"><div class="sd">${['weapon','armor','head','neck','charm'].map(slotB).join('')}</div>
       <div class="md"><div class="pt" id="twPt">${portrait(h,'g')}</div><b>${esc(h.name)}</b><small>${clsBase(h)}${spTag(h)} · المستوى ${h.lvl}</small></div>
-      <div class="sd">${['ring','neck','charm'].map(slotB).join('')}</div></div>
+      <div class="sd">${['ring','ring2','ring3','ring4'].map(slotB).join('')}</div></div>
     <div class="tw-sm" style="text-align:center;margin-top:-4px">${G('دوس','دوسي')} على أي مكان عشان ${G('تلبس','تلبسي')} أو ${G('تقلع','تقلعي')}. الحاجات بتتعمل عند عم حسن وعم فتحي.</div>
     <div class="tw-lbl">أرقامك</div>
     <div class="card"><div class="tw-nums">
@@ -4793,6 +4793,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.21.2',d:'13 أكتوبر',add:['الخواتم: {تقدر|تقدري} {تلبس|تلبسي} أكتر من خاتم في نفس الوقت. خانتين من الأول، والتالتة في مستوى 10، والرابعة في مستوى 20. كل خاتم قدرته شغالة من أي خانة، ونفس الخاتم مايتلبسش في خانتين','عدّة الصنايعية بقت بتتعمل في ميني جيم الحداد زي أي حاجة: ليها جودة من بايظ لحد تحفة، والكويسة منها ممكن تطلع «موزونة» ومفعولها أقوى. الأحسن في إيدك هو اللي شغال','{تقدر|تقدري} يبقى {معاك|معاكي} أكتر من واحدة من نفس العدّة: الزيادة {تبيعها|تبيعيها} لعم حسن أو {تنزّلها|تنزّليها} سوق اللاعبين'],fix:['المستنقع: زرار «الحشايش» بقى أيقونة صغيرة على الرسمة بدل الصندوق اللي كان مغطي الطريق','العطارة: قايمة الأعشاب بقت خانتين جنب بعض، فبتاخد نص المكان','أماكن الصيد: «إيه بيطلع هنا» بقى بيتطوي زي سلم المية، وزرار الخريطة بقى أيقونة على صورة المكان، والفلوس مابتظهرش إلا في المكان اللي محتاج تذكرة','الخلا: أطراف الخريطة الواسعة بقت بتدخل في النص بالراحة من غير خط واضح بين الألوان']},
 {v:'6.21.1',d:'13 أكتوبر',add:[],fix:['السبايك: الزرار رجع صغير، و«ناقصك» بقى سطر تحت الخانة بعرضها بدل ما يزنق الاسم','مزايا تخصصات الحرف (زي «أسطى الحدادين» +2 ضرر على اللي {بتعمله|بتعمليه} بإيدك) بقت ماشية مع جودة القطعة: البايظ مياخدش حاجة، و«عادي» نصها، و«كويس» كاملة، و«ممتاز» مرة ونص، و«تحفة» الضعف، و«بديع» و«أعجوبة» أكتر. يعني الشغل المظبوط في الميني جيم بيفرق','رسالة السمعة (الخصم أو الزيادة) بقت فوق خالص في المحلات','الشطرنج: آخر حركة للخصم مبقتش بتتعاد كل ما {تختار|تختاري} قطعة','لما {ترجع|ترجعي} من أي محل أو مكان، البلد بترجع لنفس المكان اللي {كنت|كنتي} فيه، من غير ما {تعمل|تعملي} اسكرول تاني','الوحش اللي {معاك|معاكي} في القتال صورته بقت على خلفية بلون الكارت بدل الدايرة السودا','أي وصفة أو حاجة جديدة {تقدر|تقدري} {تعملها|تعمليها} في الحرف عليها علامة «جديد» لحد ما {تشوفها|تشوفيها} في القايمة','الطبخ: قسم جديد «المخبوزات» فيه العيش البلدي والفطير المشلتت وكل أكلة بتتخبز. زرار واحد «اخبز» زي «اطبخ»، بيفتح «ابدأ العجن» أو «اخبز بسرعة»']},
 {v:'6.21',d:'13 أكتوبر',add:['«الخلا» بقت أوسع: سهم يمين وسهم شمال (والسحب) ينقلوك بين البحر والنهر والخلا والصحرا','11 مكان صيد جديد: الفرع العميق، بِرك المستنقع، أرض الفيضان، البحيرة، المصب، الساحل، خلجان الصخر، مغارة المية، البحر البعيد، الواحة، والمية القديمة. كل مكان بيتفتح بمستوى الصيد أو بمشوار لعم سيد، والبعيد منهم بتروحه بالمركب بتذكرة','149 كائن جديد في المية: سمك وقشريات وحاجات غريبة، كل واحد ليه مكانه ووقته والطعم اللي بيحبه وطريقة عض مختلفة (يخطف، يستنى، يشد لفوق، ينقر مرتين…). وفيه كائنات {بتنقذها|بتنقذيها} وترجّعها المية','«دليل الصيد»: كل اللي {اصطدته|اصطدتيه} في كل مكان، وأكبر وزن، ومكافأة أول مرة. وعم سيد عنده طلبات صيد كل يوم','صنارات: تدريب، بوص، حديد، والصياد المحترف. كل صنارة بتدّيك وقت شد أطول وبتطلّع سمك أندر','طعم: دود، عجين، حتة سمك، طعم لامع، صدف، وطعم دهبي نادر. {بتختار|بتختاري} الطعم قبل الرمية، وكل سمكة ليها طعمها','مصايد: شبكة وقفص {بتسيبهم|بتسيبيهم} في المية وترجع تلاقي فيهم سمك','السمكة الدهب بقى ليها لازمة: حوض في البيت بيدّيك مجهود كل يوم، أو {تبدلها|تبدليها} عند عم سيد بطعم دهبي'],fix:['صناديق الصيد مابقتش بتدّي فلوس: بتدّي بطارخ وطحالب وعشبة الترعة، والبطارخ ليها «عجة بطارخ» عند أم سيد','الشبشب اللي بيطلع في السنارة اترسم بيكسل']},
 {v:'6.20',d:'13 أكتوبر',add:['أم سيد: 33 أكلة وشربة جديدة من خضار الغيط والسمك وبيض البط والعسل واللبن (بصارة، أم علي، صيادية، سوبيا، حلبة باللبن…). فيه أكلات بتدفّي في ليلة البرد، وأكلات بتوقف النزيف في الخناقة','سمك من غير عيش: السمك المشوي والبساريا المقلية والتعابين المشوية مابقوش محتاجين عيش، واتضاف «قرموط مشوي» و«بوري سنجاري»','شاشة الطبخ بقت مترتبة بالمستوى وفيها فلاتر (اللي حاجتها كاملة، سمك، أكل بيتي، حلو وشرب)، والوصفات البعيدة عن مستواك مطوية','العطارة: 84 عشبة جديدة بتتلقّط من الغيطان وشط الترعة والمستنقع والجبل، ومن رملة الخرابة، ومن جوه المنجم، والنادر منها لما {توصل|توصلي} لعطارة 10','68 وصفة عطارة جديدة: شربات ودهانات وبخور وعطور. كل واحدة ليها أثر حقيقي مرة واحدة: مجهود يرجع، ميني جيم أسهل، حصاد أحسن، صيد أحسن، أول ضربة في الخناقة الجاية تتصد، زيادة في رمية، خصم في البلد، خبرة زيادة، أو المنجم يوريك السكة. أثر واحد شغال في نفس الوقت','عدّة العطار: 16 أداة (سلة، قفاز، مقص، عدسة، هون، مدق، وعاء خلط، مغرفة، رف تجفيف…) بتتعمل عند عم رجب، واحدة في إيدك من كل نوع','«طلبات الناس» عند عم رجب: 12 حكاية لناس من البلد محتاجين وصفة معينة، بتاخد عليها فلوس وخبرة وسمعة وحاجة زيادة (حكاية لسيرتك، مكان جديد في الخلا، صبغة عند الحلاق، سماد…)، و4 طلبات بتتكرر كل يوم'],fix:['قسم العيش عند أم سيد لسه موجود، والأكلات اللي بجودة غير «عادي» من الغيط الجديد بقت بتتشال في الشنطة صح']},
@@ -6070,7 +6071,10 @@ const qFem=id=>!!TW_FEMG[id];
 function qMaxD(id,I){if(!qDur(id))return 0;let m=QD[I.q]||40;if((I.t||[]).includes('mateen'))m*=I.e>=4?1.75:1.5;if(I.s2)m*=2;return Math.round(m)}
 function giNew(id,q,o){o=o||{};const I={u:qUid(),q:q==null?1:q,e:o.e||0,t:(o.t||[]).slice()};if(o.nm)I.nm=o.nm;if(o.by)I.by=String(o.by).slice(0,20);if(o.s2)I.s2=1;if(qDur(id))I.d=qMaxD(id,I);return I}
 const qScore=I=>I.q*100+I.e*10+(I.t?I.t.length:0)+(I.d||0)/1000;
-const qWorn=(h,id)=>!!(h&&h.eq&&GEAR[id]&&h.eq[GEAR[id].slot]===id&&(h.gear[id]||0)>0);
+/* TW-RINGS (acc1): a ring can also be worn in the extra ring slots h.eq.ring2…ring4 (p141); RG2.strict, only while a ring sheet is
+   built, counts just the hand that sheet is for */
+const RG2={side:0,strict:0,sheet:null,x:['ring2','ring3','ring4']};   /* the extra ring slots (p141) */
+const qWorn=(h,id)=>!!(h&&h.eq&&GEAR[id]&&(h.eq[GEAR[id].slot]===id||(!RG2.strict&&GEAR[id].slot==='ring'&&RG2.x.some(k=>h.eq[k]===id)))&&(h.gear[id]||0)>0);
 /* the list of pieces for one gear id, kept in step with h.gear[id]: the worn one first, then the best */
 function giL(h,id){if(!h||!GEAR[id])return [];h.gi=h.gi||{};const n=Math.max(0,h.gear[id]||0);let L=h.gi[id];if(!Array.isArray(L))L=h.gi[id]=[];
   const seen={};L.forEach(I=>{if(!I.u||seen[I.u])I.u=qUid();seen[I.u]=1;if(!(I.q>=0&&I.q<=6))I.q=1;if(!I.e)I.e=0;if(!Array.isArray(I.t))I.t=[];if(qDur(id)){const m=qMaxD(id,I);if(I.d==null||I.d>m)I.d=m}});
@@ -44083,7 +44087,7 @@ const RG_SRC={night:['بيوقع نادرًا من كبير الليلة في أ
 const rgSrcTx=r=>{const s=RG_SRC[r.src]||['',''];return ae(s[0],s[1])+(r.src==='smith'?ae(` (حدادة مستوى ${r.lv})`,` (smithing level ${r.lv})`):'')};
 const rgNm=id=>{const r=RGD[id];return r?ae(r.n[0],r.n[1]):''};
 const rgRn=t=>ae((RARE[t]||RARE[0]).n,['Common','Good','Rare','Legendary'][t]||'');
-const rgOn=(h,id)=>!!(h&&h.eq&&h.eq.ring===id&&RGD[id]&&qWorn(h,id));
+const rgOn=(h,id)=>!!(h&&h.eq&&(h.eq.ring===id||RG2.x.some(k=>h.eq[k]===id))&&RGD[id]&&qWorn(h,id));   /* TW-RINGS (acc1): either hand */
 const rgOwn=h=>RG_L.filter(r=>((h&&h.gear&&h.gear[r.id])|0)>0).length;
 
 /* ----- the gear entries, their English, their pictures ----- */
@@ -44108,10 +44112,10 @@ function rgLog(id,t){const C=S.combat;if(!C)return;(C.rgQ=C.rgQ||[]).push({t:`${
 
 /* ----- fights ----- */
 {const s0=startCombat;startCombat=function(){const r=s0.apply(this,arguments);try{const C=S.combat,h=S.hero;if(C&&h&&!C.tutorial){C.rgQ=[];
-    const id=h.eq&&h.eq.ring;if(RGD[id]&&rgOn(h,id)){let t='';
+    ['ring'].concat(RG2.x).map(k=>h.eq&&h.eq[k]).forEach(id=>{if(RGD[id]&&rgOn(h,id)){let t='';
       if(id==='rg_jabal')t=ae(`صحتك الكاملة ${MXH(h)} (+25%)`,`your full health is ${MXH(h)} (+25%)`);
       else if(id==='rg_ghoula')t=ae('ضربك أقوى، بس هيشرب من صحتك كل دور','your hits are stronger, but it drinks your health every round');
-      if(t){C.log.push({t:`<i class="rg-li" style="--rc:${RGD[id].c}">◎</i> ${rgNm(id)}: ${t}`,k:'good rg'});if(S.screen==='combat')combat()}}}}catch(e){console.warn(e)}return r}}
+      if(t){C.log.push({t:`<i class="rg-li" style="--rc:${RGD[id].c}">◎</i> ${rgNm(id)}: ${t}`,k:'good rg'});if(S.screen==='combat')combat()}}})}}catch(e){console.warn(e)}return r}}
 /* whose hit is it: yours (an attack or a move), a thrown thing, or your companion's. Cleared when the round goes on. */
 {const a0=heroAct;heroAct=async function(a){const C=S.combat;if(C&&!C.busy&&C.phase==='me'&&a!=='bag'&&a!=='sk')C.rgMy=1;return a0.apply(this,arguments)}}
 {const u0=useSkill;useSkill=async function(){const C=S.combat;if(C&&!C.busy&&C.phase==='me')C.rgMy=1;return u0.apply(this,arguments)}}
@@ -44122,7 +44126,7 @@ function rgLog(id,t){const C=S.combat;if(!C)return;(C.rgQ=C.rgQ||[]).push({t:`${
 {const c0=compTurn;compTurn=async function(){const C=S.combat;if(C)C.rgCp=1;try{return await c0.apply(this,arguments)}finally{if(C)C.rgCp=0}}}
 /* the damage rings: الغولة and الضلمة on your hits, الرامي on thrown things, الرفيق on the companion's; الندّاهة heals on a kill */
 /* how much the worn ring adds to this hit (and which ring), then what it does once the hit landed */
-function rgAdd(f,d,o){const C=S.combat,h=S.hero;o=o||{};if(!C||!h||C.tutorial||!f)return null;const id=h.eq&&h.eq.ring;if(!RGD[id]||!rgOn(h,id))return null;
+function rgAdd(f,d,o,id0){const C=S.combat,h=S.hero;o=o||{};if(!C||!h||C.tutorial||!f)return null;const id=id0||(h.eq&&h.eq.ring);   /* id0: a ring in an extra slot (p141) */if(!RGD[id]||!rgOn(h,id))return null;
   const mine=C.rgMy&&!C.rgCp&&o.fx!=='poison';let add=0;
   if(id==='rg_ghoula'&&mine)add=Math.ceil(d*1.35)-d;
   else if(id==='rg_dalma'&&mine&&h.hp<=MXH(h)/3)add=Math.ceil(d*1.5)-d;
@@ -48752,6 +48756,191 @@ document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.targ
 .fg-note{font-size:11px;color:var(--mute);line-height:1.5;padding:2px}
 .fg-mk .tw-act{min-height:46px;min-width:88px}
 `;document.head.appendChild(st)})();
+/* ---------- TW-RINGS (Twister 04:23 + 00:51, acc1): up to four rings at once ----------
+   Twister: as many as those action games allow; they stop at 4 and open the slots step by step. So: two ring slots from the
+   start (h.eq.ring, h.eq.ring2), a third from hero level 10 and a fourth from level 20 (RG_LV); a locked one shows its lock
+   and level in «عدّتي». Any ring fits any slot, never the same ring in two: putting it in another slot takes it out of the
+   first. acc2's 13 rings (p122) are untouched.
+   - stats come through gearOn (every value of h.eq); qWorn (p9q, RG2.x) and rgOn / the fight hooks (p122) know every slot,
+     so traits, gems, quality and each ring's own passive work from any slot
+   - an extra slot's sheet is acc2's ring sheet built with that slot swapped into h.eq.ring (rgSwap), RG2.strict so only that
+     slot's ring shows as worn; a pick from it lands in that slot (twEquip below). Wearing a ring from anywhere else (buy,
+     craft, a find, the ring book) fills the first empty open slot, else ring1
+   - rgXFix drops a ring from an extra slot that was sold, given away, doubled or is locked again, before anything reads it */
+const RG_LV={ring2:1,ring3:10,ring4:20};
+/* the hero page («شنطتي») and the help row draw an empty slot with its own icon */
+['ring2','ring3','ring4'].forEach(k=>{if(!PF_SLOTIC[k])PF_SLOTIC[k]=PF_SLOTIC.ring});
+const rgOpen=(h,k)=>k==='ring'||((h&&h.lvl)|0)>=(RG_LV[k]||1);
+Object.assign(SLOTS,{ring2:'خاتم تاني',ring3:'خاتم تالت',ring4:'خاتم رابع'});Object.assign(SLOTS_EN,{ring2:'second ring',ring3:'third ring',ring4:'fourth ring'});
+TW_SLOTS.splice(TW_SLOTS.indexOf('ring')+1,0,...RG2.x);
+L10N({'خاتم تاني':'Second ring','خاتم تالت':'Third ring','خاتم رابع':'Fourth ring'});
+function rgSwap(h,k){if(!k||k==='ring')return;const a=h.eq.ring,b=h.eq[k];if(b)h.eq.ring=b;else delete h.eq.ring;if(a)h.eq[k]=a;else delete h.eq[k]}
+function rgXFix(h){if(!h||!h.eq)return;let ch=0;const seen={};if(h.eq.ring)seen[h.eq.ring]=1;
+  RG2.x.forEach(k=>{const b=h.eq[k];if(!b)return;if(!GEAR[b]||GEAR[b].slot!=='ring'||!((h.gear&&h.gear[b])|0)||seen[b]||!rgOpen(h,k)){delete h.eq[k];ch=1}else seen[b]=1});
+  if(ch)try{saveHero()}catch(e){}}
+const rgOthers=(h,k)=>['ring'].concat(RG2.x).filter(x=>x!==k&&h.eq[x]&&GEAR[h.eq[x]]).map(x=>gView(h,h.eq[x]).n);
+{const s0=twSlotSheet;twSlotSheet=function(slot){const h=S.hero;RG2.sheet=null;if(!h||(slot!=='ring'&&!RG2.x.includes(slot)))return s0.apply(this,arguments);
+  if(!rgOpen(h,slot)){try{toast(ae(`${SLOTS[slot]} بيتفتح لما ${G('توصل','توصلي')} مستوى ${RG_LV[slot]}`,`The ${SLOTS_EN[slot]} slot opens at level ${RG_LV[slot]}`))}catch(e){}return}
+  rgXFix(h);rgSwap(h,slot);RG2.strict=1;let r;
+  try{r=s0.call(this,'ring')}finally{RG2.strict=0;rgSwap(h,slot)}
+  RG2.sheet=slot;
+  try{const d=$('#twSh'),o=rgOthers(h,slot),hd=d&&d.querySelector('.pn .h');
+    if(hd&&slot!=='ring'&&hd.firstChild&&hd.firstChild.nodeType===3)hd.firstChild.textContent=SLOTS[slot];
+    if(hd&&o.length){const sm=document.createElement('small');sm.className='rg2-o';sm.textContent=`${ae(G('لابس كمان','لابسة كمان'),'Also worn')}: ${o.join('، ')}`;hd.appendChild(sm)}}catch(e){console.warn(e)}
+  return r}}
+{const x0=twSheetX;twSheetX=function(){RG2.sheet=null;return x0.apply(this,arguments)}}
+{const e0=twEquip;twEquip=function(id,on,u){const h=S.hero,g=GEAR[id];if(!h||!h.eq||!g||g.slot!=='ring')return e0.apply(this,arguments);
+  rgXFix(h);let k=RG2.sheet&&$('#twSh')&&rgOpen(h,RG2.sheet)?RG2.sheet:null;
+  if(!k){if(on){const cur=['ring'].concat(RG2.x).find(x=>h.eq[x]===id);k=cur||(h.eq.ring?RG2.x.find(x=>rgOpen(h,x)&&!h.eq[x]):null)||'ring'}
+    else k=['ring'].concat(RG2.x).find(x=>h.eq[x]===id)||'ring'}
+  rgSwap(h,k);let r;try{r=e0.apply(this,arguments)}finally{rgSwap(h,k)}
+  if(on&&h.eq[k]===id)['ring'].concat(RG2.x).forEach(x=>{if(x!==k&&h.eq[x]===id)delete h.eq[x]});
+  try{saveHero()}catch(e){}return r}}
+{const b0=twBetter;twBetter=function(h,s){if(!RG2.x.includes(s)||!h||!h.eq)return b0.apply(this,arguments);if(!rgOpen(h,s))return false;rgSwap(h,s);try{return b0.call(this,h,'ring')}finally{rgSwap(h,s)}}}
+{const r0=render;render=function(){try{rgXFix(S.hero)}catch(e){}return r0.apply(this,arguments)}}
+/* a locked slot in «عدّتي»: lock and level instead of «فاضي», a tap says when it opens */
+{const g0=SCREENS.gear;SCREENS.gear=function(){const r=g0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='gear'||!h)return r;
+  RG2.x.forEach(k=>{const b=view.querySelector(`.tw-slot[data-slot="${k}"]`);if(!b||rgOpen(h,k))return;b.classList.add('rg-lk');
+    const ic=b.querySelector('.ic'),gn=b.querySelector('.gn');if(ic)ic.textContent='🔒';if(gn)gn.textContent=ae(`مستوى ${RG_LV[k]}`,`Level ${RG_LV[k]}`);
+    b.onclick=()=>{try{SFX.tap&&SFX.tap()}catch(e){}toast(ae(`${SLOTS[k]} بيتفتح لما ${G('توصل','توصلي')} مستوى ${RG_LV[k]}`,`The ${SLOTS_EN[k]} slot opens at level ${RG_LV[k]}`))}})}catch(e){console.warn(e)}return r}}
+/* the extra rings add their own damage on top of the first ring's (p122 hooks read ring1) */
+const rgXIds=h=>h&&h.eq?RG2.x.map(k=>h.eq[k]).filter(Boolean):[];
+{const hf=hurtFoe;hurtFoe=function(f,d,o){const xs=rgXIds(S.hero).map(id=>rgAdd(f,d,o,id)).filter(Boolean);if(!xs.length)return hf.apply(this,arguments);
+  const r=hf.call(this,f,d+xs.reduce((a,x)=>a+x.add,0),o);xs.forEach(x=>rgAfter(f,x));return r}}
+if(typeof X_hit==='function'){const x0=X_hit;X_hit=function(f,v,col,big){const xs=rgXIds(S.hero).map(id=>rgAdd(f,v,{},id)).filter(Boolean);if(!xs.length)return x0.apply(this,arguments);
+  const r=x0.call(this,f,v+xs.reduce((a,x)=>a+x.add,0),col,big);xs.forEach(x=>rgAfter(f,x));return r}}
+(function(){const s=document.createElement('style');s.textContent=`.tw-sh .pn .h small.rg2-o{display:block;opacity:.8;font-size:12px}.tw-slot.rg-lk{opacity:.55}.tw-slot.rg-lk .ic{font-size:18px}`;document.head.appendChild(s)})();
+
+/* ---------- TW-SWAMPTIP (Twister 04:14, screenshot): inside an area, the herb patch button (p123) landed in the scene's icon row
+   (p118 moved #rmMap there) as a full-width box over the drawing that caught the taps. It becomes one more small icon like
+   the others (same data-hbz and action), with a green dot when the patch is ready; its state stays in its title. ---------- */
+{const r0=SCREENS.roam;SCREENS.roam=function(){const res=r0.apply(this,arguments);try{if(S.screen!=='roam')return res;const b=view.querySelector('[data-hbz]');
+  if(!b||b.classList.contains('rs-ib'))return res;const s=hbSpot(b.dataset.hbz),h=S.hero;if(!s||!h)return res;
+  const tip=b.innerText.replace(/\s+/g,' ').trim(),ok=!hbLock(h,s)&&!hbLeft(h,s);const box=view.querySelector('.rs-ico .rs-ig');
+  rsIb(b,KH_ICO.herb,ae('الحشايش','Herbs'),tip);if(ok)b.insertAdjacentHTML('beforeend','<i class="hb-dot"></i>');if(box&&b.parentElement!==box)box.appendChild(b)}catch(e){console.warn(e)}return res}}
+(function(){const s=document.createElement('style');s.textContent=`.rs-ib .hb-dot{position:absolute;top:3px;left:4px;width:7px;height:7px;background:#7dff8a;box-shadow:0 0 4px #7dff8a}`;document.head.appendChild(s)})();
+
+/* ---------- TW-HERBUI (Twister 13:06, screenshot): the herb lists at عم رجب (p60 «.at-wild», p123 «أعشاب الخلا») took three lines
+   a herb. Now two compact cells a row: picture, name and «× count» on one line, where it grows under it in one short line
+   (no «في الخلا», the section title already says it). ---------- */
+{const a0=SCREENS.attar;SCREENS.attar=function(){const r=a0.apply(this,arguments);try{if(S.screen!=='attar')return r;
+  view.querySelectorAll('.at-wild .at-wl small').forEach(s=>{const t=s.textContent,n=t.replace(/ في الخلا$/,'').replace(/ in the wilds$/,'');if(n&&n!==t)s.textContent=n})}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`.at-wild{display:grid!important;grid-template-columns:1fr 1fr;gap:6px}
+.at-wild .at-wl{gap:6px;min-width:0;padding:5px 6px;border-radius:8px;background:#0003}
+.at-wild .at-wl>div{min-width:0;flex:1;display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:4px}
+.at-wild .at-wl b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.at-wild .at-wl span{font-size:12px;white-space:nowrap}
+.at-wild .at-wl small{grid-column:1/-1;font-size:10.5px;line-height:1.25;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.at-wild>.btn{grid-column:1/-1}.at-wild .at-wl svg,.at-wild .at-wl img,.at-wild .at-wl canvas{width:26px;height:26px;flex:none}`;document.head.appendChild(s)})();
+
+/* ---------- TW-FISHUI (Twister 13:19, screenshot «برك المستنقع»): a water place (p132 SCREENS.fzone) shows less at once.
+   «إيه بيطلع هنا» folds like «سلم المية» (one line: how many kinds and how many are open to you), the big «ارجع للخريطة»
+   becomes the usual small map icon on the picture (the one the areas use, p118 rsIb), and the money only shows where a boat
+   ticket needs it. ---------- */
+{const z0=SCREENS.fzone;SCREENS.fzone=function(){const r=z0.apply(this,arguments);try{if(S.screen!=='fzone')return r;const h=S.hero,P=khP(S.fzAt),Q=P&&fzP(P.fz);if(!h||!Q)return r;
+  const w=view.querySelector('.tw.fz');if(!w)return r;
+  const lb=[...w.querySelectorAll(':scope>.tw-lbl')].find(x=>x.textContent.trim()===ae('إيه بيطلع هنا','What bites here'));
+  if(lb){const rows=[];let n=lb.nextElementSibling;while(n&&(n.classList.contains('fz-cl')||n.classList.contains('fz-ci'))){rows.push(n);n=n.nextElementSibling}
+    const all=rows.reduce((a,x)=>a+x.querySelectorAll('.fz-c').length,0),open=rows.filter(x=>!x.classList.contains('lk')).reduce((a,x)=>a+x.querySelectorAll('.fz-c').length,0);
+    const d=document.createElement('details');d.className='fz-ld fz-cd';
+    d.innerHTML=`<summary>🐟 ${ae('إيه بيطلع هنا','What bites here')} <small>${all?ae(`${open} من ${all} مفتوحين`,`${open} of ${all} open`):''}</small></summary>`;
+    rows.forEach(x=>d.appendChild(x));lb.replaceWith(d)}
+  const m=$('#fzMap'),pic=w.querySelector('.fz-pic');if(m&&pic&&typeof rsIb==='function'){const box=document.createElement('div');box.className='rs-ico fz-ico';const g=document.createElement('div');g.className='rs-ig';
+    rsIb(m,RS_ICO.map,ae('الخريطة','Map'),ae(G('ارجع لخريطة الخلا','ارجعي لخريطة الخلا'),'Back to the map of the wilds'));g.appendChild(m);box.appendChild(g);pic.appendChild(box)}
+  if(!Q.tk){const mo=[...w.querySelectorAll('.kh-st span')].find(x=>/💰/.test(x.textContent));if(mo)mo.remove()}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`.fz .fz-pic{position:relative}.fz-ico{top:6px;right:6px;left:auto}
+.fz-cd .fz-cl{padding:6px 2px}.fz-cd summary small{opacity:.75;margin-inline-start:6px}`;document.head.appendChild(s)})();
+
+/* ---------- TW-EDGES (Twister 13:25, two screenshots): on the wide «الخلا» (p132) the old middle picture and the new sides met in
+   a hard straight line: different night colours on each side. Each seam now gets a dithered band (KXS_B art pixels on each
+   side): near the line the colours of the other side's edge are sprinkled in an ordered pattern, thinning out with distance,
+   the way two pixel pictures are blended by hand. The colours are read from the two pictures themselves (pxParse), so it
+   follows any later change to either side; the soft «mist» stripe it replaces is hidden. ---------- */
+const KXS_B=10,KXS_BY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+function pxParse(svg,w,h){const A=new Array(w*h).fill(null);const re=/<path fill="([^"]+)" d="([^"]*)"/g;let m;
+  while((m=re.exec(svg))){const c=m[1],r2=/M(-?\d+) (-?\d+)h(\d+)v(\d+)/g;let q;while((q=r2.exec(m[2]))){const x0=+q[1],y0=+q[2],ww=+q[3],hh=+q[4];
+    for(let y=Math.max(0,y0);y<Math.min(h,y0+hh);y++)for(let x=Math.max(0,x0);x<Math.min(w,x0+ww);x++)A[y*w+x]=c}}return A}
+function kxSeam(L,R,wL,wR){const B=KXS_B,H=KH_H,by={};
+  /* band x 0…2B: 0…B-1 = the left picture's last B columns, B…2B-1 = the right picture's first B columns */
+  for(let y=0;y<H;y++){const eL=L[y*wL+wL-1],eR=R[y*wR];
+    for(let d=0;d<B;d++){const p=(1-d/B)*.55*16,t=KXS_BY[(y%4)*4+(d%4)];
+      if(eR&&t<p){(by[eR]=by[eR]||[]).push(`M${B-1-d} ${y}h1v1h-1z`)}
+      if(eL&&t<p){(by[eL]=by[eL]||[]).push(`M${B+d} ${y}h1v1h-1z`)}}}
+  let s='';for(const c in by)s+=`<path fill="${c}" d="${by[c].join('')}"/>`;return s}
+function kxSeams(h){const sig=KH.baseK||'';if(KX.seam&&KX.seamK===sig)return KX.seam;let out='';
+  try{const sd=kxSides(),mid=khBase(h),M=pxParse(mid,KH_W,KH_H),W=pxParse(sd.w,KX.W,KH_H),E=pxParse(sd.e,KX.E,KH_H),B=KXS_B;
+    const box=(x,inner)=>`<svg class="kx-seam" viewBox="0 0 ${2*B} ${KH_H}" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true" style="left:${kxL(x-B).toFixed(4)}%;width:${(2*B/KX.T*100).toFixed(4)}%">${inner}</svg>`;
+    out=box(0,kxSeam(W,M,KX.W,KH_W))+box(KH_W,kxSeam(M,E,KH_W,KX.E))}catch(e){console.warn(e)}
+  KX.seam=out;KX.seamK=sig;return out}
+{const k0=SCREENS.khala;if(k0)SCREENS.khala=function(){const r=k0.apply(this,arguments);try{const h=S.hero,mp=view.querySelector('.kx-map');if(S.screen!=='khala'||!h||!mp||mp.querySelector('.kx-seam'))return r;
+  const mid=mp.querySelector(':scope>svg.kx-mid');const s=kxSeams(h);if(mid&&s)mid.insertAdjacentHTML('afterend',s)}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`.kx-map>svg.kx-seam{position:absolute;top:0;height:100%;pointer-events:none;z-index:1}.kx-map .kx-mist{display:none}`;document.head.appendChild(s)})();
+
+/* ---------- TW-TOOLS (Twister 09:52, acc1): a trade tool is made in the smith's game, has a quality and a trait, and you can keep several ----------
+   Before: tlMake (p126) took the inputs and gave the one tool in one step; owning it hid the make button; nothing to sell.
+   Now the smith's «اعمل» opens the usual sheet (qPrep): play the anvil game (qPlay 'smith') or make it fast (after the first one, «عادي»).
+   - every copy is {q,w} in h.tools.inst[id]; the one in hand works with its best copy: the tool's numbers ×TLQ[q] (×TLW when «موزون»)
+   - own[id] follows the copies; an owned tool with no copies (older saves, a rod bought at the shop) gets one «عادي» copy
+   - spare copies (all but the best) sell to عم حسن (tlVal) or go up on the players' market as a material key 't:<id>:<q>[w]'
+     (≤ 24 chars, the rules' limit); such keys reaching h.res (a buy, a taken-back listing, a refund) turn back into copies (tlIFix)
+   - inputs are noted with crPend before the game, so closing the game mid-way gives them back (R00) */
+const TLQ=[.5,1,1.15,1.3,1.5,1.75,2],TLW=1.2,TLX={mk:0,hold:null};
+const tlKey=(id,c)=>'t:'+id+':'+c.q+(c.w?'w':'');
+function tlKP(k){const m=/^t:([a-z0-9_]+):([0-6])(w?)$/.exec(String(k||''));return m&&TOOL_CATALOG[m[1]]?{id:m[1],q:+m[2],w:m[3]?1:0}:null}
+const tlBest=L=>(L||[]).reduce((b,c)=>!b||c.q>b.q||(c.q===b.q&&c.w>b.w)?c:b,null);
+function tlIFix(h){const T=h&&h.tools;if(!T||!T.own)return h;if(!T.inst||typeof T.inst!=='object'||Array.isArray(T.inst))T.inst={};const I=T.inst;
+  Object.keys(I).forEach(id=>{if(!TOOL_CATALOG[id]||!Array.isArray(I[id])){delete I[id];return}I[id]=I[id].filter(c=>c&&c.q>=0&&c.q<=6).slice(0,99).map(c=>({q:c.q|0,w:c.w?1:0}))});
+  if(h.res&&typeof h.res==='object')Object.keys(h.res).forEach(k=>{if(k===TLX.hold)return;const p=tlKP(k);if(!p&&String(k).slice(0,2)!=='t:')return;const n=Math.max(0,Math.min(99,Math.floor(+h.res[k]||0)));delete h.res[k];
+    if(p&&n){for(let i=0;i<n;i++)(I[p.id]=I[p.id]||[]).push({q:p.q,w:p.w});T.own[p.id]=1}});
+  Object.keys(I).forEach(id=>{if(!T.own[id])delete I[id]});   /* own decides: a tool taken away elsewhere takes its copies */
+  Object.keys(T.own).forEach(id=>{const t=TOOL_CATALOG[id];if(t&&t.t>0&&T.own[id]&&!(I[id]&&I[id].length))I[id]=[{q:1,w:0}]});
+  Object.keys(I).forEach(id=>{if(I[id].length)T.own[id]=1;else delete I[id]});return h}
+{const f0=tlFix;tlFix=function(h){const r=f0.apply(this,arguments);try{tlIFix(h)}catch(e){console.warn(e)}return r}}
+const tlCopies=(h,id)=>(h&&h.tools&&h.tools.inst&&h.tools.inst[id])||[];
+const tlQM=c=>c?(TLQ[c.q]||1)*(c.w?TLW:1):1;
+/* the one in hand: its numbers grow with its best copy */
+{const x0=tlFx;tlFx=function(h,tr,key){const v=x0.apply(this,arguments);if(!v)return v;try{const t=tlOn(h,tr);const m=t?tlQM(tlBest(tlCopies(h,t.id))):1;return key==='win'?Math.round(v*m):Math.round(v*m*1e4)/1e4}catch(e){return v}}}
+/* at the smith you can make another even when you have one */
+{const c0=tlCan;tlCan=function(h,t){const o=c0.apply(this,arguments);if(TLX.mk&&o.own){o.own=false;o.ok=!!h&&o.open&&t.t>0&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbLock(h))}return o}}
+const tlMatV=t=>Object.keys(t.need||{}).reduce((a,k)=>a+((MAT[k]&&MAT[k].p)||0)*t.need[k],0);
+const tlVal=(t,c)=>Math.max(1,Math.round(((t.fee||0)+tlMatV(t))*.6*(QSELL[c.q]||1)*(c.w?1.15:1)));
+const tlWN=t=>t.fem?ae('موزونة','balanced'):ae('موزون','balanced');
+/* spare copies (all but the best), worst first */
+function tlSpare(h,id){const L=tlCopies(h,id).slice(),b=tlBest(L);if(!b)return [];L.splice(L.indexOf(b),1);return L.sort((a,c)=>a.q-c.q||a.w-c.w)}
+function tlQTxt(h,t){const L=tlCopies(h,t.id),b=tlBest(L);if(!b)return '';
+  return `<small class="tl-q">${L.length>1?`${ae(G('معاك','معاكي'),'You have')} ${L.length} · ${ae('أحسنهم','best')} `:''}${qQChip(b.q)}${b.w?` <span class="tw-ch q-tr">✦ ${tlWN(t)}</span>`:''} <em>${ae(t.fem?'مفعولها':'مفعوله','effect')} ×${Math.round(tlQM(b)*100)/100}</em></small>`}
+{const r0=tlRowHTML;tlRowHTML=function(h,t,mode){const mk=mode!=='use';if(mk)TLX.mk=1;let s;try{s=r0.apply(this,arguments)}finally{TLX.mk=0}
+  try{const q=tlQTxt(h,t),sp=mk?tlSpare(h,t.id):[];if(!q)return s;let out=s.replace(/(<\/small>)(<small class="tl-need">|<\/div>)/,`$1${q}$2`);
+    if(sp.length){const c=sp[0];out=out.replace(/<\/div>$/,`<button class="tw-act tl-sell" data-tlsell="${t.id}"><b>${ae(G('بيع','بيعي')+(t.fem?' واحدة':' واحد'),'Sell one')}</b><small>${qAdj(c.q,t.fem)} · ${tlVal(t,c)} ${ae('جنيه','coins')}</small></button></div>`)}
+    return out}catch(e){console.warn(e);return s}}}
+async function tlCraft(h,id,btn){const t=TOOL_CATALOG[id];if(!h||!t||TWN.busy)return;tlFix(h);const can=()=>{TLX.mk=1;try{return tlCan(h,t).ok}finally{TLX.mk=0}};if(!can())return;
+  if(tlCopies(h,id).length>=99){toast(ae('معاك 99 منها، مفيش مكان لزيادة','You have 99 already'));return}const fee=tlFee(h,t),mk='tl_'+id;
+  const pr=await qPrep({at:'smith',title:`${tlVerb(t,'اعمل')} ${tlN(t)}`,costTxt:`${needTxt(t.need)}${fee?` + ${fee} جنيه`:''}`,icon:tlIcon(id,50),adds:[],made:qMade(h,mk),playTxt:G('ابدأ الطَّرق','ابدأي الطَّرق')});
+  if(!pr||TWN.busy||!can())return;TWN.busy=1;takeRes(h,t.need);h.money-=fee;crPend(h,t.need,null,fee);try{twPay(btn,fee)}catch(e){}
+  let Q={q:1,lucky:false,unlucky:false},played=0;
+  try{if(pr.go==='play'){const r=await qPlay('smith',h,{tier:t.t,name:tlN(t),icon:tlIcon(id,64)});played=!r.none;Q=craftQ(h,'smith',r.score,null,null)}}catch(e){console.warn(e)}
+  const c={q:Math.max(0,Math.min(6,Q.q|0)),w:played&&(Q.q>=3||(Q.q===2&&Math.random()<.3))?1:0};
+  tlFix(h);(h.tools.inst[id]=h.tools.inst[id]||[]).push(c);h.tools.own[id]=1;const cur=tlOn(h,t.tr);if(!cur||cur.t<=t.t)h.tools.on[t.tr]=id;
+  qMark(h,mk);crDone(h);saveHero();const b=tlBest(tlCopies(h,id));
+  let r='ok';try{r=await twCeremony({kind:'smith',hits:played?0:pr.go==='quick'?2:4,q:c.q,luck:Q.lucky?'up':Q.unlucky?'down':'',icon:tlIcon(id,124),title:tlN(t),
+    sub:`${ae(G('عملت','عملتي'),'You made')} ${ae(t.fem?'واحدة':'واحد','one')} ${ae(qAdj(c.q,t.fem),'')}${tlCopies(h,id).length>1?ae(` · ${G('معاك','معاكي')} ${tlCopies(h,id).length}`,` · you have ${tlCopies(h,id).length}`):''}`,
+    chips:c.w?`<span class="tw-ch q-tr">✦ ${tlWN(t)}</span>`:'',sub2:`${tlFxTxt(t)} · ${ae(t.fem?'مفعولها':'مفعوله','effect')} ×${Math.round(tlQM(c)*100)/100}${c.w?ae(` (${tlWN(t)}: أقوى ×${TLW})`,` (balanced: ×${TLW} stronger)`):''}${b!==c?ae(' · اللي في إيدك أحسن '+(t.fem?'منها':'منه'),' · the one in hand is better'):''}`,
+    acts:[{v:'ok',t:ae('تمام','OK')}],msg:`${G('دوس','دوسي')} ${G('واطرق','واطرقي')}!`})}catch(e){console.warn(e)}
+  TWN.busy=0;S.spQuick=played?0:Date.now();try{lifeXP(h,'smith',1+t.t+(c.q>=3?1:0))}finally{S.spQuick=0}try{bump('toolMade')}catch(e){}saveHero();twRender();return c}
+function tlSell(h,id,btn){const t=TOOL_CATALOG[id];if(!h||!t||TWN.busy)return;tlFix(h);const c=tlSpare(h,id)[0];if(!c)return;const L=h.tools.inst[id];L.splice(L.indexOf(c),1);
+  const v=tlVal(t,c);h.money+=v;saveHero();try{SFX.coin()}catch(e){}try{const m=$('#money');if(m)floatAt(m,twI('+'+v),'#a6e3a0','',20)}catch(e){}toast(`${tlN(t)} (${qAdj(c.q,t.fem)}): +${v} ${ae('جنيه','coins')}`);twRender()}
+{const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;
+  view.querySelectorAll('[data-tlmk]').forEach(b=>b.onclick=()=>tlCraft(h,b.dataset.tlmk,b));view.querySelectorAll('[data-tlsell]').forEach(b=>b.onclick=()=>tlSell(h,b.dataset.tlsell,b))}catch(e){console.warn(e)}return r}}
+/* the players' market: spare copies as material keys */
+{const a0=addRes;addRes=function(h,k,n){const p=String(k||'').slice(0,2)==='t:'?tlKP(k):null;if(p&&h&&h.tools){tlFix(h);const N=Math.max(0,Math.min(99,Math.floor(+(n||1))));for(let i=0;i<N;i++)(h.tools.inst[p.id]=h.tools.inst[p.id]||[]).push({q:p.q,w:p.w});h.tools.own[p.id]=1;return}
+  return a0.apply(this,arguments)}}
+{const o0=mkOffers;mkOffers=function(h){const o=o0.apply(this,arguments);try{tlFix(h);Object.keys(h.tools.inst).forEach(id=>{const t=TOOL_CATALOG[id],g={};tlSpare(h,id).forEach(c=>{const k=tlKey(id,c);g[k]=(g[k]||0)+1});
+  Object.keys(g).forEach(k=>{if(k.length<=24)o.push({k:'m',id:k,have:g[k],sug:tlVal(t,tlKP(k))*2})})})}catch(e){console.warn(e)}return o}}
+{const n0=mkName;mkName=function(x){const p=x&&x.k==='m'?tlKP(x.id):null;if(p){const t=TOOL_CATALOG[p.id];return `${tlN(t)} (${qAdj(p.q,t.fem)}${p.w?' · '+tlWN(t):''})`}return n0.apply(this,arguments)}}
+{const i0=mkIco;mkIco=function(x,w){const p=x&&x.k==='m'?tlKP(x.id):null;if(p)return tlIcon(p.id,w);return i0.apply(this,arguments)}}
+{const l0=mkList;mkList=async function(){const h=S.hero,o=MK.sel,p=o&&o.k==='m'?tlKP(o.id):null;if(!p||!h)return l0.apply(this,arguments);
+  tlFix(h);const sp=tlSpare(h,p.id).filter(c=>tlKey(p.id,c)===o.id),L=h.tools.inst[p.id];sp.forEach(c=>L.splice(L.indexOf(c),1));h.res[o.id]=(h.res[o.id]||0)+sp.length;o.have=sp.length;TLX.hold=o.id;
+  try{return await l0.apply(this,arguments)}finally{TLX.hold=null;try{tlFix(h);saveHero();render()}catch(e){}}}}
+(function(){const s=document.createElement('style');s.textContent=`.tl-q{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px}.tl-q em{font-style:normal;color:#a6e3a0;font-size:11px}.tl-row:has(.tl-sell){flex-wrap:wrap}.tw-act.tl-sell{flex:1 1 100%;max-width:none;margin-top:6px;flex-direction:row;justify-content:center;gap:8px}.tl-q .tw-ch{white-space:nowrap}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
