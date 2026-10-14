@@ -17,8 +17,10 @@ if(v==='en'){d.lang='en';d.dir='ltr';d.classList.add('en');document.title='Sirda
 window.addEventListener('error',function(e){if(!window.__bootErr)window.__bootErr=String(e&&e.error&&e.error.stack||e&&e.message||e).slice(0,700)});
 window.addEventListener('load',function(){setTimeout(function(){var w=document.getElementById('view');if(!w||w.innerText.replace(/\s/g,'').length>3||!window.__bootErr)return;
   var en=v==='en',t=document.createElement('div');t.className='card';t.style.cssText='margin:40px 0;padding:16px;text-align:center;display:flex;flex-direction:column;gap:10px';
-  t.innerHTML='<div style="font-size:30px">⚠</div><b>'+(en?'The game could not start':'اللعبة ما عرفتش تفتح')+'</b><p style="margin:0;opacity:.85">'+(en?'Your heroes are saved. Try again; if it stays, send this error.':'أبطالك متسجلين. جرّب تاني، ولو فضلت ابعت الغلط ده.')+'</p><pre dir="ltr" style="text-align:left;font-size:11px;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;background:#0b0d1c;padding:8px;border-radius:10px;margin:0"></pre><button class="btn" style="min-height:44px">'+(en?'Try again':'جرّب تاني')+'</button>';
-  t.querySelector('pre').textContent=window.__bootErr;t.querySelector('button').onclick=function(){location.reload()};w.innerHTML='';w.appendChild(t)},1500)});
+  t.innerHTML='<div style="font-size:30px">⚠</div><b>'+(en?'The game could not start':'اللعبة ما عرفتش تفتح')+'</b><p style="margin:0;opacity:.85">'+(en?'Your heroes are saved. Try again; if it stays, send this error.':'أبطالك متسجلين. جرّب تاني، ولو فضلت ابعت الغلط ده.')+'</p><pre dir="ltr" style="user-select:text;-webkit-user-select:text;cursor:text;text-align:left;font-size:11px;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;background:#0b0d1c;padding:8px;border-radius:10px;margin:0"></pre><button class="btn" style="min-height:44px">'+(en?'Try again':'جرّب تاني')+'</button><button class="btn ghost" style="min-height:44px">'+(en?'Copy the error':'انسخ الغلط')+'</button>';
+  t.querySelector('pre').textContent=window.__bootErr;var bs=t.querySelectorAll('button');bs[0].onclick=function(){location.reload()};
+  bs[1].onclick=function(){var x=window.__bootErr,ok=function(){bs[1].textContent=en?'Copied ✓':'اتنسخ ✓'};function fb(){try{var r=document.createRange();r.selectNodeContents(t.querySelector('pre'));var sel=getSelection();sel.removeAllRanges();sel.addRange(r);document.execCommand('copy');ok()}catch(e){}}
+    try{navigator.clipboard.writeText(x).then(ok,fb)}catch(e){fb()}};w.innerHTML='';w.appendChild(t)},1500)});
 })();</script>
 <style>html.en #app{direction:ltr}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Reem+Kufi:wght@500;700&family=Amiri:wght@400;700&display=swap">
@@ -4802,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.35.1',d:'14 أكتوبر',add:['تصليح: على الكمبيوتر، المحارب اللي معاه تخصص كانت اللعبة بتقف عنده أول ما تفتح. اتصلحت','مربع الغلط (لو حصل) بقى ينفع {تحدد|تحددي} الكلام اللي فيه، وفيه زرار «انسخ الغلط» عشان {تبعته|تبعتيه} بسهولة']},
 {v:'6.35',d:'14 أكتوبر',add:['القتال بقى أحلى: الصحة والطاقة فوق راس كل واحد، {انت|انتي} واللي معاك، والصحة مكتوبة بالأرقام (كام من كام) حتى للوحوش','كل قدرة بقت ليها رسمة بيكسل خاصة بيها، ومفيش قدرتين بنفس الرسمة','لما {تضرب|تضربي}، شخصيتك بتجري على الوحش، والضربة بتنوّر وتهز المسرح وتطلع شرار','بعد كل رمية النتيجة بتتكتب كبيرة تحت النرد (نجاح، نص نص، فشل) وتحتها إزاي اتحسبت','«علقة» و«تثبيت» بقوا زرارين كبار في النص، كل واحد برسمته ولونه','سجل القتال بيفتح جوه إطار اللعبة على الكمبيوتر، مش برّه']},
 {v:'6.34',d:'14 أكتوبر',add:['«سوق اللاعبين» فيه خانة بحث فوق: {اكتب|اكتبي} اسم الحاجة أو اسم اللاعب {وتلاقيها|وتلاقيها} على طول، في الشرا والبيع وعروضي','العدّة اللي {بتعملها|بتعمليها} عند عم حسن (زي المعول النابض) بقت مكتوب عليها «صنعة إيد» واسم اللي عملها، زي السلاح','«دوار العمدة» من غير قضايا: بدالها «طلب العمدة»، مهمة نادرة جدًا بتيجي كل كام يوم. أقوى وحشين في البلد وأقوى بكتير من العادي، لوحدك، ومرة واحدة بس. المكسب كبير جدًا (فلوس وحجارة وسمعة)، والخسارة إصابة وسمعة','رخص العمدة بقت غالية: رخصة تاجر 40,000، رخصة صنايعي 60,000، ووسام العمدة 150,000 وعايز سمعة 60','لو شاشة وقعت، اللعبة بترجعك للبلد بدل ما الصفحة تفضل فاضية، ولو اللعبة ما عرفتش تفتح بتكتبلك الغلط عشان {تبعته|تبعتيه}']},
 {v:'6.33',d:'14 أكتوبر',add:['«سلاح بروح»: الحكاية والاسم بقوا لسلاح مميز بس. السلاح العادي (خشب، نحاس، حديد) مش بيعد قتلات ولا بياخد اسم','السلاح اللي بروح بييجي من حاجتين: سلاح {تعمله|تعمليه} «تحفة» أو أحسن من فضة أو خامة أعلى، أو سلاح من الخامات دي في إيدك ممكن يصحى لما زعيم يقع','بيتولد باسمه وطبعه (غضبان، هادي، طماع، عجوز) وبيتكلم كلمتين في القتال. بيكبر بالقتلات لحد مستوى 10: ضرب +1 كل مستوى، ومن مستوى 3 +2 على النوع اللي بيقتله أكتر، ومن 6 كل قتلة بترجعلك صحة، ومن 9 ضربة الحظ بتيجي أكتر','«عدّتي» بقت جوه «بيتك» (تاب «عدّتي»)، و«جرنال البلد» بقى جوه «حال البلد»، فالبلد بقت أهدى','«التحدي» بقى صعب بجد: الوحش من أقوى الوحوش، صحته أكتر بكتير وضربه أتقل وتصويبه أحسن، ومن مستوى 8 بييجي معاه وحش تاني. كل ما {تكسب|تكسبي} ورا بعض بيصعب أكتر والفلوس بتزيد','«دوار العمدة» بقى مكتب العمدة: كل يوم في البلد خناقة بين اتنين من الناس {تحكم|تحكمي} فيها، وحكمك بيغير سمعتك وفلوسك. ولما سمعتك تكبر {تقدر|تقدري} {تطلع|تطلعي} رخص: رخصة تاجر (5% من اللي {بتدفعه|بتدفعيه} في البلد يرجعلك)، رخصة صنايعي (خبرة الشغلانات +10%)، ووسام العمدة (خبرة +5%)','لوحة المشاوير بقت جوه «حال البلد» جنب الجرنال','«حال البلد» بقى بالإنجليزي كامل لو اللغة إنجليزي','في القتال: الشنطة والقدرات و«اتصرّف» والكلام بقوا أيقونات بس. {دوس|دوسي} على أيقونة {تشوف|تشوفي} اسمها وبتعمل إيه، {ودوس|ودوسي} تاني أو «استعمل» عشان {تستعملها|تستعمليها}','{انت|انتي} واللي معاك (رفيق أو صاحب أو وحش) بقيتوا مرسومين على المسرح قدام الوحوش. ولو لوحدك مفيش كارت رفيق فاضي','تحت النرد سطر بيقولك الرمية اتحسبت إزاي: النرد + الصفة (قوة، خفة...) − الصعوبة = النتيجة','«التدريب» بقى بالقتال الجديد، والرفيق بيشرحلك ترمي النرد إزاي {وتضرب|وتضربي} {وتصد|وتصدي} في وقتها']},
@@ -22070,7 +22073,7 @@ function dkSync(){if(!DK.on)return;const h=S.hero,C=S.combat,c=S.comp;
 function dkCheck(){const w=dkWant();if(w===DK.on)return;DK.on=w;document.body.classList.toggle('dk',w);
   if(w){dkPanels();DK.sig='';const b=$('#dkKeys');if(b)b.innerHTML='';dkSync();clearInterval(DK.tm);DK.tm=setInterval(dkSync,600)}else clearInterval(DK.tm)}
 {const r0=render;render=function(){const r=r0.apply(this,arguments);if(DK.on){DK.sig='';setTimeout(dkSync,0)}return r}}
-window.addEventListener('resize',dkCheck);dkCheck();
+window.addEventListener("resize",dkCheck);setTimeout(dkCheck,0);   /* 6.35.1: after every part has loaded (a hero with a specialisation reads SP from a later part) */
 
 /* the keyboard (only in the computer layout) */
 const dkVis=el=>{if(!el||el.disabled)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden'};
@@ -50797,7 +50800,9 @@ function crShow(e){try{const v=document.getElementById('view')||document.body;co
   const q=id=>document.getElementById(id);
   q('crRe').onclick=()=>location.reload();
   q('crTi').onclick=()=>{CR_N=0;try{S.screen='title';S.combat=null;render()}catch(x){location.reload()}};
-  q('crCp').onclick=()=>{try{navigator.clipboard.writeText(`سرداب ${typeof NEWS!=='undefined'&&NEWS[0]?NEWS[0].v:''} · ${S.screen}\n${msg}`);toast(ae('اتنسخ','Copied'))}catch(x){}}}catch(x){}}
+  q('crCp').onclick=()=>{const txt=`سرداب ${typeof NEWS!=='undefined'&&NEWS[0]?NEWS[0].v:''} · ${S.screen}\n${msg}`,ok=()=>{q('crCp').textContent=ae('اتنسخ ✓','Copied ✓')};
+    const fb=()=>{try{const r=document.createRange();r.selectNodeContents(v.querySelector('.cr-err'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);document.execCommand('copy');ok()}catch(x){}};
+    try{navigator.clipboard.writeText(txt).then(ok,fb)}catch(x){fb()}}}catch(x){}}
 {const r0=render;render=function(){try{const r=r0.apply(this,arguments);CR_N=0;return r}catch(e){
   setTimeout(()=>{throw e},0);
   if(window.__r||window.__t||window.__q)return;   /* test builds: keep the old behaviour */
@@ -50806,7 +50811,7 @@ function crShow(e){try{const v=document.getElementById('view')||document.body;co
   crShow(e)}}}
 (function(){const s=document.createElement('style');s.textContent=`.cr-box{display:flex;flex-direction:column;gap:10px;margin:40px 0;text-align:center}
 .cr-ic{font-size:30px}.cr-box p{margin:0;opacity:.85;font-size:14px;line-height:1.6}
-.cr-err{max-height:160px;overflow:auto;text-align:left;font-size:11px;background:#0b0d1c;border-radius:10px;padding:8px;white-space:pre-wrap;word-break:break-all;margin:0}
+.cr-err{user-select:text;-webkit-user-select:text;cursor:text;max-height:160px;overflow:auto;text-align:left;font-size:11px;background:#0b0d1c;border-radius:10px;padding:8px;white-space:pre-wrap;word-break:break-all;margin:0}
 .cr-box .btn{min-height:44px}`;document.head.appendChild(s)})();
 
 render();
