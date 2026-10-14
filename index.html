@@ -3201,8 +3201,8 @@ function twTrSum(h,t,n,k){const b=v=>`<b>${twI(v)}</b>`;
   if(t==='hadd')return `ضربة المعلّم ${b('+'+(n*5+k*3)+'%')} · فرصتك دلوقتي ${b(Math.round(critChance(h)*100)+'%')}`;
   if(t==='khafif')return `خفة ${b('+'+(n+k))} · خفتك دلوقتي ${b((ST(h,'خفة')>=0?'+':'−')+Math.abs(ST(h,'خفة')))}`;
   if(t==='mabrouk'){const p=50*(n+k);return `فلوس الصناديق ${b('+'+p+'%')} · الصندوق بيدي ${b('×'+(1+p/100))}`}
-  if(t==='afreet')return `ضرر ${b('+'+(2*n+k))} على العفاريت والأرواح في كل ضربة`;
-  if(t==='malh')return `ضرر ${b('+'+(3*n+2*k))} على النداهة في كل ضربة`;
+  if(t==='afreet')return `ضرر ${b('+'+(2*n+k))} على العفاريت والأشباح في كل ضربة`;
+  if(t==='malh')return `ضرر ${b('+'+(3*n+2*k))} على أي وحش بيخاف من الملح في كل ضربة`;
   if(t==='mateen')return `كل حتة منهم بتستحمل ${k===n?b('×1.75'):k?`${b('×1.5')} (واللي +4 أو أكتر ${b('×1.75')})`:b('×1.5')}`;
   return ''}
 SCREENS.gear=function(){const h=S.hero;if(!h){S.screen='title';return render()}
@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.70',d:'14 أكتوبر',add:['القهوة بقت بالإنجليزي كلها لو {اخترت|اخترتي} الإنجليزي: الطاولة والدومينو والبصرة والسيجة والكورة.','الفلاح المنافس بقى اسمه «قناوي».','في القتال: النرد بيفضل مكانه بعد ما ترميه على حاجة، وشخصيتك بقت بتتحرك وتتنطط زي الوحوش. الجرعة اللي بتترمي زي جرعة النار بقت بتطير في الهوا لحد الوحش، والوحش الواقع بقى بيترسم نايم.','لما تفضل تضرب نفس الوحش ورا بعض وفيه غيره واقف، بيضعف: كل ضربة ورا التانية +10% لحد +50%. والوحش الدايخ ممكن يتشل ويفوّت دوره.','حركات التخصصات بقت أقوى من الضربة العادية دايمًا، والحركات اللي بتضرب الكل قريبة منها.','طلب العمدة بقى أقصر: صحة الوحوش النص، وكل وحش ليه نقطة ضعف. والقتالات الصعبة زي طلب العمدة ووحوش النخبة بقت بتصحّي روح السلاح أكتر، وممكن تصحى في نص القتال.','«متشرّب ملح» بقى بيضر أي وحش بيخاف من الملح، و«ضد العفاريت» بيضر العفاريت والأشباح.','لما تدّي وحش أكل، اللي حصل بيظهر قدامك مش في السجل بس.','عند الحداد: الحتة اللي {بتعززها|بتعززيها} بتفضل مفتوحة بعد كل تعزيز، والإنجاز بيستنى لحد ما النتيجة تبان.','«التجارب» في الورشة بتوريك اللي {جربته|جربتيه} قبل كده.','الجرنال فيه 3 سيوف ورق جديدة، والوصفات ما بقتش بتتكرر كتير.','السمسار في البورصة: لو اللي معاك مش مكفي، الباقي بيتسحب من الخزنة.','إصلاحات: الودع عند أم عطية بيقع في نص الصينية، المقص في لعبة الخياطة اترسم من جديد، والسكك المخفية ليها نسخة احتياطي عشان ما تضيعش.']},
 {v:'6.69',d:'14 أكتوبر',add:['اللي {عملته|عملتيه} في الليل بقى بيرجعلك: يوم بعد الليلة ممكن حد منها ييجي يسأل عليك في البلد. الست اللي {رجّعتلها|رجّعتيلها} شنطتها، ولاد الراجل الغلبان، عماد، سناء، عم رشاد… وكمان اللي {ظلمته|ظلمتيه}: ابن المراكبي وأخو حرامي السلك. كل واحد ليه اختيارين، وفيه اللي بيخلص بخناقة.','في القهوة بقى فيه «الناس بتحكي عنك»: الليالي اللي {كسبتها|كسبتيها} بتفضل محكية على طول، وإزاي آخر ليلة خلصت، واللي {عملته|عملتيه} مع الناس في الليالي.','لعبة «الحلقة» في الخناقات: الدايرة بتنور أخضر في اللحظة الصح، عشان {تعرف|تعرفي} {تدوس|تدوسي} امتى.','في الإنجليزي الفلوس بقت اسمها coins في كل حتة.']},
 {v:'6.68',d:'14 أكتوبر',add:['الحركة اللي قبل الرمية بقت ماشية مع اللي {بتعمله|بتعمليه}: لو الاختيار عن المطرقة {بتطرق|بتطرقي} على السندان، لو عن العربية {بتشدها|بتشديها} بالحبل، لو عن الطبلة {بتضرب|بتضربي} الطبلة، ولو مالوش صورة {بتشوف|بتشوفي} الحركة نفسها بس (شريط {تملاه|تمليه}، علامة {تدوس|تدوسي} عليها في الأخضر، شريط {تمسكه|تمسكيه}). والسطر اللي تحت الاختيار بيقولك بس {تعمل|تعملي} إيه بصباعك.','«في وقتك» وأي دايرة بتقفل: فيه دايرة خضرا ثابتة بتوريك فين {تدوس|تدوسي}، وبتنوّر وانت جواها، والدايرة بقت أبطأ والوقت أوسع.','«المعزّة»: عم رمضان وعم حسن وعم فتحي وأم سيد كل واحد فاكر بيعاملك إزاي. المشاوير اللي {بتعملها|بتعمليها} لهم والهدية من اللي بيحبوه (مرة في اليوم) بتعلّيها، و{لو شدّيت|لو شدّيتي} الحبل أوي في الفصال أو {سبت|سبتي} مشوار بتنزل. لو بيحبك السعر أرخص 5%، لو بقى حبيبك أرخص 10% وبيديك حاجة صغيرة كل يوم، ولو زعلان منك أغلى 15%. مكتوبة تحت كلامهم.','«ولاء العمال»: العامل اللي بيخلّص عقده معاك بيرتاحلك أكتر، واللي {بتوقّف|بتوقّفي} عقده بدري بيزعل. فيه «بقشيش» مرة في اليوم. لما يرتاحلك بيشتغل أكتر بربع، ولما يبقى من أهل البيت بيشتغل أكتر بالنص وبياخد أقل 10%. لو زعلان مش هيشتغل لحد ما يهدى.','إصلاح: زرار «احرت» في الغيط كان بيظهر عربي في اللعبة الإنجليزي.']},
 {v:'6.67.2',d:'14 أكتوبر',add:['الصحاب بقوا بطلب صداقة: «ابعت طلب» بكود صاحبك، وهو لازم يقبل عشان يظهرلك. الطلبات اللي جاتلك بتظهر في «صحابي» وفي البروفايل بـ«قبول» و«رفض»، واللي {بعته|بعتيه} بيفضل «مستني يقبل» {وتقدر|وتقدري} {تسحبه|تسحبيه}. لو هو بعتلك قبلك، «ابعت طلب» بيقبل طلبه على طول. الصحاب القدام زي ما هم.']},
@@ -6117,8 +6118,8 @@ const QT={
   khafif:{n:'خفيف',f:'خفيفة',d:s=>`خفة ${twI(s?'+2':'+1')}`},
   mateen:{n:'متين',f:'متينة',d:s=>`بيستحمل ${s?'×1.75':'×1.5'}`},
   mabrouk:{n:'مبروك',f:'مبروكة',d:s=>`فلوس الصناديق ${twI(s?'+100%':'+50%')}`},
-  afreet:{n:'ضد العفاريت',f:'ضد العفاريت',d:s=>`ضرر ${twI(s?'+3':'+2')} على العفاريت والأرواح`},
-  malh:{n:'متشرّب ملح',f:'متشرّبة ملح',d:s=>`ضرر ${twI(s?'+5':'+3')} على النداهة`},
+  afreet:{n:'ضد العفاريت',f:'ضد العفاريت',d:s=>`ضرر ${twI(s?'+3':'+2')} على العفاريت والأشباح`},
+  malh:{n:'متشرّب ملح',f:'متشرّبة ملح',d:s=>`ضرر ${twI(s?'+5':'+3')} على أي وحش بيخاف من الملح`},
   shabaa:{n:'مشبّع',f:'مشبّعة',d:()=>`${twI('+3')} مجهود لو {كلته|كلتيه} في البلد`,food:1},
   sokhn:{n:'سخن',f:'سخنة',d:()=>`${twI('+3')} صحة في القتال`,food:1}};
 const QT_SLOT={weapon:['hadd','khafif','mateen','mabrouk','afreet','malh'],armor:['khafif','mateen','mabrouk','afreet'],head:['khafif','mateen','mabrouk','afreet'],
@@ -6175,7 +6176,11 @@ function gView(h,id){const L=giL(h,id);return qView(id,L[0])}
 /* what the traits you wear add up to */
 function qTr(h,t){let n=0,s=0;Object.values(h.eq||{}).forEach(id=>{const o=GEAR[id]&&qWorn(h,id)&&giL(h,id)[0];if(o&&o.t.includes(t)){n++;if(o.e>=4)s++}});return {n,s}}
 function qFoeDmg(h){const C=S.combat;if(!C||!C.foes||!h)return 0;let f=C.foes[C.tgt];if(!f||f.hp<=0)f=C.foes.find(x=>x.hp>0);if(!f)return 0;let d=0;
-  if(f.spirit){const a=qTr(h,'afreet');d+=a.n*2+a.s}if(f.art==='nadaha'){const m=qTr(h,'malh');d+=m.n*3+m.s*2}return d}
+  if(qGhost(f)){const a=qTr(h,'afreet');d+=a.n*2+a.s}if(qSalty(f)){const m=qTr(h,'malh');d+=m.n*3+m.s*2}return d}
+/* 6.70 (Twister 22:16): salt-soaked works on anything that fears salt, not only the Naddaha; the afreet trait on every ghost */
+const qWk=f=>Array.isArray(f&&f.weak)?f.weak:[];
+function qSalty(f){return !!f&&(f.art==='nadaha'||qWk(f).includes('salt'))}
+function qGhost(f){return !!f&&(f.spirit||f.ghost||/afreet|ghost|ruh|nadaha|jinn/.test(f.art||'')||/عفريت|شبح|روح|جن/.test(f.name||''))}
 {const c0=critChance;critChance=function(h){let c=c0(h);if(h&&h.eq){const a=qTr(h,'hadd');c+=a.n*.05+a.s*.03}return Math.max(.02,Math.min(.4,c))}}
 /* chests: مبروك gives more money; big bosses can drop enhancement stones */
 {const r0=rollChest;rollChest=function(boss){const c=r0.apply(this,arguments),h=S.hero;
@@ -6529,7 +6534,7 @@ L10N({'بايظ':'Botched','بايظة':'Botched','ممتاز':'Excellent','مم
   'للتعزيز من +1 لـ+3 · بينجح على طول':'for enhancing +1 to +3 · always works','للتعزيز من +4 لـ+7':'for enhancing +4 to +7','الأرقام لسه زي ما هي':'the numbers stay the same','الصفات الخاصة بتقوى':'special traits grow stronger',
   'بتاخد صفة خاصة جديدة':'gains a new special trait','لو فشل، بينزل درجة':'if it fails, it drops a step','لو فشل، الحجر بيروح بس':'if it fails, only the stone is lost','آخر درجة تعزيز':'Top enhancement','نجح!':'It worked!','ما نفعش..':'It didn\'t take..'},
   [[/^ضربة المعلّم ⁦\+(\d+)%⁩$/,'master strike +$1%'],[/^خفة ⁦\+(\d+)⁩$/,'agility +$1'],[/^بيستحمل ×([\d.]+)$/,'lasts ×$1'],[/^فلوس الصناديق ⁦\+(\d+)%⁩$/,'chest money +$1%'],
-   [/^ضرر ⁦\+(\d+)⁩ على العفاريت والأرواح$/,'damage +$1 on afreets and spirits'],[/^ضرر ⁦\+(\d+)⁩ على النداهة$/,'damage +$1 on the Naddaha'],[/^⁦\+(\d+)⁩ مجهود لو (?:كلته|كلتيه) في البلد$/,'+$1 effort if eaten in the village'],
+   [/^ضرر ⁦\+(\d+)⁩ على العفاريت والأشباح$/,'damage +$1 on afreets and ghosts'],[/^ضرر ⁦\+(\d+)⁩ على أي وحش بيخاف من الملح$/,'damage +$1 on anything that fears salt'],[/^⁦\+(\d+)⁩ مجهود لو (?:كلته|كلتيه) في البلد$/,'+$1 effort if eaten in the village'],
    [/^⁦\+(\d+)⁩ صحة في القتال$/,'+$1 health in fights'],[/^حاجتك اللي (.+) بيشتغل فيها$/,(m,w)=>`Your things ${l10nStr(w)||w} works on`],[/^(\d+) حتت$/,'$1 pieces'],
    [/^مفيش حاجة (?:معاك|معاكي) من عند (.+) لسه\.$/,(m,w)=>`You have nothing from ${l10nStr(w)||w} yet.`],[/^(?:اعمل|اعملي) أو اشتري حاجة من «الشغل»\.$/,'Make or buy something from «Work».'],
    [/^(?:صلّح|صلّحي) الكل$/,'Repair all'],[/^(\d+) حاجات · (\d+) جنيه$/,'$1 things · $2 coins'],[/^(?:صلّح|صلّحي)(?:ها|ه)$/,'Repair it'],[/^(?:صلّح|صلّحي) بـ(.+)$/,(m,a)=>`Repair with ${l10nStr(a)||a}`],
@@ -26541,14 +26546,21 @@ const CF_SAY={
   bsBas:['باصرة! 😎','امسح يا عم','الترابيزة نضفت'],bsYouBas:['يا ساتر.. باصرة!','{شاطر|شاطرة} والله','دي جت في وقتها'],
   bsBig:['لمّيت الترابيزة','تعالي يا حلوة'],bsYouBig:['{لمّيت|لمّيتي} كتير يا {معلم|معلمة}','كده كتير عليا'],bsJack:['الولد ما بيرحمش','الولد كنس'],
   sgCap:['أكلتها!','واحدة كمان','خلّي بالك {يا معلم|يا معلمة}'],sgYouCap:['آه.. خدتها','ماشي يا {جدع|جدعة}','دي بتاعتي كانت'],sgBlock:['اتقفلت {عليك|عليكي}','مش {لاقي|لاقية} مكان؟']};
-function cfSay(k,p){const L=CF_SAY[k];if(!L||Math.random()>(p==null?1:p))return;CF.say={t:T(L[Math.floor(Math.random()*L.length)]),at:Date.now()}}
+function cfSay(k,p){const L=(EN&&CF_SAY_EN[k])||CF_SAY[k];if(!L||Math.random()>(p==null?1:p))return;CF.say={t:T(L[Math.floor(Math.random()*L.length)]),at:Date.now()}}
+const CF_SAY_EN={hitYou:['Take that!','Sorry, boss, that\'s the game','The bar is waiting for you','Go wait on the bar'],youHit:['Ow… fine','Nice one, but I\'ll pay you back','Good grief!','I\'ll remember that one'],
+  dblN:['Double, boss!','The dice love me today','Look at these dice'],dblP:['Your dice are on fire!','A double? Do the dice like you or what','Lucky you…'],
+  pinYou:['Pinned!','Stay right there','You\'re not moving from here'],youPin:['Oh no! You pinned it','Go on, free it then','This won\'t end well'],free:['It\'s out','Freed it!'],
+  close:['Almost there…','Pack up, the game is over'],dmDraw:['That pile is mine','If I draw, I draw','Nothing? Draw then'],dmOne:['One tile left… focus','One tile, boss'],
+  dmWin:['Domino!','Closed it'],dmLose:['Fine… next round is mine','Just luck'],bsBas:['Basra! 😎','Wipe it, mister','The table\'s clean'],bsYouBas:['Good grief… basra!','Well played, honestly','Right on time'],
+  bsBig:['Swept the table','Come here, lovely'],bsYouBig:['You took a lot, boss','That\'s too much for me'],bsJack:['The jack shows no mercy','The jack swept it'],
+  sgCap:['Got it!','One more','Watch yourself, boss'],sgYouCap:['Ow… you got it','Fine, tough one','That one was mine'],sgBlock:['You\'re boxed in','Can\'t find a spot?']};
 function cfSayHTML(nm){const s=CF.say;if(!s||Date.now()-s.at>3500)return '';return `<div class="cf-say${Date.now()-s.at<500?' new':''}"><b>${nm}:</b> ${s.t}</div>`}
 /* win streaks (any game, any player at the table) */
 function cfStreak(h,win){const C=cfFix(h);C.run=win?(C.run|0)+1:0;C.best=Math.max(C.best|0,C.run);return C.run}
 function cfCelebrate(R){const el=$('.cf-res');if(!el||!R)return;if(R.draw){SFX.meh&&SFX.meh();return}
   if(R.win){SFX.cfWin&&SFX.cfWin();try{pop(el,['#ffd36a','#fff3b0','#7fe07a','#f3c14d'],60);flash('#ffd36a')}catch(e){}
     if(R.pay){try{twMoneyFly(el,R.pay)}catch(e){}}
-    if(R.run>=3)setTimeout(()=>band('🔥 مكسب ورا مكسب',`${R.run} مرات ورا بعض!`,R.run>=5?`محدش قادر ${G('عليك','عليكي')} في القهوة`:'القهوة كلها بتتفرج',{dur:2200,sound:false}),700)}
+    if(R.run>=3)setTimeout(()=>band(ae('🔥 مكسب ورا مكسب','🔥 Win after win'),ae(`${R.run} مرات ورا بعض!`,`${R.run} in a row!`),R.run>=5?ae(`محدش قادر ${G('عليك','عليكي')} في القهوة`,'Nobody in the café can beat you'):ae('القهوة كلها بتتفرج','The whole café is watching'),{dur:2200,sound:false}),700)}
   else{SFX.cfLose&&SFX.cfLose();try{shake()}catch(e){}}}
 {const st=document.createElement('style');st.textContent=`
 @keyframes dmSlam{0%{transform:translateY(-34px) scale(1.5) rotate(-8deg);opacity:0}55%{transform:translateY(3px) scale(.95) rotate(1deg);opacity:1}75%{transform:translateY(-2px) scale(1.04)}100%{transform:none}}
@@ -26699,8 +26711,8 @@ function tvNpc(){const h=S.hero,cur=cfFix(h).cur;if(!tvIs(cur)||cur.st.turn!=='n
   const dice=st.npcFirst||tvRoll(cur);st.npcFirst=null;st.nd=dice;st.nu=[];st.nh=0;st.np=0;st.nq=tvPick(cur,st,1,dice,CF_NPC[cur.npc].lv);
   cfFx('tvRollN');SFX.dice&&SFX.dice();if(dice.length===4){setTimeout(()=>{SFX.cfDbl&&SFX.cfDbl()},420);cfSay('dblN',.7)}else if(st.off[1]>=10&&st.off[0]<6)cfSay('close',.4);
   saveHero();twRender()}
-function tvNpcEnd(cur){const st=cur.st,nm=KF_PPL[cur.npc].n,dice=st.nd||[],moved=!!(st.nu&&st.nu.length),nh=st.nh|0,np=st.np|0;
-  st.last=`${nm} ${dice.length===4?`لعب دبل ${dice[0]}`:dice.length?`لعب ${dice[0]} و${dice[1]}`:'لعب'}${moved?'':' ومعرفش يتحرك'}${nh?` · ${G('ضربك','ضربكي')}${nh>1?(nh===2?' مرتين':` ${nh} مرات`):''}!`:''}${np?` · ${G('حبسلك','حبسلكي')} ${np>1?np+' قطع':'قطعة'}`:''}`;
+function tvNpcEnd(cur){const st=cur.st,nm=cf2Nm(cur.npc),dice=st.nd||[],moved=!!(st.nu&&st.nu.length),nh=st.nh|0,np=st.np|0;
+  st.last=EN?`${nm} ${dice.length===4?`rolled double ${dice[0]}`:dice.length?`rolled ${dice[0]} and ${dice[1]}`:'played'}${moved?'':' and couldn\'t move'}${nh?` · hit you${nh>1?(nh===2?' twice':` ${nh} times`):''}!`:''}${np?` · pinned ${np>1?np+' of your checkers':'a checker of yours'}`:''}`:`${nm} ${dice.length===4?`لعب دبل ${dice[0]}`:dice.length?`لعب ${dice[0]} و${dice[1]}`:'لعب'}${moved?'':' ومعرفش يتحرك'}${nh?` · ${G('ضربك','ضربكي')}${nh>1?(nh===2?' مرتين':` ${nh} مرات`):''}!`:''}${np?` · ${G('حبسلك','حبسلكي')} ${np>1?np+' قطع':'قطعة'}`:''}`;
   st.turn='p';st.left=[];st.snap=null;st.nd=null;st.nq=null;st.nu=null;st.nh=0;st.np=0;
   if(st.off[1]>=15){saveHero();return tvWin(cur,false)}if(tvStuck(cur,moved))return;saveHero();twRender()}
 /* ---- the board picture (the player's numbers: point = index+1) ---- */
@@ -26740,28 +26752,28 @@ function tvBoard(st,o){const {W,H,M,TW,BAR,hh,cw,R}=TVG,MM=tvM(st),fx=CF.fx&&CF.
     if(fx&&fx.to==='off'&&fx.s===sd&&k===st.off[sd]-1)late.push(mv(q.x,q.y,fx.x0)+body+'</g>');else s+=body}});
   if(o.offOk){s+=`<rect class="tv-dst" x="${W-M-TW}" y="${H/2+2}" width="${TW}" height="${H/2-M-2}" rx="4" fill="#7fe07a33" stroke="#7fe07a" stroke-width="2"/>`;taps+=`<rect data-tvc="off" x="${W-M-TW-2}" y="${H/2}" width="${TW+M+2}" height="${H/2}" fill="transparent"/>`}
   /* a word over the board for a hit, a pin, a release or a checker out */
-  if(fx){const me=fx.s===0,t=fx.hit?[me?'ضربة!':'اتضربت!',me?'#ffd36a':'#ff8a6a',fx.to]:fx.pin?[me?G('حبستها!','حبستيها!'):'اتحبست!',me?'#ffd36a':'#ff8a6a',fx.to]:fx.free?['اتفكّت!',me?'#e8d6b0':'#7fe07a',fx.f]:fx.to==='off'?[`${st.off[fx.s]}/15`,'#ffd36a','off']:null;
+  if(fx){const me=fx.s===0,t=fx.hit?[me?ae('ضربة!','Hit!'):ae('اتضربت!','Hit!'),me?'#ffd36a':'#ff8a6a',fx.to]:fx.pin?[me?ae(G('حبستها!','حبستيها!'),'Pinned!'):ae('اتحبست!','Pinned!'),me?'#ffd36a':'#ff8a6a',fx.to]:fx.free?[ae('اتفكّت!','Free!'),me?'#e8d6b0':'#7fe07a',fx.f]:fx.to==='off'?[`${st.off[fx.s]}/15`,'#ffd36a','off']:null;
     if(t){const q=t[2]==='off'?tvOffXY(fx.s,Math.max(0,st.off[fx.s]-1)):tvSlot(t[2],0),y=Math.min(H-24,Math.max(28,q.y+(t[2]!=='off'&&t[2]>=12?44:-44)));
       late.push(`<text class="tv-fl" x="${Math.min(W-44,Math.max(44,q.x))}" y="${y}" text-anchor="middle" font-size="17" fill="${t[1]}">${t[0]}</text>`)}}
   return s+late.join('')+taps+'</svg>'}
-const tvMoveTxt=([f,d])=>f==='bar'?`${G('دخّل','دخّلي')} من البار على ${25-d}`:(f-d<0?`${G('طلّع','طلّعي')} من ${f+1}`:`من ${f+1} لـ ${f+1-d}`);
+const tvMoveTxt=([f,d])=>f==='bar'?ae(`${G('دخّل','دخّلي')} من البار على ${25-d}`,`Enter from the bar on ${25-d}`):(f-d<0?ae(`${G('طلّع','طلّعي')} من ${f+1}`,`Bear off from ${f+1}`):ae(`من ${f+1} لـ ${f+1-d}`,`${f+1} to ${f+1-d}`));
 /* the dice on the table: yours (white) or his (red); the ones already played are dimmed */
 const tvLeftN=st=>{const r=(st.nd||[]).slice();(st.nu||[]).forEach(d=>{const k=r.indexOf(d);if(k>=0)r.splice(k,1)});return r};
 function tvDiceHTML(st,me,roll){const all=me?(st.snap?st.snap.left:st.left):(st.nd||[]);if(!all.length)return '';const pool=(me?st.left:tvLeftN(st)).slice();
-  return all.map(d=>{const k=pool.indexOf(d),u=k<0;if(!u)pool.splice(k,1);return cfDie(d,(me?'':'npc ')+(u?'used ':'')+(roll?'roll':''))}).join('')+(all.length===4?`<span class="cf-dbl${roll?' pop':''}">دبل!</span>`:'')}
-function tvView(h,cur){const st=cur.st,me=st.turn==='p',nm=KF_PPL[cur.npc].n,L=me&&st.left.length?tvLegal(st,0,st.left):[],srcs=[...new Set(L.map(m=>m[0]))];
+  return all.map(d=>{const k=pool.indexOf(d),u=k<0;if(!u)pool.splice(k,1);return cfDie(d,(me?'':'npc ')+(u?'used ':'')+(roll?'roll':''))}).join('')+(all.length===4?`<span class="cf-dbl${roll?' pop':''}">${ae('دبل!','Double!')}</span>`:'')}
+function tvView(h,cur){const st=cur.st,me=st.turn==='p',nm=cf2Nm(cur.npc),L=me&&st.left.length?tvLegal(st,0,st.left):[],srcs=[...new Set(L.map(m=>m[0]))];
   const sel=CF.pick!=null&&srcs.includes(CF.pick)?CF.pick:null,shown=sel!=null?L.filter(m=>m[0]===sel):L,tos=sel!=null?shown.map(([f,d])=>tvTo(0,f,d)):[];
   const roll=!!(CF.fx&&(CF.fx.k==='tvRoll'||CF.fx.k==='tvRollN')),a=tvPip(st,0),b=tvPip(st,1),undo=st.snap&&st.snap.left.length!==st.left.length;
-  const opn=st.open?`<div class="cf-msg">أول رمية: ${G('انت','انتي')} ${st.open[0]} و${nm} ${st.open[1]}. ${st.turn==='p'?G('انت تبدأ','انتي تبدأي'):'هو يبدأ'}.</div>`:'';
-  const out=st.off[0]||st.off[1]||tvHome(st,0)||tvHome(st,1)?`<div class="tv-info"><span>${G('طلّعت','طلّعتي')} <b>${st.off[0]}</b>/15</span>${cfBar(st.off[0],15)}<span>${nm} طلّع <b>${st.off[1]}</b>/15</span>${cfBar(st.off[1],15,'them')}</div>`:'';
+  const opn=st.open?`<div class="cf-msg">${ae(`أول رمية: ${G('انت','انتي')} ${st.open[0]} و${nm} ${st.open[1]}. ${st.turn==='p'?G('انت تبدأ','انتي تبدأي'):'هو يبدأ'}.`,`Opening roll: you ${st.open[0]}, ${nm} ${st.open[1]}. ${st.turn==='p'?'You start':'He starts'}.`)}</div>`:'';
+  const out=st.off[0]||st.off[1]||tvHome(st,0)||tvHome(st,1)?`<div class="tv-info"><span>${ae(G('طلّعت','طلّعتي'),'You bore off')} <b>${st.off[0]}</b>/15</span>${cfBar(st.off[0],15)}<span>${nm} ${ae('طلّع','bore off')} <b>${st.off[1]}</b>/15</span>${cfBar(st.off[1],15,'them')}</div>`:'';
   return `${opn}${st.last?`<div class="cf-msg">${st.last}</div>`:''}
     ${tvBoard(st,{sel,dests:tos.filter(x=>x>=0),offOk:tos.some(x=>x<0),srcs:me&&sel==null?srcs:[]})}${out}
-    <div class="cf-dice">${tvDiceHTML(st,me,roll)}<span class="cf-pip">مشوارك ${a} · مشواره ${b}${a!==b?`<br>${a<b?G('انت قدام','انتي قدام'):'هو قدام'} بـ ${Math.abs(a-b)}`:''}</span></div>
-    ${!me?`<div class="cf-msg">دور ${nm}..</div>`
-      :!st.left.length&&!st.snap?`<button class="btn cf-go" id="tvRoll">🎲 ارمي الزهر</button>`
-      :L.length?`<div class="tw-sm">${sel!=null?`${G('دوس','دوسي')} على المكان اللي منوّر`:`${G('دوس','دوسي')} على قطعة من قطعك، أو ${G('اختار','اختاري')} حركة:`}</div><div class="cf-mv">${shown.map(m=>`<button class="tw-buy" data-tvm="${m[0]}:${m[1]}">${tvMoveTxt(m)}<small>بـ ${m[1]}</small></button>`).join('')}</div>
-        ${sel!=null?`<button class="btn ghost small" id="tvAll">كل الحركات</button>`:''}${undo?`<button class="btn ghost small" id="tvUndo">${G('رجّع','رجّعي')} حركات الدور ده</button>`:''}`
-      :`<div class="cf-msg">${st.left.length?'مفيش حركة تنفع بالزهر ده.':'خلصت الحركات.'}</div><div class="cf-mv"><button class="tw-buy cf-go" id="tvDone">${G('خلّص الدور','خلّصي الدور')}</button>${undo?`<button class="tw-buy" id="tvUndo">${G('رجّع','رجّعي')}</button>`:''}</div>`}`}
+    <div class="cf-dice">${tvDiceHTML(st,me,roll)}<span class="cf-pip">${ae(`مشوارك ${a} · مشواره ${b}`,`Your count ${a} · his ${b}`)}${a!==b?`<br>${a<b?ae(G('انت قدام','انتي قدام'),'You lead'):ae('هو قدام','He leads')} ${ae('بـ','by')} ${Math.abs(a-b)}`:''}</span></div>
+    ${!me?`<div class="cf-msg">${ae(`دور ${nm}..`,`${nm}'s turn…`)}</div>`
+      :!st.left.length&&!st.snap?`<button class="btn cf-go" id="tvRoll">🎲 ${ae('ارمي الزهر','Roll the dice')}</button>`
+      :L.length?`<div class="tw-sm">${sel!=null?ae(`${G('دوس','دوسي')} على المكان اللي منوّر`,'Tap a lit point'):ae(`${G('دوس','دوسي')} على قطعة من قطعك، أو ${G('اختار','اختاري')} حركة:`,'Tap one of your checkers, or pick a move:')}</div><div class="cf-mv">${shown.map(m=>`<button class="tw-buy" data-tvm="${m[0]}:${m[1]}">${tvMoveTxt(m)}<small>${ae('بـ','with')} ${m[1]}</small></button>`).join('')}</div>
+        ${sel!=null?`<button class="btn ghost small" id="tvAll">${ae('كل الحركات','All moves')}</button>`:''}${undo?`<button class="btn ghost small" id="tvUndo">${ae(`${G('رجّع','رجّعي')} حركات الدور ده`,'Undo this turn')}</button>`:''}`
+      :`<div class="cf-msg">${st.left.length?ae('مفيش حركة تنفع بالزهر ده.','No move works with these dice.'):ae('خلصت الحركات.','No moves left.')}</div><div class="cf-mv"><button class="tw-buy cf-go" id="tvDone">${ae(G('خلّص الدور','خلّصي الدور'),'End turn')}</button>${undo?`<button class="tw-buy" id="tvUndo">${ae(G('رجّع','رجّعي'),'Undo')}</button>`:''}</div>`}`}
 function tvBind(h,cur){const st=cur.st,b=id=>$(id),f=CF.fx;
   if(b('#tvRoll'))b('#tvRoll').onclick=tvRollP;
   view.querySelectorAll('[data-tvm]').forEach(x=>x.onclick=()=>{const [ff,d]=x.dataset.tvm.split(':');tvPlay(ff==='bar'?'bar':+ff,+d)});
@@ -26808,11 +26820,11 @@ function dmRoundEnd(st,why){const r=st.r;let w=-1,pts=0;
   if(w>=0)st.sc[w]+=pts;st.done={w,pts,why,a:dmSum(r.hand[0]),b:dmSum(r.hand[1])};if(w>=0)st.next=w}
 /* whoever's turn it is: the NPC draws until something fits (or passes); the player does it by hand (dmDrawP / dmPassP).
    Two passes in a row = blocked. */
-function dmPassTurn(st,s,nm){const r=st.r;if(r.L!=null)[r.L,r.R].forEach(v=>{if(!r.lack[s].includes(v))r.lack[s].push(v)});r.pass++;if(r.dr)r.dr[s]=0;r.last=s?`${nm} فوّت`:G('مفيش حاجة تنفع والكومة خلصت: فوّت','مفيش حاجة تنفع والكومة خلصت: فوّتي');
+function dmPassTurn(st,s,nm){const r=st.r;if(r.L!=null)[r.L,r.R].forEach(v=>{if(!r.lack[s].includes(v))r.lack[s].push(v)});r.pass++;if(r.dr)r.dr[s]=0;r.last=s?ae(`${nm} فوّت`,`${nm} passed`):ae(G('مفيش حاجة تنفع والكومة خلصت: فوّت','مفيش حاجة تنفع والكومة خلصت: فوّتي'),'Nothing fits and the pile is empty: you pass');
   if(r.pass>=2){dmRoundEnd(st,'block');return}r.turn=1-s;dmAdvance(st,nm)}
 /* review fix: the NPC draws on its own turn (now=1 from dmNpc), not the moment the player's tile lands */
 function dmAdvance(st,nm,now){const r=st.r;if(st.done)return 0;const s=r.turn;if(dmCanPlay(r,s)||s===0||!now)return 0;
-  const n=dmDraw(r,1);if(n)r.last=`${nm} سحب ${n===1?'حتة':n===2?'حتتين':n+' حتت'}`;if(!dmCanPlay(r,1))dmPassTurn(st,1,nm);return n}
+  const n=dmDraw(r,1);if(n)r.last=ae(`${nm} سحب ${n===1?'حتة':n===2?'حتتين':n+' حتت'}`,`${nm} drew ${n===1?'a tile':n+' tiles'}`);if(!dmCanPlay(r,1))dmPassTurn(st,1,nm);return n}
 function dmAfter(cur,s){const st=cur.st,r=st.r;r.must=null;r.pass=0;r.dr=[0,0];if(!r.hand[s].length){dmRoundEnd(st,'out');return}r.turn=1-s;dmAdvance(st,KF_PPL[cur.npc].n)}
 CF_GAMES.domino={n:'دومينو',
   rules:`كل واحد بياخد 7 حتت والباقي في الكومة. {حط|حطي} حتة رقمها زي طرف من الطرفين. لو مفيش حتة تنفع {بتسحب|بتسحبي} من الكومة لحد ما تلاقي، ولو الكومة خلصت {بتفوّت|بتفوّتي}. اللي يخلّص حتته الأول ياخد مجموع النقط اللي في إيد التاني. لو الدور اتقفل، الإيد الأخف تاخد نقط الإيد التانية. أول واحد يوصل ${DM_GOAL} يكسب.`,
@@ -26822,12 +26834,12 @@ function dmPlayP(i,side){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='domino')r
   if(!sd){CF.pick=i;return twRender()}CF.pick=null;dmPlace(r,0,t,sd);r.last='';r.drew=null;cfFx('dmPlace',{sd});SFX.slam&&SFX.slam();dmAfter(cur,0);dmRoundFx(st);dmCheckMatch(cur);saveHero();if(cfFix(S.hero).cur)twRender()}
 /* the player draws one tile per tap and sees it; when the pile is empty and nothing fits, they pass */
 function dmDrawP(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='domino')return;const st=cur.st,r=st.r;if(st.done||r.turn!==0||dmCanPlay(r,0)||!r.pile.length)return;
-  const t=dmDrawOne(r,0);r.drew=r.hand[0].length-1;r.last=`${G('سحبت','سحبتي')} <bdi>${t[0]}|${t[1]}</bdi>${dmCanPlay(r,0)?' · وتنفع!':''}`;cfFx('dmDraw');SFX.dmDraw&&SFX.dmDraw();saveHero();twRender()}
+  const t=dmDrawOne(r,0);r.drew=r.hand[0].length-1;r.last=`${ae(G('سحبت','سحبتي'),'You drew')} <bdi>${t[0]}|${t[1]}</bdi>${dmCanPlay(r,0)?ae(' · وتنفع!',' · and it fits!'):''}`;cfFx('dmDraw');SFX.dmDraw&&SFX.dmDraw();saveHero();twRender()}
 function dmPassP(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='domino')return;const st=cur.st,r=st.r;if(st.done||r.turn!==0||dmCanPlay(r,0)||r.pile.length)return;
   r.drew=null;dmPassTurn(st,0,KF_PPL[cur.npc].n);dmRoundFx(st);dmCheckMatch(cur);saveHero();if(cfFix(S.hero).cur)twRender()}
 function dmNpc(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='domino')return;const st=cur.st,r=st.r;if(st.done||r.turn!==1)return;
   const o=dmPick(cur,r,CF_NPC[cur.npc].lv);if(!o){if(dmAdvance(st,KF_PPL[cur.npc].n,1)){SFX.dmDraw&&SFX.dmDraw();cfSay('dmDraw',.5)}}
-  else{dmPlace(r,1,o.t,o.sd);r.last=`${KF_PPL[cur.npc].n} حط <bdi>${o.t[0]}|${o.t[1]}</bdi>`;cfFx('dmPlace',{sd:o.sd});SFX.slam&&SFX.slam();dmAfter(cur,1);if(!st.done&&r.hand[1].length===1)cfSay('dmOne',.8)}
+  else{dmPlace(r,1,o.t,o.sd);r.last=`${cf2Nm(cur.npc)} ${ae('حط','played')} <bdi>${o.t[0]}|${o.t[1]}</bdi>`;cfFx('dmPlace',{sd:o.sd});SFX.slam&&SFX.slam();dmAfter(cur,1);if(!st.done&&r.hand[1].length===1)cfSay('dmOne',.8)}
   dmRoundFx(st);dmCheckMatch(cur);saveHero();if(cfFix(S.hero).cur)twRender()}
 /* a round that just ended: «دومينو!» when you go out, a sigh when they do */
 function dmRoundFx(st){const d=st.done;if(!d||d.fx)return;d.fx=1;if(d.w===0){cfFx('dmRound',{win:1});cfSay('dmLose',.6);setTimeout(()=>{SFX.good&&SFX.good()},350)}else if(d.w===1){cfFx('dmRound',{win:0});cfSay('dmWin',.7)}}
@@ -26837,22 +26849,22 @@ function dmNext(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='domino'||!cur.st
 const DM_PIP={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
 const dmHalf=n=>`<span class="dm-h">${Array.from({length:9},(_,k)=>`<i${DM_PIP[n].includes(k)?' class="on"':''}></i>`).join('')}</span>`;
 const dmTile=(t,cls,attr)=>`<span class="dm-t ${cls||''}" ${attr||''}>${dmHalf(t[0])}<b></b>${dmHalf(t[1])}</span>`;
-function dmView(h,cur){const st=cur.st,r=st.r,nm=KF_PPL[cur.npc].n;
-  const score=`<div class="tv-info"><span>${G('انت','انتي')} <b>${st.sc[0]}</b></span>${cfBar(st.sc[0],DM_GOAL)}<span>${nm} <b>${st.sc[1]}</b></span>${cfBar(st.sc[1],DM_GOAL,'them')}</div><div class="tw-sm">اللي يوصل ${DM_GOAL} نقطة الأول يكسب</div>`;
-  if(st.done){const d=st.done;return `${score}<div class="card cf-res ${d.w===0?'w':d.w===1?'l':''}">${d.w<0?'الدور اتقفل والإيدين زي بعض: محدش أخد حاجة.':d.w===0?`<span class="cf-big">${d.why==='out'?'دومينو!':'الإيد الأخف!'}</span>${G('كسبت','كسبتي')} الدور ${G('وأخدت','وأخدتي')} <b>+${d.pts}</b> نقطة`:`<span class="cf-big" style="color:#ff8a6a">${d.why==='out'?'دومينو!':'اتقفل'}</span>${nm} كسب الدور ${d.why==='block'?'(إيده أخف) ':''}وأخد <b>${d.pts}</b> نقطة`}</div>
-      <div class="cf-mv"><button class="tw-buy" id="dmNext">الدور اللي بعده</button></div>`}
+function dmView(h,cur){const st=cur.st,r=st.r,nm=cf2Nm(cur.npc);
+  const score=`<div class="tv-info"><span>${ae(G('انت','انتي'),'You')} <b>${st.sc[0]}</b></span>${cfBar(st.sc[0],DM_GOAL)}<span>${nm} <b>${st.sc[1]}</b></span>${cfBar(st.sc[1],DM_GOAL,'them')}</div><div class="tw-sm">${ae(`اللي يوصل ${DM_GOAL} نقطة الأول يكسب`,`First to ${DM_GOAL} points wins`)}</div>`;
+  if(st.done){const d=st.done;return `${score}<div class="card cf-res ${d.w===0?'w':d.w===1?'l':''}">${d.w<0?ae('الدور اتقفل والإيدين زي بعض: محدش أخد حاجة.','Blocked, and both hands are equal: nobody scores.'):d.w===0?`<span class="cf-big">${d.why==='out'?ae('دومينو!','Domino!'):ae('الإيد الأخف!','Lighter hand!')}</span>${ae(`${G('كسبت','كسبتي')} الدور ${G('وأخدت','وأخدتي')}`,'You won the round and took')} <b>+${d.pts}</b> ${ae('نقطة','points')}`:`<span class="cf-big" style="color:#ff8a6a">${d.why==='out'?ae('دومينو!','Domino!'):ae('اتقفل','Blocked')}</span>${nm} ${ae(`كسب الدور ${d.why==='block'?'(إيده أخف) ':''}وأخد`,`won the round ${d.why==='block'?'(lighter hand) ':''}and took`)} <b>${d.pts}</b> ${ae('نقطة','points')}`}</div>
+      <div class="cf-mv"><button class="tw-buy" id="dmNext">${ae('الدور اللي بعده','Next round')}</button></div>`}
   const mine=r.turn===0,can=i=>{const t=r.hand[0][i];return r.must?t[0]===r.must[0]&&t[1]===r.must[1]:dmSides(r,t).length>0};
   const fx=CF.fx&&CF.fx.k==='dmPlace'?CF.fx:null,nw=fx?(fx.sd==='L'?0:r.chain.length-1):-1;
-  const chain=r.chain.length?r.chain.map((c,k)=>dmTile(c.t,(c.t[0]===c.t[1]?'dbl':'')+(k===nw?' new':'')+(k===0||k===r.chain.length-1?' end':''))).join(''):'<small>الترابيزة فاضية</small>';
+  const chain=r.chain.length?r.chain.map((c,k)=>dmTile(c.t,(c.t[0]===c.t[1]?'dbl':'')+(k===nw?' new':'')+(k===0||k===r.chain.length-1?' end':''))).join(''):`<small>${ae('الترابيزة فاضية','The table is empty')}</small>`;
   const stuck=mine&&!dmCanPlay(r,0),fd=CF.fx&&CF.fx.k==='dmDraw';
   return `${score}${r.last?`<div class="cf-msg">${r.last}</div>`:''}
-    <div class="cf-opp">${nm}: <span class="dm-backs">${'<i></i>'.repeat(r.hand[1].length)}</span> ${r.hand[1].length} · الكومة <b>${r.pile.length}</b></div>
-    ${r.L!=null?`<div class="dm-ends"><span>أول الترابيزة: طرف <b>${r.L}</b></span><span>آخرها: طرف <b>${r.R}</b></span></div>`:''}
+    <div class="cf-opp">${nm}: <span class="dm-backs">${'<i></i>'.repeat(r.hand[1].length)}</span> ${r.hand[1].length} · ${ae('الكومة','Pile')} <b>${r.pile.length}</b></div>
+    ${r.L!=null?`<div class="dm-ends"><span>${ae('أول الترابيزة: طرف','One end:')} <b>${r.L}</b></span><span>${ae('آخرها: طرف','Other end:')} <b>${r.R}</b></span></div>`:''}
     <div class="dm-chain${fx?' bump':''}" style="direction:ltr">${chain}</div>
-    <div class="cf-msg">${mine?(r.must?`${G('ابدأ','ابدأي')} بالـ ${r.must[0]}|${r.must[1]}`:stuck?(r.pile.length?G('مفيش حتة تنفع: اسحب من الكومة','مفيش حتة تنفع: اسحبي من الكومة'):G('مفيش حتة تنفع والكومة خلصت','مفيش حتة تنفع والكومة خلصت')):G('دورك: دوس على حتة تنفع','دورك: دوسي على حتة تنفع')):`دور ${nm}..`}</div>
-    ${stuck?`<div class="cf-mv">${r.pile.length?`<button class="btn" id="dmDraw">${G('اسحب','اسحبي')} حتة <small>(فاضل ${r.pile.length})</small></button>`:`<button class="btn" id="dmPass">${G('فوّت','فوّتي')}</button>`}</div>`:''}
+    <div class="cf-msg">${mine?(r.must?ae(`${G('ابدأ','ابدأي')} بالـ ${r.must[0]}|${r.must[1]}`,`Start with ${r.must[0]}|${r.must[1]}`):stuck?(r.pile.length?ae(G('مفيش حتة تنفع: اسحب من الكومة','مفيش حتة تنفع: اسحبي من الكومة'),'Nothing fits: draw from the pile'):ae('مفيش حتة تنفع والكومة خلصت','Nothing fits and the pile is empty')):ae(G('دورك: دوس على حتة تنفع','دورك: دوسي على حتة تنفع'),'Your turn: tap a tile that fits')):ae(`دور ${nm}..`,`${nm}'s turn…`)}</div>
+    ${stuck?`<div class="cf-mv">${r.pile.length?`<button class="btn" id="dmDraw">${ae(`${G('اسحب','اسحبي')} حتة`,'Draw a tile')} <small>(${ae('فاضل','left:')} ${r.pile.length})</small></button>`:`<button class="btn" id="dmPass">${ae(G('فوّت','فوّتي'),'Pass')}</button>`}</div>`:''}
     <div class="dm-hand">${r.hand[0].map((t,i)=>dmTile(t,(mine&&can(i)?'ok':'no')+(CF.pick===i?' sel':'')+(fd&&r.drew===i?' drawn':'')+(r.hand[0].length===1?' last':''),`data-dmi="${i}"`)).join('')}</div>
-    ${CF.pick!=null&&mine&&r.hand[0][CF.pick]?`<div class="cf-mv"><button class="tw-buy" data-dms="L">على طرف ${r.L}</button><button class="tw-buy" data-dms="R">على طرف ${r.R}</button></div>`:''}`}
+    ${CF.pick!=null&&mine&&r.hand[0][CF.pick]?`<div class="cf-mv"><button class="tw-buy" data-dms="L">${ae('على طرف','On end')} ${r.L}</button><button class="tw-buy" data-dms="R">${ae('على طرف','On end')} ${r.R}</button></div>`:''}`}
 /* 5.81 (Twister): the table snakes like a real one. Row 1 runs left→right; the next row starts right under the last tile
    of the row above and runs back the other way (its tiles turned around so the touching numbers meet), and so on.
    Laid out after render from the tiles' real widths, so it fits any phone. */
@@ -26891,7 +26903,7 @@ Object.assign(CF_GAMES.domino,{view:dmView,bind:dmBind});
 const BS_GOAL=101,BS_SUIT=['♠','♥','♦','♣'],BS_SN=['بستوني','كبة','ديناري','سباتي'],BS_RN={1:'آس',11:'ولد',12:'بنت',13:'شايب'};
 const bsNum=c=>c[0]<=10,bsSeven=c=>c[0]===7&&c[1]===2;
 const bsPts=c=>(c[0]===1?1:0)+(c[0]===11?1:0)+(c[0]===2&&c[1]===3?2:0)+(c[0]===10&&c[1]===2?3:0);
-const bsName=c=>`${BS_RN[c[0]]||c[0]} ${BS_SN[c[1]]}`;
+const bsName=c=>EN?`${({1:'A',11:'J',12:'Q',13:'K'})[c[0]]||c[0]} of ${['spades','hearts','diamonds','clubs'][c[1]]}`:`${BS_RN[c[0]]||c[0]} ${BS_SN[c[1]]}`;
 const bsLbl=c=>({1:'A',11:'J',12:'Q',13:'K'})[c[0]]||String(c[0]);
 function bsDeal(cur,dealer){const d=[];for(let s=0;s<4;s++)for(let r=1;r<=13;r++)d.push([r,s]);cfShuffle(cur,d);
   const R={deck:d,hand:[[],[]],table:[],n:[0,0],pt:[0,0],bas:[0,0],nb:[0,0],last:-1,dealer,turn:1-dealer,seen:[],msg:'',deal:1,nl:cur.o&&cur.o.last===0?1:0};
@@ -26952,35 +26964,35 @@ function bsFx(cur,res){const st=cur.st,me=res.s===0;cfFx('bsPlay',{s:res.s,c:res
   else if(res.got.length>=4)cfSay(me?'bsYouBig':'bsBig',.6);else if(!me&&res.c[0]===11&&res.got.length)cfSay('bsJack',.6)}
 function bsPlayP(i){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='basra')return;const st=cur.st,R=st.r;if(st.done||R.turn!==0||!R.hand[0][i])return;
   if(CF.pick!==i){CF.pick=i;SFX.tick&&SFX.tick(760);return twRender()}   /* first tap: see what it takes */
-  CF.pick=null;const res=bsPlay(R,0,i);R.msg=res.got.length?`${G('رميت','رميتي')} ${bsName(res.c)} ${G('وأخدت','وأخدتي')} ${res.got.length+1} ورق${res.bas?(res.bas>10?' · باصرة دبل!':' · باصرة!'):''}`:`${G('رميت','رميتي')} ${bsName(res.c)} على الترابيزة`;
+  CF.pick=null;const res=bsPlay(R,0,i);R.msg=EN?(res.got.length?`You played the ${bsName(res.c)} and took ${res.got.length+1} cards${res.bas?(res.bas>10?' · double basra!':' · basra!'):''}`:`You put the ${bsName(res.c)} on the table`):res.got.length?`${G('رميت','رميتي')} ${bsName(res.c)} ${G('وأخدت','وأخدتي')} ${res.got.length+1} ورق${res.bas?(res.bas>10?' · باصرة دبل!':' · باصرة!'):''}`:`${G('رميت','رميتي')} ${bsName(res.c)} على الترابيزة`;
   bsFx(cur,res);bsAfter(st);bsRoundFx(st);bsCheckMatch(cur);saveHero();if(cfFix(S.hero).cur)twRender()}
-function bsNpc(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='basra')return;const st=cur.st,R=st.r;if(st.done||R.turn!==1)return;const nm=KF_PPL[cur.npc].n;
+function bsNpc(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='basra')return;const st=cur.st,R=st.r;if(st.done||R.turn!==1)return;const nm=cf2Nm(cur.npc);
   const i=bsPick(cur,R,CF_NPC[cur.npc].lv),res=bsPlay(R,1,i);if(!res)return;
-  R.msg=res.got.length?`${nm} رمى ${bsName(res.c)} وأخد ${res.got.length+1} ورق${res.bas?(res.bas>10?' · باصرة دبل!':' · باصرة!'):''}`:`${nm} رمى ${bsName(res.c)} على الترابيزة`;
+  R.msg=EN?(res.got.length?`${nm} played the ${bsName(res.c)} and took ${res.got.length+1} cards${res.bas?(res.bas>10?' · double basra!':' · basra!'):''}`:`${nm} put the ${bsName(res.c)} on the table`):res.got.length?`${nm} رمى ${bsName(res.c)} وأخد ${res.got.length+1} ورق${res.bas?(res.bas>10?' · باصرة دبل!':' · باصرة!'):''}`:`${nm} رمى ${bsName(res.c)} على الترابيزة`;
   bsFx(cur,res);bsAfter(st);bsRoundFx(st);bsCheckMatch(cur);saveHero();if(cfFix(S.hero).cur)twRender()}
 function bsRoundFx(st){const d=st.done;if(!d||d.fx)return;d.fx=1;const w=d.add[0]>d.add[1]?0:d.add[1]>d.add[0]?1:-1;cfFx('bsRound',{win:w===0});if(w===0)setTimeout(()=>{SFX.good&&SFX.good()},350);else if(w===1)cfSay('dmWin',.5)}
 function bsNext(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='basra'||!cur.st.done)return;const st=cur.st;st.done=null;st.r=bsDeal(cur,st.dealer);CF.pick=null;cfFx('bsDeal');SFX.shuffle&&SFX.shuffle();saveHero();twRender()}
 /* drawing */
 const bsCard=(c,cls,attr,st)=>`<span class="bs-c ${c[1]===1||c[1]===2?'red':''} ${cls||''}" ${attr||''}${st?` style="${st}"`:''}><b>${bsLbl(c)}</b><i>${BS_SUIT[c[1]]}</i>${c[0]>10?`<u>${bsLbl(c)}</u>`:''}</span>`;
-function bsView(h,cur){const st=cur.st,R=st.r,nm=KF_PPL[cur.npc].n;
-  const score=`<div class="tv-info"><span>${G('انت','انتي')} <b>${st.sc[0]}</b></span>${cfBar(st.sc[0],BS_GOAL)}<span>${nm} <b>${st.sc[1]}</b></span>${cfBar(st.sc[1],BS_GOAL,'them')}</div><div class="tw-sm">اللي يوصل ${BS_GOAL} نقطة الأول يكسب${R.nl?' · الباصرة بآخر ورقة مش بتتحسب':''}${st.carry?` · الـ${st.carry} بتوع الورق الأكتر مستنيين الدور الجاي`:''}</div>`;
+function bsView(h,cur){const st=cur.st,R=st.r,nm=cf2Nm(cur.npc);
+  const score=`<div class="tv-info"><span>${ae(G('انت','انتي'),'You')} <b>${st.sc[0]}</b></span>${cfBar(st.sc[0],BS_GOAL)}<span>${nm} <b>${st.sc[1]}</b></span>${cfBar(st.sc[1],BS_GOAL,'them')}</div><div class="tw-sm">${ae(`اللي يوصل ${BS_GOAL} نقطة الأول يكسب${R.nl?' · الباصرة بآخر ورقة مش بتتحسب':''}${st.carry?` · الـ${st.carry} بتوع الورق الأكتر مستنيين الدور الجاي`:''}`,`First to ${BS_GOAL} points wins${R.nl?' · a basra with the last card doesn\'t count':''}${st.carry?` · the ${st.carry} for most cards carry to the next round`:''}`)}</div>`;
   if(st.done){const d=st.done,row=(t,a,b)=>`<div class="bs-sr"><span>${t}</span><b>${a}</b><b>${b}</b></div>`;
-    return `${score}<div class="card cf-res ${d.add[0]>d.add[1]?'w':d.add[1]>d.add[0]?'l':''}"><span class="cf-big">${d.add[0]>d.add[1]?G('الدور ليك!','الدور ليكي!'):d.add[1]>d.add[0]?`الدور لـ${nm}`:'الدور تعادل'}</span>
-      <div class="bs-sr hd"><span></span><b>${G('انت','انتي')}</b><b>${nm}</b></div>
-      ${row('الورق',d.n[0],d.n[1])}${row(`الورق الأكتر (${d.big})`,d.most===0?'+'+d.big:'—',d.most===1?'+'+d.big:'—')}${row('آسات وولاد والورق المميز',d.pt[0],d.pt[1])}${row('باصرة',d.nb[0]?`${d.nb[0]} = +${d.bas[0]}`:'—',d.nb[1]?`${d.nb[1]} = +${d.bas[1]}`:'—')}
-      <div class="bs-sr tot"><span>المجموع</span><b>+${d.add[0]}</b><b>+${d.add[1]}</b></div>${d.most<0?`<div class="tw-sm">الورق متساوي: الـ${d.big} هيتلعب عليهم الدور الجاي.</div>`:''}</div>
-      <div class="cf-mv"><button class="tw-buy cf-go" id="bsNext">الدور اللي بعده</button></div>`}
+    return `${score}<div class="card cf-res ${d.add[0]>d.add[1]?'w':d.add[1]>d.add[0]?'l':''}"><span class="cf-big">${d.add[0]>d.add[1]?ae(G('الدور ليك!','الدور ليكي!'),'Your round!'):d.add[1]>d.add[0]?ae(`الدور لـ${nm}`,`${nm}'s round`):ae('الدور تعادل','A tied round')}</span>
+      <div class="bs-sr hd"><span></span><b>${ae(G('انت','انتي'),'You')}</b><b>${nm}</b></div>
+      ${row(ae('الورق','Cards'),d.n[0],d.n[1])}${row(ae(`الورق الأكتر (${d.big})`,`Most cards (${d.big})`),d.most===0?'+'+d.big:'—',d.most===1?'+'+d.big:'—')}${row(ae('آسات وولاد والورق المميز','Aces, jacks and special cards'),d.pt[0],d.pt[1])}${row(ae('باصرة','Basra'),d.nb[0]?`${d.nb[0]} = +${d.bas[0]}`:'—',d.nb[1]?`${d.nb[1]} = +${d.bas[1]}`:'—')}
+      <div class="bs-sr tot"><span>${ae('المجموع','Total')}</span><b>+${d.add[0]}</b><b>+${d.add[1]}</b></div>${d.most<0?`<div class="tw-sm">${ae(`الورق متساوي: الـ${d.big} هيتلعب عليهم الدور الجاي.`,`Cards are even: the ${d.big} go to the next round.`)}</div>`:''}</div>
+      <div class="cf-mv"><button class="tw-buy cf-go" id="bsNext">${ae('الدور اللي بعده','Next round')}</button></div>`}
   const mine=R.turn===0,fx=CF.fx&&CF.fx.k==='bsPlay'?CF.fx:null,deal=CF.fx&&CF.fx.k==='bsDeal'||R.deal&&CF.fx&&CF.fx.k==='bsPlay';
   const sel=mine&&CF.pick!=null&&R.hand[0][CF.pick]?CF.pick:null,prev=sel!=null?bsTake(R.table,R.hand[0][sel],R):null;
   const tbl=R.table.map((c,k)=>bsCard(c,(prev&&prev.idx.includes(k)?'tk':'')+(fx&&!fx.got.length&&k===R.table.length-1?(fx.s?' inN':' inP'):''))).join('');
   /* a take: the cards taken and the card that took them land together, then slide off to the taker's side */
   const gone=fx&&fx.got.length?`<div class="bs-gone ${fx.s?'toN':'toP'}">${fx.got.concat([fx.c]).map((c,k)=>bsCard(c,k===fx.got.length?(fx.s?'inN':'inP'):'')).join('')}</div>`:'';
-  const bas=fx&&fx.bas?`<div class="bs-bas ${fx.s?'them':''}">${fx.bas>10?'باصرة دبل!':'باصرة!'}</div>`:'';
-  const hint=sel!=null?(prev.idx.length?`${prev.bas?(prev.bas>10?'باصرة دبل! ':'باصرة! '):''}${G('هتاخد','هتاخدي')} ${prev.idx.length} ورق من الترابيزة · ${G('دوس','دوسي')} تاني وارمي`:`مش ${G('هتاخد','هتاخدي')} حاجة: هتفضل على الترابيزة · ${G('دوس','دوسي')} تاني وارمي`):R.fin?'الورق خلص: بنعد..':mine?G('دورك: دوس على ورقة','دورك: دوسي على ورقة'):`دور ${nm}..`;
+  const bas=fx&&fx.bas?`<div class="bs-bas ${fx.s?'them':''}">${fx.bas>10?ae('باصرة دبل!','Double basra!'):ae('باصرة!','Basra!')}</div>`:'';
+  const hint=EN?(sel!=null?(prev.idx.length?`${prev.bas?(prev.bas>10?'Double basra! ':'Basra! '):''}You'll take ${prev.idx.length} cards from the table · tap again to play`:`You won't take anything: it stays on the table · tap again to play`):R.fin?'Out of cards: counting…':mine?'Your turn: tap a card':`${nm}'s turn…`):sel!=null?(prev.idx.length?`${prev.bas?(prev.bas>10?'باصرة دبل! ':'باصرة! '):''}${G('هتاخد','هتاخدي')} ${prev.idx.length} ورق من الترابيزة · ${G('دوس','دوسي')} تاني وارمي`:`مش ${G('هتاخد','هتاخدي')} حاجة: هتفضل على الترابيزة · ${G('دوس','دوسي')} تاني وارمي`):R.fin?'الورق خلص: بنعد..':mine?G('دورك: دوس على ورقة','دورك: دوسي على ورقة'):`دور ${nm}..`;
   return `${score}${R.msg?`<div class="cf-msg">${R.msg}</div>`:''}
-    <div class="cf-opp">${nm}: <span class="bs-backs">${'<i></i>'.repeat(R.hand[1].length)}</span> · الكوتشينة <b>${R.deck.length}</b> · ورقه <b>${R.n[1]}</b>${R.nb[1]?` · باصرة ${R.nb[1]}`:''}</div>
-    <div class="bs-tbl">${bas}${tbl||'<small>الترابيزة فاضية</small>'}${gone}</div>
-    <div class="cf-opp">ورقك <b>${R.n[0]}</b>${R.nb[0]?` · باصرة ${R.nb[0]}`:''}</div>
+    <div class="cf-opp">${nm}: <span class="bs-backs">${'<i></i>'.repeat(R.hand[1].length)}</span> · ${ae('الكوتشينة','Deck')} <b>${R.deck.length}</b> · ${ae('ورقه','his cards')} <b>${R.n[1]}</b>${R.nb[1]?` · ${ae('باصرة','basra')} ${R.nb[1]}`:''}</div>
+    <div class="bs-tbl">${bas}${tbl||`<small>${ae('الترابيزة فاضية','The table is empty')}</small>`}${gone}</div>
+    <div class="cf-opp">${ae('ورقك','Your cards')} <b>${R.n[0]}</b>${R.nb[0]?` · ${ae('باصرة','basra')} ${R.nb[0]}`:''}</div>
     <div class="cf-msg">${hint}</div>
     <div class="bs-hand">${R.hand[0].map((c,i)=>bsCard(c,(sel===i?'sel':'')+(deal?' dl':'')+(!mine?' wait':''),`data-bsi="${i}"`,deal?`animation-delay:${i*.08}s`:'')).join('')}</div>`}
 function bsBind(h,cur){const st=cur.st,R=st.r;
@@ -27051,13 +27063,13 @@ function sgPick(cur,st,lv){const md=sgMid(st),L=sgMoves(st.b,1,st.chain,md);if(!
 /* the game's steps (either side) */
 function sgEnd(cur){const st=cur.st,a=sgCnt(st.b,0),b=sgCnt(st.b,1);if(a<=1)return cfEnd(false),true;if(b<=1)return cfEnd(true),true;
   if(st.quiet>=SG_QUIET){if(a===b)cfEnd(false,'draw');else cfEnd(a>b);return true}return false}
-function sgTurn(cur,s){const st=cur.st,nm=KF_PPL[cur.npc].n;st.chain=-1;st.turn=1-s;
+function sgTurn(cur,s){const st=cur.st,nm=cf2Nm(cur.npc);st.chain=-1;st.turn=1-s;
   const md=sgMid(st);if(!sgMoves(st.b,st.turn,-1,md).length&&!sgMoves(st.b,s,-1,md).length){st.quiet=SG_QUIET;return sgEnd(cur)}   /* nobody can move: decided by the pieces left */
-  if(!sgMoves(st.b,st.turn,-1,md).length){st.msg=st.turn===0?G('مفيش حركة ليك: الدور رجع له','مفيش حركة ليكي: الدور رجع له'):`${nm} مالوش حركة: ${G('العب','العبي')} تاني`;if(st.turn===1)cfSay('sgBlock',.5);st.turn=s}}
+  if(!sgMoves(st.b,st.turn,-1,md).length){st.msg=st.turn===0?ae(G('مفيش حركة ليك: الدور رجع له','مفيش حركة ليكي: الدور رجع له'),'You have no move: his turn again'):ae(`${nm} مالوش حركة: ${G('العب','العبي')} تاني`,`${nm} has no move: play again`);if(st.turn===1)cfSay('sgBlock',.5);st.turn=s}}
 function sgPlace(cur,s,i){const st=cur.st;if(st.ph!=='place'||st.turn!==s||st.b[i]||i===SG_C||st.left[s]<=0)return false;
   st.b[i]=s+1;st.left[s]--;st.pl++;cfFx('sgPlace',{s,i});SFX.sgStone&&SFX.sgStone(s?.85:1);
-  if(st.pl>=2||!st.left[s]){st.pl=0;if(!st.left[0]&&!st.left[1]){st.ph='move';st.quiet=0;st.turn=st.first;st.msg='القطع كلها نزلت: الحركة بدأت';
-      if(!sgMoves(st.b,st.turn,-1,sgMid(st)).length){st.turn=1-st.first;st.msg=st.turn===0?G('هو مالوش قطعة جنب النص: انت تبدأ','هو مالوش قطعة جنب النص: انتي تبدأي'):`${G('مالكش','مالكيش')} قطعة جنب النص: ${KF_PPL[cur.npc].n} يبدأ`}}
+  if(st.pl>=2||!st.left[s]){st.pl=0;if(!st.left[0]&&!st.left[1]){st.ph='move';st.quiet=0;st.turn=st.first;st.msg=ae('القطع كلها نزلت: الحركة بدأت','All pieces are down: moving starts');
+      if(!sgMoves(st.b,st.turn,-1,sgMid(st)).length){st.turn=1-st.first;st.msg=st.turn===0?ae(G('هو مالوش قطعة جنب النص: انت تبدأ','هو مالوش قطعة جنب النص: انتي تبدأي'),'He has no piece next to the middle: you start'):ae(`${G('مالكش','مالكيش')} قطعة جنب النص: ${KF_PPL[cur.npc].n} يبدأ`,`You have no piece next to the middle: ${cf2Nm(cur.npc)} starts`)}}
     else st.turn=1-s}return true}
 function sgMove(cur,s,m){const st=cur.st,b=st.b;b[m.f]=0;b[m.t]=s+1;const md=sgMid(st),cap=sgCaps(b,m.t,s,md);cap.forEach(i=>b[i]=0);st.quiet=cap.length?0:st.quiet+1;
   cfFx('sgMove',{s,f:m.f,t:m.t,cap});setTimeout(()=>{SFX.sgStone&&SFX.sgStone(s?.85:1)},250);if(cap.length){setTimeout(()=>{SFX.cfHit&&SFX.cfHit()},330);cfSay(s?'sgCap':'sgYouCap',.6)}
@@ -27066,32 +27078,32 @@ function sgMove(cur,s,m){const st=cur.st,b=st.b;b[m.f]=0;b[m.t]=s+1;const md=sgM
 function sgTap(i){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='siga')return;const st=cur.st;if(st.turn!==0)return;
   if(st.ph==='place'){if(sgPlace(cur,0,i)){st.msg='';saveHero();twRender()}return}
   const L=sgMoves(st.b,0,st.chain,sgMid(st));if(!L.length)return;
-  if(CF.pick!=null){const m=L.find(x=>x.f===CF.pick&&x.t===i);if(m){CF.pick=null;st.msg=m.cap.length?`${G('أكلت','أكلتي')} ${m.cap.length>1?m.cap.length+' قطع':'قطعة'}!`:'';if(!sgMove(cur,0,m)){saveHero();twRender()}else saveHero();return}}
+  if(CF.pick!=null){const m=L.find(x=>x.f===CF.pick&&x.t===i);if(m){CF.pick=null;st.msg=m.cap.length?ae(`${G('أكلت','أكلتي')} ${m.cap.length>1?m.cap.length+' قطع':'قطعة'}!`,`You took ${m.cap.length>1?m.cap.length+' pieces':'a piece'}!`):'';if(!sgMove(cur,0,m)){saveHero();twRender()}else saveHero();return}}
   const mine=L.filter(x=>x.f===i);if(!mine.length){if(CF.pick!=null){CF.pick=null;twRender()}return}
-  if(mine.length===1){CF.pick=null;const m=mine[0];st.msg=m.cap.length?`${G('أكلت','أكلتي')} ${m.cap.length>1?m.cap.length+' قطع':'قطعة'}!`:'';if(!sgMove(cur,0,m)){saveHero();twRender()}else saveHero();return}
+  if(mine.length===1){CF.pick=null;const m=mine[0];st.msg=m.cap.length?ae(`${G('أكلت','أكلتي')} ${m.cap.length>1?m.cap.length+' قطع':'قطعة'}!`,`You took ${m.cap.length>1?m.cap.length+' pieces':'a piece'}!`):'';if(!sgMove(cur,0,m)){saveHero();twRender()}else saveHero();return}
   CF.pick=i;SFX.tick&&SFX.tick(700);twRender()}
 function sgStop(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='siga')return;const st=cur.st;if(st.turn!==0||st.chain<0)return;CF.pick=null;sgTurn(cur,0);saveHero();twRender()}
 /* the NPC: one piece or one step per call */
-function sgNpc(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='siga')return;const st=cur.st,nm=KF_PPL[cur.npc].n,lv=CF_NPC[cur.npc].lv;if(st.turn!==1)return;
+function sgNpc(){const cur=cfFix(S.hero).cur;if(!cur||cur.g!=='siga')return;const st=cur.st,nm=cf2Nm(cur.npc),lv=CF_NPC[cur.npc].lv;if(st.turn!==1)return;
   if(st.ph==='place'){const i=sgPlacePick(cur,st,lv);if(i<0)return;sgPlace(cur,1,i);saveHero();return twRender()}
   const m=sgPick(cur,st,lv);if(!m){sgTurn(cur,1);saveHero();return twRender()}
-  st.msg=m.cap.length?`${nm} ${m.cap.length>1?`أكل ${m.cap.length} قطع`:'أكل قطعة'}!`:`${nm} حرّك قطعة`;if(!sgMove(cur,1,m)){saveHero();twRender()}else saveHero()}
+  st.msg=EN?(m.cap.length?`${nm} took ${m.cap.length>1?m.cap.length+' pieces':'a piece'}!`:`${nm} moved a piece`):m.cap.length?`${nm} ${m.cap.length>1?`أكل ${m.cap.length} قطع`:'أكل قطعة'}!`:`${nm} حرّك قطعة`;if(!sgMove(cur,1,m)){saveHero();twRender()}else saveHero()}
 /* drawing */
-function sgView(h,cur){const st=cur.st,me=st.turn===0,nm=KF_PPL[cur.npc].n,fx=CF.fx&&(CF.fx.k==='sgMove'||CF.fx.k==='sgPlace')?CF.fx:null;
+function sgView(h,cur){const st=cur.st,me=st.turn===0,nm=cf2Nm(cur.npc),fx=CF.fx&&(CF.fx.k==='sgMove'||CF.fx.k==='sgPlace')?CF.fx:null;
   const L=me&&st.ph==='move'?sgMoves(st.b,0,st.chain,sgMid(st)):[],srcs=new Set(L.map(m=>m.f)),sel=st.chain>=0&&me?st.chain:CF.pick!=null&&srcs.has(CF.pick)?CF.pick:null,dst=sel!=null?L.filter(m=>m.f===sel):[];
   const a=sgCnt(st.b,0),b=sgCnt(st.b,1);
   const cells=st.b.map((v,i)=>{const d=dst.find(m=>m.t===i),cls=['sg-c'];if(i===SG_C)cls.push(sgMid(st)?'mid safe':'mid');
     if(me&&st.ph==='place'&&!v&&i!==SG_C)cls.push('can');if(sel==null&&srcs.has(i))cls.push('src');if(sel===i)cls.push('sel');if(d)cls.push(d.cap.length?'dst cap':'dst');
     let pc='';if(v){let an='',sty='';if(fx&&fx.k==='sgPlace'&&fx.i===i)an=' drop';
       if(fx&&fx.k==='sgMove'&&fx.t===i){an=' slide';sty=` style="--x:${fx.f%5-i%5};--y:${Math.floor(fx.f/5)-Math.floor(i/5)}"`}pc=`<i class="sg-p s${v-1}${an}"${sty}></i>`}
-    else if(fx&&fx.k==='sgMove'&&fx.cap.includes(i))pc=`<i class="sg-p s${1-fx.s} dead"></i><em class="sg-fl ${fx.s?'them':''}">${fx.s?'اتاكلت!':'+1'}</em>`;
+    else if(fx&&fx.k==='sgMove'&&fx.cap.includes(i))pc=`<i class="sg-p s${1-fx.s} dead"></i><em class="sg-fl ${fx.s?'them':''}">${fx.s?ae('اتاكلت!','Taken!'):'+1'}</em>`;
     return `<button class="${cls.join(' ')}" data-sg="${i}" aria-label="${i+1}">${pc}</button>`}).join('');
-  const head=st.ph==='place'?`<div class="cf-msg">${me?`${G('حط','حطي')} قطعة في أي خانة فاضية غير النص (${2-st.pl} في الدور ده) · فاضلك ${st.left[0]}`:`${nm} بيحط قطعه..`}</div>`
-    :`<div class="cf-msg">${st.chain>=0&&me?`${G('أكلت','أكلتي')}! نفس القطعة تقدر تاكل تاني، أو ${G('دوس','دوسي')} «كفاية»`:me?(sel!=null?`${G('دوس','دوسي')} على الخانة اللي منوّرة`:G('دورك: دوس على قطعة من قطعك','دورك: دوسي على قطعة من قطعك')):`دور ${nm}..`}</div>`;
-  return `<div class="tv-info"><span>قطعك <b>${a}</b></span>${cfBar(a,SG_PCS)}<span>${nm} <b>${b}</b></span>${cfBar(b,SG_PCS,'them')}</div>
-    ${st.ph==='move'&&st.quiet>=SG_QUIET/2?`<div class="tw-sm">من غير أكل: ${st.quiet} من ${SG_QUIET} حركة، وبعدها اللي قطعه أكتر يكسب</div>`:''}
+  const head=st.ph==='place'?`<div class="cf-msg">${me?ae(`${G('حط','حطي')} قطعة في أي خانة فاضية غير النص (${2-st.pl} في الدور ده) · فاضلك ${st.left[0]}`,`Place a piece on any empty square but the middle (${2-st.pl} this turn) · ${st.left[0]} left`):ae(`${nm} بيحط قطعه..`,`${nm} is placing…`)}</div>`
+    :`<div class="cf-msg">${st.chain>=0&&me?ae(`${G('أكلت','أكلتي')}! نفس القطعة تقدر تاكل تاني، أو ${G('دوس','دوسي')} «كفاية»`,'You took one! The same piece can take again, or tap «Enough»'):me?(sel!=null?ae(`${G('دوس','دوسي')} على الخانة اللي منوّرة`,'Tap a lit square'):ae(G('دورك: دوس على قطعة من قطعك','دورك: دوسي على قطعة من قطعك'),'Your turn: tap one of your pieces')):ae(`دور ${nm}..`,`${nm}'s turn…`)}</div>`;
+  return `<div class="tv-info"><span>${ae('قطعك','Yours')} <b>${a}</b></span>${cfBar(a,SG_PCS)}<span>${nm} <b>${b}</b></span>${cfBar(b,SG_PCS,'them')}</div>
+    ${st.ph==='move'&&st.quiet>=SG_QUIET/2?`<div class="tw-sm">${ae(`من غير أكل: ${st.quiet} من ${SG_QUIET} حركة، وبعدها اللي قطعه أكتر يكسب`,`No take for ${st.quiet} of ${SG_QUIET} moves; then whoever has more pieces wins`)}</div>`:''}
     ${st.msg?`<div class="cf-msg">${st.msg}</div>`:''}<div class="sg-b${fx&&fx.k==='sgMove'&&fx.cap.length?' hit':''}">${cells}</div>${head}
-    ${st.chain>=0&&me?`<div class="cf-mv"><button class="tw-buy" id="sgStop">كفاية كده</button></div>`:''}`}
+    ${st.chain>=0&&me?`<div class="cf-mv"><button class="tw-buy" id="sgStop">${ae('كفاية كده','Enough')}</button></div>`:''}`}
 function sgBind(h,cur){const st=cur.st,f=CF.fx;view.querySelectorAll('[data-sg]').forEach(x=>x.onclick=()=>sgTap(+x.dataset.sg));const s=$('#sgStop');if(s)s.onclick=sgStop;
   cfTakeFx('sgMove');cfTakeFx('sgPlace');
   if(st.turn===1&&!CF.busy){CF.busy=1;setTimeout(()=>{CF.busy=0;if(S.screen==='cafeg')sgNpc()},st.ph==='place'?600:(f&&f.k==='sgMove'&&f.cap.length?1100:850))}}
@@ -27149,6 +27161,8 @@ function krKick(F){if(F.ev)return;const [lh,la]=krLam(F),pois=l=>{const u=cfRnd(
   ev.sort((a,b)=>a.m-b.m||(a.k==='g')-(b.k==='g'));F.ev=ev;F.gF=[gh,ga]}
 /* what one event says on the TV */
 function krLine(F,e){const T0=KR_TEAMS[[F.h,F.a][e.s]].n;
+  if(EN){const P=KR_NAMES_EN[KR_NAMES.indexOf(e.p)]||e.p;if(e.k==='g')return `⚽ ${e.m}' GOAL! ${P} scores for ${T0}`;if(e.k==='y')return `🟨 ${e.m}' Yellow card for ${P} of ${T0}`;
+    return `${e.m}' ${['A chance for '+T0+'… over the bar','A hard shot from '+P+'… the keeper saves it','A cross from '+T0+' and nobody gets there','Through on goal: '+P+'… and misses!'][e.v|0]}`}
   if(e.k==='g')return `⚽ ${e.m}' جوووول! ${e.p} يجيبها لـ${T0}`;
   if(e.k==='y')return `🟨 ${e.m}' كارت أصفر لـ${e.p} من ${T0}`;
   return `${e.m}' ${['فرصة لـ'+T0+'.. والكورة فوق العارضة','تسديدة قوية من '+e.p+'.. والحارس يطلّعها','كورة عرضية لـ'+T0+' ومحدش لحقها','انفراد لـ'+e.p+'.. وضاعت!'][e.v|0]}`}
@@ -27159,8 +27173,8 @@ const krCan=(h,F)=>CAFE_BETS&&!cfNightOn(h)&&F.on&&F.st==='pre';
 function krBet(t){const h=S.hero,F=krToday(h),sel=KR.sel;if(!krCan(h,F)||F.bets.some(b=>b.t===t))return;const s=sel.s,npc=sel.npc;if(!CF_STAKES.includes(s)||h.money<s||!CF_NPC[npc])return;
   const p=t==='w'?sel.w:[sel.x,sel.y],o=t==='w'?krOdds(F)[p]:krScoreOdd(F,p[0],p[1]),pot=Math.round(s*o)-s;if(pot>krRoom(h,F,npc))return;
   h.money-=s;F.bets.push({t,p,s,o,npc,n:h.nDone|0});cfLog(h,'bet',s,`ماتش ${krVs(F)}`);saveHero();SFX.coin&&SFX.coin(.9);
-  toast(`${G('راهنت','راهنتي')} ${KF_PPL[npc].n} بـ${s}: لو ${G('كسبت','كسبتي')} ${G('تاخد','تاخدي')} ${Math.round(s*o)}`);twRender()}
-function krBetTxt(F,b){return b.t==='w'?(b.p==='d'?'تعادل':`فوز ${KR_TEAMS[b.p==='h'?F.h:F.a].n}`):`النتيجة ${b.p[0]}-${b.p[1]}`}
+  toast(ae(`${G('راهنت','راهنتي')} ${cf2Nm(npc)} بـ${s}: لو ${G('كسبت','كسبتي')} ${G('تاخد','تاخدي')} ${Math.round(s*o)}`,`You bet ${cf2Nm(npc)} ${s}: win and you get ${Math.round(s*o)}`));twRender()}
+function krBetTxt(F,b){return b.t==='w'?(b.p==='d'?ae('تعادل','Draw'):ae(`فوز ${KR_TEAMS[b.p==='h'?F.h:F.a].n}`,`${KR_TEAMS[b.p==='h'?F.h:F.a].n} win`)):ae(`النتيجة ${b.p[0]}-${b.p[1]}`,`Score ${b.p[0]}-${b.p[1]}`)}
 function krSettle(h,F){if(F.paid)return;F.paid=1;const g=F.gF||F.g,res=krRes(g);let net=0;
   F.bets.forEach(b=>{if(b.done)return;b.done=1;b.win=b.t==='w'?b.p===res:b.p[0]===g[0]&&b.p[1]===g[1];
     if(b.win){const pay=Math.round(b.s*b.o);h.money+=pay;if(cfNightOn(h)&&typeof bkNightShift==='function')bkNightShift(h,pay);const P=cfFix(h).purse[b.npc];if(P&&P.n===(b.n>>1))P.left=Math.max(0,P.left-(pay-b.s));
@@ -27180,37 +27194,37 @@ function krTick(){const h=S.hero;if(!h||S.screen!=='cafetv'){krStop();return}con
 function krStart(){const h=S.hero,F=krToday(h);if(!F.on||F.st!=='pre')return;krKick(F);F.st='live';F.mn=0;F.shown=0;F.g=[0,0];F.log=[];saveHero();SFX.krWhistle&&SFX.krWhistle(0);twRender()}
 /* drawing */
 function krStatus(F,b){if(F.st==='pre')return '';const res=krRes(F.g),now=b.t==='w'?b.p===res:b.p[0]===F.g[0]&&b.p[1]===F.g[1];
-  return F.st==='ft'?(b.win?`<b class="pos">+${Math.round(b.s*b.o)}</b>`:`<b class="neg">راحوا ${b.s}</b>`):`<small class="${now?'pos':'neg'}">${now?'كسبان لحد دلوقتي':'خسران لحد دلوقتي'}</small>`}
-function krTV(F,fx){const H=KR_TEAMS[F.h],A=KR_TEAMS[F.a],min=F.st==='pre'?'قبل الماتش':F.st==='ft'?'انتهى':`${Math.min(F.mn,KR_MIN)}'${F.mn>KR_MIN?`+${F.mn-KR_MIN}`:''}`;
+  return F.st==='ft'?(b.win?`<b class="pos">+${Math.round(b.s*b.o)}</b>`:`<b class="neg">${ae('راحوا','−')}${EN?'':' '}${b.s}</b>`):`<small class="${now?'pos':'neg'}">${now?ae('كسبان لحد دلوقتي','Winning so far'):ae('خسران لحد دلوقتي','Losing so far')}</small>`}
+function krTV(F,fx){const H=KR_TEAMS[F.h],A=KR_TEAMS[F.a],min=F.st==='pre'?ae('قبل الماتش','Before kick-off'):F.st==='ft'?ae('انتهى','Full time'):`${Math.min(F.mn,KR_MIN)}'${F.mn>KR_MIN?`+${F.mn-KR_MIN}`:''}`;
   return `<div class="kr-tv${fx&&fx.k==='goal'?' goal':''}"><div class="kr-sb"><span class="kr-t" style="--c:${H.c}">${H.n}</span><b id="krSc">${F.st==='pre'?'–':`${F.g[0]} - ${F.g[1]}`}</b><span class="kr-t" style="--c:${A.c}">${A.n}</span></div>
     <div class="kr-min" id="krMin">${min}</div><div class="kr-pitch"><i class="kr-mid"></i><i class="kr-box l"></i><i class="kr-box r"></i>${F.st==='live'?'<i class="kr-ball" id="krBall"></i>':''}
-    ${fx&&fx.k==='goal'?`<div class="kr-gl">جوووول!</div>`:''}</div>
+    ${fx&&fx.k==='goal'?`<div class="kr-gl">${ae('جوووول!','GOAL!')}</div>`:''}</div>
     ${F.st!=='pre'?`<div class="kr-log" id="krLog">${(F.log||[]).slice().reverse().map(x=>`<div>${x}</div>`).join('')}</div>`:''}</div>`}
 function krStars(p){return '★'.repeat(p)+'☆'.repeat(5-p)}
 SCREENS.cafetv=function(){const h=S.hero;if(!h){S.screen='title';return render()}const F=krToday(h),sel=KR.sel,fx=KR.fx;KR.fx=null;
   if(!CF_NPC[sel.npc])sel.npc='mansour';let body='';
-  if(!F.on)body=`<div class="card">مفيش ماتش النهارده. {استنى|استني} بكرة.</div>`;
+  if(!F.on)body=`<div class="card">${ae('مفيش ماتش النهارده. {استنى|استني} بكرة.','No match today. Wait for tomorrow.')}</div>`;
   else{const H=KR_TEAMS[F.h],A=KR_TEAMS[F.a],O=krOdds(F),can=krCan(h,F),bw=F.bets.find(b=>b.t==='w'),bs=F.bets.find(b=>b.t==='s');
-    const bets=F.bets.length?`<div class="tw-lbl">رهاناتك</div><div class="card bk-log">${F.bets.map(b=>`<div class="bkl"><span>${krBetTxt(F,b)} ×${b.o} <small>مع ${KF_PPL[b.npc].n} · ${b.s} جنيه</small></span>${krStatus(F,b)}</div>`).join('')}</div>`:'';
+    const bets=F.bets.length?`<div class="tw-lbl">${ae('رهاناتك','Your bets')}</div><div class="card bk-log">${F.bets.map(b=>`<div class="bkl"><span>${krBetTxt(F,b)} ×${b.o} <small>${ae('مع','with')} ${cf2Nm(b.npc)} · ${b.s} ${ae('جنيه','coins')}</small></span>${krStatus(F,b)}</div>`).join('')}</div>`:'';
     if(F.st==='pre'){const room=krRoom(h,F,sel.npc),pot=(o)=>Math.round(sel.s*o)-sel.s,so=krScoreOdd(F,sel.x,sel.y);
       const opt=(k,label)=>`<button class="cf-opt${sel.w===k?' on':''}" data-fw="${k}"><b>${label}</b><small>×${O[k]}</small></button>`;
       const stake=s=>`<button class="cf-opt${sel.s===s?' on':''}" data-fs="${s}" ${h.money<s?'disabled':''}><b>${s}</b></button>`;
       body=`${krTV(F,fx)}<div class="kr-teams"><span>${H.n} <small>${krStars(H.p)}</small></span><span>${A.n} <small>${krStars(A.p)}</small></span></div>
-        ${!CAFE_BETS?'':cfNightOn(h)?`<div class="tw-miss">${G('عندك','عندك')} ليلة متسابة: الرهان مقفول لحد ما الليلة تخلص، بس {تقدر تتفرج|تقدري تتفرجي}.</div>`:`
-        <div class="tw-lbl">مين هيكسب؟ ${bw?'<small>({راهنت|راهنتي} عليها خلاص)</small>':''}</div><div class="cf-row">${opt('h',H.n)}${opt('d','تعادل')}${opt('a',A.n)}</div>
-        <div class="tw-lbl">النتيجة بالظبط ${bs?'<small>({راهنت|راهنتي} عليها خلاص)</small>':''}</div>
+        ${!CAFE_BETS?'':cfNightOn(h)?`<div class="tw-miss">${ae('عندك ليلة متسابة: الرهان مقفول لحد ما الليلة تخلص، بس {تقدر تتفرج|تقدري تتفرجي}.','You have a saved night: no bets until it ends, but you can watch.')}</div>`:`
+        <div class="tw-lbl">${ae('مين هيكسب؟','Who wins?')} ${bw?`<small>${ae('({راهنت|راهنتي} عليها خلاص)','(already bet)')}</small>`:''}</div><div class="cf-row">${opt('h',H.n)}${opt('d',ae('تعادل','Draw'))}${opt('a',A.n)}</div>
+        <div class="tw-lbl">${ae('النتيجة بالظبط','Exact score')} ${bs?`<small>${ae('({راهنت|راهنتي} عليها خلاص)','(already bet)')}</small>`:''}</div>
         <div class="kr-score"><div class="kr-st"><small>${H.n}</small><div><button class="tw-buy" data-fx="-1">−</button><b>${sel.x}</b><button class="tw-buy" data-fx="1">+</button></div></div><b class="kr-o">×${so}</b>
           <div class="kr-st"><small>${A.n}</small><div><button class="tw-buy" data-fy="-1">−</button><b>${sel.y}</b><button class="tw-buy" data-fy="1">+</button></div></div></div>
-        <div class="tw-lbl">مع مين؟ <small>${KF_PPL[sel.npc].n} معاه يدفع لحد ${room} جنيه</small></div><div class="cf-row">${Object.keys(CF_NPC).map(n=>`<button class="cf-opt${sel.npc===n?' on':''}" data-fn="${n}"><span class="cf-pp">${portrait(KF_PPL[n].look,'krp'+n)}</span><b>${KF_PPL[n].n}</b></button>`).join('')}</div>
-        <div class="tw-lbl">بكام؟</div><div class="cf-row">${CF_STAKES.map(stake).join('')}</div>
-        <div class="cf-mv"><button class="tw-buy" id="krBw" ${!can||bw||h.money<sel.s||pot(O[sel.w])>room?'disabled':''}>${G('راهن','راهني')} على ${sel.w==='d'?'التعادل':(sel.w==='h'?H:A).n}<small>لو ${G('كسبت','كسبتي')}: +${pot(O[sel.w])}</small></button>
-          <button class="tw-buy" id="krBs" ${!can||bs||h.money<sel.s||pot(so)>room?'disabled':''}>${G('راهن','راهني')} على ${sel.x}-${sel.y}<small>لو ${G('كسبت','كسبتي')}: +${pot(so)}</small></button></div>
-        ${pot(Math.max(O[sel.w],so))>room?`<div class="tw-sm">المبلغ ده أكبر من اللي ${KF_PPL[sel.npc].n} يقدر يدفعه النهارده: ${G('قلّل','قلّلي')} الرهان أو ${G('راهن','راهني')} حد تاني.</div>`:''}`}
-        ${bets}<button class="btn cf-go" id="krGo">📺 ${F.bets.length?G('ابدأ الماتش','ابدأي الماتش'):G('اتفرج على الماتش','اتفرجي على الماتش')}</button><div class="tw-sm">بعد ما الماتش يبدأ مفيش رهان.</div>`}
-    else if(F.st==='live')body=`${krTV(F,fx)}${F.bets.length?cfSayHTML(KF_PPL[F.bets[0].npc].n):''}${bets}<button class="btn ghost" id="krFast">${KR.fast?'▶ سرعة عادية':'⏩ سرّع الماتش'}</button>`;
-    else{const net=F.net|0;body=`${krTV(F,fx)}<div class="card cf-res ${net>0?'w':net<0?'l':''}"><span class="cf-big">${F.g[0]} - ${F.g[1]}</span><div>${F.g[0]===F.g[1]?'تعادل':`${KR_TEAMS[F.g[0]>F.g[1]?F.h:F.a].n} كسب`}</div>
-      ${F.bets.length?`<span class="cf-big" style="color:${net>=0?'#ffd36a':'#ff8a6a'}">${net>0?'+'+net:net<0?'−'+(-net):'±0'} جنيه</span>`:''}</div>${bets}<div class="tw-sm">الماتش الجاي بكرة، لو فيه.</div>`}}
-  view.innerHTML=`${twTop('تلفزيون القهوة')}<div class="tw cf">${T(body)}</div>`;
+        <div class="tw-lbl">${ae('مع مين؟','With whom?')} <small>${ae(`${cf2Nm(sel.npc)} معاه يدفع لحد ${room} جنيه`,`${cf2Nm(sel.npc)} can pay up to ${room} coins`)}</small></div><div class="cf-row">${Object.keys(CF_NPC).map(n=>`<button class="cf-opt${sel.npc===n?' on':''}" data-fn="${n}"><span class="cf-pp">${portrait(KF_PPL[n].look,'krp'+n)}</span><b>${cf2Nm(n)}</b></button>`).join('')}</div>
+        <div class="tw-lbl">${ae('بكام؟','How much?')}</div><div class="cf-row">${CF_STAKES.map(stake).join('')}</div>
+        <div class="cf-mv"><button class="tw-buy" id="krBw" ${!can||bw||h.money<sel.s||pot(O[sel.w])>room?'disabled':''}>${ae(`${G('راهن','راهني')} على ${sel.w==='d'?'التعادل':(sel.w==='h'?H:A).n}`,`Bet on ${sel.w==='d'?'a draw':(sel.w==='h'?H:A).n}`)}<small>${ae(`لو ${G('كسبت','كسبتي')}: +${pot(O[sel.w])}`,`If you win: +${pot(O[sel.w])}`)}</small></button>
+          <button class="tw-buy" id="krBs" ${!can||bs||h.money<sel.s||pot(so)>room?'disabled':''}>${ae(`${G('راهن','راهني')} على ${sel.x}-${sel.y}`,`Bet on ${sel.x}-${sel.y}`)}<small>${ae(`لو ${G('كسبت','كسبتي')}: +${pot(so)}`,`If you win: +${pot(so)}`)}</small></button></div>
+        ${pot(Math.max(O[sel.w],so))>room?`<div class="tw-sm">${ae(`المبلغ ده أكبر من اللي ${cf2Nm(sel.npc)} يقدر يدفعه النهارده: ${G('قلّل','قلّلي')} الرهان أو ${G('راهن','راهني')} حد تاني.`,`That's more than ${cf2Nm(sel.npc)} can pay today: bet less or bet someone else.`)}</div>`:''}`}
+        ${bets}<button class="btn cf-go" id="krGo">📺 ${F.bets.length?ae(G('ابدأ الماتش','ابدأي الماتش'),'Start the match'):ae(G('اتفرج على الماتش','اتفرجي على الماتش'),'Watch the match')}</button><div class="tw-sm">${ae('بعد ما الماتش يبدأ مفيش رهان.','No bets once the match starts.')}</div>`}
+    else if(F.st==='live')body=`${krTV(F,fx)}${F.bets.length?cfSayHTML(cf2Nm(F.bets[0].npc)):''}${bets}<button class="btn ghost" id="krFast">${KR.fast?ae('▶ سرعة عادية','▶ Normal speed'):ae('⏩ سرّع الماتش','⏩ Speed up')}</button>`;
+    else{const net=F.net|0;body=`${krTV(F,fx)}<div class="card cf-res ${net>0?'w':net<0?'l':''}"><span class="cf-big">${F.g[0]} - ${F.g[1]}</span><div>${F.g[0]===F.g[1]?ae('تعادل','Draw'):ae(`${KR_TEAMS[F.g[0]>F.g[1]?F.h:F.a].n} كسب`,`${KR_TEAMS[F.g[0]>F.g[1]?F.h:F.a].n} won`)}</div>
+      ${F.bets.length?`<span class="cf-big" style="color:${net>=0?'#ffd36a':'#ff8a6a'}">${net>0?'+'+net:net<0?'−'+(-net):'±0'} ${ae('جنيه','coins')}</span>`:''}</div>${bets}<div class="tw-sm">${ae('الماتش الجاي بكرة، لو فيه.','The next match is tomorrow, if there is one.')}</div>`}}
+  view.innerHTML=`${twTop(ae('تلفزيون القهوة','Café TV'))}<div class="tw cf">${T(body)}</div>`;
   const bk=$('#back');if(bk)bk.onclick=()=>{krStop();twGo('cafe')};const on=(q,fn)=>view.querySelectorAll(q).forEach(b=>b.onclick=()=>fn(b));
   on('[data-fw]',b=>{sel.w=b.dataset.fw;twRender()});on('[data-fs]',b=>{sel.s=+b.dataset.fs;twRender()});on('[data-fn]',b=>{sel.npc=b.dataset.fn;twRender()});
   on('[data-fx]',b=>{sel.x=Math.max(0,Math.min(6,sel.x+ +b.dataset.fx));twRender()});on('[data-fy]',b=>{sel.y=Math.max(0,Math.min(6,sel.y+ +b.dataset.fy));twRender()});
@@ -27222,15 +27236,15 @@ SCREENS.cafetv=function(){const h=S.hero;if(!h){S.screen='title';return render()
 /* the café: a card for today's match */
 {const c0=SCREENS.cafe;SCREENS.cafe=function(){const r=c0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='cafe'||$('#krOpen'))return r;const F=krToday(h);if(!F.on)return r;
     const anchor=$('#cfOpen')||view.querySelector('.kf-bench');if(!anchor)return r;
-    anchor.insertAdjacentHTML('afterend',`<button class="card cf-entry kr-entry" id="krOpen"><b>📺 ماتش النهارده: ${krVs(F)}</b><small>${F.st==='pre'?(F.bets.length?`${G('راهنت','راهنتي')}: ${G('ابدأ','ابدأي')} الماتش`:`${G('اتفرج','اتفرجي')} أو ${G('راهن','راهني')} القاعدين`):F.st==='live'?'الماتش شغال دلوقتي':`خلص ${F.g[0]} - ${F.g[1]}`}</small></button>`);
+    anchor.insertAdjacentHTML('afterend',`<button class="card cf-entry kr-entry" id="krOpen"><b>📺 ${ae('ماتش النهارده','Today\'s match')}: ${krVs(F)}</b><small>${F.st==='pre'?(F.bets.length?ae(`${G('راهنت','راهنتي')}: ${G('ابدأ','ابدأي')} الماتش`,'You bet: start the match'):ae(`${G('اتفرج','اتفرجي')} أو ${G('راهن','راهني')} القاعدين`,'Watch, or bet the regulars')):F.st==='live'?ae('الماتش شغال دلوقتي','The match is on now'):ae(`خلص ${F.g[0]} - ${F.g[1]}`,`Ended ${F.g[0]} - ${F.g[1]}`)}</small></button>`);
     $('#krOpen').onclick=()=>twGo('cafetv')}catch(e){console.warn(e)}return r}}
 {const c0=SCREENS.cafe;SCREENS.cafe=function(){const r=c0.apply(this,arguments);try{const h=S.hero,C=h&&h.cafe,N=C&&C.krNote;if(N&&S.screen==='cafe'){C.krNote=null;saveHero();
-    toast(`الماتش اللي فات ${N.vs} خلص ${N.g[0]}-${N.g[1]}: ${N.net>0?`${G('كسبت','كسبتي')} ${N.net} جنيه`:N.net<0?`راحوا ${-N.net} جنيه`:'لا كسب ولا خسارة'}`)}}catch(e){}return r}}
+    toast(ae(`الماتش اللي فات ${N.vs} خلص ${N.g[0]}-${N.g[1]}: ${N.net>0?`${G('كسبت','كسبتي')} ${N.net} جنيه`:N.net<0?`راحوا ${-N.net} جنيه`:'لا كسب ولا خسارة'}`,`The last match ended ${N.g[0]}-${N.g[1]}: ${N.net>0?`you won ${N.net} coins`:N.net<0?`you lost ${-N.net} coins`:'no win, no loss'}`))}}catch(e){}return r}}
 Object.assign(SFX,{
   krWhistle:W((t,end)=>{const n=end?3:1;for(let i=0;i<n;i++){const g=eg(t+i*.32,.01,.22,.26,MIX.sfx);os('sine',2900,t+i*.32,.26,g,2700);const g2=eg(t+i*.32,.01,.08,.26,MIX.sfx);os('square',2950,t+i*.32,.26,g2)}}),
   krGoal:W(t=>{nz(t,1.6,900,.35,MIX.sfx,{q:.4,f2:1400,a:.25});nz(t+.1,1.2,2400,.15,MIX.sfx,{q:.5,a:.2});[392,494,587,784].forEach((f,i)=>{const g=eg(t+.2+i*.12,.01,.14,.3,MIX.sfx);os('sawtooth',f,t+.2+i*.12,.3,g)})}),
   krOoh:W(t=>{nz(t,.7,700,.14,MIX.sfx,{q:.5,f2:420,a:.15})})});
-Object.assign(CF_SAY,{krGood:['جوووول! بس مش لصالحي','ماشي.. لسه بدري'],krBad:['جوووول! الفلوس دي بتاعتي','شفت؟ قلتلك']});
+Object.assign(CF_SAY,{krGood:['جوووول! بس مش لصالحي','ماشي.. لسه بدري'],krBad:['جوووول! الفلوس دي بتاعتي','شفت؟ قلتلك']});Object.assign(CF_SAY_EN,{krGood:['Goal! But not for me','Fine… still early'],krBad:['Goal! That money is mine','See? Told you']});
 {const st=document.createElement('style');st.textContent=`
 .kr-tv{background:#111;border:6px solid #2a2a2a;border-radius:14px;padding:6px;box-shadow:0 0 0 2px #444,0 6px 14px #000a;margin:6px 0}.kr-tv.goal{animation:cfShake .35s}
 .kr-sb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;color:#fff;font-size:13px;text-align:center;direction:ltr}.kr-sb b{direction:ltr}.kr-sb b{font-size:22px;font-weight:900;color:#ffd36a;min-width:64px}
@@ -27480,21 +27494,21 @@ Object.assign(CF_GAMES.chess,{view:chView,bind:chBind});
 @media (prefers-reduced-motion:reduce){.ch-p.mv,.ch-p.dead,.ch-b.hit,.ch-dot{animation:none}.ch-p.dead{display:none}}`;document.head.appendChild(st)}
 
 /* ----- the screen: pick a game, a player and a stake; play; the result ----- */
-const CF_NPC_TXT={get sameh(){return `سامح لسه بيتعلم: سهل ${G('تكسبه','تكسبيه')}، وجيبه صغير`},mansour:'منصور لعيب كويس',hamdy:'أبو حمدي معلّم قديم: صعب، وجيبه كبير',soliman:'الحاج سليمان تاجر كبير: لعبه قوي، وجيبه يشيل الرهانات الكبيرة'};
+const CF_NPC_TXT={get sameh(){return ae(`سامح لسه بيتعلم: سهل ${G('تكسبه','تكسبيه')}، وجيبه صغير`,'Sameh is still learning: easy to beat, and his pocket is small')},get mansour(){return ae('منصور لعيب كويس','Mansour is a good player')},get hamdy(){return ae('أبو حمدي معلّم قديم: صعب، وجيبه كبير','Abu Hamdy is an old master: hard, with a deep pocket')},get soliman(){return ae('الحاج سليمان تاجر كبير: لعبه قوي، وجيبه يشيل الرهانات الكبيرة','Hajj Soliman is a big merchant: he plays strong, and his pocket takes big bets')}};
 function cfLobby(h){const C=cfFix(h),sel=CF.sel,night=cfNightOn(h);if(!CF_NPC[sel.npc])sel.npc='mansour';if(!CF_GAMES[sel.g])sel.g='tawla';
   if(sel.s&&!cfCanBet(h,sel.npc,sel.s))sel.s=0;const st=g=>C.st[g]||{w:0,l:0};
   const card=(attr,on,title,sub)=>`<button class="cf-opt${on?' on':''}" ${attr}><b>${title}</b>${sub?`<small>${sub}</small>`:''}</button>`;
-  return `<div class="tw-lbl">${G('اختار','اختاري')} اللعبة</div><div class="cf-row">${Object.keys(CF_GAMES).map(g=>card(`data-cfg="${g}"`,sel.g===g,CF_GAMES[g].n,`${G('كسبت','كسبتي')} ${st(g).w} · ${G('خسرت','خسرتي')} ${st(g).l}`)).join('')}</div>
-    <button class="btn ghost small" id="cfRules">${CF.rules?'خبّي القواعد':'القواعد'}</button>${CF.rules?`<div class="card cf-rules">${T(CF_GAMES[sel.g].rules)}</div>`:''}
+  return `<div class="tw-lbl">${ae(`${G('اختار','اختاري')} اللعبة`,'Pick a game')}</div><div class="cf-row">${Object.keys(CF_GAMES).map(g=>card(`data-cfg="${g}"`,sel.g===g,CF_GAMES[g].n,ae(`${G('كسبت','كسبتي')} ${st(g).w} · ${G('خسرت','خسرتي')} ${st(g).l}`,`Won ${st(g).w} · lost ${st(g).l}`))).join('')}</div>
+    <button class="btn ghost small" id="cfRules">${CF.rules?ae('خبّي القواعد','Hide the rules'):ae('القواعد','Rules')}</button>${CF.rules?`<div class="card cf-rules">${T(CF_GAMES[sel.g].rules)}</div>`:''}
     ${(CF_GAMES[sel.g].opts||[]).map(x=>{const v=cfOpts(h,sel.g)[x.k];return `<div class="tw-lbl">${x.n}</div><div class="cf-row">${card(`data-cfo="${x.k}:1"`,v===1,x.on,'')}${card(`data-cfo="${x.k}:0"`,v===0,x.off,'')}</div>`}).join('')}
-    <div class="tw-lbl">${G('هتلعب','هتلعبي')} مع مين؟</div><div class="cf-row">${Object.keys(CF_NPC).map(n=>card(`data-cfn="${n}"`,sel.npc===n,`<span class="cf-pp">${portrait(KF_PPL[n].look,'cfp'+n)}</span>${KF_PPL[n].n}`,CF_NPC[n].how)).join('')}</div>
+    <div class="tw-lbl">${ae(`${G('هتلعب','هتلعبي')} مع مين؟`,'Who do you play?')}</div><div class="cf-row">${Object.keys(CF_NPC).map(n=>card(`data-cfn="${n}"`,sel.npc===n,`<span class="cf-pp">${portrait(KF_PPL[n].look,'cfp'+n)}</span>${cf2Nm(n)}`,EN?CF_HOW_EN[n]:CF_NPC[n].how)).join('')}</div>
     <div class="tw-sm">${CF_NPC_TXT[sel.npc]}.</div>
-    ${CAFE_BETS?`<div class="tw-lbl">على إيه؟ <small>معاه ${cfFree(h,sel.npc)} جنيه لحد بكرة</small></div>
-    <div class="cf-row">${card('data-cfs="0"',!sel.s,'ودي','من غير فلوس')}${CF_STAKES.map(s=>card(`data-cfs="${s}" ${cfCanBet(h,sel.npc,s)?'':'disabled'}`,sel.s===s,`${s} جنيه`,`لو ${G('كسبت','كسبتي')}: +${s-cfFee(s)}`)).join('')}</div>
-    ${night?`<div class="tw-miss">${G('عندك','عندك')} ليلة متسابة: اللعب ودي بس لحد ما الليلة تخلص.</div>`:''}
-    ${sel.s?`<div class="card cf-rules">لو ${G('كسبت','كسبتي')} ${G('بتاخد','بتاخدي')} الـ${sel.s} بتوعك و${sel.s-cfFee(sel.s)} من ${KF_PPL[sel.npc].n} (عم صابر بياخد ${cfFee(sel.s)} حق القهوة). لو ${G('خسرت','خسرتي')} أو ${G('انسحبت','انسحبتي')} الـ${sel.s} بيروحوا. ${G('أقصى خسارة','أقصى خسارة')}: ${sel.s} جنيه.</div>`:''}`:''}
-    <button class="btn" id="cfGo">${sel.s?`${G('العب','العبي')} على ${sel.s} جنيه`:G('العب ودي','العبي ودي')}</button>
-    ${C.log.length?`<div class="tw-lbl">الدفتر</div><div class="card bk-log">${C.log.slice().reverse().slice(0,8).map(x=>`<div class="bkl"><span>#${x.id} ${T(CF_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='win'||x.k==='back'?'pos':'neg'}">${x.k==='win'||x.k==='back'?'+':'−'}${x.a}</b></div>`).join('')}</div>`:''}`}
+    ${CAFE_BETS?`<div class="tw-lbl">${ae('على إيه؟','For what?')} <small>${ae(`معاه ${cfFree(h,sel.npc)} جنيه لحد بكرة`,`He has ${cfFree(h,sel.npc)} coins until tomorrow`)}</small></div>
+    <div class="cf-row">${card('data-cfs="0"',!sel.s,ae('ودي','Friendly'),ae('من غير فلوس','No money'))}${CF_STAKES.map(s=>card(`data-cfs="${s}" ${cfCanBet(h,sel.npc,s)?'':'disabled'}`,sel.s===s,`${s} ${ae('جنيه','coins')}`,ae(`لو ${G('كسبت','كسبتي')}: +${s-cfFee(s)}`,`If you win: +${s-cfFee(s)}`))).join('')}</div>
+    ${night?`<div class="tw-miss">${ae('عندك ليلة متسابة: اللعب ودي بس لحد ما الليلة تخلص.','You have a saved night: friendly games only until it ends.')}</div>`:''}
+    ${sel.s?`<div class="card cf-rules">${ae(`لو ${G('كسبت','كسبتي')} ${G('بتاخد','بتاخدي')} الـ${sel.s} بتوعك و${sel.s-cfFee(sel.s)} من ${KF_PPL[sel.npc].n} (عم صابر بياخد ${cfFee(sel.s)} حق القهوة). لو ${G('خسرت','خسرتي')} أو ${G('انسحبت','انسحبتي')} الـ${sel.s} بيروحوا. أقصى خسارة: ${sel.s} جنيه.`,`If you win you get your ${sel.s} back and ${sel.s-cfFee(sel.s)} from ${cf2Nm(sel.npc)} (Uncle Saber takes ${cfFee(sel.s)} as the house cut). If you lose or resign, the ${sel.s} is gone. Most you can lose: ${sel.s} coins.`)}</div>`:''}`:''}
+    <button class="btn" id="cfGo">${sel.s?ae(`${G('العب','العبي')} على ${sel.s} جنيه`,`Play for ${sel.s} coins`):ae(G('العب ودي','العبي ودي'),'Play friendly')}</button>
+    ${C.log.length?`<div class="tw-lbl">${ae('الدفتر','The book')}</div><div class="card bk-log">${C.log.slice().reverse().slice(0,8).map(x=>`<div class="bkl"><span>#${x.id} ${EN?({back:'Stake back',bet:'Bet',win:'Won',lose:'Lost',quit:'Resigned'})[x.k]||x.k:T(CF_LOGN[x.k]||x.k)}${x.t?` <small>${esc(x.t)}</small>`:''}</span><b class="${x.k==='win'||x.k==='back'?'pos':'neg'}">${x.k==='win'||x.k==='back'?'+':'−'}${x.a}</b></div>`).join('')}</div>`:''}`}
 const CF_HOW_EN={sameh:'Still learning',mansour:'A good player',hamdy:'An old master',soliman:'A big merchant who plays big'};   /* 6.16: the game's header and result in English too */
 function cfGameHTML(h,cur){const nm=EN?cf2Nm(cur.npc):KF_PPL[cur.npc].n;
   return `<div class="cf-hd"><span class="cf-pp">${portrait(KF_PPL[cur.npc].look,'cfpg')}</span><div><b>${CF_GAMES[cur.g].n} ${ae('مع','vs')} ${nm}</b><small>${cur.stake?ae(`على ${cur.stake} جنيه`,`For ${cur.stake} coins`):ae('ودي','Friendly')} · ${EN?CF_HOW_EN[cur.npc]:CF_NPC[cur.npc].how}</small></div>
@@ -27502,8 +27516,8 @@ function cfGameHTML(h,cur){const nm=EN?cf2Nm(cur.npc):KF_PPL[cur.npc].n;
     ${cfSayHTML(nm)}${CF_GAMES[cur.g].view(h,cur)}`}
 SCREENS.cafeg=function(){const h=S.hero;if(!h){S.screen='title';return render()}const C=cfFix(h),cur=C.cur;
   let body;if(cur)body=cfGameHTML(h,cur);
-  else if(CF.res){const R=CF.res,nm=EN?cf2Nm(R.npc):KF_PPL[R.npc].n,C=cfFix(h),st=C.st[R.g]||{w:0,l:0};body=`<div class="card cf-res ${R.win?'w':R.draw?'':'l'}"><span class="cf-big">${R.draw?ae('تعادل','Draw'):R.win?ae(G('كسبت!','كسبتي!'),'You won!'):R.why==='quit'?ae(G('انسحبت','انسحبتي'),'You resigned'):ae(`${nm} كسب`,`${nm} won`)}</span>${R.x&&R.x.why?`<div>${R.x.why}</div>`:R.draw?`<div>${G('انت','انتي')} وهو اتحبستوا: محدش يقدر يتحرك.</div>`:''}
-      ${R.x&&R.x.mars?`<span class="cf-big" style="color:${R.win?'#ffd36a':'#ff8a6a'}">${R.win?'ومارس كمان!':`${nm} ${G('عملك','عملكي')} مارس`}</span>`:''}${R.s&&R.win?`<span class="cf-big">+${R.pay-R.s} ${ae('جنيه','coins')}</span>`:''}
+  else if(CF.res){const R=CF.res,nm=EN?cf2Nm(R.npc):KF_PPL[R.npc].n,C=cfFix(h),st=C.st[R.g]||{w:0,l:0};body=`<div class="card cf-res ${R.win?'w':R.draw?'':'l'}"><span class="cf-big">${R.draw?ae('تعادل','Draw'):R.win?ae(G('كسبت!','كسبتي!'),'You won!'):R.why==='quit'?ae(G('انسحبت','انسحبتي'),'You resigned'):ae(`${nm} كسب`,`${nm} won`)}</span>${R.x&&R.x.why?`<div>${R.x.why}</div>`:R.draw?`<div>${ae(`${G('انت','انتي')} وهو اتحبستوا: محدش يقدر يتحرك.`,'You are both pinned: nobody can move.')}</div>`:''}
+      ${R.x&&R.x.mars?`<span class="cf-big" style="color:${R.win?'#ffd36a':'#ff8a6a'}">${R.win?ae('ومارس كمان!','And a gammon too!'):ae(`${nm} ${G('عملك','عملكي')} مارس`,`${nm} gammoned you`)}</span>`:''}${R.s&&R.win?`<span class="cf-big">+${R.pay-R.s} ${ae('جنيه','coins')}</span>`:''}
       <div>${CF_GAMES[R.g].n} ${ae('مع','vs')} ${nm}${R.s?(R.draw?ae(` · الـ${R.s} ${G('رجعولك','رجعولكي')}`,` · your ${R.s} coins came back`):R.win?ae(` · عم صابر أخد ${R.fee} حق القهوة`,` · Uncle Saber took ${R.fee} as the house cut`):ae(` · راحوا ${R.s} جنيه`,` · you lost ${R.s} coins`)):ae(' · ودي',' · friendly')}</div>
       ${R.win&&R.run>=2?`<span class="cf-streak">🔥 ${ae(`${R.run} مكسب ورا بعض`,`${R.run} wins in a row`)}</span>`:''}
       <div class="tw-sm">${EN?`${CF_GAMES[R.g].n}: won ${st.w} · lost ${st.l}${st.d?` · drawn ${st.d}`:''}${C.best>=2?` · best streak ${C.best}`:''}`:`في ${CF_GAMES[R.g].n}: ${G('كسبت','كسبتي')} ${st.w} · ${G('خسرت','خسرتي')} ${st.l}${st.d?` · تعادل ${st.d}`:''}${C.best>=2?` · أطول سلسلة ${C.best}`:''}`}</div></div>
@@ -27521,7 +27535,7 @@ SCREENS.cafeg=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 /* the café: a card that leads to the games (or back to a game in progress) */
 {const c0=SCREENS.cafe;SCREENS.cafe=function(){const r=c0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='cafe'||$('#cfOpen'))return r;const cur=cfFix(h).cur;
     const box=view.querySelector('.kf-bench');if(!box)return r;
-    box.insertAdjacentHTML('afterend',`<button class="card cf-entry" id="cfOpen"><b>${cur?`${G('كمّل','كمّلي')} ${CF_GAMES[cur.g].n} مع ${KF_PPL[cur.npc].n}`:'طاولة ودومينو وباصرة وسيجة وشطرنج'}</b><small>${cur?(cur.stake?`على ${cur.stake} جنيه`:'ودي'):`${G('العب','العبي')} مع ناس القهوة، ودي أو على فلوس`}</small></button>`);
+    box.insertAdjacentHTML('afterend',`<button class="card cf-entry" id="cfOpen"><b>${cur?ae(`${G('كمّل','كمّلي')} ${CF_GAMES[cur.g].n} مع ${KF_PPL[cur.npc].n}`,`Go on: ${CF_GAMES[cur.g].n} vs ${cf2Nm(cur.npc)}`):ae('طاولة ودومينو وباصرة وسيجة وشطرنج','Backgammon, dominoes, basra, siga and chess')}</b><small>${cur?(cur.stake?ae(`على ${cur.stake} جنيه`,`For ${cur.stake} coins`):ae('ودي','Friendly')):ae(`${G('العب','العبي')} مع ناس القهوة، ودي أو على فلوس`,'Play the café regulars, friendly or for money')}</small></button>`);
     $('#cfOpen').onclick=()=>twGo('cafeg')}catch(e){console.warn(e)}return r}}
 {const st=document.createElement('style');st.textContent=`
 .cf .cf-row{display:flex;flex-wrap:wrap;gap:6px}.cf-opt{flex:1 1 30%;min-width:96px;min-height:48px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:6px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit}
@@ -28417,11 +28431,14 @@ function jrToday(h){const J=jrFix(h),d=h.nDone|0;if(J.today&&J.today.d===d)retur
   const R=jrRnd(h,d),pk=a=>a[Math.floor(R()*a.length)];
   const head=JR_HEAD.indexOf(pk(JR_HEAD)),wx=JR_WX.indexOf(pk(JR_WX)),ad=JR_ADS.indexOf(pk(JR_ADS));
   const hs=jrHints(h),fresh=hs.filter(x=>!J.hs.includes(x.id)),hp=(fresh.length?fresh:hs);let hint=null;if(hp.length&&R()<.45)hint=pk(hp).id;
-  const left=Object.keys(JR_REC).filter(k=>!J.rec[k]&&ITEMS[k]);let rec=null;const rr=R();if(left.length&&d-J.lr>=2&&(rr<.3||d-J.lr>=4)){rec=pk(left);J.lr=d}
+  const left=Object.keys(JR_REC).filter(k=>!J.rec[k]&&jrIt(k));let rec=null;const rr=R();if(left.length&&d-J.lr>=2&&(rr<.3||d-J.lr>=4)){rec=pk(left);J.lr=d}
   J.today={d,head,wx,ad,hint,rec,paid:0};saveHero();return J.today}
+/* 6.70: a paper recipe can be a weapon (JR_REC[k].gear, GEAR[k]); it then shows in the smith's own list once saved (p208) */
+function jrIt(k){if(JR_REC[k]&&JR_REC[k].gear){const g=GEAR[k];return g?{name:g.n,info:()=>g.info||''}:null}return ITEMS[k]}
+function jrIc(k,w){return JR_REC[k]&&JR_REC[k].gear?twGear(k,w):twFood(k,w)}
 const jrPlace=at=>JR_AT[at]?JR_AT[at][0]:'';
-function jrRecCard(h,k,d,old){const r=JR_REC[k],it=ITEMS[k],got=jrKnows(h,k),lv=lifeLvl(h,r.at)>=r.lv;
-  return `<div class="card jr-rec" id="jrRec"><div class="jr-k">📜 ${old?'وصفة من العدد ده':'وصفة النهارده'}</div><div class="jr-rh"><span class="ic">${twFood(k,44)}</span><div><b>${it.name}</b><small>من ${r.who}: «${r.t}»</small></div></div>
+function jrRecCard(h,k,d,old){const r=JR_REC[k],it=jrIt(k),got=jrKnows(h,k),lv=lifeLvl(h,r.at)>=r.lv;
+  return `<div class="card jr-rec" id="jrRec"><div class="jr-k">📜 ${old?'وصفة من العدد ده':'وصفة النهارده'}</div><div class="jr-rh"><span class="ic">${jrIc(k,44)}</span><div><b>${it.name}</b><small>من ${r.who}: «${r.t}»</small></div></div>
     <div class="tw-chs">${Object.keys(r.need).map(m=>`<span class="tw-nd ${(h.res[m]||0)>=r.need[m]?'ok':'no'}">${twMat(m,18)}${r.need[m]>1?r.need[m]+' ':''}${resN(m)}</span>`).join('')}</div>
     <small class="jr-at">بتتعمل عند ${jrPlace(r.at)} · ${LIFE[r.at].n} مستوى ${r.lv}${lv?'':` (${G('انت','انتي')} لسه ${lifeLvl(h,r.at)})`} · ${T(it.info())}</small>
     ${got?`<div class="jr-ok">✓ الوصفة عندك. ${G('روح','روحي')} ل${jrPlace(r.at)} ${G('واعملها','واعمليها')}.</div><button class="btn small ghost" data-jrgo="${JR_AT[r.at][1]}">${G('روح','روحي')} ل${jrPlace(r.at)}</button>`
@@ -28456,7 +28473,7 @@ SCREENS.jornal=function(){const h=S.hero;if(!h){S.screen='title';return render()
   const by=$('#jrBuy');if(by)by.onclick=()=>{if(P.paid)return;if((h.money|0)<price){toast('فلوسك مش مكفية');cls(by,'shake');try{SFX.meh()}catch(e){}return}
     h.money-=price;P.paid=1;saveHero();try{SFX.coin?SFX.coin():SFX.bell()}catch(e){}try{SFX.page()}catch(e){}render()};
   const sv=$('#jrSave');if(sv)sv.onclick=()=>{if(!P.rec||jrKnows(h,P.rec))return;jrFix(h).rec[P.rec]=d+1;saveHero();try{SFX.titlePick?SFX.titlePick():SFX.bell()}catch(e){}
-    const c=$('#jrRec');if(c){c.outerHTML=jrRecCard(h,P.rec,d,!!old);jrBind()}const bk=$('#jrBook');if(bk)bk.outerHTML=jrBookHTML(h);toast(`${G('حفظت','حفظتي')} وصفة «${ITEMS[P.rec].name}»`)};
+    const c=$('#jrRec');if(c){c.outerHTML=jrRecCard(h,P.rec,d,!!old);jrBind()}const bk=$('#jrBook');if(bk)bk.outerHTML=jrBookHTML(h);toast(`${G('حفظت','حفظتي')} وصفة «${jrIt(P.rec).name}»`)};
   view.querySelectorAll('[data-jrday]').forEach(b=>b.onclick=()=>{S.jrDay=+b.dataset.jrday;try{SFX.page()}catch(e){}render();view.scrollTop=0});
   jrBind();if(first&&P.paid)try{SFX.page()}catch(e){}};
 /* leaving the paper always brings you back to today's issue next time */
@@ -28468,7 +28485,7 @@ function jrOldHTML(h){const J=jrFix(h),A=J.ar.filter(x=>x&&JR_HEAD[x.head]);
 function jrBind(){view.querySelectorAll('[data-jrgo]').forEach(b=>b.onclick=()=>{try{SFX.bell()}catch(e){}twGo(b.dataset.jrgo)})}
 /* the recipes you saved, under the paper */
 function jrBookHTML(h){const ks=Object.keys(JR_REC).filter(k=>jrKnows(h,k)),n=Object.keys(JR_REC).length;
-  return `<div id="jrBook"><div class="tw-lbl">وصفاتك من الجرنال <small>${ks.length} من ${n}</small></div><div class="card">${ks.length?ks.map(k=>`<div class="jr-bk">${twFood(k,26)}<b>${ITEMS[k].name}</b><small>عند ${jrPlace(JR_REC[k].at)}</small></div>`).join('')
+  return `<div id="jrBook"><div class="tw-lbl">وصفاتك من الجرنال <small>${ks.length} من ${n}</small></div><div class="card">${ks.length?ks.map(k=>`<div class="jr-bk">${jrIc(k,26)}<b>${jrIt(k).name}</b><small>عند ${jrPlace(JR_REC[k].at)}</small></div>`).join('')
     :`<span class="tw-sm">لسه ما ${G('حفظتش','حفظتيش')} ولا وصفة. الوصفات بتنزل في الجرنال كل كام يوم.</span>`}</div></div>`}
 
 /* ---------- making a saved recipe ---------- */
@@ -28478,7 +28495,7 @@ function jrRow(h,k){const r=JR_REC[k],it=ITEMS[k],lock=lifeLvl(h,r.at)<r.lv,miss
   return `<div class="tw-row" style="--rc:${twRc(0)};flex-wrap:wrap"><div class="ic">${twFood(k,40)}</div><div class="tx"><b>${it.name} <span class="jr-tag">من الجرنال</span></b><small>${T(it.info())}</small><div class="tw-chs">${nd}</div></div>
     ${lock?`<button class="tw-buy" disabled style="opacity:.7;border-style:dashed;color:#f2c77a;border-color:var(--line)">${TW_LOCK}<small style="color:#f2c77a">${LIFE[r.at].n} مستوى ${r.lv}</small></button>`:`<button class="tw-buy" data-jr="${k}" ${miss.length||full?'disabled':''}>${G('اعمل','اعملي')}</button>`}
     ${note?`<div style="flex-basis:100%">${note}</div>`:''}</div>`}
-function jrSecHTML(h,at){const ks=Object.keys(JR_REC).filter(k=>JR_REC[k].at===at),own=ks.filter(k=>jrKnows(h,k));if(!ks.length)return '';
+function jrSecHTML(h,at){const ks=Object.keys(JR_REC).filter(k=>JR_REC[k].at===at&&!JR_REC[k].gear),own=ks.filter(k=>jrKnows(h,k));if(!ks.length)return '';
   return `<div class="tw-lbl" data-section="jr">وصفات من الجرنال <small>${own.length} من ${ks.length}</small></div>${own.length?`<div class="col">${own.map(k=>jrRow(h,k)).join('')}</div>`:`<div class="tw-sm">لسه ما ${G('حفظتش','حفظتيش')} وصفة من هنا. ${G('اقرا','اقري')} جرنال البلد كل يوم.</div>`}`}
 async function jrMake(k){const h=S.hero,r=JR_REC[k];if(!h||TWN.busy||!r||!jrKnows(h,k)||lifeLvl(h,r.at)<r.lv||!hasRes(h,r.need))return;if(bagFull(h,k)){toast(bagFullTxt(h,k));return}
   const it=ITEMS[k],can=()=>jrKnows(h,k)&&hasRes(h,r.need)&&!bagFull(h,k);
@@ -49840,7 +49857,7 @@ L10N({'التحدي':'The challenge','قتال صعب مرة في اليوم':'A
 Object.assign(TM_SPOTS,{dar:['mid',1,2],balad:['work',1,2]});
 Object.assign(TM_LB,{dar:['بيتك','Your house'],balad:['حال البلد','The town'],tahadi:['التحدي','Challenge']});
 /* ---------- 6.31 D42/D37/D39 (acc1): «المنافس والذكريات» ----------
-   D42: a rival of your own, «عصام» (RV), a fighter from the next village who grows with you. From level RV_LV he comes to town every
+   D42: a rival of your own, «قناوي» (RV), a fighter from the next village who grows with you. From level RV_LV he comes to town every
         RV_EVERY town days (a card on the town screen); meeting him is a fight against him at your level, a little stronger each
         time he lost (RV_GROW). He speaks first, from the record between you (RV_SAY). Win: money and the record goes up; lose: a
         little money (RV_LOSE of what you carry, at most 60) and you are back in town with a third of your health. h.rv = {w, l, d day
@@ -49850,8 +49867,8 @@ Object.assign(TM_LB,{dar:['بيتك','Your house'],balad:['حال البلد','T
         change, the rival, a last stand. Hooks: gainXP, endFight, ghNamed, wxSecTake, tbGive, fall.
    D39: a field whose boss falls changes: for RG_DAYS town days after, the beasts there are calmer (hit −1) and a white flag stands
         on its pin on «الخلا»; read from h.roam.boss[zone] (the town day the field boss fell, p89). */
-const RV={n:'عصام',cls:'مصارع',art:'q_hunter'},RV_LV=3,RV_EVERY=3,RV_GROW=.12,RV_LOSE=.05,JR_MAX=60,RG_DAYS=3;
-const RV_SAY={first:'أنا عصام، من الكفر اللي جنبكم. سمعت إن {فيه واحد هنا بيقولوا عليه شاطر|فيه واحدة هنا بيقولوا عليها شاطرة}. ورّيني.',
+const RV={n:'قناوي',cls:'مصارع',art:'q_hunter'},RV_LV=3,RV_EVERY=3,RV_GROW=.12,RV_LOSE=.05,JR_MAX=60,RG_DAYS=3;
+const RV_SAY={first:'أنا قناوي، من الكفر اللي جنبكم. سمعت إن {فيه واحد هنا بيقولوا عليه شاطر|فيه واحدة هنا بيقولوا عليها شاطرة}. ورّيني.',
   up:'المرة اللي فاتت كانت حظ. أنا اتمرنت من ساعتها.',down:'لسه {فاكر|فاكرة} آخر مرة؟ النهارده زيها.',even:'الحساب بينا متساوي. النهارده نشوف مين الأحسن بجد.'};
 function rvFix(h){if(!h)return {};let R=h.rv;if(!R||typeof R!=='object'||Array.isArray(R))R=h.rv={w:0,l:0,d:-99,met:-99};R.w|=0;R.l|=0;if(R.d==null)R.d=-99;if(R.met==null)R.met=-99;return R}
 const rvHere=h=>!!h&&(h.lvl|0)>=RV_LV&&((h.nDone|0)-rvFix(h).met>=RV_EVERY)&&!h.night;
@@ -50616,7 +50633,7 @@ function skpAll(){if(!app.classList.contains('af')||S.screen!=='combat')return;s
    another one you don't have (or none). A recipe card you learned from another paper is not shown again on any paper; the paper
    you learned it from still shows it, so you can read what you saved. */
 {const t0=jrToday;jrToday=function(h){const P=t0.apply(this,arguments);try{const J=jrFix(h),on=k=>J.ar.some(p=>p&&p.rec===k&&p.d!==P.d);
-  if(P&&P.rec&&!P.paid&&(jrKnows(h,P.rec)||on(P.rec))){const left=Object.keys(JR_REC).filter(k=>!jrKnows(h,k)&&ITEMS[k]&&!on(k));P.rec=left.length?left[(P.d|0)%left.length]:null;saveHero()}}catch(e){console.warn(e)}return P}}
+  if(P&&P.rec&&!P.paid&&(jrKnows(h,P.rec)||on(P.rec))){const left=Object.keys(JR_REC).filter(k=>!jrKnows(h,k)&&jrIt(k)&&!on(k));P.rec=left.length?left[(P.d|0)%left.length]:null;saveHero()}}catch(e){console.warn(e)}return P}}
 {const c0=jrRecCard;jrRecCard=function(h,k,d){try{const J=jrFix(h);if(jrKnows(h,k)&&J.rec[k]!==(d|0)+1)return ''}catch(e){}return c0.apply(this,arguments)}}
 /* 6.36 (Twister 11:48): «ضيف زرار راحه في البيت، ووضح للاعبين انه لازم ترتاح هناك». Health lost in town fights (challenge,
    rival, the mayor's request, the field) only came back on the next night. Now «بيتك» has a rest card on top: one tap fills
@@ -54326,9 +54343,9 @@ function bkBoth(h,B,a,fn){const m0=h.money,v0=B.v;a=bkInt(a);let take=0;if(a>0&&
 {const g0=bk2FdGo;bk2FdGo=function(h,B){const m=h.money;h.money=m+(B.v|0);try{return g0.apply(this,arguments)}finally{h.money=m}}}
 {const g0=bk2PlGo;bk2PlGo=function(h,B){const m=h.money;h.money=m+(B.v|0);try{return g0.apply(this,arguments)}finally{h.money=m}}}
 (function(){const s=document.createElement('style');s.textContent=`#bkFdGo:disabled,#bkPlGo:disabled{opacity:.45;filter:grayscale(.6)}`;document.head.appendChild(s)})();
-/* the rival «عصام» (p154) spoke Arabic in the English game */
-try{Object.defineProperty(RV,'n',{get:()=>EN?'Essam':'عصام',configurable:true})}catch(e){}
-const RV_SAY_EN={first:'I\'m Essam, from the next village. I heard there\'s someone good around here. Show me.',up:'Last time was luck. I\'ve trained since.',down:'Remember last time? Today will be the same.',even:'We\'re even. Today we see who\'s really better.'};
+/* the rival «قناوي» (p154) spoke Arabic in the English game */
+try{Object.defineProperty(RV,'n',{get:()=>EN?'Qenawy':'قناوي',configurable:true})}catch(e){}
+const RV_SAY_EN={first:'I\'m Qenawy, from the next village. I heard there\'s someone good around here. Show me.',up:'Last time was luck. I\'ve trained since.',down:'Remember last time? Today will be the same.',even:'We\'re even. Today we see who\'s really better.'};
 {const l0=rvLine;rvLine=function(h){if(!EN)return l0.apply(this,arguments);const R=rvFix(h);return RV_SAY_EN[!R.w&&!R.l?'first':R.w>R.l?'up':R.l>R.w?'down':'even']}}
 /* Twister 19:55 «الميني جيم بتاعه الحداد بقت بتلاج»: the screen under a mini-game (the town's walking people, glowing badges,
    drop shadows) kept animating and painting behind the full-screen overlay. While a mini-game is open the view under it is
@@ -54629,6 +54646,202 @@ const PS_OPEN={v:1};
 .vr-ch{display:flex;flex-direction:column;gap:6px}.vr-ch .btn{min-height:44px;margin:0;width:100%}
 .ps-told summary{min-height:44px;display:flex;align-items:center;gap:6px;font-weight:700;cursor:pointer}.ps-told summary small{color:var(--mute);font-weight:400}
 .ps-told ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}.ps-told li{display:flex;gap:8px;font-size:13px;line-height:1.6}.ps-told li span{flex:none}`;document.head.appendChild(s)})();
+/* ---------- 6.70 (acc1): the café in English ----------
+   The café screen, its games (طاولة، محبوسة، دومينو، باصرة، سيجة) and the match on TV were Arabic in English mode. The games'
+   own lines now pass through ae() in p70; here: the game names, rules and house rules, the teams, the players' names, and the
+   café screen's own lines (exact text nodes, L10NG / L10N). */
+const CF_EN={
+  tawla:{n:'Backgammon',rules:'Each side has 15 checkers. Roll the two dice and move your checkers by the numbers towards your home (from 24 to 1). A point with two of his checkers is closed; a point with one you hit, and it goes to the bar. A checker on the bar must come in first. When all 15 of yours are home (1 to 6) you start bearing them off. Whoever bears off all of theirs first wins; if the other hasn\'t borne off a single one yet, it\'s a gammon. Doubles are played 4 times.'},
+  mahbusa:{n:'Mahbusa',rules:'Each side\'s 15 checkers all start on their first point, and the two sides run against each other. Roll the two dice and move your checkers towards your home (from 24 to 1). No hitting here: if you land on a lone checker of his you pin it; it stays pinned and can\'t move until your checker leaves it. A point with two checkers, or with a pinning one, is closed to the other side. When all 15 of yours reach home (1 to 6), pinned ones included, you start bearing them off. First to bear off all 15 wins. Doubles are played 4 times.'},
+  domino:{get n(){return 'Dominoes'},get rules(){return `Each side takes 7 tiles and the rest is the pile. Play a tile whose number matches one of the two ends. If nothing fits you draw from the pile until something does; if the pile is empty you pass. Whoever empties their hand first takes the points left in the other hand. If the game blocks, the lighter hand takes the other hand's points. First to ${DM_GOAL} wins.`}},
+  basra:{n:'Basra',get rules(){return `A 52-card deck. Each side gets 4 cards, and 4 lie face up on the table. Play a card: it takes the same rank from the table, and number cards (ace to ten) also take any cards that add up to it (a nine takes a 5 and a 4). Queens and kings take only their own rank. The jack sweeps the whole table, and so does the seven of diamonds. Clearing the whole table with a card other than a jack is a «basra» worth 10, and a jack on a lone jack is a double basra worth 20. When the cards run out, whoever has more cards takes 30, each ace and jack is 1 point, the two of clubs 2, and the ten of diamonds 3. First to ${BS_GOAL} wins.`},
+    opts:{last:['A basra with the last card','Counts','Doesn\'t count']}},
+  siga:{n:'Siga',get rules(){return `A 5 by 5 board, 12 pieces each. First, each side places two pieces a turn on any empty square except the middle, until all pieces are down. Then each turn you move a piece one square up, down, left or right into an empty square (the first move must be into the middle). If you trap one of his pieces between two of yours in a line, you take it; stepping between two of his yourself is safe. After a take, the same piece may keep going as long as it keeps taking. Whoever is left with one piece loses. If ${SG_QUIET} moves pass with no take, whoever has more pieces wins.`},
+    opts:{mid:['The middle square','Protects its piece','Doesn\'t protect']}}};
+Object.keys(CF_EN).forEach(k=>{const g=CF_GAMES[k],E=CF_EN[k];if(!g)return;
+  ['n','rules'].forEach(f=>{const d=Object.getOwnPropertyDescriptor(g,f),ar=d&&('value' in d?()=>d.value:d.get);if(!ar)return;
+    Object.defineProperty(g,f,{configurable:true,enumerable:true,get(){return EN?E[f]:ar.call(g)}})});
+  (g.opts||[]).forEach(o=>{const t=E.opts&&E.opts[o.k];if(!t)return;const a=[o.n,o.on,o.off];['n','on','off'].forEach((f,i)=>Object.defineProperty(o,f,{configurable:true,enumerable:true,get(){return EN?t[i]:a[i]}}))})});
+const KR_EN=['Kafr Stars','Field Lads','Canal Lions','Village Eagles','Station Hawks','Steamer United','Market Men','Mountain Boys'];
+KR_TEAMS.forEach((t,i)=>{const ar=t.n;Object.defineProperty(t,'n',{configurable:true,enumerable:true,get(){return EN?KR_EN[i]||ar:ar}})});
+const KR_NAMES_EN=['Hassan','Mahmoud','Karim','Amr','Walid','Tarek','Sayed','Ibrahim','Yasser','Ashraf','Rami','Sherif','Mostafa','Adel','Hesham','Gamal'];
+L10NG({'«{اتفضل|اتفضلي}، الدكة فاضية.»':'"Come in, the bench is free."','«أهلاً {يا بطل|يا بطلة}. شاي؟»':'"Welcome, hero. Tea?"','«{اقعد|اقعدي} {ارتاح|ارتاحي}، الدنيا مش هتطير.»':'"Sit and rest, the world won\'t fly away."',
+  '{قاعد|قاعدة} على الدكة':'Sitting on the bench','المجهود ×3':'Effort ×3','مجهودك مليان':'Your effort is full','طول ما {انت قاعد|انتي قاعدة} هنا بيرجع أسرع 3 مرات':'While you sit here it comes back 3 times faster',
+  'كوباية شاي':'A glass of tea','كل كوباية زيادة في نفس الساعة بالضعف':'Each extra glass in the same hour costs double','{اشرب|اشربي}':'Drink','حلبة عم صابر':'Uncle Saber\'s fenugreek',
+  'نفَسك وصل لآخره: أقصى مجهود 40':'Your breath is as long as it gets: max effort 40','وصفة قديمة بتطوّل النفَس، عشان تنقّب وتصطاد أكتر':'An old recipe for a longer breath, so you can mine and fish more',
+  'كلام القهوة':'Café talk','{دوس|دوسي} {وتسمع|وتسمعي} غيره':'tap to hear another','مجهودك اتملى! {روح|روحي} المنجم أو الترعة':'Your effort is full! Off to the mine or the canal',
+  'مجهودك مليان. خلّي الأكل لبعدين':'Your effort is full. Keep the food for later','مجهودك اتملى!':'Your effort is full!'},);
+L10N({},[[/^اللي جاي بعد (\d+:\d+)$/,'Next in $1'],[/^(\+?\d+) مجهود على طول$/,'$1 effort right away'],
+  [/^شربتي? (كوباية|كوبايتين|\d+ كوبايات) الساعة دي · السعر يرجع 10 بعد (\d+) دقيقة$/,(m,a,b)=>`You drank ${a==='كوباية'?'one glass':a==='كوبايتين'?'two glasses':parseInt(a)+' glasses'} this hour · the price goes back to 10 in ${b} min`],
+  [/^أقصى مجهود (\+?\d+) على طول: من (\d+) لـ (\d+)$/,'Max effort $1 for good: from $2 to $3'],[/^شربتي? (\d+) من 10 · كل كوباية أغلى من اللي قبلها$/,'You drank $1 of 10 · each glass costs more than the last'],
+  [/^عم صابر: «الكوباية الجاية بـ(\d+)\. الشاي بيخلص يا (?:ابني|بنتي)\.»$/,'Uncle Saber: "The next glass is $1. Tea runs out, my child."'],[/^مجهودك اتملى \((\d+)\/(\d+)\): المنجم والترعة مستنيينك$/,'Your effort is full ($1/$2): the mine and the canal are waiting'],
+  [/^نفَسك طوّل: أقصى مجهود بقى (\d+)$/,'Your breath got longer: max effort is now $1']]);
+/* ---------- 6.70 (acc1, Twister 21:53–22:03): fixes from a phone session ----------
+   1. The dice stay where you put them: dropped on a move or a foe (or a move tapped after the roll), a copy of the dice sits
+      there until the next throw or the end of the fight (AFPIN).
+   2. «التجارب» shows what you already tried and what came of it (h.lab.t), so a mix isn't tried twice.
+   3. Your hero moves on the fight stage like the foes do: breathing, a small sway and now and then a little hop.
+   4. A thrown item (a fire bottle, a poison coat…) flies from your hand to the foe in an arc and bursts; the hero no longer
+      runs in as if hitting (AFI.k wraps useItem; skpLunge throws instead).
+   5. A foe that is knocked down («واقع») lies on the ground on the stage; it stands up when it gets up.
+   6. The paper's recipes: three weapons (JR_REC[k].gear, GEAR[k]) join the recipes; a saved one shows in the smith's own list.
+   7. «سكك مخفية» and «مشاريع البلد» never go back: every save keeps a copy of h.hpth per hero (sirdab.hpk.<id>); on loading,
+      the further one wins (stage, then what was handed in).
+   8. The tailor's scissors are drawn as scissors (blades in metal, ring handles), not as two crossed sticks. */
+/* ---- 1. the dice stay ---- */
+const AFPIN={el:null};
+function afPinAt(x,y,sm){afPinClr(true);try{const D=afDiceEl();if(!D||!D.children.length)return;const g=D.cloneNode(true);g.removeAttribute('id');g.hidden=false;
+  g.className='af-pin'+(sm?' sm':'');g.style.left=x+'px';g.style.top=y+'px';afLayer().appendChild(g);AFPIN.el=g;
+  try{g.animate([{transform:`translate(-50%,-50%) scale(${sm?.9:1.25})`},{transform:`translate(-50%,-50%) scale(${sm?.6:.82})`}],{duration:220,easing:'cubic-bezier(.3,1.5,.5,1)'})}catch(e){}}catch(e){}}
+function afPinClr(now){const g=AFPIN.el;AFPIN.el=null;if(!g)return;if(now)return g.remove();try{const a=g.animate([{opacity:1},{opacity:0}],{duration:260});a.onfinish=()=>g.remove()}catch(e){g.remove()}}
+{const t0=afThrow;afThrow=function(){if(AF.st==='wait')afPinClr();return t0.apply(this,arguments)}}
+{const d0=afDropAt;afDropAt=function(x,y){const t=d0.apply(this,arguments);AFPIN.last=t?{t,at:Date.now()}:null;return t}}
+document.addEventListener('pointerup',ev=>{try{const L=AFPIN.last;if(!L||Date.now()-L.at>600||!L.t.isConnected)return;AFPIN.last=null;
+  if(AF.st!=='rolled'&&AF.st!=='used')return;const r=L.t.getBoundingClientRect(),f=L.t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f)}catch(e){}},true);
+/* a move tapped while the dice are thrown: they go onto it */
+document.addEventListener('click',ev=>{try{if(!app.classList.contains('af')||AF.st!=='rolled'||AFPIN.el)return;const t=ev.target.closest&&ev.target.closest('.af-stage .foe,#view .act[data-a="atk"],#view .act[data-a="def"],#view .act[data-a="talk"]');
+  if(!t||t.disabled)return;const r=t.getBoundingClientRect(),f=t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f)}catch(e){}},true);
+{const d0=afDress;afDress=function(){const r=d0.apply(this,arguments);try{if(!S.combat||S.screen!=='combat')afPinClr(true)}catch(e){}return r}}
+setInterval(()=>{try{if(AFPIN.el&&(!S.combat||S.screen!=='combat'))afPinClr(true)}catch(e){}},500);
+/* ---- 2. the lab: what you tried ---- */
+{const l0=lbHTML;lbHTML=function(h){let s=l0.apply(this,arguments);try{const L=lbFix(h),T0=L.t.slice().reverse();if(!T0.length)return s;const N=TWN.lbAll?T0.length:Math.min(8,T0.length);
+  const row=key=>{const a=key.split('+');return `<div class="lb-r lb-t"><span class="lb-ri">${a.map(k=>MAT[k]?twMat(k,22):'?').join('<i>+</i>')}</span><span class="lb-rn">${a.map(k=>esc(MAT[k]?gbName(k,1):k)).join(' + ')}</span><small class="lb-no">${ae('ما طلعش حاجة','Nothing')}</small></div>`};
+  const card=`<div class="card lb" id="lbTried"><b>🧾 ${T(ae('اللي {جرّبته|جرّبتيه} قبل كده','What you already tried'))} (${T0.length})</b><small class="dim">${T(ae('دول ما طلعوش حاجة. الحلة بتقولك لو {حطيت|حطيتي} واحدة منهم تاني.','These made nothing. The pot tells you if you put one of them in again.'))}</small>
+    ${T0.slice(0,N).map(row).join('')}${T0.length>8?`<button class="mkl-more" id="lbAll">${TWN.lbAll?ae('أقل','Less'):ae(`شوف الباقي (${T0.length-8})`,`Show the rest (${T0.length-8})`)}</button>`:''}</div>`;
+  const i=s.indexOf('<div class="card lb"><b>📜');s=i>0?s.slice(0,i)+card+s.slice(i):s+card}catch(e){console.warn(e)}return s}}
+{const b0=lbBind;lbBind=function(h){const r=b0.apply(this,arguments);try{const a=$('#lbAll');if(a)a.onclick=()=>{TWN.lbAll=!TWN.lbAll;const y=window.scrollY;render();try{window.scrollTo(0,y)}catch(e){}}}catch(e){}return r}}
+/* ---- 3, 4, 5: the fight stage ---- */
+const AFI={k:null};
+{const u0=useItem;useItem=async function(k){AFI.k=k;try{return await u0.apply(this,arguments)}finally{AFI.k=null}}}
+const AFI_COL={firepot:'#ef7a3a',shadowpot:'#7a5ad8',poisoncoat:'#6bd36a',antidote:'#9fe0ff',sleeppow:'#e8d6ff',incense:'#d8c8a0'};
+function afiBottle(c){return `<svg viewBox="0 0 8 10" width="30" height="38" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="1" fill="#6b4425"/><rect x="2" y="1" width="4" height="1" fill="#0b0d1c"/><rect x="3" y="2" width="2" height="2" fill="#cfe4ff"/><rect x="1" y="4" width="6" height="5" fill="${c}"/><rect x="0" y="5" width="1" height="3" fill="#0b0d1c"/><rect x="7" y="5" width="1" height="3" fill="#0b0d1c"/><rect x="1" y="9" width="6" height="1" fill="#0b0d1c"/><rect x="2" y="5" width="1" height="2" fill="#ffffffaa"/></svg>`}
+function afiThrow(foeEl,k){try{const card=$('#meCard'),fig=card&&card.querySelector('.af-fig');if(!fig||!foeEl)return;const a=fig.getBoundingClientRect(),b=foeEl.getBoundingClientRect();
+  const x0=a.left+a.width*.6,y0=a.top+a.height*.3,x1=b.left+b.width/2,y1=b.top+b.height*.55,c=AFI_COL[String(k||'').replace(/_q\d.*$/,'')]||'#f2c14e';
+  fig.animate([{transform:'rotate(0)'},{transform:'rotate(-10deg) translateY(-4px)',offset:.35},{transform:'rotate(6deg)',offset:.6},{transform:'rotate(0)'}],{duration:380,easing:'ease-out'});
+  const el=document.createElement('div');el.className='afi-b';el.innerHTML=afiBottle(c);afLayer().appendChild(el);const H=Math.max(70,Math.abs(x1-x0)*.35);
+  const kf=[];for(let i=0;i<=10;i++){const p=i/10;kf.push({transform:`translate(${x0+(x1-x0)*p}px,${y0+(y1-y0)*p-H*4*p*(1-p)}px) rotate(${p*540}deg)`})}
+  const an=el.animate(kf,{duration:420,easing:'linear'});an.onfinish=()=>{el.remove();try{afRingFx(x1,y1,c,46,320);pop(foeEl,[c,'#fff6c8','#ffffff'],18);vib([15,25])}catch(e){}}}catch(e){}}
+{const l0=skpLunge;skpLunge=function(who,foeEl){if(AFI.k&&who==='me')return afiThrow(foeEl,AFI.k);return l0.apply(this,arguments)}}
+function afStage8(){const C=S.combat;if(!C||!app.classList.contains('af'))return;
+  view.querySelectorAll('.af-stage .foe').forEach(e=>{const f=C.foes[+e.dataset.f];const dn=!!(f&&f.hp>0&&typeof X_down==='function'&&X_down(f));e.classList.toggle('x8down',dn)});
+  const fig=view.querySelector('.af-stage #meCard .af-fig');if(fig&&!fig.dataset.x8){fig.dataset.x8=1;const w=fig.firstElementChild;if(w)w.classList.add('x8-me')}}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{afStage8()}catch(e){console.warn(e)}return r}}
+setInterval(()=>{try{if(S.screen==='combat')afStage8()}catch(e){}},400);
+/* now and then the hero shifts on the feet, like the foes */
+(function hop(){setTimeout(()=>{try{const C=S.combat,m=C&&!C.busy&&view.querySelector('.af-stage .x8-me');if(m&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))
+  m.animate([{transform:'none'},{transform:'translateX(3px) scale(1.05,.95)'},{transform:'translate(-4px,-7px) scale(.96,1.05)'},{transform:'none'}],{duration:540,easing:'ease-out',composite:'add'})}catch(e){}hop()},2200+Math.random()*2600)})();
+/* ---- 6. weapons from the paper ---- */
+Object.assign(GEAR,{
+  jr_hasan:{n:'سيف عم حسن القديم',slot:'weapon',tier:1,dmg:3,skill:'double',at:'smith',craft:{iron:3,copper:2,coal:1},cm:90,lv:3,jrw:1,info:'من وصفة في الجرنال · «ضربتين»: لو {نجحت|نجحتي} كامل، {بتضرب|بتضربي} مرة كمان'},
+  jr_darwish:{n:'سيف الدرويش',slot:'weapon',tier:2,dmg:4,skill:'cleave',at:'smith',craft:{steel:2,silver:1,coal:2},cm:150,lv:5,jrw:1,info:'من وصفة في الجرنال · «ضربة واسعة»: لو {نجحت|نجحتي} كامل، نص الضربة بيوصل لعدو تاني'},
+  jr_mamluk:{n:'سيف المماليك',slot:'weapon',tier:3,dmg:5,skill:'double',at:'smith',craft:{steel:4,gold:1,silver:1},cm:260,lv:7,jrw:1,info:'من وصفة في الجرنال · «ضربتين»: لو {نجحت|نجحتي} كامل، {بتضرب|بتضربي} مرة كمان'}});
+I18N(GEAR,{jr_hasan:{n:'Uncle Hassan\'s old sword',info:'From a paper recipe · «Two blows»: on a full success you strike once more'},
+  jr_darwish:{n:'The dervish\'s sword',info:'From a paper recipe · «Wide blow»: on a full success, half the blow reaches a second foe'},
+  jr_mamluk:{n:'The Mamluk sword',info:'From a paper recipe · «Two blows»: on a full success you strike once more'}});
+Object.assign(JR_REC,{
+  jr_hasan:{at:'smith',gear:1,need:GEAR.jr_hasan.craft,lv:3,who:'عم حسن',t:'السيف اللي عملته وأنا صبي: حديد ونحاس بيتطرقوا مع بعض لحد ما يتلحموا'},
+  jr_darwish:{at:'smith',gear:1,need:GEAR.jr_darwish.craft,lv:5,who:'الشيخ عبده',t:'سيف خفيف بيلف في الإيد زي الدرويش في الحضرة، وفيه فضة على الحرف'},
+  jr_mamluk:{at:'smith',gear:1,need:GEAR.jr_mamluk.craft,lv:7,who:'عم حسن',t:'سيف من أيام المماليك: فولاذ مطروق أربع مرات، ومقبضه دهب'}});
+L10N({'السيف اللي عملته وأنا صبي: حديد ونحاس بيتطرقوا مع بعض لحد ما يتلحموا':'The sword I made as a boy: iron and copper hammered together until they weld',
+  'سيف خفيف بيلف في الإيد زي الدرويش في الحضرة، وفيه فضة على الحرف':'A light sword that turns in the hand like a dervish, with silver on the edge',
+  'سيف من أيام المماليك: فولاذ مطروق أربع مرات، ومقبضه دهب':'A sword from the Mamluk days: steel folded four times, with a gold grip','الشيخ عبده':'Sheikh Abdo'});
+/* a paper weapon is in the smith's list only once its recipe is saved */
+{const g0=spGearOk;spGearOk=function(h,id){const g=GEAR[id];if(g&&g.jrw&&!(h&&jrKnows(h,id)))return false;return g0.apply(this,arguments)}}
+/* ---- 7. hidden paths and projects never go back ---- */
+const HPK=h=>'sirdab.hpk.'+(h&&h.id);
+function hpkMore(a,b){/* is b further than a? */const sA=x=>Object.values((x&&x.p)||{}).reduce((s,v)=>s+((v&&v.s)|0)*1000+1,0)+Object.values((x&&x.j)||{}).reduce((s,v)=>s+((v&&v.s)|0)*1000+Object.values((v&&v.g)||{}).reduce((q,n)=>q+(n|0),0)/1e4,0)+Object.keys((x&&x.seen)||{}).length*.1;return sA(b)>sA(a)}
+{const sv=saveHero;saveHero=function(){const R=sv.apply(this,arguments);try{const h=S.hero;if(h&&h.id&&h.hpth){const old=store(HPK(h));if(!old||!hpkMore(h.hpth,old))store(HPK(h),h.hpth)}}catch(e){}return R}}
+setTimeout(()=>{try{let ch=0;HEROES.filter(Boolean).forEach(h=>{if(!h.id)return;const k=store(HPK(h));if(k&&typeof k==='object'&&hpkMore(h.hpth||{},k)){h.hpth=JSON.parse(JSON.stringify(k));ch=1}});if(ch)store('sirdab.heroes',HEROES)}catch(e){console.warn(e)}},0);
+/* ---- 8. the tailor's scissors ---- */
+{const SC=['.KK.......KK','.KMK.....KMK','..KMK...KMK.','..KmMK.KMmK.','...KmMKMmK..','....KmMmK...','.....KWK....','....KHKHK...','...KHK.KHK..','..KHK...KHK.','.KHHHK.KHHHK','KHK.KHKHK.KHK','KHK.KHKHK.KHK','.KHHHK.KHHHK.','..KKK...KKK..'];
+  const HC=['R','v','B','Q'];
+  Object.keys(TOOL_CATALOG).forEach(id=>{const t=TOOL_CATALOG[id];if(t.tr!=='tailor')return;try{PXI_D[id]=P20_rc(P20_grid(16,SC),{M:'c',m:'g',W:'y',H:HC[Math.min(3,t.t|0)]});delete PXI_K[id]}catch(e){}});
+  TA.tailor={ax:6.5,ay:6.5,rot:-94,s:6.5}}
+(function(){const s=document.createElement('style');s.textContent=`
+.af-pin{position:absolute;display:flex;gap:6px;transform:translate(-50%,-50%) scale(.82);pointer-events:none;z-index:4;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}
+.af-pin .afd{width:44px;height:44px}.af-pin.sm{transform:translate(-50%,-50%) scale(.6);opacity:.92}.af-pin .fc,.af-pin .fc svg{width:100%;height:100%;display:block}
+.afi-b{position:absolute;left:0;top:0;margin:-19px 0 0 -15px;pointer-events:none;z-index:5;filter:drop-shadow(0 3px 0 rgba(0,0,0,.4))}
+#app.af .af-stage .x8-me{display:block;transform-origin:50% 100%;animation:x8Br 1.9s ease-in-out infinite,x8Sw 3.8s ease-in-out infinite}
+@keyframes x8Br{50%{transform:scale(1.04,.96)}}@keyframes x8Sw{25%{translate:3px 0}75%{translate:-3px 0}}
+#app.af .af-stage .foe.x8down .fx7-body{animation:none!important;transform:rotate(-84deg) translate(-12%,18%);transition:transform .35s cubic-bezier(.5,1.6,.5,1)}
+#app.af .af-stage .foe .fx7-body{transition:transform .35s ease-out}
+.lb-t .lb-rn{font-size:12px}.lb-t .lb-ri i{font-style:normal;opacity:.6;margin:0 2px}.lb-no{color:#f0a090;font-size:11px;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){#app.af .af-stage .x8-me{animation:none}}`;document.head.appendChild(s)})();
+
+/* 6.70 (Twister 22:12): after enhancing, the piece's card stays open so the next try is one tap away.
+   croOrg (p167) keeps the open card by its name, and the name carries the +N, so it shut after every try.
+   (Twister 22:13): an achievement earned by the try waits until the result has shown. */
+let ENH_HOLD=0,ACH_IN=0;const ENH_Q=[];
+{const b0=band;band=function(){if(ENH_HOLD&&ACH_IN){let res;const p=new Promise(r=>res=r);ENH_Q.push([arguments,res]);return p}return b0.apply(this,arguments)}}
+{const a0=ach;ach=function(){ACH_IN++;try{return a0.apply(this,arguments)}finally{ACH_IN--}}}
+function enhFlush(){if(ENH_HOLD)return;const q=ENH_Q.splice(0);q.forEach(([a,res])=>{try{const p=band.apply(null,a);p&&p.then?p.then(res):res()}catch(e){res()}})}
+function enhReopen(u,idx){const sc=S.screen,st=typeof CRO!=='undefined'&&CRO[sc];if(!st)return;
+  const b=view.querySelector(`[data-enh="${u}"]`);let it=b&&b.closest('.cro-i');
+  if(!it&&idx>=0){const all=[...view.querySelectorAll('.cro-g .cro-i')];it=all[idx]}
+  if(!it||it.classList.contains('cro-open'))return;
+  view.querySelectorAll('.cro-i.cro-open').forEach(x=>x.classList.remove('cro-open'));
+  it.classList.add('cro-open');st.open=it.dataset.cron||'';try{it.scrollIntoView({block:'nearest'})}catch(e){}}
+{const e0=qEnhBtn;qEnhBtn=async function(u){const b=view.querySelector(`[data-enh="${u}"]`),it=b&&b.closest('.cro-i');
+  const idx=it?[...view.querySelectorAll('.cro-g .cro-i')].indexOf(it):-1;ENH_HOLD++;
+  try{return await e0.apply(this,arguments)}finally{ENH_HOLD--;try{enhReopen(u,idx)}catch(e){}setTimeout(enhFlush,450)}}}
+L10N({'على العفاريت والأشباح في كل ضربة':'on afreets and ghosts, every hit','على أي وحش بيخاف من الملح في كل ضربة':'on anything that fears salt, every hit'},[]);
+/* 6.70 (Twister 22:17): the shells landed off to one side: the wardrobe's hanger bar (p180) shares the class .wd-sh */
+(function(){const s=document.createElement('style');s.textContent=`.wd-tray>.wd-sh{position:absolute;inset:0;top:0;width:auto;height:auto;margin:0;border-radius:0;background:none;border:0}
+.btn.wd-go{border:0;text-align:center;justify-content:center;min-height:54px}.btn.ghost.wd-go{border:1px solid var(--line)}`;document.head.appendChild(s)})();
+
+/* 6.70 (Twister 22:19): a broker's deal can be paid with the safe's money too: «اشتري» works when pocket + safe cover it,
+   and the missing part comes out of the safe on the tap. When the shares cap is what stops it, the card says so. */
+{const o0=brOfferHTML2;brOfferHTML2=function(h,X,o){let s=o0.apply(this,arguments);if(!o||!h)return s;try{
+  const V=(h.bank&&h.bank.v)|0,C=o.id&&X.co.find(c=>c.id===o.id),over=C&&brOwn(X,C).c+o.a>brCap(h);
+  if(h.money<o.a&&h.money+V>=o.a&&!brLocked(h)&&!over){const need=o.a-h.money;
+    s=s.replace(/(data-brd="1") disabled/,'$1').replace(/<div class="tw-sm bk2-need">[\s\S]*?<\/div>/,`<div class="tw-sm bk2-need">${ae(`${G('معاك','معاكي')} ${nf(h.money)}، والباقي ${nf(need)} هيتسحب من الخزنة`,`You have ${nf(h.money)}; the other ${nf(need)} comes from the safe`)}</div>`)}
+  else if(over&&!brLocked(h))s=s.replace(/(<div class="bk2-two">)/,`<div class="tw-miss">${ae(`مش ${G('هتقدر','هتقدري')} تحط أكتر من ${nf(brCap(h))} في الشركة دي`,`You can't put more than ${nf(brCap(h))} into this company`)}</div>$1`)}catch(e){}return s}}
+{const d0=brDeal;brDeal=function(yes){const h=S.hero;try{const X=brFix(h),o=X.of;if(yes&&o&&o.v===2&&!o.done&&bk2Live(h,o)&&!brLocked(h)&&h.money<o.a){const B=bkFix(h),need=o.a-h.money;
+  if(B.v>=need){B.v-=need;bkMove(h,need);bkLog(h,'out',need)}}}catch(e){}return d0.apply(this,arguments)}}
+
+/* 6.70 (Twister 22:22): a specialisation's damage moves never hit softer than the plain hit.
+   The moves were tuned on small numbers (die + weapon) and missed the level and the rest of the plain hit, so late in the game
+   they fell behind it. Now a move on one foe hits at least the plain hit ×1.3 (×1.15 for a 1-energy move), a move on every foe ×0.75. */
+function spPlain(h){try{const K=CLASSES[h.cls];let a=0;for(let i=0;i<8;i++)a+=K.atk.dmg();return Math.max(1,Math.round(a/8)+(h.lvl-1)+WDMG(h)+thb(h))}catch(e){return 1}}
+{const l0=spLvX;spLvX=function(h,s){const y=l0.apply(this,arguments);if(!y||!y.dmg||!h)return y;const f0=y.dmg,m=y.all?.75:(s&&s.cost<=1?1.15:1.3);
+  return Object.assign({},y,{dmg:(hh,e)=>Math.max(f0(hh,e),Math.ceil(spPlain(hh)*m))})}}
+
+/* 6.70 (Twister 22:23): the mayor's request ran far too long: half the health it had, and a foe with no weak spot gets one */
+{const g0=omGo;omGo=function(h){const r=g0.apply(this,arguments);try{const C=S.combat;if(C&&C.omq&&!C.om70){C.om70=1;
+  C.foes.forEach((f,i)=>{f.max=Math.max(1,Math.round(f.max*.55));f.hp=Math.min(f.hp,f.max);
+    if(!X_weak(f).length)f.weak=[f.spirit?'salt':['fire','iron','salt'][(String(f.art||f.name).length+i)%3]]});combat()}}catch(e){}return r}}
+
+/* 6.70 (Twister 22:24): keep hitting the same foe while others stand and it wears down: each hit in a row on it +10%, up to +50%.
+   Switching target starts over; one move that hits everyone doesn't break the row. */
+{const h0=hurtFoe;hurtFoe=function(f,d,o){try{const C=S.combat;if(C&&f&&d>0&&C.phase==='me'&&!C.inComp&&!(o&&o.fx)&&!C.tutorial&&C.foes.filter(x=>x.hp>0).length>=2){
+    const now=Date.now(),R=C.row||(C.row={id:-1,n:0,t:0});
+    if(now-R.t<350&&R.id!==f.id){/* the same move hitting another foe */}
+    else{R.n=R.id===f.id?R.n+1:1;R.id=f.id;R.t=now;
+      if(R.n>=2){const b=Math.min(.5,.1*(R.n-1));d=Math.round(d*(1+b));const el=$('#foe'+f.id);
+        if(el)setTimeout(()=>{try{floatAt(el,ae(`${FF(f,'بيضعف','بتضعف')} +${Math.round(b*100)}%`,`Wearing down +${Math.round(b*100)}%`),'#ffb36a','',14)}catch(e){}},120)}}}}catch(e){}
+  return h0.call(this,f,d,o)}}
+
+/* 6.70 (Twister 22:26): hard fights wake a weapon more often: the mayor's request 30%, an elite 15%, after the win;
+   and once in such a fight, when you are down to 40% health, a chance (half that) that it wakes right there. */
+const SOUL_HARD=C=>!C||C.tutorial?0:C.omq?.3:C.foes.some(f=>f.elite||(f.base&&f.base.elite))?.15:0;
+function soulWake(h,o,why,mid){soulGive(h,o.id,o.I,why);saveHero();
+  setTimeout(()=>{try{band(ae('سلاحك صحي!','Your weapon woke up!'),`${GEAR[o.id].n} «${o.I.en}»`,ae(`بقى فيه روح · طبعه ${SOUL_PE[o.I.pe].n[0]}`,`It has a soul · ${SOUL_PE[o.I.pe].n[1]}`),{dur:2600,sound:SFX.good})}catch(e){}},mid?300:1400)}
+{const e0=endFight;endFight=function(won){try{const C=S.combat,h=S.hero,p=SOUL_HARD(C);if(won&&h&&p&&!C.soulTry){C.soulTry=1;const o=ghWpn(h);
+  if(o&&!o.I.soul&&soulOk(o.id)&&Math.random()<p){const r=e0.apply(this,arguments);soulWake(h,o,ae('صحي بعد قتال صعب','Woke up after a hard fight'));return r}}}catch(e){}
+  return e0.apply(this,arguments)}}
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const r=h0.apply(this,arguments);try{const C=S.combat,h=S.hero,p=SOUL_HARD(C);
+  if(p&&C.phase==='me'&&!C.soulMid&&h.hp>0&&h.hp<=MXH(h)*.4){C.soulMid=1;const w=ghWpn(h);
+    if(w&&!w.I.soul&&soulOk(w.id)&&Math.random()<p/2){C.soulTry=1;const why=ae('صحي في نص قتال صعب','Woke up in the middle of a hard fight');soulWake(h,w,why,1)}}}catch(e){}return r}}
+
+/* 6.70 (Twister 22:27): a dazed foe (fx.weak, «مدوّخ») you hit may be stunned: 25%, it loses its next turn */
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const r=h0.apply(this,arguments);try{const C=S.combat;
+  if(C&&f&&f.hp>0&&d>0&&C.phase==='me'&&f.fx&&f.fx.weak&&!f.fx.skip&&!(o&&o.fx)&&!f.boss&&Math.random()<.25){fxOn(f.fx,'skip',{n:1});
+    const el=$('#foe'+f.id);if(el)setTimeout(()=>{try{floatAt(el,ae(FF(f,'اتشل!','اتشلّت!'),'Stunned!'),'#ffd36a','',18)}catch(e){}},200)}}catch(e){}return r}}
+
+/* 6.70 (Twister 22:29): what feeding a beast did was only written in the fight log, which most people keep shut: say it on screen */
+{const d0=tkDo;tkDo=async function(k){const C=S.combat,n0=C&&C.log?C.log.length:0;const r=await d0.apply(this,arguments);
+  try{if(k==='feed'&&C&&C.log&&C.log.length>n0){const L=C.log.slice(n0).map(x=>x&&x.t).filter(Boolean).slice(-2);
+    if(L.length)toast(L.map(t=>String(t).replace(/<(?!\/?b\b)[^>]*>/g,'')).join('<br>'))}}catch(e){}return r}}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
