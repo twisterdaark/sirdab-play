@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.67.1',d:'14 أكتوبر',add:['إصلاح: الوديعة والاستثمار في البنك بقوا ياخدوا من فلوس الخزنة الأول، وبعدها من اللي معاك. قبل كده لو فلوسك كلها في الخزنة الزرار ما كانش بيعمل حاجة.','إصلاح: ميني جيم الحداد كانت بتقطّع، وكمان الشاشة اللي تحت أي ميني جيم كانت بتفضل ترسم ورا. اتصلحوا، وكل الميني جيمز بقت أنعم.','أيقونة الفلوس بقت بتظهر مرة واحدة بس لما {تكسب|تكسبي} أو {تدفع|تدفعي}.','«أسعار النهارده» بقت أقسام: سمك، محاصيل الغيط، معادن، أعشاب، جلود وريش. كل قسم ليه سعره النهارده طالع أو نازل، وكل حاجة جواه بتتحرك شوية لوحدها. محاصيل الغيط بقت بتطلع وتنزل هي كمان.','التجارب: لو الحلة مليانة {اختار|اختاري} حاجة من تحت تاخد مكان الأخيرة، أو {دوس|دوسي} ✕ على أي حاجة في الحلة تطلّعها.','«عصام» بقى بيتكلم إنجليزي في اللعبة الإنجليزي.']},
 {v:'6.67',d:'14 أكتوبر',add:['«أسعار النهارده» فوق في السوق، في الشرا والبيع: كل الحاجات اللي سعرها طالع النهارده واللي نازل، حتى لو مش معاك، بالسعر القديم والجديد. اللي معاك بيبان الأول، {ودوس|ودوسي} عليه يفتحلك البيع عند الحاجة دي. «شوف الباقي» بيوريك كل النوع.','«مسابقة الصنايعية» عند الحداد والخياط والطباخ كل يومين في البلد: {ادفع|ادفعي} الرسم {والعب|والعبي} لعبة الصنعة قدام تلت أسطوات من البلد. الأول والتاني بياخدوا فلوس وسمعة. وفيه «درس عند الأسطى» مرة كل يوم بفلوس قصاد خبرة.','«سمعة الصنعة»: كل حاجة {تعملها|تعمليها} بإيدك وتطلع حلوة بتزود اسمك عند الأسطى. بعد 10 {بتبقى|بتبقي} «معروف»، وبعد 30 «مشهور»، وبعد 60 «أسطى البلد»، وكل درجة الشغل عنده بيرخص 5%.','«المقابض» عند الحداد على السلاح اللي في إيدك: الجلد بيوسّع دايرة الضربة، والكتان بيوسّع دايرة الصد، والقرن بيزود أول ضربة في كل دور 1.']},
 {v:'6.66.1',d:'14 أكتوبر',add:['إصلاح: صندوق التقاوي بقى يزرع الأرض الفاضية كمان، مش بس اللي لسه {اتحصدت|اتحصدت}. أول ما {تفتح|تفتحي} الغيط أو البلد، أي أرض فاضية بتتزرع باللي كانت زارعاه قبل كده، أو بزرعة الصندوق، أو بالزرعة اللي في أغلب الغيط. «{سيبها|سيبيها} فاضية» لسه شغالة، والتقاوي من فلوسك.']},
 {v:'6.66',d:'14 أكتوبر',add:['«التجارب» في بيتك: {حط|حطي} حاجتين أو تلاتة من خاماتك في الحلة {وقلّب|وقلّبي}. لو التركيبة صح {بتاخد|بتاخدي} اللي بتعمله وبتفضل في «اكتشافاتك» {تعملها|تعمليها} تاني بدوسة. 16 تركيبة مستخبية. اللي ما بتطلعش حاجة بتتسجل عشان ما {تضيعش|تضيعيش} خاماتك فيها تاني، ولو اتنين من التلاتة صح بيقولك «قربت».','«أسرار الشنطة»: فيه حاجات لو {شلتها|شلتيها} مع بعض في الليلة بتعمل حاجة (زي شمع ونور، أو قلة نار وسم). محدش بيقولك عليها، {بتكتشفها|بتكتشفيها} لما تحصل، وبتتسجل في «التجارب».','«السوق النهارده»: كل يوم عم رمضان عايز نوع (+40%) والسوق غرقان نوع تاني (−25%)، ونفس الكلام لكل اللعيبة. مكتوب فوق في البيع، والأسهم جنب كل حاجة.']},
@@ -54009,15 +54010,15 @@ function lbNear(a){const s=new Set(a);let best=0;LB_REC.forEach(r=>{if(r.in.leng
 function lbHTML(h){const L=lbFix(h),pot=LBX.pot,key=lbKey(pot),tried=pot.length>=2&&L.t.includes(key),known=pot.length>=2&&LB_BY[key]&&L.k[LB_BY[key].id];
   const ms=lbMats(h),found=LB_REC.filter(r=>L.k[r.id]),cbK=CB.filter(c=>cbSeen(h)[c.id]);
   return `<div class="card lb"><b>⚗️ ${ae('التجارب','Experiments')}</b><small class="dim">${T(ae('{حط|حطي} حاجتين أو تلاتة في الحلة {وقلّب|وقلّبي}. اللي يطلع حاجة بيفضل معاك.','Put two or three things in the pot and stir. What works stays with you.'))}</small>
-    <div class="lb-pot" id="lbPot">${[0,1,2].map(i=>pot[i]?`<button class="lb-in" data-lo="${i}">${twMat(pot[i],34)}<small>${esc(gbName(pot[i],1))}</small></button>`:`<span class="lb-in e"></span>`).join('<i>+</i>')}</div>
-    <div class="lb-msg">${pot.length<2?T(ae('{اختار|اختاري} من تحت.','Pick from below.')):known?ae('دي معروفة: هتطلع ','Known: makes ')+esc(lbOutN(LB_BY[key].out)):tried?T(ae('{جرّبتها|جرّبتيها} قبل كده وما طلعش حاجة.','Tried before: nothing.')):''}</div>
+    <div class="lb-pot" id="lbPot">${[0,1,2].map(i=>pot[i]?`<button class="lb-in" data-lo="${i}" aria-label="${ae('طلّعها','Take out')}"><i class="lb-x">✕</i>${twMat(pot[i],34)}<small>${esc(gbName(pot[i],1))}</small></button>`:`<span class="lb-in e"></span>`).join('<i>+</i>')}</div>
+    <div class="lb-msg">${pot.length<2?T(ae('{اختار|اختاري} من تحت.','Pick from below.')):known?ae('دي معروفة: هتطلع ','Known: makes ')+esc(lbOutN(LB_BY[key].out)):tried?T(ae('{جرّبتها|جرّبتيها} قبل كده وما طلعش حاجة. {دوس|دوسي} ✕ تطلّع حاجة، أو {اختار|اختاري} حاجة من تحت مكان الأخيرة.','Tried before: nothing. Tap ✕ to take one out, or pick another below to swap the last.')):pot.length>=3?T(ae('الحلة مليانة. {اختار|اختاري} حاجة من تحت مكان الأخيرة.','The pot is full. Pick another below to swap the last.')):''}</div>
     <button class="btn" id="lbGo" ${pot.length<2||tried||LBX.busy?'disabled':''}>${T(ae('{قلّب|قلّبي}','Stir'))}</button>
-    <div class="lb-mats">${ms.length?ms.map(k=>{const n=lbHave(h,k)-pot.filter(x=>x===k).length;return `<button class="lb-m" data-lm="${k}" ${n<1||pot.length>=3||pot.includes(k)?'disabled':''}>${twMat(k,30)}<small>${n}</small></button>`}).join(''):`<div class="dim">${ae('مفيش خامات.','No materials.')}</div>`}</div></div>
+    <div class="lb-mats">${ms.length?ms.map(k=>{const n=lbHave(h,k)-pot.filter(x=>x===k).length;return `<button class="lb-m" data-lm="${k}" ${n<1||pot.includes(k)?'disabled':''}>${twMat(k,30)}<small>${n}</small></button>`}).join(''):`<div class="dim">${ae('مفيش خامات.','No materials.')}</div>`}</div></div>
   <div class="card lb"><b>📜 ${ae('اكتشافاتك','Your finds')} (${found.length}/${LB_REC.length})</b>${found.length?found.map(r=>{const ok=r.in.every(k=>lbHave(h,k)>=1);
       return `<div class="lb-r"><span class="lb-ri">${r.in.map(k=>twMat(k,22)).join('')} → ${r.out.m?twMat(r.out.m,22):gbIcon(r.out.b,0,22)}</span><span class="lb-rn">${esc(lbOutN(r.out))}${r.out.n>1?' ×'+r.out.n:''}</span><button class="tw-buy" data-lr="${r.id}" ${ok?'':'disabled'}>${T(ae('{اعملها|اعمليها}','Make'))}</button></div>`}).join(''):`<div class="dim">${T(ae('لسه {ما اكتشفتش|ما اكتشفتيش} حاجة.','Nothing found yet.'))}</div>`}</div>
   <div class="card lb"><b>🎒 ${ae('أسرار الشنطة','Bag secrets')} (${cbK.length}/${CB.length})</b><small class="dim">${T(ae('حاجات لو {شلتها|شلتيها} مع بعض في ليلة بتعمل حاجة. بتتعرف لما تحصل.','Things carried together in a night do something. You learn them when it happens.'))}</small>
     ${CB.map(c=>cbSeen(h)[c.id]?`<div class="lb-r"><span class="lb-ri">${c.in.map(k=>gbIcon(k,0,22)).join('')}</span><span class="lb-rn"><b>${ae(c.n[0],c.n[1])}</b><small>${T(ae(c.d[0],c.d[1]))}</small></span></div>`:`<div class="lb-r dim"><span class="lb-ri">? ? ?</span><span class="lb-rn">${ae('سر لسه ما اتعرفش','A secret not found yet')}</span></div>`).join('')}</div>`}
-function lbBind(h){view.querySelectorAll('[data-lm]').forEach(b=>b.onclick=()=>{if(LBX.pot.length>=3||LBX.pot.includes(b.dataset.lm))return;LBX.pot.push(b.dataset.lm);try{SFX.tick(700)}catch(e){}render()});
+function lbBind(h){view.querySelectorAll('[data-lm]').forEach(b=>b.onclick=()=>{if(LBX.pot.includes(b.dataset.lm))return;if(LBX.pot.length>=3)LBX.pot.pop();LBX.pot.push(b.dataset.lm);try{SFX.tick(700)}catch(e){}render()});
   view.querySelectorAll('[data-lo]').forEach(b=>b.onclick=()=>{LBX.pot.splice(+b.dataset.lo,1);render()});
   const g=$('#lbGo');if(g)g.onclick=()=>lbStir(h);
   view.querySelectorAll('[data-lr]').forEach(b=>b.onclick=()=>{const r=LB_REC.find(x=>x.id===b.dataset.lr);if(!r||!r.in.every(k=>lbHave(h,k)>=1))return;r.in.forEach(k=>h.res[k]-=1);lbGive(h,r.out);
@@ -54080,7 +54081,7 @@ function mkWith(k,fn){const m=MAT[k],f=m?mkMul(k):1;if(f===1)return fn();const p
 (function(){const s=document.createElement('style');s.textContent=`
 .lb{display:flex;flex-direction:column;gap:8px}.lb-pot{display:flex;align-items:center;justify-content:center;gap:4px;min-height:84px;padding:8px;border-radius:50% / 30%;background:radial-gradient(#3b2a1a,#1a120a);border:2px solid #6b4425}
 .lb-pot i{color:var(--dim);font-style:normal}.lb-in{width:64px;min-height:64px;border-radius:12px;border:1px solid #ffffff33;background:#0006;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px}
-.lb-in.e{border-style:dashed}.lb-in small{font-size:10px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-in.e{border-style:dashed}.lb-in{position:relative}.lb-x{position:absolute;top:-6px;inset-inline-end:-6px;width:20px;height:20px;border-radius:50%;background:#b0453a;color:#fff;font-style:normal;font-size:11px;line-height:20px;text-align:center}.lb-in small{font-size:10px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-msg{text-align:center;min-height:20px;font-size:13px;color:#f3d48f}
 .lb-mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}.lb-m{min-height:52px;border-radius:10px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;gap:0}
 .lb-m small{font-size:10px}.lb-m:disabled{opacity:.35}
@@ -54217,6 +54218,69 @@ function mkListHTML(h){const M=mkToday(),ex=k=>{const now=mkWith(k,()=>satNow(h,
 .mkl-i small{font-size:11px}.mkl-i s{color:var(--dim)}.mkl-i.up small:first-of-type{color:#7fe07a}.mkl-i.dn small:first-of-type{color:#f0a090}.mkl-n{color:#f3d48f!important}
 .mkl-more{width:100%;min-height:44px;margin-top:6px;border-radius:10px;border:1px dashed #ffffff33;background:none;color:var(--dim);font:inherit;font-size:13px}
 .mkl-hl{outline:2px solid #f3d48f;outline-offset:2px;border-radius:10px}`;document.head.appendChild(s)})();
+/* ---------- 6.67.1 (acc1, Twister 19:49 «مش عارف افتح ودايع ولا استثمارات»): deposits and investments take the safe's money too ----------
+   A deposit (bkFdOpen) or a bank investment (bkPlanOpen) could only be paid from the money on you, so a player who keeps
+   their money in the safe saw «معاك … بس» and a button that did nothing. Now the safe pays first and the money on you
+   covers the rest; the preview, the button and «معاك … بس» count both. A disabled button now looks disabled. */
+function bkBoth(h,B,a,fn){const m0=h.money,v0=B.v;a=bkInt(a);let take=0;if(a>0&&a>m0&&a<=m0+v0){take=Math.min(v0,a);B.v-=take;h.money+=take}
+  const m1=h.money;fn();if(take&&h.money===m1){B.v=v0;h.money=m0}else if(take){try{bkLog(h,'out',take,ae('للوديعة/الاستثمار','for a deposit/investment'))}catch(e){}saveHero()}}
+{const f0=bkFdOpen;bkFdOpen=function(a,ti){const h=S.hero,B=bkFix(h),x=arguments;if(!h)return;bkBoth(h,B,a,()=>f0.apply(this,x))}}
+{const f0=bkPlanOpen;bkPlanOpen=function(pid,a){const h=S.hero,B=bkFix(h),x=arguments;if(!h)return;bkBoth(h,B,a,()=>f0.apply(this,x))}}
+{const g0=bk2FdGo;bk2FdGo=function(h,B){const m=h.money;h.money=m+(B.v|0);try{return g0.apply(this,arguments)}finally{h.money=m}}}
+{const g0=bk2PlGo;bk2PlGo=function(h,B){const m=h.money;h.money=m+(B.v|0);try{return g0.apply(this,arguments)}finally{h.money=m}}}
+(function(){const s=document.createElement('style');s.textContent=`#bkFdGo:disabled,#bkPlGo:disabled{opacity:.45;filter:grayscale(.6)}`;document.head.appendChild(s)})();
+/* the rival «عصام» (p154) spoke Arabic in the English game */
+try{Object.defineProperty(RV,'n',{get:()=>EN?'Essam':'عصام',configurable:true})}catch(e){}
+const RV_SAY_EN={first:'I\'m Essam, from the next village. I heard there\'s someone good around here. Show me.',up:'Last time was luck. I\'ve trained since.',down:'Remember last time? Today will be the same.',even:'We\'re even. Today we see who\'s really better.'};
+{const l0=rvLine;rvLine=function(h){if(!EN)return l0.apply(this,arguments);const R=rvFix(h);return RV_SAY_EN[!R.w&&!R.l?'first':R.w>R.l?'up':R.l>R.w?'down':'even']}}
+/* Twister 19:55 «الميني جيم بتاعه الحداد بقت بتلاج»: the screen under a mini-game (the town's walking people, glowing badges,
+   drop shadows) kept animating and painting behind the full-screen overlay. While a mini-game is open the view under it is
+   hidden and its animations paused. */
+{const sync=()=>{try{app.classList.toggle('mg-on',!!app.querySelector(':scope>.mg-ov:not(.out)'))}catch(e){}};
+  try{new MutationObserver(sync).observe(app,{childList:true});sync()}catch(e){}}
+(function(){const s=document.createElement('style');s.textContent=`#app.mg-on>#view{visibility:hidden}#app.mg-on>#view *,#app.mg-on>#view{animation-play-state:paused!important;transition:none!important}`;document.head.appendChild(s)})();
+/* The pixel filter (p55 pxF3) is worked out again for the whole scene on every frame something in it moves; the forge's
+   flickering, blurred fire made that every frame, so the smith dropped to a few frames a second on phones. Animated scenes
+   keep their blocky edges with crispEdges instead of the filter. */
+(function(){const s=document.createElement('style');s.textContent=`.mg-ov .mg-box>svg{filter:none!important;shape-rendering:crispEdges}`;document.head.appendChild(s)})();
+/* Twister 19:58 «ايقونه الفلوس تظهر مره، حاليا بتظهر مرتين»: the money pop (p172) drew a stack of two coins; one now */
+(function(){const s=document.createElement('style');s.textContent=`.mny-pop .mny-c+.mny-c{display:none}.mny-pop .mny-c{margin:0}.mny-pop b{margin-left:4px}`;document.head.appendChild(s)})();
+/* ---------- Twister 20:06: crops go up and down too, and «أسعار النهارده» is split by kind ----------
+   p198 had one kind up and one down a day, crops never moved. Now every kind (MK_G + crops) has its own move for the real day,
+   the same for everyone: the kinds take the moves MKC_F in a shuffled order (so there is always a big rise and a big drop),
+   and each thing wobbles a little around its kind (±8%, rounded to 5%). The list at the top of the market has a tab per kind
+   with its move; the tab shows that kind's things, what you carry first. */
+MK_G.push({id:'crop',n:['محاصيل الغيط','field crops'],t:k=>typeof CROPS!=='undefined'&&!!CROPS[k]});
+const MKC_F=[1.4,.75,1.2,.85,1.1,.95],MKC_IC={fish:'🐟',crop:'🌾',ore:'⛏️',herb:'🌿',hide:'🪶'};
+const mkcRnd=s=>{s=(s|0)||1;return()=>(s=(s*16807)%2147483647)/2147483647};
+const mkcHash=k=>{let x=7;for(let i=0;i<k.length;i++)x=(x*31+k.charCodeAt(i))%1000003;return x};
+function mkcDay(){const d=mkDay();if(MKC.d===d)return MKC.f;const r=mkcRnd(d*7919+13),F=MKC_F.slice();for(let i=F.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[F[i],F[j]]=[F[j],F[i]]}
+  MKC.d=d;MKC.f={};MK_G.forEach((g,i)=>MKC.f[g.id]=F[i%F.length]);return MKC.f}
+const MKC={d:null,f:{}};
+const mkcGroup=k=>{if(typeof CROPS!=='undefined'&&CROPS[k])return MK_G.find(g=>g.id==='crop');return MK_G.find(g=>g.id!=='crop'&&g.t(k))||null};
+mkMul=function(k){const g=mkcGroup(k);if(!g)return 1;const f=mkcDay()[g.id]||1,j=1+(mkcRnd(mkDay()*131+mkcHash(k))()-.5)*.16;
+  return Math.max(.6,Math.round(f*j*20)/20)};
+/* p201's list, by kind (crops included now) */
+mkListKeys=function(g){return Object.keys(MAT).filter(k=>{const m=MAT[k];return m&&m.p>0&&(g.id==='crop'?typeof CROPS!=='undefined'&&!!CROPS[k]:!(typeof CROPS!=='undefined'&&CROPS[k])&&g.t(k))})};
+const mkcPc=f=>{const p=Math.round((f-1)*100);return `<bdi dir="ltr">${p>0?`+${p}%`:p<0?`−${-p}%`:'0%'}</bdi>`};
+function mkcOrder(){const F=mkcDay();return MK_G.slice().sort((a,b)=>F[b.id]-F[a.id])}
+mkListHTML=function(h){const F=mkcDay(),G=mkcOrder();let cur=TWN.mkCat&&G.some(g=>g.id===TWN.mkCat)?TWN.mkCat:G[0].id;const g=G.find(x=>x.id===cur);
+  const fold=!!TWN.mkFold;
+  const tabs=`<div class="mkc-tabs" role="tablist">${G.map(x=>{const f=F[x.id],c=f>1?'up':f<1?'dn':'';return `<button class="mkc-t ${c}${x.id===cur?' on':''}" data-mkc="${x.id}" role="tab" aria-selected="${x.id===cur}"><span>${MKC_IC[x.id]||'📦'}</span><small>${ae(x.n[0],x.n[1])}</small><b>${f>1?'▲':f<1?'▼':'•'} ${mkcPc(f)}</b></button>`}).join('')}</div>`;
+  const A=mkListKeys(g).map(k=>{const now=mkWith(k,()=>satNow(h,k)),was=satNow(h,k),n=h.res[k]|0,f=mkMul(k);return {k,now,was,n,f}}).sort((a,b)=>(b.n>0)-(a.n>0)||b.now-a.now||a.k.localeCompare(b.k));
+  const all=!!(TWN.mkAll&&TWN.mkAll[g.id]),L=all?A:A.filter((e,j)=>e.n>0||j<8),more=A.length-L.length,f=F[g.id];
+  const head=`<div class="mkl-h ${f>1?'up':'dn'}">${f>1?ae(`عم رمضان عايز ${g.n[0]} النهارده`,`Uncle Ramadan wants ${g.n[1]} today`):ae(`السوق مليان ${g.n[0]} النهارده`,`The market is full of ${g.n[1]} today`)} <b>${mkcPc(f)}</b></div>`;
+  const items=A.length?`<div class="mkl-g">${L.map(e=>{const u=e.f>1?'up':e.f<1?'dn':'';return `<button class="mkl-i ${u}${e.n?' have':''}" data-mkl="${e.k}" ${e.n?'':'tabindex="-1"'}><span class="ic">${twMat(e.k,28)}</span><span class="tx"><b>${esc(fpEn(MAT[e.k].n))}</b><small>${e.was!==e.now?`<s>${e.was}</s> `:''}${e.now} ${ae('جنيه','coins')} <i class="mkc-p">${mkcPc(e.f)}</i></small>${e.n?`<small class="mkl-n">${ae('معاك','You have')} ×${e.n}</small>`:''}</span></button>`}).join('')}</div>
+    ${more>0?`<button class="mkl-more" data-mkm="${g.id}">${ae(`شوف الباقي (${more})`,`Show the rest (${more})`)}</button>`:all&&A.length>8?`<button class="mkl-more" data-mkm="${g.id}">${ae('أقل','Less')}</button>`:''}`:`<small class="dim">${ae('لسه مفيش حاجة من النوع ده في السوق.','Nothing of this kind in the market yet.')}</small>`;
+  return `<div class="card mkl${fold?' fold':''}" id="mkList"><button class="mkl-t" id="mkListT" aria-expanded="${!fold}">📰 ${ae('أسعار النهارده','Today\'s prices')} <span class="mkl-s">${fold?ae('افتح','Open'):ae('اقفل','Close')}</span></button>
+    ${fold?'':`<small class="mkl-sub">${ae('كل نوع ليه سعر النهارده لحد بكرة، ونفس الكلام لكل الناس. السعر بينزل شوية كل ما تبيع من نفس الحاجة في نفس اليوم.','Each kind has its price today until tomorrow, the same for everyone. A price drops a little each time you sell more of the same thing that day.')}</small>${tabs}${head}${items}`}</div>`};
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{view.querySelectorAll('[data-mkc]').forEach(b=>b.onclick=()=>{TWN.mkCat=b.dataset.mkc;const y=window.scrollY;twRender();try{window.scrollTo(0,y)}catch(e){}})}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.mkc-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:6px 0 4px}
+.mkc-t{min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;border-radius:10px;border:1px solid #ffffff1f;background:#0004;color:inherit;font:inherit;padding:3px 2px;min-width:0}
+.mkc-t span{font-size:18px;line-height:1.1}.mkc-t small{font-size:10px;line-height:1.2;text-align:center;max-width:100%;overflow-wrap:anywhere}.mkc-t b{font-size:11px}
+.mkc-t.up b{color:#7fe07a}.mkc-t.dn b{color:#f0a090}.mkc-t.on{border-color:#f3d48f;background:#f3d48f1f;box-shadow:inset 0 0 0 1px #f3d48f55}
+.mkc-p{font-style:normal;font-size:10px;opacity:.85}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
