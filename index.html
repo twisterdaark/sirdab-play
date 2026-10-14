@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.67',d:'14 أكتوبر',add:['«أسعار النهارده» فوق في السوق، في الشرا والبيع: كل الحاجات اللي سعرها طالع النهارده واللي نازل، حتى لو مش معاك، بالسعر القديم والجديد. اللي معاك بيبان الأول، {ودوس|ودوسي} عليه يفتحلك البيع عند الحاجة دي. «شوف الباقي» بيوريك كل النوع.','«مسابقة الصنايعية» عند الحداد والخياط والطباخ كل يومين في البلد: {ادفع|ادفعي} الرسم {والعب|والعبي} لعبة الصنعة قدام تلت أسطوات من البلد. الأول والتاني بياخدوا فلوس وسمعة. وفيه «درس عند الأسطى» مرة كل يوم بفلوس قصاد خبرة.','«سمعة الصنعة»: كل حاجة {تعملها|تعمليها} بإيدك وتطلع حلوة بتزود اسمك عند الأسطى. بعد 10 {بتبقى|بتبقي} «معروف»، وبعد 30 «مشهور»، وبعد 60 «أسطى البلد»، وكل درجة الشغل عنده بيرخص 5%.','«المقابض» عند الحداد على السلاح اللي في إيدك: الجلد بيوسّع دايرة الضربة، والكتان بيوسّع دايرة الصد، والقرن بيزود أول ضربة في كل دور 1.']},
 {v:'6.66.1',d:'14 أكتوبر',add:['إصلاح: صندوق التقاوي بقى يزرع الأرض الفاضية كمان، مش بس اللي لسه {اتحصدت|اتحصدت}. أول ما {تفتح|تفتحي} الغيط أو البلد، أي أرض فاضية بتتزرع باللي كانت زارعاه قبل كده، أو بزرعة الصندوق، أو بالزرعة اللي في أغلب الغيط. «{سيبها|سيبيها} فاضية» لسه شغالة، والتقاوي من فلوسك.']},
 {v:'6.66',d:'14 أكتوبر',add:['«التجارب» في بيتك: {حط|حطي} حاجتين أو تلاتة من خاماتك في الحلة {وقلّب|وقلّبي}. لو التركيبة صح {بتاخد|بتاخدي} اللي بتعمله وبتفضل في «اكتشافاتك» {تعملها|تعمليها} تاني بدوسة. 16 تركيبة مستخبية. اللي ما بتطلعش حاجة بتتسجل عشان ما {تضيعش|تضيعيش} خاماتك فيها تاني، ولو اتنين من التلاتة صح بيقولك «قربت».','«أسرار الشنطة»: فيه حاجات لو {شلتها|شلتيها} مع بعض في الليلة بتعمل حاجة (زي شمع ونور، أو قلة نار وسم). محدش بيقولك عليها، {بتكتشفها|بتكتشفيها} لما تحصل، وبتتسجل في «التجارب».','«السوق النهارده»: كل يوم عم رمضان عايز نوع (+40%) والسوق غرقان نوع تاني (−25%)، ونفس الكلام لكل اللعيبة. مكتوب فوق في البيع، والأسهم جنب كل حاجة.']},
 {v:'6.65',d:'14 أكتوبر',add:['الساحة بقت فيها حاجات {تستعملها|تستعمليها}: زلعة جاز، طوب سايب، شبكة صياد، بير قديم، فانوس، حيطة. {دوس|دوسي} عليها في دورك والدايرة بتقفل عليها، وكل ما التوقيت أحسن كل ما الحركة تنفع أكتر. كل حاجة مرة واحدة في القتال.','{تقدر|تقدري} {تكسب|تكسبي} من غير ما {تموّت|تموّتي}: {زق|زقي} وحش متعور في البير، أو {خوّف|خوّفي} الوحوش المتعورة بالفانوس فيهربوا. {بتاخد|بتاخدي} خبرتهم من غير غنايمهم، والزعما ما بيتزقوش.','ضربة مشتركة مع رفيق الليلة: ضرباتكم بتملا عداد، ولما يتملى زرار «مع …» بيخليكم تضربوا وحش واحد سوا بضربة كبيرة.','العدة اللي بتتكسر مش بتضيع خلاص: «حرامي الكراكيب» بيلمها، وفي البلد كارت «حاجة ضايعة» {تروح|تروحي} {تغلبه|تغلبيه} فيه {وترجعها|وترجعيها} مصلّحة لنص عمرها. لو غلبك {ترجع|ترجعي} بكرة.']},
@@ -54085,6 +54086,83 @@ function mkWith(k,fn){const m=MAT[k],f=m?mkMul(k):1;if(f===1)return fn();const p
 .lb-m small{font-size:10px}.lb-m:disabled{opacity:.35}
 .lb-r{display:flex;align-items:center;gap:8px;min-height:44px}.lb-ri{display:flex;align-items:center;gap:2px;flex:none;direction:ltr}.lb-rn{flex:1;display:flex;flex-direction:column;font-size:13px}.lb-rn small{color:var(--dim)}.lb-r .tw-buy{min-height:44px}
 .mk-day{margin:2px 2px 8px;line-height:1.7}.mk-day .up,.mk-f.up{color:#7fe07a}.mk-day .dn,.mk-f.dn{color:#f0a090}`;document.head.appendChild(s)})();
+/* ---------- 6.67 (acc1, approved ideas D32, D31, D27): «مسابقة الصنايعية» + «سمعة الصنعة» + «المقابض» ----------
+   D32: at the smith, the tailor and the cook: a contest every CT_EVERY town days per trade. Pay the fee, play the trade's own
+        mini-game; three village masters (CT_NPC) play too (their scores are fixed for that day and trade, so a retry can't fish).
+        Places pay money (CT_PAY) and trade name (CT_REP). And a lesson («درس عند الأسطى»): once a town day per trade, money for
+        trade experience.
+   D31: trade name (h.trp[at]): +1 for a craft made by hand that came out well (craftQ score ≥ .8), more from contests. Steps at
+        TRP_STEP: «معروف», «مشهور», «أسطى البلد»; each step makes that master's work 5% cheaper (spCost).
+   D27: weapon grips (GP), made at the smith and fitted on the weapon you hold (I.gp on its own piece, so it goes with it): leather
+        widens the hit ring's timing, flax cord widens the block ring's, horn adds 1 to your first hit each turn. Changing one costs again.
+   Tests: window.__ctScore forces your contest score. */
+const CT_EVERY=2,CT_AT=['smith','tailor','cook'],TRP_STEP=[10,30,60],TRP_N=[['معروف','Known'],['مشهور','Famous'],['أسطى البلد','Village master']];
+const CT_NPC={smith:[['عم حسن','Uncle Hassan'],['سيد الحداد','Sayed the smith'],['مجدي','Magdy']],tailor:[['عم فتحي','Uncle Fathy'],['أم هاني','Umm Hany'],['رضا','Reda']],
+  cook:[['أم سيد','Umm Sayed'],['الحاجة نبوية','Hagga Nabawiya'],['عادل','Adel']]};
+const CT_PAY=L=>[60+25*L,25+10*L,10,0],CT_REP=[3,2,1,0];
+const ctFee=(h,at)=>15+5*lifeLvl(h,at),lsFee=(h,at)=>30+10*lifeLvl(h,at);
+function ctFix(h){if(!h.ct||typeof h.ct!=='object'||Array.isArray(h.ct))h.ct={};if(!h.trp||typeof h.trp!=='object'||Array.isArray(h.trp))h.trp={};CT_AT.forEach(a=>{const c=h.ct[a]=h.ct[a]||{};if(c.d==null)c.d=-99;if(c.l==null)c.l=-99;c.w|=0});return h.ct}
+const ctFree=(h,at)=>(h.nDone|0)-ctFix(h)[at].d>=CT_EVERY;
+const trpOf=(h,at)=>{ctFix(h);return h.trp[at]|0};
+const trpStep=(h,at)=>{const v=trpOf(h,at);let s=0;TRP_STEP.forEach(x=>{if(v>=x)s++});return s};
+function trpAdd(h,at,n){if(!CT_AT.includes(at)||!n)return;ctFix(h);const s0=trpStep(h,at);h.trp[at]=(h.trp[at]|0)+n;const s1=trpStep(h,at);
+  if(s1>s0)setTimeout(()=>{try{band(ae('سمعتك','Your name'),ae(TRP_N[s1-1][0],TRP_N[s1-1][1]),ae(`${LIFE[at].n}: الشغل عنده أرخص ${s1*5}%`,`${LIFE[at].n}: work there ${s1*5}% cheaper`),{dur:2200,sound:SFX.good})}catch(e){}},600)}
+{const c0=spCost;spCost=function(h,at){let m=c0.apply(this,arguments);try{if(h&&CT_AT.includes(at))m*=1-.05*trpStep(h,at)}catch(e){}return m}}
+{const q0=craftQ;craftQ=function(h,at,score){const r=q0.apply(this,arguments);try{if(h&&(+score||0)>=.8&&!S.spQuick&&!CTX.on)trpAdd(h,at,1)}catch(e){}return r}}
+/* the three masters' scores for this town day and trade: fixed, from the day */
+function ctRivals(h,at){let s=((h.nDone|0)*7919+at.length*104729+(h.lvl|0)*31)%2147483647;const rn=()=>(s=s*16807%2147483647)/2147483647;
+  return CT_NPC[at].map(n=>({n,s:Math.round((.45+.42*rn())*100)/100}))}
+const CTX={on:0};
+async function ctGo(h,at){if(!ctFree(h,at)||CTX.on)return;const fee=ctFee(h,at);if((h.money|0)<fee)return toast(ae('الفلوس مش مكفية.','Not enough money.'));
+  h.money-=fee;ctFix(h)[at].d=h.nDone|0;saveHero();CTX.on=1;let sc=.5;
+  try{if(window.__ctScore!=null)sc=window.__ctScore;else{const r=await qPlay(at,h,{tier:Math.min(4,lifeLvl(h,at)>>1),name:ae('المسابقة','The contest'),icon:(()=>{try{return at==='cook'?twFood('foul',64):twMat(at==='smith'?'iron':'cloth',64)}catch(e){return ''}})()});sc=r.score}}
+  finally{CTX.on=0}
+  const L=[{n:[h.name,h.name],s:Math.round(sc*100)/100,me:1}].concat(ctRivals(h,at)).sort((a,b)=>b.s-a.s||(b.me?1:0)-(a.me?1:0));const pl=L.findIndex(x=>x.me);
+  const pay=CT_PAY(Math.max(1,h.lvl|0))[pl],rep=CT_REP[pl];h.money+=pay;trpAdd(h,at,rep);if(pl===0){h.ct[at].w++;try{jrAdd(h,'boss',ae(`كسبت مسابقة ${LIFE[at].n}`,`Won the ${LIFE[at].n} contest`))}catch(e){}}
+  try{lifeXP(h,at,2)}catch(e){}saveHero();ctSheet(h,at,L,pl,pay,rep)}
+function ctSheet(h,at,L,pl,pay,rep){const s=document.createElement('div');s.className='cmg ct-o';
+  s.innerHTML=`<div class="ag-box" style="direction:${EN?'ltr':'rtl'}"><b>🏆 ${ae('المسابقة','The contest')} · ${esc(LIFE[at].n)}</b>
+    ${L.map((x,i)=>`<div class="ct-l${x.me?' me':''}"><span class="ct-p">${i+1}</span><span class="ct-n">${esc(ae(x.n[0],x.n[1]))}</span><i class="ct-b"><b style="width:${Math.round(x.s*100)}%"></b></i><span class="ct-s">${Math.round(x.s*100)}</span></div>`).join('')}
+    <div class="ct-r">${pl===0?T(ae('{كسبت|كسبتي}!','You won!')):ae(`المركز ${pl+1}`,`Place ${pl+1}`)}${pay?` · +${pay} ${ae('جنيه','EGP')}`:''}${rep?` · ${ae('سمعة','name')} +${rep}`:''}</div>
+    <button class="btn" id="ctX">${ae('تمام','OK')}</button></div>`;
+  document.body.appendChild(s);try{(pl===0?SFX.good:SFX.meh)()}catch(e){}s.querySelector('#ctX').onclick=()=>{s.remove();render()}}
+function lsGo(h,at,btn){ctFix(h);const c=h.ct[at];if(c.l===(h.nDone|0))return;const fee=lsFee(h,at);if((h.money|0)<fee)return toast(ae('الفلوس مش مكفية.','Not enough money.'));
+  h.money-=fee;c.l=h.nDone|0;const xp=2+lifeLvl(h,at);try{lifeXP(h,at,xp)}catch(e){}saveHero();try{SFX.reg()}catch(e){}if(btn)floatAt(btn,'+'+xp,'#d9cbff','',20);render()}
+/* ---------- D27: grips ---------- */
+const GP={leather:{n:['مقبض جلد','Leather grip'],c:{reag_leatherstrip:2},d:['دايرة الضربة أوسع شوية: الضربة في الوقت أسهل.','The hit ring is a little wider: timing a hit is easier.']},
+  cord:{n:['لفة حبل كتان','Flax cord wrap'],c:{reag_flax:3,reag_palmfiber:1},d:['دايرة الدفاع أوسع شوية: التفادي في الوقت أسهل.','The block ring is a little wider: timing a block is easier.']},
+  horn:{n:['مقبض قرن','Horn grip'],c:{horn:1,reag_leatherstrip:1},d:['أول ضربة منك في كل دور +1.','Your first hit each turn +1.']}};
+function gpOf(h){try{const o=h&&qOn(h,'weapon');return o&&GP[o.I.gp]?o.I.gp:''}catch(e){return ''}}
+{const r0=afRing;afRing=function(el,o){o=Object.assign({},o||{});try{const C=S.combat,h=S.hero,g=C&&S.screen==='combat'?gpOf(h):'';
+  if(g&&((g==='leather'&&C.phase==='me')||(g==='cord'&&C.phase!=='me'))){o.perf=(o.perf||70)+25;o.good=(o.good||170)+30}}catch(e){}return r0.call(this,el,o)}}
+{const h0=hurtFoe;hurtFoe=function(f,d,o){try{const C=S.combat;if(C&&d>0&&C.phase==='me'&&!C.inComp&&!(o&&o.fx==='poison')&&gpOf(S.hero)==='horn'&&!C.gpN){C.gpN=1;d+=1}}catch(e){}return h0.call(this,f,d,o)}}
+{const a0=afterHero;afterHero=function(){const C=S.combat;if(C)C.gpN=0;return a0.apply(this,arguments)}}
+function gpFit(h,k){const o=qOn(h,'weapon'),G0=GP[k];if(!o||!G0||o.I.gp===k||!hasRes(h,G0.c))return;takeRes(h,G0.c);o.I.gp=k;try{lifeXP(h,'smith',1)}catch(e){}saveHero();try{SFX.reg()}catch(e){}
+  toast(ae(`${G0.n[0]} على ${GEAR[o.id].n}.`,`${G0.n[1]} on your ${GEAR[o.id].n}.`));render()}
+/* the cards on the three masters' screens */
+function ctCardHTML(h,at){ctFix(h);const c=h.ct[at],free=ctFree(h,at),left=CT_EVERY-((h.nDone|0)-c.d),v=trpOf(h,at),st=trpStep(h,at),nx=TRP_STEP[st];
+  const ls=c.l!==(h.nDone|0);
+  return `<div class="card ct-card"><b>🏆 ${ae('مسابقة الصنايعية','The craft contest')}</b>
+    <div class="ct-rep"><span>${ae('سمعتك','Your name')}: <b>${v}</b>${st?` · ${ae(TRP_N[st-1][0],TRP_N[st-1][1])}`:''}</span>${nx?`<i class="ct-b"><b style="width:${Math.round(v/nx*100)}%"></b></i><small>${nx}</small>`:''}</div>
+    <small class="dim">${T(ae(`{العب|العبي} قدام تلاتة من أسطوات البلد. المركز الأول ${CT_PAY(Math.max(1,h.lvl|0))[0]} جنيه.`,`Play against three village masters. First place pays ${CT_PAY(Math.max(1,h.lvl|0))[0]} EGP.`))}${c.w?` · ${ae('كسبت','Won')} ${c.w}`:''}</small>
+    <div class="ct-bt"><button class="tw-buy" id="ctGo" ${free&&h.money>=ctFee(h,at)?'':'disabled'}>${free?T(ae(`{ادخل|ادخلي} (${ctFee(h,at)} جنيه)`,`Enter (${ctFee(h,at)} EGP)`)):ae(`بعد ${left} ${left>1?'أيام':'يوم'}`,`In ${left} day${left>1?'s':''}`)}</button>
+    <button class="tw-buy" id="lsGo" ${ls&&h.money>=lsFee(h,at)?'':'disabled'}>${ls?ae(`درس عند الأسطى (${lsFee(h,at)} جنيه)`,`A lesson (${lsFee(h,at)} EGP)`):ae('الدرس الجاي بكرة','Next lesson tomorrow')}</button></div></div>`}
+function gpCardHTML(h){const o=qOn(h,'weapon');if(!o)return '';const cur=o.I.gp;
+  return `<div class="card gp-card"><b>🗡️ ${ae('مقبض السلاح','Weapon grip')}: ${esc(GEAR[o.id].n)}</b><small class="dim">${ae('بيشتغل في القتال بالإيد.','Works in the hands-on fight.')}</small>
+    ${Object.keys(GP).map(k=>{const G0=GP[k],ok=hasRes(h,G0.c);return `<div class="gp-r${cur===k?' on':''}"><span class="gp-n"><b>${ae(G0.n[0],G0.n[1])}</b><small>${ae(G0.d[0],G0.d[1])}</small><small class="gp-c">${Object.keys(G0.c).map(m=>`${twMat(m,18)} ${G0.c[m]}`).join(' ')}</small></span>
+      <button class="tw-buy" data-gp="${k}" ${cur===k||!ok?'disabled':''}>${cur===k?ae('عليه','Fitted'):T(ae('{ركّبه|ركّبيه}','Fit'))}</button></div>`}).join('')}</div>`}
+function ctPut(at){const h=S.hero;if(!h||S.screen!==at||view.querySelector('.ct-card'))return;const lf=view.querySelector('.tw-life'),box=lf&&lf.closest('.card')||lf,top=box||view.querySelector('.tw > *');if(!top)return;
+  top.insertAdjacentHTML('afterend',ctCardHTML(h,at)+(at==='smith'?gpCardHTML(h):''));
+  const g=$('#ctGo');if(g)g.onclick=()=>ctGo(h,at);const l=$('#lsGo');if(l)l.onclick=()=>lsGo(h,at,l);
+  view.querySelectorAll('[data-gp]').forEach(b=>b.onclick=()=>gpFit(h,b.dataset.gp))}
+CT_AT.forEach(at=>{const s0=SCREENS[at];SCREENS[at]=function(){const r=s0.apply(this,arguments);try{ctPut(at)}catch(e){console.warn(e)}return r}});
+(function(){const s=document.createElement('style');s.textContent=`
+.ct-card,.gp-card{display:flex;flex-direction:column;gap:6px}.ct-rep{display:flex;align-items:center;gap:8px;font-size:13px}.ct-rep>span{flex:none}.ct-rep small{color:var(--dim)}
+.ct-b{flex:1;height:8px;border-radius:4px;background:#0008;overflow:hidden;display:block;min-width:40px}.ct-b b{display:block;height:100%;background:#f3c14d}
+.ct-bt{display:flex;gap:6px;flex-wrap:wrap}.ct-bt .tw-buy{flex:1 1 140px;min-height:44px}
+.ct-o .ag-box{gap:8px}.ct-l{display:flex;align-items:center;gap:8px;min-height:36px}.ct-l.me{color:#ffd36a;font-weight:700}.ct-p{width:22px;text-align:center}.ct-n{width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ct-s{width:30px;text-align:end}
+.ct-r{text-align:center;font-weight:700;color:#f3d48f}.ct-o .btn{min-height:48px}
+.gp-r{display:flex;align-items:center;gap:8px;min-height:52px;padding:4px 0;border-top:1px solid #ffffff14}.gp-r.on .gp-n b{color:#7fe07a}.gp-n{flex:1;display:flex;flex-direction:column;font-size:13px}.gp-n small{color:var(--dim)}.gp-c{display:flex;align-items:center;gap:4px}.gp-r .tw-buy{min-height:44px;flex:none}`;document.head.appendChild(s)})();
 /* ---------- 6.66.1 (acc1, Twister 19:27 «زرع مش بيتزرع لوحده»): the seed box fills empty plots too ----------
    The seed box (p42 ftReplant, choices in p71) only planted a plot at the moment it was harvested. A plot that was empty for any other
    reason stayed empty for good: bought before the box, harvested while the box was off or with too little money for the seed, a crop
@@ -54104,6 +54182,41 @@ function ftGuess(h){const F=h.farm,c={};F.p.slice(0,farmN(h)).forEach(p=>{if(p&&
 {const t0=SCREENS.town;SCREENS.town=function(){try{ftFill(S.hero)}catch(e){}return t0.apply(this,arguments)}}
 /* an uprooted plot is not planted back with the crop you just pulled out (only the box's own crop, if one is set) */
 {const u0=ftUproot;ftUproot=function(i){const r=u0.apply(this,arguments);try{const h=S.hero;if(r&&h&&h.farm&&h.farm.lc)delete h.farm.lc[i]}catch(e){}return r}}
+/* ---------- 6.67 (acc1, Twister 19:33 «ليستة بالمنتجات الي سعرها زايد او ناقص»): today's prices at the top of the market ----------
+   The 6.66 market day (p198 D34) only said which kind of goods is up or down, in one line on the sell tab, and marked the rows
+   of what you already carry. Now a card at the top of the market, on both tabs, lists every material of the two groups with its
+   price today (old price struck through), what you carry first, then dearest first, whether or not you have it (six per kind, «شوف الباقي» shows the rest); what you carry says «معاك ×n» and a
+   tap on it opens the sell tab at its row. The card folds (TWN.mkFold, kept for the visit). It replaces p198's one-line note. */
+const MKL_N=6;
+function mkListKeys(g){return Object.keys(MAT).filter(k=>{const m=MAT[k];return m&&m.p>0&&!(typeof CROPS!=='undefined'&&CROPS[k])&&g.t(k)})}
+function mkListHTML(h){const M=mkToday(),ex=k=>{const now=mkWith(k,()=>satNow(h,k)),was=satNow(h,k),n=h.res[k]|0;return {k,now,was,n}};
+  const sec=(g,up)=>{const A=mkListKeys(g).map(ex).sort((a,b)=>(b.n>0)-(a.n>0)||b.now-a.now||a.k.localeCompare(b.k));if(!A.length)return '';
+    const all=!!(TWN.mkAll&&TWN.mkAll[g.id]),L=all?A:A.filter((e,j)=>e.n>0||j<MKL_N),more=A.length-L.length;
+    const pc=up?`+${Math.round((LB_UP-1)*100)}%`:`−${Math.round((1-LB_DN)*100)}%`;
+    return `<div class="mkl-h ${up?'up':'dn'}">${up?'▲':'▼'} ${ae(up?`عم رمضان عايز ${g.n[0]}`:`السوق غرقان ${g.n[0]}`,up?`Uncle Ramadan wants ${g.n[1]}`:`The market is full of ${g.n[1]}`)} <b>${pc}</b></div>
+      <div class="mkl-g">${L.map(e=>`<button class="mkl-i ${up?'up':'dn'}${e.n?' have':''}" data-mkl="${e.k}" ${e.n?'':'tabindex="-1"'}><span class="ic">${twMat(e.k,28)}</span><span class="tx"><b>${esc(fpEn(MAT[e.k].n))}</b><small><s>${e.was}</s> ${e.now} ${ae('جنيه','coins')}</small>${e.n?`<small class="mkl-n">${ae('معاك','You have')} ×${e.n}</small>`:''}</span></button>`).join('')}</div>${more>0?`<button class="mkl-more" data-mkm="${g.id}">${ae(`شوف الباقي (${more})`,`Show the rest (${more})`)}</button>`:all&&A.length>MKL_N?`<button class="mkl-more" data-mkm="${g.id}">${ae('أقل','Less')}</button>`:''}`};
+  const fold=!!TWN.mkFold;
+  return `<div class="card mkl${fold?' fold':''}" id="mkList"><button class="mkl-t" id="mkListT" aria-expanded="${!fold}">📰 ${ae('أسعار النهارده','Today\'s prices')} <span class="mkl-s">${fold?ae('افتح','Open'):ae('اقفل','Close')}</span></button>
+    ${fold?'':`<small class="mkl-sub">${ae('الأسعار دي لحد بكرة، لكل الناس. السعر بينزل شوية كل ما تبيع من نفس الحاجة في نفس اليوم.','These prices last until tomorrow, for everyone. A price drops a little each time you sell more of the same thing that day.')}</small>${sec(M.up,1)}${sec(M.dn,0)}`}</div>`}
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='market'||$('#mkList'))return r;
+  const old=$('#mkDay');if(old)old.remove();
+  const st=view.querySelector('.tw-stk');if(!st)return r;st.insertAdjacentHTML('afterend',mkListHTML(h));
+  $('#mkListT').onclick=()=>{TWN.mkFold=!TWN.mkFold;const y=window.scrollY;twRender();try{window.scrollTo(0,y)}catch(e){}};
+  view.querySelectorAll('[data-mkm]').forEach(b=>b.onclick=()=>{const id=b.dataset.mkm;TWN.mkAll=TWN.mkAll||{};TWN.mkAll[id]=!TWN.mkAll[id];const y=window.scrollY;twRender();try{window.scrollTo(0,y)}catch(e){}});
+  view.querySelectorAll('[data-mkl]').forEach(b=>b.onclick=()=>{const k=b.dataset.mkl;if(!(h.res[k]>0))return;
+    const go=()=>{const s=view.querySelector(`[data-s="${k}"]`),row=s&&s.closest('.tw-row');if(!row)return;try{row.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){row.scrollIntoView()}row.classList.add('mkl-hl');setTimeout(()=>row.classList.remove('mkl-hl'),1600)};
+    if(TWN.tab!=='sell'){TWN.tab='sell';TWN.conf=null;twRender();setTimeout(go,60)}else go()})}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.mkl{padding:8px 10px;margin:6px 0 10px}.mkl-t{width:100%;min-height:44px;display:flex;align-items:center;gap:6px;background:none;border:0;color:var(--ink);font:inherit;font-weight:700;font-size:15px;padding:0;text-align:start}
+.mkl-s{margin-inline-start:auto;font-size:12px;font-weight:400;color:var(--dim)}.mkl-sub{display:block;color:var(--dim);font-size:12px;margin:0 0 6px;line-height:1.6}
+.mkl-h{font-size:13px;margin:8px 0 4px}.mkl-h.up{color:#7fe07a}.mkl-h.dn{color:#f0a090}
+.mkl-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.mkl-i{min-height:48px;display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:10px;border:1px solid #ffffff1f;background:#0004;color:inherit;font:inherit;text-align:start;min-width:0}
+.mkl-i.up{border-color:#7fe07a44}.mkl-i.dn{border-color:#f0a09044}.mkl-i.have{background:#ffffff12;cursor:pointer}.mkl-i:not(.have){cursor:default}
+.mkl-i .ic{flex:none;display:flex}.mkl-i .tx{display:flex;flex-direction:column;min-width:0;line-height:1.3}.mkl-i b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mkl-i small{font-size:11px}.mkl-i s{color:var(--dim)}.mkl-i.up small:first-of-type{color:#7fe07a}.mkl-i.dn small:first-of-type{color:#f0a090}.mkl-n{color:#f3d48f!important}
+.mkl-more{width:100%;min-height:44px;margin-top:6px;border-radius:10px;border:1px dashed #ffffff33;background:none;color:var(--dim);font:inherit;font-size:13px}
+.mkl-hl{outline:2px solid #f3d48f;outline-offset:2px;border-radius:10px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
