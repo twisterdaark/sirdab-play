@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.36',d:'14 أكتوبر',add:['القتال: أول ما {ترمي|ترمي} النرد، تحته مكتوب الرمية دي هتعمل إيه في الضربة: النرد + الصفة − صعوبة العدو = النتيجة.','أرقام الصحة بقت جوه البار نفسه، فوق كل وحش وفوقك.','الشعلة وأي حاجة {بترميها|بترميها} على عدو: {دوس|دوسي} على العدو نفسه زي الضربة، من غير زراير.','الوحوش بقت بتتنفس وبتتحرك في مكانها، ونقط الضعف بقت أيقونات صغيرة من غير بوكسات.','اسم «علقة» و«تثبيت» بقى فوق الزرار.','في «بيتك» بقى فيه سرير: لو صحتك ناقصة {ارتاح|ارتاحي} ببلاش وصحتك وطاقتك يرجعوا كاملين. صحتك ما بترجعش لوحدها في البلد.','التحدي والمنافس وطلب العمدة لما {تكون تعبان|تكوني تعبانة} بيودّوك على السرير على طول، ومربع «بيتك» بيقولك {ترتاح|ترتاحي} هناك.','الجرنال مابقاش بيجيب وصفة {انت عارفها|انتي عارفاها} خلاص.']},
 {v:'6.35.1',d:'14 أكتوبر',add:['تصليح: على الكمبيوتر، المحارب اللي معاه تخصص كانت اللعبة بتقف عنده أول ما تفتح. اتصلحت','مربع الغلط (لو حصل) بقى ينفع {تحدد|تحددي} الكلام اللي فيه، وفيه زرار «انسخ الغلط» عشان {تبعته|تبعتيه} بسهولة']},
 {v:'6.35',d:'14 أكتوبر',add:['القتال بقى أحلى: الصحة والطاقة فوق راس كل واحد، {انت|انتي} واللي معاك، والصحة مكتوبة بالأرقام (كام من كام) حتى للوحوش','كل قدرة بقت ليها رسمة بيكسل خاصة بيها، ومفيش قدرتين بنفس الرسمة','لما {تضرب|تضربي}، شخصيتك بتجري على الوحش، والضربة بتنوّر وتهز المسرح وتطلع شرار','بعد كل رمية النتيجة بتتكتب كبيرة تحت النرد (نجاح، نص نص، فشل) وتحتها إزاي اتحسبت','«علقة» و«تثبيت» بقوا زرارين كبار في النص، كل واحد برسمته ولونه','سجل القتال بيفتح جوه إطار اللعبة على الكمبيوتر، مش برّه']},
 {v:'6.34',d:'14 أكتوبر',add:['«سوق اللاعبين» فيه خانة بحث فوق: {اكتب|اكتبي} اسم الحاجة أو اسم اللاعب {وتلاقيها|وتلاقيها} على طول، في الشرا والبيع وعروضي','العدّة اللي {بتعملها|بتعمليها} عند عم حسن (زي المعول النابض) بقت مكتوب عليها «صنعة إيد» واسم اللي عملها، زي السلاح','«دوار العمدة» من غير قضايا: بدالها «طلب العمدة»، مهمة نادرة جدًا بتيجي كل كام يوم. أقوى وحشين في البلد وأقوى بكتير من العادي، لوحدك، ومرة واحدة بس. المكسب كبير جدًا (فلوس وحجارة وسمعة)، والخسارة إصابة وسمعة','رخص العمدة بقت غالية: رخصة تاجر 40,000، رخصة صنايعي 60,000، ووسام العمدة 150,000 وعايز سمعة 60','لو شاشة وقعت، اللعبة بترجعك للبلد بدل ما الصفحة تفضل فاضية، ولو اللعبة ما عرفتش تفتح بتكتبلك الغلط عشان {تبعته|تبعتيه}']},
@@ -50566,6 +50567,128 @@ function skpAll(){if(!app.classList.contains('af')||S.screen!=='combat')return;s
 #app.af .cg-roll{font-size:11px;opacity:.7;margin-top:0}
 #app.af .af-stage .foe .hpn{display:block!important;font-size:11px;font-weight:800;color:#fff;text-shadow:0 1px 0 #000;direction:ltr;margin-top:1px}
 #app.af.af-log .log{position:fixed}`;document.head.appendChild(s)})();
+/* ---------- 6.36 (acc1, Twister 2026-10-14 11:47): «لو عندك وصفه، متخليش الجرنال ينزلها تاني، هي خلاص مره» ----------
+   The paper of the day never carries a recipe you already know, nor one an older paper on the pile still offers: it picks
+   another one you don't have (or none). A recipe card you learned from another paper is not shown again on any paper; the paper
+   you learned it from still shows it, so you can read what you saved. */
+{const t0=jrToday;jrToday=function(h){const P=t0.apply(this,arguments);try{const J=jrFix(h),on=k=>J.ar.some(p=>p&&p.rec===k&&p.d!==P.d);
+  if(P&&P.rec&&!P.paid&&(jrKnows(h,P.rec)||on(P.rec))){const left=Object.keys(JR_REC).filter(k=>!jrKnows(h,k)&&ITEMS[k]&&!on(k));P.rec=left.length?left[(P.d|0)%left.length]:null;saveHero()}}catch(e){console.warn(e)}return P}}
+{const c0=jrRecCard;jrRecCard=function(h,k,d){try{const J=jrFix(h);if(jrKnows(h,k)&&J.rec[k]!==(d|0)+1)return ''}catch(e){}return c0.apply(this,arguments)}}
+/* 6.36 (Twister 11:48): «ضيف زرار راحه في البيت، ووضح للاعبين انه لازم ترتاح هناك». Health lost in town fights (challenge,
+   rival, the mayor's request, the field) only came back on the next night. Now «بيتك» has a rest card on top: one tap fills
+   health and energy (and the creature that is with you) for free. Every «تعبان» stop in town (challenge, rival, mayor) is a
+   button that takes you to it, and the house tile says so while you are hurt. */
+const rsTired=h=>!!h&&h.hp<MXH(h)*.5,rsHurt=h=>{if(!h)return 0;const cr=typeof crActive==='function'&&!h.night?crActive(h):null;return h.hp<MXH(h)||h.energy<MXE(h)||!!(cr&&cr.health<crMax(cr))};
+function rsGo(){const h=S.hero;if(!h)return;toast(T(ae('{روّح|روّحي} البيت {وارتاح|وارتاحي} الأول.','Go home and rest first.')));try{SFX.page&&SFX.page()}catch(e){}HMS.tab='home';S.screen='dar';render();
+  try{const c=$('#rsCard');if(c){c.scrollIntoView({block:'center'});c.classList.add('rs-ping')}}catch(e){}}
+function rsDo(h){if(!h||h.night||S.combat)return;if(!rsHurt(h)){toast(T(ae('{انت مرتاح|انتي مرتاحة} خلاص.','You are already rested.')));return}
+  const cr=typeof crActive==='function'?crActive(h):null;h.hp=MXH(h);h.energy=MXE(h);if(cr)cr.health=crMax(cr);saveHero();
+  try{band('🛏',T(ae('{نمت|نمتي} شوية','You slept a little')),ae('صحتك وطاقتك رجعوا كاملين','Health and energy are full again'),{dur:1500,sound:SFX.good})}catch(e){try{SFX.good()}catch(x){}}render()}
+function rsCardHTML(h){const M=MXH(h),E=MXE(h),hu=rsHurt(h),p=Math.round(100*h.hp/M);
+  return `<div class="card rs-card${rsTired(h)?' low':''}" id="rsCard"><div class="rs-t"><span class="rs-ic">🛏</span><div><b>${ae('السرير','The bed')}</b>
+    <small>${ae('صحتك ما بترجعش لوحدها في البلد. التحدي والمنافس وطلب العمدة محتاجين نص صحتك على الأقل، {فارتاح|فارتاحي} هنا ببلاش.','Health does not come back by itself in town. The challenge, the rival and the mayor\'s request need at least half your health, so rest here for free.')}</small></div></div>
+    <div class="rs-bars"><i class="rs-b"><b style="width:${p}%"></b></i><small>❤ ${h.hp}/${M} · ⚡ ${h.energy}/${E}</small></div>
+    <button class="tw-buy" id="rsGo" ${hu?'':'disabled'}>${hu?ae('{ارتاح|ارتاحي}','Rest'):ae('✓ {مرتاح|مرتاحة}','✓ Rested')}</button></div>`}
+{const d0=SCREENS.dar;SCREENS.dar=function(){const r=d0.apply(this,arguments);try{const h=S.hero;if(S.screen==='dar'&&h&&HMS.tab==='home'&&!$('#rsCard')){
+  const at=view.querySelector('.hm-pic');if(at){at.insertAdjacentHTML('afterend',T(rsCardHTML(h)));$('#rsGo').onclick=()=>rsDo(h)}}}catch(e){console.warn(e)}return r}}
+/* the stops point home */
+{const t0=SCREENS.tahadi;SCREENS.tahadi=function(){const r=t0.apply(this,arguments);try{const h=S.hero,g=$('#thGo');if(g&&rsTired(h)){g.disabled=false;g.textContent=T(ae('{انت تعبان|انتي تعبانة} أوي · {ارتاح|ارتاحي} في البيت 🛏','Too tired · rest at home 🛏'));g.onclick=rsGo}}catch(e){console.warn(e)}return r}}
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{const b=$('#rvGo'),h=S.hero;if(b&&h){const o=b.onclick;b.onclick=function(){if(rsTired(h))return rsGo();return o&&o.apply(this,arguments)}}}catch(e){console.warn(e)}return r}}
+{const o0=omGo;omGo=function(h){if(rsTired(h)&&!S.combat)return rsGo();return o0.apply(this,arguments)}}
+TW_EXTRA.forEach((f,i)=>{TW_EXTRA[i]=function(h){const t=f.apply(this,arguments);try{if(t&&t.id==='dar'&&h&&!h.night&&h.hp<MXH(h)){t.s=`<span class="ok">${T(ae(`❤ ${h.hp}/${MXH(h)} · {ارتاح|ارتاحي} هنا`,`❤ ${h.hp}/${MXH(h)} · rest here`))}</span>`;if(rsTired(h))t.bell=1}}catch(e){}return t}});
+(function(){const s=document.createElement('style');s.textContent=`.rs-card{display:flex;flex-direction:column;gap:8px}.rs-card.low{border-color:#e0605a}
+.rs-t{display:flex;gap:10px;align-items:flex-start}.rs-ic{font-size:28px;line-height:1}.rs-t b{color:#ffd36a}.rs-t small{display:block;opacity:.85;font-size:13px;line-height:1.5}
+.rs-bars{display:flex;flex-direction:column;gap:4px}.rs-b{display:block;height:8px;border-radius:4px;background:#0006;overflow:hidden}.rs-b b{display:block;height:100%;background:linear-gradient(90deg,#e0605a,#7fe07a)}
+.rs-card .tw-buy{min-height:44px}.rs-ping{animation:rsP 1s 2}@keyframes rsP{50%{box-shadow:0 0 0 4px #ffd36a88}}`;document.head.appendChild(s)})();
+/* ---------- 6.36 (acc1, Twister 2026-10-14 11:52) the hands-on fight, round two ----------
+   (1) «لسا مكتبليش تحت ال15 ايه السبب»: once the dice are thrown, the line under the tray says what they make with your plain hit on
+       the foe you aim at (dice + stat − that foe's difficulty = total · success/partly/fail). After the move the real line replaces it.
+   (2) «خلي الارقام جوا الهيلث بار»: every bar on the stage (foes, you, your friend) is thicker and has hp/max inside it.
+   (3) «البوكسات دي شكلها وحش وبي overlap»: no frames around foes. The foe you can pick gets a glowing ring on the ground and a
+       bouncing arrow; the weak-point/trait chips are small icons only; the foes stay above your corner of the stage.
+   (4) «لما تستعمل ايتم زي الشعلة … يخليك تختار زي ما تكون بتضرب»: an item thrown at a foe is aimed like a hit: tap the foe.
+   (5) «خلي كلمة علقه وتثبيت فوق الزراير»: the names sit above the big buttons.
+   (6) «خلي الوحوش بتتحرك شويه»: foes breathe, sway and now and then lunge in place, each on its own beat. */
+const FX7={tm:0};
+const fx7On=()=>{try{return afOn()&&S.screen==='combat'&&!!S.combat}catch(e){return false}};
+/* (1) the line under the dice before the move */
+function fx7Pre(){const C=S.combat,h=S.hero,tr=view.querySelector('.af-tray');if(!C||!h||!tr)return;let el=$('#fx7Pre');
+  const on=AF.st==='rolled'&&Array.isArray(AF.vals)&&AF.vals.length&&C.phase==='me'&&!C.bag&&!C.more;
+  if(!on){if(el)el.remove();view.querySelectorAll('#cgBig,#cgRoll').forEach(x=>x.style.display='');return}
+  const f=C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(x=>x.hp>0);if(!f)return;
+  const K=CLASSES[h.cls],stat=K.atk.stat,two=S.dice==='2d6',hz=!!(h.hidden&&h.hidden.hazz);let mod=0,dc=f.def|0;try{mod=ST(h,stat)}catch(e){}
+  try{const B=typeof burOf==='function'&&N_on()&&burOf();if(B&&B.cursed)dc+=B.cursed}catch(e){}
+  const R=afTier(AF.vals,two,mod,dc,hz),dice=AF.vals.reduce((a,b)=>a+b,0),sg=n=>(n<0?'−':'+')+Math.abs(n);
+  const nm=EN?((typeof L10N_W!=='undefined'&&L10N_W.get(stat))||stat):stat;
+  const tx={full:ae('نجاح','Success'),part:ae('نص نص','Partly'),fail:ae('فشل','Fail')}[R.tier];
+  const k=AF.vals.join()+'|'+f.id+'|'+mod+'|'+dc;if(el&&el.dataset.k===k)return;
+  if(!el){el=document.createElement('div');el.id='fx7Pre';el.className='fx7-pre';tr.after(el)}el.dataset.k=k;
+  view.querySelectorAll('#cgBig,#cgRoll').forEach(x=>x.style.display='none');
+  el.innerHTML=`<div class="fx7-sum cg-${R.tier}"><b>${R.total}</b><span>${R.crit?ae('ضربة حظ!','Lucky!'):R.fumble?ae('وقعة!','Fumble!'):tx}</span></div>
+    <div class="fx7-why">🎲 ${dice} · ${esc(nm)} ${sg(mod)}${dc?` · ${ae('صعوبة','Difficulty of')} ${esc(f.name)} −${dc}`:''} = <b>${R.total}</b></div>
+    <small>${T(ae('{اسحب|اسحبي} النرد على حركة أو على العدو','Drag the dice onto a move or a foe'))}</small>`;
+  try{el.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],{duration:220})}catch(e){}}
+/* (2) numbers inside the bars */
+function fx7Bars(){const C=S.combat,h=S.hero,c=S.comp;if(!C||!h)return;
+  view.querySelectorAll('.af-stage .foe').forEach(e=>{const f=C.foes[+e.dataset.f],hb=e.querySelector('.hb');if(!f||!hb)return;let n=hb.querySelector('.fx7-n');
+    if(!n){n=document.createElement('b');n.className='fx7-n';hb.appendChild(n)}const t=`${Math.max(0,f.hp|0)}/${f.max|0}`;if(n.textContent!==t)n.textContent=t});
+  view.querySelectorAll('.af-stage .mate').forEach(card=>{const hb=card.querySelector('.hb'),n0=card.querySelector('.af-hpn');if(!hb||!n0)return;if(n0.parentElement!==hb){hb.appendChild(n0)}})}
+/* (4) an item thrown at a foe is aimed by tapping the foe */
+function fx7Aim(){const C=S.combat;if(!C||!C.bag||C.bag==='sk'||C.bag===true||!ITEMS[C.bag])return;const sh=view.querySelector('.sheet');if(!sh||!sh.querySelector('[data-t]'))return;
+  let ts=[];try{ts=itemTargets(C.bag)}catch(e){return}if(!ts.length||ts.some(t=>t.who!=='foe'))return;
+  const k=C.bag,ok=new Set(ts.map(t=>t.id));sh.classList.add('fx7-aim');
+  sh.innerHTML=`<div class="turn pick fx7-turn"><span class="fx7-ic">${(()=>{try{return itIco(k,26)}catch(e){return ''}})()}</span>${T(ae(`${ITEMS[k].name} على مين؟ {دوس|دوسي} على العدو`,`${ITEMS[k].name} at whom? Tap a foe`))}</div>
+    <button class="btn ghost small" id="bagB">${ae('رجوع','Back')}</button>`;
+  $('#bagB').onclick=()=>{C.bag=true;combat()};
+  view.querySelectorAll('.af-stage .foe').forEach(e=>{const id=+e.dataset.f;if(!ok.has(id))return;e.classList.add('pick');
+    e.addEventListener('click',ev=>{if(S.combat!==C||C.bag!==k)return;ev.stopPropagation();const t=itemTargets(k).find(x=>x.who==='foe'&&x.id===id);if(!t)return;
+      try{AFS.snap(7)}catch(x){}useItem(k,t)},true)})}
+/* (5) the names above علقة/تثبيت */
+function fx7Xb(){view.querySelectorAll('.acts.xbig .act.xbb').forEach(b=>{if(b.dataset.fx7)return;b.dataset.fx7=1;const n=b.querySelector(':scope>b');const ic=b.querySelector('.af-ic');if(n&&ic)ic.before(n)})}
+/* (6) foes move */
+function fx7Live(){view.querySelectorAll('.af-stage .foe').forEach((e,i)=>{if(e.dataset.fx7)return;e.dataset.fx7=1;const s=e.querySelector(':scope>svg');if(!s)return;
+  const w=document.createElement('span');w.className='fx7-body';s.before(w);w.appendChild(s);const r=(n,m)=>(n+Math.random()*(m-n)).toFixed(2);
+  w.style.setProperty('--b',r(1.6,2.4)+'s');w.style.setProperty('--s',r(3.2,5)+'s');w.style.setProperty('--d','-'+r(0,3)+'s');w.style.setProperty('--x',(i%2?-1:1)*(2+Math.random()*3)+'px')});
+  clearTimeout(FX7.tm);const go=()=>{if(!fx7On())return;const fs=[...view.querySelectorAll('.af-stage .foe:not(.dead):not(.fledf) .fx7-body')];const C=S.combat;
+    if(fs.length&&C&&!C.busy){const e=fs[Math.floor(Math.random()*fs.length)];try{e.animate([{transform:'none'},{transform:'translateX(var(--x)) scale(1.06,.94)'},{transform:'translate(calc(var(--x) * -2),-6px) scale(.96,1.05)'},{transform:'none'}],{duration:520,easing:'ease-out',composite:'add'})}catch(x){}}
+    FX7.tm=setTimeout(go,1800+Math.random()*2600)};FX7.tm=setTimeout(go,1200)}
+function fx7All(){if(!fx7On())return;fx7Bars();fx7Aim();fx7Xb();fx7Live();fx7Pre()}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{fx7All()}catch(e){console.warn(e);(window.__xErr=window.__xErr||[]).push('fx7: '+(e&&e.message))}return r}}
+{const l0=afLay;afLay=function(){const r=l0.apply(this,arguments);try{if(fx7On())fx7Pre()}catch(e){}return r}}
+{const t0=cgRollTag;cgRollTag=function(){const r=t0.apply(this,arguments);try{const e=$('#fx7Pre');if(e)e.remove();view.querySelectorAll('#cgBig,#cgRoll').forEach(x=>x.style.display='')}catch(e){}return r}}
+setInterval(()=>{try{if(fx7On())fx7Bars()}catch(e){}},200);
+(function(){const s=document.createElement('style');s.textContent=`
+#app.af .fx7-pre{display:flex;flex-direction:column;align-items:center;gap:2px;margin:2px auto 0;text-align:center}
+#app.af .fx7-sum{display:flex;align-items:baseline;gap:8px;font-weight:900;text-shadow:0 2px 0 #000}#app.af .fx7-sum b{font-size:28px;line-height:1}#app.af .fx7-sum span{font-size:15px}
+#app.af .fx7-sum.cg-full{color:#7fd88a}#app.af .fx7-sum.cg-part{color:#f2c14e}#app.af .fx7-sum.cg-fail{color:#e2483f}
+#app.af .fx7-why{font-size:12px;color:#e9dcc4;opacity:.9}#app.af .fx7-pre small{font-size:11px;opacity:.6}
+#app.af .af-tray .af-pw{display:none!important}
+#app.af .af-stage .hb{position:relative;height:14px!important;border-radius:7px!important;overflow:hidden;box-shadow:0 0 0 2px #0b0d1c!important;background:#2a1418}
+#app.af .af-stage .hb>i{height:100%}
+#app.af .af-stage .hb .fx7-n,#app.af .af-stage .hb .af-hpn{position:absolute;inset:0;display:flex!important;align-items:center;justify-content:center;font-size:10px!important;font-weight:900;color:#fff;line-height:1;direction:ltr;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 2px #000;pointer-events:none;z-index:2}
+#app.af .af-stage .foe .hpn{display:none!important}
+#app.af .af-stage .foe.af-hov,#app.af .af-stage .foe.pick{outline:0!important;border-radius:0;animation:none!important;box-shadow:none!important;background:none!important}
+#app.af .af-stage .foes{top:3%!important;align-items:flex-start!important}
+#app.af .af-stage .fx7-body>svg{max-height:84px!important}
+#app.af .af-stage .foe.pick::after,#app.af .af-stage .foe.af-hov::after{content:'';position:absolute;left:12%;right:12%;top:calc(var(--fy,58%) - 8px);height:16px;border-radius:50%;background:radial-gradient(closest-side,#fff6c8cc,#f2c14e55 60%,transparent);animation:fx7Gl 1s ease-in-out infinite;pointer-events:none;z-index:-1}
+#app.af .af-stage .foe.pick::before{content:'▼';position:absolute;top:-4px;left:50%;transform:translateX(-50%);color:#ffd36a;font-size:16px;text-shadow:0 2px 0 #000;animation:fx7Ar .7s ease-in-out infinite alternate;pointer-events:none;z-index:3}
+@keyframes fx7Gl{50%{opacity:.55;transform:scaleX(1.12)}}@keyframes fx7Ar{to{transform:translate(-50%,6px)}}
+#app.af .af-stage .foe{cursor:pointer;isolation:isolate}
+#app.af .af-stage .foe .xwk{display:inline-flex!important;align-items:center;gap:3px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:3px 2px 0!important;min-height:0}
+#app.af .af-stage .foe .xwk small{display:none}
+#app.af .af-stage .foe .xwk i{width:20px!important;height:20px!important;display:grid;place-items:center;border-radius:50%;background:#0b0d1ccc!important;box-shadow:0 0 0 1.5px var(--c)!important;margin:0!important}
+#app.af .af-stage .foe .xwk i svg{width:13px!important;height:13px!important}
+#app.af .af-stage .foe .xtrs{display:inline-flex!important;gap:3px;margin:3px 2px 0!important;vertical-align:top}
+#app.af .af-stage .foe .xtr{display:inline-grid!important;place-items:center;width:20px;height:20px;padding:0!important;font-size:0!important;border-radius:50%;background:#0b0d1ccc!important;border:0!important;box-shadow:0 0 0 1.5px var(--c)!important}
+#app.af .af-stage .foe .xtr svg{width:13px!important;height:13px!important;margin:0!important}
+#app.af .af-stage .fx7-body{display:block;transform-origin:50% 100%;animation:fx7Br var(--b,2s) ease-in-out var(--d,0s) infinite,fx7Sw var(--s,4s) ease-in-out var(--d,0s) infinite}
+#app.af .af-stage .fx7-body>svg{width:100%;height:auto;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+#app.af .af-stage .foe.dead .fx7-body,#app.af .af-stage .foe.fledf .fx7-body{animation:none}
+@keyframes fx7Br{50%{transform:scale(1.03,.97)}}@keyframes fx7Sw{25%{translate:var(--x,3px) 0}75%{translate:calc(var(--x,3px) * -1) 0}}
+#app.af .sheet.fx7-aim{background:none;box-shadow:none;border:0;padding:4px 0}
+#app.af .fx7-turn{display:flex;align-items:center;justify-content:center;gap:8px}.fx7-ic svg{width:26px;height:26px}
+#app.af .acts.xbig .act.xbb>b{order:-1;margin-bottom:4px}
+@media (prefers-reduced-motion:reduce){#app.af .af-stage .fx7-body{animation:none}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
