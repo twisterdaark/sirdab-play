@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.61',d:'14 أكتوبر',add:['المنجم: أول مرة صخرة تقع أو غاز أو الهوا يخلص أو عِرق نادر، المنجم بيقف ويشرحلك {تعمل|تعملي} إيه، والوقت ما بيبدأش غير لما {تدوس|تدوسي} «جاهز». بعد كده بتطلع «{انتبه|انتبهي}!» الأول ثانية، عشان دوستك على الصخرة ما تقعش على اللعبة بالغلط.','المنجم: الوقت بقى أطول في الأربع ألعاب، وزرار «اكتم نفسك» وزرار «انفخ!» ما بقوش بيتحركوا من مكانهم وانت بتدوس.','الجو ما بقاش بيحط «مبلول» أو «هايج» أو «متعفّر» قدام اسم كل وحش. الجو لسه بيأثر في الخناقة زي ما هو، بس الاسم بيفضل نضيف، إلا الوحش اللي تاه في الشبورة.']},
 {v:'6.60',d:'14 أكتوبر',add:['في الحوار، كل واحد بيتكلم بقى ليه صورته جنب كلامه: لو خالد اتكلم تشوف خالد، ولو مراته ردّت تشوف مراته. وكل شخص بيفضل بنفس الوش طول المشهد، ولو انت اللي بتتكلم بتشوف صورتك.']},
 {v:'6.59',d:'14 أكتوبر',add:['«مبارزة أونلاين»: من «صحابي» {دوس|دوسي} 🔴⚔ جنب صاحبك و{ابعت|ابعتي} له دعوة، وتلعبوا مع بعض في نفس الوقت دور بدور: ضربة، تقيلة، أو حماية، و{اضرب|اضربي} في الأخضر عشان الضربة تصيب (والدهبي ضربة قاضية).','الرهان: ولا حاجة، فلوس، أو حاجة من شنطتك. الرهان بيتحجز أول ما {تبعت|تبعتي}، وصاحبك بيحط نفس الفلوس أو حاجة قيمتها قريبة. الكسبان بياخد الرهانين، ولو اترفضت أو اتلغت رهانك بيرجعلك.','لو صاحبك ما ردّش في دوره دقيقة، {تقدر|تقدري} {تاخد|تاخدي} المكسب. والمكسب بيتحسب كمان في جدول الأسبوع.']},
 {v:'6.58',d:'14 أكتوبر',add:['اتصلح: لو عندك ليلة متسابة، أدوات الصنايعية (زي الفاس البرونز) وأدوات العطارة ومراحل الورش كانت بتقفل زرار «اعمل» من غير ما تقول ليه، حتى لو الخامات والفلوس معاك. دلوقتي {بتعملها|بتعمليها} عادي، والقفل بقى بس وانت جوه الليلة أو في خناقة.','«المبارزة الودية»: من «صحابي» {دوس|دوسي} ⚔ جنب صاحبك و{بارز|بارزي} بطله بالقتال الجديد، واللعبة هي اللي بتلعبه. مفيش رهان ومفيش حاجة بتضيع، وصحتك بترجع زي ما كانت.','«جدول الأسبوع»: كل مكسب بيتحسب في جدول المبارزات بينك وبين صحابك (3 مكاسب في اليوم مع نفس الصاحب)، وكل مكسب بيتحسب بيدي شوية خبرة.']},
@@ -49358,7 +49359,7 @@ const wxNm=k=>ae(WX[k].n[0],WX[k].n[1]);
     if(W.dmg)f.dmg=Math.max(1,(f.dmg|0)+W.dmg);
     if(W.hp&&!f.boss&&!(f.base&&f.base.boss)){const full=f.hp>=f.max;f.max=Math.max(1,Math.round(f.max*W.hp));f.hp=full?f.max:Math.min(f.hp,f.max)}
     if(W.lost&&!(f.fx&&f.fx.skip)&&Math.random()<W.lost){f.fx=f.fx||{};f.fx.skip={n:1,daze:1,t:Date.now()};f.wxLost=1;lost++}
-    if(W.tag&&(!W.lost||f.wxLost))f.name=fxTag(f,W.tag[0],W.tag[1],WX_TEN[k]);});
+    if(W.tag&&W.lost&&f.wxLost)f.name=fxTag(f,W.tag[0],W.tag[1],WX_TEN[k]);});
   C.log.push({t:`${W.e} ${ae(`الجو ${WX[k].n[0]}`,WX[k].n[1])}: ${ae(W.d[0],W.d[1]).split('.')[0]}.${lost?` ${lost>1?ae(`${lost} منهم تاهوا في الشبورة`,`${lost} of them are lost in the fog`):ae('في واحد تاه في الشبورة','one is lost in the fog')}.`:''}`});
   if(S.screen==='combat'&&S.combat===C)render()}catch(e){console.warn(e)}return r}}
 /* D40/D01: the hidden things on «الخلا» */
@@ -52116,7 +52117,7 @@ function mrLayer(cls,html,say){MR.busy=1;GXB(1);const st=$('#gxStage');const L=d
   L.innerHTML=`${html}<div class="mr-say" style="direction:${EN?'ltr':'rtl'}">${say}</div>`;st.appendChild(L);return L}
 function mrEnd(L,ms,fn){setTimeout(()=>{try{L.remove()}catch(e){}MR.busy=0;GXB(0);fn&&fn();try{if(S.screen==='mine'){mnSlot();mnBtn();mnGoal()}}catch(e){}},ms)}
 const mrAuto=()=>window.__mrAuto!=null;
-function mrFall(){const h=S.hero,side=Math.random()<.5?0:1,win=mrWin(h,1150);
+function mrFall(){const h=S.hero,side=Math.random()<.5?0:1,win=mrWin(h,2000);
   const L=mrLayer('fall',`<div class="mr-half${side?'':' bad'}" data-s="0"><i class="mr-rk"></i></div><div class="mr-half${side?' bad':''}" data-s="1"><i class="mr-rk"></i></div><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
     T(ae('صخرة هتقع! {اطلع|اطلعي} الناحية التانية!','A rock is coming down! Get to the other side!')));
   try{SFX.crumble();vib(40)}catch(e){}let over=0;const say=L.querySelector('.mr-say');
@@ -52125,7 +52126,7 @@ function mrFall(){const h=S.hero,side=Math.random()<.5?0:1,win=mrWin(h,1150);
     else{say.innerHTML=ae('الصخرة نزلت عليك.','The rock came down on you.');mrHurt(h,2,say);try{shake()}catch(e){}}mrEnd(L,1100)};
   const tm=setTimeout(()=>fin(window.__mrAuto===true),mrAuto()?60:win);
   L.querySelectorAll('.mr-half').forEach(x=>x.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fin(mrAuto()?window.__mrAuto:+x.dataset.s!==side)}))}
-function mrGas(){const h=S.hero,need=1500,win=mrWin(h,1400);
+function mrGas(){const h=S.hero,need=1500,win=mrWin(h,2600);
   const L=mrLayer('gas',`<div class="mr-cloud"></div><button class="btn mr-hold" id="mrHold"><span>${T(ae('{اكتم|اكتمي} نفسك','Hold your breath'))}</span><i id="mrHf"></i></button><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
     T(ae('غاز طالع من الشق! {دوس|دوسي} {وامسك|وامسكي} لحد ما الهوا يعدّي.','Gas from the crack! Press and hold until it passes.')));
   try{SFX.smoke?SFX.smoke():SFX.tick(180);vib(30)}catch(e){}let over=0,t0=0,raf=0;const say=L.querySelector('.mr-say'),B=L.querySelector('#mrHold'),hf=L.querySelector('#mrHf');
@@ -52136,7 +52137,7 @@ function mrGas(){const h=S.hero,need=1500,win=mrWin(h,1400);
   const tm=setTimeout(()=>{if(!t0)fin(window.__mrAuto===true)},mrAuto()?60:win);
   B.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(mrAuto())return fin(window.__mrAuto);if(over||t0)return;t0=performance.now();clearTimeout(tm);try{B.setPointerCapture(e.pointerId)}catch(x){}raf=requestAnimationFrame(tick)});
   const let_=()=>{if(t0&&!over)fin(false)};B.addEventListener('pointerup',let_);B.addEventListener('pointercancel',let_)}
-function mrAir(V){const h=S.hero,need=5,win=mrWin(h,2400);
+function mrAir(V){const h=S.hero,need=5,win=mrWin(h,3800);
   const L=mrLayer('air',`<div class="mr-lamp"></div><button class="btn mr-pump" id="mrPump">${ae('انفخ!','Pump!')}<small id="mrPn">0/${need}</small></button><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
     T(ae('الهوا خلص! {انفخ|انفخي} في المنفاخ بسرعة.','The air is gone! Pump the bellows, fast.')));
   try{SFX.tired?SFX.tired():SFX.tick(200);vib(30)}catch(e){}let over=0,n=0;const say=L.querySelector('.mr-say'),pn=L.querySelector('#mrPn');
@@ -52148,7 +52149,7 @@ function mrAir(V){const h=S.hero,need=5,win=mrWin(h,2400);
     try{SFX.tick(400+n*90);vib(10);L.querySelector('.mr-lamp').animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:180})}catch(x){}if(n>=need)fin(true)})}
 /* the floor's best ore for a vein */
 function mrBest(F){const b=mnBand(F);if(b.g&&b.g.length)return b.g[0];const ord=['gold','silver','iron','coal','copper'];return ord.find(k=>k in b.w)||'iron'}
-function mrVein(V){const h=S.hero,F=V.floor||1,k=mrBest(F),win=mrWin(h,2600),P=[[22,30],[70,26],[46,58],[18,66],[78,62],[50,22]].sort(()=>Math.random()-.5).slice(0,3);
+function mrVein(V){const h=S.hero,F=V.floor||1,k=mrBest(F),win=mrWin(h,4000),P=[[22,30],[70,26],[46,58],[18,66],[78,62],[50,22]].sort(()=>Math.random()-.5).slice(0,3);
   const L=mrLayer('vein',`${P.map(([x,y],i)=>`<button class="mr-gl" data-i="${i}" style="left:${x}%;top:${y}%;--oc:${(MAT[k]||{}).c||'#fff'}" aria-label="${ae('لمعة','Glint')}"></button>`).join('')}<i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
     T(ae(`عِرق ${resN(k)} بيلمع! {المس|المسي} اللمعات التلاتة بسرعة.`,`A vein is glinting! Tap all three glints, fast.`)));
   try{SFX.sparkle();vib(20)}catch(e){}let over=0,got=0;const say=L.querySelector('.mr-say');
@@ -52238,7 +52239,7 @@ function bpDodge(e){return new Promise(res=>{const h=S.hero,side=Math.random()<.
 @keyframes mrWob{to{transform:rotate(6deg) translateX(3px)}}@keyframes mrDrop{to{transform:translateY(160px)}}
 .mr-cloud{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#7fe07a88,#4a8a2a55 45%,#0000 75%);animation:mrGas 1.4s ease-out both}
 @keyframes mrGas{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
-.mr-hold,.mr-pump{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:auto;min-height:64px;min-width:200px;font-size:18px;overflow:hidden;z-index:2}
+.mr-hold,.mr-pump{position:absolute;left:0;right:0;margin:0 auto;bottom:14%;transform:none;width:max-content;min-height:64px;min-width:200px;font-size:18px;overflow:hidden;z-index:2}
 .mr-hold i{position:absolute;left:0;bottom:0;height:6px;width:0;background:#7fe07a}.mr-hold span{position:relative}
 .mr-pump small{display:block;font-size:12px}
 .mr-lamp{position:absolute;left:50%;top:30%;width:44px;height:58px;margin-left:-22px;border-radius:10px 10px 6px 6px;background:radial-gradient(circle at 50% 60%,#ffd27a,#a8641a 60%,#3a2a1a);animation:mrFl .3s steps(2) infinite}
@@ -53514,6 +53515,36 @@ function cmSpeakers(segs){const key=CMX.key||'';if(!CMX.sp||CMX.spKey!==key){CMX
 {const p0=cmPanels;cmPanels=function(segs,face){if(!segs||!segs.some(s=>s.f))return p0.apply(this,arguments);let n=0;
   return segs.map(s=>{const d=`style="--d:${(n++*.22).toFixed(2)}s"`,f=s.t==='say'?(s.f||face):null;
     return s.t==='cap'?`<div class="cm-cap" ${d}>${s.h}</div>`:`<div class="cm-say${f?'':' nof'}" ${d}>${f?`<span class="cm-who" data-cmwho>${f}</span>`:''}<div class="cm-bb">${s.h}</div></div>`}).join('')}}
+/* ---------- 6.61 (acc1, Twister 18:12, a tester's notes): the mine's hand risks are fair now ----------
+   «الميني جيمز بتاعت التنقيب في المنجم بتظهر بسرعة جدا وبعضهم فيه bugs بتخلي الزراير يتحرك من مكانه وانا بدوس،
+    وخلي في tutorial لما تعملهم اول مرة» + «الأعداء كلهم تقريبا قدام اسمهم كلمة مبلول»
+   - The first time each risk comes (h.mrSeen), the mine stops and shows what to do, with a «جاهز» button; the clock starts after it.
+   - Every later time a short «انتبه!» comes first and nothing can be tapped yet, so a tap meant for the rock never lands on it.
+   - The windows are longer (p181: fall 2.0 s, gas 2.6 s to start holding, air 3.8 s, vein 4.0 s), and the hold/pump buttons
+     no longer jump sideways when pressed (they were centred with a transform that .btn:active replaced).
+   - Weather (p148) no longer adds «مبلول/هايج/متعفّر» to every foe's name; only a foe lost in the fog is named so. */
+const MR_HOW={
+  fall:['🪨','صخرة هتقع','A falling rock','الناحية اللي فوقها الصخرة بتحمر. {دوس|دوسي} على الناحية التانية قبل الشريط الأصفر ما يخلص.','The side under the rock turns red. Tap the other side before the yellow bar runs out.'],
+  gas:['🟢','غاز','Gas','{دوس|دوسي} على «اكتم نفسك» {وسيب|وسيبي} صباعك عليه لحد ما الشريط الأخضر يتملي. لو {شلته|شلتيه} بدري هتدوخ.','Press «Hold your breath» and keep your finger on it until the green bar fills. Let go early and you get dizzy.'],
+  air:['💨','الهوا خلص','The air is out','{دوس|دوسي} على «انفخ!» 5 مرات بسرعة قبل الشريط ما يخلص.','Tap «Pump!» 5 times, fast, before the bar runs out.'],
+  vein:['✨','عِرق نادر','A rare vein','هتظهر 3 لمعات في الصخر. {المسهم|المسيهم} كلهم قبل الشريط ما يخلص {وهتاخد|وهتاخدي} خام حلو.','Three glints show in the rock. Tap them all before the bar runs out for good ore.']};
+function mrPre(k,go){const h=S.hero;if(!mrOn()||mrAuto()||!h||!$('#gxStage'))return go();h.mrSeen=h.mrSeen||{};const W=MR_HOW[k];
+  if(!h.mrSeen[k]&&W){const L=mrLayer('how',`<div class="mr-how" style="direction:${EN?'ltr':'rtl'}"><div class="mr-hi">${W[0]}</div><b>${ae(W[1],W[2])}</b><p>${T(ae(W[3],W[4]))}</p>
+      <button class="btn" id="mrGo">${ae('جاهز','Ready')}</button></div>`,ae('المنجم وقف لحظة','The mine stops for a moment'));
+    L.querySelector('.mr-say').style.display='none';try{SFX.page&&SFX.page()}catch(e){}
+    L.querySelector('#mrGo').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();h.mrSeen[k]=1;try{saveHero()}catch(x){}L.remove();MR.busy=0;GXB(0);setTimeout(()=>{if(S.screen==='mine'&&$('#gxStage'))go()},250)});return}
+  const L=mrLayer('warn',`<div class="mr-warn">⚠</div>`,`${W?W[0]+' ':''}${T(ae('{انتبه|انتبهي}!','Look out!'))}`);try{vib(30)}catch(e){}
+  setTimeout(()=>{L.remove();MR.busy=0;GXB(0);if(S.screen==='mine'&&$('#gxStage'))go()},750)}
+{const f0=mrFall;mrFall=function(){const a=arguments;mrPre('fall',()=>f0.apply(this,a))}}
+{const f0=mrGas;mrGas=function(){const a=arguments;mrPre('gas',()=>f0.apply(this,a))}}
+{const f0=mrAir;mrAir=function(){const a=arguments;mrPre('air',()=>f0.apply(this,a))}}
+{const f0=mrVein;mrVein=function(){const a=arguments;mrPre('vein',()=>f0.apply(this,a))}}
+(function(){const s=document.createElement('style');s.textContent=`
+.mr-l.how{background:#000c;display:flex;align-items:center;justify-content:center;padding:12px}
+.mr-how{max-width:300px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px;border-radius:14px;background:#1a1410f2;border:2px solid #f3c14d;text-align:center;color:#fff}
+.mr-how .mr-hi{font-size:40px;line-height:1}.mr-how b{font-size:18px;color:#ffd36a}.mr-how p{margin:0;font-size:14px;line-height:1.6}.mr-how .btn{min-height:48px;min-width:160px}
+.mr-l.warn{background:#e2483f22;pointer-events:auto}.mr-warn{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:56px;animation:mrWarn .25s ease-in-out infinite alternate}
+@keyframes mrWarn{to{transform:scale(1.15)}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
