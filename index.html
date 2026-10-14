@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.59',d:'14 أكتوبر',add:['«مبارزة أونلاين»: من «صحابي» {دوس|دوسي} 🔴⚔ جنب صاحبك و{ابعت|ابعتي} له دعوة، وتلعبوا مع بعض في نفس الوقت دور بدور: ضربة، تقيلة، أو حماية، و{اضرب|اضربي} في الأخضر عشان الضربة تصيب (والدهبي ضربة قاضية).','الرهان: ولا حاجة، فلوس، أو حاجة من شنطتك. الرهان بيتحجز أول ما {تبعت|تبعتي}، وصاحبك بيحط نفس الفلوس أو حاجة قيمتها قريبة. الكسبان بياخد الرهانين، ولو اترفضت أو اتلغت رهانك بيرجعلك.','لو صاحبك ما ردّش في دوره دقيقة، {تقدر|تقدري} {تاخد|تاخدي} المكسب. والمكسب بيتحسب كمان في جدول الأسبوع.']},
 {v:'6.58',d:'14 أكتوبر',add:['اتصلح: لو عندك ليلة متسابة، أدوات الصنايعية (زي الفاس البرونز) وأدوات العطارة ومراحل الورش كانت بتقفل زرار «اعمل» من غير ما تقول ليه، حتى لو الخامات والفلوس معاك. دلوقتي {بتعملها|بتعمليها} عادي، والقفل بقى بس وانت جوه الليلة أو في خناقة.','«المبارزة الودية»: من «صحابي» {دوس|دوسي} ⚔ جنب صاحبك و{بارز|بارزي} بطله بالقتال الجديد، واللعبة هي اللي بتلعبه. مفيش رهان ومفيش حاجة بتضيع، وصحتك بترجع زي ما كانت.','«جدول الأسبوع»: كل مكسب بيتحسب في جدول المبارزات بينك وبين صحابك (3 مكاسب في اليوم مع نفس الصاحب)، وكل مكسب بيتحسب بيدي شوية خبرة.']},
 {v:'6.57',d:'14 أكتوبر',add:['«المقايضة وش لوش»: من «صحابي» {افتح|افتحي} ترابيزة وابعت الكود لصاحبك، أو {ادخل|ادخلي} بالكود بتاعه. كل واحد بيحط خاماته أو فلوسه على الترابيزة ({دوسة|دوسة} تحط واحدة، {واسحب|واسحبي} تحط 5).','اللي بتحطه على الترابيزة بيطلع من شنطتك على طول. لما الاتنين يدوسوا «موافق» التبديل بيحصل مرة واحدة بس، ولو حد غيّر حاجة الموافقة بتتشال من الاتنين. لو حد لغى، أو اللعبة اتقفلت قبل ما التبديل يتم، حاجتك بترجعلك.']},
 {v:'6.56',d:'14 أكتوبر',add:['«صحابي»: من البروفايل (أو من «رفيق الليلة») {تقدر|تقدري} تشوف صحابك، مين فيهم أونلاين دلوقتي وآخر مرة دخل إمتى، والأونلاين بيظهروا الأول.','بروفايل صاحبك: وشه، صنفه ومستواه، لابس إيه، ألقابه، وكام مرة طلع من السرداب وكام عقد وحكاية خلّص. و«بروفايلي» بيوريك نفسك زي ما صحابك شايفينك.','الهدايا: {ابعت|ابعتي} لصاحبك خامة من اللي معاك (من 1 لـ 20، خمس هدايا في اليوم). اللي يوصلك بيظهر فوق في «هدايا وصلتلك» و{بتستلمه|بتستلميه} مرة واحدة. لو الهدية ما اتبعتتش الحاجة بترجعلك.']},
@@ -53297,6 +53298,174 @@ SCREENS.duel=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 .dl-tb{display:flex;flex-direction:column;gap:6px}.dl-r{display:grid;grid-template-columns:28px 1fr 40px 64px;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;background:#ffffff08}
 .dl-r.me{border:2px solid #f3c14d}.dl-r .k{font-weight:900;color:#ffd36a;text-align:center}.dl-r .n small{color:var(--dim);font-size:11px}.dl-r b{font-size:20px;text-align:center;color:#7fe07a}.dl-r .btn{min-height:44px;width:100%;padding:0}
 .fr-bt [data-fd]{flex:0 0 56px}`;document.head.appendChild(s)})();
+/* ---------- 6.59 (acc1, Twister 17:30, R22 live + R23 bets): «مبارزة أونلاين» — invite a friend, both play live, a bet if you like ----------
+   «انا عايز مبارزه تبقا اونلاين وبعت دعوه ليه مثلا و مبارزه تبقا علي رهان فلوس او ايتم كدا و ظبط انت»
+   - From «صحابي» (🔴 on a friend's row, or the duel screen) you send an invite with a bet: none, money (50 to half of what you carry),
+     or a thing from your bag (a material or a bag item, 1 to 20). The friend's game shows the invite wherever they are in town
+     (it listens for duo/ docs with b = them); they accept or refuse. A money bet is matched with the same money; for a thing they put
+     a thing of their own worth at least DU_FAIR of yours (by its price).
+   - Stakes leave the bag at once (h.duEsc[id], saved). Refused, cancelled or unanswered: they come back. The winner's game takes
+     both stakes once (h.duGot[id]); the loser's escrow is cleared.
+   - The fight is live and turn by turn on one screen: both heroes with health bars. On your turn pick «ضربة», «تقيلة» (2 energy,
+     ×1.7, a smaller green) or «حماية» (the next hit on you is halved, +1 energy). A hit is a timing ring: tap when the marker is in
+     the green (a crit in the gold). Each side's numbers (health, hit, guard) are fixed when the duel starts (pa/pb).
+   - A turn waits DU_TURN ms; after that the other side can claim the win. Leaving the duel gives the win to the other side.
+   - A win also counts on the weekly duel table (6.58).
+   Firestore: duo/{id} needs the rules in firebase/firestore.rules deployed from the PC.
+   Tests: window.__duMock = {me, create, update, listen, inbox(cb)} replaces the cloud; window.__duAuto answers the timing ring. */
+const DU_TURN=60000,DU_FAIR=.6,DU_MAXN=20;
+const DUX={id:null,doc:null,unsub:null,inbox:null,pop:null,err:'',busy:0};
+const duMk=()=>window.__duMock||null;
+const duUid=()=>{const M=duMk();return M?M.me:(FB.user&&FB.user.uid)};
+const duCol=()=>FB.db.collection('duo');
+const DUA={
+  async create(o){const M=duMk();if(M)return M.create(o);const r=await duCol().add(Object.assign({},o,{t:window.firebase.firestore.FieldValue.serverTimestamp()}));return r.id},
+  async update(id,p){const M=duMk();if(M)return M.update(id,p);return duCol().doc(id).update(p)},
+  listen(id,cb){const M=duMk();if(M)return M.listen(id,cb);return duCol().doc(id).onSnapshot(d=>cb(d.exists?Object.assign({_id:d.id},d.data()):null),e=>{DUX.err=String(e&&e.code||e)})},
+  inbox(cb){const M=duMk();if(M)return M.inbox(cb);return duCol().where('b','==',FB.user.uid).where('st','==','inv').onSnapshot(q=>cb(q.docs.map(d=>Object.assign({_id:d.id},d.data()))),e=>{})}};
+/* what a stake is: {k:'$'|key, n} */
+const duVal=s=>!s||!s.k?0:s.k==='$'?s.n|0:(((MAT[s.k]&&MAT[s.k].p)||(ITEMS[s.k]&&ITEMS[s.k].price)||1)*(s.n|0));
+const duNm=s=>!s||!s.k?ae('من غير رهان','No bet'):s.k==='$'?`${s.n} ${ae('جنيه','coins')}`:`${s.n} ${MAT[s.k]?fsNm(s.k):ITEMS[s.k]?(ITEMS[s.k].name||s.k):'?'}`;
+const duIc=s=>!s||!s.k?'🤝':s.k==='$'?'🪙':MAT[s.k]?twMat(s.k,22):ITEMS[s.k]?twFood(s.k,22):'❔';
+const duP=s=>{try{const o=JSON.parse(s||'null');return o&&typeof o==='object'?o:null}catch(e){return null}};
+function duHave(h,s){if(!s||!s.k)return true;if(s.k==='$')return h.money>=s.n;if(MAT[s.k])return (h.res[s.k]|0)>=s.n;return (h.bag[s.k]|0)>=s.n}
+function duTake(h,id,s){if(!s||!s.k)return true;if(!duHave(h,s))return false;if(s.k==='$')h.money-=s.n;else if(MAT[s.k])h.res[s.k]-=s.n;else h.bag[s.k]-=s.n;h.duEsc=h.duEsc||{};h.duEsc[id]=s;saveHero();return true}
+function duGive(h,s){if(!s||!s.k)return;const n=Math.max(0,Math.min(s.k==='$'?1e6:999,s.n|0));if(s.k==='$')h.money+=n;else if(MAT[s.k])addRes(h,s.k,n);else if(ITEMS[s.k])h.bag[s.k]=(h.bag[s.k]|0)+n}
+function duBack(h,id){const E=h.duEsc&&h.duEsc[id];if(E){duGive(h,E);delete h.duEsc[id];saveHero()}}
+/* my fight numbers, fixed for the duel */
+function duMe(h){const w=h.eq&&GEAR[h.eq.weapon],L=Math.max(1,h.lvl|0);let lk={};try{lk=JSON.parse(palSnap(h).lk)}catch(e){}
+  return JSON.stringify({hp:MXH(h),atk:2+Math.floor(L*.45)+((w&&w.dmg)|0)+Math.floor(Math.max(0,ST(h,'قوة'))/2),def:Math.floor(Math.max(0,ST(h,'تحمّل'))/3),l:L,n:String(h.name||'').slice(0,20),g:h.g==='f'?'f':'m',c:String(h.cls||'').slice(0,12),lk:JSON.stringify(lk).slice(0,1500)})}
+const duSide=D=>D&&D.a===DUX.me?'a':'b';
+/* ---- invites ---- */
+function duInvite(h,g){if(!g)return;const s=document.createElement('div');s.className='cmg du-o';let bet=null;
+  const mats=Object.keys(h.res||{}).filter(k=>MAT[k]&&(h.res[k]|0)>0&&!MAT[k].junk).sort((a,b)=>(MAT[b].p|0)-(MAT[a].p|0)).slice(0,24).map(k=>({k,n:h.res[k]|0}));
+  const its=Object.keys(h.bag||{}).filter(k=>ITEMS[k]&&(h.bag[k]|0)>0&&k!=='amulet').slice(0,16).map(k=>({k,n:h.bag[k]|0}));
+  const half=Math.floor(Math.max(0,h.money)/2),ms=[50,200,500,1000,5000].filter(v=>v<=half);
+  s.innerHTML=`<div class="ag-box du-inv" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>${T(ae(`{ادعي|ادعي} ${esc(g.heroes[0].n)} لمبارزة أونلاين`,`Invite ${esc(g.heroes[0].n)} to a live duel`))}</b></div>
+    <small class="dim">${T(ae('{اختار|اختاري} الرهان: ولا حاجة، فلوس، أو حاجة من شنطتك. الكسبان بياخد الرهانين.','Pick the bet: nothing, money, or a thing from your bag. The winner takes both.'))}</small>
+    <div class="du-bets"><button class="du-b on" data-b="none">🤝<small>${ae('من غير رهان','No bet')}</small></button>${ms.map(v=>`<button class="du-b" data-b="$:${v}">🪙<small>${v}</small></button>`).join('')}</div>
+    <div class="du-items">${mats.concat(its).map(x=>`<button class="du-b" data-b="${x.k}:1">${MAT[x.k]?twMat(x.k,22):twFood(x.k,22)}<small>${esc(MAT[x.k]?fsNm(x.k):ITEMS[x.k].name)}</small><i>${x.n}</i></button>`).join('')}</div>
+    <div class="fr-n" id="duQ" style="display:none"><button class="btn ghost" data-q="1">1</button><button class="btn ghost" data-q="5">5</button><button class="btn ghost" data-q="20">20</button></div>
+    <div class="row"><button class="btn" id="duSend">${ae('ابعت الدعوة','Send the invite')}</button><button class="btn ghost" id="duNo">${ae('لأ','Cancel')}</button></div></div>`;
+  document.body.appendChild(s);let q=1;const upd=()=>{s.querySelectorAll('.du-b').forEach(b=>b.classList.toggle('on',b.dataset.b===(bet?bet.k+':'+(bet.k==='$'?bet.n:1):'none')));s.querySelector('#duQ').style.display=bet&&bet.k!=='$'?'flex':'none';
+    s.querySelectorAll('[data-q]').forEach(b=>b.classList.toggle('on',+b.dataset.q===q));if(bet&&bet.k!=='$'){const have=MAT[bet.k]?h.res[bet.k]|0:h.bag[bet.k]|0;bet.n=Math.min(q,have,DU_MAXN)}
+    s.querySelector('#duSend').textContent=ae(`ابعت الدعوة · ${duNm(bet)}`,`Send the invite · ${duNm(bet)}`)};
+  s.querySelectorAll('.du-b').forEach(b=>b.onclick=()=>{const v=b.dataset.b;if(v==='none')bet=null;else{const [k,n]=v.split(':');bet={k,n:k==='$'?+n:1}}upd()});
+  s.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{q=+b.dataset.q;upd()});upd();
+  s.querySelector('#duNo').onclick=()=>s.remove();
+  s.querySelector('#duSend').onclick=async()=>{const btn=s.querySelector('#duSend');btn.disabled=true;DUX.me=duUid();if(!DUX.me){s.remove();return toast(ae('لازم تدخل بحساب جوجل.','Sign in with Google first.'))}
+    if(bet&&!duHave(h,bet)){btn.disabled=false;return toast(ae('مش معاك ده.','You don\'t have that.'))}
+    try{const id=await DUA.create({a:DUX.me,an:String(h.name||'').slice(0,20),b:g.o,bn:String(g.heroes[0].n||'').slice(0,20),st:'inv',ba:JSON.stringify(bet),bb:'null',pa:duMe(h),pb:'',hpa:0,hpb:0,tn:'a',n:0,gd:'',ea:2,eb:2,last:'',w:'',dl:0});
+      duTake(h,id,bet);s.remove();duOpen(h,id);toast(T(ae('الدعوة اتبعتت. مستني صاحبك يقبل…','Invite sent. Waiting for your friend…')))}
+    catch(e){btn.disabled=false;toast(duErr(e))}}}
+const duErr=e=>e&&e.code==='permission-denied'?ae('المبارزة الأونلاين لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','Live duels are still being set up (needs an update from the PC).'):ae('مش قادر أوصل دلوقتي.','Can\'t connect right now.');
+/* an invite for me: a popup wherever I am in town (not in a fight or a night) */
+function duPop(h,D){if(DUX.id||DUX.pop||!D||S.combat||(typeof gbIn==='function'&&gbIn(h)))return;const bet=duP(D.ba);const s=document.createElement('div');s.className='cmg du-o';DUX.pop=D._id;
+  const mine=bet&&bet.k&&bet.k!=='$'?Object.keys(h.res||{}).filter(k=>MAT[k]&&(h.res[k]|0)>0).concat(Object.keys(h.bag||{}).filter(k=>ITEMS[k]&&(h.bag[k]|0)>0&&k!=='amulet')).filter(k=>duVal({k,n:Math.min(DU_MAXN,MAT[k]?h.res[k]:h.bag[k])})>=duVal(bet)*DU_FAIR).slice(0,24):[];
+  let pick=null;
+  s.innerHTML=`<div class="ag-box du-inv" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>⚔ ${T(ae(`${esc(D.an)} {بيدعيك|بيدعيكي} لمبارزة أونلاين`,`${esc(D.an)} invites you to a live duel`))}</b></div>
+    <div class="du-bet">${duIc(bet)} <b>${ae('الرهان','The bet')}:</b> ${esc(duNm(bet))}</div>
+    ${bet&&bet.k==='$'?`<small class="dim">${T(ae(`{هتحط|هتحطي} نفس المبلغ: ${bet.n} جنيه.`,`You put the same: ${bet.n} coins.`))}</small>`:bet&&bet.k?`<small class="dim">${T(ae('{اختار|اختاري} حاجة من عندك قيمتها قريبة:','Pick a thing of yours of about the same worth:'))}</small><div class="du-items">${mine.map(k=>`<button class="du-b" data-m="${k}">${MAT[k]?twMat(k,22):twFood(k,22)}<small>${esc(MAT[k]?fsNm(k):ITEMS[k].name)}</small></button>`).join('')||`<small class="dim">${ae('مفيش حاجة عندك تكفي.','Nothing of yours is worth enough.')}</small>`}</div>`:''}
+    <div class="row"><button class="btn" id="duYes">${T(ae('{اقبل|اقبلي}','Accept'))}</button><button class="btn ghost" id="duRef">${T(ae('{ارفض|ارفضي}','Refuse'))}</button></div></div>`;
+  document.body.appendChild(s);const close=()=>{s.remove();DUX.pop=null};
+  s.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const k=b.dataset.m,have=MAT[k]?h.res[k]|0:h.bag[k]|0;let n=1;while(n<Math.min(DU_MAXN,have)&&duVal({k,n})<duVal(bet)*DU_FAIR)n++;pick={k,n};s.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x===b));s.querySelector('#duYes').textContent=ae(`اقبل · ${duNm(pick)}`,`Accept · ${duNm(pick)}`)});
+  s.querySelector('#duRef').onclick=async()=>{close();try{await DUA.update(D._id,{st:'no'})}catch(e){}};
+  s.querySelector('#duYes').onclick=async()=>{let my=null;if(bet&&bet.k==='$')my={k:'$',n:bet.n};else if(bet&&bet.k){if(!pick)return toast(T(ae('{اختار|اختاري} رهانك الأول.','Pick your bet first.')));my=pick}
+    if(my&&!duHave(h,my))return toast(ae('مش معاك الرهان.','You don\'t have the stake.'));DUX.me=duUid();
+    const pa=duP(D.pa)||{},pb=duMe(h),PB=JSON.parse(pb);
+    try{await DUA.update(D._id,{st:'on',bb:JSON.stringify(my),pb,hpa:pa.hp|0,hpb:PB.hp,tn:Math.random()<.5?'a':'b',dl:Date.now()+DU_TURN});duTake(h,D._id,my);close();S.duFrom=S.screen;duOpen(h,D._id)}catch(e){toast(duErr(e))}};
+  try{SFX.levelup&&SFX.levelup();vib([30,40,30])}catch(e){}}
+function duListen(h){if(DUX.inbox||!duUid())return;try{DUX.inbox=DUA.inbox(L=>{const D=(L||[]).find(x=>x.st==='inv');if(D&&S.hero)duPop(S.hero,D)})}catch(e){console.warn(e)}}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);try{duListen(S.hero);await duFixLoad(S.hero)}catch(e){}return R}}
+/* ---- the live duel ---- */
+function duOpen(h,id){duStop();DUX.id=id;DUX.me=duUid();DUX.doc=null;DUX.unsub=DUA.listen(id,D=>duOn(h,D));S.duFrom=S.duFrom||S.screen;S.screen='duo';render()}
+function duStop(){try{DUX.unsub&&DUX.unsub()}catch(e){}DUX.unsub=null}
+function duOn(h,D){const old=DUX.doc;DUX.doc=D;if(!D){duBack(h,DUX.id);duStop();return duR()}
+  if(D.st==='no'||D.st==='gone'){duBack(h,D._id||DUX.id);duStop();toast(D.st==='no'?ae('صاحبك رفض المبارزة. رهانك رجعلك.','Your friend refused. Your bet is back.'):ae('المبارزة اتلغت. رهانك رجعلك.','The duel was called off. Your bet is back.'))}
+  else if(D.st==='done')duSettle(h,D);
+  else if(old&&old.last!==D.last&&D.last){const L=duP(D.last);if(L&&L.w!==duSide(D))setTimeout(()=>duFx(L,true),30)}
+  duR()}
+function duSettle(h,D){const id=D._id||DUX.id;h.duGot=h.duGot||{};if(h.duGot[id])return;h.duGot[id]=1;const me=duSide(D),won=D.w===me;
+  if(won){duGive(h,duP(D.ba));duGive(h,duP(D.bb));try{const W=dlFix(h);W.w=(W.w|0)+1;DLA.push(h.name,W.w).catch(()=>{})}catch(e){}bump('duoWin')}
+  if(h.duEsc)delete h.duEsc[id];saveHero();duStop();
+  const pot=[duP(D.ba),duP(D.bb)].filter(x=>x&&x.k);
+  band(ae('مبارزة أونلاين','Live duel'),won?T(ae('{كسبت|كسبتي}!','You won!')):T(ae('{خسرت|خسرتي} المرة دي','You lost this time')),pot.length?(won?ae('خدت الرهان: ','You took the bet: '):ae('راح الرهان: ','The bet is gone: '))+pot.map(duNm).join(' + '):ae('من غير رهان','No bet'),{color:won?'':'red',dur:2400,sound:won?SFX.levelup:SFX.down})}
+/* a duel left open when the game closed: settled from the cloud once signed in */
+async function duFixLoad(h){const E=h&&h.duEsc;if(!E||duMk()||!FB.user)return;for(const id of Object.keys(E)){if(id===DUX.id)continue;try{const d=await duCol().doc(id).get(),D=d.exists?Object.assign({_id:id},d.data()):null;const keep=DUX.me;DUX.me=FB.user.uid;
+  if(D&&D.st==='done')duSettle(h,D);else if(D&&D.st==='on'){const me=duSide(D);try{await DUA.update(id,{st:'done',w:me==='a'?'b':'a'})}catch(e){}duSettle(h,Object.assign({},D,{st:'done',w:me==='a'?'b':'a'}))}
+  else{if(D&&D.st==='inv'&&D.a===FB.user.uid)try{await DUA.update(id,{st:'gone'})}catch(e){}duBack(h,id)}DUX.me=keep}catch(e){console.warn('duFix',e)}}}
+function duR(){if(S.screen==='duo'){render()}}
+/* the timing ring: a marker runs round; tap in the green (gold = crit). Smaller green for the heavy hit */
+const duAuto=()=>window.__duAuto!=null;
+function duRing(heavy){return new Promise(res=>{if(duAuto()){res(window.__duAuto);return}
+  const g0=heavy?.42:.34,g1=heavy?.58:.66,c0=.47,c1=.53;const s=document.createElement('div');s.className='cmg du-o';
+  s.innerHTML=`<div class="ag-box" style="align-items:center"><div class="ag-h"><b>${heavy?ae('تقيلة!','Heavy!'):ae('اضرب!','Strike!')}</b></div><svg viewBox="0 0 100 100" class="du-ring"><circle cx="50" cy="50" r="42" class="bg"/><path d="${nsArc(g0,g1)}" class="ok"/><path d="${nsArc(c0,c1)}" class="cr"/><circle r="6" class="mk" id="duMk"/></svg>
+    <button class="btn" id="duTap" style="min-height:64px">${ae('دلوقتي!','Now!')}</button></div>`;
+  document.body.appendChild(s);const mk=s.querySelector('#duMk');let t0=performance.now(),raf=0,over=0,v=0;const sp=heavy?1250:1600;
+  const loop=()=>{v=((performance.now()-t0)%sp)/sp;const a=-Math.PI/2+v*2*Math.PI;mk.setAttribute('cx',(50+42*Math.cos(a)).toFixed(1));mk.setAttribute('cy',(50+42*Math.sin(a)).toFixed(1));raf=requestAnimationFrame(loop);if(performance.now()-t0>sp*3)end()};
+  const end=()=>{if(over)return;over=1;cancelAnimationFrame(raf);const r=v>=c0&&v<=c1?'cr':v>=g0&&v<=g1?'ok':'miss';try{r==='miss'?SFX.meh():SFX.hit()}catch(e){}setTimeout(()=>{s.remove();res(r)},250)};
+  raf=requestAnimationFrame(loop);s.querySelector('#duTap').addEventListener('pointerdown',e=>{e.preventDefault();end()})})}
+function duFx(L,onMe){const t=$(onMe?'#duMeP':'#duHimP');if(!t)return;t.classList.remove('du-hit');void t.offsetWidth;t.classList.add('du-hit');
+  try{floatAt(t,L.mv==='guard'?'🛡':L.d>0?`−${L.d}${L.cr==='cr'?'!':''}`:ae('فاتت','miss'),L.mv==='guard'?'#7fb6ff':L.cr==='cr'?'#ffd36a':'#ff8a7a','',L.cr==='cr'?28:22)}catch(e){}
+  if(onMe&&L.d>0)try{shake();vib(60);SFX.hurt()}catch(e){}}
+async function duAct(h,mv){const D=DUX.doc;if(!D||D.st!=='on'||DUX.busy)return;const me=duSide(D),op=me==='a'?'b':'a';if(D.tn!==me)return;
+  const E=D['e'+me]|0;if(mv==='heavy'&&E<2)return toast(ae('محتاج 2 طاقة.','You need 2 energy.'));
+  DUX.busy=1;try{const P=duP(D['p'+me])||{},Q=duP(D['p'+op])||{};let d=0,cr='';
+    if(mv!=='guard'){cr=await duRing(mv==='heavy');if(cr!=='miss'){d=P.atk*(mv==='heavy'?1.7:1)*(cr==='cr'?1.5:1)-(Q.def|0);if(D.gd===op)d/=2;d=Math.max(1,Math.round(d))}}
+    const hp=Math.max(0,(D['hp'+op]|0)-d),L={w:me,mv,d,cr,k:Date.now()};const p={last:JSON.stringify(L),n:(D.n|0)+1,tn:op,dl:Date.now()+DU_TURN,gd:mv==='guard'?me:(D.gd===op?'':D.gd)};
+    p['hp'+op]=hp;p['e'+me]=Math.min(3,E-(mv==='heavy'?2:0)+(mv==='guard'?1:0)+1);p['e'+op]=D['e'+op]|0;if(hp<=0){p.st='done';p.w=me}
+    await DUA.update(DUX.id,p);duFx(L,false)}catch(e){toast(duErr(e))}finally{DUX.busy=0}}
+async function duClaim(){const D=DUX.doc;if(!D||D.st!=='on')return;const me=duSide(D);if(D.tn===me||Date.now()<(+D.dl||0))return;try{await DUA.update(DUX.id,{st:'done',w:me})}catch(e){toast(duErr(e))}}
+async function duQuit(h){const D=DUX.doc;if(!D)return;const me=duSide(D);if(D.st==='inv'&&me==='a'){try{await DUA.update(DUX.id,{st:'gone'})}catch(e){}return}
+  if(D.st==='on'){try{await DUA.update(DUX.id,{st:'done',w:me==='a'?'b':'a'})}catch(e){}}}
+SCREENS.duo=function(){const h=S.hero;if(!h){S.screen='title';return render()}const D=DUX.doc;let body='';
+  if(!D)body=`<div class="card nnote">${ae('بيحمّل…','Loading…')}</div>`;
+  else if(D.st==='inv')body=`<div class="card du-st"><div class="du-big">⚔</div><b>${T(ae(`مستني ${esc(D.bn)} يقبل…`,`Waiting for ${esc(D.bn)} to accept…`))}</b><div class="du-bet">${duIc(duP(D.ba))} ${esc(duNm(duP(D.ba)))}</div><button class="btn ghost" id="duX">${ae('الغي الدعوة','Cancel the invite')}</button></div>`;
+  else if(D.st==='no'||D.st==='gone')body=`<div class="card du-st"><div class="du-big">↩</div><b>${D.st==='no'?ae('رفض المبارزة','Refused'):ae('اتلغت','Called off')}</b><small class="dim">${ae('رهانك رجعلك.','Your bet is back.')}</small><button class="btn" id="duOk">${ae('تمام','OK')}</button></div>`;
+  else{const me=duSide(D),op=me==='a'?'b':'a',P=duP(D['p'+me])||{},Q=duP(D['p'+op])||{},my=D.tn===me&&D.st==='on',left=Math.max(0,Math.ceil(((+D.dl||0)-Date.now())/1000)),L=duP(D.last);
+    const bar=(hp,mx)=>`<div class="du-hb"><i style="width:${Math.max(0,Math.min(100,hp/Math.max(1,mx)*100)).toFixed(0)}%"></i><span>${hp}/${mx}</span></div>`;
+    let lkQ={};try{lkQ=JSON.parse(Q.lk||'{}')}catch(e){}
+    const pot=[duP(D.ba),duP(D.bb)].filter(x=>x&&x.k);
+    body=`<div class="du-arena"><div class="du-f" id="duHimP"><div class="du-pic">${frPic(Object.assign({},lkQ,{name:Q.n,g:Q.g,cls:Q.c}),'duq')}</div><b>${esc(Q.n||'')}</b>${bar(D['hp'+op]|0,Q.hp|0)}<small>${'⚡'.repeat(D['e'+op]|0)}${D.gd===op?' 🛡':''}</small></div>
+      <div class="du-vs">VS</div>
+      <div class="du-f me" id="duMeP"><div class="du-pic">${frPic(h,'dum')}</div><b>${esc(h.name)}</b>${bar(D['hp'+me]|0,P.hp|0)}<small>${'⚡'.repeat(D['e'+me]|0)}${D.gd===me?' 🛡':''}</small></div></div>
+      ${pot.length?`<div class="du-pot">🏆 ${pot.map(x=>duIc(x)+' '+esc(duNm(x))).join(' + ')}</div>`:''}
+      ${L?`<div class="du-last">${esc(L.w===me?h.name:Q.n||'')}: ${L.mv==='guard'?ae('حماية','guard'):L.d?`${L.mv==='heavy'?ae('تقيلة','heavy'):ae('ضربة','strike')} −${L.d}${L.cr==='cr'?' !':''}`:ae('فاتت','missed')}</div>`:''}
+      ${D.st==='done'?`<div class="card du-st"><div class="du-big">${D.w===me?'🏆':'💀'}</div><b>${D.w===me?T(ae('{كسبت|كسبتي}!','You won!')):T(ae('{خسرت|خسرتي}','You lost'))}</b><button class="btn" id="duOk">${ae('تمام','OK')}</button></div>`
+      :my?`<div class="du-acts"><button class="du-a" data-mv="hit"><span>👊</span><small>${ae('ضربة','Strike')}</small></button><button class="du-a" data-mv="heavy" ${(D['e'+me]|0)<2?'disabled':''}><span>💥</span><small>${ae('تقيلة · 2⚡','Heavy · 2⚡')}</small></button><button class="du-a" data-mv="guard"><span>🛡</span><small>${ae('حماية','Guard')}</small></button></div><div class="du-tm">${T(ae(`دورك · ${left} ثانية`,`Your turn · ${left}s`))}</div>`
+      :`<div class="du-tm">${T(ae(`دور ${esc(Q.n||'')}… ${left} ثانية`,`${esc(Q.n||'')}'s turn… ${left}s`))}</div>${left<=0?`<button class="btn" id="duClaim">${T(ae('ما ردّش: {خد|خدي} المكسب','No answer: take the win'))}</button>`:''}`}
+      ${D.st==='on'?`<button class="btn ghost" id="duX">${T(ae('{انسحب|انسحبي} (الكسبان هو)','Give up (they win)'))}</button>`:''}`}
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('مبارزة أونلاين','Live duel')}</h2><span class="tag">⚔</span></div><div class="tw du" style="direction:${EN?'ltr':'rtl'}">${body}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};const out=()=>{duStop();DUX.id=null;DUX.doc=null;S.screen=S.duFrom&&S.duFrom!=='duo'?S.duFrom:'frs';S.duFrom=null;render()};
+  on('back',()=>{if(D&&(D.st==='on'))return toast(T(ae('{انسحب|انسحبي} الأول لو عايز تمشي.','Give up first if you want to leave.')));if(D&&D.st==='inv')duQuit(h);out()});
+  on('duOk',out);on('duX',()=>duQuit(h));on('duClaim',duClaim);view.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>duAct(h,b.dataset.mv));
+  clearTimeout(DUX.tick);if(D&&(D.st==='on'||D.st==='inv'))DUX.tick=setTimeout(()=>{if(S.screen==='duo'&&!DUX.busy&&!document.querySelector('.du-o'))render()},1000)};
+/* the ways in: an invite button on every friend's row and on the duel table */
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs')return r;const h=S.hero;duListen(h);const gs=frGroups(FRS.rows||[]);
+  view.querySelectorAll('[data-fd]').forEach(b=>{const i=+b.dataset.fd;if(view.querySelector(`[data-fo="${i}"]`))return;b.insertAdjacentHTML('afterend',`<button class="btn" data-fo="${i}" aria-label="${ae('مبارزة أونلاين','Live duel')}">🔴⚔</button>`)});
+  view.querySelectorAll('[data-fo]').forEach(b=>b.onclick=()=>{const g=gs[+b.dataset.fo];if(g)duInvite(h,g)})}catch(e){console.warn(e)}return r}}
+{const d0=SCREENS.duel;SCREENS.duel=function(){const r=d0.apply(this,arguments);try{if(S.screen!=='duel')return r;const h=S.hero;duListen(h);const gs=frGroups(FRS.rows||[]);
+  view.querySelectorAll('[data-dl]').forEach(b=>{const i=+b.dataset.dl,R=b.closest('.dl-r'),n=R&&R.querySelector('.n').textContent.split(' ')[0],gi=gs.findIndex(g=>g.heroes[0].n===n);if(gi<0||R.querySelector('[data-do]'))return;
+    b.insertAdjacentHTML('afterend',`<button class="btn" data-do="${gi}">🔴</button>`)});
+  view.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>duInvite(h,gs[+b.dataset.do]));
+  const top=view.querySelector('.dl .card');if(top&&!$('#duNote'))top.insertAdjacentHTML('afterend',`<div class="card du-note" id="duNote">🔴 ${T(ae('«أونلاين»: {ابعت|ابعتي} دعوة لصاحبك وتلعبوا مع بعض في نفس الوقت، وممكن على رهان فلوس أو حاجة من الشنطة.','«Live»: invite your friend to play at the same time, with a money or item bet if you like.'))}</div>`)}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.dl-r{grid-template-columns:28px 1fr 36px 52px 52px}.fr-bt [data-fo]{flex:0 0 64px}
+.du-inv{gap:10px;max-height:88vh;overflow:auto}.du-bets,.du-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}.du-items{max-height:30vh;overflow:auto}
+.du-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:60px;padding:6px 2px;border-radius:10px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;font-size:20px;cursor:pointer}
+.du-b small{font-size:10px;line-height:1.2;text-align:center}.du-b i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:10px;color:#ffd36a}.du-b.on{border-color:#f3c14d;background:#f3c14d22}
+.du-bet{font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.du-st{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}.du-st .btn{min-height:48px;width:100%}.du-big{font-size:48px}
+.du-arena{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;background:radial-gradient(circle at 50% 70%,#3a2a1a,#120c08)}
+.du-f{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}.du-f b{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.du-f small{font-size:12px;min-height:16px}
+.du-pic{width:72px;height:72px;border-radius:50%;overflow:hidden;background:#0006;border:3px solid #ffffff22}.du-f.me .du-pic{border-color:#7fb6ff}.du-pic svg{width:100%;height:100%}
+.du-hit{animation:duHit .35s}@keyframes duHit{20%{transform:translateX(-6px);filter:brightness(2)}60%{transform:translateX(6px)}}
+.du-vs{font-weight:900;color:#ffd36a;font-size:18px}.du-hb{position:relative;width:100%;height:14px;border-radius:7px;background:#ffffff18;overflow:hidden}.du-hb i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#e2483f,#ff8a5a);transition:width .3s}.du-hb span{position:relative;display:block;text-align:center;font-size:10px;line-height:14px;font-weight:800}
+.du-pot{text-align:center;font-weight:800;color:#ffd36a;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.du-last{text-align:center;font-size:13px;color:var(--dim)}
+.du-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.du-a{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:84px;border-radius:14px;border:2px solid #f3c14d88;background:#2a2038;color:inherit;font:inherit;cursor:pointer;box-shadow:0 3px 0 #0008}
+.du-a span{font-size:32px}.du-a small{font-size:12px;font-weight:700}.du-a:disabled{opacity:.4}.du-a:active{transform:translateY(2px)}
+.du-tm{text-align:center;font-weight:800;color:#ffd36a}.du .btn{min-height:48px}
+.du-ring{width:170px;height:170px}.du-ring .bg{fill:none;stroke:#ffffff18;stroke-width:10}.du-ring .ok{fill:none;stroke:#7fe07a;stroke-width:12;stroke-linecap:round}.du-ring .cr{fill:none;stroke:#ffd36a;stroke-width:14;stroke-linecap:round}.du-ring .mk{fill:#fff;stroke:#e2483f;stroke-width:3}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
