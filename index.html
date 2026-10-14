@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.46',d:'14 أكتوبر',add:['الطريق بالليل بقا فيه مفاجآت: وانت {ماشي|ماشية} لوقفة خناقة ممكن حاجة تنط عليك من الضلمة، {دوس|دوسي} عليها بسرعة {تضربها|تضربيها} الأول وتبدأ الخناقة مجروحة، ولو {اتأخرت|اتأخرتي} تخربشك. ولوقفات تانية ممكن يطلع فخ تحت رجلك، {اسحب|اسحبي} لفوق {تنط|تنطي} عليه وإلا يعضك. الخفة بتديك وقت أكتر، والحرامي أكتر.','القتال: لو {اخترت|اخترتي} الحركة الأول وبعدين {رميت|رميتي} النرد، الرمية بتقف في كارت في النص وتشوف الأرقام والنتيجة (نجاح، نص نص، فشل) قبل الضربة. {دوس|دوسي} عليه لو {عايز|عايزة} {تكمل|تكملي} بسرعة. ومجموع النرد بيفضل ظاهر لحد ما الحركة تخلص.','الدواير اللي بتقفل (الضربة، الصد، الطبلة، طرق الحدادة) بقت سرعتها مختلفة كل مرة: مرة أسرع ومرة أبطأ.','كلمة «دفاع!» بقت بتطلع فوق الوحش اللي هيضربك.','جرنال البلد: العلامة الحمرا اللي جنبه بقت «!» بدل الكلمة الغريبة.','«شجرة» كل شغلانة اسمها بقى «مهارات الصنعة»، والنجوم اللي تحت («اختيار ١» و«اختيار ٢») مبقتش متغطية ولا مقصوصة.','في الحِرف: الخانة بتكبر شوية لما الماوس يعدّي عليها، والكارت لما يتفتح بيفرد بشكل أحلى والخانات اللي بعده بتملا مكانها من غير فراغات.','تصليح: الدايرة كانت بتفضل لازقة على الشخصية بعد الصد أو الضربة. خلاص مبقتش.']},
 {v:'6.45',d:'14 أكتوبر',add:['المفاصلة مع عم رمضان: لما {تبيع|تبيعي} في السوق {بتسحب|بتسحبي} السعر بإيدك لفوق، ووشه بيحمر ويعرق ويزعق كل ما {تزوّد|تزوّدي}. {اعرض|اعرضي} وهو يا يوافق يا يرفض، ولو {زودتها|زودتيها} بيشتري بسعره بس لدقيقتين. «بسعره» بتبيع على طول زي الأول.','الحضور بيخليه يستحمل أكتر.']},
 {v:'6.44',d:'14 أكتوبر',add:['الغيط بقا بإيدك: الأرض بعد الحصاد بتبقى ناشفة، {فاسحب|فاسحبي} الفاس عليها يمين وشمال {تحرتها|تحرتيها}. {اختار|اختاري} البذرة {واسحب|واسحبي} الشنطة على الأرض {تبدر|تبدري}، {وامسح|وامسحي} بالإبريق على الزرع تسقيه.','دود بيطلع في الزرع ساعات زي الغربان: {دوس|دوسي} عليه {تشيله|تشيليه} قبل ما ياكل.','الحصاد: {امسك|امسكي} الزرعة {واسحبها|واسحبيها} لفوق. لو {سبتها|سبتيها} والبار في الأخضر الجدر بيطلع سليم وبتاخد واحدة زيادة.']},
 {v:'6.43',d:'14 أكتوبر',add:['أي فلوس {بتدفعها|بتدفعيها} أو {بتاخدها|بتاخديها} بقت تظهر صورة فلوس جنب فلوسك بالمبلغ: أحمر ونازل لو {دفعت|دفعتي}، ودهبي وطالع لو {كسبت|كسبتي}.','صناديق مقفولة بقفل: {افتحها|افتحيها} بـ«مفتاح صدي» (عند عم رمضان بالليل)، أو {افتح|افتحي} القفل بإيدك في ميني جيم المسامير، أو {اكسره|اكسريه} والصندوق يقل درجة. الحرامي إيده أخف: مكان أوسع وسنّارة زيادة.','في الحرف، الحاجة اللي {متقدرش|متقدريش} {تعملها|تعمليها} ولا تشتريها بقت مطفية وعليها قفل صغير. {دوس|دوسي} عليها تشوف ناقصك إيه.']},
@@ -5665,7 +5666,7 @@ function sHammer(C){const hm=C.hm||(C.hm={i:0,i0:0,sc:[],np:0,miss:0,streak:0,fo
     down(){if(ph==='ring')hit(r)},peek:()=>({id:'hammer',ph,r,RT,spd,PW,GW,i:hm.i})};
   function pip(i,q){const c=E.mgPips&&E.mgPips.children[i];if(c)sa(c,{fill:q>=.999?'#ffd36a':q>=.55?'#7fe07a':q>0?'#c8b070':'#d0483b',stroke:'#000'})}
   function next(){if(hm.i>=N){ph='end';t0=t;setBtn('','',1);return}const j=hm.last<0?Math.floor(Math.random()*HM_SP.length):(hm.last+1+Math.floor(Math.random()*(HM_SP.length-1)))%HM_SP.length;hm.last=j;[sx,sy]=HM_SP[j];
-    spd=(150+14*hm.i)*C.sp;r=R0;ph='ring';t0=t;sf('mgTick',1+hm.i*.08);if(hm.i)hint(`${C.g('اطرق','اطرقي')} لما الدايرة تقفل على النقطة · الطرقة ${hm.i+1} من ${N}`)}
+    spd=(150+14*hm.i)*C.sp/afSpd();r=R0;ph='ring';t0=t;sf('mgTick',1+hm.i*.08);if(hm.i)hint(`${C.g('اطرق','اطرقي')} لما الدايرة تقفل على النقطة · الطرقة ${hm.i+1} من ${N}`)}
   function hit(rv){const e=rv==null?99:Math.abs(rv-RT);let q,gr;
     if(e<=PW){q=1;gr='p'}else if(e<=GW){q=1-.42*(e-PW)/(GW-PW);gr='g'}else{q=0;gr='m'}
     if(gr==='m'&&fr>=4&&!hm.forg){hm.forg=1;q=.6;gr='f'}
@@ -6592,7 +6593,7 @@ function treeCan(h,k){const p=treePts(h,k);if(!p||!TREE[k])return 0;const t=tree
   return TREE[k].br.some(b=>t[b.id]<5&&p>=t[b.id]+1)||(TREE_LK[k]||[]).some(L=>!treeLink(h,k,L.id)&&lkOk(h,k,L)&&p>=lkCost(L))
     ||(TREE_FK[k]&&((!F.f1&&fkOpen(h,k,'f1')&&p>=2)||(F.f1&&!F.f1x&&p>=4)||(!F.f2&&fkOpen(h,k,'f2')&&p>=2)))?p:0}
 function treeBtnHTML(h,k){if(!TREE[k])return '';const p=treeCan(h,k);
-  return `<button class="tw-tree" data-tree="${k}">${treeIco(k,22)}<span>شجرة ${LIFE[k].n}</span>${p?`<small><span class="pt">${p===1?'نقطة جديدة':p===2?'نقطتين':p+' نقط'}</span></small>`:''}</button>`}
+  return `<button class="tw-tree" data-tree="${k}">${treeIco(k,22)}<span>${ae('مهارات الصنعة','Craft skills')}</span>${p?`<small><span class="pt">${p===1?'نقطة جديدة':p===2?'نقطتين':p+' نقط'}</span></small>`:''}</button>`}
 function treeBind(){view.querySelectorAll('[data-tree]').forEach(b=>b.onclick=()=>treeOpen(b.dataset.tree))}
 function treeOpen(k){TS.k=k;TS.from=S.screen;TS.sel=null;TS.conf=0;TS.tab='br';SFX.page();S.screen='tree';render();view.scrollTop=0}
 SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}const k=TREE[TS.k]?TS.k:'smith',T0=TREE[k],t=treeOf(h,k),p=treePts(h,k),c=T0.c;
@@ -6637,7 +6638,7 @@ function treeBuy(k,bid){const h=S.hero,t=treeOf(h,k),b=TREE[k].br.find(x=>x.id==
 function treeRespec(k){const h=S.hero,c=treeCost(h,k);if(!treeSpent(h,k)||h.money<c)return;if(!TS.conf){TS.conf=1;SFX.meh();return twRender()}
   TS.conf=0;h.money-=c;const t=treeOf(h,k);Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};if(h.treeF)h.treeF[k]={};saveHero();SFX.whoosh();SFX.reg();TS.sel=null;twRender();toast(`النقط رجعت كلها · ${G('دفعت','دفعتي')} ${c} جنيه`)}
 /* a new skill level = a new point */
-{const lx=lifeXP;lifeXP=function(h,k){const r=lx.apply(this,arguments);if(r&&TREE[k]&&h&&treeCan(h,k))setTimeout(()=>toast(`<span style="color:#d9cbff">نقطة جديدة في شجرة ${LIFE[k].n}!</span>`),900);return r}}
+{const lx=lifeXP;lifeXP=function(h,k){const r=lx.apply(this,arguments);if(r&&TREE[k]&&h&&treeCan(h,k))setTimeout(()=>toast(`<span style="color:#d9cbff">نقطة جديدة في مهارات الصنعة (${LIFE[k].n})!</span>`),900);return r}}
 /* the cook screen gets the tree button through its skill box; this binds it */
 {const c0=SCREENS.cook;SCREENS.cook=function(){c0.apply(this,arguments);treeBind()}}
 /* the mountain and the canal: a small tree button by the skill level (added after the screen draws) */
@@ -49933,10 +49934,14 @@ function afLayer(){if(afL&&afL.isConnected)return afL;afL=document.createElement
   document.body.appendChild(afL);afCv=afL.querySelector('#afCv');afCx=afCv.getContext('2d');afSize();afBindDice();return afL}
 function afSize(){if(!afCv)return;const d=Math.min(2,window.devicePixelRatio||1);afCv.width=innerWidth*d;afCv.height=innerHeight*d;afCx.setTransform(d,0,0,d,0,0)}
 addEventListener('resize',()=>{afSize();afLay()});
-let afRaf=0;function afLoop(t){afCx&&afCx.clearRect(0,0,innerWidth,innerHeight);for(const f of [...AF_FX]){try{if(f(t)===false)AF_FX.delete(f)}catch(e){AF_FX.delete(f)}}afRaf=AF_FX.size?requestAnimationFrame(afLoop):0}
+let afRaf=0;function afLoop(t){afCx&&afCx.clearRect(0,0,innerWidth,innerHeight);for(const f of [...AF_FX]){try{if(f(t)===false)AF_FX.delete(f)}catch(e){AF_FX.delete(f)}}
+  /* 6.46 (Twister 15:03): a ring that ends draws its last frame and leaves; with nothing left, wipe it so it doesn't stay stuck on the hero */
+  if(!AF_FX.size&&afCx)afCx.clearRect(0,0,innerWidth,innerHeight);afRaf=AF_FX.size?requestAnimationFrame(afLoop):0}
 function afFx(f){AF_FX.add(f);if(!afRaf)afRaf=requestAnimationFrame(afLoop)}
 const afMid=el=>{const r=el.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}};
-function afBan(t,red,hold){const b=afLayer().querySelector('#afBan');b.textContent=t;b.className=red?'red':'';try{b.getAnimations().forEach(a=>a.cancel());
+function afBan(t,red,hold,at){const b=afLayer().querySelector('#afBan');b.textContent=t;b.className=red?'red':'';
+  /* 6.46 (Twister 15:04): «دفاع» comes up over the foe that is about to hit you */
+  if(at&&at.isConnected){const r=afMid(at),w=Math.min(260,innerWidth-16);b.style.left=Math.max(8,Math.min(innerWidth-w-8,r.x-w/2))+'px';b.style.right='auto';b.style.width=w+'px';b.style.top=Math.max(4,r.y-r.h/2-30)+'px'}else{b.style.left=b.style.right=b.style.width=b.style.top=''}try{b.getAnimations().forEach(a=>a.cancel());
   return b.animate([{opacity:0,transform:'scale(1.8)'},{opacity:1,transform:'scale(.95)',offset:.25},{opacity:1,transform:'scale(1)',offset:.8},{opacity:0,transform:'translateY(-14px)'}],{duration:(hold||420)+420,easing:'ease-out'}).finished.catch(()=>{})}catch(e){return Promise.resolve()}}
 function afRingFx(x,y,col,R,d){const s=performance.now();afFx(t=>{const p=(t-s)/d;if(p>1)return false;afCx.globalAlpha=1-p;afCx.strokeStyle=col;afCx.lineWidth=6*(1-p)+1;afCx.beginPath();afCx.arc(x,y,R*(.3+.7*p),0,7);afCx.stroke();afCx.globalAlpha=1})}
 /* sounds, through the game's mixer (silent when muted) */
@@ -49964,7 +49969,7 @@ function afLay(){const D=afL&&afDiceEl();if(!D)return;const tr=afTray();if(!afSh
   if(AF.st!=='throw'&&AF.fk!==fk){AF.fk=fk;afPaintFaces()}
   D.classList.toggle('wait',AF.st==='wait');D.classList.toggle('need',AF.st==='wait'&&!!AF.need);D.classList.toggle('rolled',AF.st==='rolled');
   if(AF.drag)return;const r=afMid(tr);D.style.left=r.x+'px';D.style.top=r.y+'px';
-  const pw=tr.querySelector('.af-pw');if(pw){const v=AF.st==='rolled'&&AF.vals?AF.vals.reduce((a,b)=>a+b,0):'';pw.textContent=v;pw.classList.toggle('on',!!v)}}
+  const pw=tr.querySelector('.af-pw');if(pw){const v=(AF.st==='rolled'||AF.st==='used')&&AF.vals?AF.vals.reduce((a,b)=>a+b,0):'';pw.textContent=v;pw.classList.toggle('on',!!v)}}
 function afPaintFaces(){const D=afDiceEl();[...D.children].forEach((el,i)=>{el.firstChild.innerHTML=afDie(AF.vals?AF.vals[i]:0)})}
 let afThrowP=null;
 function afThrow(pw){if(AF.st!=='wait')return afThrowP;AF.st='throw';AF.need=0;const D=afDiceEl(),two=S.dice==='2d6',n=two?2:1;
@@ -50047,7 +50052,7 @@ function rcAlt(stat,opt,mod,dc,hz){const C=S.combat;if(!C||S.screen!=='combat'||
   if(AF.C!==C)afSync();return afRoll(stat,opt||{},mod,dc,hz)}
 async function afRoll(stat,opt,mod,dc,hz){const C=S.combat,h=S.hero,two=S.dice==='2d6',me=C.phase==='me',rf=()=>two?rnd(6):rnd(20);let q='good',R;
   afLayer();
-  if(me){let base;
+  if(me){let base;const fresh=AF.st!=='rolled';
     if(AF.st==='rolled'&&AF.vals)base=AF.vals.slice();
     else if(AF.st==='throw'&&afThrowP)base=await afThrowP;
     else if(AF.st==='wait')base=await afWaitRoll();
@@ -50056,8 +50061,10 @@ async function afRoll(stat,opt,mod,dc,hz){const C=S.combat,h=S.hero,two=S.dice==
     const faces=base.concat(opt.adv?[rf()]:[]);
     if(opt.adv){const tr=afTray()||$('#meCard');try{floatAt(tr,`+${afNum(faces[faces.length-1])}`,'#a6e3a0','',24)}catch(e){}await sleep(window.__afAuto?60:380)}
     R=afTier(faces,two,mod,dc,hz);
+    /* 6.46 (Twister 15:00): a move picked first, then the throw: show what the dice made before the hit plays */
+    if(fresh&&!window.__afAuto)try{await afShowRoll(R,stat,mod,dc,two)}catch(e){}
     if(!R.fumble){const S0=afSeenGet();const tg=afTgtEl();let stop=()=>{};if(!window.__afAuto&&(S0.ring|0)<2){const p=afMid(tg());stop=afHint('ring','tap',{x:p.x,y:p.y})}
-      q=await afRing(tg,{dur:760,col:'#f2c14e',onTap:()=>stop()});stop(q!=='miss');
+      q=await afRing(tg,{dur:Math.round(760*afSpd()),col:'#f2c14e',onTap:()=>stop()});stop(q!=='miss');
       if(q==='perfect'){R.tier=afUp(R.tier);try{const e=tg();floatAt(e,ae('بالظبط!','Perfect!'),'#ffd36a','crit',28);vib([30,20,60])}catch(e){}}
       else if(q==='miss')try{floatAt(tg(),ae('فاتتك','Late'),'#b9b2c8','',20)}catch(e){}}
     AF.q=q}
@@ -50076,9 +50083,9 @@ async function afRoll(stat,opt,mod,dc,hz){const C=S.combat,h=S.hero,two=S.dice==
 const afNum=n=>String(n);
 /* the block: the foe flashes, then lunges, and a blue ring closes on you */
 async function afBlock(e){const C=S.combat,me=$('#meCard'),fe=e&&$('#foe'+e.id);afLayer();
-  await afBan(ae('دفاع!','Block!'),true,200);
+  await afBan(ae('دفاع!','Block!'),true,200,fe);
   try{if(fe)fe.animate([{filter:'none'},{filter:'brightness(1.7) sepia(1) saturate(5) hue-rotate(-40deg)'},{filter:'none'},{filter:'brightness(1.7) sepia(1) saturate(5) hue-rotate(-40deg)'},{filter:'none'}],{duration:480});AFS.growl()}catch(x){}
-  const boss=e&&(e.boss||e.base&&e.base.boss),dur=boss?700:840;
+  const boss=e&&(e.boss||e.base&&e.base.boss),dur=Math.round((boss?700:840)*afSpd());
   setTimeout(()=>{try{const a=$('#foe'+(e&&e.id)),m=$('#meCard');if(!a||!m)return;const p=afMid(a),q=afMid(m);
     a.animate([{transform:'translate(0,0)'},{transform:`translate(${(q.x-p.x)*.55}px,${(q.y-p.y)*.55}px) scale(1.12)`,offset:.5},{transform:'translate(0,0)'}],{duration:340,easing:'cubic-bezier(.5,0,.5,1)'})}catch(x){}},Math.max(0,dur-200));
   const S0=afSeenGet();let stop=()=>{};if(!window.__afAuto&&(S0.block|0)<2&&me){const p=afMid(me);stop=afHint('block','tap',{x:p.x,y:p.y})}
@@ -50211,12 +50218,12 @@ function dgTabs(){const tb=view.querySelector('.hm-tabs');if(!tb||tb.querySelect
 function jnUnread(h){try{return typeof jrUnread==='function'?jrUnread(h):0}catch(e){return 0}}
 {const b0=SCREENS.balad;SCREENS.balad=function(){const r=b0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='balad'||!h||$('#jnGo'))return r;const box=view.querySelector('.tw.tb');if(!box)return r;
   try{jrToday(h)}catch(e){}const u=jnUnread(h);
-  box.insertAdjacentHTML('afterbegin',`<button class="card jn-go" id="jnGo"><span class="jn-ic">📰</span><span class="jn-tx"><b>${ae('جرنال البلد','The village paper')}</b><small>${ae('عم سعيد: أخبار البلد كل يوم','Uncle Saeed: village news every day')}</small></span>${u?`<span class="jn-n">${u}</span>`:''}</button>`);
+  box.insertAdjacentHTML('afterbegin',`<button class="card jn-go" id="jnGo"><span class="jn-ic">📰</span><span class="jn-tx"><b>${ae('جرنال البلد','The village paper')}</b><small>${ae('عم سعيد: أخبار البلد كل يوم','Uncle Saeed: village news every day')}</small></span>${u?`<span class="jn-n" aria-label="${ae('جديد','New')}">!</span>`:''}</button>`);
   $('#jnGo').onclick=()=>{TW_FROM.jornal='balad';try{SFX.page&&SFX.page()}catch(e){}S.screen='jornal';render()}}catch(e){console.warn(e)}return r}}
 {const j0=SCREENS.jornal;if(typeof j0==='function')SCREENS.jornal=function(){const r=j0.apply(this,arguments);try{if(S.screen==='jornal')twInBack('jornal')}catch(e){console.warn(e)}return r}}
 /* the tiles carry what the removed ones said */
 for(let i=0;i<TW_EXTRA.length;i++){const f=TW_EXTRA[i];TW_EXTRA[i]=function(h){const t=f.apply(this,arguments);try{if(t&&h){
-  if(t.id==='balad'){const u=jnUnread(h);if(u){t.s=`${t.s} · <span class="new">📰 ${u}</span>`;t.bell=1}}
+  if(t.id==='balad'){const u=jnUnread(h);if(u){t.s=`${t.s} · <span class="new">${ae('جرنال جديد','New paper')}</span>`;t.bell=1}}
   if(t.id==='dar'&&typeof TW_SLOTS!=='undefined'){t.w=ae('أوضك وعدّتك والمتحف وأهدافك','Rooms, gear, museum and goals')}}}catch(e){}return t};if(f.__tm)TW_EXTRA[i].__tm=1}
 L10N({'أوضك وعدّتك والمتحف وأهدافك':'Rooms, gear, museum and goals'});
 (function(){const s=document.createElement('style');s.textContent=`.hm-tb .dg-n{font-size:11px;opacity:.75}
@@ -50706,7 +50713,7 @@ setInterval(()=>{try{if(fx7On())fx7Bars()}catch(e){}},200);
    Tap a star: the card under the sky says what it does and buys it (treeInfo/lkInfo/fkInfo, treeBuy/lkBuy/fkBuy from p9t).
    A bought star lights up, its line fills in, and sparks fly. The data and the rules are p9t's, so nothing changes in play.
    «شجرة الصنايعي» (p147, one tree for all trades) is retired: no way in any more; nodes already bought keep working. */
-const SKY={W:400,H:650,SUN:{x:200,y:452},COL:[52,148,252,348],Y0:392,DY:68};
+const SKY={W:400,H:716,SUN:{x:200,y:452},COL:[52,148,252,348],Y0:392,DY:68};
 const skyHash=s=>{let x=2166136261;for(let i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619)}return ()=>{x=Math.imul(x^x>>>15,2246822507);x=Math.imul(x^x>>>13,3266489909);return ((x^=x>>>16)>>>0)/4294967296}};
 /* where each star sits */
 function skyPos(k){const T0=TREE[k],P={},sw=[0,-6,5,-4,6];
@@ -50741,7 +50748,7 @@ function skySVG(h,k,p){const T0=TREE[k],P=skyPos(k),c=T0.c,R=skyHash('sky'+k),se
     return `<g class="sk-n ${st}${on?' sel':''}${TS.just===id?' just':''}" transform="translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})" ${tag} role="button" tabindex="0" aria-label="${esc(skyName(k,id))}">
       <circle r="27" class="sk-hit"/>${st==='got'||st==='open'?`<circle r="${r+9}" class="sk-glow"/>`:''}<g class="sk-s">${shape}</g>${on?`<circle r="${r+6}" class="sk-ring"/>`:''}${st==='lock'?`<path d="M-5 -5L5 5M5 -5L-5 5" class="sk-x"/>`:''}</g>`};
   const labels=T0.br.map((b,c)=>`<text x="${SKY.COL[c]}" y="${SKY.Y0+30}" class="sk-t">${esc(T(b.n))}</text>`).join('')
-    +(TREE_FK[k]?`<text x="100" y="634" class="sk-t dim">${ae('اختيار ١','Choice 1')}</text><text x="300" y="634" class="sk-t dim">${ae('اختيار ٢','Choice 2')}</text>`:'');
+    +(TREE_FK[k]?`<text x="100" y="700" class="sk-t dim">${ae('اختيار ١','Choice 1')}</text><text x="300" y="700" class="sk-t dim">${ae('اختيار ٢','Choice 2')}</text>`:'');
   return `<svg class="sky" viewBox="0 0 ${SKY.W} ${SKY.H}" style="--tc:${c}" xmlns="http://www.w3.org/2000/svg">
     <defs><radialGradient id="skSun"><stop offset="0" stop-color="#fff7d0"/><stop offset=".45" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>
       <radialGradient id="skNeb" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="${c}" stop-opacity=".16"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>
@@ -50753,7 +50760,7 @@ SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
   const who=T0.who&&TW_NPC[T0.who]?TW_NPC[T0.who][0]:null,cost=treeCost(h,k),spent=treeSpent(h,k),sel=TS.sel;
   let info='';try{if(sel&&sel.indexOf('F:')===0)info=fkInfo(h,k,sel.slice(2),p);else if(sel&&sel.indexOf('L:')===0)info=lkInfo(h,k,sel.slice(2),p);
     else if(sel){const b=T0.br.find(x=>sel.indexOf(x.id)===0&&/^\d$/.test(sel.slice(x.id.length)));if(b)info=treeInfo(h,k,b,+sel.slice(b.id.length),p)}}catch(e){console.warn(e)}
-  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('شجرة','Tree:')} ${LIFE[k].n}</h2><span style="width:44px"></span></div>
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('مهارات الصنعة','Craft skills')}</h2><span style="width:44px"></span></div>
   <div class="tw tr sk" style="--tc:${c}">
     <div class="card sk-top"><span class="ic">${treeIco(k,34)}</span><div class="tx"><b>${LIFE[k].n} · ${ae('مستوى','level')} ${treeLvl(h,k)}</b>
       <small>${T(ae(`كل مستوى = ${TREE_PPL} نقط. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}.`,`Each level = ${TREE_PPL} points. Tap any star to read it and buy it.`))}</small></div>
@@ -50949,6 +50956,16 @@ function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;cons
 .tw[data-cro] .tw-stk{position:static!important;top:auto!important}
 .tw .cro-hide,.tw .col.cro-g.cro-hide{display:none!important}
 .col.cro-g{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+/* 6.46 (Twister 15:09): tiles fill the holes an open card leaves (dense), grow a little under the mouse, and an open card unfolds */
+.col.cro-g{grid-auto-flow:row dense}
+.cro-g .cro-i{transition:transform .18s cubic-bezier(.3,1.4,.5,1),box-shadow .18s ease}
+@media (hover:hover){.cro-g .cro-i:not(.cro-open):hover{transform:scale(1.06);z-index:2;box-shadow:0 8px 18px #0008}}
+.cro-g .cro-i:not(.cro-open):active{transform:scale(.97)}
+.cro-g .cro-i.cro-open{animation:croOpen .26s cubic-bezier(.2,1.2,.4,1) both;box-shadow:0 0 0 2px #f3c14d55,0 10px 24px #000a;border-radius:16px}
+.cro-g .cro-i.cro-open .hd{padding-bottom:8px;border-bottom:1px dashed #ffffff22;margin-bottom:8px}
+.cro-g .cro-i.cro-open .hd .ic svg{width:52px;height:52px}
+@keyframes croOpen{from{transform:scale(.92);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.cro-g .cro-i,.cro-g .cro-i.cro-open{transition:none;animation:none}}
 .col.cro-g.cro-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .col.cro-g>:not(.cro-i){grid-column:1/-1}
 .cro-g.cro-3 .cro-i:not(.cro-open) .ic svg{width:34px;height:34px}
@@ -51005,7 +51022,7 @@ function nwGo(sp){if(NW.busy)return;const id=sp.dataset.nw,b=view.querySelector(
   me.classList.toggle('flip',dx<0);let n=0;const step=setInterval(()=>{try{SFX.tick(260+(n++%2)*60)}catch(e){}},170);
   try{me.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx}px,${dy}px) scale(.72)`}],{duration:720,easing:'cubic-bezier(.4,.1,.5,1)',fill:'forwards'})}catch(e){}
   try{sp.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.25)'},{transform:'translate(-50%,-50%) scale(1.1)'}],{duration:720,fill:'forwards'})}catch(e){}
-  setTimeout(()=>{clearInterval(step);try{SFX.page&&SFX.page()}catch(e){}try{pop(sp,[sp.style.getPropertyValue('--c')||'#fff','#fff'],16)}catch(e){}},700);setTimeout(done,860)}
+  setTimeout(()=>{clearInterval(step);try{SFX.page&&SFX.page()}catch(e){}try{pop(sp,[sp.style.getPropertyValue('--c')||'#fff','#fff'],16)}catch(e){}},700);setTimeout(()=>{try{typeof nvEvent==="function"?nvEvent(sp,id,done):done()}catch(e){console.warn(e);done()}},860)}
 {const s0=SCREENS.stop;SCREENS.stop=function(){NW.busy=0;const r=s0.apply(this,arguments);try{nwStage()}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
 .art.nw-on{height:min(400px,56vh)}
@@ -51118,8 +51135,8 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
   else if(stat==='حضور'){
     /* a darbuka; a ring closes on it, hit the drum as the ring touches its skin */
     A.innerHTML=sc(`<div class="ag-stage">${AGD.crowd}</div><div class="ag-ring"><i id="agC"></i>${AGD.drum}</div><span class="ag-tip">${T(ae('{اضرب|اضربي} لما الدايرة تقفل','Hit it as the ring closes'))}</span>`,'ag-pre');
-    const t0=performance.now(),P=1500;let v=0;const m=A.querySelector('#agC');
-    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`},16));
+    let t0=performance.now(),P=1500*afSpd();let v=0;const m=A.querySelector('#agC');
+    iv.push(setInterval(()=>{let t=(performance.now()-t0)/P;if(t>=1){t0=performance.now();P=1500*afSpd();t=0}v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`},16));
     A.querySelector('#agT').onclick=()=>{const d=Math.abs(v*1.65+.35-1);A.querySelector('.ag-ring').classList.add('hit');try{SFX.tick(180)}catch(x){}end(d<.08?2:d<.22?1:0)};tm.push(setTimeout(()=>end(0),5200))}
   else if(stat==='تحمّل'){
     /* something pushes on the door; hold, and the wooden bar slides into its latch */
@@ -51640,6 +51657,92 @@ function hgOpen(o){const h=S.hero;if(!h||$('#hgS'))return;const v=Math.max(1,o.v
 .hg-th{position:absolute;top:50%;width:44px;height:44px;margin:-22px -22px 0;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff3b0,#f3c14d 60%,#c98a1a);border:3px solid #2b1b22;box-shadow:0 3px 0 #0008}
 .hg-l0,.hg-l1{position:absolute;bottom:-18px;font-size:11px;color:#c9c2dc}[style*="rtl"] .hg-l0{right:6px}[style*="rtl"] .hg-l1{left:6px}[style*="ltr"] .hg-l0{left:6px}[style*="ltr"] .hg-l1{right:6px}
 .hg-b{display:flex;gap:8px;margin-top:14px}.hg-b .btn{flex:1;min-height:48px}`;document.head.appendChild(s)})();
+/* ---------- 6.46 (acc1, Twister 14:35, major 3/5): traps and ambushes on the night road ----------
+   When the hero walks to a stop on the night road (p168), something can happen on the way:
+   - Ambush (fight stops, 45%): a shape leaps out of the dark. Tap it before it lands and you hit first: the first foe starts the
+     fight with a fifth of its health gone. Too slow and it scratches you (−1 health) before the fight.
+   - Trap (other stops, 18%, only above 3 health): a snare opens under your feet. Swipe up to jump it; too slow and it bites (−1 or −2).
+   خفة widens the window a little, and the thief gets a bit more time.
+   Test builds skip both unless window.__trap is set; window.__nvAuto true/false forces the result, window.__nvKind picks one. */
+const NV={amb:0,busy:0};
+const nvOn=()=>!((window.__r||window.__t||window.__q)&&!window.__trap);
+function nvWin(h,ms){let d=0;try{d=ST(h,'خفة')}catch(e){}return ms*(1+.04*Math.max(0,d))*(h.cls==='thief'?1.25:1)}
+function nvHurt(h,n){h.hp=Math.max(1,(h.hp|0)-n);try{saveHero()}catch(e){}try{SFX.bad();vib(60)}catch(e){}}
+const NV_FOE=`<svg viewBox="0 0 16 14" shape-rendering="crispEdges"><rect x="4" y="2" width="8" height="2" fill="#120c14"/><rect x="2" y="4" width="12" height="6" fill="#120c14"/><rect x="1" y="6" width="14" height="3" fill="#120c14"/>
+  <rect x="3" y="10" width="2" height="3" fill="#120c14"/><rect x="11" y="10" width="2" height="3" fill="#120c14"/><rect x="7" y="10" width="2" height="2" fill="#120c14"/><rect x="2" y="1" width="2" height="3" fill="#120c14"/><rect x="12" y="1" width="2" height="3" fill="#120c14"/>
+  <rect x="5" y="5" width="2" height="2" fill="#ff3b30"/><rect x="9" y="5" width="2" height="2" fill="#ff3b30"/><rect x="5" y="8" width="6" height="1" fill="#e8e0d0"/><rect x="6" y="9" width="1" height="1" fill="#e8e0d0"/><rect x="9" y="9" width="1" height="1" fill="#e8e0d0"/></svg>`;
+const NV_TRAP=`<svg viewBox="0 0 24 10" shape-rendering="crispEdges"><rect x="2" y="4" width="20" height="4" fill="#1a1208"/><rect x="0" y="5" width="24" height="2" fill="#1a1208"/>
+  <rect x="2" y="3" width="2" height="2" fill="#9aa3ad"/><rect x="6" y="2" width="2" height="3" fill="#9aa3ad"/><rect x="10" y="1" width="2" height="4" fill="#9aa3ad"/><rect x="14" y="2" width="2" height="3" fill="#9aa3ad"/><rect x="18" y="3" width="2" height="2" fill="#9aa3ad"/>
+  <rect x="4" y="7" width="16" height="1" fill="#5a3a1a"/><rect x="11" y="7" width="2" height="3" fill="#7a5a2a"/></svg>`;
+function nvEvent(sp,id,done){const h=S.hero,st=sp&&sp.closest('.nw-st');if(!nvOn()||!h||!st||NV.busy){done();return}
+  const C=CARD[id]||{},k=window.__nvKind||(C.type==='fight'&&Math.random()<.45?'amb':(C.type!=='fight'&&(h.hp|0)>3&&Math.random()<.18?'trap':''));
+  if(k==='amb')nvAmb(sp,st,done);else if(k==='trap')nvTrap(sp,st,done);else done()}
+function nvLayer(sp,st,cls,html,say){NV.busy=1;const L=document.createElement('div');L.className='nv-l '+cls;L.style.direction=EN?'ltr':'rtl';
+  L.innerHTML=`${html}<div class="nv-say">${say}</div>`;L.style.setProperty('--x',sp.style.left||'50%');L.style.setProperty('--y',sp.style.top||'40%');st.appendChild(L);st.classList.add('nv-on');return L}
+function nvEnd(L,done,ms){setTimeout(()=>{try{L.parentNode.classList.remove('nv-on');L.remove()}catch(e){}NV.busy=0;done()},ms)}
+function nvAmb(sp,st,done){const h=S.hero,win=nvWin(h,900);
+  const L=nvLayer(sp,st,'amb',`<button class="nv-foe" id="nvFoe" aria-label="${ae('اضربه','Hit it')}">${NV_FOE}<i class="nv-bang">!</i></button><i class="nv-ring" style="animation-duration:${win|0}ms"></i>`,T(ae('في حاجة نطّت! {اضربها|اضربيها} بسرعة!','Something leaps out! Hit it, fast!')));
+  try{SFX.bad();vib(30)}catch(e){}let over=0;const F=L.querySelector('#nvFoe'),say=L.querySelector('.nv-say');
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);if(ok){NV.amb=Date.now();L.classList.add('won');say.innerHTML=T(ae('{ضربته|ضربتيه} الأول! هيبدأ الخناقة مجروح.','You hit first! It starts the fight hurt.'));try{SFX.hit?SFX.hit():SFX.tick(520);vib(25)}catch(e){}}
+    else{L.classList.add('lost');nvHurt(h,1);say.innerHTML=T(ae('اتأخرت! خربشك قبل الخناقة (−1 صحة).','Too slow! It scratched you first (−1 health).'))}nvEnd(L,done,900)};
+  const tm=setTimeout(()=>fin(window.__nvAuto===true),window.__nvAuto!=null?60:win);
+  F.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fin(window.__nvAuto!=null?window.__nvAuto:true)})}
+function nvTrap(sp,st,done){const h=S.hero,win=nvWin(h,1400);
+  const L=nvLayer(sp,st,'trap',`<div class="nv-tr">${NV_TRAP}</div><div class="nv-up"><svg viewBox="0 0 10 12" shape-rendering="crispEdges"><rect x="4" y="3" width="2" height="9" fill="#fff"/><rect x="2" y="3" width="6" height="2" fill="#fff"/><rect x="3" y="1" width="4" height="2" fill="#fff"/><rect x="4" y="0" width="2" height="1" fill="#fff"/></svg></div><i class="nv-bar" style="animation-duration:${win|0}ms"></i>`,
+    T(ae('فخ تحت رجلك! {اسحب|اسحبي} لفوق عشان {تنط|تنطي}!','A trap under your feet! Swipe up to jump!')));
+  try{SFX.tick(200);vib(30)}catch(e){}let over=0,y0=null;const say=L.querySelector('.nv-say'),me=$('#nwMe');
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);if(ok){L.classList.add('won');say.innerHTML=T(ae('{نطّيت|نطّيتي} فوقه! عدّت على خير.','You jumped it! Close one.'));try{me&&me.querySelector('.nw-h').animate([{transform:'translateY(0)'},{transform:'translateY(-40px)'},{transform:'translateY(0)'}],{duration:500,easing:'ease-out'});SFX.tick(640)}catch(e){}}
+    else{const n=1+(Math.random()<.4?1:0);L.classList.add('lost');nvHurt(h,n);say.innerHTML=T(ae(`الفخ عضّك (−${n} صحة).`,`The trap bit you (−${n} health).`))}nvEnd(L,done,1000)};
+  const tm=setTimeout(()=>fin(window.__nvAuto===true),window.__nvAuto!=null?60:win);
+  L.addEventListener('pointerdown',e=>{y0=e.clientY;try{L.setPointerCapture(e.pointerId)}catch(x){}});
+  L.addEventListener('pointermove',e=>{if(y0!=null&&y0-e.clientY>34)fin(true)});L.addEventListener('pointerup',()=>{y0=null})}
+/* the first foe of the next fight starts a fifth down after a first hit */
+{const r0=startCombat;startCombat=function(foes,win,tut){if(NV.amb&&Date.now()-NV.amb<180000&&foes&&foes.length&&!tut){NV.amb=0;foes=foes.slice();foes[0]=Object.assign({},foes[0],{hurt:Math.max(foes[0].hurt||0,.2)})}
+  return r0.call(this,foes,win,tut)}}
+(function(){const s=document.createElement('style');s.textContent=`
+.nw-st.nv-on .nw-lb{opacity:0;transition:opacity .15s}
+.nv-l{position:absolute;inset:0;z-index:6;touch-action:none;background:radial-gradient(circle at var(--x) var(--y),transparent 12%,#000b 55%);animation:agIn .15s ease-out both}
+.nv-say{position:absolute;left:8px;right:8px;top:8px;padding:8px 10px;border-radius:12px;background:#1a1410ee;border:2px solid #f3c14d;color:#fff;font-weight:800;font-size:15px;text-align:center}
+.nv-l.won .nv-say{border-color:#7fe07a}.nv-l.lost .nv-say{border-color:#e2483f}
+.nv-foe{position:absolute;left:var(--x);top:var(--y);width:96px;height:96px;margin:-48px;padding:0;border:0;background:none;cursor:pointer;animation:nvLeap .35s cubic-bezier(.2,1.5,.4,1) both}
+.nv-foe svg{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 0 8px #ff3b3088)}
+.nv-bang{position:absolute;top:-14px;right:-4px;font-style:normal;font-family:var(--display);font-size:30px;font-weight:900;color:#ffd36a;text-shadow:0 2px 0 #000;animation:hgAn .25s ease-in-out infinite alternate}
+.nv-ring{position:absolute;left:var(--x);top:var(--y);width:150px;height:150px;margin:-75px;border-radius:50%;border:4px solid #ffd36a;pointer-events:none;animation:nvRing linear forwards}
+@keyframes nvLeap{from{transform:scale(.2) translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes nvRing{from{transform:scale(1);opacity:1}to{transform:scale(.4);opacity:.3}}
+.nv-l.won .nv-foe{animation:nvDie .5s ease-in forwards}.nv-l.won .nv-ring,.nv-l.lost .nv-ring,.nv-l.won .nv-bar,.nv-l.lost .nv-bar{display:none}
+.nv-l.lost .nv-foe{animation:agShk .1s linear 4 alternate}
+@keyframes nvDie{to{transform:rotate(25deg) scale(.5);opacity:0;filter:brightness(3)}}
+.nv-tr{position:absolute;left:var(--x);top:calc(var(--y) - 4px);width:140px;height:58px;margin-left:-70px;z-index:2;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px #ff9a3c);animation:nvLeap .3s ease-out both}.nv-tr svg{width:100%;height:100%;image-rendering:pixelated}
+.nv-l.lost .nv-tr{animation:agShk .1s linear 4 alternate}.nv-l.won .nv-tr{opacity:.4}
+.nv-up{position:absolute;left:var(--x);top:calc(var(--y) - 96px);width:34px;height:40px;transform:translateX(-50%);animation:nvUp .7s ease-in-out infinite}.nv-up svg{width:100%;height:100%}
+.nv-l.won .nv-up,.nv-l.lost .nv-up{display:none}
+@keyframes nvUp{0%{transform:translate(-50%,12px);opacity:0}50%{opacity:1}100%{transform:translate(-50%,-14px);opacity:0}}
+.nv-bar{position:absolute;left:20%;right:20%;bottom:1%;height:6px;border-radius:3px;background:#ffd36a;transform-origin:center;animation:nvBar linear forwards}
+@keyframes nvBar{to{transform:scaleX(0);background:#e2483f}}`;document.head.appendChild(s)})();
+/* ---------- 6.46 (acc1, Twister 15:00): «لو اختارت حاجه زي ضربه او قدره … بعدين رميت النرد، بتضرب علي طول ومبتعرفش جالك رقم ايه» ----------
+   When a move is picked first and the dice are thrown after, the hit used to play at once and the number was gone. Now the dice
+   stop in a card in the middle of the stage for a moment: the faces, «+ الصفة − الصعوبة = النتيجة», and success/partly/fail
+   in its colour. A tap skips it. The sum also stays on the tray while the move plays (p155 afLay shows it in 'used' too). */
+/* 6.47 (Twister 15:02): every closing ring has its own speed each time, sometimes faster, sometimes slower */
+function afSpd(){return window.__afAuto?1:.7+Math.random()*.65}
+const AFR_TX={full:['نجاح','Success','#7fe07a'],part:['نص نص','Partly','#f3c14d'],fail:['فشل','Fail','#f0806a']};
+const AFR_ST={'قوة':'Strength','خفة':'Agility','تحمّل':'Endurance','ذكاء':'Intellect','حكمة':'Wisdom','حضور':'Presence'};
+function afShowRoll(R,stat,mod,dc,two){return new Promise(res=>{const L=afLayer();const old=L.querySelector('#afRs');if(old)old.remove();
+  const t=AFR_TX[R.tier]||AFR_TX.fail,sn=EN?(AFR_ST[stat]||''):stat;
+  const faces=R.used.map(v=>`<span class="afrs-d">${afDie(v)}</span>`).join(''),sgn=n=>n<0?'−'+(-n):'+'+n;
+  const d=document.createElement('div');d.id='afRs';d.style.direction='ltr';
+  d.innerHTML=`<div class="afrs-f">${faces}</div><div class="afrs-m">${R.used.reduce((a,b)=>a+b,0)} <i>${sgn(mod|0)} ${esc(sn||'')}</i> <i>−${dc|0} ${ae('صعوبة','diff.')}</i></div>
+    <div class="afrs-t" style="color:${t[2]}">= ${R.total}<small>${R.crit?ae('ضربة حظ!','Lucky!'):R.fumble?ae('وقعة!','Fumble!'):ae(t[0],t[1])}</small></div>`;
+  L.appendChild(d);let over=0;const end=()=>{if(over)return;over=1;try{d.animate([{opacity:1},{opacity:0,transform:'translate(-50%,-60%) scale(.9)'}],{duration:180,fill:'forwards'})}catch(e){}setTimeout(()=>{d.remove();res()},170)};
+  d.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();end()});try{SFX.tick(R.tier==='fail'?300:R.tier==='part'?560:820)}catch(e){}
+  setTimeout(end,1250)})}
+(function(){const s=document.createElement('style');s.textContent=`
+#afRs{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:30;pointer-events:auto;min-width:200px;padding:12px 18px;border-radius:18px;background:#120e1cf0;border:3px solid #f3c14d;box-shadow:0 6px 0 #0009,0 0 30px #f3c14d55;text-align:center;color:#fff;animation:afrsIn .22s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes afrsIn{from{transform:translate(-50%,-50%) scale(.5);opacity:0}}
+.afrs-f{display:flex;justify-content:center;gap:8px}.afrs-d{display:block;width:54px;height:54px}.afrs-d svg{width:100%;height:100%}
+.afrs-m{margin-top:6px;font-size:16px;font-weight:800}.afrs-m i{font-style:normal;color:#c9c2dc;font-size:14px;margin-inline-start:4px}
+.afrs-t{font-family:var(--display);font-size:36px;font-weight:900;text-shadow:0 2px 0 #000;line-height:1.1}.afrs-t small{display:block;font-size:18px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
