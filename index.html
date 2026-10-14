@@ -12,7 +12,14 @@
 <title>سرداب</title>
 <script id="langBoot">/* 5.92.1: the saved language and its direction are set on the page before anything is drawn, so an English player never sees Arabic first */
 (function(){var d=document.documentElement,v=null;try{v=JSON.parse(localStorage.getItem('sirdab.lang')||'null')}catch(e){}
-if(v==='en'){d.lang='en';d.dir='ltr';d.classList.add('en');document.title='Sirdab'}else{d.lang='ar';d.dir='rtl';d.classList.remove('en')}})();</script>
+if(v==='en'){d.lang='en';d.dir='ltr';d.classList.add('en');document.title='Sirdab'}else{d.lang='ar';d.dir='rtl';d.classList.remove('en')}
+/* 6.34: if the game stops before it draws anything, say so and show the error instead of an empty frame */
+window.addEventListener('error',function(e){if(!window.__bootErr)window.__bootErr=String(e&&e.error&&e.error.stack||e&&e.message||e).slice(0,700)});
+window.addEventListener('load',function(){setTimeout(function(){var w=document.getElementById('view');if(!w||w.innerText.replace(/\s/g,'').length>3||!window.__bootErr)return;
+  var en=v==='en',t=document.createElement('div');t.className='card';t.style.cssText='margin:40px 0;padding:16px;text-align:center;display:flex;flex-direction:column;gap:10px';
+  t.innerHTML='<div style="font-size:30px">⚠</div><b>'+(en?'The game could not start':'اللعبة ما عرفتش تفتح')+'</b><p style="margin:0;opacity:.85">'+(en?'Your heroes are saved. Try again; if it stays, send this error.':'أبطالك متسجلين. جرّب تاني، ولو فضلت ابعت الغلط ده.')+'</p><pre dir="ltr" style="text-align:left;font-size:11px;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;background:#0b0d1c;padding:8px;border-radius:10px;margin:0"></pre><button class="btn" style="min-height:44px">'+(en?'Try again':'جرّب تاني')+'</button>';
+  t.querySelector('pre').textContent=window.__bootErr;t.querySelector('button').onclick=function(){location.reload()};w.innerHTML='';w.appendChild(t)},1500)});
+})();</script>
 <style>html.en #app{direction:ltr}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Reem+Kufi:wght@500;700&family=Amiri:wght@400;700&display=swap">
 <style>
@@ -4795,6 +4802,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.34',d:'14 أكتوبر',add:['«سوق اللاعبين» فيه خانة بحث فوق: {اكتب|اكتبي} اسم الحاجة أو اسم اللاعب {وتلاقيها|وتلاقيها} على طول، في الشرا والبيع وعروضي','العدّة اللي {بتعملها|بتعمليها} عند عم حسن (زي المعول النابض) بقت مكتوب عليها «صنعة إيد» واسم اللي عملها، زي السلاح','«دوار العمدة» من غير قضايا: بدالها «طلب العمدة»، مهمة نادرة جدًا بتيجي كل كام يوم. أقوى وحشين في البلد وأقوى بكتير من العادي، لوحدك، ومرة واحدة بس. المكسب كبير جدًا (فلوس وحجارة وسمعة)، والخسارة إصابة وسمعة','رخص العمدة بقت غالية: رخصة تاجر 40,000، رخصة صنايعي 60,000، ووسام العمدة 150,000 وعايز سمعة 60','لو شاشة وقعت، اللعبة بترجعك للبلد بدل ما الصفحة تفضل فاضية، ولو اللعبة ما عرفتش تفتح بتكتبلك الغلط عشان {تبعته|تبعتيه}']},
 {v:'6.33',d:'14 أكتوبر',add:['«سلاح بروح»: الحكاية والاسم بقوا لسلاح مميز بس. السلاح العادي (خشب، نحاس، حديد) مش بيعد قتلات ولا بياخد اسم','السلاح اللي بروح بييجي من حاجتين: سلاح {تعمله|تعمليه} «تحفة» أو أحسن من فضة أو خامة أعلى، أو سلاح من الخامات دي في إيدك ممكن يصحى لما زعيم يقع','بيتولد باسمه وطبعه (غضبان، هادي، طماع، عجوز) وبيتكلم كلمتين في القتال. بيكبر بالقتلات لحد مستوى 10: ضرب +1 كل مستوى، ومن مستوى 3 +2 على النوع اللي بيقتله أكتر، ومن 6 كل قتلة بترجعلك صحة، ومن 9 ضربة الحظ بتيجي أكتر','«عدّتي» بقت جوه «بيتك» (تاب «عدّتي»)، و«جرنال البلد» بقى جوه «حال البلد»، فالبلد بقت أهدى','«التحدي» بقى صعب بجد: الوحش من أقوى الوحوش، صحته أكتر بكتير وضربه أتقل وتصويبه أحسن، ومن مستوى 8 بييجي معاه وحش تاني. كل ما {تكسب|تكسبي} ورا بعض بيصعب أكتر والفلوس بتزيد','«دوار العمدة» بقى مكتب العمدة: كل يوم في البلد خناقة بين اتنين من الناس {تحكم|تحكمي} فيها، وحكمك بيغير سمعتك وفلوسك. ولما سمعتك تكبر {تقدر|تقدري} {تطلع|تطلعي} رخص: رخصة تاجر (5% من اللي {بتدفعه|بتدفعيه} في البلد يرجعلك)، رخصة صنايعي (خبرة الشغلانات +10%)، ووسام العمدة (خبرة +5%)','لوحة المشاوير بقت جوه «حال البلد» جنب الجرنال','«حال البلد» بقى بالإنجليزي كامل لو اللغة إنجليزي','في القتال: الشنطة والقدرات و«اتصرّف» والكلام بقوا أيقونات بس. {دوس|دوسي} على أيقونة {تشوف|تشوفي} اسمها وبتعمل إيه، {ودوس|ودوسي} تاني أو «استعمل» عشان {تستعملها|تستعمليها}','{انت|انتي} واللي معاك (رفيق أو صاحب أو وحش) بقيتوا مرسومين على المسرح قدام الوحوش. ولو لوحدك مفيش كارت رفيق فاضي','تحت النرد سطر بيقولك الرمية اتحسبت إزاي: النرد + الصفة (قوة، خفة...) − الصعوبة = النتيجة','«التدريب» بقى بالقتال الجديد، والرفيق بيشرحلك ترمي النرد إزاي {وتضرب|وتضربي} {وتصد|وتصدي} في وقتها']},
 {v:'6.32',d:'14 أكتوبر',add:['«القتال بالإيد»: القتال بقى على مسرح بالليل، والوحوش قدامك {وانت|وانتي} ورفيقك جنبهم، والحركات بقت أيقونات كبيرة من غير كلام كتير.','النرد بقى في إيدك: {اسحب|اسحبي} لفوق عشان ترمي، {وشوف|وشوفي} الرقم قبل ما {تختار|تختاري}. {اسحب|اسحبي} النرد على حركة أو قدرة أو حاجة من الشنطة، أو على الوحش نفسه عشان {تضربه|تضربيه}.','دبل في النردين (غير 1 و1) بيديك طاقة زيادة.','الضربة في وقتها: دايرة بتقفل على الوحش، {دوس|دوسي} لما تقابل الدايرة الصغيرة. بالظبط = النتيجة بتطلع درجة والضربة أقوى، متأخر = الضربة أضعف.','الصد: لما وحش يهجم {عليك|عليكي} بينوّر ويجري، ودايرة زرقا بتقفل {عليك|عليكي}. صد بالظبط = مفيش ولا خدش وطاقة زيادة (مرة كل دور)، ولو فاتك الوقت الضربة بتبقى أوجع.','الاستراحة والطاقة والقدرات والشنطة والأكل للوحوش والعفو والكلام كلهم زي ما هما، تحت «اتصرّف» و«قدرات» و«الشنطة».','سجل القتال في زرار الورقة فوق. واللي {عايز|عايزة} القتال القديم {يقفل|تقفل} «القتال بالإيد» من الإعدادات.'],fix:['المنجم: نسبة العروق الجانبية اللي بتبان بقت بتحسب «خرايط العروق» (+50%)، والنسبة نفسها كانت شغالة صح من الأول']},
 {v:'6.31',d:'14 أكتوبر',add:['منافس: «عصام» من الكفر اللي جنبكم، بيكبر معاك. من مستوى 3 بييجي البلد كل 3 أيام، وبيكلمك على حسب الحساب اللي بينكم. لو {غلبته|غلبتيه}: فلوس، وهو بيتمرن وبيرجع أقوى. لو غلبك: {بتخسر|بتخسري} شوية فلوس {وترجع|وترجعي} البلد','«الرحلة» في بيتك: دفتر بيكتب لوحده اللحظات الكبيرة برسمة صغيرة جنب كل واحدة: كل مستوى، أول مرة {تهزم|تهزمي} زعيم، السلاح لما ياخد اسم، أسرار الطقس، تغييرات البلد، عصام، والوقفة الأخيرة','المنطقة بتتغير بعد الزعيم: لما زعيم منطقة في الخلا يقع، الوحوش هناك بتبقى هادية وضربتها أخف 3 أيام، وعلى الخريطة بيبان علم أبيض على المكان']},
@@ -50181,7 +50189,7 @@ function twInBack(scr){const from=TW_FROM[scr];if(!from)return;const b=$('#back'
 /* the house: a tab for your gear */
 function dgTabs(){const tb=view.querySelector('.hm-tabs');if(!tb||tb.querySelector('[data-tb="gear"]'))return;const h=S.hero;
   const eqN=typeof TW_SLOTS!=='undefined'?TW_SLOTS.filter(s=>h.eq[s]).length:0;
-  const b=document.createElement('button');b.className='hm-tb';b.dataset.tb='gear';b.innerHTML=`${ae('عدّتي','My gear')} <small class="dg-n">${eqN}/6</small>`;
+  const b=document.createElement('button');b.className='hm-tb';b.dataset.tb='gear';b.innerHTML=`${ae('عدّتي','My gear')}`;
   b.onclick=()=>{TW_FROM.gear='dar';try{SFX.page&&SFX.page()}catch(e){}S.screen='gear';render()};tb.insertBefore(b,tb.children[1]||null)}
 {const d0=SCREENS.dar;SCREENS.dar=function(){const r=d0.apply(this,arguments);try{if(S.screen==='dar')dgTabs()}catch(e){console.warn(e)}return r}}
 {const g0=SCREENS.gear;SCREENS.gear=function(){const r=g0.apply(this,arguments);try{if(S.screen==='gear')twInBack('gear')}catch(e){console.warn(e)}return r}}
@@ -50200,66 +50208,66 @@ L10N({'أوضك وعدّتك والمتحف وأهدافك':'Rooms, gear, museum
 (function(){const s=document.createElement('style');s.textContent=`.hm-tb .dg-n{font-size:11px;opacity:.75}
 .jn-go{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;text-align:start;cursor:pointer;margin-bottom:10px}.jn-ic{font-size:26px}.jn-tx{flex:1;display:flex;flex-direction:column}.jn-tx small{opacity:.8}
 .jn-n{min-width:26px;height:26px;border-radius:13px;background:#d0483b;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}`;document.head.appendChild(s)})();
-/* ---------- 6.33 (acc1, Twister 2026-10-14 10:25): «دوار العمدة» gets its own job ----------
+/* ---------- 6.33 (acc1, Twister 2026-10-14 10:25): «دوار العمدة» gets its own job; 6.34 (Twister 11:16) reshaped it ----------
    «غير مكان الكويستات من دوار العمدة لحال البلد، وخلي وظيفه دوار العمدة حاجه مختلفه».
    - The errands board (p43, SCREENS.quests) opens from «حال البلد» now (a button with the ready mark); its back button goes back there.
-   - «دوار العمدة» (SCREENS.omda, on the errands' old spot on the map) is the village's office:
-     1. «قضية النهارده»: one dispute a town day (OM_CASES, picked by day). You settle it with one of two first-person choices; each
-        moves your reputation and maybe your money. A settled case shows what you did until the next day (h.omda).
-     2. «رخص العمدة» (OM_LIC): bought once with money and enough reputation, they last: «رخصة تاجر» (5% back on what you pay in
-        town), «رخصة صنايعي» (+10% trade experience), «وسام العمدة» (+5% experience). Bad reputation can't buy them. */
-const OM_CASES=[
-  {t:['سعيد وفتحي متخانقين على حدود الغيط: فتحي نقل الحجر شبر لجوه.','Saeed and Fathi fight over a field border: Fathi moved the stone a hand inward.'],
-   a:['أرجّع الحجر مكانه قدام الاتنين',3,0,'الحجر رجع، وسعيد باس راسك.','I put the stone back in front of both',3,0,'The stone is back, and Saeed kissed your head.'],
-   b:['آخد من فتحي 40 جنيه وأسكت',-4,40,'فتحي دفع وضحك. سعيد ما نسيهاش.','I take 40 from Fathi and keep quiet',-4,40,'Fathi paid and laughed. Saeed won\'t forget.']},
-  {t:['أم حسن بتقول إن بياع اللبن بيخلط اللبن بمية.','Umm Hassan says the milkman waters his milk.'],
-   a:['أدوق اللبن بنفسي قدام الناس',4,0,'كان فيه مية فعلا. البياع اتفضح والناس شكرتك.','I taste the milk myself in front of everyone',4,0,'There was water in it. The milkman was shamed and people thanked you.'],
-   b:['أقول لأم حسن تشتري من حد تاني',-2,0,'أم حسن مشيت زعلانة.','I tell Umm Hassan to buy elsewhere',-2,0,'Umm Hassan left upset.']},
-  {t:['ولد اسمه كريم سرق رغيفين من الفرن، وصاحب الفرن عايز يضربه.','A boy called Karim stole two loaves, and the baker wants to beat him.'],
-   a:['أدفع تمن العيش وأسيب الولد يمشي',3,-15,'الولد جري، والفران سكت.','I pay for the bread and let the boy go',3,-15,'The boy ran off, and the baker calmed down.'],
-   b:['أسيب الفران يأدبه',-3,0,'الولد اتضرب قدام الناس. ناس كتير ما عجبهاش.','I let the baker teach him a lesson',-3,0,'The boy was beaten in public. Many people disliked it.']},
-  {t:['عم رجب العطار وعم حسن الحداد عايزين نفس الدكان الفاضي.','Uncle Ragab and Uncle Hassan both want the same empty shop.'],
-   a:['أعمل قرعة قدام الاتنين',2,0,'القرعة طلعت لرجب، وحسن قبلها.','I draw lots in front of both',2,0,'Ragab won the draw, and Hassan accepted.'],
-   b:['أديها للي يدفع أكتر للدوار',-2,60,'حسن دفع 60. رجب بيقول عليك كلام.','I give it to whoever pays the office more',-2,60,'Hassan paid 60. Ragab is talking about you.']},
-  {t:['جاموسة منى دخلت زرع جارها وأكلت نصه.','Mona\'s buffalo got into her neighbour\'s crop and ate half of it.'],
-   a:['منى تعوّض جارها بنص المحصول بتاعها',3,0,'الاتنين خرجوا راضيين.','Mona pays her neighbour half her own crop',3,0,'Both left content.'],
-   b:['أقول دي جاموسة وما تفهمش، وخلاص',-1,0,'الجار مشي وهو بيبرطم.','I say it is a buffalo and knows no better',-1,0,'The neighbour left grumbling.']},
-  {t:['شاب غريب نايم في الجامع من 3 ليالي، والناس خايفة منه.','A stranger has slept in the mosque for 3 nights, and people fear him.'],
-   a:['أقعد معاه وأسمع حكايته',3,0,'طلع راجل تايه من البلد اللي جنبكم. {وديته|وديتيه} لأهله.','I sit with him and hear his story',3,0,'He was lost from the next village. You took him home.'],
-   b:['أطرده من البلد',-2,0,'مشي من غير ولا كلمة. فيه ناس ارتاحت وناس اتكسفت.','I throw him out of the village',-2,0,'He left without a word. Some were relieved, some ashamed.']},
-  {t:['محمود الفكهاني بيبيع بالميزان المضروب، والزباين اشتكوا.','Mahmoud the fruit seller uses a crooked scale, and buyers complained.'],
-   a:['أكسر الميزان قدام السوق',4,0,'السوق كله صقف. محمود جاب ميزان جديد.','I break the scale in front of the market',4,0,'The whole market clapped. Mahmoud got a new scale.'],
-   b:['آخد منه غرامة للدوار',1,30,'دفع 30 وكمّل يبيع.','I fine him for the office',1,30,'He paid 30 and kept selling.']},
-  {t:['عيلتين متخانقين على مية الساقية مين يسقي الأول.','Two families fight over who waters first from the waterwheel.'],
-   a:['أعمل جدول: يوم ليكم ويوم ليهم',3,0,'الجدول اتعلق على الساقية وما حدش اتخانق.','I make a schedule: one day each',3,0,'The schedule hangs on the wheel and nobody fights.'],
-   b:['أدي الدور للعيلة الأكبر',-2,0,'العيلة الصغيرة حلفت ما تنسى.','I give the turn to the bigger family',-2,0,'The small family swore not to forget.']},
-  {t:['ست سعاد بتقول إن جوزها خد دهبها وباعه.','Mrs Soad says her husband took her gold and sold it.'],
-   a:['أخليه يرجّعلها تمنه قدام الكبار',3,0,'رجّع الفلوس وهو مكسوف.','I make him pay it back before the elders',3,0,'He paid it back, ashamed.'],
-   b:['أقول دي حاجة بين الراجل ومراته',-3,0,'سعاد مشيت معيطة.','I say it is between husband and wife',-3,0,'Soad left in tears.']},
-  {t:['تاجر من بره عايز يشتري أرض الجبانة القديمة ويبني عليها.','An outside trader wants to buy the old cemetery land to build on it.'],
-   a:['أرفض: دي أرض أموات البلد',4,0,'الكبار اتطمنوا. التاجر مشي زعلان.','I refuse: it belongs to the village dead',4,0,'The elders were reassured. The trader left angry.'],
-   b:['أبيعها له وآخد عمولة',-6,120,'خدت 120. البلد كلها بتتكلم عليك.','I sell it and take a cut',-6,120,'You took 120. The whole village is talking about you.']}];
+   - «دوار العمدة» (SCREENS.omda, on the errands' old spot on the map):
+     6.34: «انت ملكش دعوة بالعمدة انت ليه تحكم مكانه، خلينا في الرخص وضيف … كويستات خطر جدا ونادره جدا بتبقا مطلوبة مخصوص من العمدة»
+     and «رخص العمدة رخيصه جدا». The daily disputes are gone.
+     1. «طلب العمدة» (OM_REQ): on about one town day in five (seeded by the day and the hero, so a reload never changes it), from
+        level OM_LV, the mayor asks for you by name: a very dangerous fight against the two strongest beasts around (health
+        ×omHpM, hit +omDmg, aim and guard +OM_AIM). One try that day. A win pays a lot (omPay), reputation +8 and 3 stones;
+        a loss costs reputation and an injury, and you wake with a quarter of your health.
+     2. «رخص العمدة» (OM_LIC): bought once with a lot of money and enough reputation, they last: «رخصة تاجر» (5% back on what you
+        pay in town), «رخصة صنايعي» (+10% trade experience), «وسام العمدة» (+5% experience). */
+const OM_LV=6,OM_AIM=3,OM_DAY=5;
+const OM_REQ=[
+  ['فيه حاجة بتخطف عيال من الكفر بالليل. العمدة باعتلك بالاسم: «محدش غيرك يقدر عليها».','Something takes children from the hamlet at night. The mayor sent for you by name: «nobody else can handle it».'],
+  ['الوحوش بقت تنزل على مخزن الغلة كل ليلة. لو القمح راح البلد هتجوع الشتا.','Beasts raid the grain store every night. If the wheat goes, the village starves this winter.'],
+  ['قافلة جاية من الصعيد اتهاجمت عند الترعة، والعمدة عايز الطريق نضيف قبل ما التانية توصل.','A caravan from Upper Egypt was attacked by the canal, and the mayor wants the road clear before the next one comes.'],
+  ['الخفرا لقوا آثار غريبة جنب الجبانة، واتنين منهم ما رجعوش. العمدة قفل الدوار عليك وقالك: «انت آخر أمل».','The watchmen found strange tracks by the cemetery, and two of them never came back. The mayor shut the door and said: «you are the last hope».'],
+  ['عيلة كاملة قافلة على نفسها البيت من الخوف، والحاجة اللي برا مش راضية تمشي.','A whole family has locked itself in from fear, and the thing outside will not leave.']];
 const OM_LIC=[
-  {id:'tagir',n:['رخصة تاجر','Trader\'s licence'],d:['5% من اللي {بتدفعه|بتدفعيه} في البلد بيرجعلك','5% back on what you pay in town'],rep:20,p:500},
-  {id:'sanay',n:['رخصة صنايعي','Craftsman\'s licence'],d:['خبرة الشغلانات +10%','Trade experience +10%'],rep:20,p:700},
-  {id:'wesam',n:['وسام العمدة','Mayor\'s medal'],d:['الخبرة +5%','Experience +5%'],rep:45,p:900}];
-function omFix(h){if(!h.omda||typeof h.omda!=='object')h.omda={d:-1,pick:'',lic:{}};h.omda.lic=h.omda.lic||{};return h.omda}
+  {id:'tagir',n:['رخصة تاجر','Trader\'s licence'],d:['5% من اللي {بتدفعه|بتدفعيه} في البلد بيرجعلك','5% back on what you pay in town'],rep:30,p:40000},
+  {id:'sanay',n:['رخصة صنايعي','Craftsman\'s licence'],d:['خبرة الشغلانات +10%','Trade experience +10%'],rep:30,p:60000},
+  {id:'wesam',n:['وسام العمدة','Mayor\'s medal'],d:['الخبرة +5%','Experience +5%'],rep:60,p:150000}];
+function omFix(h){if(!h.omda||typeof h.omda!=='object')h.omda={lic:{}};const O=h.omda;O.lic=O.lic&&typeof O.lic==='object'?O.lic:{};delete O.pick;return O}
 const omHas=(h,id)=>!!(h&&h.omda&&h.omda.lic&&h.omda.lic[id]);
-const omCase=h=>OM_CASES[(((h.nDone|0)*7+String(h.name||'').length*3)%OM_CASES.length+OM_CASES.length)%OM_CASES.length];
-const omDone=h=>{const O=omFix(h);return O.d===(h.nDone|0)&&!!O.pick};
+function omSeed(h,salt){let x=((h.nDone|0)+1)*2246822519^salt;const nm=String(h.name||'')+(h.cls||'');for(let i=0;i<nm.length;i++)x=Math.imul(x^nm.charCodeAt(i),16777619);x=Math.imul(x^(x>>>15),0x2c1b3c6d);x^=x>>>13;return (x>>>0)/4294967296}
+const omHpM=h=>Math.round((3+(h.lvl|0)/10)*10)/10,omDmg=h=>2+Math.floor((h.lvl|0)/3),omPay=h=>2000+500*(h.lvl|0);
+/* today's request, or null */
+function omReq(h){if(!h||(h.lvl|0)<OM_LV||omSeed(h,3)>=1/OM_DAY)return null;
+  const all=Object.keys(ROAM_ENCOUNTERS).filter(k=>{const e=ROAM_ENCOUNTERS[k];return e&&e.hp&&!e.boss}).sort((a,b)=>{const A=ROAM_ENCOUNTERS[a],B=ROAM_ENCOUNTERS[b];return B.hp*((B.dmg|0)+1)-A.hp*((A.dmg|0)+1)||(a<b?-1:1)});
+  const top=all.slice(0,6);if(top.length<2)return null;const i=Math.floor(omSeed(h,5)*top.length);let j=Math.floor(omSeed(h,7)*(top.length-1));if(j>=i)j++;
+  return {k:top[i],e:ROAM_ENCOUNTERS[top[i]],k2:top[j],e2:ROAM_ENCOUNTERS[top[j]],t:OM_REQ[Math.floor(omSeed(h,11)*OM_REQ.length)],pay:omPay(h)}}
+const omTried=h=>{const O=omFix(h);return O.rd===(h.nDone|0)};
+function omGo(h){const R=omReq(h);if(!R||omTried(h)||S.combat)return;const O=omFix(h);O.rd=h.nDone|0;O.rw=0;saveHero();
+  S.comp=cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;S.roamFight=null;
+  const mk=(e,m,d)=>{const f=Object.assign({},e,{name:e.n,hp:Math.round(e.hp*m),dmg:(e.dmg|0)+d});delete f.n;delete f.say;delete f.two;return f};
+  startCombat([mk(R.e,omHpM(h),omDmg(h)),mk(R.e2,omHpM(h)*.8,omDmg(h)-1)],()=>{S.screen='town';render()},false);
+  const C=S.combat;if(C){C.omq=R.pay;C.foes.forEach(x=>{x.acc=(x.acc|0)+OM_AIM;x.def=(x.def|0)+OM_AIM});C.log.push({t:T(ae('طلب العمدة: أخطر قتال في البلد. مفيش رجوع.','The mayor\'s request: the most dangerous fight around. No turning back.'))});try{combat()}catch(e){}}}
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;if(!C||!C.omq||!h)return e0.apply(this,arguments);const O=omFix(h);
+  if(won){O.rw=1;O.won=(O.won|0)+1;h.money=(h.money|0)+C.omq;addRes(h,'stone1',3);try{addRep(8,T(ae('{خلّصت|خلّصتي} طلب العمدة','You did the mayor\'s request')))}catch(e){h.rep=Math.min(100,(h.rep|0)+8)}
+    setTimeout(()=>{try{band(ae('طلب العمدة','The mayor\'s request'),T(ae('{خلّصته!|خلّصتيه!}','Done!')),`+${C.omq} ${ae('جنيه','EGP')} · ${resN('stone1')} ×3 · ${ae('سمعة','reputation')} +8`,{dur:2400,sound:SFX.good});gainXP(Math.max(10,(h.lvl|0)*10))}catch(e){}},900);return e0.apply(this,arguments)}
+  const rr=render;render=function(){};try{e0.apply(this,arguments)}catch(e){console.warn(e)}finally{render=rr}
+  S.lost=null;S.combat=null;let k=null;try{k=ijAdd(h)}catch(e){}try{addRep(-4,T(ae('{خذلت|خذلتي} العمدة','You let the mayor down')))}catch(e){h.rep=Math.max(-100,(h.rep|0)-4)}h.hp=Math.max(1,Math.ceil(MXH(h)/4));saveHero();
+  band('',T(ae('{رجعت|رجعتي} للعمدة {مكسور|مكسورة}','You went back to the mayor beaten')),k&&IJ[k]?IJ[k].n:ae('سمعتك نزلت','your name fell'),{color:'red',dur:1900,sound:SFX.down});twGo('town')}}
 const omL=(a,i)=>ae(a[i],a[i+4]);
-SCREENS.omda=function(){const h=S.hero;if(!h){S.screen='title';return render()}const O=omFix(h),c=omCase(h),dn=omDone(h),r=h.rep|0;
-  const ch=k=>{const x=c[k];return `<button class="tw-buy om-ch" data-om="${k}"><b>${T(omL(x,0))}</b><small>${x[1]>0?ae('سمعتك بتعلى','your name rises'):x[1]<0?ae('سمعتك بتنزل','your name falls'):''}${x[2]?` · ${x[2]>0?'+':'−'}${Math.abs(x[2])} ${ae('جنيه','EGP')}`:''}</small></button>`};
-  view.innerHTML=`${twTop(ae('دوار العمدة','The mayor\'s house'))}<div class="tw om">
-    <div class="card om-c"><div class="om-h">⚖ ${ae('قضية النهارده','Today\'s case')}</div><p>${T(ae(c.t[0],c.t[1]))}</p>
-      ${dn?`<div class="om-res"><b>${T(omL(c[O.pick],0))}</b><small>${T(omL(c[O.pick],3))}</small></div><small class="om-sm">${ae('بكرة فيه قضية جديدة','A new case tomorrow')}</small>`:`<div class="om-chs">${ch('a')}${ch('b')}</div>`}</div>
+SCREENS.omda=function(){const h=S.hero;if(!h){S.screen='title';return render()}const O=omFix(h),R=omReq(h),tr=omTried(h),r=h.rep|0;
+  const art=k=>{try{return foeArt(ROAM_ENCOUNTERS[k].art)}catch(x){return ''}};const en=n=>EN?(L10N_W.get(n)||n):n;
+  const req=!R?`<div class="card om-c"><div class="om-h">📜 ${ae('طلب العمدة','The mayor\'s request')}</div><p>${ae('العمدة مش طالب حاجة النهارده. طلباته نادرة: بتيجي كل كام يوم، ولما تيجي بتبقى أخطر حاجة في البلد.','The mayor asks nothing today. His requests are rare: one comes every few days, and it is the most dangerous thing around.')}</p>${(h.lvl|0)<OM_LV?`<small class="om-sm">${ae(`من المستوى ${OM_LV}`,`From level ${OM_LV}`)}</small>`:''}</div>`
+    :`<div class="card om-c om-q"><div class="om-h">📜 ${ae('طلب العمدة','The mayor\'s request')}</div><p>${T(ae(R.t[0],R.t[1]))}</p>
+      <div class="om-fs"><span>${art(R.k)}<b>${en(R.e.n)}</b></span><span>${art(R.k2)}<b>${en(R.e2.n)}</b></span></div>
+      <small class="om-sm">${ae(`صحة ×${omHpM(h)} · ضرب +${omDmg(h)} · تصويب ودفاع +${OM_AIM} · لوحدك`,`Health ×${omHpM(h)} · hit +${omDmg(h)} · aim and guard +${OM_AIM} · alone`)}</small>
+      <div class="om-pay">🏆 ${R.pay} ${ae('جنيه','EGP')} · ${resN('stone1')} ×3 · ${ae('سمعة','reputation')} +8</div>
+      ${tr?`<div class="om-res"><b>${O.rw?ae('✓ خلّصته','✓ Done'):ae('✗ ما نفعش','✗ It did not work')}</b><small>${ae('الطلب الجاي بعد كام يوم','The next request comes in a few days')}</small></div>`
+        :`<small class="om-w">${ae('لو {خسرت|خسرتي}: إصابة، وسمعتك تنزل، {وترجع|وترجعي} بربع صحتك. مرة واحدة بس.','If you lose: an injury, your name falls, and you come back with a quarter of your health. One try only.')}</small><button class="btn om-go" id="omGo">${ae(G('اقبل الطلب','اقبلي الطلب'),'Take the request')}</button>`}</div>`;
+  view.innerHTML=`${twTop(ae('دوار العمدة','The mayor\'s house'))}<div class="tw om">${T(req)}
     <div class="card om-c"><div class="om-h">📜 ${ae('رخص العمدة','The mayor\'s licences')}</div><small class="om-sm">${ae(`سمعتك دلوقتي ${r} · الرخصة بتفضل معاك على طول`,`Your reputation: ${r} · a licence is yours for good`)}</small>
       ${OM_LIC.map(L=>{const got=omHas(h,L.id),okR=r>=L.rep,okM=(h.money|0)>=L.p;return `<div class="om-l${got?' got':''}"><div class="om-lt"><b>${ae(L.n[0],L.n[1])}</b><small>${T(ae(L.d[0],L.d[1]))}</small></div>
-        ${got?`<span class="om-ok">✓ ${ae('معاك','Yours')}</span>`:`<button class="tw-buy om-b" data-oml="${L.id}" ${okR&&okM?'':'disabled'}>${!okR?ae(`سمعة ${L.rep}`,`Reputation ${L.rep}`):`${L.p} ${ae('جنيه','EGP')}`}</button>`}</div>`}).join('')}</div></div>`;
+        ${got?`<span class="om-ok">✓ ${ae('معاك','Yours')}</span>`:`<button class="tw-buy om-b" data-oml="${L.id}" ${okR&&okM?'':'disabled'}>${!okR?ae(`سمعة ${L.rep}`,`Reputation ${L.rep}`):`${L.p.toLocaleString('en')} ${ae('جنيه','EGP')}`}</button>`}</div>`}).join('')}</div></div>`;
   const b=$('#back');if(b)b.onclick=()=>{S.screen='town';render()};
-  view.querySelectorAll('[data-om]').forEach(x=>x.onclick=()=>{if(omDone(h))return;const k=x.dataset.om,cc=omCase(h)[k];O.d=h.nDone|0;O.pick=k;
-    if(cc[2])h.money=Math.max(0,(h.money|0)+cc[2]);if(cc[1]){try{addRep(cc[1],T(omL(cc,0)))}catch(e){h.rep=Math.max(-100,Math.min(100,(h.rep|0)+cc[1]))}}
-    saveHero();try{(cc[1]>=0?SFX.good:SFX.meh)()}catch(e){}render()});
+  const g=$('#omGo');if(g)g.onclick=()=>{try{SFX.page&&SFX.page()}catch(e){}omGo(h)};
   view.querySelectorAll('[data-oml]').forEach(x=>x.onclick=()=>{const L=OM_LIC.find(l=>l.id===x.dataset.oml);if(!L||omHas(h,L.id)||(h.rep|0)<L.rep||(h.money|0)<L.p)return;
     h.money-=L.p;O.lic[L.id]=1;saveHero();try{band(ae('دوار العمدة','The mayor\'s house'),ae(L.n[0],L.n[1]),T(ae(L.d[0],L.d[1])),{dur:2000,sound:SFX.good})}catch(e){}render()})};
 /* the effects of the licences */
@@ -50268,7 +50276,7 @@ SCREENS.omda=function(){const h=S.hero;if(!h){S.screen='title';return render()}c
 {const g0=gainXP;gainXP=function(n){try{if(omHas(S.hero,'wesam')&&n>0)n=Math.round(n*1.05)}catch(e){}return g0.call(this,n)}}
 /* the town: the errands' tile becomes the mayor's office, the errands open from «حال البلد» */
 for(let i=0;i<TW_EXTRA.length;i++){const f=TW_EXTRA[i];TW_EXTRA[i]=function(h){const t=f.apply(this,arguments);try{if(t&&h&&t.id==='quests'){
-  return {id:'omda',go:'omda',n:'دوار العمدة',w:ae('قضايا الناس ورخص العمدة','Village cases and licences'),s:omDone(h)?ae('القضية اتحلت النهارده','Today\'s case is settled'):`<span class="ok">${ae('فيه قضية مستنياك','A case is waiting')}</span>`,bell:omDone(h)?0:1}}
+  const R=omReq(h),on=R&&!omTried(h);return {id:'omda',go:'omda',n:'دوار العمدة',w:ae('رخص العمدة وطلباته النادرة','Licences and rare requests'),s:on?`<span class="ok">${ae('العمدة طالبك!','The mayor sent for you!')}</span>`:ae('مفيش طلب النهارده','No request today'),bell:on?1:0}}
   if(t&&h&&t.id==='balad'){let r=0;try{qbFix(h);qbRoll(h);r=qbReady(h)}catch(e){}if(r){t.s=`${t.s} · <span class="ok">${ae(`${r} ${r===1?'مهمة جاهزة':'مهمات جاهزة'}`,`${r} errands ready`)}</span>`;t.bell=1}}}catch(e){}return t};if(f.__tm)TW_EXTRA[i].__tm=1}
 TW_GROUPS.forEach(g=>{const i=g.go.indexOf('quests');if(i>=0)g.go.splice(i,1,'omda')});
 try{if(TM_SPOTS.quests){TM_SPOTS.omda=TM_SPOTS.quests;delete TM_SPOTS.quests}TM_LB.omda=TM_LB.quests||['دوار العمدة',"Mayor's house"]}catch(e){}
@@ -50280,10 +50288,11 @@ try{if(TM_SPOTS.quests){TM_SPOTS.omda=TM_SPOTS.quests;delete TM_SPOTS.quests}TM_
   const jn=$('#jnGo');if(jn)jn.insertAdjacentHTML('beforebegin',btn);else box.insertAdjacentHTML('afterbegin',btn);
   $('#qbGo').onclick=()=>{TW_FROM.quests='balad';try{SFX.page&&SFX.page()}catch(e){}S.screen='quests';render()}}catch(e){console.warn(e)}return r}}
 {const q0=SCREENS.quests;SCREENS.quests=function(){const r=q0.apply(this,arguments);try{if(S.screen==='quests')twInBack('quests')}catch(e){console.warn(e)}return r}}
-L10N({'دوار العمدة':"The mayor's house",'قضايا الناس ورخص العمدة':'Village cases and licences'});
+L10N({'دوار العمدة':"The mayor's house",'رخص العمدة وطلباته النادرة':'Licences and rare requests'});
 (function(){const s=document.createElement('style');s.textContent=`.om-c{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}.om-h{font-weight:800;color:#ffd36a}.om-c p{margin:0;line-height:1.7}
 .om-chs{display:flex;flex-direction:column;gap:8px}.om-ch{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:56px;text-align:start}.om-ch small{opacity:.8}
 .om-res{display:flex;flex-direction:column;gap:4px;padding:8px;border-radius:10px;background:#0006}.om-res b{color:#a6e3a0}.om-sm{opacity:.75}
+.om-fs{display:flex;gap:10px;justify-content:center}.om-fs span{display:flex;flex-direction:column;align-items:center;gap:2px;width:96px}.om-fs svg{width:72px;height:72px}.om-pay{font-weight:800;color:#ffd36a}.om-w{color:#e2a0a0}.om-go{min-height:48px}.om-q{border-color:#e2483f88}
 .om-l{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #ffffff14}.om-lt{flex:1;display:flex;flex-direction:column}.om-lt small{opacity:.8}.om-b{min-height:44px;white-space:nowrap}.om-ok{color:#a6e3a0;font-weight:800}`;document.head.appendChild(s)})();
 /* ---------- 6.33 (acc1, Twister 2026-10-14 10:53/10:54): the fight's sheets are icons ----------
    «ممكن نخليهم الايكون وخلاص، ولما تيجي تختارها يقلك الوصف والاسم وهكذا عشان ميبقاش الشاشه طويله» and «الصور دول مش مظبوطين».
@@ -50393,6 +50402,33 @@ function cgAll(){if(!cgOn())return;view.querySelectorAll('.sheet').forEach(cgDre
 #app.af .cg-roll{text-align:center;font-size:12px;opacity:.9;margin:-2px 0 4px;direction:rtl}
 #app.af .cg-roll .cg-full{color:#7fd88a}#app.af .cg-roll .cg-part{color:#f2c14e}#app.af .cg-roll .cg-fail{color:#e2483f}
 .cg-cw{width:40px;height:40px;flex:0 0 40px;overflow:hidden;border-radius:10px}.cg-cw svg{width:40px;height:40px}`;document.head.appendChild(s)})();
+/* ---------- 6.34 (acc1, Twister 2026-10-14 11:11/11:12) ----------
+   «ضيف سيرش للسوق»: «سوق اللاعبين» has a search box on top of every tab (buy, sell, my offers). It filters the rows as you type
+   (name, seller, maker), ignoring hamza/ة/ى and diacritics, and keeps the text when the screen redraws.
+   «خلي الأدوات زي المعول النابض … تقول معموله من مين زي الأسلحه»: a tool made at the smith keeps its maker (h.tools.by[id]);
+   older tools the hero made show the hero's name. The tool card and its rows show «صنعة إيد: …» like weapons. */
+const mkNorm=s=>String(s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,' ').trim();
+function mkSearch(){if(S.screen!=='pmarket')return;const rows=[...view.querySelectorAll('.mk-r,.mk-o')];const col=rows.length?rows[0].parentElement:null;
+  if(!col||$('#mkS'))return mkFilter();
+  const box=document.createElement('div');box.className='mk-s';
+  box.innerHTML=`<span class="mk-si">🔍</span><input id="mkS" type="search" enterkeyhint="search" autocomplete="off" placeholder="${ae(`${G('دوّر','دوّري')} على حاجة… (حديد، سيف، اسم لاعب)`,'Search… (iron, sword, a player)')}" value="${esc(MK.q||'')}"><button class="mk-sx" id="mkSx" aria-label="${ae('امسح','Clear')}" ${MK.q?'':'hidden'}>✕</button>`;
+  col.before(box);const i=$('#mkS');i.oninput=()=>{MK.q=i.value;$('#mkSx').hidden=!MK.q;mkFilter()};
+  $('#mkSx').onclick=()=>{MK.q='';i.value='';$('#mkSx').hidden=true;mkFilter();i.focus()};mkFilter()}
+function mkFilter(){const q=mkNorm(MK.q);const rows=[...view.querySelectorAll('.mk-r,.mk-o')];let n=0;
+  rows.forEach(r=>{const ok=!q||q.split(' ').every(w=>mkNorm(r.innerText).includes(w));r.style.display=ok?'':'none';if(ok)n++});
+  let e=$('#mkSn');if(q&&!n){if(!e){e=document.createElement('div');e.id='mkSn';e.className='card tw-empty';const c=rows[0]&&rows[0].parentElement;if(c)c.after(e)}if(e)e.textContent=ae('مفيش حاجة بالاسم ده','Nothing by that name')}else if(e)e.remove()}
+{const p0=SCREENS.pmarket;SCREENS.pmarket=function(){const r=p0.apply(this,arguments);try{mkSearch()}catch(e){console.warn(e)}return r}}
+/* tools keep their maker */
+function tlBy(h,id){const t=TOOL_CATALOG[id];if(!h||!t||!t.t||!tlOwn(h,id))return '';const b=h.tools&&h.tools.by&&h.tools.by[id];return b||h.name||''}
+{const m0=tlMake;tlMake=function(h,id){const r=m0.apply(this,arguments);try{if(r&&h){h.tools.by=h.tools.by&&typeof h.tools.by==='object'?h.tools.by:{};h.tools.by[id]=String(h.name||'').slice(0,20);saveHero()}}catch(e){}return r}}
+const tlByTx=(h,id)=>{const b=tlBy(h,id);return b?`<small class="q-by">${ae('صنعة إيد','Made by')}: ${esc(b)}</small>`:''};
+{const c0=tlCardHTML;tlCardHTML=function(h,tr){const s=c0.apply(this,arguments);try{const t=tlOn(h,tr);if(s&&t){const by=tlByTx(h,t.id);if(by)return s.replace('</span><span class="go">',`${by}</span><span class="go">`)}}catch(e){}return s}}
+{const r0=tlRowHTML;tlRowHTML=function(h,t){const s=r0.apply(this,arguments);try{const by=t&&tlByTx(h,t.id);if(s&&by){const i=s.lastIndexOf('</div>',s.lastIndexOf('</div>')-1);if(i>0)return s.slice(0,i)+by+s.slice(i)}}catch(e){}return s}}
+(function(){const s=document.createElement('style');s.textContent=`.mk-s{position:relative;display:flex;align-items:center;margin:0 0 10px}
+.mk-s input{flex:1;min-height:44px;box-sizing:border-box;padding:0 40px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px}
+.mk-s input::-webkit-search-cancel-button{display:none}
+.mk-si{position:absolute;inset-inline-start:12px;opacity:.7;pointer-events:none}
+.mk-sx{position:absolute;inset-inline-end:2px;width:44px;height:44px;background:none;border:0;color:var(--mute);font-size:16px;cursor:pointer}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
@@ -50611,6 +50647,33 @@ L10N({},[[/^(.+) مستوى (\d+)$/,(m,n,d)=>{const r=l10nStr(n);return r?`${r} 
 L10N({},[[/^([^:·«»]+): ([^·]+)$/,(m,a,b)=>{const x=l10nStr(a),y=l10nPart(b);return x&&y?`${x}: ${y}`:m}]]);
 /* 6.12: the page's own HTML (the dice's «تمام», …) was translated when p80 started, before later parts added their words: once more now */
 if(EN)L10N_SWEEP();
+/* ---------- 6.34 (acc1, Twister 2026-10-14 11:11): «اللعبه مبتفتحش عنده لسبب ما» ----------
+   A screen that throws used to leave the page empty (only the frame), with no way to tell why. Now render() is guarded: when a
+   screen throws, the game tries the town (or the title) once; if that throws too, a card shows the error with buttons to try
+   again, go back to the start, or copy the error to send. The error is still thrown on a timer, so tests see it as before.
+   This is the last part before pEnd, so it wraps every other render wrapper. */
+let CR_N=0;
+function crShow(e){try{const v=document.getElementById('view')||document.body;const msg=String(e&&(e.stack||e.message)||e).slice(0,700);
+  v.innerHTML=`<div class="card cr-box"><div class="cr-ic">⚠</div><b>${ae('حصلت مشكلة وإحنا بنفتح الشاشة دي','Something broke while opening this screen')}</b>
+    <p>${ae('أبطالك متسجلين ومحدش لمسهم. جرّب تاني، ولو فضلت، انسخ الغلط وابعته.','Your heroes are saved and untouched. Try again; if it stays, copy the error and send it.')}</p>
+    <pre class="cr-err" dir="ltr">${esc(msg)}</pre>
+    <button class="btn" id="crRe">${ae('جرّب تاني','Try again')}</button>
+    <button class="btn ghost" id="crTi">${ae('ارجع للبداية','Back to the start')}</button>
+    <button class="btn ghost small" id="crCp">${ae('انسخ الغلط','Copy the error')}</button></div>`;
+  const q=id=>document.getElementById(id);
+  q('crRe').onclick=()=>location.reload();
+  q('crTi').onclick=()=>{CR_N=0;try{S.screen='title';S.combat=null;render()}catch(x){location.reload()}};
+  q('crCp').onclick=()=>{try{navigator.clipboard.writeText(`سرداب ${typeof NEWS!=='undefined'&&NEWS[0]?NEWS[0].v:''} · ${S.screen}\n${msg}`);toast(ae('اتنسخ','Copied'))}catch(x){}}}catch(x){}}
+{const r0=render;render=function(){try{const r=r0.apply(this,arguments);CR_N=0;return r}catch(e){
+  setTimeout(()=>{throw e},0);
+  if(window.__r||window.__t||window.__q)return;   /* test builds: keep the old behaviour */
+  const from=S.screen;CR_N++;
+  if(CR_N<=2){const to=S.hero&&from!=='town'&&from!=='title'?'town':'title';if(to!==from){S.screen=to;try{S.combat=null}catch(x){}try{return render()}catch(x){}}}
+  crShow(e)}}}
+(function(){const s=document.createElement('style');s.textContent=`.cr-box{display:flex;flex-direction:column;gap:10px;margin:40px 0;text-align:center}
+.cr-ic{font-size:30px}.cr-box p{margin:0;opacity:.85;font-size:14px;line-height:1.6}
+.cr-err{max-height:160px;overflow:auto;text-align:left;font-size:11px;background:#0b0d1c;border-radius:10px;padding:8px;white-space:pre-wrap;word-break:break-all;margin:0}
+.cr-box .btn{min-height:44px}`;document.head.appendChild(s)})();
 
 render();
 })();
