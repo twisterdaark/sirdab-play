@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.53',d:'14 أكتوبر',add:['«ناس البلد»: كارت جديد فوق «حال البلد» فيه حكايات وعقود مع ناس البلد، وكل واحد ليه وش.','«حكاية النهارده»: حكاية واحدة كل يوم بلد (عشر حكايات لحد دلوقتي، بتتفتح بالمستوى): جاموسة هربانة، خناقة عند القهوة، فرح، حرامي في بيتك... وفيها حاجات {بتعملها|بتعمليها} بإيدك: «امسك» ({سيب|سيبي} لما الدايرة توصل للأخضر) أو «بسرعة» (7 دوسات في 3 ثواني). لو فاتتك بتاخد النهاية الوحشة.','اللي {بتختاره|بتختاريه} بيفضل: لو {سلّفت|سلّفتي} الريس صابر بيرجعلك 150 بعد يومين وعقده بيدفع أكتر، والكلب اللي {بتأكّله|بتأكّليه} بيرجع ينقذك بعدين. كل اللي حصل مكتوب تحت «اللي حصل».','«العقود»: 8 عقود من ناس البلد، كل عقد 3 خطوات بتلف بيك على الحرف (تزرع وتطبخ وتصطاد، أو تكسر صخر وتشتغل عند الحداد). {بتسلّم|بتسلّمي} الحاجة بإيدك، وأجره بيتدفع مرة واحدة، وولاء صاحبه في «حال البلد» بيزيد. لو {سبت|سبتي} العقد اللي {سلّمته|سلّمتيه} بيرجعلك.']},
 {v:'6.52.1',d:'14 أكتوبر',add:['«حال الغيط» بقى بيقول سعر البيع: كل أرض مزروعة مكتوب تحتها الواحدة بتتباع بكام عند عم رمضان النهارده، والأرض كلها هتجيب حوالي كام. وجدول «كل زرعة بتاخد قد إيه» فيه سعر البيع جنب التقاوي والمحصول.']},
 {v:'6.52',d:'14 أكتوبر',add:['«سرداب الطاحونة»: أول سرداب بأوض. سبع أوض تحت الطاحونة القديمة {بتمشي|بتمشي} فيهم أوضة أوضة على خريطة: {دوس|دوسي} على الأوضة اللي جنبك وبعدين «ادخل». بتلاقيه في «الخلا» جنب المأوى أو من «الدهاليز».','جوه السرداب: جرار {بتفتكر|بتفتكري} نورها بالترتيب، عتلات {بتظبطها|بتظبطيها} بإيدك عشان الباب الحديد يتفتح، فيران {تقدر|تقدري} تتسحب من جنبها وعينها مغمضة، خزنة فيها فلوس وتمثال (لو {خدته|خدتيه} الغول بيتعصب ويبقى أقوى)، والغول في الآخر.','مكانك محفوظ: لو {طلعت|طلعتي} ورجعت {بتلاقي|بتلاقي} نفسك في نفس الأوضة. لو {وقعت|وقعتي} {بتصحى|بتصحي} عند المدخل والسرداب بيرجع من الأول وبيضيع منك شوية فلوس. ولما {تطلع|تطلعي} للنور السرداب بيتغيّر المرة الجاية.','اتصلح: لما {بتهزم|بتهزمي} وحش كبير واللعبة بالإنجليزي، كان بيظهر كلام عربي في الآخر.']},
 {v:'6.51',d:'14 أكتوبر',add:['«حال الغيط» تحت الأرض: سطر لكل أرض فيه الزرعة، حالها (بتكبر، عطشانة، اتسقت، اتاكل منها، جاهزة، محتاجة حرت) والوقت الفاضل من وقتها كله، والعداد ماشي قدامك.','«كل زرعة بتاخد قد إيه»: جدول بكل الزرع، وقت كل واحدة على مستواك، سعر التقاوي، المحصول، والمستوى اللي بتتفتح فيه.','الحرت لسه بإيدك، بس فيه زرار يخليه «تلقائي» والأرض الفاضية بتتحرت لوحدها. أو {أجّر|أجّري} عامل على شغلانة «الحرت» الجديدة من «العمال»، وفيه عامل جديد اسمه زكي شغلته الحرت.']},
@@ -52485,6 +52486,243 @@ try{KH_ADD({id:'tahuna',kind:'dg',scr:'dg',x:52,y:118,n:['سرداب الطاح�
 .dg-lv i{position:absolute;left:50%;width:10px;margin-left:-5px;top:50%;height:44%;background:#9aa3ad;border-radius:5px;transform-origin:50% 0;transition:transform .2s}
 .dg-lv i::after{content:'';position:absolute;left:-9px;bottom:-10px;width:28px;height:20px;border-radius:50%;background:#c9a46a}
 .dg-lv.up i{transform:rotate(180deg)}`;document.head.appendChild(s)})();
+/* ---------- 6.53 (acc1, R18 + R17 first batch): «ناس البلد» — town stories and contracts ----------
+   A new screen (SCREENS.nas), opened from «حال البلد» (a card on top) and from the town's «الناس والحكايات».
+   1. «حكاية النهارده» (NS_SC, 10 stories SC01–SC10): one a town day (h.nDone), in order, from the level each one asks for.
+      Each is a short comic (caption + the person's line, a pixel face) and 2–3 things you do. Some ask your hands:
+      «امسك» (hold until the ring is in the green, then let go) or «بسرعة» (tap 7 times in 3 seconds); a miss gives the worse end.
+      What you chose stays: some set a mark (h.sc.f) that a later story or a contract reads (the dog of SC08 saves you in SC10,
+      lending the fisherman money in SC03 pays back 150 two town days later and makes his contract pay +20%).
+      Every story is played once (h.sc.done) and its reward is paid once. What happened is listed under «اللي حصل» (h.sc.log).
+   2. «العقود» (NS_CT, 8 contracts): a town person asks for three steps that cross the trades (farm → cook → fish, mine → smith…).
+      A step is «سلّم» (materials, taken by hand from bag + storage through hasRes/takeRes) or «اعمل» (a counter that must grow by n
+      after the step starts: cooked, crafted, brewed, harvest, rocks, fish). One contract at a time; leaving it costs nothing and gives
+      back what you already handed in. The reward is paid once (h.ct.done); the giver's loyalty in «حال البلد» grows (tbFix).
+   Saved in h.sc = {d: town day of the last story, done:{id:1}, f:{mark:1}, due:[{d,m,w}], log:[[ar,en]]}
+   and h.ct = {a: {id, s: step, b: counter at the step's start, g: {k:n} handed in}, done:{id:1}}.
+   Tests: window.__ns (off in test builds unless set); window.__nsAuto true/false answers the hand actions. */
+const nsOn=()=>!((window.__r||window.__t||window.__q||window.__y)&&!window.__ns);
+const NSX={tab:'sc',busy:0,res:null};
+const nsDay=h=>h.nDone|0;
+function nsFix(h){let A=h.sc;if(!A||typeof A!=='object'||Array.isArray(A))A=h.sc={};A.done=A.done||{};A.f=A.f||{};A.due=Array.isArray(A.due)?A.due:[];A.log=Array.isArray(A.log)?A.log:[];if(typeof A.d!=='number')A.d=-1;
+  let C=h.ct;if(!C||typeof C!=='object'||Array.isArray(C))C=h.ct={};C.done=C.done||{};if(C.a&&!NS_CT.find(c=>c.id===C.a.id))C.a=null;return A}
+const nsLog=(h,ar,en)=>{const A=nsFix(h);A.log.unshift([ar,en]);A.log.length=Math.min(A.log.length,12)};
+/* a town face, the same person every time (made like the comic faces of p170) */
+function nsFace(p){const r=cmHash('ns|'+p.id),P=(typeof PD!=='undefined'&&PD.RAMPS)||{},f=p.g==='f',old=!!p.old;
+  const pick=(o,n)=>{const k=Object.keys(o||{});return k.length?k[(r>>>n)%k.length]:undefined};
+  const L={name:'',g:f?'f':'m',cls:'ابن البلد',skin:pick(P.skin,1),hairColor:old?'#d9d4cc':pick({'#1b1412':1,'#4a2c1a':1,'#8a5a2b':1},4),eyes:pick(P.eyes,6),outfit:pick(P.outfit,8),
+    age:old?'كبير':'شاب',hair:f?'غطا راس':['قصير','مموج','كيرلي','أصلع','مفروق'][(r>>>5)%5]};
+  if(!f)L.beard=old?['شنب','دقن كاملة','شنب مبروم'][(r>>>7)%3]:['من غير','شنب','سكسوكة'][(r>>>7)%3];
+  try{return PX.pic(L,'cm')}catch(e){return ''}}
+/* ---- the people ---- */
+const NS_P={
+  omsayed:{id:'omsayed',n:['أم سيد','Umm Sayed'],g:'f',old:1,tb:'omsayed'},hasan:{id:'hasan',n:['عم حسن','Uncle Hassan'],old:1,tb:'hasan'},
+  fathi:{id:'fathi',n:['عم فتحي','Uncle Fathi'],old:1,tb:'fathi'},ragab:{id:'ragab',n:['عم رجب','Uncle Ragab'],old:1,tb:'ragab'},
+  ramadan:{id:'ramadan',n:['عم رمضان','Uncle Ramadan'],old:1,tb:'ramadan'},saber:{id:'saber',n:['الريس صابر','Captain Saber']},
+  farag:{id:'farag',n:['المعلم فرج','Master Farag']},neamat:{id:'neamat',n:['ست نعمات','Mrs Neamat'],g:'f',old:1},
+  mahmoud:{id:'mahmoud',n:['محمود الفلاح','Mahmoud the farmer']},ziad:{id:'ziad',n:['زياد','Ziad']},
+  sabah:{id:'sabah',n:['صباح البياعة','Sabah the seller'],g:'f'},ghafir:{id:'ghafir',n:['عم عبده الغفير','Uncle Abdo the watchman'],old:1},
+  sheikh:{id:'sheikh',n:['الشيخ عبد الله','Sheikh Abdallah'],old:1},karim:{id:'karim',n:['كريم','Karim']},
+  hoda:{id:'hoda',n:['هدى','Hoda'],g:'f'}};
+const nsPN=id=>NS_P[id].n[EN?1:0];
+/* ---- 1. the stories ---- */
+/* out: {m: money, x: xp, rep, hp, res:{k:n}, f: mark, due: payback, loy:[npc,n], heal:1}; t: the line after */
+const NS_SC=[
+  {id:'sc01',lv:1,who:'mahmoud',ic:'🐃',t:['الجاموسة الهربانة','The runaway buffalo'],
+    cap:['جاموسة محمود الفلاح فلتت في السوق، والناس بتجري.','Mahmoud the farmer\'s buffalo got loose in the market and people are running.'],
+    say:['الحقني! الحبل في رقبتها، لو {مسكته|مسكتيه} هتهدى.','Help me! The rope is on her neck. Grab it and she\'ll calm down.'],
+    ch:[{ic:'✋',t:['{امسك|امسكي} الحبل وشد','Grab the rope and pull'],act:'hold',ok:{m:40,rep:4,x:6,t:['{مسكتها|مسكتيها} وهديت. محمود حط في إيدك 40 جنيه.','You held her and she calmed down. Mahmoud pressed 40 coins into your hand.']},
+        no:{hp:-2,rep:2,t:['الحبل فلت وسحلك شوية، بس الناس شافتك {بتحاول|بتحاولي}.','The rope slipped and dragged you a bit, but people saw you try.']}},
+      {ic:'🚶',t:['{ابعد|ابعدي} عن طريقها','Get out of her way'],ok:{t:['الجاموسة عدّت جنبك، ومحمود جري وراها لوحده.','The buffalo ran past you and Mahmoud chased her alone.']}}]},
+  {id:'sc02',lv:1,who:'ziad',ic:'🪁',t:['الطيارة في النخلة','The kite in the palm'],
+    cap:['زياد، عيل صغير، طيارته الورق اتعلقت في نخلة عالية.','Ziad, a little boy, got his paper kite stuck up a tall palm.'],
+    say:['دي آخر طيارة عندي.. {تطلعلي|تطلعيلي}؟','It\'s the only kite I have.. will you climb up?'],
+    ch:[{ic:'🧗',t:['{اطلع|اطلعي} النخلة بسرعة','Climb the palm fast'],act:'tap',ok:{rep:3,x:8,t:['{نزلت|نزلتي} بالطيارة سليمة. زياد بيجري بيها في الشارع.','You came down with the kite whole. Ziad is running down the street with it.']},
+        no:{hp:-2,t:['رجلك اتزحلقت في نص النخلة و{وقعت|وقعتي}. الطيارة لسه فوق.','Your foot slipped halfway and you fell. The kite is still up there.']}},
+      {ic:'🪙',t:['اديله 10 جنيه يجيب غيرها','Give him 10 coins for a new one'],cost:{m:10},ok:{rep:2,t:['زياد خد الفلوس وجري على المكتبة.','Ziad took the coins and ran to the shop.']}}]},
+  {id:'sc03',lv:2,who:'saber',ic:'🎣',t:['ديون الريس صابر','Captain Saber\'s debt'],
+    cap:['الريس صابر قاعد على الشط، والمركب مربوط من غير شبكة.','Captain Saber sits on the bank, his boat tied up with no net.'],
+    say:['الشبكة اتقطعت وعليا فلوس لعم رمضان. {سلّفني|سلّفيني} 100 وأرجعهم 150 بعد يومين.','My net tore and I owe Uncle Ramadan. Lend me 100 and I\'ll give back 150 in two days.'],
+    ch:[{ic:'🪙',t:['{سلّفه|سلّفيه} 100 جنيه','Lend him 100 coins'],cost:{m:100},ok:{f:'saber',due:[2,150,'saber'],rep:2,t:['صابر حضنك. «يومين بالظبط، وعقد الشبكة بتاعي هيبقى ليك بزيادة.»','Saber hugged you. «Two days exactly, and my net contract will pay you more.»']}},
+      {ic:'✋',t:['{قوله|قوليله} معنديش','Tell him you have nothing'],ok:{t:['صابر هز راسه وبص للمية.','Saber nodded and looked at the water.']}}]},
+  {id:'sc04',lv:2,who:'karim',ic:'👊',t:['خناقة عند القهوة','A fight at the café'],
+    cap:['اتنين بيتخانقوا قدام القهوة على دور الطاولة، والكراسي بتطير.','Two men are fighting outside the café over a game turn, and chairs are flying.'],
+    say:['{فرّقهم|فرّقيهم} قبل ما حد يتعوّر!','Pull them apart before someone gets hurt!'],
+    ch:[{ic:'✋',t:['{ادخل|ادخلي} بينهم و{امسكهم|امسكيهم}','Step in and hold them'],act:'hold',ok:{rep:5,x:8,m:20,t:['{فصلتهم|فصلتيهم}. صاحب القهوة عزمك على شاي و20 جنيه.','You split them up. The café owner gave you tea and 20 coins.']},
+        no:{hp:-3,rep:1,t:['خدت بوكس طاير، بس الخناقة خلصت.','You caught a stray punch, but the fight ended.']}},
+      {ic:'🚶',t:['{سيبهم|سيبيهم} ويخلصوا لوحدهم','Leave them to it'],ok:{rep:-2,t:['الكرسي اتكسر، والناس بصتلك وانت ماشي.','A chair broke, and people watched you walk off.']}}]},
+  {id:'sc05',lv:3,who:'sabah',ic:'⚖',t:['الميزان المضروب','The rigged scale'],
+    cap:['صباح البياعة وزنتلك طماطم، والميزان بيميل من غير ما تحط حاجة.','Sabah weighs your tomatoes, and the scale tips with nothing on it.'],
+    say:['كيلو بالظبط يا {حبيبي|حبيبتي}. اتفضل.','Exactly a kilo, dear. Here you go.'],
+    ch:[{ic:'👆',t:['وريها الميزان قدام الناس','Show her scale to everyone'],ok:{rep:3,res:{tamatem:3},t:['الناس اتلمت. صباح ضحكت بكسوف وزودتلك 3 طماطم.','People gathered. Sabah laughed it off and threw in 3 tomatoes.']}},
+      {ic:'🪙',t:['{ادفع|ادفعي} وسكت','Pay and say nothing'],cost:{m:5},ok:{t:['دفعت 5 جنيه في كيلو ناقص.','You paid 5 coins for a short kilo.']}}]},
+  {id:'sc06',lv:3,who:'ghafir',ic:'🌙',t:['الغفير نايم','The watchman is asleep'],
+    cap:['آخر الليل، عم عبده الغفير نايم على الدكة، وفيه خيال بيتسلق سور عم رمضان.','Late at night, Uncle Abdo the watchman sleeps on his bench, and a shadow climbs Uncle Ramadan\'s wall.'],
+    say:['ززز..','Zzz..'],
+    ch:[{ic:'📣',t:['{اصرخ|اصرخي} و{اجري|اجري} عليه','Shout and run at him'],act:'tap',ok:{m:60,rep:4,loy:['ramadan',8],t:['الحرامي نط ووقع الشوال. عم رمضان ادالك 60 جنيه الصبح.','The thief jumped and dropped the sack. Uncle Ramadan gave you 60 coins in the morning.']},
+        no:{rep:1,t:['الحرامي سبقك وهرب، بس عم عبده صحي على صوتك.','The thief was faster, but Uncle Abdo woke at your shout.']}},
+      {ic:'🙈',t:['{كمّل|كمّلي} طريقك','Keep walking'],ok:{rep:-3,t:['الصبح البلد كلها بتتكلم عن السرقة.','In the morning the whole town talks about the theft.']}}]},
+  {id:'sc07',lv:4,who:'hoda',ic:'💃',t:['الفرح','The wedding'],
+    cap:['زفة فرح هدى معدية، والصندوق بتاع العروسة تقيل والشيالين تعبوا.','Hoda\'s wedding parade passes, the bride\'s chest is heavy and the carriers are tired.'],
+    say:['حد يشيل معاهم بالله عليكم!','Someone help them carry it, please!'],
+    ch:[{ic:'💪',t:['{شيل|شيلي} الصندوق','Carry the chest'],act:'hold',ok:{x:12,heal:1,rep:3,t:['{شلته|شلتيه} لحد البيت، وأكلوك لحد ما شبعت.','You carried it to the house, and they fed you until you were full.']},
+        no:{hp:-2,x:4,t:['الصندوق كان أتقل منك. وقع على رجلك بس دخل.','The chest was heavier than you. It landed on your foot, but it got in.']}},
+      {ic:'🥁',t:['{ارقص|ارقصي} في الزفة','Dance in the parade'],ok:{rep:2,x:4,t:['الزفة كلها بتسقف لك.','The whole parade claps for you.']}}]},
+  {id:'sc08',lv:4,who:'karim',ic:'🐕',t:['الكلب الجريح','The hurt dog'],
+    cap:['كلب بلدي رجله متعورة نايم جنب الترعة، وعيال بيرموه بالطوب.','A street dog with a hurt leg lies by the canal, and kids throw stones at it.'],
+    say:['سيبه يا عم، ده كلب سعران.','Leave it, it\'s rabid.'],
+    ch:[{ic:'🫘',t:['{أكّله|أكّليه} 2 فول و{اربطله|اربطيله} رجله','Feed it 2 beans and bind its leg'],cost:{res:{ful:2}},ok:{f:'dog',x:6,t:['الكلب أكل وبص لك كتير. من النهارده بيمشي وراك من بعيد.','The dog ate and stared at you. From today it follows you from afar.']}},
+      {ic:'🗣',t:['{زعّق|زعّقي} في العيال وبس','Just yell at the kids'],ok:{rep:1,t:['العيال جريوا. الكلب عرج ومشي.','The kids ran. The dog limped away.']}}]},
+  {id:'sc09',lv:5,who:'sheikh',ic:'🕌',t:['سقف الجامع','The mosque roof'],
+    cap:['المطر نزل من سقف الجامع على الحصير، والشيخ عبد الله بيلم الجرادل.','Rain dripped through the mosque roof onto the mats, and Sheikh Abdallah is collecting buckets.'],
+    say:['السقف عايز خشب وإيدين.','The roof needs wood and hands.'],
+    ch:[{ic:'🪙',t:['{اتبرع|اتبرعي} بـ 50 جنيه','Give 50 coins'],cost:{m:50},ok:{rep:7,t:['الشيخ دعالك قدام الناس كلها في صلاة الجمعة.','The sheikh prayed for you in front of everyone at Friday prayer.']}},
+      {ic:'🔨',t:['{اطلع|اطلعي} {صلّح|صلّحي} بإيدك','Climb up and fix it'],act:'tap',ok:{x:15,rep:4,t:['{سديت|سديتي} الخرم. الشيخ قال «الإيد دي فيها بركة».','You sealed the hole. The sheikh said «these hands are blessed».']},
+        no:{hp:-2,x:5,t:['اتزحلقت على السقف المبلول، بس الخرم اتقفل نصه.','You slipped on the wet roof, but half the hole is sealed.']}}]},
+  {id:'sc10',lv:6,who:'ghafir',ic:'🚪',t:['حرامي في بيتك','A thief in your house'],
+    cap:['{رجعت|رجعتي} البيت بالليل، والباب مفتوح، وفيه حد بيقلب في حاجتك.','You come home at night: the door is open and someone is going through your things.'],
+    say:['مين هناك؟!','Who\'s there?!'],
+    ch:[{ic:'🤼',t:['{اهجم|اهجمي} عليه','Jump him'],act:'hold',dog:1,ok:{m:80,rep:3,x:10,t:['{مسكته|مسكتيه} وعم عبده الغفير خده. لقيت معاه 80 جنيه مسروقة من الجيران ورجعوهالك مكافأة.','You held him and Uncle Abdo took him away. He had 80 stolen coins and the neighbours gave them to you as thanks.']},
+        no:{lose:.05,hp:-3,t:['زقك وهرب، وخد معاه 5% من فلوسك.','He shoved you and ran off with 5% of your money.']}},
+      {ic:'📣',t:['{اصرخ|اصرخي} على الجيران','Shout for the neighbours'],ok:{rep:1,lose:.02,t:['الجيران جم بس هو كان هرب ومعاه 2% من فلوسك.','The neighbours came but he had fled with 2% of your money.']}}]}];
+/* the dog of SC08 turns SC10: it holds him for you */
+const NS_DOG=['الكلب البلدي اللي {أكلته|أكلتيه} نط من ورا الحيطة ومسك في رجله. ما احتجتش {تمسكه|تمسكيه}!','The street dog you fed leapt over the wall and grabbed his leg. You did not even need to hold him!'];
+function nsToday(h){const A=nsFix(h);if(A.d===nsDay(h))return {wait:1};const s=NS_SC.find(x=>!A.done[x.id]);if(!s)return {all:1};if(h.lvl<s.lv)return {lv:s.lv};return {s}}
+/* ---- 2. the contracts ---- */
+const NS_CNT={cooked:['{اطبخ|اطبخي}','Cook'],crafted:['{اعمل|اعملي} عند الحداد أو الخياط','Make at the smith or tailor'],brewed:['{اعمل|اعملي} دوا في العطارة','Brew at the herbalist'],
+  harvest:['{احصد|احصدي} من الغيط','Harvest in the field'],rocks:['{اكسر|اكسري} صخر في المنجم','Break rocks in the mine'],fish:['{اصطاد|اصطادي} سمك','Catch fish']};
+const NS_CT=[
+  {id:'ct1',lv:1,who:'omsayed',ic:'🍲',t:['عزومة الجمعة','The Friday feast'],say:['عازمة البلد كلها الجمعة، وإيدي لوحدها مش هتكفي.','I invited the whole town on Friday and my hands alone won\'t do.'],
+    st:[{give:{tamatem:5}},{do:'cooked',n:2},{give:{bolti:3}}],pay:{m:180,x:20,st:1}},
+  {id:'ct2',lv:2,who:'hasan',ic:'⚒',t:['سكة المحراث','The plough blade'],say:['محراث محمود اتكسر وموسم الزرع داخل. عايز حديد وفحم ومساعدة.','Mahmoud\'s plough broke and planting season is coming. I need iron, coal and a hand.'],
+    st:[{give:{iron:4}},{give:{coal:6}},{do:'crafted',n:1}],pay:{m:220,x:24,st:1}},
+  {id:'ct3',lv:3,who:'fathi',ic:'🧵',t:['جلابية العريس','The groom\'s robe'],say:['فرح هدى قرّب، والعريس لسه من غير جلابية.','Hoda\'s wedding is close and the groom still has no robe.'],
+    st:[{give:{cloth:4}},{do:'crafted',n:1},{give:{ful:4}}],pay:{m:200,x:22,st:1}},
+  {id:'ct4',lv:3,who:'ragab',ic:'🌿',t:['دوا الحاجة','Grandma\'s medicine'],say:['الحاجة زينب صدرها تعبان، والدوا عايز نعناع وحلبة وإيد شاطرة.','Hajja Zeinab\'s chest is bad. The medicine needs mint, fenugreek and a good hand.'],
+    st:[{give:{mint:3}},{do:'brewed',n:1},{give:{helba:2}}],pay:{m:200,x:24,st:1}},
+  {id:'ct5',lv:4,who:'ramadan',ic:'🫘',t:['موسم الفول','Bean season'],say:['الناس عايزة فول مدمس، والسمك للغدا. {اشتغل|اشتغلي} معايا.','People want stewed beans and fish for lunch. Work with me.'],
+    st:[{do:'harvest',n:10},{give:{ful:8}},{give:{bolti:4}}],pay:{m:260,x:28,st:1}},
+  {id:'ct6',lv:5,who:'saber',ic:'🎣',t:['شبكة جديدة','A new net'],say:['من غير شبكة مفيش رزق. {ساعدني|ساعديني} أرجع الترعة.','No net, no living. Help me back onto the canal.'],
+    st:[{do:'fish',n:8},{give:{cloth:2}},{give:{qarmout:2}}],pay:{m:300,x:30,st:2}},
+  {id:'ct7',lv:6,who:'farag',ic:'⛏',t:['طريق المنجم','The mine road'],say:['الطريق للمنجم اتهد. عايزين صخر ونحاس وفحم نصلّحه.','The mine road caved in. We need rock, copper and coal to fix it.'],
+    st:[{do:'rocks',n:15},{give:{copper:6}},{give:{coal:4}}],pay:{m:340,x:34,st:2}},
+  {id:'ct8',lv:7,who:'neamat',ic:'🏠',t:['سطح ست نعمات','Mrs Neamat\'s roof'],say:['أنا ست لوحدي والسطح وقع. اللي يساعدني ربنا يكرمه.','I live alone and my roof fell in. God bless whoever helps me.'],
+    st:[{give:{ful:6}},{do:'crafted',n:1},{do:'cooked',n:1}],pay:{m:380,x:40,st:3}}];
+const nsCt=id=>NS_CT.find(c=>c.id===id);
+const nsCnt=(h,k)=>(h.cnt&&h.cnt[k])|0;
+function nsStepTxt(h,s,a,cur){if(s.give)return Object.keys(s.give).map(k=>`${twMat(k,20)} ${esc(fsNm(k))} × ${s.give[k]}${cur?` <small>(${ae('معاك','you have')} ${(h.res[k]|0)+((h.overR&&h.overR[k])|0)})</small>`:''}`).join(' ');
+  const d=cur&&a?Math.max(0,nsCnt(h,s.do)-a.b):0;return `${T(ae(NS_CNT[s.do][0],NS_CNT[s.do][1]))} × ${s.n}${cur?` <small>(${Math.min(d,s.n)}/${s.n})</small>`:''}`}
+function nsStepOk(h,s,a){return s.give?hasRes(h,s.give):nsCnt(h,s.do)-a.b>=s.n}
+function nsTake(h){const C=h.ct,a=C.a;if(!a)return;const c=nsCt(a.id),s=c.st[a.s];if(!nsStepOk(h,s,a))return toast(T(ae('لسه ما {خلصتش|خلصتيش} الخطوة دي.','This step is not done yet.')));
+  if(s.give){takeRes(h,s.give);a.g=a.g||{};Object.keys(s.give).forEach(k=>a.g[k]=(a.g[k]|0)+s.give[k])}
+  a.s++;try{SFX.good()}catch(e){}
+  if(a.s>=c.st.length){C.a=null;C.done[c.id]=1;const P=c.pay,m=Math.round(P.m*(c.who==='saber'&&nsFix(h).f.saber?1.2:1));h.money+=m;gainXP(P.x);try{addRes(h,'stone1',P.st|0)}catch(e){}
+    const p=NS_P[c.who];if(p.tb)try{const B=tbFix(h);B.l[p.tb]=Math.min(100,(B.l[p.tb]|0)+15)}catch(e){}bump('ctDone');
+    nsLog(h,`${p.n[0]}: ${c.t[0]} خلص (+${m} جنيه)`,`${p.n[1]}: ${c.t[1]} done (+${m} coins)`);saveHero();
+    band(ae('العقد خلص','Contract done'),T(c.t[EN?1:0]),`+${m} ${ae('جنيه','coins')} · +${P.x} ${ae('خبرة','XP')} · +${P.st} ${ae('حجر تعزيز','enhancement stone')}`,{dur:2200,sound:SFX.levelup});return nsRender()}
+  a.b=c.st[a.s].do?nsCnt(h,c.st[a.s].do):0;saveHero();toast(T(ae('تمام! الخطوة الجاية.','Done! On to the next step.')));nsRender()}
+function nsStart(h,id){const C=h.ct,c=nsCt(id);if(!c||C.a||C.done[id]||h.lvl<c.lv)return;C.a={id,s:0,b:c.st[0].do?nsCnt(h,c.st[0].do):0,g:{}};saveHero();try{SFX.page()}catch(e){}nsRender()}
+function nsDrop(h){const C=h.ct,a=C.a;if(!a)return;Object.keys(a.g||{}).forEach(k=>addRes(h,k,a.g[k]));C.a=null;saveHero();toast(T(ae('{سبت|سبتي} العقد. اللي {سلّمته|سلّمتيه} رجعلك.','You left the contract. What you handed in is back with you.')));nsRender()}
+/* ---- hand actions ---- */
+const nsAuto=()=>window.__nsAuto!=null;
+function nsHold(label){return new Promise(res=>{if(nsAuto()){res(!!window.__nsAuto);return}
+  const s=document.createElement('div');s.className='cmg ns-o';s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${label}</b></div><div class="ns-ring" id="nsRing"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><path d="${nsArc(.7,.92)}" class="ok"/><circle cx="50" cy="50" r="42" class="fl" id="nsFl" pathLength="100" stroke-dasharray="0 100"/></svg></div>
+    <div class="cmg-m" style="direction:${EN?'ltr':'rtl'}">${T(ae('{اضغط|اضغطي} و{امسك|امسكي}، و{سيب|سيبي} لما الدايرة توصل للأخضر','Press and hold, let go when the ring reaches the green'))}</div><button class="btn" id="nsHb" style="min-height:64px;touch-action:none">${ae('امسك','Hold')}</button></div>`;
+  document.body.appendChild(s);const fl=s.querySelector('#nsFl'),b=s.querySelector('#nsHb');let t0=0,raf=0,v=0,over=0;
+  const tick=()=>{v=Math.min(1,(performance.now()-t0)/1500);fl.setAttribute('stroke-dasharray',`${(v*100).toFixed(1)} 100`);if(v>=1)return end();raf=requestAnimationFrame(tick)};
+  const end=()=>{if(over||!t0)return;over=1;cancelAnimationFrame(raf);const ok=v>=.7&&v<=.92;try{ok?SFX.good():SFX.meh()}catch(e){}s.querySelector('#nsRing').classList.add(ok?'win':'miss');setTimeout(()=>{s.remove();res(ok)},500)};
+  b.addEventListener('pointerdown',e=>{e.preventDefault();if(over||t0)return;t0=performance.now();try{vib(15)}catch(x){}raf=requestAnimationFrame(tick)});
+  b.addEventListener('pointerup',end);b.addEventListener('pointerleave',end);b.addEventListener('pointercancel',end)})}
+function nsArc(a,b){const p=t=>{const g=-Math.PI/2+t*2*Math.PI;return `${(50+42*Math.cos(g)).toFixed(2)} ${(50+42*Math.sin(g)).toFixed(2)}`};return `M ${p(a)} A 42 42 0 0 1 ${p(b)}`}
+function nsTap(label){return new Promise(res=>{if(nsAuto()){res(!!window.__nsAuto);return}
+  const s=document.createElement('div');s.className='cmg ns-o';s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${label}</b></div><div class="ns-bar"><i id="nsTb"></i></div><div class="ns-time"><i id="nsTt"></i></div>
+    <div class="cmg-m" style="direction:${EN?'ltr':'rtl'}">${T(ae('{دوس|دوسي} 7 مرات قبل ما الوقت يخلص','Tap 7 times before time runs out'))}</div><button class="btn" id="nsTp" style="min-height:72px;touch-action:manipulation">${ae('بسرعة!','Quick!')}</button></div>`;
+  document.body.appendChild(s);let n=0,over=0;const t0=performance.now(),tb=s.querySelector('#nsTb'),tt=s.querySelector('#nsTt');
+  const end=ok=>{if(over)return;over=1;try{ok?SFX.good():SFX.meh()}catch(e){}setTimeout(()=>{s.remove();res(ok)},400)};
+  const loop=()=>{if(over)return;const f=(performance.now()-t0)/3000;tt.style.width=Math.max(0,100-f*100)+'%';if(f>=1)return end(false);requestAnimationFrame(loop)};requestAnimationFrame(loop);
+  s.querySelector('#nsTp').addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;n++;tb.style.width=(n/7*100)+'%';try{SFX.tick(300+n*60);vib(8)}catch(x){}if(n>=7)end(true)})})}
+/* ---- playing a story choice ---- */
+async function nsPick(h,s,i){if(NSX.busy)return;const c=s.ch[i],A=nsFix(h);if(A.d===nsDay(h)||A.done[s.id])return;
+  if(c.cost){if(c.cost.m&&h.money<c.cost.m)return toast(ae('الفلوس مش مكفية.','Not enough money.'));if(c.cost.res&&!hasRes(h,c.cost.res))return toast(ae('مش معاك اللي محتاجه.','You don\'t have what it takes.'))}
+  NSX.busy=1;let ok=true,dog=false;try{if(c.dog&&A.f.dog){dog=true}else if(c.act==='hold')ok=await nsHold(T(ae(c.t[0],c.t[1])));else if(c.act==='tap')ok=await nsTap(T(ae(c.t[0],c.t[1])))}finally{NSX.busy=0}
+  if(c.cost){if(c.cost.m)h.money-=c.cost.m;if(c.cost.res)takeRes(h,c.cost.res)}
+  const o=ok?c.ok:c.no,lines=[];
+  if(o.m){h.money+=o.m;lines.push(`+${o.m} ${ae('جنيه','coins')}`)}
+  if(o.lose){const l=Math.min(150,Math.floor(Math.max(0,h.money)*o.lose));h.money-=l;if(l)lines.push(`−${l} ${ae('جنيه','coins')}`)}
+  if(c.cost&&c.cost.m)lines.push(`−${c.cost.m} ${ae('جنيه','coins')}`);
+  if(o.x){gainXP(o.x);lines.push(`+${o.x} ${ae('خبرة','XP')}`)}
+  if(o.rep){h.rep=Math.max(-100,Math.min(100,(h.rep|0)+o.rep));lines.push(`${o.rep>0?'+':''}${o.rep} ${ae('سمعة','reputation')}`)}
+  if(o.hp){h.hp=Math.max(1,h.hp+o.hp);lines.push(`${o.hp} ${ae('صحة','health')}`)}
+  if(o.heal){h.hp=MXH(h);lines.push(ae('صحتك اتملت','health full'))}
+  if(o.res)Object.keys(o.res).forEach(k=>{addRes(h,k,o.res[k]);lines.push(`+${o.res[k]} ${esc(fsNm(k))}`)});
+  if(o.f)A.f[o.f]=1;if(o.due)A.due.push({d:nsDay(h)+o.due[0],m:o.due[1],w:o.due[2]});
+  if(o.loy)try{const B=tbFix(h);B.l[o.loy[0]]=Math.min(100,(B.l[o.loy[0]]|0)+o.loy[1])}catch(e){}
+  A.done[s.id]=1;A.d=nsDay(h);bump('scDone');
+  const said=dog?ae(NS_DOG[0],NS_DOG[1]):'';const tx=T(ae(o.t[0],o.t[1]));
+  nsLog(h,`${s.t[0]}: ${T(o.t[0])}`,`${s.t[1]}: ${o.t[1]}`);NSX.res={id:s.id,ok,t:(said?T(said)+' ':'')+tx,lines};saveHero();try{ok?SFX.coin&&o.m&&SFX.coin():SFX.down&&SFX.down()}catch(e){}nsRender()}
+function nsDue(h){const A=nsFix(h),d=nsDay(h);const keep=[];A.due.forEach(x=>{if(d>=x.d){h.money+=x.m;nsLog(h,`${nsPN(x.w)} رجّعلك ${x.m} جنيه زي ما وعد.`,`${NS_P[x.w].n[1]} paid you back ${x.m} coins as promised.`);toast(EN?`${NS_P[x.w].n[1]} paid you back ${x.m} coins.`:`${NS_P[x.w].n[0]} رجّعلك ${x.m} جنيه.`);try{SFX.coin()}catch(e){}}else keep.push(x)});
+  if(keep.length!==A.due.length){A.due=keep;saveHero()}}
+/* ---- the screen ---- */
+function nsRender(){if(S.screen==='nas'){const y=view.scrollTop;render();view.scrollTop=y}}
+function nsStory(h){const R=NSX.res,A=nsFix(h);
+  if(R){const s=NS_SC.find(x=>x.id===R.id),p=NS_P[s.who];return `<div class="card ns-sc"><div class="ns-h"><span class="ic">${s.ic}</span><b>${T(s.t[EN?1:0])}</b></div>
+    ${cmPanels([{t:'cap',h:R.t}],'')}<div class="ns-out ${R.ok?'ok':'no'}">${R.lines.map(l=>`<span>${l}</span>`).join('')}</div><button class="btn" id="nsOk">${ae('تمام','OK')}</button></div>`}
+  const D=nsToday(h);
+  if(!D.s)return `<div class="card ns-sc ns-wait"><div class="ns-h"><span class="ic">☕</span><b>${ae('حكاية النهارده','Today\'s story')}</b></div><div class="dim">${D.wait?T(ae('{خلصت|خلصتي} حكاية النهارده. فيه حكاية جديدة بكرة (يوم البلد الجاي).','You played today\'s story. A new one comes tomorrow (next town day).')):D.lv?ae(`الحكاية الجاية من مستوى ${D.lv}.`,`The next story opens at level ${D.lv}.`):T(ae('{سمعت|سمعتي} كل حكايات البلد لحد دلوقتي.','You have heard every town story for now.'))}</div></div>`;
+  const s=D.s,p=NS_P[s.who],face=nsFace(p);
+  return `<div class="card ns-sc"><div class="ns-h"><span class="ic">${s.ic}</span><b>${T(s.t[EN?1:0])}</b><small>${esc(nsPN(s.who))}</small></div>
+    <div class="ns-cm">${cmPanels([{t:'cap',h:T(s.cap[EN?1:0])},{t:'say',h:T(s.say[EN?1:0])}],face)}</div>
+    <div class="ns-chs">${s.ch.map((c,i)=>{const lock=c.cost&&((c.cost.m&&h.money<c.cost.m)||(c.cost.res&&!hasRes(h,c.cost.res)));const tag=c.dog&&A.f.dog?ae('الكلب معاك','the dog is with you'):c.act==='hold'?ae('امسك','hold'):c.act==='tap'?ae('بسرعة','quick'):'';
+      return `<button class="ns-ch${lock?' lk':''}" data-nsc="${i}"><span class="ic">${c.ic}</span><span class="tx">${T(c.t[EN?1:0])}${tag?`<i class="ns-tg">✋ ${tag}</i>`:''}</span></button>`}).join('')}</div></div>`}
+function nsCts(h){const C=h.ct,a=C.a;let out='';
+  if(a){const c=nsCt(a.id),p=NS_P[c.who],s=c.st[a.s],ok=nsStepOk(h,s,a);
+    out+=`<div class="card ns-ct on"><div class="ns-h"><span class="ns-f">${nsFace(p)}</span><span><b>${T(c.t[EN?1:0])}</b><small>${esc(nsPN(c.who))}</small></span></div>
+      <div class="ns-q">«${T(c.say[EN?1:0])}»</div>
+      <div class="ns-sts">${c.st.map((x,i)=>`<div class="ns-st ${i<a.s?'dn':i===a.s?'cu':''}"><span class="n">${i<a.s?'✓':i+1}</span><span>${x.give?ae('سلّم: ','Hand in: '):''}${nsStepTxt(h,x,i===a.s?a:null,i===a.s)}</span></div>`).join('')}</div>
+      <div class="row"><button class="btn${ok?'':' ghost'}" id="nsGive" ${ok?'':'aria-disabled="true"'}>${s.give?T(ae('{سلّم|سلّمي}','Hand in')):T(ae('{خلّصت|خلّصتي}','I did it'))}</button><button class="btn ghost" id="nsDrop">${T(ae('{سيب|سيبي} العقد','Leave it'))}</button></div>
+      <div class="dim ns-pay">${ae('الأجر','Pay')}: ${Math.round(c.pay.m*(c.who==='saber'&&nsFix(h).f.saber?1.2:1))} ${ae('جنيه','coins')} · ${c.pay.x} ${ae('خبرة','XP')} · ${c.pay.st} ${ae('حجر','stone')}</div></div>`}
+  out+=NS_CT.filter(c=>!a||c.id!==a.id).map(c=>{const p=NS_P[c.who],done=C.done[c.id],lock=h.lvl<c.lv;
+    return `<div class="card ns-ct${done?' dn':''}${lock?' lk':''}"><div class="ns-h"><span class="ns-f">${nsFace(p)}</span><span><b>${c.ic} ${T(c.t[EN?1:0])}</b><small>${esc(nsPN(c.who))}${done?' · '+ae('خلص','done'):lock?' · '+ae(`مستوى ${c.lv}`,`level ${c.lv}`):''}</small></span></div>
+      ${done||lock?'':`<div class="ns-sts sm">${c.st.map((x,i)=>`<div class="ns-st"><span class="n">${i+1}</span><span>${x.give?ae('سلّم: ','Hand in: '):''}${nsStepTxt(h,x,null,false)}</span></div>`).join('')}</div>
+      <button class="btn ${a?'ghost':''}" data-nst="${c.id}" ${a?'disabled':''}>${a?ae('خلّص عقدك الأول','Finish your contract first'):T(ae('{اقبل|اقبلي} العقد','Take the contract'))}</button>`}</div>`}).join('');
+  return out}
+SCREENS.nas=function(){const h=S.hero;if(!h){S.screen='title';return render()}const A=nsFix(h);nsDue(h);
+  const tab=NSX.tab==='ct'?'ct':'sc',D=nsToday(h);
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('ناس البلد','Town folk')}</h2><span class="tag">💰 ${h.money}</span></div>
+    <div class="tw ns" style="direction:${EN?'ltr':'rtl'}"><div class="ns-tabs"><button class="${tab==='sc'?'on':''}" id="nsTsc">${ae('حكاية النهارده','Today\'s story')}${D.s?' <i class="dot"></i>':''}</button><button class="${tab==='ct'?'on':''}" id="nsTct">${ae('العقود','Contracts')}${h.ct.a&&nsStepOk(h,nsCt(h.ct.a.id).st[h.ct.a.s],h.ct.a)?' <i class="dot"></i>':''}</button></div>
+    ${tab==='sc'?nsStory(h):nsCts(h)}
+    ${tab==='sc'&&A.log.length?`<div class="card ns-log"><b>${ae('اللي حصل','What happened')}</b>${A.log.slice(0,8).map(l=>`<div>• ${T(l[EN?1:0])}</div>`).join('')}</div>`:''}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};
+  on('back',()=>{NSX.res=null;try{SFX.page()}catch(e){}S.screen=S.nsFrom||'balad';render()});
+  on('nsTsc',()=>{NSX.tab='sc';NSX.res=null;nsRender()});on('nsTct',()=>{NSX.tab='ct';NSX.res=null;nsRender()});
+  on('nsOk',()=>{NSX.res=null;nsRender()});
+  if(D.s)view.querySelectorAll('[data-nsc]').forEach(b=>b.onclick=()=>nsPick(h,D.s,+b.dataset.nsc));
+  view.querySelectorAll('[data-nst]').forEach(b=>b.onclick=()=>nsStart(h,b.dataset.nst));
+  on('nsGive',()=>nsTake(h));on('nsDrop',()=>nsDrop(h))};
+/* ---- the way in: a card on top of «حال البلد» ---- */
+{const b0=SCREENS.balad;SCREENS.balad=function(){const r=b0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='balad'||!h||!nsOn()||$('#nsGo'))return r;const box=view.querySelector('.tw.tb');if(!box)return r;nsFix(h);
+  const D=nsToday(h),a=h.ct.a,c=a&&nsCt(a.id),rd=c&&nsStepOk(h,c.st[a.s],a);
+  box.insertAdjacentHTML('afterbegin',`<button class="card jn-go ns-go" id="nsGo"><span class="jn-ic">🗣</span><span class="jn-tx"><b>${ae('ناس البلد: حكايات وعقود','Town folk: stories and contracts')}</b><small>${D.s?`<span class="ok">${ae('فيه حكاية النهارده','A story is waiting today')}</span>`:''}${c?`${D.s?' · ':''}${T(c.t[EN?1:0])} ${a.s+1}/3${rd?` <span class="ok">${ae('جاهزة','ready')}</span>`:''}`:D.s?'':ae('عقود مع ناس البلد بتدفع كويس','Contracts with town folk that pay well')}</small></span><span class="go">‹</span></button>`);
+  $('#nsGo').onclick=()=>{S.nsFrom='balad';NSX.res=null;NSX.tab=D.s||!c?'sc':'ct';try{SFX.page&&SFX.page()}catch(e){}S.screen='nas';render()}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.ns-go{border:2px solid #c9a46a}
+.ns-tabs{display:flex;gap:8px}.ns-tabs button{flex:1;min-height:48px;border-radius:12px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;font-weight:800;cursor:pointer;position:relative}
+.ns-tabs button.on{border-color:#f3c14d;background:#f3c14d22}.ns-tabs .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#e2483f;vertical-align:middle}
+.ns-sc,.ns-ct{display:flex;flex-direction:column;gap:10px}.ns-h{display:flex;align-items:center;gap:8px}.ns-h .ic{font-size:26px}.ns-h b{font-size:17px}.ns-h small{color:var(--dim);margin-inline-start:auto;font-size:12px}
+.ns-h>span:last-child{display:flex;flex-direction:column}.ns-h>span:last-child small{margin:0}
+.ns-cm{display:flex;flex-direction:column;gap:8px}
+.ns-chs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ns-ch{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:96px;padding:10px 6px;border-radius:14px;border:2px solid #f3c14d88;background:#2a2038;color:inherit;font:inherit;cursor:pointer;text-align:center;box-shadow:0 3px 0 #0008}
+.ns-ch .ic{font-size:30px}.ns-ch .tx{font-size:14px;font-weight:700;line-height:1.35;display:flex;flex-direction:column;gap:3px}.ns-ch.lk{opacity:.45}.ns-ch:active{transform:translateY(2px)}
+.ns-tg{font-style:normal;font-size:11px;color:#ffd36a}
+.ns-out{display:flex;flex-wrap:wrap;gap:6px}.ns-out span{padding:3px 8px;border-radius:8px;background:#ffffff12;font-weight:800;font-size:13px}.ns-out.ok span{color:#a6e3a0}.ns-out.no span{color:#f0a090}
+.ns-f{width:44px;height:44px;flex:none;border-radius:50%;overflow:hidden;background:#f3e2b0;border:2px solid #2b1b22}.ns-f svg,.ns-f img{width:100%;height:100%}
+.ns-q{font-size:14px;line-height:1.6;color:#f3e2b0}.ns-sts{display:flex;flex-direction:column;gap:6px}.ns-st{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 8px;border-radius:10px;background:#ffffff08;flex-wrap:wrap}
+.ns-st .n{width:24px;height:24px;flex:none;display:grid;place-items:center;border-radius:50%;background:#ffffff18;font-weight:900;font-size:12px}.ns-st.dn{opacity:.6}.ns-st.dn .n{background:#7fe07a55}.ns-st.cu{border:2px solid #f3c14d}
+.ns-st small{color:var(--dim)}.ns-sts.sm .ns-st{font-size:12px;padding:4px 6px}.ns-ct.dn,.ns-ct.lk{opacity:.6}.ns-ct.on{border:2px solid #f3c14d}.ns-ct .btn,.ns-sc .btn{min-height:48px}.ns-pay{font-size:12px}
+.ns-log{display:flex;flex-direction:column;gap:4px;font-size:13px}.ns-log div{color:var(--dim)}
+.ns-ring{width:150px;height:150px;margin:10px auto}.ns-ring svg{width:100%;height:100%;transform:none}.ns-ring .bg{fill:none;stroke:#ffffff18;stroke-width:10}.ns-ring .ok{fill:none;stroke:#7fe07a;stroke-width:12;stroke-linecap:round;opacity:.8}
+.ns-ring .fl{fill:none;stroke:#f3c14d;stroke-width:6;transform:rotate(-90deg);transform-origin:50% 50%}.ns-ring.win .fl{stroke:#7fe07a}.ns-ring.miss .fl{stroke:#e2483f}
+.ns-bar,.ns-time{height:16px;border-radius:8px;background:#ffffff14;overflow:hidden;margin:8px 0}.ns-bar i,.ns-time i{display:block;height:100%;width:0;background:#f3c14d;transition:width .08s}.ns-time{height:8px}.ns-time i{width:100%;background:#e2483f;transition:none}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
