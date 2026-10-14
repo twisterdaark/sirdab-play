@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.44',d:'14 أكتوبر',add:['الغيط بقا بإيدك: الأرض بعد الحصاد بتبقى ناشفة، {فاسحب|فاسحبي} الفاس عليها يمين وشمال {تحرتها|تحرتيها}. {اختار|اختاري} البذرة {واسحب|واسحبي} الشنطة على الأرض {تبدر|تبدري}، {وامسح|وامسحي} بالإبريق على الزرع تسقيه.','دود بيطلع في الزرع ساعات زي الغربان: {دوس|دوسي} عليه {تشيله|تشيليه} قبل ما ياكل.','الحصاد: {امسك|امسكي} الزرعة {واسحبها|واسحبيها} لفوق. لو {سبتها|سبتيها} والبار في الأخضر الجدر بيطلع سليم وبتاخد واحدة زيادة.']},
 {v:'6.43',d:'14 أكتوبر',add:['أي فلوس {بتدفعها|بتدفعيها} أو {بتاخدها|بتاخديها} بقت تظهر صورة فلوس جنب فلوسك بالمبلغ: أحمر ونازل لو {دفعت|دفعتي}، ودهبي وطالع لو {كسبت|كسبتي}.','صناديق مقفولة بقفل: {افتحها|افتحيها} بـ«مفتاح صدي» (عند عم رمضان بالليل)، أو {افتح|افتحي} القفل بإيدك في ميني جيم المسامير، أو {اكسره|اكسريه} والصندوق يقل درجة. الحرامي إيده أخف: مكان أوسع وسنّارة زيادة.','في الحرف، الحاجة اللي {متقدرش|متقدريش} {تعملها|تعمليها} ولا تشتريها بقت مطفية وعليها قفل صغير. {دوس|دوسي} عليها تشوف ناقصك إيه.']},
 {v:'6.42',d:'14 أكتوبر',add:['الحركات اللي قبل النرد بقت مشاهد مرسومة: في «شد!» {بتشد|بتشدي} عربية من الطين بحبل، وفي «اتسحّب» {ماشي|ماشية} جنب حيطة بين فانوسين، وفي «استحمل» {بتمسك|بتمسكي} باب والترباس بيقفل، وفي «افتكر» يافطات خشب منورة، وفي «خلّي بالك» عينين بترمش في الشجر، وفي «في وقتك» طبلة.']},
 {v:'6.41',d:'14 أكتوبر',add:['البلد بقت فيها ناس ماشية في الشوارع. {دوس|دوسي} على حد يقف ويكلمك: كلام البلد ونصايح بجد. وساعات حد {يديك|يديكي} قرشين عشان {ساعدته|ساعدتيه} قبل كده.','الصندوق بقا {بتفتحه|بتفتحيه} بإيدك: {اخبط|اخبطي} على القفل لحد ما يتكسر. كل خبطة بتشرخه وتطيّر شرار، والصندوق الأغلى قفله أنشف.','دكان عم رمضان بالليل بقا رفوف خشب والحاجات متصفصفة عليها.']},
@@ -51486,6 +51487,93 @@ function lkGame(c,el){const h=S.hero,th=LK_THIEF(h),tier=c.tier|0;let pin=0,pick
 .lk-op{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:110px;padding:10px 4px;border-radius:14px;border:2px solid #3d3266;background:#2a2148;color:#fff;font:inherit;cursor:pointer}
 .lk-op b{font-size:14px}.lk-op small{font-size:11px;color:#c9c2dc}.lk-op:disabled{opacity:.45;filter:grayscale(.8);cursor:default}
 .ag-box.lk-bad{animation:agShk .08s linear 4 alternate}`;document.head.appendChild(s)})();
+/* ---------- 6.44 (acc1, Twister 14:35 «نفذ كل اقتراحاتك»): the field by hand ----------
+   The plots stay the same plots (same crops, timers, crows, trees, tools); what changes is what your finger does:
+   - A plot after a harvest (or never worked) is hard ground: drag the hoe back and forth across it (3 strokes) to till it.
+   - Tilled ground: tap it and pick the seed as before, then drag the seed bag over the plot to sow it.
+   - A growing plot: rub the watering can over it to water it (same effect and effort as before). A plain tap only says how.
+   - Worms come up on growing plots now and then, like the crows: tap one to pick it off, or it eats part of the crop.
+   - A ripe plot: pull the crop UP. Let go when the bar is in the green and the root comes out whole: one more crop.
+   «احصد الكل», «في كل الفاضي» and the tools that work by themselves stay as they were.
+   Test builds keep the old taps unless window.__fm2 is set. */
+const FH={busy:0,worm:-1,wormT:0,wNext:0,sow:null,tm:0};
+const fhOn=()=>!((window.__r||window.__t||window.__q)&&!window.__fm2);
+const FH_HOE=`<svg viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="13" fill="#2b1b22"/><rect x="3" y="2" width="1" height="12" fill="#a8743e"/><rect x="5" y="2" width="8" height="3" fill="#2b1b22"/><rect x="6" y="3" width="6" height="1" fill="#b8c2ca"/><rect x="11" y="4" width="2" height="2" fill="#2b1b22"/></svg>`;
+const FH_BAG=`<svg viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="4" y="3" width="8" height="2" fill="#2b1b22"/><rect x="3" y="5" width="10" height="10" fill="#2b1b22"/><rect x="4" y="6" width="8" height="8" fill="#d8c08a"/><rect x="5" y="4" width="6" height="1" fill="#a8743e"/><rect x="6" y="8" width="1" height="1" fill="#7fe07a"/><rect x="9" y="10" width="1" height="1" fill="#7fe07a"/><rect x="7" y="12" width="1" height="1" fill="#7fe07a"/></svg>`;
+const FH_CAN=`<svg viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="4" y="6" width="8" height="8" fill="#2b1b22"/><rect x="5" y="7" width="6" height="6" fill="#45a8b4"/><rect x="5" y="7" width="6" height="1" fill="#9fe0ff"/><rect x="12" y="7" width="3" height="2" fill="#2b1b22"/><rect x="14" y="5" width="2" height="2" fill="#2b1b22"/><rect x="5" y="3" width="6" height="2" fill="#2b1b22"/></svg>`;
+const FH_WORM=`<svg viewBox="0 0 16 8" shape-rendering="crispEdges"><rect x="1" y="4" width="3" height="3" fill="#2b1b22"/><rect x="3" y="2" width="4" height="3" fill="#2b1b22"/><rect x="6" y="4" width="4" height="3" fill="#2b1b22"/><rect x="9" y="2" width="5" height="3" fill="#2b1b22"/>
+  <rect x="2" y="5" width="2" height="1" fill="#e08aa8"/><rect x="4" y="3" width="3" height="1" fill="#e08aa8"/><rect x="7" y="5" width="2" height="1" fill="#e08aa8"/><rect x="10" y="3" width="3" height="1" fill="#e08aa8"/><rect x="12" y="3" width="1" height="1" fill="#2b1b22"/></svg>`;
+function fhSet(el,html){let o=el.querySelector('.fh-o');if(!o){o=document.createElement('span');o.className='fh-o';el.appendChild(o)}o.innerHTML=html;return o}
+function fhDress(){if(S.screen!=='farm'||!fhOn())return;const h=S.hero;if(!h||!h.farm)return;const P=h.farm.p;
+  view.querySelectorAll('.fm-p[data-fp]').forEach(el=>{if(el.dataset.fh)return;el.dataset.fh=1;const i=+el.dataset.fp,p=P[i]||{};const b=el.querySelector(':scope>b'),sm=el.querySelector(':scope>small');
+    if(!p.c&&!p.til){el.classList.add('fh-un');if(b)b.textContent=G('احرت','احرتي');if(sm)sm.textContent=ae('اسحب الفاس عليها','Drag the hoe across');fhSet(el,`<i class="fh-tool">${FH_HOE}</i><i class="fh-fur" style="--f:0"></i>`)}
+    else if(!p.c){el.classList.add('fh-til');if(sm)sm.textContent=ae('أرض محروتة','Tilled ground')}
+    else if(el.classList.contains('gr')&&!p.w&&FARM.crow!==i){fhSet(el,`<i class="fh-tool fh-c">${FH_CAN}</i><i class="fh-wt" style="--w:0"></i>`)}
+    else if(el.classList.contains('rd')){el.classList.add('fh-rd');fhSet(el,`<i class="fh-mt"><i class="g"></i><i class="v"></i></i>`);if(sm)sm.textContent=T(ae('{شدها|شديها} لفوق','Pull it up'))}
+    if(FH.worm===i&&p.c&&!farmReady(h,p))el.insertAdjacentHTML('beforeend',`<button class="fh-worm" aria-label="${ae('دودة','A worm')}">${FH_WORM}</button>`);
+    if(FH.sow&&FH.sow.i===i)el.classList.add('fh-sow');
+    fhBind(el,i)});
+  view.querySelectorAll('.fh-worm').forEach(w=>w.onclick=e=>{e.stopPropagation();e.preventDefault();const el=w.closest('.fm-p');FH.worm=-1;w.remove();try{lifeXP(h,'farm',1);saveHero()}catch(x){}
+    try{SFX.whoosh&&SFX.whoosh();vib(15);floatAt(el,T(ae('{شلتها|شلتيها}!','Picked off!')),'#a6e3a0','',16);pop(el,['#e08aa8','#fff'],10)}catch(x){}});
+  if(!FH.tm)FH.tm=setInterval(fhTick,1000)}
+function fhTick(){const h=S.hero;if(S.screen!=='farm'||!h||!h.farm||!fhOn()){clearInterval(FH.tm);FH.tm=0;FH.worm=-1;return}const P=h.farm.p,n=farmN(h),now=Date.now();
+  if(FH.worm>=0&&now>FH.wormT){const p=P[FH.worm];const i=FH.worm;FH.worm=-1;if(p&&p.c&&!farmReady(h,p)&&!p.e){p.e=1;saveHero();toast(ae(`الدودة كلت شوية من ال${MAT[p.c].n}.`,'The worm ate some of the crop.'));try{SFX.bad()}catch(x){}}farmRe();return}
+  if(FH.worm<0&&now>FH.wNext){FH.wNext=now+14000+Math.random()*12000;const can=[];for(let i=0;i<n;i++){const p=P[i];if(p&&p.c&&!farmReady(h,p)&&!p.e&&FARM.crow!==i)can.push(i)}
+    if(can.length&&Math.random()<.4){FH.worm=can[Math.floor(Math.random()*can.length)];FH.wormT=now+6500;farmRe()}}}
+/* one gesture per plot: hoe strokes, rubbing (water / sow), pulling up */
+function fhBind(el,i){const h=S.hero;let st=null;
+  el.addEventListener('pointerdown',e=>{if(e.button||FH.busy||e.target.closest('.fh-worm'))return;const p=h.farm.p[i]||{};
+    const mode=FH.sow&&FH.sow.i===i?'sow':!p.c&&!p.til?'hoe':p.c&&farmReady(h,p)?'pull':p.c&&!p.w&&FARM.crow!==i?'water':'';if(!mode)return;
+    st={mode,x:e.clientX,y:e.clientY,lx:e.clientX,dir:0,strokes:0,run:0,dist:0,moved:0};try{el.setPointerCapture(e.pointerId)}catch(x){}});
+  el.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.lx,dy=e.clientY-st.y;st.dist+=Math.hypot(dx,e.movementY||0);st.lx=e.clientX;if(Math.hypot(e.clientX-st.x,dy)>8)st.moved=1;
+    if(st.mode==='hoe'){const d=Math.sign(dx);if(d&&d!==st.dir){if(st.dir&&st.run>18){st.strokes++;try{SFX.tick(220+st.strokes*40);vib(12)}catch(x){}}st.dir=d;st.run=0}st.run+=Math.abs(dx);
+      const f=el.querySelector('.fh-fur');if(f)f.style.setProperty('--f',Math.min(1,(st.strokes+st.run/60)/3).toFixed(2));if(st.strokes>=3){st=null;FH.noClick=Date.now();fhTill(el,i)}}
+    else if(st.mode==='water'||st.mode==='sow'){const need=st.mode==='sow'?140:170,w=el.querySelector(st.mode==='sow'?'.fh-sd':'.fh-wt');if(w)w.style.setProperty('--w',Math.min(1,st.dist/need).toFixed(2));
+      if(Math.random()<.25)fhDrop(el,e,st.mode);if(st.dist>=need){const m=st.mode;st=null;FH.noClick=Date.now();m==='sow'?fhSow(el,i):fhWater(el,i)}}
+    else if(st.mode==='pull'){const up=Math.max(0,st.y-e.clientY);st.up=up;const pl=el.querySelector('.pl');if(pl)pl.style.transform=`translateX(-50%) translateY(${-Math.min(up,90)*.45}px) scaleY(${1+Math.min(up,120)/400})`;
+      const v=el.querySelector('.fh-mt .v');if(v)v.style.height=Math.min(100,up/1.3)+'%';el.classList.toggle('fh-gd',up>=55&&up<=105)}});
+  const up=e=>{if(!st){return}const s=st;st=null;if(s.moved)FH.noClick=Date.now();if(s.mode==='pull'){FH.noClick=Date.now();const u=s.up|0;const pl=el.querySelector('.pl');if(u<30){if(pl)pl.style.transform='';return}fhPull(el,i,u>=55&&u<=105)}};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>{st=null});
+  /* a plain tap on a plot that wants a gesture shows how instead of the old tap */
+  el.addEventListener('click',e=>{if(!fhOn())return;if(Date.now()-(FH.noClick||0)<450){e.stopImmediatePropagation();e.preventDefault();return}const p=h.farm.p[i]||{};if(FARM.crow===i)return;if(e.target.closest('.fh-worm'))return;
+    let msg='';if(FH.sow&&FH.sow.i===i)msg=T(ae('{اسحب|اسحبي} الشنطة على الأرض عشان {تبدر|تبدري}','Drag the seed bag over the ground to sow'));
+    else if(!p.c&&!p.til)msg=T(ae('الأرض ناشفة. {اسحب|اسحبي} صباعك عليها يمين وشمال عشان {تحرتها|تحرتيها}','The ground is hard. Drag your finger left and right to till it'));
+    else if(p.c&&farmReady(h,p))msg=T(ae('{امسك|امسكي} الزرعة {واسحبها|واسحبيها} لفوق','Hold the crop and pull it up'));
+    else if(p.c&&!p.w)msg=T(ae('{امسح|امسحي} بالإبريق على الزرع عشان {تسقيه|تسقيه}','Rub the watering can over it to water it'));
+    if(msg){e.stopImmediatePropagation();e.preventDefault();toast(msg);el.classList.remove('fh-hint');void el.offsetWidth;el.classList.add('fh-hint')}},true)}
+function fhDrop(el,e,m){const r=el.getBoundingClientRect(),d=document.createElement('i');d.className='fh-dp '+(m==='sow'?'s':'w');d.style.left=(e.clientX-r.left)+'px';d.style.top=(e.clientY-r.top)+'px';el.appendChild(d);setTimeout(()=>d.remove(),600)}
+function fhTill(el,i){const h=S.hero,P=h.farm.p;P[i]=P[i]||{};P[i].til=1;try{saveHero();SFX.good&&SFX.good();vib(25);pop(el,['#5a3a22','#8a5a32','#c9a46a'],14)}catch(x){}farmRe()}
+function fhWater(el,i){FH.busy=1;try{farmTap(i,el)}finally{FH.busy=0}}
+function fhSow(el,i){const s=FH.sow;FH.sow=null;el.classList.remove('fh-sow');if(!s)return;const b=s.btn;FH.pass=1;try{pop(el,['#d8c08a','#7fe07a'],12)}catch(x){}if(b&&b.isConnected)b.click();const sh=$('#fmSh');if(sh)sh.remove()}
+function fhPull(el,i,good){const h=S.hero,p=h.farm.p[i];if(!p||!farmReady(h,p))return;const r=farmHarvest(i,el);
+  if(r&&good){addRes(h,r.k,1);saveHero();setTimeout(()=>{try{floatAt(el,T(ae('شدة حلوة! +1','Clean pull! +1')),'#ffd36a','',16)}catch(x){}},350)}}
+/* sowing: picking a seed in the sheet (one plot) waits for the bag to be dragged over that plot */
+document.addEventListener('click',e=>{if(!fhOn()||S.screen!=='farm')return;const b=e.target.closest&&e.target.closest('#fmSh [data-sd]');if(!b||b.disabled)return;
+  if(FH.pass){FH.pass=0;return}
+  e.stopImmediatePropagation();e.preventDefault();const sh=$('#fmSh');const i=FH.pick;if(i==null){return}
+  if(sh)sh.style.display='none';FH.sow={i,btn:b};const el=view.querySelector(`.fm-p[data-fp="${i}"]`);if(el){el.classList.add('fh-sow');fhSet(el,`<i class="fh-tool fh-b">${FH_BAG}</i><i class="fh-sd" style="--w:0"></i>`);el.scrollIntoView({block:'center',behavior:'smooth'})}
+  toast(T(ae('{اسحب|اسحبي} الشنطة على الأرض عشان {تبدر|تبدري}','Drag the seed bag over the ground to sow')))},true);
+{const s0=farmSheet;farmSheet=function(i){FH.pick=i;FH.sow=null;return s0.apply(this,arguments)}}
+{const f0=SCREENS.farm;SCREENS.farm=function(){const r=f0.apply(this,arguments);try{fhDress()}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.fm-p{touch-action:pan-y}.fm-p.fh-rd{touch-action:none}
+.fh-o{position:absolute;inset:0;pointer-events:none}
+.fh-tool{position:absolute;top:8px;inset-inline-end:8px;width:26px;height:26px;animation:fhBob 1.4s ease-in-out infinite}.fh-tool svg{width:100%;height:100%}
+@keyframes fhBob{50%{transform:translateY(-3px) rotate(-8deg)}}
+.fh-un .soil{background:#4a3424;box-shadow:inset 0 0 0 2px #3a2818}
+.fh-fur{position:absolute;left:8px;right:8px;top:52px;height:22px;border-radius:8px;background:repeating-linear-gradient(0deg,#5a3a22 0 4px,#2e1d10 4px 8px);opacity:var(--f);clip-path:inset(0 calc((1 - var(--f))*100%) 0 0)}
+.fh-til .soil{background:repeating-linear-gradient(0deg,#6b4428 0 4px,#3a2414 4px 8px)}
+.fh-wt,.fh-sd{position:absolute;left:8px;right:8px;top:52px;height:22px;border-radius:8px;background:#45a8b4;opacity:calc(var(--w)*.6)}.fh-sd{background:repeating-radial-gradient(circle at 30% 50%,#d8c08a 0 2px,transparent 2px 7px);opacity:var(--w)}
+.fh-dp{position:absolute;width:5px;height:7px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;pointer-events:none;animation:fhDp .6s ease-in forwards}.fh-dp.w{background:#9fe0ff}.fh-dp.s{width:4px;height:4px;background:#d8c08a;border-radius:1px}
+@keyframes fhDp{to{transform:translateY(26px);opacity:0}}
+.fm-p.fh-sow{box-shadow:0 0 0 3px #d8c08a,0 0 18px #d8c08a88;animation:fhGl 1s ease-in-out infinite}@keyframes fhGl{50%{box-shadow:0 0 0 3px #fff3b0,0 0 26px #d8c08a}}
+.fh-rd .pl{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.fh-mt{position:absolute;top:10px;inset-inline-start:8px;width:8px;height:46px;border-radius:4px;background:#0b0d1c;box-shadow:inset 0 0 0 1px #ffffff33;overflow:hidden}
+.fh-mt .g{position:absolute;left:0;right:0;bottom:42%;height:38%;background:#7fe07a55}.fh-mt .v{position:absolute;left:0;right:0;bottom:0;height:0;background:#f3c14d}
+.fm-p.fh-gd .fh-mt .v{background:#7fe07a;box-shadow:0 0 8px #7fe07a}
+.fh-worm{position:absolute;z-index:3;left:50%;top:56px;transform:translateX(-50%);width:44px;height:44px;padding:8px 4px;border:0;background:none;cursor:pointer;animation:fhWr .5s steps(2) infinite}.fh-worm svg{width:100%;height:auto}
+@keyframes fhWr{50%{transform:translateX(-46%) scaleX(1.1)}}
+.fm-p.fh-hint{animation:fhHn .35s ease-in-out}@keyframes fhHn{30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
