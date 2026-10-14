@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.66.1',d:'14 أكتوبر',add:['إصلاح: صندوق التقاوي بقى يزرع الأرض الفاضية كمان، مش بس اللي لسه {اتحصدت|اتحصدت}. أول ما {تفتح|تفتحي} الغيط أو البلد، أي أرض فاضية بتتزرع باللي كانت زارعاه قبل كده، أو بزرعة الصندوق، أو بالزرعة اللي في أغلب الغيط. «{سيبها|سيبيها} فاضية» لسه شغالة، والتقاوي من فلوسك.']},
 {v:'6.66',d:'14 أكتوبر',add:['«التجارب» في بيتك: {حط|حطي} حاجتين أو تلاتة من خاماتك في الحلة {وقلّب|وقلّبي}. لو التركيبة صح {بتاخد|بتاخدي} اللي بتعمله وبتفضل في «اكتشافاتك» {تعملها|تعمليها} تاني بدوسة. 16 تركيبة مستخبية. اللي ما بتطلعش حاجة بتتسجل عشان ما {تضيعش|تضيعيش} خاماتك فيها تاني، ولو اتنين من التلاتة صح بيقولك «قربت».','«أسرار الشنطة»: فيه حاجات لو {شلتها|شلتيها} مع بعض في الليلة بتعمل حاجة (زي شمع ونور، أو قلة نار وسم). محدش بيقولك عليها، {بتكتشفها|بتكتشفيها} لما تحصل، وبتتسجل في «التجارب».','«السوق النهارده»: كل يوم عم رمضان عايز نوع (+40%) والسوق غرقان نوع تاني (−25%)، ونفس الكلام لكل اللعيبة. مكتوب فوق في البيع، والأسهم جنب كل حاجة.']},
 {v:'6.65',d:'14 أكتوبر',add:['الساحة بقت فيها حاجات {تستعملها|تستعمليها}: زلعة جاز، طوب سايب، شبكة صياد، بير قديم، فانوس، حيطة. {دوس|دوسي} عليها في دورك والدايرة بتقفل عليها، وكل ما التوقيت أحسن كل ما الحركة تنفع أكتر. كل حاجة مرة واحدة في القتال.','{تقدر|تقدري} {تكسب|تكسبي} من غير ما {تموّت|تموّتي}: {زق|زقي} وحش متعور في البير، أو {خوّف|خوّفي} الوحوش المتعورة بالفانوس فيهربوا. {بتاخد|بتاخدي} خبرتهم من غير غنايمهم، والزعما ما بيتزقوش.','ضربة مشتركة مع رفيق الليلة: ضرباتكم بتملا عداد، ولما يتملى زرار «مع …» بيخليكم تضربوا وحش واحد سوا بضربة كبيرة.','العدة اللي بتتكسر مش بتضيع خلاص: «حرامي الكراكيب» بيلمها، وفي البلد كارت «حاجة ضايعة» {تروح|تروحي} {تغلبه|تغلبيه} فيه {وترجعها|وترجعيها} مصلّحة لنص عمرها. لو غلبك {ترجع|ترجعي} بكرة.']},
 {v:'6.64',d:'14 أكتوبر',add:['«الشات»: من «صحابي» {دوس|دوسي} 💬 جنب أي صاحب {وكلمه|وكلميه} على طول. ولما حد يبعتلك {وانت مش فاتح|وانتي مش فاتحة} الشات بتطلعلك رسالة صغيرة ونقطة حمرا على «صحابي».','«القهوة الكبيرة»: أوضة كلام لكل اللعيبة، واحدة بالعربي وواحدة بالإنجليزي. رسالة كل 5 ثواني، وتقدر {تقفلها|تقفليها} عندك لو مش {عايزها|عايزاها}.','جمل جاهزة تحت الكتابة («يلا ليلة؟»، «تعالى مبارزة»، «شكرًا!») تتبعت بدوسة واحدة.','الأمان: الشتايم بتتغطى بنجوم، وأي رسالة {تقدر تبلّغ|تقدري تبلّغي} عنها أو {تسكّت|تسكّتي} صاحبها فميظهرلكش تاني.']},
@@ -54084,6 +54085,25 @@ function mkWith(k,fn){const m=MAT[k],f=m?mkMul(k):1;if(f===1)return fn();const p
 .lb-m small{font-size:10px}.lb-m:disabled{opacity:.35}
 .lb-r{display:flex;align-items:center;gap:8px;min-height:44px}.lb-ri{display:flex;align-items:center;gap:2px;flex:none;direction:ltr}.lb-rn{flex:1;display:flex;flex-direction:column;font-size:13px}.lb-rn small{color:var(--dim)}.lb-r .tw-buy{min-height:44px}
 .mk-day{margin:2px 2px 8px;line-height:1.7}.mk-day .up,.mk-f.up{color:#7fe07a}.mk-day .dn,.mk-f.dn{color:#f0a090}`;document.head.appendChild(s)})();
+/* ---------- 6.66.1 (acc1, Twister 19:27 «زرع مش بيتزرع لوحده»): the seed box fills empty plots too ----------
+   The seed box (p42 ftReplant, choices in p71) only planted a plot at the moment it was harvested. A plot that was empty for any other
+   reason stayed empty for good: bought before the box, harvested while the box was off or with too little money for the seed, a crop
+   uprooted, a new plot opened by a farm level, or a plot that was never planted. Now, whenever the farm or the town opens and the
+   box is on, every empty plot is planted from what it last grew (h.farm.lc[i]) or the box's crop, through the same ftReplant (the
+   per-plot choice «سيبها فاضية» is kept, the seed is paid from your money). A plot with nothing to go on (never grew anything and
+   the box is set to «نفس الزرعة») takes the crop growing most in the field, else the last one harvested (ftGuess). */
+function ftFill(h){try{if(!h||!h.farm||!ftHas(h,'box')||h.farm.bOff)return 0;FARM_FIX(h);const F=h.farm,n=farmN(h),lc=F.lc||{};let c=0;
+  for(let i=0;i<n;i++){const p=F.p[i];if(p&&p.c)continue;const k=lc[i]||ftBoxCrop(h,'')||ftGuess(h);if(!k||!CROPS[k])continue;if(ftReplant(h,i,k,Date.now()))c++}
+  if(c){saveHero();setTimeout(()=>{try{toast(T(ae(`صندوق التقاوي زرع ${c} ${c>1?'أرض':'أرض'} فاضية.`,`The seed box planted ${c} empty plot${c>1?'s':''}.`)))}catch(e){}},400)}return c}catch(e){console.warn(e);return 0}}
+/* a plot that never grew anything (or an old save): the crop growing most in the field now, else the last one harvested anywhere */
+function ftGuess(h){const F=h.farm,c={};F.p.slice(0,farmN(h)).forEach(p=>{if(p&&p.c&&CROPS[p.c])c[p.c]=(c[p.c]|0)+1});const ks=Object.keys(c).sort((a,b)=>c[b]-c[a]);
+  return ks[0]||(F.lcA&&CROPS[F.lcA]?F.lcA:'')}
+/* remember what each plot grew */
+{const f0=farmHarvest;farmHarvest=function(i){const h=S.hero,p=h&&h.farm&&h.farm.p[i],k=p&&p.c;const r=f0.apply(this,arguments);try{if(r&&k){const F=h.farm;F.lc=F.lc&&typeof F.lc==='object'?F.lc:{};F.lc[i]=k;F.lcA=k}}catch(e){}return r}}
+{const f0=SCREENS.farm;SCREENS.farm=function(){try{ftFill(S.hero)}catch(e){}return f0.apply(this,arguments)}}
+{const t0=SCREENS.town;SCREENS.town=function(){try{ftFill(S.hero)}catch(e){}return t0.apply(this,arguments)}}
+/* an uprooted plot is not planted back with the crop you just pulled out (only the box's own crop, if one is set) */
+{const u0=ftUproot;ftUproot=function(i){const r=u0.apply(this,arguments);try{const h=S.hero;if(r&&h&&h.farm&&h.farm.lc)delete h.farm.lc[i]}catch(e){}return r}}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
