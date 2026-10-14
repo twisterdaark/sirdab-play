@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.45',d:'14 أكتوبر',add:['المفاصلة مع عم رمضان: لما {تبيع|تبيعي} في السوق {بتسحب|بتسحبي} السعر بإيدك لفوق، ووشه بيحمر ويعرق ويزعق كل ما {تزوّد|تزوّدي}. {اعرض|اعرضي} وهو يا يوافق يا يرفض، ولو {زودتها|زودتيها} بيشتري بسعره بس لدقيقتين. «بسعره» بتبيع على طول زي الأول.','الحضور بيخليه يستحمل أكتر.']},
 {v:'6.44',d:'14 أكتوبر',add:['الغيط بقا بإيدك: الأرض بعد الحصاد بتبقى ناشفة، {فاسحب|فاسحبي} الفاس عليها يمين وشمال {تحرتها|تحرتيها}. {اختار|اختاري} البذرة {واسحب|واسحبي} الشنطة على الأرض {تبدر|تبدري}، {وامسح|وامسحي} بالإبريق على الزرع تسقيه.','دود بيطلع في الزرع ساعات زي الغربان: {دوس|دوسي} عليه {تشيله|تشيليه} قبل ما ياكل.','الحصاد: {امسك|امسكي} الزرعة {واسحبها|واسحبيها} لفوق. لو {سبتها|سبتيها} والبار في الأخضر الجدر بيطلع سليم وبتاخد واحدة زيادة.']},
 {v:'6.43',d:'14 أكتوبر',add:['أي فلوس {بتدفعها|بتدفعيها} أو {بتاخدها|بتاخديها} بقت تظهر صورة فلوس جنب فلوسك بالمبلغ: أحمر ونازل لو {دفعت|دفعتي}، ودهبي وطالع لو {كسبت|كسبتي}.','صناديق مقفولة بقفل: {افتحها|افتحيها} بـ«مفتاح صدي» (عند عم رمضان بالليل)، أو {افتح|افتحي} القفل بإيدك في ميني جيم المسامير، أو {اكسره|اكسريه} والصندوق يقل درجة. الحرامي إيده أخف: مكان أوسع وسنّارة زيادة.','في الحرف، الحاجة اللي {متقدرش|متقدريش} {تعملها|تعمليها} ولا تشتريها بقت مطفية وعليها قفل صغير. {دوس|دوسي} عليها تشوف ناقصك إيه.']},
 {v:'6.42',d:'14 أكتوبر',add:['الحركات اللي قبل النرد بقت مشاهد مرسومة: في «شد!» {بتشد|بتشدي} عربية من الطين بحبل، وفي «اتسحّب» {ماشي|ماشية} جنب حيطة بين فانوسين، وفي «استحمل» {بتمسك|بتمسكي} باب والترباس بيقفل، وفي «افتكر» يافطات خشب منورة، وفي «خلّي بالك» عينين بترمش في الشجر، وفي «في وقتك» طبلة.']},
@@ -51574,6 +51575,71 @@ document.addEventListener('click',e=>{if(!fhOn()||S.screen!=='farm')return;const
 .fh-worm{position:absolute;z-index:3;left:50%;top:56px;transform:translateX(-50%);width:44px;height:44px;padding:8px 4px;border:0;background:none;cursor:pointer;animation:fhWr .5s steps(2) infinite}.fh-worm svg{width:100%;height:auto}
 @keyframes fhWr{50%{transform:translateX(-46%) scaleX(1.1)}}
 .fm-p.fh-hint{animation:fhHn .35s ease-in-out}@keyframes fhHn{30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}`;document.head.appendChild(s)})();
+/* ---------- 6.45 (acc1, Twister 14:35, major 2/5): haggling with عم رمضان by hand ----------
+   Selling materials or spare gear at the market opens a haggle sheet instead of selling at once:
+   - عم رمضان's face and a price you drag up (from his price to +35%). As you push, his face turns red, sweat and an angry mark
+     come up, and he grumbles in a bubble: that is how you read how far he will go.
+   - «اعرض»: if the price is within what he takes today, he pays it; push past it and he says no, and for two minutes he only
+     buys at his own price («بسعري وبس»). «بسعره» sells at his price straight away, as before.
+   How far he goes is hidden and different each time: about +6% plus 1.2% per point of حضور, plus luck (up to +10%).
+   Test builds sell at once unless window.__hg is set. */
+const HG={angry:{}};
+const hgOn=()=>!((window.__r||window.__t||window.__q)&&!window.__hg);
+const HG_SAY=[['«ماشي، كلام معقول.»','"Fine, that\'s fair."'],['«إمم.. {انت|انتي} بتشدّ الحبل.»','"Hmm... you\'re pushing it."'],['«كتير كده! {انت|انتي} عايز تخرب بيتي؟»','"That much? You want to ruin me?"'],['«لا يا عم! ده نصب!»','"No way! That\'s robbery!"']];
+const HG_MAX=1.35;
+function hgOpen(o){const h=S.hero;if(!h||$('#hgS'))return;const v=Math.max(1,o.v),top=Math.max(v+1,Math.round(v*HG_MAX)),now=Date.now(),mad=(HG.angry[o.key]||0)>now;
+  const lim=1+.06+.012*Math.max(0,(()=>{try{return ST(h,'حضور')}catch(e){return 0}})())+Math.random()*.1;let x=v;
+  let face='';try{face=twNpcA('ramadan',96)}catch(e){}
+  const s=document.createElement('div');s.id='hgS';s.style.direction=EN?'ltr':'rtl';
+  s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${ae('فاصل عم رمضان','Haggle with Ramadan')}</b><span class="ag-st">${esc(o.what)}</span></div>
+    <div class="hg-top"><div class="hg-face" id="hgF">${face}<i class="hg-red"></i><svg class="hg-sw" viewBox="0 0 8 10" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="2" fill="#9fe0ff"/><rect x="2" y="2" width="4" height="4" fill="#9fe0ff"/><rect x="3" y="6" width="2" height="2" fill="#9fe0ff"/></svg>
+      <svg class="hg-ang" viewBox="0 0 10 10" shape-rendering="crispEdges"><rect x="1" y="1" width="2" height="3" fill="#e2483f"/><rect x="7" y="1" width="2" height="3" fill="#e2483f"/><rect x="1" y="6" width="2" height="3" fill="#e2483f"/><rect x="7" y="6" width="2" height="3" fill="#e2483f"/></svg></div>
+      <div class="hg-bb" id="hgB">${T(mad?ae('«{انت|انتي} لسه {مزعلني|مزعلاني}. بسعري وبس.»','"You upset me just now. My price only."'):ae(HG_SAY[0][0],HG_SAY[0][1]))}</div></div>
+    <div class="hg-pr"><span>${MNY_COIN}</span><b id="hgP">${v}</b><small>${ae('جنيه','coins')}</small><em id="hgPc"></em></div>
+    <div class="hg-tr${mad?' off':''}" id="hgTr"><i class="hg-fill" id="hgFi"></i><i class="hg-th" id="hgTh"></i><span class="hg-l0">${v}</span><span class="hg-l1">${top}</span></div>
+    <div class="hg-b"><button class="btn" id="hgOff" ${mad?'disabled':''}>${ae('اعرض','Offer')}</button><button class="btn ghost" id="hgHis">${ae('بسعره','His price')} · ${v}</button></div>
+    <div class="ag-b"><button class="btn ghost small" id="hgX">${ae('رجوع','Back')}</button></div></div>`;
+  document.body.appendChild(s);const tr=s.querySelector('#hgTr'),th=s.querySelector('#hgTh'),fi=s.querySelector('#hgFi'),P=s.querySelector('#hgP'),Pc=s.querySelector('#hgPc'),F=s.querySelector('#hgF'),B=s.querySelector('#hgB');
+  const tSay=i=>T(ae(HG_SAY[i][0],HG_SAY[i][1]));
+  const set=f=>{f=Math.max(0,Math.min(1,f));x=Math.round(v+(top-v)*f);const rtl=s.style.direction==='rtl',pc=f*100;th.style[rtl?'right':'left']=pc+'%';th.style[rtl?'left':'right']='';fi.style.width=pc+'%';fi.style[rtl?'right':'left']=0;
+    P.textContent=x;Pc.textContent=x>v?`+${Math.round((x/v-1)*100)}%`:'';
+    const a=(x/v-1)/Math.max(.01,lim-1)+(Math.random()-.5)*.08,m=a<.45?0:a<.8?1:a<1.02?2:3;F.style.setProperty('--a',Math.min(1.2,Math.max(0,a)).toFixed(2));F.dataset.m=m;B.innerHTML=tSay(m);B.dataset.m=m};
+  if(!mad){let drag=0;const at=e=>{const r=tr.getBoundingClientRect();let f=(e.clientX-r.left)/r.width;if(s.style.direction==='rtl')f=1-f;set(f)};
+    tr.addEventListener('pointerdown',e=>{drag=1;try{tr.setPointerCapture(e.pointerId)}catch(x){}at(e)});tr.addEventListener('pointermove',e=>{if(drag)at(e)});tr.addEventListener('pointerup',()=>drag=0);tr.addEventListener('pointercancel',()=>drag=0)}
+  set(0);B.innerHTML=mad?B.innerHTML:tSay(0);
+  const close=()=>s.remove();s.querySelector('#hgX').onclick=close;
+  s.querySelector('#hgHis').onclick=()=>{close();o.sell(0)};
+  s.querySelector('#hgOff').onclick=()=>{if(x/v<=lim){close();o.sell(x-v);if(x>v)setTimeout(()=>{try{toast(T(ae(`عم رمضان: «ماشي، {خد|خدي}. بس المرة الجاية {ارحمني|ارحميني}.» (+${x-v})`,`Ramadan: "Fine, take it. Go easy next time." (+${x-v})`)))}catch(e){}},300)}
+    else{HG.angry[o.key]=Date.now()+120000;F.dataset.m=3;F.classList.add('no');B.innerHTML=T(ae('«لا! {روح|روحي} {بيع|بيعي} في حتة تانية. بسعري وبس دلوقتي.»','"No! Go sell somewhere else. My price only now."'));try{SFX.bad();vib(40)}catch(e){}
+      s.querySelector('#hgOff').disabled=true;tr.classList.add('off')}}}
+/* sell wrappers: the old function does the sale; the haggled extra is added on top */
+{const r0=twSellRes;twSellRes=function(k,btn){const h=S.hero,args=arguments;if(!hgOn()||!h||HG.pass)return r0.apply(this,args);const have=h.res[k]||0;if(have<1)return;
+  const n=qtyN('sr:'+k,have),m=MAT[k],key=k+':'+n;if((m.tier||0)>=2&&TWN.conf!==key)return r0.apply(this,args);
+  let v=0;try{v=typeof satTotal==='function'?satTotal(h,k,n):twSellP(k)*n}catch(e){v=twSellP(k)*n}
+  hgOpen({key:'r:'+k,v,what:`${n} ${resN(k)}`,sell:extra=>{HG.pass=1;try{r0.call(this,k,btn)}finally{HG.pass=0}if(extra>0){h.money+=extra;saveHero();try{twRender()}catch(e){}}}})}}
+{const r0=twSellGear;twSellGear=function(gk,btn){const h=S.hero,args=arguments;if(!hgOn()||!h||HG.pass)return r0.apply(this,args);const x=qSpare(h).find(y=>y.key===gk);if(!x)return;
+  const n=qtyN('sg:'+gk,x.us.length),key='g:'+gk+':'+n;if(TWN.conf!==key)return r0.apply(this,args);
+  const v=qSellP(x.id,x.I)*n;let nm='';try{nm=GEAR[x.id].n}catch(e){}
+  hgOpen({key:'g:'+gk,v,what:`${n>1?n+' ':''}${nm}`,sell:extra=>{HG.pass=1;try{r0.call(this,gk,btn)}finally{HG.pass=0}if(extra>0){h.money+=extra;saveHero();try{twRender()}catch(e){}}}})}}
+(function(){const s=document.createElement('style');s.textContent=`
+#hgS{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both}
+.hg-top{display:flex;align-items:center;gap:12px}
+.hg-face{position:relative;flex:none;width:96px;height:96px;border-radius:16px;overflow:hidden;border:3px solid #2b1b22;box-shadow:0 0 0 2px #f3e2b0;--a:0}
+.hg-face>svg:first-child{width:100%;height:100%;display:block}
+.hg-red{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#e2483f,transparent 70%);opacity:calc(var(--a)*.55);mix-blend-mode:multiply;pointer-events:none}
+.hg-sw{position:absolute;top:30%;right:14%;width:12px;height:15px;opacity:0;transition:opacity .2s}.hg-face[data-m="2"] .hg-sw,.hg-face[data-m="3"] .hg-sw{opacity:1;animation:hgSw 1s ease-in infinite}
+@keyframes hgSw{to{transform:translateY(10px);opacity:0}}
+.hg-ang{position:absolute;top:8%;left:10%;width:18px;height:18px;opacity:0}.hg-face[data-m="3"] .hg-ang{opacity:1;animation:hgAn .4s ease-in-out infinite alternate}@keyframes hgAn{to{transform:scale(1.25)}}
+.hg-face[data-m="3"]{animation:agShk .1s linear 3 alternate}.hg-face.no{box-shadow:0 0 0 3px #e2483f}
+.hg-bb{position:relative;flex:1;padding:10px 12px;border-radius:16px;background:#fff;color:#1a1410;border:2px solid #2b1b22;box-shadow:3px 3px 0 #0008;font-size:14px;font-weight:700;line-height:1.5}
+.hg-bb[data-m="2"]{background:#ffe3c8}.hg-bb[data-m="3"]{background:#ffd0c8}
+.hg-pr{display:flex;align-items:center;justify-content:center;gap:6px;direction:ltr}.hg-pr .mny-c{width:26px;height:26px}.hg-pr b{font-size:34px;font-family:var(--display);color:#ffd36a;text-shadow:0 2px 0 #000}.hg-pr small{font-size:13px;color:#c9c2dc}.hg-pr em{font-style:normal;font-weight:800;color:#7fe07a;min-width:44px}
+.hg-tr{position:relative;height:48px;border-radius:24px;background:linear-gradient(90deg,#2f5b3a,#8a6a2a,#8a2a1c);box-shadow:inset 0 0 0 2px #0008;touch-action:none;cursor:pointer;margin:0 6px}
+[style*="rtl"] .hg-tr{background:linear-gradient(270deg,#2f5b3a,#8a6a2a,#8a2a1c)}
+.hg-tr.off{opacity:.4;pointer-events:none}.hg-fill{position:absolute;top:0;bottom:0;border-radius:24px;background:#ffffff18}
+.hg-th{position:absolute;top:50%;width:44px;height:44px;margin:-22px -22px 0;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff3b0,#f3c14d 60%,#c98a1a);border:3px solid #2b1b22;box-shadow:0 3px 0 #0008}
+.hg-l0,.hg-l1{position:absolute;bottom:-18px;font-size:11px;color:#c9c2dc}[style*="rtl"] .hg-l0{right:6px}[style*="rtl"] .hg-l1{left:6px}[style*="ltr"] .hg-l0{left:6px}[style*="ltr"] .hg-l1{right:6px}
+.hg-b{display:flex;gap:8px;margin-top:14px}.hg-b .btn{flex:1;min-height:48px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
