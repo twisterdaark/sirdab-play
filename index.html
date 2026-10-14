@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.43',d:'14 أكتوبر',add:['أي فلوس {بتدفعها|بتدفعيها} أو {بتاخدها|بتاخديها} بقت تظهر صورة فلوس جنب فلوسك بالمبلغ: أحمر ونازل لو {دفعت|دفعتي}، ودهبي وطالع لو {كسبت|كسبتي}.','صناديق مقفولة بقفل: {افتحها|افتحيها} بـ«مفتاح صدي» (عند عم رمضان بالليل)، أو {افتح|افتحي} القفل بإيدك في ميني جيم المسامير، أو {اكسره|اكسريه} والصندوق يقل درجة. الحرامي إيده أخف: مكان أوسع وسنّارة زيادة.','في الحرف، الحاجة اللي {متقدرش|متقدريش} {تعملها|تعمليها} ولا تشتريها بقت مطفية وعليها قفل صغير. {دوس|دوسي} عليها تشوف ناقصك إيه.']},
 {v:'6.42',d:'14 أكتوبر',add:['الحركات اللي قبل النرد بقت مشاهد مرسومة: في «شد!» {بتشد|بتشدي} عربية من الطين بحبل، وفي «اتسحّب» {ماشي|ماشية} جنب حيطة بين فانوسين، وفي «استحمل» {بتمسك|بتمسكي} باب والترباس بيقفل، وفي «افتكر» يافطات خشب منورة، وفي «خلّي بالك» عينين بترمش في الشجر، وفي «في وقتك» طبلة.']},
 {v:'6.41',d:'14 أكتوبر',add:['البلد بقت فيها ناس ماشية في الشوارع. {دوس|دوسي} على حد يقف ويكلمك: كلام البلد ونصايح بجد. وساعات حد {يديك|يديكي} قرشين عشان {ساعدته|ساعدتيه} قبل كده.','الصندوق بقا {بتفتحه|بتفتحيه} بإيدك: {اخبط|اخبطي} على القفل لحد ما يتكسر. كل خبطة بتشرخه وتطيّر شرار، والصندوق الأغلى قفله أنشف.','دكان عم رمضان بالليل بقا رفوف خشب والحاجات متصفصفة عليها.']},
 {v:'6.40',d:'14 أكتوبر',add:['الكلام بقا كوميكس: اللي بيحصل في صناديق صفرا، وكلام الناس في فقاعات جنب وشهم، وكل واحد له وش ثابت. النتيجة بعد الرمية كمان فيها فقاعة اللي بيكلمك.','الاختيارات بقت كروت بأيقونة كبيرة: قبضة للقوة، جري للخفة، فقاعة للحضور، عملة للشرا، رجلين للي {عايز|عايزة} تمشي وبس. فرصتك في شريطة ملونة تحت.','كارت الدفع أو الإدية تقدر {تسحبه|تسحبيه} على وش الشخص بدل ما {تدوس|تدوسي} عليه.']},
@@ -50929,6 +50930,7 @@ function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;cons
     e.classList.add('cro-g');e.classList.toggle('cro-3',its.length>=10);its.forEach(it=>{const row=it.classList.contains('tw-row'),hd=row?it:it.querySelector(':scope>.hd'),nm=((hd.querySelector('b')||{}).textContent||'').trim();it.dataset.cron=nm;it.classList.add('cro-i');if(row)it.classList.add('cro-r');
       const bs=[...it.querySelectorAll('button')].filter(b=>!b.classList.contains('cr-from-l')),mk=bs.some(b=>!b.disabled&&!b.classList.contains('by')&&b.dataset.buy===undefined),by=bs.some(b=>!b.disabled&&(b.classList.contains('by')||b.dataset.buy!==undefined));
       if(!it.querySelector('.cro-st'))(row?it:hd).insertAdjacentHTML('beforeend',`<i class="cro-st${mk?' mk':by?' by':''}" aria-hidden="true"></i>`);
+      it.classList.toggle('cro-no',!mk&&!by);   /* 6.43 (Twister 14:26): what you can't make or buy now is dimmed; a tap still opens it with «ناقصك …» */
       it.classList.toggle('cro-open',st.open===nm);
       const tog=ev=>{if(row&&it.classList.contains('cro-open')&&ev&&ev.target.closest('button,input,a'))return;const was=it.classList.contains('cro-open');
         if(was&&row&&ev&&!ev.target.closest('.ic,.tx>b'))return;
@@ -50959,6 +50961,10 @@ function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;cons
 .cro-st{position:absolute;top:6px;inset-inline-end:6px;width:10px;height:10px;border-radius:50%;background:#ffffff22}
 .cro-st.mk{background:#7fe07a;box-shadow:0 0 8px #7fe07a}.cro-st.by{background:#f3c14d}
 .cro-g .cro-open .cro-st{display:none}
+.cro-g .cro-i.cro-no:not(.cro-open){opacity:.5;filter:grayscale(.7)}
+.cro-g .cro-i.cro-no:not(.cro-open) .cro-st{background:none;width:12px;height:12px;border-radius:2px;box-shadow:inset 0 0 0 2px #cfc6b8aa}
+.cro-g .cro-i.cro-no:not(.cro-open) .cro-st::before{content:'';position:absolute;left:2px;top:-5px;width:4px;height:5px;border:2px solid #cfc6b8aa;border-bottom:0;border-radius:4px 4px 0 0}
+.cro-g .cro-open .tw-miss{border:1px solid #f0a09066;background:#f0a09014;border-radius:10px;padding:8px}
 .cro-g .tw-it .hd{position:relative}
 .cro-g .cro-r{position:relative;margin:0!important;min-width:0}
 .cro-g .cro-r:not(.cro-open){flex-direction:column!important;align-items:center!important;justify-content:center;text-align:center;gap:4px;min-height:96px;cursor:pointer}
@@ -51383,6 +51389,103 @@ function t4Shelf(){if(S.screen!=='shop'||!t4On())return;const g=view.querySelect
 .sgrid.t4-sh .sitem .ic::after{content:'';position:absolute;left:-12px;right:-12px;bottom:0;height:8px;background:linear-gradient(#a8743e,#6b4226);box-shadow:0 4px 0 #3a2414}
 .sgrid.t4-sh .sitem .ic svg{filter:drop-shadow(0 3px 0 #0008)}
 @media (prefers-reduced-motion:reduce){.t4-w,.t4-w .t4-s{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.43 (acc1, Twister 14:26): «في حاله دفع فلوس في حاجه، حط صوره فلوس جنب الي اتخصم منك» ----------
+   Whenever your money changes, a little stack of coins pops beside the money tag with the amount (red and falling when you
+   pay, gold and rising when you get paid), and every «−N جنيه» line in a result gets the coin picture too.
+   One watcher compares the hero's money a few times a second, so every shop, fee and reward shows it without touching them. */
+const MNY={last:null,who:null};
+const MNY_COIN=`<svg class="mny-c" viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="1" width="6" height="1" fill="#2b1b22"/><rect x="2" y="2" width="8" height="1" fill="#2b1b22"/><rect x="1" y="3" width="10" height="6" fill="#2b1b22"/><rect x="2" y="9" width="8" height="1" fill="#2b1b22"/><rect x="3" y="10" width="6" height="1" fill="#2b1b22"/>
+  <rect x="3" y="2" width="6" height="8" fill="#f3c14d"/><rect x="2" y="3" width="8" height="6" fill="#f3c14d"/><rect x="3" y="3" width="2" height="2" fill="#fff3b0"/><rect x="5" y="4" width="2" height="4" fill="#c98a1a"/><rect x="3" y="8" width="6" height="1" fill="#c98a1a"/></svg>`;
+function mnyPop(d){const h=S.hero,vis=e=>{const r=e.getBoundingClientRect();return r.width&&r.bottom>0&&r.top<innerHeight};
+  let t=$('#money');if(!t||!vis(t))t=[...view.querySelectorAll('span,b,div,small')].find(e=>!e.children.length&&new RegExp('^'+(h.money|0)+'\\s*(جنيه|coins?)$').test(e.textContent.trim())&&vis(e))||null;
+  const host=document.getElementById('app')||document.body,a=host.getBoundingClientRect(),r=t?t.getBoundingClientRect():{left:a.left+a.width/2-20,width:40,top:Math.max(a.top,0)+40,height:0};const el=document.createElement('div');el.className='mny-pop '+(d<0?'dn':'up');
+  el.innerHTML=`${MNY_COIN}${MNY_COIN}<b>${d<0?'−':'+'}${Math.abs(d)}</b>`;el.style.left=(r.left-a.left+r.width/2)+'px';el.style.top=(r.top-a.top+r.height+4)+'px';host.appendChild(el);setTimeout(()=>el.remove(),1500)}
+function mnyTick(){const h=S.hero;if(!h){MNY.last=null;return}if(MNY.who!==h){MNY.who=h;MNY.last=h.money|0;return}const m=h.money|0,d=m-(MNY.last|0);MNY.last=m;if(d)try{mnyPop(d)}catch(e){}}
+setInterval(mnyTick,250);
+/* «−15 جنيه» / «-15 coins» lines get the coins in front */
+function mnyLines(){view.querySelectorAll('.note,.res .note,small,.rx').forEach(n=>{if(n.dataset.mny||n.children.length)return;const t=n.textContent.trim();if(!/^[+\-−]?\s?\d+\s*(جنيه|coins?)$/i.test(t))return;n.dataset.mny=1;n.insertAdjacentHTML('afterbegin',MNY_COIN)})}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{mnyLines()}catch(e){}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.mny-c{width:16px;height:16px;vertical-align:-3px;margin-inline-end:3px;image-rendering:pixelated}
+.mny-pop{position:absolute;z-index:46;transform:translateX(-50%);display:flex;align-items:center;gap:0;pointer-events:none;font-family:var(--display);font-weight:800;font-size:18px;text-shadow:0 2px 4px #000;white-space:nowrap;direction:ltr}
+.mny-pop .mny-c{width:20px;height:20px;margin:0 -6px 0 0}.mny-pop b{margin-left:9px}
+.mny-pop.dn{color:#f0a090;animation:mnyDn 1.5s ease-in forwards}.mny-pop.up{color:#ffd36a;animation:mnyUp 1.5s ease-out forwards}
+@keyframes mnyDn{0%{opacity:0;transform:translate(-50%,-6px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,26px)}}
+@keyframes mnyUp{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-22px)}}`;document.head.appendChild(s)})();
+/* ---------- 6.43 (acc1, Twister 14:26): «حط صناديق محتاجه تتفتح بمفتاح او ب lockpick خصوصا لو حرامي وميني جيمز ليها» ----------
+   Some chests after a fight come with a padlock (not boss chests; 40% of the uncommon and better ones). Tap one and pick:
+   - «مفتاح»: an old key from the bag («مفتاح صدي», sold by عم رمضان at night and sometimes found) opens it at once;
+   - «افتح القفل»: the lock game. Three pins; the pick sweeps along the lock and you tap while it is on the gold spot of each pin.
+     A miss bends the pick; three bent picks and the lock jams. The thief (حرامي) gets a wider spot and one more pick;
+   - «اكسره»: no game, the lock is smashed and the chest drops one rarity step; then you knock it open as usual.
+   An opened padlock opens the chest straight away (no knocking). Test builds keep chests unlocked unless window.__tw4 is set. */
+ITEMS.key={name:ae('مفتاح صدي','Rusty key'),price:35,use:null,info:()=>ae('بيفتح أي صندوق مقفول من غير لعب','Opens any padlocked chest, no game needed')};
+BAG_MAX.key=5;
+{const i0=itemIcon2;itemIcon2=function(k,w){if(k!=='key')return i0.apply(this,arguments);w=w||30;
+  return `<svg viewBox="0 0 16 16" width="${w}" height="${w}" shape-rendering="crispEdges" aria-hidden="true"><rect x="2" y="3" width="6" height="6" fill="#2b1b22"/><rect x="3" y="4" width="4" height="4" fill="#c98a1a"/><rect x="4" y="5" width="2" height="2" fill="#2b1b22"/><rect x="3" y="4" width="2" height="1" fill="#ffd36a"/>
+    <rect x="7" y="5" width="8" height="2" fill="#2b1b22"/><rect x="8" y="5" width="6" height="1" fill="#c98a1a"/><rect x="11" y="7" width="2" height="3" fill="#2b1b22"/><rect x="13" y="7" width="2" height="2" fill="#2b1b22"/><rect x="11" y="7" width="1" height="2" fill="#a8743e"/></svg>`}}
+{const g0=genShop;genShop=function(){const L=g0.apply(this,arguments);try{if(t4On()&&Math.random()<.6&&!L.some(e=>e.k==='key'))L.push({k:'key',stock:1+Math.floor(Math.random()*2)})}catch(e){}return L}}
+const LK_THIEF=h=>!!h&&(h.cls==='حرامي'||h.cls==='متسلل');
+{const r0=rollChest;rollChest=function(boss){const c=r0.apply(this,arguments);try{if(c&&!boss&&t4On()&&(c.tier|0)>=1&&Math.random()<.4){c.lock=1}}catch(e){}return c}}
+const LK_PAD=`<svg class="lk-pad" viewBox="0 0 16 18" shape-rendering="crispEdges" aria-hidden="true"><rect x="4" y="1" width="8" height="2" fill="#2b1b22"/><rect x="3" y="3" width="2" height="6" fill="#2b1b22"/><rect x="11" y="3" width="2" height="6" fill="#2b1b22"/><rect x="5" y="2" width="6" height="1" fill="#8a8f9a"/><rect x="4" y="3" width="1" height="5" fill="#8a8f9a"/><rect x="11" y="3" width="1" height="5" fill="#8a8f9a"/>
+  <rect x="1" y="8" width="14" height="9" fill="#2b1b22"/><rect x="2" y="9" width="12" height="7" fill="#c98a1a"/><rect x="2" y="9" width="12" height="1" fill="#ffd36a"/><rect x="7" y="11" width="2" height="3" fill="#2b1b22"/></svg>`;
+function lkDress(){const L=S.loot;if(!L||!L.chests)return;view.querySelectorAll('.chest:not(.open)').forEach(el=>{const c=L.chests[+el.dataset.c];if(!c||!c.lock||c.unl)return;el.classList.add('lk-on');
+  if(!el.querySelector('.lk-pad'))el.insertAdjacentHTML('beforeend',LK_PAD);const rn=el.querySelector('.rn');if(rn)rn.innerHTML=`<span class="t4-ht">${ae('مقفول بقفل','Padlocked')}</span>`})}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{if(t4On())lkDress()}catch(e){console.warn(e)}return r}}
+/* this listener sits on window so it runs before the knock listener on document */
+window.addEventListener('click',e=>{if(!t4On())return;const el=e.target.closest&&e.target.closest('.chest.lk-on:not(.open)');if(!el)return;const L=S.loot,c=L&&L.chests&&L.chests[+el.dataset.c];if(!c||!c.lock||c.unl||c.open||c.busy)return;
+  e.stopImmediatePropagation();e.preventDefault();lkSheet(c,el)},true);
+function lkOpen(c,el){c.unl=1;el.classList.remove('lk-on');const p=el.querySelector('.lk-pad');if(p){p.classList.add('lk-drop');setTimeout(()=>p.remove(),500)}
+  try{SFX.chest&&SFX.chest()}catch(x){}setTimeout(()=>{delete el.dataset.t4;el.click()},450)}
+function lkSheet(c,el){const h=S.hero;if(!h||$('#lkS'))return;const keys=h.bag&&(h.bag.key|0),th=LK_THIEF(h);
+  const s=document.createElement('div');s.id='lkS';s.style.direction=EN?'ltr':'rtl';
+  s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${ae('صندوق مقفول','A padlocked chest')}</b>${th?`<span class="ag-st">${T(ae('حرامي: إيدك خفيفة','Thief: light fingers'))}</span>`:''}</div>
+    <div class="lk-ops">
+      <button class="lk-op" id="lkKey" ${keys?'':'disabled'}>${itemIcon('key',40)}<b>${ae('مفتاح','Key')}</b><small>${keys?T(ae(`{معاك|معاكي} ${keys}`,`You have ${keys}`)):T(ae('مفيش {معاك|معاكي}','You have none'))}</small></button>
+      <button class="lk-op" id="lkPick" ${c.jam?'disabled':''}>${LK_PICK}<b>${ae('افتح القفل','Pick the lock')}</b><small>${c.jam?ae('اتزرجن','Jammed'):ae('3 مسامير','3 pins')}</small></button>
+      <button class="lk-op" id="lkBash">${LK_HAM}<b>${ae('اكسره','Smash it')}</b><small>${ae('الصندوق يقل درجة','The chest drops a step')}</small></button></div>
+    <div class="ag-b"><button class="btn ghost small" id="lkBack">${ae('رجوع','Back')}</button></div></div>`;
+  document.body.appendChild(s);const close=()=>s.remove();
+  s.querySelector('#lkBack').onclick=close;
+  s.querySelector('#lkKey').onclick=()=>{if(!(h.bag.key>0))return;h.bag.key--;try{saveHero()}catch(x){}close();lkOpen(c,el)};
+  s.querySelector('#lkBash').onclick=()=>{close();c.lock=0;c.tier=Math.max(0,(c.tier|0)-1);el.classList.remove('lk-on');const p=el.querySelector('.lk-pad');if(p)p.remove();delete el.dataset.t4;try{SFX.bad&&SFX.bad();vib(40)}catch(x){}
+    try{floatAt(el,ae('اتكسر','Smashed'),'#f0a090','',18)}catch(x){}render()};
+  s.querySelector('#lkPick').onclick=()=>{close();lkGame(c,el)}}
+const LK_PICK=`<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M6 34 L26 14" stroke="#2b1b22" stroke-width="6" stroke-linecap="round"/><path d="M6 34 L26 14" stroke="#b8c2ca" stroke-width="3" stroke-linecap="round"/><path d="M26 14 L30 8 L33 10" fill="none" stroke="#b8c2ca" stroke-width="2.4" stroke-linecap="round"/><rect x="3" y="29" width="9" height="8" rx="2" transform="rotate(-45 7 33)" fill="#8a5a32" stroke="#2b1b22" stroke-width="2"/></svg>`;
+const LK_HAM=`<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M10 34 L24 18" stroke="#2b1b22" stroke-width="7" stroke-linecap="round"/><path d="M10 34 L24 18" stroke="#a8743e" stroke-width="4" stroke-linecap="round"/><rect x="18" y="5" width="18" height="11" rx="2" transform="rotate(42 27 10)" fill="#7a808a" stroke="#2b1b22" stroke-width="2.4"/></svg>`;
+/* the lock game: the pick sweeps left/right along the pin; tap on the gold spot. 3 pins, 3 picks (thief: 4 picks, wider spot) */
+function lkGame(c,el){const h=S.hero,th=LK_THIEF(h),tier=c.tier|0;let pin=0,picks=th?4:3,over=false,iv=0;const W0=Math.max(.07,(.2-.035*tier)*(th?1.6:1));
+  const g=document.createElement('div');g.id='actG';g.style.direction=EN?'ltr':'rtl';
+  const pins=[0,1,2].map(i=>`<g class="lk-pn" data-p="${i}"><rect x="${96+i*40}" y="34" width="16" height="44" fill="#2b1b22"/><rect x="${99+i*40}" y="40" width="10" height="34" class="lk-pb" fill="#c9a46a"/><rect x="${99+i*40}" y="74" width="10" height="8" fill="#8a8f9a"/></g>`).join('');
+  g.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${ae('افتح القفل','Pick the lock')}</b><span class="ag-st">${th?ae('حرامي','Thief'):ae('بإيدك','By hand')}</span></div>
+    <div class="ag-how">${T(ae('السنّارة بتتحرك في القفل. {دوس|دوسي} على الصورة وهي على المكان الدهبي، ومسمار ورا مسمار.','The pick slides through the lock. Tap the picture while it is on the gold spot, pin by pin.'))}</div>
+    <div class="ag-a"><button class="ag-sc" id="agT" aria-label="${ae('افتح','Pick')}"><svg class="ag-sv" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid meet">
+      <rect width="300" height="150" fill="#1a1428"/><path d="M110 40 Q110 8 150 8 Q190 8 190 40" fill="none" stroke="#2b1b22" stroke-width="16"/><path d="M110 40 Q110 8 150 8 Q190 8 190 40" fill="none" stroke="#8a8f9a" stroke-width="9" id="lkSh"/>
+      <rect x="70" y="30" width="160" height="104" rx="10" fill="#2b1b22"/><rect x="76" y="36" width="148" height="92" rx="7" fill="#c98a1a"/><rect x="76" y="36" width="148" height="6" fill="#ffd36a"/>
+      ${pins}<rect id="lkSpot" x="0" y="86" width="0" height="10" rx="3" fill="#ffd36a" opacity=".9"/><rect x="84" y="86" width="132" height="10" rx="3" fill="none" stroke="#2b1b22" stroke-width="2"/>
+      <g id="lkPk"><path d="M0 91 L-40 91" stroke="#2b1b22" stroke-width="6" stroke-linecap="round"/><path d="M0 91 L-40 91" stroke="#e4e8ec" stroke-width="3" stroke-linecap="round"/><path d="M0 91 l0 -6" stroke="#e4e8ec" stroke-width="3" stroke-linecap="round"/></g></svg>
+      <span class="ag-tip" id="lkTip"></span></button></div><div class="ag-r" id="agR"></div>
+    <div class="ag-b"><button class="btn ghost small" id="agBack">${ae('سيبه','Leave it')}</button></div></div>`;
+  document.body.appendChild(g);const pk=g.querySelector('#lkPk'),sp=g.querySelector('#lkSpot'),tip=g.querySelector('#lkTip'),Rr=g.querySelector('#agR');let spot=.5,v=0,t0=performance.now();
+  const showTip=()=>{tip.textContent=`${ae('مسمار','Pin')} ${pin+1}/3 · ${ae('سنانير','Picks')}: ${picks}`};
+  const newSpot=()=>{spot=W0/2+Math.random()*(1-W0);sp.setAttribute('x',(84+132*(spot-W0/2)).toFixed(1));sp.setAttribute('width',(132*W0).toFixed(1));showTip()};newSpot();
+  const P=Math.max(700,1200-tier*120);iv=setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=t<.5?t*2:2-t*2;pk.setAttribute('transform',`translate(${(84+132*v).toFixed(1)} 0)`)},16);
+  const fin=(won)=>{if(over)return;over=true;clearInterval(iv);if(won){Rr.innerHTML=`<b class="ag-up">${ae('اتفتح!','Click! Open!')}</b>`;g.querySelector('#lkSh').setAttribute('transform','translate(0 -10)');try{SFX.good()}catch(x){}try{pop(Rr,['#ffd36a','#fff'],16)}catch(x){}}
+    else{Rr.innerHTML=`<b class="ag-dn">${ae('القفل اتزرجن','The lock jammed')}</b>`;try{SFX.bad()}catch(x){}}
+    setTimeout(()=>{g.classList.add('out');setTimeout(()=>g.remove(),200);if(won)lkOpen(c,el);else{c.jam=1;const rn=el.querySelector('.rn');if(rn)rn.innerHTML=`<span class="t4-ht">${ae('القفل اتزرجن: اكسره','Jammed: smash it')}</span>`}},window.__actFast?40:900)};
+  g.querySelector('#agBack').onclick=()=>{over=true;clearInterval(iv);g.remove()};
+  g.querySelector('#agT').onclick=()=>{if(over)return;const hit=Math.abs(v-spot)<=W0/2;const pn=g.querySelector(`.lk-pn[data-p="${pin}"] .lk-pb`);
+    if(hit){pn.setAttribute('y','28');pn.setAttribute('fill','#7fe07a');pin++;try{SFX.tick(900+pin*120);vib(12)}catch(x){}if(pin>=3)return fin(true);newSpot()}
+    else{picks--;g.querySelector('.ag-box').classList.remove('lk-bad');void g.offsetWidth;g.querySelector('.ag-box').classList.add('lk-bad');try{SFX.tick(160);vib(30)}catch(x){}showTip();if(picks<=0)fin(false)}};
+  if(typeof window.__lkAuto==='boolean')setTimeout(()=>fin(window.__lkAuto),60)}
+(function(){const s=document.createElement('style');s.textContent=`
+.chest.lk-on{position:relative}.lk-pad{position:absolute;z-index:3;left:50%;top:44%;width:34px;height:38px;transform:translate(-50%,-50%);image-rendering:pixelated;filter:drop-shadow(0 2px 0 #000a);pointer-events:none;animation:lkSw 2.4s ease-in-out infinite}
+@keyframes lkSw{50%{transform:translate(-50%,-50%) rotate(6deg)}}.lk-pad.lk-drop{animation:lkDr .5s ease-in forwards}@keyframes lkDr{to{transform:translate(-50%,40px) rotate(40deg);opacity:0}}
+#lkS{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both}
+.lk-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lk-op{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:110px;padding:10px 4px;border-radius:14px;border:2px solid #3d3266;background:#2a2148;color:#fff;font:inherit;cursor:pointer}
+.lk-op b{font-size:14px}.lk-op small{font-size:11px;color:#c9c2dc}.lk-op:disabled{opacity:.45;filter:grayscale(.8);cursor:default}
+.ag-box.lk-bad{animation:agShk .08s linear 4 alternate}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
