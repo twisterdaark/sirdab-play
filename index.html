@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.75',d:'14 أكتوبر',add:['«بيتك»: الأوض بقت مربعات مرسومة زي الفرش: الورشة والأوضة والمتحف كل واحدة بصورتها ومستواها والتمن تحتها، {دوس|دوسي} عليها {تبنيها|تبنيها} أو {تكبّرها|تكبّريها}.']},
 {v:'6.74',d:'14 أكتوبر',add:['«بديع» و«أعجوبة» اتظبطوا في النص: أسهل من زمان بس مش ببلاش. لو {عملت|عملتي} تحفة 15 مرة ورا بعض من غيرهم، اللي بعدها أكيد «بديع».','«دوار العمدة» بقى بالصور: كل رخصة ليها أيقونة، والسمعة والفلوس اللي محتاجاها قدامها.']},
 {v:'6.73',d:'14 أكتوبر',add:['«بيتك» بقى صور وأفعال: الأوض بأيقوناتها ومستواها نقط والتمن قدامها، والفرش بقى مربعات مرسومة، والراحة نقط.','جديد في الحدادة والخياطة والعطارة: «فهمك». كل ما {تفك|تفكي} حاجة أو {تعملها|تعمليها} بإيدك، فهمك ليها بيزيد (5 مستويات)، وكل مستوى بيخليها تطلع أجود، ومن مستوى 3 ممكن تاخد صفة زيادة، ومن 4 التحفة ممكن تبقى «بديع».','«بديع» و«أعجوبة» بقوا أسهل بكتير: الشغل البيرفكت بيجيبهم أكتر، ولو التحفة طلعت 8 مرات ورا بعض من غيرهم، المرة الجاية أكيد «بديع».']},
 {v:'6.72',d:'14 أكتوبر',add:['«حال البلد» بقت صور بدل كلام: كل طلبية سطر واحد فيه وش صاحبها، والحاجة اللي عايزها مرسومة وجنبها معاك قد إيه، والفلوس، وزرار «{سلّم|سلّمي}». ناس البلد بقوا وشوش جنب بعض بشريط الولاء، والإشاعة سطر واحد بوش اللي قالها.','الكروت اللي بتفتح صفحات (زي لوحة المهمات وجرنال البلد وناس البلد) بقت مربعات بصورة كبيرة واسم قصير، من غير الكلام الطويل.']},
@@ -55042,13 +55043,18 @@ const HMD_ART={rug:[17,29,28,8,R=>{R(18,30,26,6,'#963c2c');R(19,31,24,4,'#c75b3d
 function hmDecoIc(id,w){const A=HMD_ART[id];if(!A)return '';let s='';A[4]((x,y,ww,hh,c)=>{s+=`<rect x="${x}" y="${y}" width="${ww}" height="${hh}" fill="${c}"/>`});
   const z=Math.max(A[2],A[3]),x=A[0]-(z-A[2])/2,y=A[1]-(z-A[3])/2;return `<svg viewBox="${x} ${y} ${z} ${z}" width="${w}" height="${w}" shape-rendering="crispEdges" aria-hidden="true">${s}</svg>`}
 const HMR_IC={warsha:'🔨',oda:'🛏️',mathaf:'🏺'};
+/* 6.75: each room is a drawn tile, not a line of text (Twister: «مش ملاحظ اي فرق») */
+const HMR_ART={warsha:R=>{R(0,0,16,16,'#3a2a20');R(3,9,10,2,'#8a8f98');R(5,11,6,3,'#5d6168');R(2,8,3,2,'#8a8f98');R(9,2,2,6,'#8a5a30');R(7,1,6,2,'#b8bcc4');R(12,12,2,2,'#ff9c3a')},
+  oda:R=>{R(0,0,16,16,'#2e2a3a');R(2,8,12,4,'#c75b3d');R(2,7,4,2,'#f0e6d8');R(2,6,1,7,'#7a4a28');R(13,8,1,5,'#7a4a28');R(10,2,4,3,'#8ad0ff');R(3,12,1,2,'#7a4a28');R(12,12,1,2,'#7a4a28')},
+  mathaf:R=>{R(0,0,16,16,'#2a2f2a');R(2,13,12,2,'#6b4a2a');R(4,6,4,7,'#c9873a');R(5,4,2,2,'#c9873a');R(4,8,4,1,'#7a3a20');R(10,8,3,5,'#7fb3a0');R(10,7,3,1,'#5a8a78');R(11,3,1,1,'#ffd36a');R(10,4,3,1,'#ffd36a')}};
+function hmRoomIc(id,w){const f=HMR_ART[id];if(!f)return HMR_IC[id]||'🏠';let s='';f((x,y,ww,hh,c)=>{s+=`<rect x="${x}" y="${y}" width="${ww}" height="${hh}" fill="${c}"/>`});return `<svg viewBox="0 0 16 16" width="${w}" height="${w}" shape-rendering="crispEdges" aria-hidden="true">${s}</svg>`}
 const pgPips=(n,of,c)=>`<span class="pg-pips">${Array.from({length:of},(_,i)=>`<i class="${i<n?'on':''}"${c?` style="--pc:${c}"`:''}></i>`).join('')}</span>`;
 function pgCost(h,c){return `<span class="pg-cost"><span class="pg-need${(h.money|0)>=c[0]?' ok':''}">${twI(String(c[0]))}<small>${ae('جنيه','coins')}</small></span>${Object.keys(c[1]).map(k=>pgNeed(h,k,c[1][k],(h.res&&h.res[k])|0)).join('')}</span>`}
 hmHomeHTML=function(h){const H=hmFix(h),cf=hmComfort(h);
   return `<div class="card hm-pic">${hmRoomArt(h)}</div><div class="card pg-cf"><b>😌 ${ae('الراحة','Comfort')}</b>${pgPips(cf,HM_CMAX,'#7fe07a')}<small>${ae('خبرة القتال','Fight XP')} +${cf}%</small></div>
-  <h3 class="hm-h">🏠 ${ae('الأوض','Rooms')}</h3>${HM_R.map(R0=>{const l=hmLv(h,R0.id),c=R0.c[l];
-    return `<div class="card pg-room"><span class="pg-ric">${HMR_IC[R0.id]||'🏠'}</span><div class="pg-rt"><b>${hmN(R0.n)}</b>${pgPips(l,R0.c.length,'#ffd36a')}<small>${hmN(R0.d)}</small>${c?pgCost(h,c):''}</div>
-      ${c?`<button class="tw-buy pg-go" data-hr="${R0.id}" ${hmCan(h,c)?'':'disabled'}>${l?ae('{كبّر|كبّري}','Grow'):ae('{ابني|ابني}','Build')}</button>`:'<span class="pg-ok">✓</span>'}</div>`}).join('')}
+  <h3 class="hm-h">🏠 ${ae('الأوض','Rooms')}</h3><div class="pg-dg pg-rg">${HM_R.map(R0=>{const l=hmLv(h,R0.id),c=R0.c[l],ok=c&&hmCan(h,c);
+    return `<button class="pg-d pg-rm${c?'':' on'}" ${c?`data-hr="${R0.id}"`:''} ${c&&!ok?'disabled':''} title="${esc(hmN(R0.d))}"><span class="pg-di">${hmRoomIc(R0.id,56)}</span><b>${hmN(R0.n)}</b>${pgPips(l,R0.c.length,'#ffd36a')}
+      ${c?`<span class="pg-v">${l?ae('{كبّر|كبّري}','Grow'):ae('{ابني|ابني}','Build')}</span>${pgCost(h,c)}`:'<small>✓ '+ae('على الآخر','Maxed')+'</small>'}</button>`}).join('')}</div>
   <h3 class="hm-h">🪑 ${ae('الفرش','Decorations')}</h3><div class="pg-dg">${HM_D.map(D=>H.d[D.id]?`<div class="pg-d on"><span class="pg-di">${hmDecoIc(D.id,56)}</span><b>${hmN(D.n)}</b><small>✓ 😌+${D.cf}</small></div>`:
     `<button class="pg-d" data-hd="${D.id}" ${(h.money|0)>=D.p?'':'disabled'}><span class="pg-di">${hmDecoIc(D.id,56)}</span><b>${hmN(D.n)}</b><small>${twI(String(D.p))} · 😌+${D.cf}</small></button>`).join('')}</div>`};
 {const d0=SCREENS.dar;SCREENS.dar=function(){const r=d0.apply(this,arguments);try{const c=$('#rsCard');if(c){const sm=[...c.querySelectorAll('.rs-t small')].filter(x=>x.textContent.length>40);sm.forEach(x=>{c.title=x.textContent;x.remove()})}}catch(e){}return r}}
@@ -55058,7 +55064,7 @@ hmHomeHTML=function(h){const H=hmFix(h),cf=hmComfort(h);
 .pg-room{display:flex;align-items:center;gap:10px}.pg-ric{font-size:34px;width:48px;text-align:center;flex:none}.pg-rt{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}.pg-rt>small{opacity:.8;font-size:12px}
 .pg-cost{display:flex;flex-wrap:wrap;gap:4px}.pg-cost .pg-need{padding:2px 6px}.pg-cost .pg-need svg{width:22px;height:22px}.pg-cost .pg-need b{font-size:12px}.pg-cost .pg-need small{font-size:10px}
 .pg-dg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.pg-d{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:inherit;font:inherit;cursor:pointer;min-height:44px}
-.pg-d:disabled{opacity:.5;cursor:default}.pg-d.on{border-color:#7fe07a;box-shadow:0 0 10px #7fe07a33}.pg-d b{font-size:12px}.pg-d small{font-size:11px;opacity:.85}.pg-di{width:56px;height:56px;border-radius:10px;background:#4a3226;display:flex;align-items:center;justify-content:center;overflow:hidden}`;document.head.appendChild(s)})();
+.pg-d:disabled{opacity:.5;cursor:default}.pg-d.on{border-color:#7fe07a;box-shadow:0 0 10px #7fe07a33}.pg-d b{font-size:12px}.pg-d small{font-size:11px;opacity:.85}.pg-rg{grid-template-columns:repeat(3,1fr)}.pg-rm .pg-cost{justify-content:center}.pg-rm .pg-pips{margin:0}.pg-v{font-weight:700;color:#ffd36a;font-size:13px}.pg-d:not(:disabled):not(.on).pg-rm{border-color:#ffd36a88}.pg-di{width:56px;height:56px;border-radius:10px;background:#4a3226;display:flex;align-items:center;justify-content:center;overflow:hidden}`;document.head.appendChild(s)})();
 /* 6.74: «دوار العمدة» in pictures: the licences become rows with a big icon and a cost chip; the request card keeps its two foes and loses its long lines */
 const OM_IC={tagir:'💰',sanay:'🔨',wesam:'🎖️'};
 {const o0=SCREENS.omda;SCREENS.omda=function(){const r=o0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='omda')return r;
