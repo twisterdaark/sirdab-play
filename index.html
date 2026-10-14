@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.42',d:'14 أكتوبر',add:['الحركات اللي قبل النرد بقت مشاهد مرسومة: في «شد!» {بتشد|بتشدي} عربية من الطين بحبل، وفي «اتسحّب» {ماشي|ماشية} جنب حيطة بين فانوسين، وفي «استحمل» {بتمسك|بتمسكي} باب والترباس بيقفل، وفي «افتكر» يافطات خشب منورة، وفي «خلّي بالك» عينين بترمش في الشجر، وفي «في وقتك» طبلة.']},
 {v:'6.41',d:'14 أكتوبر',add:['البلد بقت فيها ناس ماشية في الشوارع. {دوس|دوسي} على حد يقف ويكلمك: كلام البلد ونصايح بجد. وساعات حد {يديك|يديكي} قرشين عشان {ساعدته|ساعدتيه} قبل كده.','الصندوق بقا {بتفتحه|بتفتحيه} بإيدك: {اخبط|اخبطي} على القفل لحد ما يتكسر. كل خبطة بتشرخه وتطيّر شرار، والصندوق الأغلى قفله أنشف.','دكان عم رمضان بالليل بقا رفوف خشب والحاجات متصفصفة عليها.']},
 {v:'6.40',d:'14 أكتوبر',add:['الكلام بقا كوميكس: اللي بيحصل في صناديق صفرا، وكلام الناس في فقاعات جنب وشهم، وكل واحد له وش ثابت. النتيجة بعد الرمية كمان فيها فقاعة اللي بيكلمك.','الاختيارات بقت كروت بأيقونة كبيرة: قبضة للقوة، جري للخفة، فقاعة للحضور، عملة للشرا، رجلين للي {عايز|عايزة} تمشي وبس. فرصتك في شريطة ملونة تحت.','كارت الدفع أو الإدية تقدر {تسحبه|تسحبيه} على وش الشخص بدل ما {تدوس|تدوسي} عليه.']},
 {v:'6.39',d:'14 أكتوبر',add:['الليلة بقت مكان: في كل وقفة {بتشوف|بتشوفي} نفسك على الطريق، وقدامك 3 أماكن بتنوّر بصورتها واسمها ونجوم خطرها. {دوس|دوسي} على مكان وهتمشي لحد عنده.','الاختيارات بقت حركة {بتعملها|بتعمليها} قبل النرد: شد بسرعة للقوة، اتسحّب في الوقت الصح للخفة، استحمل للتحمّل، افتكر للذكاء، خلّي بالك للحكمة، وفي وقتك للحضور. لو {عملتها|عملتيها} حلو بتاخد لحد +2 على الرمية.','مش {عايز|عايزة} تلعبها؟ «{سيبها|سيبيها} للحظ» وارمي النرد على طول.']},
@@ -51037,14 +51038,38 @@ function nwGo(sp){if(NW.busy)return;const id=sp.dataset.nw,b=view.querySelector(
    Test builds skip it unless window.__act is set. */
 const ACT={on:0};
 const actOn=()=>!((window.__r||window.__t||window.__q)&&!window.__act);
-const ACT_G={'قوة':['شد!','Pull!','{دوس|دوسي} بسرعة لحد ما البار يتملا','Tap fast until the bar fills'],
-  'خفة':['اتسحّب','Sneak','{دوس|دوسي} والعلامة جوه الأخضر','Tap while the mark is in the green'],
-  'تحمّل':['استحمل','Hold on','{امسك|امسكي} الزرار وما {تسيبوش|تسيبيهوش} لحد ما يتملا','Hold the button until it fills'],
-  'ذكاء':['افتكر','Remember','3 علامات هتنوّر، {دوس|دوسي} عليهم بنفس الترتيب','Three signs light up; tap them back in order'],
-  'حكمة':['خلّي بالك','Watch','علامة واحدة هترمش، {دوس|دوسي} عليها','One sign will flicker; tap it'],
-  'حضور':['في وقتك','On cue','{دوس|دوسي} لما الدايرة تقفل على الكلمة','Tap as the ring closes on the word']};
-const ACT_SG=['☾','✦','♣','◆','✋','☀'];
-function actPanel(stat,label){const g=ACT_G[stat]||ACT_G['قوة'];const el=document.createElement('div');el.id='actG';
+const ACT_G={'قوة':['شد!','Pull!','العربية غرزانة في الطين. {دوس|دوسي} على الصورة بسرعة {وشدها|وشديها} بالحبل','The cart is stuck in the mud. Tap the picture fast to haul it out'],
+  'خفة':['اتسحّب','Sneak','{ماشي|ماشية} جنب الحيطة. {دوس|دوسي} {وانت|وانتي} في الضلمة بين الفانوسين','You slip along the wall. Tap while you are in the dark between the lamps'],
+  'تحمّل':['استحمل','Hold on','حاجة بتزق الباب. {امسك|امسكي} الصورة وما {تسيبهاش|تسيبيهاش} لحد ما الترباس يقفل','Something pushes on the door. Hold the picture until the bar locks'],
+  'ذكاء':['افتكر','Remember','3 يافطات هتنوّر، {دوس|دوسي} عليهم بنفس الترتيب','Three plaques light up; tap them back in order'],
+  'حكمة':['خلّي بالك','Watch','عينين في الشجر هيرمشوا مرة، {دوس|دوسي} على الشجرة دي','Eyes in the bushes blink once; tap that bush'],
+  'حضور':['في وقتك','On cue','{اضرب|اضربي} الطبلة لما الدايرة تقفل عليها','Hit the drum as the ring closes on it']};
+/* 6.42 (Twister 14:19 «خلي رسم شد والميني جيمز دي احلي … حبل مرسوم … رسومات بدل ما هو زراير»): each move is a little drawn scene */
+const AGO='stroke="#2b1b22" stroke-width="3" stroke-linejoin="round"';
+const AGD={
+  night:`<defs><linearGradient id="agSk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#151230"/><stop offset="1" stop-color="#2c2448"/></linearGradient></defs><rect width="300" height="150" fill="url(#agSk)"/>
+    <g fill="#fff6d8">${[[20,14],[70,30],[130,10],[200,24],[262,12],[288,40],[100,48]].map(([x,y])=>`<rect x="${x}" y="${y}" width="2" height="2"/>`).join('')}</g><circle cx="244" cy="34" r="12" fill="#f3e2b0"/><circle cx="249" cy="30" r="11" fill="#2c2448" opacity=".9"/>
+    <path d="M0 104 L18 92 L40 100 L64 86 L92 98 L120 90 L150 100 L182 88 L214 98 L246 90 L274 100 L300 94 V122 H0Z" fill="#1d1830"/>`,
+  ground:`<rect y="118" width="300" height="32" fill="#4a3424"/><rect y="118" width="300" height="4" fill="#6b4a2e"/><g fill="#3a2818">${[14,52,96,150,188,232,276].map(x=>`<rect x="${x}" y="${128+(x%3)*5}" width="8" height="3"/>`).join('')}</g>`,
+  cart:`<path d="M90 100 L104 107" ${AGO} stroke-width="5" stroke-linecap="round"/><path d="M90 100 L104 107" stroke="#a8743e" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="22" y="78" width="70" height="26" rx="3" fill="#8a5a32" ${AGO}/><path d="M24 86 H90 M24 95 H90" stroke="#6b4226" stroke-width="2"/>
+    <ellipse cx="44" cy="74" rx="16" ry="10" fill="#d8c08a" ${AGO}/><ellipse cx="68" cy="72" rx="13" ry="9" fill="#c9a46a" ${AGO}/><path d="M38 68 l4 3 M64 66 l3 3" stroke="#8a6a3a" stroke-width="2"/>
+    <circle cx="44" cy="112" r="16" fill="#5a3820" ${AGO}/><circle cx="44" cy="112" r="10" fill="none" stroke="#8a5a32" stroke-width="2"/><path d="M44 96 V128 M28 112 H60 M33 101 L55 123 M55 101 L33 123" stroke="#8a5a32" stroke-width="2"/><circle cx="44" cy="112" r="3" fill="#2b1b22"/>`,
+  wall:`<rect width="300" height="150" fill="#241d36"/><g stroke="#1a1428" stroke-width="2">${[18,36,54,72,90,108].map((y,i)=>`<path d="M0 ${y} H300"/>`+Array.from({length:11},(_,k)=>`<path d="M${k*30+(i%2)*15} ${y-18} V${y}"/>`).join('')).join('')}</g><rect y="126" width="300" height="24" fill="#1a1428"/><rect y="124" width="300" height="3" fill="#3a3050"/>`,
+  lamp:x=>`<path d="M${x} 126 V64" ${AGO} stroke-width="5"/><path d="M${x} 126 V64" stroke="#4a4a5a" stroke-width="2.4"/><path d="M${x-9} 50 h18 l-4 14 h-10z" fill="#ffd36a" ${AGO}/><path d="M${x-11} 50 h22 l-11 -8z" fill="#3a3050" ${AGO}/>`,
+  crowd:`<svg viewBox="0 0 300 60" preserveAspectRatio="none">${[20,58,96,204,242,280].map((x,i)=>`<circle cx="${x}" cy="${26+(i%2)*4}" r="11" fill="#1d1830"/><rect x="${x-15}" y="${36+(i%2)*4}" width="30" height="30" rx="10" fill="#1d1830"/>`).join('')}</svg>`,
+  drum:`<svg class="ag-drum" viewBox="0 0 60 70"><path d="M8 10 Q30 2 52 10 L40 40 Q36 46 38 64 H22 Q24 46 20 40 Z" fill="#c75b3d" ${AGO}/><path d="M14 20 L46 20 M19 31 L41 31" stroke="#ffd36a" stroke-width="2.4"/><path d="M24 50 h12 M23 58 h14" stroke="#8a3a22" stroke-width="2"/><ellipse cx="30" cy="10" rx="22" ry="6" fill="#f3e2b0" ${AGO}/></svg>`,
+  door:`<rect x="104" y="24" width="92" height="98" fill="#1a1428"/><rect x="110" y="30" width="80" height="92" fill="#8a5a32" ${AGO}/><path d="M130 30 V122 M150 30 V122 M170 30 V122" stroke="#6b4226" stroke-width="2.4"/>
+    <rect x="114" y="76" width="10" height="18" fill="#5a5a6a" ${AGO}/><rect x="176" y="76" width="10" height="18" fill="#5a5a6a" ${AGO}/><rect y="118" width="300" height="32" fill="#2a1e14"/><rect y="118" width="300" height="3" fill="#4a3424"/>`,
+  bar:`<rect x="104" y="80" width="92" height="10" rx="2" fill="#c9a46a" ${AGO}/><path d="M112 85 H188" stroke="#a8743e" stroke-width="2"/>`,
+  hands:`<g fill="#cfe8ff" opacity=".85" stroke="#7aa0c8" stroke-width="1.5"><path d="M196 46 q10 -4 16 2 q-4 4 -2 8 q-8 2 -14 -2z"/><path d="M196 100 q12 -2 16 4 q-6 3 -4 8 q-8 0 -12 -4z"/><path d="M190 30 q6 -8 14 -4 q-2 5 2 9 q-8 1 -16 -1z"/></g>`,
+  plaque:`<rect x="3" y="3" width="34" height="34" rx="5" fill="#6b4226" stroke="#2b1b22" stroke-width="2.4"/><rect x="7" y="7" width="26" height="26" rx="3" fill="#8a5a32"/><g fill="#5a3820"><circle cx="8" cy="8" r="1.4"/><circle cx="32" cy="8" r="1.4"/><circle cx="8" cy="32" r="1.4"/><circle cx="32" cy="32" r="1.4"/></g>`,
+  bush:`<path d="M4 36 Q0 22 10 18 Q10 6 22 8 Q28 0 36 8 Q48 8 46 20 Q50 30 44 36Z" fill="#2f5b3a" stroke="#15301c" stroke-width="2.4"/><path d="M10 30 Q14 26 18 30 M28 32 Q32 28 36 32" stroke="#3f7a4a" stroke-width="2" fill="none"/>`};
+const AGS={moon:'<path d="M24 9 a11 11 0 1 0 6 19 a9 9 0 1 1 -6 -19z"/>',star:'<path d="M20 7 l3.6 8 8.4.8 -6.4 5.6 2 8.4 -7.6 -4.6 -7.6 4.6 2 -8.4 -6.4 -5.6 8.4 -.8z"/>',
+  eye:'<path d="M7 20 Q20 8 33 20 Q20 32 7 20z"/><circle cx="20" cy="20" r="4.4" fill="#5a3820"/>',hand:'<path d="M14 32 V18 a2 2 0 0 1 4 0 V12 a2 2 0 0 1 4 0 v6 a2 2 0 0 1 4 0 v3 a2 2 0 0 1 4 0 v5 q0 6 -6 6z"/>',
+  sun:'<circle cx="20" cy="20" r="6"/><path d="M20 7v5M20 28v5M7 20h5M28 20h5M11 11l3.4 3.4M25.6 25.6L29 29M29 11l-3.4 3.4M14.4 25.6L11 29" stroke-width="2.6" stroke-linecap="round"/>',
+  fish:'<path d="M8 20 Q18 10 28 18 L34 12 V28 L28 22 Q18 30 8 20z"/><circle cx="14" cy="19" r="1.6" fill="#5a3820"/>'};
+function actPanel(stat,label){const g=ACT_G[stat]||ACT_G['قوة'];const el=document.createElement('div');el.id='actG';el.style.direction=EN?'ltr':'rtl';
   el.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${T(ae(g[0],g[1]))}</b><span class="ag-st">${esc(EN?((typeof L10N_W!=='undefined'&&L10N_W.get(stat))||stat):stat)}</span></div>
     <div class="ag-l">${esc(label||'')}</div><div class="ag-how">${T(ae(g[2],g[3]))}</div><div class="ag-a" id="agA"></div><div class="ag-r" id="agR"></div>
     <div class="ag-b"><button class="btn ghost small" id="agSkip">${T(ae('{سيبها|سيبيها} للحظ','Leave it to luck'))}</button><button class="btn ghost small" id="agBack">${ae('رجوع','Back')}</button></div></div>`;
@@ -51057,24 +51082,54 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
     setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),200);res({bonus:b})},window.__actFast?40:900)};
   el.querySelector('#agSkip').onclick=()=>end(0);el.querySelector('#agBack').onclick=()=>end(0,true);
   const auto=window.__actAuto;   /* tests: a number = the bonus to get */
-  if(stat==='قوة'){A.innerHTML=`<div class="ag-bar"><i id="agF"></i></div><button class="ag-big" id="agT">${ae('شد!','Pull!')}</button>`;let n=0,t0=0;const need=14,f=A.querySelector('#agF');
-    A.querySelector('#agT').onpointerdown=e=>{e.preventDefault();if(!t0){t0=1;tm.push(setTimeout(()=>end(n>=need?2:n>=need*.6?1:0),2600))}n++;f.style.width=Math.min(100,n/need*100)+'%';try{SFX.tick(300+n*25);vib(8)}catch(x){}if(n>=need)end(2)}}
-  else if(stat==='خفة'||stat==='حضور'){const ring=stat==='حضور';
-    A.innerHTML=ring?`<div class="ag-ring"><i id="agC"></i><b>${T(ae('دلوقتي','Now'))}</b></div><button class="ag-big" id="agT">${ae('دوس','Tap')}</button>`:`<div class="ag-sw"><i class="g"></i><i class="m" id="agM"></i></div><button class="ag-big" id="agT">${ae('دوس','Tap')}</button>`;
-    const t0=performance.now(),P=ring?1500:1100;let v=0;const m=A.querySelector(ring?'#agC':'#agM');
-    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;if(ring){v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`}else{v=t<.5?t*2:2-t*2;m.style.left=(v*100).toFixed(1)+'%'}},16));
-    const score=()=>ring?Math.abs(v*1.65+.35-1):Math.abs(v-.5);
-    A.querySelector('#agT').onclick=()=>{const d=score();end(ring?(d<.08?2:d<.22?1:0):(d<.06?2:d<.14?1:-1))};tm.push(setTimeout(()=>end(ring?0:-1),5200))}
-  else if(stat==='تحمّل'){A.innerHTML=`<div class="ag-bar"><i id="agF"></i></div><button class="ag-big" id="agT">${T(ae('{امسك|امسكي}','Hold'))}</button>`;const f=A.querySelector('#agF'),bt=A.querySelector('#agT');let t0=0,h=0;
-    bt.onpointerdown=e=>{e.preventDefault();t0=performance.now();bt.classList.add('on');h=setInterval(()=>{const p=(performance.now()-t0)/2400;f.style.width=Math.min(100,p*100)+'%';el.classList.toggle('ag-shk',p>.5);if(p>=1){clearInterval(h);end(2)}},30);iv.push(h)};
-    const up=()=>{if(!t0||over)return;clearInterval(h);const p=(performance.now()-t0)/2400;end(p>=.7?1:0)};bt.onpointerup=up;bt.onpointerleave=up;bt.onpointercancel=up}
-  else{const mem=stat==='ذكاء',sg=ACT_SG.slice().sort(()=>Math.random()-.5).slice(0,mem?4:5);A.innerHTML=`<div class="ag-sg">${sg.map((s,i)=>`<button class="ag-s" data-i="${i}">${s}</button>`).join('')}</div>`;
+  const h=S.hero;let me='';try{me=PX.body(h)}catch(x){}
+  const sc=(inner,cls)=>`<button class="ag-sc ${cls||''}" id="agT" aria-label="${esc(ae('العب','Play'))}">${inner}</button>`;
+  if(stat==='قوة'){
+    /* a cart stuck in the mud and a twisted rope from it to your hands: every tap pulls it closer */
+    A.innerHTML=sc(`<svg class="ag-sv" viewBox="0 0 300 150" preserveAspectRatio="xMidYMax meet">${AGD.night}${AGD.ground}
+      <ellipse cx="62" cy="128" rx="58" ry="9" fill="#3a2414"/><ellipse cx="62" cy="126" rx="46" ry="5" fill="#4e3018"/>
+      <g id="agObj">${AGD.cart}</g><path id="agRope" class="ag-rope" d=""/><path id="agRope2" class="ag-rope2" d=""/></svg>
+      <span class="ag-me ag-pull" id="agMe">${me}</span><span class="ag-tip">${T(ae('{دوس|دوسي} بسرعة!','Tap fast!'))}</span>`,'ag-str');
+    let n=0,t0=0;const need=14,obj=A.querySelector('#agObj'),r1=A.querySelector('#agRope'),r2=A.querySelector('#agRope2'),mEl=A.querySelector('#agMe');
+    const draw=j=>{const p=Math.min(1,n/need),x=p*118,hx=x+92,hy=106,ex=236,ey=98,sag=(1-p)*14+(j||0);
+      obj.setAttribute('transform',`translate(${x.toFixed(1)} 0) rotate(${(Math.sin(n)*2*(1-p)).toFixed(1)} ${60+x} 110)`);
+      const d=`M${hx} ${hy} Q${((hx+ex)/2).toFixed(1)} ${(Math.max(hy,ey)+sag).toFixed(1)} ${ex} ${ey}`;r1.setAttribute('d',d);r2.setAttribute('d',d)};draw(0);
+    A.querySelector('#agT').onpointerdown=e=>{e.preventDefault();if(over)return;if(!t0){t0=1;tm.push(setTimeout(()=>end(n>=need?2:n>=need*.6?1:0),2600))}n++;draw(-4);
+      setTimeout(()=>{if(!over)draw(0)},90);mEl.classList.remove('yank');void mEl.offsetWidth;mEl.classList.add('yank');try{SFX.tick(300+n*25);vib(8)}catch(x){}if(n>=need){A.querySelector('.ag-sc').classList.add('done');end(2)}}}
+  else if(stat==='خفة'){
+    /* an alley with a lamp on each side; you slide along the wall, tap while you are in the dark between the lamps */
+    A.innerHTML=sc(`<svg class="ag-sv" viewBox="0 0 300 150" preserveAspectRatio="none">${AGD.wall}
+      <defs><radialGradient id="agLm"><stop offset="0" stop-color="#ffd36a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd36a" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="40" cy="96" rx="96" ry="70" fill="url(#agLm)"/><ellipse cx="260" cy="96" rx="96" ry="70" fill="url(#agLm)"/>
+      ${AGD.lamp(40)}${AGD.lamp(260)}<rect x="126" y="40" width="48" height="104" fill="#000" opacity=".35"/>
+      <path d="M150 52l3 6 6 1-5 4 1 6-5-3-5 3 1-6-5-4 6-1z" fill="#7a86b8" opacity=".6"/></svg>
+      <span class="ag-me ag-sneak" id="agM">${me}</span><span class="ag-tip">${T(ae('{استخبى|استخبي} في الضلمة','Hide in the dark'))}</span>`,'ag-dex');
+    const t0=performance.now(),P=1100;let v=0;const m=A.querySelector('#agM');let last=0;
+    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=t<.5?t*2:2-t*2;m.style.left=(6+v*88).toFixed(1)+'%';m.classList.toggle('flip',t>=.5);const lit=Math.abs(v-.5)>.08;m.classList.toggle('lit',lit)},16));
+    A.querySelector('#agT').onclick=()=>{const d=Math.abs(v-.5);m.classList.add('hid');end(d<.06?2:d<.14?1:-1)};tm.push(setTimeout(()=>end(-1),5200))}
+  else if(stat==='حضور'){
+    /* a darbuka; a ring closes on it, hit the drum as the ring touches its skin */
+    A.innerHTML=sc(`<div class="ag-stage">${AGD.crowd}</div><div class="ag-ring"><i id="agC"></i>${AGD.drum}</div><span class="ag-tip">${T(ae('{اضرب|اضربي} لما الدايرة تقفل','Hit it as the ring closes'))}</span>`,'ag-pre');
+    const t0=performance.now(),P=1500;let v=0;const m=A.querySelector('#agC');
+    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`},16));
+    A.querySelector('#agT').onclick=()=>{const d=Math.abs(v*1.65+.35-1);A.querySelector('.ag-ring').classList.add('hit');try{SFX.tick(180)}catch(x){}end(d<.08?2:d<.22?1:0)};tm.push(setTimeout(()=>end(0),5200))}
+  else if(stat==='تحمّل'){
+    /* something pushes on the door; hold, and the wooden bar slides into its latch */
+    A.innerHTML=sc(`<svg class="ag-sv" viewBox="0 0 300 150" preserveAspectRatio="xMidYMax meet">${AGD.night}${AGD.door}<g id="agBar">${AGD.bar}</g>
+      <g class="ag-hands" id="agHs">${AGD.hands}</g></svg><span class="ag-me ag-hold" id="agMe">${me}</span><span class="ag-tip">${T(ae('{امسك|امسكي} وما {تسيبش|تسيبيش}','Hold on, don\'t let go'))}</span>`,'ag-end');
+    const bt=A.querySelector('#agT'),bar=A.querySelector('#agBar'),hs=A.querySelector('#agHs');let t0=0,hd=0;const set=p=>{bar.setAttribute('transform',`translate(${(-(1-p)*96).toFixed(1)} 0)`);hs.style.opacity=(1-p*.8).toFixed(2)};set(0);
+    bt.onpointerdown=e=>{e.preventDefault();if(over)return;t0=performance.now();bt.classList.add('on');hd=setInterval(()=>{const p=(performance.now()-t0)/2400;set(Math.min(1,p));el.classList.toggle('ag-shk',p>.5&&p<1);if(p>=1){clearInterval(hd);bt.classList.add('done');end(2)}},30);iv.push(hd)};
+    const up=()=>{if(!t0||over)return;clearInterval(hd);bt.classList.remove('on');const p=(performance.now()-t0)/2400;end(p>=.7?1:0)};bt.onpointerup=up;bt.onpointerleave=up;bt.onpointercancel=up}
+  else{const mem=stat==='ذكاء',keys=Object.keys(AGS).sort(()=>Math.random()-.5).slice(0,mem?4:5);
+    /* ذكاء: carved wooden plaques light up in turn; حكمة: eyes in the bushes, one pair blinks */
+    A.innerHTML=`<div class="ag-sg ${mem?'ag-pl':'ag-bu'}">${keys.map((k,i)=>`<button class="ag-s" data-i="${i}" aria-label="${i+1}">${mem?`<svg viewBox="0 0 40 40">${AGD.plaque}<g class="ag-gl">${AGS[k]}</g></svg>`:`<svg viewBox="0 0 48 40">${AGD.bush}<g class="ag-ey"><ellipse cx="17" cy="20" rx="3.4" ry="2.4"/><ellipse cx="31" cy="20" rx="3.4" ry="2.4"/></g></svg>`}</button>`).join('')}</div>
+      <span class="ag-tip">${T(mem?ae('{افتكر|افتكري} الترتيب','Remember the order'):ae('{بص|بصي} كويس','Look closely'))}</span>`;
     const bs=[...A.querySelectorAll('.ag-s')];bs.forEach(b=>b.disabled=true);
     if(mem){const seq=[0,1,2].map(()=>Math.floor(Math.random()*4));let k=0;
       seq.forEach((i,j)=>{tm.push(setTimeout(()=>{bs[i].classList.add('lit');try{SFX.tick(600+j*150)}catch(x){}},400+j*650));tm.push(setTimeout(()=>bs[i].classList.remove('lit'),400+j*650+450))});
       let right=0;tm.push(setTimeout(()=>{bs.forEach(b=>b.disabled=false);bs.forEach(b=>b.onclick=()=>{if(+b.dataset.i===seq[k])right++;b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),150);k++;if(k>=3)end(right===3?2:right===2?1:0)})},400+3*650))}
     else{const w=Math.floor(Math.random()*bs.length);tm.push(setTimeout(()=>{bs[w].classList.add('lit');try{SFX.tick(1200)}catch(x){}},700+Math.random()*900));
-      tm.push(setTimeout(()=>{bs.forEach(b=>b.classList.remove('lit'));bs.forEach(b=>{b.disabled=false;b.onclick=()=>end(+b.dataset.i===w?2:0)})},1900))}}
+      tm.push(setTimeout(()=>{bs.forEach(b=>b.classList.remove('lit'));bs.forEach(b=>{b.disabled=false;b.onclick=()=>{b.classList.add('hit');end(+b.dataset.i===w?2:0)}})},1900))}}
   if(typeof auto==='number')tm.push(setTimeout(()=>end(auto),60))})}
 {const r0=rollCheck;rollCheck=async function(stat,opt){opt=opt||{};let skip=!actOn()||!!S.combat||S.screen==='combat'||!!S.training||!opt.cancel||opt.mod!==undefined||!ACT_G[stat]||ACT.on;
   try{if(typeof CO!=='undefined'&&CO&&CO.code&&CO.room)skip=true}catch(e){}
@@ -51087,7 +51142,7 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
   try{return r0.call(this,stat,Object.assign({},opt,{label:(opt.label||'')+` · ${ae('حركتك','your move')} ${b>0?'+':'−'}${Math.abs(b)}`}))}
   finally{if(had)st[stat]=v0;else delete st[stat]}}}
 (function(){const s=document.createElement('style');s.textContent=`
-#actG{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both;direction:rtl}
+#actG{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both}
 #actG.out{animation:agOut .2s ease-in both}@keyframes agIn{from{opacity:0}}@keyframes agOut{to{opacity:0}}
 .ag-box{width:min(100%,480px);box-sizing:border-box;padding:16px 16px 20px;border-radius:20px 20px 0 0;background:#1a1530;border-top:2px solid #f2c14e;box-shadow:0 -10px 30px #000a;display:flex;flex-direction:column;gap:10px;animation:agUp .3s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes agUp{from{transform:translateY(60%)}}
@@ -51105,7 +51160,29 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
 .ag-s.lit{background:#ffd36a;color:#2b1b22;border-color:#fff;box-shadow:0 0 18px #ffd36a}.ag-s.hit{transform:scale(.9)}.ag-s:disabled{cursor:default}
 .ag-r{min-height:28px;text-align:center;font-size:20px}.ag-up{color:#7fd88a}.ag-dn{color:#e2483f}.ag-eq{color:#e9dcc4}
 .ag-b{display:flex;gap:8px;justify-content:space-between}.ag-b .btn{min-height:44px;flex:1}
-#actG.ag-shk .ag-box{animation:agShk .08s linear infinite alternate}@keyframes agShk{to{transform:translate(1px,-1px)}}`;document.head.appendChild(s)})();
+#actG.ag-shk .ag-box{animation:agShk .08s linear infinite alternate}@keyframes agShk{to{transform:translate(1px,-1px)}}
+.ag-sc{position:relative;display:block;width:100%;height:178px;padding:0;border:3px solid #2b1b22;border-radius:14px;overflow:hidden;background:#12101e;box-shadow:0 0 0 2px #f2c14e55,inset 0 0 30px #000a;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;font:inherit;color:#fff}
+.ag-sv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ag-tip{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:2px 10px;border-radius:10px;background:#0b0d1ccc;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none}
+.ag-me{position:absolute;bottom:22px;width:46px;height:62px;pointer-events:none}.ag-me svg{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 3px 0 #0008)}
+.ag-pull{right:7%;transform-origin:50% 100%;transform:rotate(-8deg)}.ag-pull svg{transform:scaleX(-1)}
+.ag-pull.yank{animation:agYank .16s ease-out}@keyframes agYank{40%{transform:rotate(-20deg) translateX(6px)}}
+.ag-rope{fill:none;stroke:#6b4226;stroke-width:6;stroke-linecap:round}.ag-rope2{fill:none;stroke:#d8b07a;stroke-width:3;stroke-dasharray:4 4;stroke-linecap:round}
+.ag-str.done .ag-sv{animation:agDust .5s ease-out}@keyframes agDust{30%{filter:brightness(1.4)}}
+.ag-sneak{bottom:22px;left:6%;transform:translateX(-50%);transition:filter .1s}.ag-sneak.flip svg{transform:scaleX(-1)}
+.ag-sneak.lit svg{filter:drop-shadow(0 0 6px #ffd36a) brightness(1.15)}.ag-sneak:not(.lit) svg{filter:brightness(.3) drop-shadow(0 0 2px #000)}.ag-sneak.hid{opacity:.55}
+.ag-pre{display:grid;place-items:center}.ag-stage{position:absolute;left:0;right:0;bottom:0;height:60px;opacity:.9}.ag-stage svg{width:100%;height:100%}
+.ag-pre .ag-ring{width:120px;height:120px;position:relative;display:grid;place-items:center}.ag-drum{width:64px;height:74px;filter:drop-shadow(0 4px 0 #0008)}
+.ag-pre .ag-ring i{position:absolute;inset:6px;border-radius:50%;border:4px solid #f2c14e;box-shadow:0 0 12px #f2c14e}
+.ag-pre .ag-ring.hit .ag-drum{animation:agHit .2s ease-out}@keyframes agHit{50%{transform:scale(.88)}}
+.ag-hold{left:14%}
+.ag-end.on .ag-hold{animation:agShk .08s linear infinite alternate}.ag-hands{animation:agPush .5s ease-in-out infinite alternate}@keyframes agPush{to{transform:translateX(-4px)}}
+.ag-sg.ag-pl .ag-s,.ag-sg.ag-bu .ag-s{width:64px;height:60px;padding:2px;border:0;background:none;box-shadow:none;border-radius:10px}
+.ag-sg .ag-s svg{width:100%;height:100%;display:block}
+.ag-pl .ag-gl{fill:#4a2c18;stroke:#4a2c18;transition:fill .15s}.ag-pl .ag-s.lit .ag-gl{fill:#ffd36a;stroke:#ffd36a;filter:drop-shadow(0 0 4px #ffd36a)}.ag-pl .ag-s.lit{background:#ffd36a33;box-shadow:0 0 16px #ffd36a}
+.ag-bu .ag-ey{fill:#0b1a10;transition:fill .1s}.ag-bu .ag-s.lit .ag-ey{fill:#ffe36a;filter:drop-shadow(0 0 3px #ffe36a)}
+.ag-sg .ag-s.hit{transform:scale(.9)}.ag-sg+.ag-tip{position:static;transform:none;display:block;text-align:center;margin:4px auto 0;width:max-content}
+#actG .ag-a{min-height:178px}`;document.head.appendChild(s)})();
 /* ---------- 6.40 (acc1, Twister 13:02) · update 3: talking is a comic ----------
    A story scene was a paragraph and a list of long buttons. Now:
    - The paragraph is cut into comic panels: what happens sits in yellow caption boxes, and every «quoted line» is a speech
