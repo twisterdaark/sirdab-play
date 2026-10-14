@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.52',d:'14 أكتوبر',add:['«سرداب الطاحونة»: أول سرداب بأوض. سبع أوض تحت الطاحونة القديمة {بتمشي|بتمشي} فيهم أوضة أوضة على خريطة: {دوس|دوسي} على الأوضة اللي جنبك وبعدين «ادخل». بتلاقيه في «الخلا» جنب المأوى أو من «الدهاليز».','جوه السرداب: جرار {بتفتكر|بتفتكري} نورها بالترتيب، عتلات {بتظبطها|بتظبطيها} بإيدك عشان الباب الحديد يتفتح، فيران {تقدر|تقدري} تتسحب من جنبها وعينها مغمضة، خزنة فيها فلوس وتمثال (لو {خدته|خدتيه} الغول بيتعصب ويبقى أقوى)، والغول في الآخر.','مكانك محفوظ: لو {طلعت|طلعتي} ورجعت {بتلاقي|بتلاقي} نفسك في نفس الأوضة. لو {وقعت|وقعتي} {بتصحى|بتصحي} عند المدخل والسرداب بيرجع من الأول وبيضيع منك شوية فلوس. ولما {تطلع|تطلعي} للنور السرداب بيتغيّر المرة الجاية.','اتصلح: لما {بتهزم|بتهزمي} وحش كبير واللعبة بالإنجليزي، كان بيظهر كلام عربي في الآخر.']},
 {v:'6.51',d:'14 أكتوبر',add:['«حال الغيط» تحت الأرض: سطر لكل أرض فيه الزرعة، حالها (بتكبر، عطشانة، اتسقت، اتاكل منها، جاهزة، محتاجة حرت) والوقت الفاضل من وقتها كله، والعداد ماشي قدامك.','«كل زرعة بتاخد قد إيه»: جدول بكل الزرع، وقت كل واحدة على مستواك، سعر التقاوي، المحصول، والمستوى اللي بتتفتح فيه.','الحرت لسه بإيدك، بس فيه زرار يخليه «تلقائي» والأرض الفاضية بتتحرت لوحدها. أو {أجّر|أجّري} عامل على شغلانة «الحرت» الجديدة من «العمال»، وفيه عامل جديد اسمه زكي شغلته الحرت.']},
 {v:'6.50.1',d:'14 أكتوبر',add:['لما {بتاخد|بتاخدي} ميزة «الكارت الرابع» من الحكواتي، الليلة كانت بتفتح من غير ولا اختيار. اتصلحت: المحطات الأربعة بتبان على الطريق، ولو حصل أي عطل الاختيارات بترجع تبان كقايمة.']},
 {v:'6.50',d:'14 أكتوبر',add:['المنجم من الدور 6 وتحت بقى فيه مخاطر {بتردّ|بتردّي} عليها بإيدك: صخرة بتقع على ناحية ({اطلع|اطلعي} الناحية التانية)، وغاز من الشقوق من الدور 9 ({اكتم|اكتمي} نفسك {وامسك|وامسكي} الزرار لحد ما يعدّي)، ومن الدور 12 عداد «الهوا» بيقل مع كل صخرة، ولما يخلص {انفخ|انفخي} في المنفاخ بسرعة. لو فاتتك بتخسر صحة.','«عِرق نادر» من الدور 6: تلات لمعات بتنوّر في الصخر، {المسهم|المسيهم} كلهم بسرعة {وتطلّع|وتطلّعي} أحسن حجر في الدور. الفيروز والزمرد في الصخر بقوا أقل شوية عشان العِرق بقى طريقهم.','الدور بيكتبلك المخاطر اللي فيه تحت في الأهداف، وعلامة ⚠ جنب رقم الدور.','إعلانات المنجم بقت بلون الحجر نفسه: الزمرد أخضر، والدهب دهبي، والفضة فضي، والفيروز فيروزي.','قدرتين جداد لكل نوع (مستوى 11 و13): المحارب «ضربة كاسحة» و«ثبّت رجلك»، الحرامي «طعنة في الضلمة» و«اختفاء»، الساحر «نار ماسكة» و«مراية»، المعالج «نور الفجر» و«بركة»، المصارع «كتفة» و«نفَس المصارع»، وابن البلد «فهلوة» و«زفّة».','الزعماء ليهم مراحل: تحت النص بيتجننوا، وتحت الربع آخر نفس. في المراحل دي الزعيم بيلم نفسه لضربة كبيرة وناحية من الشاشة بتحمر: {اسحب|اسحبي} للناحية التانية {وتفاداها|وتفاديها} كلها، ولو اتأخرت بتيجي تقيلة.']},
@@ -9734,7 +9735,7 @@ function N_mins(ms){return Math.max(1,Math.round((ms||0)/60000))}
     if(N_on()&&S.night.phase!=='camp'&&(id===N_act().boss||(N_act().also||[]).includes(id))){const N=S.night;if(N.phase!=='boss'){N.phase='boss';N.opt={};N.card=null}N.at=id;N_save()}}
   return g0(id)}}
 /* a foe with boss:1 is a boss (boss music, a boss chest, its name on the loot screen); only النداهة ends the night */
-function N_bossWin(foes){const b=(foes||[]).find(f=>f.art==='nadaha'||f.boss);return b?`${b.name} ${FF(b,'اتهزم','اتهزمت')}`:''}
+function N_bossWin(foes){const b=(foes||[]).find(f=>f.art==='nadaha'||f.boss);return b?`${b.name} ${EN?'is beaten':FF(b,'اتهزم','اتهزمت')}`:''}
 /* fights: a card that ends in a fight counts as a fight; new monsters get loot; the Naddaha is stronger at the end of a long night */
 function N_loot(f){if(!f||!f.art||LOOT[f.art])return;const hp=f.hp||6,d=f.dmg||1,boss=!!f.boss;
   LOOT[f.art]={xp:Math.max(1,Math.round((hp+2*d)/4)),m:boss?[Math.round(hp*3.5),Math.round(hp*4.5)]:[Math.max(3,2*hp-1),4*hp-2],chest:boss?1:hp>7?.3:.15}}
@@ -52314,6 +52315,169 @@ function fsMount(h){const old=$('#fsCard');const html=fsHTML(h);if(old)old.outer
 .fs-c{display:grid;grid-template-columns:28px 1fr 64px 1.1fr;gap:6px;align-items:center;padding:4px 6px;border-radius:10px;background:#ffffff06;font-size:13px}
 .fs-c>span:nth-child(3){font-variant-numeric:tabular-nums;color:#f3d48f;font-weight:800}.fs-c small{font-size:11px;color:var(--dim);text-align:end}
 .fs-c.hd{background:none;font-size:11px;color:var(--dim)}.fs-c.hd b{font-weight:700}.fs-c.lk{opacity:.5}`;document.head.appendChild(s)})();
+/* ---------- 6.52 (acc1, Roadmap R19 / N08): «سرداب الطاحونة», the first dungeon of linked rooms ----------
+   A place on «الخلا» (and a card in «الدهاليز»). Seven rooms on a map: المدخل → two ways (a puzzle room and a fight room, they swap
+   sides every run) → the iron door (levers) → the treasure (a choice) and the ghoul's room (a boss with phases) → the way out.
+   - The map: tap a room next to you to see it, then «ادخل» (a wrong tap never walks in). A cleared room never comes back in the
+     same run; you can walk back through it.
+   - Your place is saved (h.dg): leave any time and come back to the same room. Fall in a fight: you wake at the gate, the run starts
+     over (5% of your money is lost in the dark); what you took stays yours. The way out pays and starts a new run (other order,
+     other puzzle, other foes).
+   - By hand: the jars (repeat the order they light), sneaking past the bones (move only while the eye is shut), the levers (each pulls
+     its right-hand neighbour too). Choices show on the map: rats you sneaked past are still there; the idol makes the ghoul angrier.
+   Tests: window.__dg (off in test builds unless set); window.__dgAuto true/false answers the hand games. */
+const DGX={sel:null,busy:0};
+const dgOn=()=>!((window.__r||window.__t||window.__q||window.__y)&&!window.__dg);
+const DG_N=[['المدخل','The gate'],['أوضة الجرار','The jar room'],['أوضة العضم','The bone room'],['الباب الحديد','The iron door'],['الخزنة','The vault'],['أوضة الغول','The ghoul\'s room'],['المخرج','The way out']];
+const DG_POS=[[50,90],[20,66],[80,66],[50,44],[20,20],[80,20],[50,5]];
+const DG_LINK=[[1,2],[0,3],[0,3],[1,2,4,5],[3],[3,6],[5]];
+const DG_FOES={rats:[{name:'فار السرداب',art:'d_rat',hp:5,dmg:1,weak:['fire'],traits:['fast']},{name:'فار السرداب',art:'d_rat',hp:5,dmg:1,weak:['fire'],traits:['fast']}],
+  scorp:[{name:'العقربة',art:'d_scorp',hp:9,dmg:3,fem:1,weak:['fire','salt'],traits:['thick']}],
+  ghost:[{name:'روح الطحان',art:'d_ghost',hp:10,dmg:2,spirit:1,weak:['salt','incense'],traits:['vanish']}],
+  boss:[{name:'الغول',art:'mb_ghoul',hp:30,dmg:4,boss:1,weak:['iron'],traits:['thick']}],
+  boss2:[{name:'عسكري الباشا',art:'d_soldier',hp:22,dmg:4,spirit:1,boss:1,weak:['salt','iron'],traits:['vanish']}]};
+function dgNew(run,old){const r=Math.random,sw=r()<.5,jar=Array.from({length:Math.min(6,3+Math.floor((run-1)/2))},()=>Math.floor(r()*4));
+  let lv;do{lv=[0,1,2].map(()=>r()<.5?1:0)}while(lv.every(x=>!x));
+  return {run,at:0,seen:{0:1},done:{0:1},sn:{},idol:0,sw:sw?1:0,jar,lv,lvS:[0,0,0],fz:r()<.5?'rats':'scorp',bz:run%3===2?'boss2':'boss',got:old&&old.got||{m:0,x:0,runs:run-1,falls:old&&old.got?old.got.falls|0:0}}}
+function dgFix(h){let D=h.dg;if(!D||typeof D!=='object'||!Array.isArray(D.lv)){D=h.dg=dgNew(1,D)}D.seen=D.seen||{0:1};D.done=D.done||{0:1};D.sn=D.sn||{};D.got=D.got||{m:0,x:0,runs:0,falls:0};return D}
+/* what each room is this run: 1 and 2 swap the puzzle and the fight */
+const dgKind=(D,i)=>i===1?(D.sw?'fight':'jars'):i===2?(D.sw?'jars':'fight'):['gate',null,null,'door','vault','boss','exit'][i];
+const dgOpen=(D,i)=>i===4||i===5?!!D.done[3]:i===6?!!D.done[5]:true;
+const dgNm=i=>DG_N[i][EN?1:0];
+function dgHere(D){const k=dgKind(D,D.at);return k}
+/* ---- the map ---- */
+const DG_IC={gate:'🚪',jars:'🏺',fight:'💀',door:'⛓',vault:'💰',boss:'👹',exit:'🌙'};
+function dgMap(h,D){const W=100,H=100,lines=[];DG_LINK.forEach((L,i)=>L.forEach(j=>{if(j>i)lines.push([i,j])}));
+  const ln=lines.map(([a,b])=>{const A=DG_POS[a],B=DG_POS[b],on=(D.seen[a]||D.seen[b]);return `<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" class="dg-ln${on?' on':''}"/>`}).join('');
+  const nodes=DG_POS.map(([x,y],i)=>{const k=dgKind(D,i),seen=D.seen[i]||DG_LINK[D.at].includes(i)||i===D.at,done=!!D.done[i],lock=!dgOpen(D,i),here=i===D.at,near=DG_LINK[D.at].includes(i),sel=DGX.sel===i;
+    const ic=lock?'🔒':seen?DG_IC[k]:'?',tag=D.sn[i]?`<i class="dg-tg">${ae('الفيران لسه هنا','rats still here')}</i>`:i===5&&D.idol?`<i class="dg-tg r">${ae('الغول متعصب','the ghoul is angry')}</i>`:'';
+    return `<button class="dg-n${here?' here':''}${done&&!here?' done':''}${near?' near':''}${sel?' sel':''}${lock?' lock':''}" data-dg="${i}" style="left:${x}%;top:${y}%"><span class="ic">${ic}</span>${done&&!here&&i?'<i class="ok">✓</i>':''}<b>${seen?esc(dgNm(i)):(EN?'?':'؟')}</b>${tag}</button>`}).join('');
+  const me=PX&&PX.body?`<span class="dg-me" style="left:${DG_POS[D.at][0]}%;top:${DG_POS[D.at][1]}%">${PX.body(h)}</span>`:'';
+  return `<div class="dg-map"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="dg-svg">${ln}</svg>${nodes}${me}</div>`}
+/* ---- the room card under the map ---- */
+function dgRoom(h,D){const i=D.at,k=dgKind(D,i),done=D.done[i];
+  if(DGX.sel!=null&&DGX.sel!==i){const j=DGX.sel,kj=dgKind(D,j),lock=!dgOpen(D,j);
+    const what=lock?(j===6?ae('بيتفتح بعد الغول','Opens after the ghoul'):ae('ورا الباب الحديد','Behind the iron door')):D.done[j]?ae('خلصانة: تعدّي منها بس','Cleared: you just pass through'):D.seen[j]?DG_TX[kj][1]():ae('مش عارف فيها إيه لسه','You don\'t know what is in there yet');
+    return `<div class="card dg-rc"><div class="dg-rh"><span class="ic">${lock?'🔒':DG_IC[kj]}</span><b>${esc(dgNm(j))}</b></div><div class="tw-sm">${what}</div>
+      <div class="row"><button class="btn" id="dgIn" ${lock?'disabled':''}>${T(ae('{ادخل|ادخلي}','Go in'))}</button><button class="btn ghost" id="dgNo">${ae('لأ','No')}</button></div></div>`}
+  if(done)return `<div class="card dg-rc"><div class="dg-rh"><span class="ic">${DG_IC[k]}</span><b>${esc(dgNm(i))}</b></div><div class="tw-sm">${i===0?T(ae('{دوس|دوسي} على أوضة جنبك عشان {تشوفها|تشوفيها}.','Tap a room next to you to look at it.')):ae('الأوضة دي خلصانة.','This room is done.')}</div>
+    ${i===0?`<div class="row"><button class="btn ghost" id="dgRest">${ae('استريح (مجهود 1)','Rest (1 effort)')}</button><button class="btn ghost" id="dgOut">${T(ae('{اطلع|اطلعي} برا','Leave'))}</button></div>`:`<button class="btn ghost" id="dgOut">${T(ae('{اطلع|اطلعي} برا (مكانك محفوظ)','Leave (your place is kept)'))}</button>`}</div>`;
+  return `<div class="card dg-rc on"><div class="dg-rh"><span class="ic">${DG_IC[k]}</span><b>${esc(dgNm(i))}</b></div><div class="dg-tx">${DG_TX[k][0](D)}</div><div class="dg-acts">${DG_ACT[k](h,D)}</div></div>`}
+const DG_TX={
+  jars:[()=>T(ae('أربع جرار على رف. كل ما {تقرب|تقربي} واحدة بتنوّر وتطلع صوت. الطحان كان بيقفل بيها الطريق: {اعمل|اعملي} نفس الترتيب.','Four jars on a shelf. Each lights and hums as you come near. The miller locked the way with them: repeat the order.')),()=>ae('أوضة فيها جرار بتنوّر','A room of glowing jars')],
+  fight:[D=>D.fz==='rats'?T(ae('فيران قد القطط بتقرض في عضم قديم. لسه ما {شافوكش|شافوكيش}.','Cat-sized rats gnawing old bones. They haven\'t seen you yet.')):T(ae('عقربة قد الكف واقفة على كومة عضم، وديلها مرفوع.','A scorpion the size of a hand on a pile of bones, tail up.')),()=>ae('أوضة فيها عضم.. وحاجة بتتحرك','A room of bones.. and something moving')],
+  door:[D=>T(ae(`باب حديد عليه ٣ عتلات، ومحفور فوقه الشكل اللي يفتحه. كل عتلة {بتشدها|بتشديها} بتشد اللي على يمينها كمان.`,'An iron door with 3 levers, and the shape that opens it carved above. Each lever you pull pulls the one to its right too.')),()=>ae('باب حديد بعتلات','An iron door with levers')],
+  vault:[D=>T(ae('خزنة الطحان القديمة: فلوس متكومة، وفي النص تمثال دهب صغير. {حاسس|حاسة} إن حد بيبص عليك من أوضة الغول.','The miller\'s old vault: heaps of coins, and a small gold idol in the middle. You feel something watching from the ghoul\'s room.')),()=>ae('ريحة تراب وفلوس','Dust and the smell of coins')],
+  boss:[D=>D.bz==='boss2'?T(ae(`عسكري من أيام الباشا واقف قدام الطريق لبرا، وبيلمع في الضلمة.${D.idol?' {شاف|شافت} التمثال معاك واتعصب.':''}`,`A soldier from the Pasha's days stands before the way out, glowing in the dark.${D.idol?' It saw the idol on you and is furious.':''}`)):T(ae(`الغول قاعد على شوال دقيق، وسنانه في عضمة. ${D.idol?'{شافك|شافكي} شايل التمثال بتاعه.. وقام.':'رفع راسه ببطء.'}`,`The ghoul sits on a flour sack, teeth in a bone. ${D.idol?'It saw you carrying its idol.. and got up.':'It raises its head slowly.'}`)),()=>ae('صوت نَفَس تقيل','Heavy breathing')],
+  exit:[()=>T(ae('هوا بارد وريحة غيط. الطريق لبرا مفتوح.','Cold air and the smell of fields. The way out is open.')),()=>ae('الطريق لبرا','The way out')],
+  gate:[()=>'',()=>ae('المدخل','The gate')]};
+const DG_ACT={
+  jars:()=>`<button class="btn" id="dgJar">${T(ae('{قرّب|قرّبي} من الجرار','Step up to the jars'))}</button>`,
+  fight:(h,D)=>`<button class="btn" id="dgFight">${T(ae('{هاجمهم|هاجميهم}','Attack'))}</button>${D.fz==='rats'?`<button class="btn ghost" id="dgSneak">${T(ae('{اتسحّب|اتسحّبي} من جنبهم','Sneak past'))}</button>`:''}`,
+  door:()=>`<button class="btn" id="dgLev">${T(ae('{مد|مدي} إيدك على العتلات','Reach for the levers'))}</button>`,
+  vault:()=>`<button class="btn" id="dgIdol">${T(ae('{خد|خدي} الفلوس والتمثال','Take the coins and the idol'))}</button><button class="btn ghost" id="dgCoins">${T(ae('{خد|خدي} الفلوس بس','Take only the coins'))}</button>`,
+  boss:()=>`<button class="btn" id="dgBoss">${T(ae('{واجهه|واجهيه}','Face it'))}</button>`,
+  exit:()=>`<button class="btn" id="dgExit">${T(ae('{اطلع|اطلعي} للنور','Walk out to the light'))}</button>`,
+  gate:()=>''};
+/* ---- moving ---- */
+function dgGo(h,j){const D=dgFix(h);if(DGX.busy||!DG_LINK[D.at].includes(j)||!dgOpen(D,j))return;D.at=j;D.seen[j]=1;DGX.sel=null;saveHero();try{SFX.page();vib(10)}catch(e){}dgRender()}
+function dgDone(h,i,msg){const D=dgFix(h);D.done[i]=1;delete D.sn[i];saveHero();if(msg)toast(msg);dgRender()}
+const dgRender=()=>{if(S.screen==='dg'){const y=view.scrollTop;render();view.scrollTop=y}};
+const dgAuto=()=>window.__dgAuto!=null;
+/* ---- the hand games ---- */
+function dgOverlay(title,html){const s=document.createElement('div');s.className='cmg dg-o';s.style.direction='ltr';s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${title}</b></div>${html}</div>`;document.body.appendChild(s);return s}
+function dgJars(h,D){return new Promise(res=>{if(dgAuto()){res(!!window.__dgAuto);return}const seq=D.jar,col=['#e2483f','#45b4a8','#f3c14d','#a578d6'];
+  const s=dgOverlay(ae('الجرار','The jars'),`<div class="dg-jr">${col.map((c,i)=>`<button class="dg-j" data-j="${i}" style="--c:${c}"><i></i></button>`).join('')}</div><div class="cmg-m" id="dgJm" style="direction:${EN?'ltr':'rtl'}">${ae('بص كويس..','Watch..')}</div>`);
+  const J=[...s.querySelectorAll('.dg-j')],M=s.querySelector('#dgJm');let n=0,on=0;const lit=(i,ms)=>{J[i].classList.add('lit');try{SFX.tick(420+i*130)}catch(e){}setTimeout(()=>J[i].classList.remove('lit'),ms)};
+  seq.forEach((v,k)=>setTimeout(()=>lit(v,420),600+k*700));setTimeout(()=>{on=1;M.textContent=T(ae('{دورك|دورك}: نفس الترتيب','Your turn: the same order'))},600+seq.length*700);
+  const end=ok=>{on=0;M.textContent=ok?ae('الطريق اتفتح!','The way opens!'):ae('غلط! جرة اتكسرت.','Wrong! A jar cracked.');setTimeout(()=>{s.remove();res(ok)},800)};
+  J.forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(!on)return;const i=+b.dataset.j;lit(i,220);if(i!==seq[n])return end(false);n++;if(n>=seq.length)end(true)}))})}
+function dgSneakG(h){return new Promise(res=>{if(dgAuto()){res(!!window.__dgAuto);return}
+  const s=dgOverlay(ae('اتسحّب','Sneak'),`<div class="dg-eye" id="dgEye"><i></i></div><div class="cmg-m" id="dgSm" style="direction:${EN?'ltr':'rtl'}">${T(ae('{اتحرك|اتحركي} وهي مغمضة بس (٣ خطوات)','Move only while the eye is shut (3 steps)'))}</div><button class="btn" id="dgStep" style="min-height:56px">${ae('خطوة','Step')}</button>`);
+  const E=s.querySelector('#dgEye'),M=s.querySelector('#dgSm');let open=0,n=0,over=0,tm=0;const flip=()=>{if(over)return;open=open?0:1;E.classList.toggle('open',!!open);tm=setTimeout(flip,open?700+Math.random()*900:900+Math.random()*900)};tm=setTimeout(flip,1200);
+  const end=ok=>{over=1;clearTimeout(tm);M.textContent=ok?ae('عدّيت من غير ما يحسوا!','You slipped by unseen!'):ae('شافوك!','They saw you!');setTimeout(()=>{s.remove();res(ok)},800)};
+  s.querySelector('#dgStep').addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;if(open)return end(false);n++;try{SFX.tick(300+n*80);vib(10)}catch(x){}M.textContent=`${n}/3`;if(n>=3)end(true)})})}
+function dgLevers(h,D){return new Promise(res=>{if(dgAuto()){res(!!window.__dgAuto);return}const S0=D.lvS.slice(),goal=D.lv;
+  const s=dgOverlay(ae('العتلات','The levers'),`<div class="dg-goal">${goal.map(v=>`<i class="${v?'up':''}">${v?'▲':'▼'}</i>`).join('')}</div><div class="dg-lvs">${[0,1,2].map(i=>`<button class="dg-lv${S0[i]?' up':''}" data-l="${i}"><i></i></button>`).join('')}</div>
+    <div class="cmg-m" style="direction:${EN?'ltr':'rtl'}">${T(ae('كل عتلة بتشد اللي على يمينها. خلّي العتلات زي الشكل اللي فوق.','Each lever pulls the one to its right. Match the shape above.'))}</div><button class="btn ghost" id="dgLx">${ae('سيبها','Leave it')}</button>`);
+  const L=[...s.querySelectorAll('.dg-lv')],draw=()=>L.forEach((b,i)=>b.classList.toggle('up',!!S0[i]));let over=0;
+  const end=ok=>{over=1;D.lvS=S0.slice();setTimeout(()=>{s.remove();res(ok)},ok?700:0)};
+  L.forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;const i=+b.dataset.l;S0[i]^=1;if(i<2)S0[i+1]^=1;draw();try{SFX.tick(260+i*90);vib(12)}catch(x){}if(S0.every((v,k)=>v===goal[k])){try{SFX.good()}catch(x){}end(true)}}));
+  s.querySelector('#dgLx').onclick=()=>end(false)})}
+/* ---- fights ---- */
+function dgFight(h,i,key){const D=dgFix(h);if(S.combat)return;S.dgFight={i,run:D.run};const bst=typeof rmBeast==='function'?rmBeast(h):null;S.comp=bst||cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;
+  const fo=JSON.parse(JSON.stringify(DG_FOES[key]));if(key.startsWith('boss')){if(D.idol)fo.forEach(f=>{f.hp=Math.round(f.hp*1.3);f.dmg+=1})}
+  if(bst)fo.forEach(f=>{f.hp=Math.max(1,Math.round(f.hp/CM_SOLO_HP))});
+  startCombat(fo,'dg_back',false);const C=S.combat;if(!C)return;C.enc='dg:'+i;C.rm=1;
+  if(!bst)C.foes.forEach(g=>{if(typeof g.dmg==='number'&&g.dmg>0){const v=g.dmg*CM_SOLO_DMG;g.dmg=Math.max(1,Math.floor(v)+(Math.random()<v%1?1:0))}});try{combat()}catch(e){}}
+SC.dg_back={art:'cave',chip:'السرداب',text:'',ch:[],onEnter(){S.screen='dg';S.scene=null}};
+{const e0=endFight;endFight=function(won){const F=S.dgFight,C=S.combat,h=S.hero;if(!F||!C||!h||C.enc!=='dg:'+F.i)return e0.apply(this,arguments);S.dgFight=null;const D=dgFix(h);
+  if(won){if(D.run===F.run){D.done[F.i]=1;delete D.sn[F.i];D.got.m=D.got.m|0}saveHero();return e0.apply(this,arguments)}
+  const rr=render;render=function(){};try{e0.apply(this,arguments)}catch(e){console.warn(e)}finally{render=rr}
+  S.lost=null;S.combat=null;const lose=Math.min(100,Math.floor(Math.max(0,h.money)*.05));h.money-=lose;h.hp=Math.max(1,Math.ceil(MXH(h)/3));
+  const old=D;h.dg=dgNew(old.run,old);h.dg.got.falls=(old.got.falls|0)+1;h.dg.msg=ae(`{وقعت|وقعتي}، {وصحيت|وصحيتي} عند المدخل. السرداب رجع زي ما كان${lose?`، وضاع منك ${lose} جنيه`:''}.`,`You fell and woke at the gate. The dungeon is as it was${lose?`, and ${lose} coins were lost`:''}.`);
+  saveHero();band('',T(ae('{وقعت|وقعتي}','You fell')),'',{color:'red',dur:1600,sound:SFX.down});S.screen='dg';render()}}
+/* ---- the screen ---- */
+SCREENS.dg=function(){const h=S.hero;if(!h){S.screen='title';return render()}const D=dgFix(h);
+  const msg=D.msg?`<div class="card dg-msg">${T(D.msg)}</div>`:'';
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('سرداب الطاحونة','The mill cellar')}</h2><span class="tag dg-hp">${ae('صحة','Health')} ${h.hp}/${MXH(h)}</span></div>
+    <div class="tw dg" style="direction:${EN?'ltr':'rtl'}">${msg}<div class="card dg-mc">${dgMap(h,D)}<div class="dg-run">${ae('المرة','Run')} ${D.run} · ${ae('عدّيت','Cleared')} ${Object.keys(D.done).filter(k=>+k).length}/6</div></div>${dgRoom(h,D)}</div>`;
+  D.msg=null;
+  $('#back').onclick=()=>{DGX.sel=null;try{SFX.page()}catch(e){}twGo(S.dgFrom||'khala')};
+  view.querySelectorAll('[data-dg]').forEach(b=>b.onclick=()=>{const j=+b.dataset.dg;if(j===D.at){DGX.sel=null;return dgRender()}
+    if(!DG_LINK[D.at].includes(j)){toast(T(ae('الأوضة دي مش جنبك. {امشي|امشي} أوضة أوضة.','That room isn\'t next to you. Go room by room.')));try{SFX.meh()}catch(e){}return}DGX.sel=j;try{SFX.tick(700)}catch(e){}dgRender()});
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};
+  on('dgIn',()=>dgGo(h,DGX.sel));on('dgNo',()=>{DGX.sel=null;dgRender()});
+  on('dgOut',()=>{DGX.sel=null;toast(T(ae('مكانك محفوظ: {هترجع|هترجعي} لنفس الأوضة.','Your place is kept: you will come back to this room.')));twGo(S.dgFrom||'khala')});
+  on('dgRest',()=>{if(h.hp>=MXH(h)){toast(T(ae('{انت|انتي} {مرتاح|مرتاحة} خلاص.','You are rested already.')));return}if(!useEff(h)){toast(ae('مفيش مجهود.','No effort left.'));return}h.hp=MXH(h);h.energy=MXE(h);saveHero();try{SFX.good()}catch(e){}dgRender()});
+  on('dgJar',async()=>{if(DGX.busy)return;DGX.busy=1;let ok=false;try{ok=await dgJars(h,D)}finally{DGX.busy=0}
+    if(ok){const m=20+5*h.lvl;h.money+=m;D.got.m+=m;dgDone(h,D.at,ae(`الطريق اتفتح، ولقيت ${m} جنيه في جرة.`,`The way opened, and ${m} coins were in a jar.`))}else{h.hp=Math.max(1,h.hp-1);saveHero();toast(T(ae('الجرة اتكسرت وجرحتك (−1 صحة). {جرّب|جرّبي} تاني.','The jar cracked and cut you (−1 health). Try again.')));dgRender()}});
+  on('dgFight',()=>dgFight(h,D.at,D.fz));
+  on('dgSneak',async()=>{if(DGX.busy)return;DGX.busy=1;let ok=false;try{ok=await dgSneakG(h)}finally{DGX.busy=0}
+    if(ok){const i=D.at;D.done[i]=1;D.sn[i]=1;saveHero();toast(T(ae('{عدّيت|عدّيتي}. الفيران لسه هناك، والعضم ما {اتلمّش|اتلمّش}.','You got by. The rats are still there, and the bones untouched.')));dgRender()}else dgFight(h,D.at,D.fz)});
+  on('dgLev',async()=>{if(DGX.busy)return;DGX.busy=1;let ok=false;try{ok=await dgLevers(h,D)}finally{DGX.busy=0}if(ok){try{SFX.crumble&&SFX.crumble()}catch(e){}dgDone(h,D.at,ae('الباب الحديد اتفتح.','The iron door swung open.'))}else dgRender()});
+  const vault=idol=>{const m=(60+12*h.lvl)+(idol?150:0);h.money+=m;D.got.m+=m;D.idol=idol?1:0;try{SFX.coin&&SFX.coin()}catch(e){}
+    dgDone(h,D.at,idol?ae(`+${m} جنيه والتمثال.. والغول سمع.`,`+${m} coins and the idol.. and the ghoul heard.`):ae(`+${m} جنيه. التمثال فضل مكانه.`,`+${m} coins. The idol stays where it is.`))};
+  on('dgIdol',()=>vault(1));on('dgCoins',()=>vault(0));
+  on('dgBoss',()=>dgFight(h,D.at,D.bz));
+  on('dgExit',()=>{const m=80+20*h.lvl,x=10+2*h.lvl;h.money+=m;D.got.m+=m;D.got.x+=x;const ups=gainXP(x);D.got.runs=(D.got.runs|0)+1;try{addRes(h,'stone1',1)}catch(e){}bump('dgRun');
+    const nx=dgNew(D.run+1,D);h.dg=nx;nx.msg=ae(`{طلعت|طلعتي}! +${m} جنيه، +${x} خبرة، وحجر تعزيز. المرة الجاية السرداب هيبقى متغيّر.`,`You made it out! +${m} coins, +${x} XP and an enhancement stone. Next time the dungeon will be different.`);saveHero();
+    band(ae('سرداب الطاحونة','The mill cellar'),T(ae('{طلعت|طلعتي} سليم!','Out alive!')),`+${m} ${ae('جنيه','coins')} · +${x} ${ae('خبرة','XP')}`,{dur:2200,sound:SFX.levelup});dgRender()})};
+/* ---- the ways in: «الخلا» map and «الدهاليز» ---- */
+try{KH_ICO.dg=['..BBBBB..','.B.....B.','B..ggg..B','B.g...g.B','B.g.K.g.B','B.g...g.B','B..ggg..B','BBBBBBBBB','.........']}catch(e){}
+try{KH_ADD({id:'tahuna',kind:'dg',scr:'dg',x:52,y:118,n:['سرداب الطاحونة','The mill cellar'],em:'🕳',icon:'dg',lvl:2,links:['maawa'],via:{maawa:[[60,140]]},fog:[14,10],
+  seen0:h=>!!h.dg,st:h=>{const D=h.dg;return {t:D?`${ae('المرة','Run')} ${D.run} · ${Object.keys(D.done||{}).filter(k=>+k).length}/6`:ae('سبع أوض تحت الأرض','Seven rooms underground')}},
+  go:(h,P)=>{if(!dgOn())return;S.dgFrom='khala';try{khFix(h).at=P.id}catch(e){}saveHero();DGX.sel=null;twGo('dg')}});const M=khP('maawa');if(M&&!M.links.includes('tahuna'))M.links.push('tahuna')}catch(e){console.warn(e)}
+{const a0=SCREENS.advs;SCREENS.advs=function(){const r=a0.apply(this,arguments);try{const h=S.hero;if(!h||S.screen!=='advs'||!dgOn()||$('#dgGo'))return r;const D=h.dg,f=view.querySelector('.card');if(!f)return r;
+  f.insertAdjacentHTML('beforebegin',`<button class="card dg-go" id="dgGo"><span class="ic">🕳</span><span class="tx"><b>${ae('سرداب الطاحونة','The mill cellar')}</b><small>${D?ae(`مكانك محفوظ: ${dgNm(D.at)} · المرة ${D.run}`,`Your place is kept: ${dgNm(D.at)} · run ${D.run}`):ae('سبع أوض تحت الطاحونة القديمة: ألغاز بإيدك، وخناقات، وغول','Seven rooms under the old mill: puzzles by hand, fights, and a ghoul')}</small></span><span class="go">‹</span></button>`);
+  $('#dgGo').onclick=()=>{S.dgFrom='advs';DGX.sel=null;try{SFX.page()}catch(e){}twGo('dg')}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.dg-go{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;text-align:start;cursor:pointer;border:2px solid #8a5a2e}.dg-go .ic{font-size:30px}.dg-go .tx{flex:1;display:flex;flex-direction:column}.dg-go small{color:var(--dim)}
+.dg-hp{color:#f0a090}
+.dg-mc{padding:8px}.dg-map{position:relative;height:330px;border-radius:14px;background:radial-gradient(circle at 50% 60%,#2a2018,#0e0a08);overflow:hidden}
+.dg-svg{position:absolute;inset:0;width:100%;height:100%}.dg-ln{stroke:#ffffff1a;stroke-width:1.4;stroke-dasharray:2 2}.dg-ln.on{stroke:#c9a46a77}
+.dg-n{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:84px;min-height:56px;padding:0;border:0;background:none;color:#fff;font:inherit;cursor:pointer}
+.dg-n .ic{width:44px;height:44px;display:grid;place-items:center;font-size:22px;border-radius:50%;background:#1a1410;border:2px solid #ffffff2a;box-shadow:0 2px 0 #0008}
+.dg-n b{font-size:11px;line-height:1.2;text-align:center;text-shadow:0 1px 2px #000}.dg-n.near .ic{border-color:#f3c14d;animation:dgNr 1.2s ease-in-out infinite}.dg-n.sel .ic{border-color:#fff;box-shadow:0 0 0 3px #f3c14d,0 0 14px #f3c14d}
+.dg-n.done .ic{border-color:#7fe07a88}.dg-n .ok{position:absolute;top:-2px;inset-inline-end:16px;font-style:normal;color:#7fe07a;font-weight:900}.dg-n.lock{opacity:.55}.dg-n.here .ic{border-color:#7fb6ff;box-shadow:0 0 12px #7fb6ff}
+.dg-tg{font-style:normal;font-size:10px;color:#ffd36a;background:#000a;padding:0 4px;border-radius:6px}.dg-tg.r{color:#ff8a7a}
+@keyframes dgNr{50%{box-shadow:0 0 0 3px #f3c14d55}}
+.dg-me{position:absolute;width:26px;height:35px;transform:translate(-120%,-80%);pointer-events:none;filter:drop-shadow(0 2px 2px #000)}.dg-me svg{width:100%;height:100%}
+.dg-run{text-align:center;font-size:12px;color:var(--dim);margin-top:6px}
+.dg-rc{display:flex;flex-direction:column;gap:8px}.dg-rc.on{border:2px solid #c9a46a}.dg-rh{display:flex;align-items:center;gap:8px}.dg-rh .ic{font-size:26px}.dg-rh b{font-size:17px}
+.dg-tx{font-size:15px;line-height:1.6}.dg-acts{display:flex;flex-direction:column;gap:8px}.dg-acts .btn,.dg-rc .btn{min-height:48px}
+.dg-msg{border:2px solid #f3c14d;font-weight:700}
+.dg-jr{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 4px}
+.dg-j{height:110px;border:0;border-radius:40% 40% 18% 18%;background:linear-gradient(#5a3a22,#2e1d10);box-shadow:inset 0 0 0 3px #0006;cursor:pointer;position:relative}
+.dg-j i{position:absolute;left:25%;right:25%;top:22%;height:28%;border-radius:50%;background:var(--c);opacity:.25;transition:opacity .1s}.dg-j.lit i{opacity:1;box-shadow:0 0 22px var(--c)}.dg-j.lit{transform:scale(1.06)}
+.dg-eye{margin:16px auto;width:120px;height:60px;border-radius:50%;background:#1a1410;border:3px solid #c9a46a;position:relative;overflow:hidden}
+.dg-eye i{position:absolute;left:0;right:0;top:50%;height:3px;background:#c9a46a}.dg-eye.open{background:#f4e8d0}.dg-eye.open i{left:40%;right:40%;top:20%;height:60%;border-radius:50%;background:#e2483f;box-shadow:0 0 14px #e2483f}
+.dg-goal{display:flex;justify-content:center;gap:18px;padding:8px;font-size:22px;color:#c9a46a}.dg-goal i{font-style:normal}.dg-goal i.up{color:#ffd36a}
+.dg-lvs{display:flex;justify-content:center;gap:24px;padding:12px}
+.dg-lv{width:56px;height:120px;border-radius:14px;border:2px solid #ffffff2a;background:#1a1410;position:relative;cursor:pointer}
+.dg-lv i{position:absolute;left:50%;width:10px;margin-left:-5px;top:50%;height:44%;background:#9aa3ad;border-radius:5px;transform-origin:50% 0;transition:transform .2s}
+.dg-lv i::after{content:'';position:absolute;left:-9px;bottom:-10px;width:28px;height:20px;border-radius:50%;background:#c9a46a}
+.dg-lv.up i{transform:rotate(180deg)}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
