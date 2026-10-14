@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.67.2',d:'14 أكتوبر',add:['الصحاب بقوا بطلب صداقة: «ابعت طلب» بكود صاحبك، وهو لازم يقبل عشان يظهرلك. الطلبات اللي جاتلك بتظهر في «صحابي» وفي البروفايل بـ«قبول» و«رفض»، واللي {بعته|بعتيه} بيفضل «مستني يقبل» {وتقدر|وتقدري} {تسحبه|تسحبيه}. لو هو بعتلك قبلك، «ابعت طلب» بيقبل طلبه على طول. الصحاب القدام زي ما هم.']},
 {v:'6.67.1',d:'14 أكتوبر',add:['إصلاح: الوديعة والاستثمار في البنك بقوا ياخدوا من فلوس الخزنة الأول، وبعدها من اللي معاك. قبل كده لو فلوسك كلها في الخزنة الزرار ما كانش بيعمل حاجة.','إصلاح: ميني جيم الحداد كانت بتقطّع، وكمان الشاشة اللي تحت أي ميني جيم كانت بتفضل ترسم ورا. اتصلحوا، وكل الميني جيمز بقت أنعم.','أيقونة الفلوس بقت بتظهر مرة واحدة بس لما {تكسب|تكسبي} أو {تدفع|تدفعي}.','«أسعار النهارده» بقت أقسام: سمك، محاصيل الغيط، معادن، أعشاب، جلود وريش. كل قسم ليه سعره النهارده طالع أو نازل، وكل حاجة جواه بتتحرك شوية لوحدها. محاصيل الغيط بقت بتطلع وتنزل هي كمان.','التجارب: لو الحلة مليانة {اختار|اختاري} حاجة من تحت تاخد مكان الأخيرة، أو {دوس|دوسي} ✕ على أي حاجة في الحلة تطلّعها.','«عصام» بقى بيتكلم إنجليزي في اللعبة الإنجليزي.']},
 {v:'6.67',d:'14 أكتوبر',add:['«أسعار النهارده» فوق في السوق، في الشرا والبيع: كل الحاجات اللي سعرها طالع النهارده واللي نازل، حتى لو مش معاك، بالسعر القديم والجديد. اللي معاك بيبان الأول، {ودوس|ودوسي} عليه يفتحلك البيع عند الحاجة دي. «شوف الباقي» بيوريك كل النوع.','«مسابقة الصنايعية» عند الحداد والخياط والطباخ كل يومين في البلد: {ادفع|ادفعي} الرسم {والعب|والعبي} لعبة الصنعة قدام تلت أسطوات من البلد. الأول والتاني بياخدوا فلوس وسمعة. وفيه «درس عند الأسطى» مرة كل يوم بفلوس قصاد خبرة.','«سمعة الصنعة»: كل حاجة {تعملها|تعمليها} بإيدك وتطلع حلوة بتزود اسمك عند الأسطى. بعد 10 {بتبقى|بتبقي} «معروف»، وبعد 30 «مشهور»، وبعد 60 «أسطى البلد»، وكل درجة الشغل عنده بيرخص 5%.','«المقابض» عند الحداد على السلاح اللي في إيدك: الجلد بيوسّع دايرة الضربة، والكتان بيوسّع دايرة الصد، والقرن بيزود أول ضربة في كل دور 1.']},
 {v:'6.66.1',d:'14 أكتوبر',add:['إصلاح: صندوق التقاوي بقى يزرع الأرض الفاضية كمان، مش بس اللي لسه {اتحصدت|اتحصدت}. أول ما {تفتح|تفتحي} الغيط أو البلد، أي أرض فاضية بتتزرع باللي كانت زارعاه قبل كده، أو بزرعة الصندوق، أو بالزرعة اللي في أغلب الغيط. «{سيبها|سيبيها} فاضية» لسه شغالة، والتقاوي من فلوسك.']},
@@ -54281,6 +54282,75 @@ mkListHTML=function(h){const F=mkcDay(),G=mkcOrder();let cur=TWN.mkCat&&G.some(g
 .mkc-t span{font-size:18px;line-height:1.1}.mkc-t small{font-size:10px;line-height:1.2;text-align:center;max-width:100%;overflow-wrap:anywhere}.mkc-t b{font-size:11px}
 .mkc-t.up b{color:#7fe07a}.mkc-t.dn b{color:#f0a090}.mkc-t.on{border-color:#f3d48f;background:#f3d48f1f;box-shadow:inset 0 0 0 1px #f3d48f55}
 .mkc-p{font-style:normal;font-size:10px;opacity:.85}`;document.head.appendChild(s)})();
+/* ---------- 6.67.2 (acc1, Twister 19:57 «خلي الفريندز بفريند ريكوست ولازم يتقبل»): friend requests ----------
+   Adding a friend's code used to put it straight in your list (h.frs, p29). Now «ضيف» sends a request (freq/{to}_{from}) and the
+   friend shows in your list only after the other side accepts:
+   - The other side sees «طلبات صداقة» on «صحابي» and on the profile, with «قبول» / «رفض». Accepting puts your code in their
+     list and marks the request ok; your game, the next time it looks (opening «صحابي» or the profile, signing in), adds
+     theirs and clears the request. A refusal clears it with a note.
+   - If they already sent you one, «ضيف» accepts theirs instead.
+   - What you sent and is waiting shows as «مستني يقبل» (h.frq on every hero, like h.frs) and can be taken back.
+   - Friends added before this stay.
+   Firestore: freq/{id} needs the rules in firebase/firestore.rules deployed from the PC.
+   Tests: window.__frqMock = {me, code, send(o), inbox(), mine(), answer(id,ok), del(id)} replaces the cloud. */
+const FRQ={inbox:null,mine:null,busy:0,msg:'',t:0};
+const frqMk=()=>window.__frqMock||null;
+const frqMe=()=>{const M=frqMk();return M?M.me:(FB.user&&FB.user.uid)};
+const frqCode=()=>{const M=frqMk();return M?M.code:(FB.user?frCode(FB.user.uid):'')};
+const frqCol=()=>FB.db.collection('freq');
+const frqPend=()=>{const s=new Set();HEROES.filter(Boolean).forEach(h=>(h.frq||[]).forEach(c=>s.add(c)));return [...s]};
+function frqSetPend(L){HEROES.filter(Boolean).forEach(h=>h.frq=L.slice(0,20));saveHero();if(typeof fbSoon==='function')fbSoon()}
+const FRQA={
+  async send(to,n){const M=frqMk();if(M)return M.send({to,n});const me=frqMe();return frqCol().doc(to+'_'+me).set({to,from:me,fc:frCode(me),n:String(n||'').slice(0,20),st:'new',t:window.firebase.firestore.FieldValue.serverTimestamp()})},
+  async inbox(){const M=frqMk();if(M)return M.inbox();const q=await frqCol().where('to','==',frqCode()).where('st','==','new').limit(30).get();return q.docs.map(d=>Object.assign({_id:d.id},d.data()))},
+  async mine(){const M=frqMk();if(M)return M.mine();const q=await frqCol().where('from','==',frqMe()).limit(30).get();return q.docs.map(d=>Object.assign({_id:d.id},d.data()))},
+  async answer(id,ok,bn){const M=frqMk();if(M)return M.answer(id,ok);return frqCol().doc(id).update({st:ok?'ok':'no',bn:String(bn||'').slice(0,20)})},
+  async del(id){const M=frqMk();if(M)return M.del(id);return frqCol().doc(id).delete()}};
+/* look at both sides: requests to me, and what became of mine */
+async function frqSync(force){if(FRQ.busy||!frqMe())return;if(!force&&Date.now()-FRQ.t<8000)return;FRQ.busy=1;FRQ.t=Date.now();
+  try{if(!frqMk())await fbLoad();FRQ.inbox=await FRQA.inbox();const mine=await FRQA.mine();let L=frList(),P=frqPend(),ch=0;
+    for(const r of mine){if(r.st==='ok'){if(!L.includes(r.to)){L.push(r.to);ch=1}P=P.filter(c=>c!==r.to);try{toast(`🤝 ${ae(`${r.bn||r.to} قبل طلب الصداقة.`,`${r.bn||r.to} accepted your friend request.`)}`)}catch(e){}try{await FRQA.del(r._id)}catch(e){}}
+      else if(r.st==='no'){P=P.filter(c=>c!==r.to);ch=1;try{toast(ae(`${r.to} ما قبلش طلب الصداقة.`,`${r.to} didn't accept your friend request.`))}catch(e){}try{await FRQA.del(r._id)}catch(e){}}}
+    /* a pending code with no request left (taken back elsewhere) goes */
+    const open=new Set(mine.filter(r=>r.st==='new').map(r=>r.to)),P2=P.filter(c=>open.has(c));if(P2.length!==P.length)ch=1;
+    if(ch||L.length!==frList().length){frSet(L);frqSetPend(P2)}FRQ.mine=mine.filter(r=>r.st==='new');FRQ.err=''}
+  catch(e){FRQ.err=e&&e.code==='permission-denied'?ae('طلبات الصداقة لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','Friend requests are still being set up (needs an update from the PC).'):'';console.warn('freq',e)}
+  finally{FRQ.busy=0}if(['frs','profile','pals'].includes(S.screen)){const y=window.scrollY;render();try{window.scrollTo(0,y)}catch(e){}}}
+/* «ضيف» sends a request (or accepts theirs) */
+frAddCode=function(v){const c=String(v||'').replace(/[^a-z0-9]/gi,'').toUpperCase(),mine=frqCode();
+  if(!mine)return T(ae('{ادخل|ادخلي} بحساب جوجل الأول.','Sign in with Google first.'));
+  if(c.length!==6)return ae('الكود 6 حروف وأرقام.','The code is 6 letters and digits.');if(c===mine)return T(ae('ده كودك {انت|انتي}!','That\'s your own code!'));
+  if(frList().includes(c))return ae('ده صاحبك أصلًا.','Already your friend.');if(frqPend().includes(c))return ae('الطلب اتبعت قبل كده، مستني يقبل.','Already sent; waiting for them.');
+  const theirs=(FRQ.inbox||[]).find(r=>r.fc===c);if(theirs){frqAnswer(theirs,true);return ''}
+  const h=S.hero;FRQA.send(c,h&&h.name).then(()=>{frqSetPend(frqPend().concat([c]));try{SFX.reg&&SFX.reg()}catch(e){}toast(`📨 ${ae('طلب الصداقة اتبعت. أول ما يقبل هيظهر عندك.','Friend request sent. They show up once they accept.')}`);render()})
+    .catch(e=>{toast(e&&e.code==='permission-denied'?ae('طلبات الصداقة لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','Friend requests are still being set up (needs an update from the PC).'):ae('ما اتبعتش. اتأكد إن فيه نت.','Not sent. Check the connection.'))});return ''};
+async function frqAnswer(r,ok){try{await FRQA.answer(r._id,ok,S.hero&&S.hero.name);if(ok){const L=frList();if(!L.includes(r.fc)){L.push(r.fc);frSet(L)}
+    frqSetPend(frqPend().filter(c=>c!==r.fc));toast(`🤝 ${ae(`${r.n||r.fc} بقى من صحابك.`,`${r.n||r.fc} is your friend now.`)}`)}
+  FRQ.inbox=(FRQ.inbox||[]).filter(x=>x._id!==r._id);if(S.screen==='frs'){FRS.pres=null}render()}catch(e){toast(ae('ما اتسجلش. جرب تاني.','Didn\'t save. Try again.'))}}
+async function frqBack(c){const r=(FRQ.mine||[]).find(x=>x.to===c);frqSetPend(frqPend().filter(x=>x!==c));try{await FRQA.del(r?r._id:c+'_'+frqMe())}catch(e){}if(r)FRQ.mine=FRQ.mine.filter(x=>x!==r);render()}
+function frqBoxHTML(){const inb=FRQ.inbox||[],P=frqPend();if(!inb.length&&!P.length&&!FRQ.err)return '';
+  return `<div class="card frq" id="frqBox">${FRQ.err?`<small class="dim">${FRQ.err}</small>`:''}
+    ${inb.length?`<b>🤝 ${ae('طلبات صداقة','Friend requests')} (${inb.length})</b>${inb.map(r=>`<div class="frq-r"><span><b>${esc(r.n||'؟')}</b> <small translate="no">${esc(r.fc)}</small></span>
+      <button class="btn" data-fqa="${esc(r._id)}">${ae('قبول','Accept')}</button><button class="btn ghost" data-fqn="${esc(r._id)}">${ae('رفض','Decline')}</button></div>`).join('')}`:''}
+    ${P.length?`<b class="frq-h">📨 ${ae('مستني يقبل','Waiting for them')}</b>${P.map(c=>`<div class="frq-r"><span translate="no">${esc(c)}</span><button class="btn ghost" data-fqb="${esc(c)}">${ae('اسحب الطلب','Take back')}</button></div>`).join('')}`:''}</div>`}
+function frqBind(){view.querySelectorAll('[data-fqa],[data-fqn]').forEach(b=>b.onclick=()=>{const id=b.dataset.fqa||b.dataset.fqn,r=(FRQ.inbox||[]).find(x=>x._id===id);if(!r)return;b.disabled=true;frqAnswer(r,!!b.dataset.fqa)});
+  view.querySelectorAll('[data-fqb]').forEach(b=>b.onclick=()=>frqBack(b.dataset.fqb))}
+/* «صحابي»: an add box and the requests on top */
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs'||!frqMe())return r;frqSync();const me2=view.querySelector('.fr-me2');if(!me2||$('#frqAdd'))return r;
+  me2.insertAdjacentHTML('afterend',`<div class="card fr-box" id="frqAdd"><div class="fr-add"><input id="frqIn" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="${ae('كود صاحبك','Friend\'s code')}"><button class="tw-buy" id="frqGo">${ae('ابعت طلب','Send request')}</button></div><small id="frqM"></small></div>${frqBoxHTML()}`);
+  const go=$('#frqGo'),inp=$('#frqIn');go.onclick=()=>{const m=frAddCode(inp.value);if(m)$('#frqM').textContent=m};frqBind();
+  const t=view.querySelector('.fr .card:not(.fr-me2):not(.fr-box):not(.frq)');if(t&&/ضيف|Add a friend/.test(t.textContent))t.textContent=ae('لسه مفيش صحاب. ابعت طلب بكود صاحبك، وأول ما يقبل هيظهر هنا.','No friends yet. Send a request with a friend\'s code; they show here once they accept.')}catch(e){console.warn(e)}return r}}
+/* the profile box and the companion picker: «ضيف» sends a request, and the requests show there too */
+{const p0=SCREENS.profile;SCREENS.profile=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='profile'||!frqMe())return r;frqSync();const box=$('#pfFr');if(!box||$('#frqBox'))return r;
+  const go=$('#pfFrGo'),inp=$('#pfFrIn');if(go){go.textContent=ae('ابعت طلب','Send request');go.onclick=()=>{const m=frAddCode(inp.value);const el=$('#pfFrM');if(m&&el)el.textContent=m}}
+  const html=frqBoxHTML();if(html){box.insertAdjacentHTML('beforeend',html);frqBind()}}catch(e){console.warn(e)}return r}}
+{const p0=SCREENS.pals;SCREENS.pals=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='pals'||!frqMe())return r;frqSync();const go=$('#frGo'),inp=$('#frIn');
+  if(go){go.textContent=ae('ابعت طلب','Send request');go.onclick=()=>{const m=frAddCode(inp.value);if(m){PAL.msg=m;render()}}}
+  const box=view.querySelector('.fr-box');if(box&&!$('#frqBox')){const html=frqBoxHTML();if(html){box.insertAdjacentHTML('afterend',html);frqBind()}}}catch(e){console.warn(e)}return r}}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);try{frqSync(1)}catch(e){}return R}}
+(function(){const s=document.createElement('style');s.textContent=`
+.frq{display:flex;flex-direction:column;gap:6px}.frq-h{margin-top:6px}.frq-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.frq-r>span{flex:1;min-width:120px}.frq-r small{color:var(--mute);letter-spacing:1px}
+.frq-r .btn{min-height:44px;width:auto;padding-inline:12px;margin:0}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
