@@ -3535,7 +3535,7 @@ L10N({'السوق':'Market','بيع':'Sell','البضاعة بتتجدد بعد 
 .gx-btn.hold.on{transform:scale(.97);filter:brightness(1.25)}
 @media (prefers-reduced-motion:reduce){.mn-rock,.mn-rock svg,.mn-aura,.mn-tw,.mn-pick,.mn-empty,.fsh-say span,.gx-btn.now,.mn-crk::before,.mn-crk::after,.mn-hole .rim,.fs-fish svg{animation:none!important}}
 `;document.head.appendChild(st)})();
-let gxDev=null;
+let gxDev=null;const MNH={};
 {
 /* sounds */
 Object.assign(SFX,{
@@ -3737,7 +3737,7 @@ function rollRock(h,F){const L=lifeLvl(h,'mine'),sb=h.hidden.sabr?1:0,d=Math.max
   if(treeLink(h,'mine','l1')&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<.06)k=MINE_K[MINE_K.indexOf(k)+1];
   /* طريقين: دهب الأعماق / نزلة على نزلة */
   {const o=tf(h,'mine','ore');if(o>0&&(k==='stone'||k==='copper'||k==='iron')&&Math.random()<o)k=MINE_K[MINE_K.indexOf(k)+1];else if(o<0&&(k==='iron'||k==='silver')&&Math.random()<-o)k=MINE_K[MINE_K.indexOf(k)-1]}
-  return mnBandFix(h,F,k)}
+  k=mnBandFix(h,F,k);return MNH.rock?MNH.rock(h,F,k):k}
 /* B35 (5.76, Twister): floors no longer pile up every ore (floor 20 used to have them all). Each band of floors has its own short
    list and a signature ore; a roll (with all the skill and tree bonuses above) that lands outside the band's list is re-picked
    from the band, so bonuses still help but never bring an ore the floor doesn't have. */
@@ -3809,7 +3809,8 @@ function mnBtn(){const b=$('#gxGo'),b2=$('#gxGo2'),h=S.hero,V=gxVisit('mine'),ho
   else{b.className='btn gx-btn';b.innerHTML=`${G('هات','هاتي')} صخرة جديدة <span class="gx-cost">${ICO.drop}1 مجهود</span>`}}
 const MINE_GEAR=()=>Object.keys(GEAR).filter(id=>{const c=GEAR[id].craft;return c&&Object.keys(c).every(k=>isMineK(k))});
 const missTxt=m=>Object.keys(m).map(k=>m[k]===1?`${resN(k)} ${k==='silver'?'واحدة':'واحد'}`:`${m[k]} ${resN(k)}`).join(' و');
-function mnGoal(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks||0,L=lifeLvl(h,'mine'),d=hitOf(h),V=gxVisit('mine'),F=V.floor||1,lines=[];let best=null;
+function mnGoal(){mnGoal0();try{MNH.goal&&MNH.goal()}catch(e){console.warn(e)}}
+function mnGoal0(){const g=$('#gxGoal'),h=S.hero;if(!g)return;const c=h.cnt.rocks||0,L=lifeLvl(h,'mine'),d=hitOf(h),V=gxVisit('mine'),F=V.floor||1,lines=[];let best=null;
   MINE_GEAR().forEach(id=>{if(h.gear[id])return;const need=GEAR[id].craft,miss={};let tot=0;Object.keys(need).forEach(k=>{const m=need[k]-(h.res[k]||0);if(m>0){miss[k]=m;tot+=m}});if(!best||tot<best.tot)best={id,miss,tot}});
   if(best){const g0=GEAR[best.id],at=g0.at==='tailor'?'الخياط':'الحداد';lines.push(best.tot?`فاضلك <b>${missTxt(best.miss)}</b> ${G('وتعمل','وتعملي')} «${g0.n}» عند ${at}`:`<span class="ok">${G('معاك','معاكي')} خامات «${g0.n}».. ${G('روح','روحي')} ${at==='الحداد'?'للحداد':'للخياط'}</span>`)}
   lines.push(`الفاس بتشيل <b>${d}</b> من الصخرة${L<9?` · في مستوى ${3*Math.floor(L/3)+3} تبقى ${d+1}`:''}`);
@@ -3870,7 +3871,8 @@ function mnTireHit(h,imp){GX.tire=(GX.tire||0)+1;const T=mnTireN(h);
 /* the arm meter: one half drop per swing off the crack */
 function mnTire(pp){const t=$('#mnTire');if(!t)return;const T=mnTireN(S.hero),n=GX.rock?GX.tire||0:0;t.classList.toggle('hidden',!GX.rock);
   t.innerHTML=`<span>إيدك</span>${Array.from({length:T},(_,i)=>`<i class="${i<n?'on':''}${pp&&i===n-1?' pp':''}"></i>`).join('')}`}
-function mnBreak(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxStage'),a=rk?rectOf(rk):st&&rectOf(st),F=R.f||V.floor||1;GX.busy=1;GX.rock=null;GX.rubble=1;GX.broke=performance.now();
+function mnBreak(R){MNH.k=R&&R.k;try{mnBreak0(R)}finally{MNH.k=null}try{MNH.brk&&MNH.brk(R)}catch(e){console.warn(e)}}
+function mnBreak0(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxStage'),a=rk?rectOf(rk):st&&rectOf(st),F=R.f||V.floor||1;GX.busy=1;GX.rock=null;GX.rubble=1;GX.broke=performance.now();
   SFX.crumble();shake();vib([40,30,90]);if(rk){rk.classList.add('crumble');pop(rk,CHIPS[R.k],36)}
   const L=lifeLvl(h,'mine'),t=tierOf(R.k),drops=[[R.k,(Math.random()<.3+.03*L+(h.hidden.sabr?.1:0)?2:1)+(R.bonus||0)]];
   if(R.k!=='stone'&&Math.random()<.35)drops.push(['stone',1]);
@@ -4152,7 +4154,7 @@ SCREENS.fish=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 };
 /* a finger lifted anywhere, or the page losing focus, lets go of the reel */
 ['pointerup','blur'].forEach(ev=>addEventListener(ev,()=>{if(FS.hold){FS.hold=0;const g=document.getElementById('gxGo');if(g)g.classList.remove('on')}}));
-gxDev={effUI,mnSlot,mnBtn,fsBtn,gxMsgOff,GX,FS,REEL,reelNew,reelStep,reelZone,rollFish,rollRock,critOf,downOf,hpOf,gxVisit,mnSpawn,mnHit,mnDown};
+gxDev={mnBreak,mnBand,mnBandFix,mnChips,mnGoal,effUI,mnSlot,mnBtn,fsBtn,gxMsgOff,GX,FS,REEL,reelNew,reelStep,reelZone,rollFish,rollRock,critOf,downOf,hpOf,gxVisit,mnSpawn,mnHit,mnDown};
 }
 I18NA(ACH,{m_turq:{n:'First turquoise',d:'The first turquoise out of the mine'},m_rocks10:{n:'10 rocks broken',d:'Ten rocks broken in the mine'},f_first:{n:'First fish',d:'The first fish on the hook'},
   f_gold:{n:'The golden fish',d:'The golden fish on the hook'},f_shoe:{n:'Congrats?',d:'An old slipper on the hook'},m_floor10:{n:'Halfway down',d:'Floor 10 of the mine'},
@@ -4804,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.50',d:'14 أكتوبر',add:['المنجم من الدور 6 وتحت بقى فيه مخاطر {بتردّ|بتردّي} عليها بإيدك: صخرة بتقع على ناحية ({اطلع|اطلعي} الناحية التانية)، وغاز من الشقوق من الدور 9 ({اكتم|اكتمي} نفسك {وامسك|وامسكي} الزرار لحد ما يعدّي)، ومن الدور 12 عداد «الهوا» بيقل مع كل صخرة، ولما يخلص {انفخ|انفخي} في المنفاخ بسرعة. لو فاتتك بتخسر صحة.','«عِرق نادر» من الدور 6: تلات لمعات بتنوّر في الصخر، {المسهم|المسيهم} كلهم بسرعة {وتطلّع|وتطلّعي} أحسن حجر في الدور. الفيروز والزمرد في الصخر بقوا أقل شوية عشان العِرق بقى طريقهم.','الدور بيكتبلك المخاطر اللي فيه تحت في الأهداف، وعلامة ⚠ جنب رقم الدور.','إعلانات المنجم بقت بلون الحجر نفسه: الزمرد أخضر، والدهب دهبي، والفضة فضي، والفيروز فيروزي.','قدرتين جداد لكل نوع (مستوى 11 و13): المحارب «ضربة كاسحة» و«ثبّت رجلك»، الحرامي «طعنة في الضلمة» و«اختفاء»، الساحر «نار ماسكة» و«مراية»، المعالج «نور الفجر» و«بركة»، المصارع «كتفة» و«نفَس المصارع»، وابن البلد «فهلوة» و«زفّة».','الزعماء ليهم مراحل: تحت النص بيتجننوا، وتحت الربع آخر نفس. في المراحل دي الزعيم بيلم نفسه لضربة كبيرة وناحية من الشاشة بتحمر: {اسحب|اسحبي} للناحية التانية {وتفاداها|وتفاديها} كلها، ولو اتأخرت بتيجي تقيلة.']},
 {v:'6.49',d:'14 أكتوبر',add:['«الدولاب» عند عم فتحي الخياط: طبقة لبس فوق الدرع، والدرع زي ما هو. فيه 3 طبقات: «جوّه» (فانلة، شراب صوف، حزام…)، «اللبس» (جلابية، قفطان، صديري، بالطو…) و«فوق» (شال، وشاح، عباية…).','اللبس الجوّاني واللبس العادي بيدوك صفة أو صحة أو زيادة في صنعة (بدلة الصياد للصيد، ومريلة الصنايعي للحدادة والخياطة والطبيخ). أقصى زيادة من اللبس +3 لكل صفة. اللي «فوق» شكل بس.','النول: {انسج|انسجي} 24 نوع قماش من القماش والكتان والصوف والجلد والحرير والريش. المكوك بيجري يمين وشمال، {ودوس|ودوسي} «اضرب!» لما يوصل للطرف المنوّر. النسجة النضيفة بتطلع اتنين.','{فصّل|فصّلي} 60 قطعة من القماش بلعبة الخياطة. لو القطعة طلعت «كويس» أو أحسن بتاخد +1 زيادة.','{اسحب|اسحبي} اللبس بصباعك على رسمة شخصيتك {تلبسه|تلبسيه}، ولونه بيبان عليك في الرسمة. وفيه 30 باترون (تقليم، منقّط، مربعات، تطريز…) {تشتريه|تشتريها} مرة {وتحطه|وتحطيه} على لبسك وقت ما {تحب|تحبي}.']},
 {v:'6.48',d:'14 أكتوبر',add:['السبك عند عم حسن بقا بإيدك: البوتقة فوق القالب، {دوس|دوسي} {وامسك|وامسكي} عشان {تصب|تصبي} المعدن {وسيب|وسيبي} لما يوصل للخط الأخضر. الصبّة الصافية بتديك خبرة حدادة زيادة، ولو فاض أو نقص بيتسبك برضه.','التسقية (لما {تعلّي|تعلّي} قطعة +1، +2 …) بقت بإيدك: الإبرة بتتحرك على النار من البارد للأبيض، {دوس|دوسي} «اسقي!» وهي في الأحمر. في النص بالظبط الفرصة بتزيد 6%، وقريب منه 3%.','الصيد: {اسحب|اسحبي} لتحت على المية {وسيب|وسيبي} عشان {ترمي|ترمي} السنارة. لو العداد وقف في الأخضر الرمية بعيدة والسمك النادر بيقرب، ولو {زوّدت|زوّدتي} الخيط بيتشبك. الدوسة العادية لسه بترمي زي الأول.','الكارت المفتوح في الحِرف بيقفل بأنيميشن وهو بيصغر.','الدواير اللي سرعتها بتتغير بقت في القتال بس. الطبلة وطرق الحدادة رجعوا بسرعة ثابتة.']},
 {v:'6.47',d:'14 أكتوبر',add:['القتال: {تقدر|تقدري} {تسحب|تسحبي} أي حاجة من الشنطة بصباعك و{ترميها|ترميها} على اللي {عايزه|عايزاه}. الجرعة على نفسك {تشربها|تشربيها}، والأكل على اللي معاك {تأكّله|تأكّليه}، والملح أو قزازة النار على الوحش {تضربه|تضربيه}. وانت {بتسحب|بتسحبي} الحاجة اللي تحت صباعك بتنوّر أخضر لو تنفع عليه، وأحمر لو لأ. والدوسة العادية لسه شغالة زي الأول.']},
@@ -52071,6 +52074,174 @@ function wdDrag(){const doll=$('#wdDoll');if(!doll)return;view.querySelectorAll(
 .wd-wp{position:absolute;left:8%;right:8%;top:0;bottom:0;display:flex;justify-content:space-between}.wd-wp i{width:2px;background:#e8dcc0aa}
 .wd-sh{position:absolute;top:44%;width:56px;height:18px;margin-left:-28px;border-radius:9px;background:linear-gradient(#c98f4a,#74412a);border:2px solid #2b1b22}
 .wd-z{position:absolute;top:30%;bottom:30%;width:12%;background:#7fe07a33;border:2px solid #7fe07a88;border-radius:8px}.wd-z.l{left:-2%}.wd-z.r{right:-2%}`;document.head.appendChild(s)})();
+/* ---------- 6.50 (acc1, Roadmap R16 + C69, Twister 15:20 «استعمل الدوكمنت») the deep mine, new moves, boss phases ----------
+   1) The deep mine has risks you answer with your hands (window.__mr in test builds; window.__mrKind / __mrAuto force them):
+      - from floor 6 «صخر بيقع»: a rock shakes loose over one side of you; tap the other side to step away (−2 health if not).
+      - from floor 9 «غاز»: a green cloud; hold «اكتم نفسك» until the bar fills (−1 health if you let go early).
+      - from floor 12 «الهوا تقيل»: an air meter (6) drops one a rock; at 0 pump the bellows 5 times fast or lose 2 health.
+      - from floor 6 «عِرق نادر»: three glints; tap them all for the floor's best ore. Rare stones in a rock come 30% less often.
+      The floor tag and the goal list say which risks the floor has. خفة widens the windows; the thief gets more.
+   2) C69: the mine's bands take the ore's own colour (emerald green, gold, silver, turquoise, enhancement stones), not generic blue.
+   3) Two new moves for each class (levels 11 and 13), data moves run by spAct.
+   4) Boss phases: under half health a boss is in phase 2 (p149's anger); under a quarter phase 3. In phase 2/3 a boss may wind up a
+      big sweep: one side of the screen goes red; swipe or tap the other side to dodge it all. Miss and it hits ×1.8.
+      window.__bp in test builds; window.__bpForce makes the next boss turn a sweep; window.__bpAuto true/false answers it. */
+const MR={busy:0};
+const mrOn=()=>!((window.__r||window.__t||window.__q||window.__y)&&!window.__mr);
+function mrWin(h,ms){let d=0;try{d=ST(h,'خفة')}catch(e){}return ms*(1+.04*Math.max(0,d))*(h.cls==='حرامي'?1.25:1)}
+const MR_RISK=[['fall',6,'صخر بيقع','Falling rock'],['gas',9,'غاز','Gas'],['air',12,'هوا تقيل','Thin air'],['vein',6,'عِرق نادر','Rare vein']];
+const mrRisks=F=>MR_RISK.filter(r=>(F||1)>=r[1]);
+function mrHurt(h,n,at){h.hp=Math.max(1,(h.hp|0)-n);try{saveHero()}catch(e){}try{SFX.bad();vib([60,30,60]);floatAt(at||$('#gxStage'),ae(`−${n} صحة`,`−${n} health`),'#ff8a7a','',26)}catch(e){}}
+/* p9b's mine lives in a closed block: its hooks are MNH (rock / brk / goal) and its functions come through gxDev */
+const MRD=()=>gxDev||{},gxVisit=k=>MRD().gxVisit(k),mnBand=F=>MRD().mnBand(F),mnBandFix=(h,F,k)=>MRD().mnBandFix(h,F,k),mnChips=()=>MRD().mnChips(),mnSlot=()=>MRD().mnSlot(),mnBtn=()=>MRD().mnBtn(),mnGoal=()=>MRD().mnGoal();
+const GXB=v=>{try{MRD().GX.busy=v}catch(e){}};
+/* rare stones in a rock: 30% of them become a plain ore of the floor (the vein is the new way to find them) */
+MNH.rock=(h,F,k)=>mrOn()&&(k==='turq'||k==='emerald')&&Math.random()<.3?mnBandFix(h,F,'__none'):k;
+/* the overlay inside the mine stage */
+function mrLayer(cls,html,say){MR.busy=1;GXB(1);const st=$('#gxStage');const L=document.createElement('div');L.className='mr-l '+cls;L.style.direction='ltr';
+  L.innerHTML=`${html}<div class="mr-say" style="direction:${EN?'ltr':'rtl'}">${say}</div>`;st.appendChild(L);return L}
+function mrEnd(L,ms,fn){setTimeout(()=>{try{L.remove()}catch(e){}MR.busy=0;GXB(0);fn&&fn();try{if(S.screen==='mine'){mnSlot();mnBtn();mnGoal()}}catch(e){}},ms)}
+const mrAuto=()=>window.__mrAuto!=null;
+function mrFall(){const h=S.hero,side=Math.random()<.5?0:1,win=mrWin(h,1150);
+  const L=mrLayer('fall',`<div class="mr-half${side?'':' bad'}" data-s="0"><i class="mr-rk"></i></div><div class="mr-half${side?' bad':''}" data-s="1"><i class="mr-rk"></i></div><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
+    T(ae('صخرة هتقع! {اطلع|اطلعي} الناحية التانية!','A rock is coming down! Get to the other side!')));
+  try{SFX.crumble();vib(40)}catch(e){}let over=0;const say=L.querySelector('.mr-say');
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);L.classList.add(ok?'won':'lost');
+    if(ok){say.innerHTML=T(ae('{نطّيت|نطّيتي} بعيد! الصخرة وقعت جنبك.','You jumped clear! It crashed beside you.'));try{SFX.dodge?SFX.dodge():SFX.tick(640)}catch(e){}bump('mrDodge')}
+    else{say.innerHTML=ae('الصخرة نزلت عليك.','The rock came down on you.');mrHurt(h,2,say);try{shake()}catch(e){}}mrEnd(L,1100)};
+  const tm=setTimeout(()=>fin(window.__mrAuto===true),mrAuto()?60:win);
+  L.querySelectorAll('.mr-half').forEach(x=>x.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fin(mrAuto()?window.__mrAuto:+x.dataset.s!==side)}))}
+function mrGas(){const h=S.hero,need=1500,win=mrWin(h,1400);
+  const L=mrLayer('gas',`<div class="mr-cloud"></div><button class="btn mr-hold" id="mrHold"><span>${T(ae('{اكتم|اكتمي} نفسك','Hold your breath'))}</span><i id="mrHf"></i></button><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
+    T(ae('غاز طالع من الشق! {دوس|دوسي} {وامسك|وامسكي} لحد ما الهوا يعدّي.','Gas from the crack! Press and hold until it passes.')));
+  try{SFX.smoke?SFX.smoke():SFX.tick(180);vib(30)}catch(e){}let over=0,t0=0,raf=0;const say=L.querySelector('.mr-say'),B=L.querySelector('#mrHold'),hf=L.querySelector('#mrHf');
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);cancelAnimationFrame(raf);L.classList.add(ok?'won':'lost');
+    if(ok){say.innerHTML=ae('الغاز عدّى وانت كاتم نفسك.','The gas passed while you held your breath.');try{lifeXP(h,'mine',1);SFX.tick(820)}catch(e){}bump('mrGas')}
+    else{say.innerHTML=ae('شمّيت الغاز ودُخت.','You breathed the gas and reeled.');mrHurt(h,1,say)}mrEnd(L,1100)};
+  const tick=()=>{if(over||!t0)return;const k=(performance.now()-t0)/need;hf.style.width=Math.min(100,k*100)+'%';if(k>=1)return fin(true);raf=requestAnimationFrame(tick)};
+  const tm=setTimeout(()=>{if(!t0)fin(window.__mrAuto===true)},mrAuto()?60:win);
+  B.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(mrAuto())return fin(window.__mrAuto);if(over||t0)return;t0=performance.now();clearTimeout(tm);try{B.setPointerCapture(e.pointerId)}catch(x){}raf=requestAnimationFrame(tick)});
+  const let_=()=>{if(t0&&!over)fin(false)};B.addEventListener('pointerup',let_);B.addEventListener('pointercancel',let_)}
+function mrAir(V){const h=S.hero,need=5,win=mrWin(h,2400);
+  const L=mrLayer('air',`<div class="mr-lamp"></div><button class="btn mr-pump" id="mrPump">${ae('انفخ!','Pump!')}<small id="mrPn">0/${need}</small></button><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
+    T(ae('الهوا خلص! {انفخ|انفخي} في المنفاخ بسرعة.','The air is gone! Pump the bellows, fast.')));
+  try{SFX.tired?SFX.tired():SFX.tick(200);vib(30)}catch(e){}let over=0,n=0;const say=L.querySelector('.mr-say'),pn=L.querySelector('#mrPn');
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);L.classList.add(ok?'won':'lost');V.air=ok?6:3;
+    if(ok){say.innerHTML=ae('الهوا رجع. نفَس عميق.','Fresh air. A deep breath.');try{SFX.tick(900)}catch(e){}bump('mrAir')}
+    else{say.innerHTML=ae('اتخنقت شوية قبل ما الهوا يرجع.','You choked before the air came back.');mrHurt(h,2,say)}mrEnd(L,1100)};
+  const tm=setTimeout(()=>fin(window.__mrAuto===true),mrAuto()?60:win);
+  L.querySelector('#mrPump').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(mrAuto())return fin(window.__mrAuto);if(over)return;n++;pn.textContent=`${n}/${need}`;
+    try{SFX.tick(400+n*90);vib(10);L.querySelector('.mr-lamp').animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:180})}catch(x){}if(n>=need)fin(true)})}
+/* the floor's best ore for a vein */
+function mrBest(F){const b=mnBand(F);if(b.g&&b.g.length)return b.g[0];const ord=['gold','silver','iron','coal','copper'];return ord.find(k=>k in b.w)||'iron'}
+function mrVein(V){const h=S.hero,F=V.floor||1,k=mrBest(F),win=mrWin(h,2600),P=[[22,30],[70,26],[46,58],[18,66],[78,62],[50,22]].sort(()=>Math.random()-.5).slice(0,3);
+  const L=mrLayer('vein',`${P.map(([x,y],i)=>`<button class="mr-gl" data-i="${i}" style="left:${x}%;top:${y}%;--oc:${(MAT[k]||{}).c||'#fff'}" aria-label="${ae('لمعة','Glint')}"></button>`).join('')}<i class="mr-bar" style="animation-duration:${win|0}ms"></i>`,
+    T(ae(`عِرق ${resN(k)} بيلمع! {المس|المسي} اللمعات التلاتة بسرعة.`,`A vein is glinting! Tap all three glints, fast.`)));
+  try{SFX.sparkle();vib(20)}catch(e){}let over=0,got=0;const say=L.querySelector('.mr-say');
+  const fin=()=>{if(over)return;over=1;clearTimeout(tm);const n=got>=3?(MAT[k]&&MAT[k].tier>=2?1:2):got>=2?1:0;L.classList.add(n?'won':'lost');
+    if(n){addRes(h,k,n);V.n[k]=(V.n[k]||0)+n;saveHero();say.innerHTML=ae(`طلّعت ${n} ${resN(k)} من العِرق!`,`You pulled ${n} ore from the vein!`);try{SFX.turq?SFX.turq():SFX.sparkle()}catch(e){}bump('mrVein')}
+    else say.innerHTML=ae('العِرق ضاع في الصخر.','The vein faded into the rock.');mrEnd(L,1200,()=>{try{mnChips()}catch(e){}})};
+  const tm=setTimeout(()=>{if(window.__mrAuto===true)got=3;fin()},mrAuto()?60:win);
+  L.querySelectorAll('.mr-gl').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(over||b.classList.contains('got'))return;b.classList.add('got');got++;try{SFX.tick(700+got*120);pop(b,[(MAT[k]||{}).c||'#fff','#ffffff'],12)}catch(x){}if(got>=3)fin()}))}
+/* after a rock breaks: the air goes down, and sometimes something happens */
+MNH.brk=function(R){const V=gxVisit('mine'),F=R&&R.f||V.floor||1;
+  if(!mrOn()||F<6)return;if(F>=12){V.air=(V.air==null?6:V.air)-1}
+  let kind=window.__mrKind||'';if(!kind){if(F>=12&&V.air<=0)kind='air';else{const x=Math.random();kind=x<.06?'vein':x<.15?'fall':(F>=9&&x<.22)?'gas':''}}
+  if(kind==='air'&&F<12)kind='';if(kind==='gas'&&F<9)kind='';
+  if(kind)setTimeout(()=>{if(S.screen!=='mine'||MR.busy||!$('#gxStage'))return;if(kind==='fall')mrFall();else if(kind==='gas')mrGas();else if(kind==='air')mrAir(V);else mrVein(V)},900);
+  else if(F>=12)setTimeout(mrAirUI,450)};
+/* the air meter on deep floors and the risk tag on the floor label */
+function mrAirUI(){const st=$('#gxStage'),V=gxVisit('mine'),F=V.floor||1;if(!st)return;let a=$('#mrAirM');if(F<12||!mrOn()){if(a)a.remove();return}
+  if(!a){a=document.createElement('div');a.id='mrAirM';a.className='mr-airm';st.appendChild(a)}const n=V.air==null?6:Math.max(0,V.air);
+  a.innerHTML=`<span>${ae('الهوا','Air')}</span>${Array.from({length:6},(_,i)=>`<i class="${i<n?'on':''}${n<=2&&i<n?' low':''}"></i>`).join('')}`}
+MNH.goal=function(){const g=$('#gxGoal'),F=gxVisit('mine').floor||1,rs=mrRisks(F);mrAirUI();
+  const f=$('#mnFl');if(f){const o=f.querySelector('.mr-tag');if(o)o.remove();if(rs.length&&mrOn())f.insertAdjacentHTML('beforeend',`<i class="mr-tag">⚠ ${rs.filter(x=>x[0]!=='vein').length}</i>`)}
+  if(g&&rs.length&&mrOn())g.insertAdjacentHTML('beforeend',`<div class="mr-gx"><span>⚠ ${ae('في الدور ده','On this floor')}: <b>${rs.map(x=>EN?x[3]:x[2]).join(EN?', ':'، ')}</b>. ${T(ae('{خليك|خليكي} صاحي: هتحتاج إيدك.','Stay sharp: you will need your hands.'))}</span></div>`)};
+/* C69: ore colours on the mine's bands */
+const MR_AR={'زمرد':'emerald','فيروز':'turq','دهب':'gold','فضة':'silver','Emerald':'emerald','Turquoise':'turq','Gold':'gold','Silver':'silver'};
+const MR_OC=['emerald','turq','gold','silver','stone1','stone2','stone3','iron','copper','coal'];
+{const n0=band;band=function(s1,t,s2,o){try{if(S.screen==='mine'&&o&&(!o.color||o.color==='blue')){const k=o.key&&MR_OC.includes(o.key)?o.key:MR_AR[String(t).replace(/!$/,'')]||MR_OC.find(x=>MAT[x]&&(t===MAT[x].n+'!'||t===resN(x)+'!'))||(MNH.k&&MR_OC.includes(MNH.k)?MNH.k:null);
+  if(k)o=Object.assign({},o,{color:'ore-'+k})}}catch(e){}return n0.call(this,s1,t,s2,o)}}
+(function(){const css=MR_OC.filter(k=>MAT[k]).map(k=>`#band.ore-${k} .t{color:${MAT[k].c};text-shadow:0 0 22px ${MAT[k].c}cc,0 3px 0 #0008}`).join('\n');const s=document.createElement('style');s.textContent=css;document.head.appendChild(s)})();
+
+/* ---- 3) two new moves for every class ---- */
+const C181=(id,lv,cost,n,d,x)=>({id,lv,cost,n,d,roll:x.roll||null,tgt:x.tgt?1:0,spx:x});
+const MV181={
+  'محارب':[C181('war_cleave',11,2,'ضربة كاسحة','سيفك بيلف على كل الوحوش، وضربتهم الجاية نص',{roll:'قوة',all:1,ico:'storm',weak:1,dmg:h=>rnd(6)+2+Math.ceil(WDMG(h)/2)}),
+    C181('war_stand',13,1,'ثبّت رجلك','{بتثبت|بتثبتي} في الأرض: درع لضربتين، وضرباتك الـ2 الجاية +3',{ico:'shield',shield:2,sharp:{a:3,n:2}})],
+  'حرامي':[C181('th_dark',11,1,'طعنة في الضلمة','طعنة بتسرق صحة من الوحش وتسمّه',{roll:'خفة',tgt:1,ico:'venom',steal:'all',poison:h=>[2,2],dmg:h=>rnd(4)+1+WDMG(h)}),
+    C181('th_vanish',13,2,'اختفاء','{بتختفي|بتختفي} في الضلمة: أول ضربتين مش هييجوا، وضربتك الجاية +4',{ico:'smoke',smoke:2,sharp:{a:4,n:1}})],
+  'ساحر':[C181('mg_fire',11,2,'نار ماسكة','نار على كل الوحوش، وبتفضل تحرقهم',{roll:'ذكاء',all:1,ico:'storm',burn:h=>2+Math.floor(h.lvl/4),dmg:h=>rnd(4)+2}),
+    C181('mg_mirror',13,2,'مراية','مراية سحرية بتمص 3 ضربات',{ico:'shield',shield:3})],
+  'معالج':[C181('he_dawn',11,2,'نور الفجر','نور بيضرب كل الوحوش، والأرواح بتفوّت دورها، {وانت|وانتي} ورفيقك صحة +3',{roll:'حكمة',all:1,ico:'mass',skipSpirit:1,heal:3,dmg:h=>rnd(4)+2}),
+    C181('he_bless',13,1,'بركة','الفريق بيرجع 3 صحة كل دور لمدة 3 أدوار، وضربة رفيقك أكيد',{ico:'regen',regen:{a:3,n:3},cheer:1})]};
+try{MV181[MU]=[C181('mu_lock',11,2,'كتفة','{بتكتّف|بتكتّفي} الوحش: بيفوّت دورين',{roll:'قوة',tgt:1,ico:'bash',skip:2,dmg:h=>rnd(4)+2+WDMG(h)}),
+    C181('mu_breath',13,1,'نفَس المصارع','صحة +4 وكمان، وضرباتك الـ3 الجاية +2',{ico:'rage',heal:h=>4+Math.floor(h.lvl/3),sharp:{a:2,n:3}})];
+  MV181[BL]=[C181('bl_trick',11,1,'فهلوة','حركة ابن بلد: بتسرق صحة والوحش ضربته الجاية نص',{roll:'حضور',tgt:1,ico:'smoke',steal:1,weak:1,dmg:h=>rnd(4)+1+WDMG(h)}),
+    C181('bl_zaffa',13,2,'زفّة','الحارة بتزفّك: الفريق بيرجع 2 كل دور، ضرباتك الـ2 الجاية +2، ورفيقك ضربته أكيد',{ico:'cheer',regen:{a:2,n:3},sharp:{a:2,n:2},cheer:1})]}catch(e){}
+Object.keys(MV181).forEach(c=>{if(!CSK[c])return;MV181[c].forEach(s=>{if(CSK[c].some(x=>x.id===s.id))return;CSK[c].push(s);try{SKD[s.id]=spkUp(s.spx)}catch(e){}try{if(typeof SKI!=='undefined'&&!SKI[s.id])SKI[s.id]=SKI[s.spx.ico]||SKI.bash}catch(e){}})});
+try{L10N({'ضربة كاسحة':'Sweeping blow','ثبّت رجلك':'Plant your feet','طعنة في الضلمة':'Stab in the dark','اختفاء':'Vanish','نار ماسكة':'Clinging fire','مراية':'Mirror','نور الفجر':'Dawn light','بركة':'Blessing','كتفة':'Lock','نفَس المصارع':'Wrestler\'s breath','فهلوة':'Street trick','زفّة':'Wedding march',
+  'سيفك بيلف على كل الوحوش، وضربتهم الجاية نص':'Your blade sweeps every beast, and their next blow is halved','طعنة بتسرق صحة من الوحش وتسمّه':'A stab that steals health and poisons','نار على كل الوحوش، وبتفضل تحرقهم':'Fire on every beast that keeps burning',
+  'مراية سحرية بتمص 3 ضربات':'A magic mirror that soaks 3 blows','حركة ابن بلد: بتسرق صحة والوحش ضربته الجاية نص':'A street move: steal health, and its next blow is halved'});
+  L10NG({'{بتثبت|بتثبتي} في الأرض: درع لضربتين، وضرباتك الـ2 الجاية +3':'You dig in: a guard for two blows, and your next 2 hits +3','{بتختفي|بتختفي} في الضلمة: أول ضربتين مش هييجوا، وضربتك الجاية +4':'You vanish: the next two blows miss, and your next hit +4',
+    'نور بيضرب كل الوحوش، والأرواح بتفوّت دورها، {وانت|وانتي} ورفيقك صحة +3':'Light hits every beast, spirits lose their turn, and you and your friend heal 3','الفريق بيرجع 3 صحة كل دور لمدة 3 أدوار، وضربة رفيقك أكيد':'The team heals 3 a turn for 3 turns, and your friend\'s hit lands',
+    '{بتكتّف|بتكتّفي} الوحش: بيفوّت دورين':'You pin the beast: it loses two turns','صحة +4 وكمان، وضرباتك الـ3 الجاية +2':'Health +4 and more, and your next 3 hits +2','الحارة بتزفّك: الفريق بيرجع 2 كل دور، ضرباتك الـ2 الجاية +2، ورفيقك ضربته أكيد':'The street marches with you: the team heals 2 a turn, your next 2 hits +2, your friend\'s hit lands'})}catch(e){}
+
+/* ---- 4) boss phases and the telegraphed sweep ---- */
+const BP={};
+const bpOn=()=>{try{return afOn()&&!((window.__r||window.__t||window.__q||window.__y)&&!window.__bp)}catch(e){return false}};
+const bpBoss=e=>!!(e&&(e.boss||e.base&&e.base.boss));
+function bpPhase(e){if(!e||!e.max)return 1;return e.hp<=e.max*.25?3:(e.enr||e.hp<=e.max/2)?2:1}
+async function bpAnnounce(e,p){const k='p'+p;e.bpS=e.bpS||{};if(e.bpS[k])return;e.bpS[k]=1;try{flash(p===3?'#e2483f':'#ff9a3c');shake();vib([40,30,120]);SFX.foeCry&&SFX.foeCry(e.art)}catch(x){}
+  try{band(ae(p===3?'المرحلة الأخيرة':'المرحلة التانية',p===3?'Final phase':'Phase two'),`${e.name}`,ae(p===3?FF(e,'آخر نفس فيه.. هيكسح كتير','آخر نفس فيها.. هتكسح كتير'):FF(e,'اتجنن، وبيلم نفسه لضربة كبيرة','اتجننت، وبتلم نفسها لضربة كبيرة'),p===3?'Its last breath: it sweeps often':'Enraged, it winds up big sweeps'),{color:'red',dur:1500,sound:false})}catch(x){}
+  await sleep(window.__bpAuto!=null?50:1200)}
+function bpDodge(e){return new Promise(res=>{const h=S.hero,side=Math.random()<.5?0:1,win=mrWin(h,1250);const L=document.createElement('div');L.className='bp-l';L.style.direction='ltr';
+  L.innerHTML=`<div class="bp-h${side?'':' bad'}" data-s="0"></div><div class="bp-h${side?' bad':''}" data-s="1"></div><div class="bp-say" style="direction:${EN?'ltr':'rtl'}">${T(ae(`${e.name} ${FF(e,'هيكسح','هتكسح')} الناحية الحمرا! {اسحب|اسحبي} للناحية التانية!`,'A big sweep is coming at the red side! Swipe to the other side!'))}</div><i class="bp-arr ${side?'l':'r'}"></i><i class="mr-bar" style="animation-duration:${win|0}ms"></i>`;
+  (document.getElementById('app')||document.body).appendChild(L);try{AFS.growl()}catch(x){}try{vib(40)}catch(x){}let over=0,x0=null;
+  const fin=ok=>{if(over)return;over=1;clearTimeout(tm);L.classList.add(ok?'won':'lost');try{const m=$('#meCard');if(m&&ok)m.animate([{transform:'translateX(0)'},{transform:`translateX(${side?-60:60}px)`},{transform:'translateX(0)'}],{duration:420,easing:'ease-out'})}catch(x){}
+    setTimeout(()=>{L.remove();res(ok)},window.__bpAuto!=null?40:520)};
+  const tm=setTimeout(()=>fin(window.__bpAuto===true),window.__bpAuto!=null?60:win);
+  L.addEventListener('pointerdown',ev=>{ev.preventDefault();x0=ev.clientX;if(window.__bpAuto!=null)return fin(window.__bpAuto);const t=ev.target.closest('.bp-h');if(t&&!t.classList.contains('bad'))fin(true)});
+  L.addEventListener('pointermove',ev=>{if(x0==null||over)return;const dx=ev.clientX-x0;if(Math.abs(dx)>40)fin(side?dx<0:dx>0)});
+  L.addEventListener('pointerup',ev=>{if(x0!=null&&!over){const t=document.elementFromPoint(ev.clientX,ev.clientY);const hh=t&&t.closest&&t.closest('.bp-h');if(hh&&hh.classList.contains('bad'))fin(false)}x0=null})})}
+{const t0=foeTurn;foeTurn=async function(e,o){const C=S.combat,h=S.hero;
+  try{if(C&&h&&bpOn()&&bpBoss(e)&&e.hp>0&&h.hp>0&&!C.tutorial){const p=bpPhase(e);if(p>=2)await bpAnnounce(e,p);
+    const go=window.__bpForce?(window.__bpForce=0,1):p>=2&&Math.random()<(p===3?.6:.35);
+    if(go&&!(C.me&&C.me.smoke)){AF.atk=e;await say(`${e.name} ${FF(e,'بيلم نفسه','بتلم نفسها')} لضربة كبيرة..`,'bad',window.__bpAuto!=null?50:500);const ok=await bpDodge(e);combat();
+      if(ok){floatAt($('#meCard'),G('اتفاديت!','اتفاديتي!'),'#a6e3a0','crit',28);try{SFX.dodge()}catch(x){}bump('bpDodge');await say(`{اتفاديت|اتفاديتي} الضربة الكبيرة كلها!`,'good');return {d:0,me:1}}
+      let d=Math.max(1,Math.round((e.dmg|0)*1.8));d=Math.max(1,d-ARMcut(h,d));
+      if(C.me.shield){if((C.me.shield.n||1)>1)C.me.shield.n--;else delete C.me.shield;combat();try{SFX.absorb();glow($('#meCard'))}catch(x){}await say('الدرع مص الضربة الكبيرة!','good');return {d:0,me:1}}
+      hurtMe(d);await say(`الضربة الكبيرة جت {فيك|فيكي}: -${d} صحة.`,'bad');if(h.hp<=0&&await fall())return {end:true};return {d,me:1}}}}catch(x){console.warn(x)}
+  return t0.apply(this,arguments)}}
+(function(){const s=document.createElement('style');s.textContent=`
+.mr-l{position:absolute;inset:0;z-index:8;touch-action:none;animation:agIn .15s ease-out both}
+.mr-say{white-space:normal;overflow-wrap:break-word;position:absolute;left:24px;right:24px;top:8px;padding:8px 10px;border-radius:12px;background:#1a1410ee;border:2px solid #f3c14d;color:#fff;font-weight:800;font-size:15px;text-align:center;z-index:3}
+.mr-l.won .mr-say{border-color:#7fe07a}.mr-l.lost .mr-say{border-color:#e2483f}
+.mr-bar{position:absolute;left:20%;right:20%;bottom:2%;height:6px;border-radius:3px;background:#ffd36a;animation:nvBar linear forwards;z-index:3}.mr-l.won .mr-bar,.mr-l.lost .mr-bar{display:none}
+.mr-l.fall{display:flex}.mr-half{flex:1;position:relative;cursor:pointer;background:#0006}.mr-half.bad{background:repeating-linear-gradient(135deg,#e2483f55 0 12px,#0000 12px 24px);box-shadow:inset 0 0 0 3px #e2483f}
+.mr-half .mr-rk{display:none}.mr-half.bad .mr-rk{display:block;position:absolute;left:50%;top:14%;width:64px;height:52px;margin-left:-32px;border-radius:40% 50% 45% 55%;background:#5a4a3c;box-shadow:inset -6px -6px 0 #3a2e24,0 0 0 2px #1a120c;animation:mrWob .18s linear infinite alternate}
+.mr-l.fall.lost .mr-half.bad .mr-rk,.mr-l.fall.won .mr-half.bad .mr-rk{animation:mrDrop .3s ease-in forwards}
+@keyframes mrWob{to{transform:rotate(6deg) translateX(3px)}}@keyframes mrDrop{to{transform:translateY(160px)}}
+.mr-cloud{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#7fe07a88,#4a8a2a55 45%,#0000 75%);animation:mrGas 1.4s ease-out both}
+@keyframes mrGas{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.mr-hold,.mr-pump{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:auto;min-height:64px;min-width:200px;font-size:18px;overflow:hidden;z-index:2}
+.mr-hold i{position:absolute;left:0;bottom:0;height:6px;width:0;background:#7fe07a}.mr-hold span{position:relative}
+.mr-pump small{display:block;font-size:12px}
+.mr-lamp{position:absolute;left:50%;top:30%;width:44px;height:58px;margin-left:-22px;border-radius:10px 10px 6px 6px;background:radial-gradient(circle at 50% 60%,#ffd27a,#a8641a 60%,#3a2a1a);animation:mrFl .3s steps(2) infinite}
+.mr-l.air{background:#000a}.mr-l.air.won{background:#0004}
+@keyframes mrFl{50%{opacity:.4}}
+.mr-gl{position:absolute;width:56px;height:56px;margin:-28px;border:0;border-radius:50%;background:radial-gradient(circle,#fff 0 12%,var(--oc) 30%,#0000 70%);cursor:pointer;animation:hgAn .35s ease-in-out infinite alternate}
+.mr-gl.got{opacity:.15;animation:none;pointer-events:none}
+.mr-airm{position:absolute;inset-inline-start:24px;bottom:8px;display:flex;align-items:center;gap:3px;padding:3px 8px;border-radius:10px;background:#000a;font-size:11px;font-weight:800;color:#bfe6ff;z-index:4}
+.mr-airm span{margin-inline-end:4px}.mr-airm i{width:8px;height:12px;border-radius:2px;background:#ffffff22}.mr-airm i.on{background:#7fc8ff}.mr-airm i.low{background:#ff8a6a}
+.mr-tag{font-style:normal;margin-inline-start:6px;padding:0 6px;border-radius:8px;background:#e2483f;color:#fff;font-size:11px;font-weight:900}
+.mr-gx b{color:#ffb08a}
+.bp-l{position:fixed;inset:0;z-index:60;display:flex;touch-action:none;animation:agIn .12s ease-out both}
+.bp-h{flex:1;background:#0003}.bp-h.bad{background:repeating-linear-gradient(135deg,#e2483f66 0 14px,#0000 14px 28px);box-shadow:inset 0 0 0 4px #e2483f;animation:bpPulse .25s ease-in-out infinite alternate}
+@keyframes bpPulse{to{background-color:#e2483f33}}
+.bp-say{white-space:normal;position:absolute;left:10px;right:10px;top:18%;padding:10px 12px;border-radius:14px;background:#1a1410f0;border:2px solid #e2483f;color:#fff;font-weight:900;font-size:16px;text-align:center}
+.bp-arr{position:absolute;top:48%;width:0;height:0;border:26px solid transparent}.bp-arr.l{left:calc(75% - 26px);border-left:0;border-right:40px solid #7fe07a}.bp-arr.r{left:calc(25% - 14px);border-right:0;border-left:40px solid #7fe07a}
+.bp-l.won .bp-say{border-color:#7fe07a}.bp-l.won .bp-h.bad,.bp-l.lost .bp-h.bad{animation:none}.bp-l .mr-bar{bottom:6%}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
