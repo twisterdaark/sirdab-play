@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.78',d:'14 أكتوبر',add:['خلفيات المعارك اترسمت من جديد بكسل: غيط، بلد، ترعة، جبل، قصر، مغارة. والسما بتتغير مع الوقت: فجر، صبح، ضهر، عصر، مغرب، ليل.','«أهدافي» بقت تدّي حاجات ليها قيمة: فلوس أكتر 3 مرات، وأحجار تقوية، وورق تدريب، وجواهر، وحاجات من الصنعة نفسها. والجوايز باينة بالصور.','طلبات لوحة البلد بقت تدّي حجر تقوية كمان (أزرق مرة من 4).','السوق بقى أقصر: كل حاجة سطر واحد، {دوس|دوسي} عليها عشان تشوف الكمية والتفاصيل، وفيه بحث.','عند الحداد: البحث بقى لكل تاب لوحده (الخامات، السبك، العدة، اعمل).','مهارات زي «تسقية» بقت تتراكم: لو {استعملتها|استعملتيها} أكتر من مرة الضربات بتزيد بدل ما ترجع للحد.','مخاطر المنجم: وهي ظاهرة مفيش زرار تاني يتداس، والإشعارات مش بتغطيها، والشاشة بتنزل عليها لوحدها.','الصبّ في السبك بقى متسامح أكتر: لو فوق الخط بحاجة صغيرة يتحسب صبّة صافية.','تفكيك قطعة «بديع» أو «أعجوبة» بيسألك مرة زيادة قبل ما يفكها.','«سلاح بروح» بقى بيطلع أكتر: من الحديد وفوق لو {عملته|عملتيه} بإيدك «ممتاز» أو «تحفة» فيه فرصة، والفضة وفوق فرصتها أكبر. ولو مطلعش لفترة طويلة، اللي بعده «كويس» أو أحسن بيطلع بروح أكيد.']},
 {v:'6.77',d:'14 أكتوبر',add:['الصحاب بقوا بالـID والاسم بدل الأكواد: {اختار|اختاري} الـID بتاعك من البروفايل أو «صحابي»، وصحابك {يضيفوك|يضيفوكي} بـ@الـID (الكود القديم لسه شغال).','«صحابي» بقى مربع في البلد على طول، وفيه بحث عن صاحب بالاسم أو الـID.','الهدايا: {تقدر|تقدري} تبعت أي حاجة من الشنطة أو المخزن (خامات، جرع، أكل، قزايز…)، وفيه بحث.','المبارزة بقت أونلاين بس: طلب بيوصل لصاحبك وهو أونلاين، و{بتلعبوا|بتلعبوا} انتو الاتنين بشكلكم وصحتكم الحقيقية، وفيه زرار «🏳️ انسحب». المبارزة ضد البوت اتشالت.','الشات: الساعة تحت كل رسالة، وإيموجي أكتر.','زرار «عدّل الشكل» بقى في النص ومش داخل في الكارت اللي تحته.','في القتال: النرد بيفضل في الصندوق برقمه بعد ما {تختار|تختاري} الحركة، وشنطة القتال فيها بحث. ولو الصد في وقته قلب الرمية نجاح، بيكتب «في وقته!» بدل «نجاح!» لوحدها.','«قدراتي»: كارت كل قدرة بقى بلونه ومترتب، و«أعلى مستوى» مش بتتكتب مرتين.','صوت السبك بقى بيشتغل وانت بتصب، والميني جيم بتخلص أول ما الصب يخلص.']},
 {v:'6.76',d:'14 أكتوبر',add:['كل حاجة بتتعمل بالإيد بقى عليها «🧠 فهمك 0/5». {دوس|دوسي} عليه يقولك النقط اللي معاك من كام للمستوى الجاي، وكل مستوى بيديك إيه.','لو {عملت|عملتي} «بديع» فهمك بيزيد 3 نقط زيادة، و«أعجوبة» 5.']},
 {v:'6.75',d:'14 أكتوبر',add:['«بيتك»: الأوض بقت مربعات مرسومة زي الفرش: الورشة والأوضة والمتحف كل واحدة بصورتها ومستواها والتمن تحتها، {دوس|دوسي} عليها {تبنيها|تبنيها} أو {تكبّرها|تكبّريها}.']},
@@ -24938,7 +24939,8 @@ async function spAct(h,f,r,s){const C=S.combat,c=S.comp,x=spLvX(h,s),me=$('#meCa
   else if(x.heal){const n=typeof x.heal==='function'?x.heal(h):x.heal,a=Math.min(n,MXH(h)-h.hp);if(a>0){h.hp+=a;healFx(me,a)}
     if(c&&c.hp>0){const b=Math.min(n,c.max-c.hp);if(b>0){c.hp+=b;healFx($('#compCard'),b)}}out.push(`صحة +${n}`)}
   if(x.regen){fxOn(C.me,'regen',x.regen);if(c&&c.hp>0)fxOn(C.cp,'regen',x.regen);if(typeof coAls==='function')coAls().forEach(a=>{if(a.hp>0)a.regen=Object.assign({},x.regen)});SFX.regen&&SFX.regen();out.push(`الفريق بيرجع ${x.regen.a} كل دور`)}
-  if(x.sharp){C.me.sharp=Object.assign({t:Date.now()},x.sharp);SFX.equipMetal&&SFX.equipMetal();out.push(`ضرباتك الجاية +${x.sharp.a}`)}
+  if(x.sharp){const o0=C.me.sharp;C.me.sharp=o0&&(o0.n|0)>0?{t:Date.now(),a:Math.max(o0.a|0,x.sharp.a|0),n:(o0.n|0)+(x.sharp.n|0)}:Object.assign({t:Date.now()},x.sharp);   /* 6.78 (Twister 23:38): using it again adds its hits instead of resetting them */
+    SFX.equipMetal&&SFX.equipMetal();out.push(`ضرباتك الجاية +${x.sharp.a}`)}
   if(x.shield){fxOn(C.me,'shield',{n:x.shield});SFX.shieldUp&&SFX.shieldUp();glow(me);out.push(x.shield>1?'درع لضربتين':'درع لضربة')}
   if(x.smoke){fxOn(C.me,'smoke',{n:x.smoke});SFX.smoke&&SFX.smoke();pop(me,['#bdb6ae','#8a847c'],26);out.push('دخان')}
   if(x.cheer&&c&&c.hp>0){fxOn(C.cp,'cheer');out.push(`${c.name} ضربت${CG('ه','ها')} الجاية أكيد`)}
@@ -51860,7 +51862,7 @@ function cmgPour(what){return new Promise(res=>{const T0=.62+Math.random()*.18;
   const sc=s.querySelector('#cmgSc'),cr=s.querySelector('#cmgCr'),st=s.querySelector('#cmgSt'),fi=s.querySelector('#cmgFi');let lv=0,on=0,over=0,last=0,raf=0;const sp=.34;
   const draw=()=>{fi.style.height=(Math.min(1,lv)*100).toFixed(1)+'%';cr.classList.toggle('tip',!!on);st.classList.toggle('on',!!on)};
   const tick=t=>{if(over)return;if(last&&on){lv+=(t-last)/1000*sp*(1+lv*.6);if(lv>=1){lv=1;fin()}}last=t;draw();raf=requestAnimationFrame(tick)};
-  const fin=()=>{if(over)return;over=1;on=0;draw();cancelAnimationFrame(raf);const d=Math.abs(lv-T0),q=window.__cmgAuto||(d<=.04?'perfect':d<=.1?'good':'miss');
+  const fin=()=>{if(over)return;over=1;on=0;draw();cancelAnimationFrame(raf);const d=lv-T0,q=window.__cmgAuto||(d>=-.04&&d<=.075?'perfect':d>=-.1&&d<=.14?'good':'miss');   /* 6.78 (Twister 23:48): a hair over the line still counts clean */
     cmgSay(s,q,T(q==='perfect'?ae('صبّة صافية! (+1 خبرة، وممكن سبيكة زيادة)','A clean pour! (+1 XP, maybe an extra ingot)'):q==='good'?ae('صبّة كويسة.','A good pour.'):lv>T0?ae('فاض شوية، بس اتسبك.','It spilled a bit, but it cast.'):ae('ناقص شوية، بس اتسبك.','A bit short, but it cast.')),1);
     setTimeout(()=>{s.remove();res(q)},window.__cmgAuto?60:900)};
   if(window.__cmgAuto){setTimeout(fin,40);return}
@@ -53581,6 +53583,17 @@ function mrPre(k,go){const h=S.hero;if(!mrOn()||mrAuto()||!h||!$('#gxStage'))ret
 .mr-how .mr-hi{font-size:40px;line-height:1}.mr-how b{font-size:18px;color:#ffd36a}.mr-how p{margin:0;font-size:14px;line-height:1.6}.mr-how .btn{min-height:48px;min-width:160px}
 .mr-l.warn{background:#e2483f22;pointer-events:auto}.mr-warn{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:56px;animation:mrWarn .25s ease-in-out infinite alternate}
 @keyframes mrWarn{to{transform:scale(1.15)}}`;document.head.appendChild(s)})();
+/* ---------- 6.78 (acc1, Twister 23:43/23:45): while a mine risk is up nothing else on the screen can be tapped
+   («اقدر ادوس علي الزراير التانيه زي هات صخره جديدة واتجاهلها»), and notices stay out of its way («الاشعارات بتغطي الخطر»):
+   the page gets .mr-lock (buttons outside the stage dimmed and dead, a capture guard eats taps), toasts and bands are hidden,
+   and the stage scrolls into view. ---------- */
+const mrLockSet=on=>{try{document.body.classList.toggle('mr-lock',!!on)}catch(e){}};
+{const l0=mrLayer;mrLayer=function(){const L=l0.apply(this,arguments);mrLockSet(1);try{const st=$('#gxStage'),r=st.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)st.scrollIntoView({block:'center'})}catch(e){}return L}}
+setInterval(()=>{if(document.body.classList.contains('mr-lock')&&(!MR.busy||S.screen!=='mine'||!document.querySelector('#gxStage .mr-l')))mrLockSet(0)},150);
+['pointerdown','click'].forEach(ev=>window.addEventListener(ev,e=>{if(!document.body.classList.contains('mr-lock'))return;const t=e.target;if(t.closest&&t.closest('.mr-l'))return;e.stopImmediatePropagation();e.preventDefault()},true));
+document.head.insertAdjacentHTML('beforeend',`<style>body.mr-lock #toasts,body.mr-lock #band{visibility:hidden!important}
+body.mr-lock #view button,body.mr-lock #view .btn,body.mr-lock #view .card{pointer-events:none}body.mr-lock #view .mr-l,body.mr-lock #view .mr-l *{pointer-events:auto}
+body.mr-lock #view button:not(.mr-l *){opacity:.45;filter:grayscale(.6)}</style>`);
 /* ---------- 6.62 (acc1, Roadmap R07): the live night and the online lists, made fair and sturdy ----------
    B24 an answer (a vote, a move, a roll) counted as sent before it reached the room: now coPutAns() tries up to 4 times and
        only then marks it; a failed send can be tapped again.
@@ -55297,6 +55310,146 @@ document.head.insertAdjacentHTML('beforeend',`<style>#app.af .af-tray .af-keep{p
 {const p0=SCREENS.profile;SCREENS.profile=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='profile')return r;view.querySelectorAll('.pf-sk').forEach(c=>{const nx=c.querySelector('.sk-nx'),x=c.querySelector('.skx');if(nx&&x&&/✦/.test(nx.textContent)&&!x.querySelector('.bar'))x.remove()})}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend',`<style>.pf-sk .sk-box{background:#00000038!important;border:1px solid #ffffff14;border-radius:12px;padding:10px 12px!important;display:flex;flex-direction:column;gap:6px;box-sizing:border-box}
 .pf-sk .sk-box .sk-up{width:100%;min-height:44px;margin:4px 0 0}.pf-sk .sk-box .skx{margin-top:2px}.pf-sk .sk-gots{gap:3px}</style>`);
+/* the craft screens: each tab («اعمل», «خامات وسبك», «العدّة» …) keeps its own search (Twister 23:32) */
+const TWQT={};
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.cro-t[data-cro]');if(!b)return;const sc=S.screen;if(!(sc in TWQ))return;
+  const st=CRO[sc]||{tab:'make'},T0=TWQT[sc]=TWQT[sc]||{};T0[st.tab||'make']=TWQ[sc]||'';
+  setTimeout(()=>{const nt=(CRO[sc]&&CRO[sc].tab)||'make';TWQ[sc]=T0[nt]||'';const i=$('#twQ');if(i)i.value=TWQ[sc];const x=$('#twQx');if(x&&!TWQ[sc])x.remove();try{twQApply(sc)}catch(err){}},0)},true);
+document.head.insertAdjacentHTML('beforeend',`<style>.tw .tw-stk.cro-hide{display:flex!important}.tw .tw-stk.cro-hide>:not(.twq){display:none!important}</style>`);
+/* ==========================================================================
+   سرداب 6.78: rewards worth having, a shorter market list, better trade tools (p213.js)
+   - Twister 23:27: «خلي "اهدافي" تديني حاجات احسن لأنها بتديني فلوس قليله جدا … وشوف اي حاجه بتديك هدايا او ريوردز وظبطها».
+     A goal now pays three times the money and real things (glRw): a level goal a training paper and a blue stone; a trade goal
+     two blue stones and something of that trade (a gem from the mine, gold fish, gold filings and quench oil at the smith,
+     gold silk at the tailor, a wake-up bottle for the cook and the farm, rare herbs at the attar); a beast goal two blue stones
+     and a wake-up bottle; a weather goal a gem; a boss goal a gold stone, a gem and a training paper. The cards show the
+     rewards as pictures. The town board's orders also give an enhancement stone (blue one time in four).
+   ========================================================================== */
+const GL_GEMS=['yaqout','kahraman','zomorod','lowli','eincat'].filter(k=>MAT[k]);
+const GL_TR={mine:()=>[[GL_GEMS.length?GL_GEMS[0]:'stone2',1,'gem']],fish:()=>[['goldfish',2]],smith:()=>[['brada2',2],['zeit',1]],tailor:()=>[['fab_sil_y',2]],
+  cook:()=>[['revive',1]],farm:()=>[['revive',1]],attar:()=>[[(Object.keys(MAT).find(k=>/^apoth_herb_/.test(k))||'stone2'),2,'herb']]};
+/* what a goal gives: [key, count, kind?]; 'skT' is a training paper; 'gem'/'herb' are picked when collected */
+function glRw(g){const L=[['$',g.r*3]];const t=g.t;
+  if(t==='lvl')L.push(['skT',1],['stone2',1]);
+  else if(t==='life')L.push(['stone2',2],...((GL_TR[g.k]||(()=>[]))()));
+  else if(t==='kill')L.push(['stone2',2],['revive',1]);
+  else if(t==='wx')L.push([GL_GEMS[0]||'stone2',1,'gem']);
+  else L.push(['stone3',1],[GL_GEMS[0]||'stone2',1,'gem'],['skT',1]);
+  return L.filter(x=>x[0]==='$'||x[0]==='skT'||MAT[x[0]]||ITEMS[x[0]])}
+const glIc=x=>x[0]==='$'?'🪙':x[0]==='skT'?'📜':x[2]==='gem'?'💎':MAT[x[0]]?twMat(x[0],22):twFood(x[0],22);
+const glNm=x=>x[0]==='$'?ae('جنيه','coins'):x[0]==='skT'?ae('ورقة تدريب','training paper'):x[2]==='gem'?ae('جوهرة','a gem'):x[2]==='herb'?ae('عشب نادر','rare herb'):MAT[x[0]]?fsNm(x[0]):ITEMS[x[0]].name;
+const glChips=g=>`<span class="gl-rw">${glRw(g).map(x=>`<span class="gl-c" title="${esc(glNm(x))}">${glIc(x)}<b>${x[0]==='$'?x[1].toLocaleString('en'):'×'+x[1]}</b></span>`).join('')}</span>`;
+function glGive(h,g){const got=[];glRw(g).forEach(x=>{let k=x[0];const n=x[1];
+  if(k==='$'){h.money=(h.money|0)+n;got.push(`${n} ${ae('جنيه','coins')}`);return}
+  if(k==='skT'){h.skT=(h.skT|0)+n;got.push(`${ae('ورقة تدريب','training paper')} ×${n}`);return}
+  if(x[2]==='gem'&&GL_GEMS.length)k=pick(GL_GEMS);if(x[2]==='herb'){const H=Object.keys(MAT).filter(q=>/^apoth_herb_|^herb_/.test(q));if(H.length)k=pick(H)}
+  if(MAT[k])addRes(h,k,n);else h.bag[k]=(h.bag[k]|0)+n;got.push(`${MAT[k]?fsNm(k):ITEMS[k].name} ×${n}`)});return got}
+hmGoalsHTML=function(h){const H=hmFix(h);const cur=H.g.map((g,i)=>{const now=glNow(h,g),pct=Math.max(0,Math.min(100,Math.round(100*(now-g.from)/Math.max(1,g.to-g.from)))),done=now>=g.to;
+    return `<div class="card hm-g${done?' done':''}"><div class="hm-t"><b>${glTxt(g)}</b></div>${glChips(g)}<i class="hm-bar"><b style="width:${pct}%"></b></i>
+      <div class="hm-gr">${done?`<button class="tw-buy" data-gt="${i}">${ae('{استلم|استلمي}','Collect')}</button>`:`<small>${Math.min(now,g.to)}/${g.to}</small><button class="btn ghost hm-x" data-gx="${i}">${ae('{شيله|شيليه}','Drop')}</button>`}</div></div>`}).join('');
+  const room=H.g.length<3,off=room?glOffers(h):[];
+  return `<div class="card hm-cf"><b>${ae('أهدافي','My goals')} ${H.g.length}/3</b><small>${ae(`{اختار|اختاري} لحد 3 أهداف. كل هدف بيدّيك فلوس وحاجات ليها قيمة. {خلصت|خلصتي} ${H.gd}.`,`Pick up to 3 goals. Each pays money and things worth having. ${H.gd} done.`)}</small></div>${cur}
+    ${room&&off.length?`<h3 class="hm-h">${ae('{اختار|اختاري} هدف','Pick a goal')}</h3>${off.map((g,i)=>`<button class="card hm-o" data-go2="${i}"><b>${glTxt(g)}</b>${glChips(g)}</button>`).join('')}`:''}`};
+/* collecting pays the new rewards (the old handler paid only the money) */
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-gt]');if(!b||S.screen!=='dar')return;const h=S.hero;if(!h)return;const H=hmFix(h),i=+b.dataset.gt,g=H.g[i];
+  e.stopImmediatePropagation();e.preventDefault();if(!g||!glDone(h,g))return;H.g.splice(i,1);H.gd++;const got=glGive(h,g);saveHero();
+  try{band(ae('هدف','Goal'),ae('خلص!','Done!'),got.join(' · '),{dur:2600,sound:SFX.good})}catch(x){toast(got.join(' · '))}render()},true);
+/* the town board's orders also give an enhancement stone */
+{const t0=tbGive;tbGive=function(h,i){const r=t0.apply(this,arguments);if(r!==false){try{const k=Math.random()<.25?'stone2':'stone1';addRes(h,k,1);saveHero();setTimeout(()=>{try{toast(`+ ${resN(k)}`)}catch(e){}},900)}catch(e){}}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>.gl-rw{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}.gl-c{display:inline-flex;align-items:center;gap:3px;padding:2px 8px 2px 4px;border-radius:99px;background:#ffffff10;border:1px solid #ffffff1c;font-size:12px}.gl-c svg{width:22px;height:22px}.gl-c b{color:#ffd36a}
+.hm-o{display:flex;flex-direction:column;align-items:stretch;text-align:start}</style>`);
+/* the market (عم رمضان): short rows (picture, name, count, one button) and a search box; a tap on a row opens its amount
+   (Twister 23:28: «ليسته البيع والشرا في السوق طويله جدا حاول تقصرها وضيف سيرش») */
+const MKCQ={q:'',open:''};
+{const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{if(S.screen!=='market')return r;const tw=view.querySelector('.tw');if(!tw)return r;tw.classList.add('mk-c');
+  const stk=tw.querySelector('.tw-stk');if(stk&&!$('#mkcQ'))stk.insertAdjacentHTML('beforeend',`<input id="mkcQ" class="hd-sq" type="search" autocomplete="off" placeholder="🔍 ${ae('دوّر على حاجة…','Search…')}" value="${esc(MKCQ.q)}">`);
+  const rows=[...tw.querySelectorAll('.col > .tw-row')];
+  rows.forEach(row=>{const b=row.querySelector('[data-qb]'),key=b?b.dataset.qb:'';row.dataset.mk=key;row.dataset.q=twQN((row.querySelector('.tx b')||row).textContent);if(key&&key===MKCQ.open)row.classList.add('open');
+    if(row.querySelector('.qty'))row.classList.add('mk-more');
+    row.addEventListener('click',e=>{if(e.target.closest('button,input,a'))return;if(!row.classList.contains('mk-more'))return;const on=!row.classList.contains('open');rows.forEach(x=>x.classList.remove('open'));row.classList.toggle('open',on);MKCQ.open=on?key:''})});
+  const q=$('#mkcQ'),run=()=>{MKCQ.q=q.value;const v=twQN(q.value);rows.forEach(x=>x.style.display=!v||x.dataset.q.includes(v)?'':'none')};if(q){q.oninput=run;run()}}catch(e){console.warn(e)}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.tw.mk-c .col>.tw-row{flex-wrap:nowrap!important;align-items:center;gap:10px;padding:8px 10px;min-height:60px;cursor:pointer}
+.tw.mk-c .col>.tw-row .ic{flex:none;width:40px;height:40px}.tw.mk-c .col>.tw-row .ic svg{width:40px;height:40px}
+.tw.mk-c .col>.tw-row .tx{flex:1;min-width:0}.tw.mk-c .col>.tw-row .tx small{display:none}.tw.mk-c .col>.tw-row .tx b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tw.mk-c .col>.tw-row .tw-qb{flex:none;width:auto;margin:0}.tw.mk-c .col>.tw-row .tw-qb>:not(.tw-buy){display:none}.tw.mk-c .col>.tw-row .tw-buy{min-width:96px;min-height:44px}
+.tw.mk-c .col>.tw-row.mk-more .tx b::after{content:' ▾';opacity:.5;font-size:.8em}
+.tw.mk-c .col>.tw-row.open{flex-wrap:wrap!important}.tw.mk-c .col>.tw-row.open .tx small{display:block}.tw.mk-c .col>.tw-row.open .tw-qb{flex:1 1 100%;display:flex}.tw.mk-c .col>.tw-row.open .tw-qb>*{display:flex}
+.tw.mk-c .col>.tw-row.open .tx b::after{content:' ▴'}</style>`);
+/* Twister 23:50: «خلي تفكيك حاجه بديع او اعلي عليها انذار لأني فككتها مرتين بالغلط». After the usual second tap, a «بديع» or
+   «أعجوبة» piece asks once more on its own sheet, with the piece's name in its colour; «سيبها» is the big button. */
+const DISW={ok:''};
+{const d0=qDisBtn;qDisBtn=function(u,btn){const h=S.hero,f=h&&qFind(h,u),q=f&&f.I?(f.I.q|0):0;
+  if(q>=5&&TWN.conf==='dis:'+u&&DISW.ok!==u){document.getElementById('disW')?.remove();const d=document.createElement('div');d.id='disW';d.className='und-sh';
+    d.innerHTML=`<div class="card und-in" style="border:2px solid ${QC[q]}"><b class="und-t" style="color:${QC[q]}">⚠️ ${esc(GEAR[f.id].n)} · ${QN[q]}</b>
+      <small>${T(ae(`دي قطعة «${QN[q]}». لو {فكّيتها|فكّيتيها} مش هترجع، والخامات اللي هتاخدها أقل بكتير من قيمتها.`,`This piece is «${QN[q]}». Taking it apart cannot be undone, and the materials are worth far less than it.`))}</small>
+      <button class="btn" id="disNo" style="min-height:48px">${T(ae('{سيبها|سيبيها}','Keep it'))}</button><button class="btn ghost" id="disYes" style="min-height:44px;color:#ff8a7a">${T(ae('{فكّها|فكّيها} برضه','Take it apart anyway'))}</button></div>`;
+    document.body.appendChild(d);try{SFX.meh&&SFX.meh();vib(40)}catch(e){}
+    const x=()=>{d.remove();TWN.conf=null;twRender()};d.onclick=e=>{if(e.target===d)x()};d.querySelector('#disNo').onclick=x;
+    d.querySelector('#disYes').onclick=()=>{d.remove();DISW.ok=u;try{d0.call(this,u,btn)}finally{DISW.ok=''}};return}
+  return d0.apply(this,arguments)}}
+/* Twister 23:53: «انا عامل فوق ال100 سلاح مشفتش ولا سلاح اتخلق بروح». Before, only a «تحفة» of silver or better was born with
+   a soul. Now a weapon made by hand can be born with one more often (SOUL2): silver or better at «ممتاز» 20%, «كويس» 5%;
+   iron to cinnabar (level 4–7) at «تحفة» 25%, «ممتاز» 6%. And every hand-made weapon of iron or better without a soul adds to
+   h.soulM (only while making it at the smith, not quick make); at SOUL2.pity the next one at «كويس» or better is born with a soul. Wood and copper still never. */
+const SOUL2={hi:{4:1,3:.2,2:.05},mid:{4:.25,3:.06},pity:40};
+{const g0=giNew;giNew=function(id,q,o){const I=g0.apply(this,arguments);try{const h=S.hero,g=GEAR[id];
+  if(h&&I&&!I.soul&&g&&g.slot==='weapon'&&g.craft&&UND.cur==='g:'+id&&!S.spQuick&&!(o&&o.noSoul)&&!(q===0)){const b=eqBase(id);if(b>=4){q=q|0;
+    const p=(b>=SOUL_LV?SOUL2.hi:SOUL2.mid)[Math.min(4,q)]||0;h.soulM=(h.soulM|0)+1;
+    if(Math.random()<p||(q>=2&&h.soulM>=SOUL2.pity)){h.soulM=0;soulGive(h,id,I,ae('اتولد بروح في إيد صنايعي','Born with a soul in a maker\'s hands'));
+      setTimeout(()=>{try{band(ae('سلاح بروح','A weapon with a soul'),`${g.n} «${I.en}»`,ae(`طبعه: ${SOUL_PE[I.pe].n[0]} · بيكبر مع كل قتلة`,`Temper: ${SOUL_PE[I.pe].n[1]} · grows with every kill`),{dur:2600,sound:SFX.good})}catch(e){}},900)}}}}catch(e){console.warn(e)}return I}}
+/* ==========================================================================
+   سرداب 6.78: fight backdrops (p214.js) — Twister 23:39
+   «غير خلفيات المعارك، السما بتبقا حسب التوقيت والمكان، والخلفيه حسب المكان بردو عشان حاليا شكلها سئ للغايه»
+   The hands-on fight's stage gets a drawn pixel scene (one art pixel = a rect in a 128×80 box) for where the fight happens:
+   the fields, the village, the canal, the hills, the palace, the cave, the town. Where it is open the sky follows the town clock
+   (dawn, morning, noon, afternoon, sunset, night: klPh) and a night adventure is always under the night sky; a cave or a cellar
+   has no sky. The place is read once when the fight starts (C.bg).
+   ========================================================================== */
+const FBG_SKY={n:['#0b1030','#121a40','#1b2552','#22305e'],a:['#2a2350','#4a3366','#8a4a72','#d07a6a'],m:['#4e9ee0','#6db4ec','#90c8f2','#bfe2f7'],
+  d:['#3a8ee0','#5aa6ec','#80c0f2','#aad6f6'],s:['#5b98d6','#8ab8e0','#e6c290','#f2d6a0'],g:['#2e2452','#7a3a64','#d0604a','#f2a050']};
+const FBG_DIM={n:.5,a:.28,g:.3,m:0,d:0,s:.08};
+function fbgPlace(){const C=S.combat;try{if(S.roamFight){const z=S.roamFight.z;return z==='tera'?'canal':z==='jabal'?'hills':'fields'}
+    if(S.night&&typeof N_act==='function'&&S.screen!=='town'){const a=(N_act()||{}).art||'';return a==='village'?'village':a==='canal'?'canal':a==='fields'?'fields':/cave|cellar|quarry/.test(a)?'cave':/^p_/.test(a)?'palace':/^m_/.test(a)?'hills':'fields'}
+    const sc=S.fbgSc||'';if(/mine|dg|sirdab|cellar|dung/.test(sc))return 'cave';if(/fish|canal|tera/.test(sc))return 'canal';if(/farm/.test(sc))return 'fields';
+    if(C&&(C.rv||C.omq||C.th||C.dl))return 'town';if(/town|omda|balad|dar|frs|duel|cafe|kh/.test(sc))return 'town'}catch(e){}return 'fields'}
+const fbgNight=()=>!!(S.night&&!S.roamFight);
+function fbgPhase(){try{if(fbgNight())return 'n';return klPh(klHr(S.hero))}catch(e){return 'n'}}
+function fbgSVG(place,ph){let s='';const R=(x,y,w,h,c,o)=>{s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"${o!=null?` opacity="${o}"`:''}/>`};
+  const rnd=(i=>()=>{i=(i*16807)%2147483647;return i/2147483647})(place.length*977+7);
+  const cave=place==='cave';
+  if(!cave){const K=FBG_SKY[ph]||FBG_SKY.n;K.forEach((c,i)=>R(0,i*10,128,10,c));
+    if(ph==='n'){for(let i=0;i<34;i++)R(Math.floor(rnd()*128),Math.floor(rnd()*34),1,1,rnd()<.3?'#ffffff':'#c9d4ff',.5+rnd()*.5);R(84,8,9,9,'#f3e6b0');R(83,10,1,5,'#f3e6b0');R(93,10,1,5,'#f3e6b0');R(86,7,5,1,'#f3e6b0');R(86,17,5,1,'#f3e6b0');R(87,10,2,2,'#d8ca90')}
+    else{const sy=ph==='g'?30:ph==='a'?33:ph==='s'?18:ph==='m'?12:6,sx=ph==='g'||ph==='s'?22:ph==='a'?100:60,sc=ph==='g'||ph==='a'?'#ffb060':'#fff2a0';R(sx-1,sy+1,10,6,sc);R(sx,sy,8,8,sc);R(sx+1,sy-1,6,10,sc);
+      if(ph==='m'||ph==='d'||ph==='s'){[[14,10],[70,6],[104,14]].forEach(([x,y])=>{R(x,y,14,3,'#ffffff',.85);R(x+3,y-2,7,2,'#ffffff',.85)})}}}
+  const G=(c)=>c;
+  if(place==='fields'){R(0,34,128,6,'#24452a');for(let x=0;x<128;x+=6)R(x,31+Math.floor(rnd()*3),6,4,'#2c5530');R(0,40,128,40,'#3d6b2e');
+    for(let y=44;y<80;y+=5)R(0,y,128,2,'#355e28');for(let i=0;i<16;i++){const x=Math.floor(rnd()*124),y=44+Math.floor(rnd()*30);R(x,y,2,3,'#c8b04a');R(x,y-1,1,1,'#e6d070')}
+    const palm=(x,h)=>{R(x,40-h,2,h,'#6a4a2a');R(x-5,40-h-2,12,2,'#2f6a2a');R(x-3,40-h-4,8,2,'#3d8a34');R(x-6,40-h,3,1,'#2f6a2a');R(x+5,40-h,3,1,'#2f6a2a')};palm(8,20);palm(116,16);palm(92,10)}
+  else if(place==='village'||place==='town'){R(0,40,128,40,place==='town'?'#8a6a48':'#7a5a38');for(let y=44;y<80;y+=6)R(0,y,128,1,'#6e5030');
+    const house=(x,w,h,c)=>{R(x,40-h,w,h,c);R(x,40-h,w,2,'#5a3e26');for(let i=x+2;i<x+w-3;i+=5){R(i,40-h+5,3,3,'#2a1a10');if(rnd()<.4)R(i,40-h+5,3,3,'#ffcf6a',ph==='n'||ph==='g'?1:0)}R(x+Math.floor(w/2)-2,34,4,6,'#3a2414')};
+    house(2,20,18,'#c8a070');house(24,16,13,'#b88c5c');house(44,22,22,'#d0aa7a');house(70,14,12,'#b88c5c');house(88,18,17,'#c8a070');house(110,18,14,'#bc9262');
+    R(66,8,4,30,'#e0c8a0');R(65,6,6,3,'#c8a070');R(67,3,2,3,'#c8a070');
+    if(place==='town'){[[30,'#b8403a'],[96,'#3a7ab8']].forEach(([x,c])=>{for(let i=0;i<10;i+=2)R(x+i,40,2,3,i%4?'#e8dcc8':c)})}}
+  else if(place==='canal'){R(0,34,128,8,'#2c5530');for(let x=0;x<128;x+=7)R(x,31+Math.floor(rnd()*3),7,4,'#346038');R(0,42,128,16,ph==='n'?'#1a3050':'#3a78a8');
+    for(let i=0;i<22;i++)R(Math.floor(rnd()*120),43+Math.floor(rnd()*14),4+Math.floor(rnd()*5),1,ph==='n'?'#5a7aa8':'#9ad0f0',.7);R(0,58,128,22,'#6a5234');R(0,58,128,2,'#4a3a22');
+    for(let i=0;i<12;i++){const x=Math.floor(rnd()*126);R(x,50,1,9,'#4a7a30');R(x+1,48,1,4,'#6a5a2a')}}
+  else if(place==='hills'){[[0,30,40],[28,22,46],[64,26,40],[96,20,32]].forEach(([x,y,w])=>{for(let i=0;i<(40-y);i+=2)R(x+i,y+i,w-i*2>0?w-i*2:2,2,'#8a6040');R(x+w/2-2,y,4,2,'#a07450')});
+    R(0,40,128,40,'#c8a468');for(let i=0;i<20;i++)R(Math.floor(rnd()*126),42+Math.floor(rnd()*36),2,1,'#a8844c');R(10,50,6,3,'#8a7a6a');R(100,60,8,4,'#8a7a6a')}
+  else if(place==='palace'){R(0,10,128,32,'#8a7a68');for(let x=4;x<128;x+=20){R(x,18,12,22,'#3a2c24');R(x+2,16,8,2,'#3a2c24');R(x+4,15,4,1,'#3a2c24')}R(0,10,128,3,'#6a5a48');
+    R(0,40,128,40,'#6a5a4a');for(let y=40;y<80;y+=6)for(let x=(y/6%2)*6;x<128;x+=12)R(x,y,6,6,'#5a4a3a')}
+  else if(cave){R(0,0,128,80,'#1c1a24');for(let x=0;x<128;x+=4){const h=4+Math.floor(rnd()*10);R(x,0,4,h,'#2a2634');if(rnd()<.4)R(x+1,h,2,3,'#2a2634')}
+    for(let i=0;i<10;i++)R(Math.floor(rnd()*124),14+Math.floor(rnd()*22),3,3,'#26222e');R(0,42,128,38,'#2e2a36');for(let y=44;y<80;y+=7)R(0,y,128,1,'#24202c');
+    [[18,24],[108,22]].forEach(([x,y])=>{R(x,y,2,8,'#5a3a20');R(x-1,y-3,4,3,'#ffb040');R(x,y-5,2,2,'#ffe080');R(x-6,y-8,14,14,'#ffb040',.08)});
+    [[50,36,'#7fd0ff'],[54,38,'#a8e4ff'],[86,34,'#c48aff'],[88,37,'#e0b8ff']].forEach(([x,y,c])=>R(x,y,2,6,c))}
+  const dim=cave?0:FBG_DIM[ph]||0;if(dim)R(0,30,128,50,'#0b1030',dim);
+  return `<svg class="fbg" viewBox="0 0 128 80" preserveAspectRatio="xMidYMax slice" shape-rendering="crispEdges" aria-hidden="true">${s}</svg>`}
+{const s0=startCombat;startCombat=function(){const r=s0.apply(this,arguments);try{const C=S.combat;if(C){C.bg={p:fbgPlace(),ph:fbgPhase()}}}catch(e){}return r}}
+{const r0=render;render=function(){if(S.screen!=='combat')S.fbgSc=S.screen;return r0.apply(this,arguments)}}
+{const d0=afDress;afDress=function(){const r=d0.apply(this,arguments);try{const C=S.combat,st=view.querySelector('.af-stage');if(C&&st&&!st.querySelector('.fbg')){if(!C.bg)C.bg={p:fbgPlace(),ph:fbgPhase()};
+  st.insertAdjacentHTML('afterbegin',fbgSVG(C.bg.p,C.bg.ph));st.classList.add('fbg-on')}}catch(e){console.warn(e)}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>#app.af .af-stage.fbg-on{background:#0b0d1c;isolation:isolate;text-shadow:0 1px 0 #000,0 0 3px #000}#app.af .af-stage.fbg-on .af-moon,#app.af .af-stage.fbg-on .af-hill{display:none}
+#app.af .af-stage .fbg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;image-rendering:pixelated}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
