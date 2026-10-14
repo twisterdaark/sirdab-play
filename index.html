@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.47',d:'14 أكتوبر',add:['القتال: {تقدر|تقدري} {تسحب|تسحبي} أي حاجة من الشنطة بصباعك و{ترميها|ترميها} على اللي {عايزه|عايزاه}. الجرعة على نفسك {تشربها|تشربيها}، والأكل على اللي معاك {تأكّله|تأكّليه}، والملح أو قزازة النار على الوحش {تضربه|تضربيه}. وانت {بتسحب|بتسحبي} الحاجة اللي تحت صباعك بتنوّر أخضر لو تنفع عليه، وأحمر لو لأ. والدوسة العادية لسه شغالة زي الأول.']},
 {v:'6.46',d:'14 أكتوبر',add:['الطريق بالليل بقا فيه مفاجآت: وانت {ماشي|ماشية} لوقفة خناقة ممكن حاجة تنط عليك من الضلمة، {دوس|دوسي} عليها بسرعة {تضربها|تضربيها} الأول وتبدأ الخناقة مجروحة، ولو {اتأخرت|اتأخرتي} تخربشك. ولوقفات تانية ممكن يطلع فخ تحت رجلك، {اسحب|اسحبي} لفوق {تنط|تنطي} عليه وإلا يعضك. الخفة بتديك وقت أكتر، والحرامي أكتر.','القتال: لو {اخترت|اخترتي} الحركة الأول وبعدين {رميت|رميتي} النرد، الرمية بتقف في كارت في النص وتشوف الأرقام والنتيجة (نجاح، نص نص، فشل) قبل الضربة. {دوس|دوسي} عليه لو {عايز|عايزة} {تكمل|تكملي} بسرعة. ومجموع النرد بيفضل ظاهر لحد ما الحركة تخلص.','الدواير اللي بتقفل (الضربة، الصد، الطبلة، طرق الحدادة) بقت سرعتها مختلفة كل مرة: مرة أسرع ومرة أبطأ.','كلمة «دفاع!» بقت بتطلع فوق الوحش اللي هيضربك.','جرنال البلد: العلامة الحمرا اللي جنبه بقت «!» بدل الكلمة الغريبة.','«شجرة» كل شغلانة اسمها بقى «مهارات الصنعة»، والنجوم اللي تحت («اختيار ١» و«اختيار ٢») مبقتش متغطية ولا مقصوصة.','في الحِرف: الخانة بتكبر شوية لما الماوس يعدّي عليها، والكارت لما يتفتح بيفرد بشكل أحلى والخانات اللي بعده بتملا مكانها من غير فراغات.','تصليح: الدايرة كانت بتفضل لازقة على الشخصية بعد الصد أو الضربة. خلاص مبقتش.']},
 {v:'6.45',d:'14 أكتوبر',add:['المفاصلة مع عم رمضان: لما {تبيع|تبيعي} في السوق {بتسحب|بتسحبي} السعر بإيدك لفوق، ووشه بيحمر ويعرق ويزعق كل ما {تزوّد|تزوّدي}. {اعرض|اعرضي} وهو يا يوافق يا يرفض، ولو {زودتها|زودتيها} بيشتري بسعره بس لدقيقتين. «بسعره» بتبيع على طول زي الأول.','الحضور بيخليه يستحمل أكتر.']},
 {v:'6.44',d:'14 أكتوبر',add:['الغيط بقا بإيدك: الأرض بعد الحصاد بتبقى ناشفة، {فاسحب|فاسحبي} الفاس عليها يمين وشمال {تحرتها|تحرتيها}. {اختار|اختاري} البذرة {واسحب|واسحبي} الشنطة على الأرض {تبدر|تبدري}، {وامسح|وامسحي} بالإبريق على الزرع تسقيه.','دود بيطلع في الزرع ساعات زي الغربان: {دوس|دوسي} عليه {تشيله|تشيليه} قبل ما ياكل.','الحصاد: {امسك|امسكي} الزرعة {واسحبها|واسحبيها} لفوق. لو {سبتها|سبتيها} والبار في الأخضر الجدر بيطلع سليم وبتاخد واحدة زيادة.']},
@@ -51743,6 +51744,41 @@ function afShowRoll(R,stat,mod,dc,two){return new Promise(res=>{const L=afLayer(
 .afrs-f{display:flex;justify-content:center;gap:8px}.afrs-d{display:block;width:54px;height:54px}.afrs-d svg{width:100%;height:100%}
 .afrs-m{margin-top:6px;font-size:16px;font-weight:800}.afrs-m i{font-style:normal;color:#c9c2dc;font-size:14px;margin-inline-start:4px}
 .afrs-t{font-family:var(--display);font-size:36px;font-weight:900;text-shadow:0 2px 0 #000;line-height:1.1}.afrs-t small{display:block;font-size:18px}`;document.head.appendChild(s)})();
+/* ---------- 6.47 (acc1, Twister 14:35, major 4/5): drag what's in the bag onto who it's for ----------
+   In a fight, an item in the bag sheet can be picked up with a finger and dropped on yourself, your friend or a foe:
+   a potion on you heals you, food on your friend feeds them, salt or a fire pot on a foe hits it. While you drag, the sheet
+   fades, the item's picture follows your finger and the one under it lights up green (it works on them) or red (it doesn't).
+   A plain tap still opens it as before. Works for every item the fight already lets you use (itemTargets), so new items join by themselves. */
+const BD={k:null,g:null,x0:0,y0:0,on:0,el:null,hov:null,eat:0};
+function bdWho(x,y){for(const e of document.elementsFromPoint(x,y)){const f=e.closest&&e.closest('.foe[data-f]');if(f)return {who:'foe',id:+f.dataset.f,el:f};
+  const m=e.closest&&e.closest('#meCard');if(m)return {who:'me',el:m};const c=e.closest&&e.closest('#compCard');if(c)return {who:'comp',el:c}}return null}
+function bdTarget(k,w){if(!w)return null;let ts=[];try{ts=itemTargets(k)}catch(e){}return ts.find(t=>t.who===w.who&&(w.who!=='foe'||t.id==null||t.id===w.id))||null}
+function bdEnd(){if(BD.g)BD.g.remove();BD.g=null;document.querySelectorAll('.bd-ok,.bd-no').forEach(x=>x.classList.remove('bd-ok','bd-no'));const sh=document.querySelector('.sheet.bd-fade');if(sh)sh.classList.remove('bd-fade');BD.k=null;BD.on=0;BD.el=null;BD.hov=null}
+document.addEventListener('pointerdown',e=>{if(S.screen!=='combat'||!S.combat)return;const b=e.target.closest&&e.target.closest('.sheet [data-k]');if(!b)return;const C=S.combat;if(C.busy||C.phase!=='me')return;
+  BD.k=b.dataset.k;BD.el=b;BD.x0=e.clientX;BD.y0=e.clientY;BD.on=0},true);
+document.addEventListener('pointermove',e=>{if(!BD.k)return;const dx=e.clientX-BD.x0,dy=e.clientY-BD.y0;
+  if(!BD.on){if(Math.hypot(dx,dy)<14)return;let ts=[];try{ts=itemTargets(BD.k)}catch(x){}if(!ts.length){BD.k=null;return}
+    BD.on=1;const ic=BD.el.querySelector('.cg-i,.ic');BD.g=document.createElement('div');BD.g.className='bd-g';BD.g.innerHTML=ic?ic.innerHTML:'';document.body.appendChild(BD.g);
+    const sh=BD.el.closest('.sheet');if(sh)sh.classList.add('bd-fade');try{SFX.tick(520);vib(12)}catch(x){}}
+  e.preventDefault();BD.g.style.left=e.clientX+'px';BD.g.style.top=e.clientY+'px';
+  const w=bdWho(e.clientX,e.clientY),el=w&&w.el;if(el!==BD.hov){document.querySelectorAll('.bd-ok,.bd-no').forEach(x=>x.classList.remove('bd-ok','bd-no'));BD.hov=el;
+    if(el){el.classList.add(bdTarget(BD.k,w)?'bd-ok':'bd-no');try{SFX.tick(bdTarget(BD.k,w)?880:240)}catch(x){}}}},{passive:false});
+const bdUp=e=>{if(!BD.k)return;if(!BD.on){BD.k=null;return}const k=BD.k,w=bdWho(e.clientX,e.clientY),t=bdTarget(k,w);BD.eat=Date.now();bdEnd();
+  if(t){try{useItem(k,t)}catch(x){console.warn(x)}}
+  else{try{SFX.tick(260)}catch(x){}if(w)try{toast(T(ae('مينفعش {تستعملها|تستعمليها} على ده دلوقتي.','It does nothing on that right now.')))}catch(x){}}};
+document.addEventListener('pointerup',bdUp,true);document.addEventListener('pointercancel',()=>{if(BD.k)bdEnd()},true);
+/* the click that follows a drag must not open the item too */
+document.addEventListener('click',e=>{if(Date.now()-BD.eat<400&&e.target.closest&&e.target.closest('.sheet [data-k]')){e.stopPropagation();e.preventDefault()}},true);
+/* a line in the bag sheet says it */
+{const b0=bagSheet;bagSheet=function(){const r=b0.apply(this,arguments);try{if(S.combat&&S.combat.bag==='list'&&typeof r==='string')return r.replace(/(<div class="h">[^<]*<\/div>)/,`$1<div class="bd-tip">${T(ae('{اسحب|اسحبي} الحاجة على نفسك أو على اللي معاك أو على الوحش','Drag an item onto yourself, your friend or a foe'))}</div>`)}catch(e){}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.sheet [data-k]{touch-action:none}
+.bd-tip{font-size:12px;color:#c9c2dc;margin:-2px 0 6px;text-align:center}
+.bd-g{position:fixed;z-index:95;width:56px;height:56px;margin:-28px 0 0 -28px;pointer-events:none;filter:drop-shadow(0 6px 6px #000a);animation:bdIn .15s ease-out both}
+.bd-g svg{width:100%;height:100%;image-rendering:pixelated}@keyframes bdIn{from{transform:scale(.4)}}
+.sheet.bd-fade{opacity:.25;pointer-events:none;transition:opacity .15s}
+.bd-ok{outline:4px solid #7fe07a;outline-offset:2px;border-radius:14px;filter:drop-shadow(0 0 10px #7fe07a)}
+.bd-no{outline:4px solid #e2483f;outline-offset:2px;border-radius:14px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
