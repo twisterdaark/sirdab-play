@@ -1416,6 +1416,8 @@ try{addEventListener('devicemotion',e=>{const a=e.accelerationIncludingGravity||
 function rollCheck(stat,opt){
   opt=opt||{};
   const h=S.hero,mod=opt.mod!==undefined?opt.mod:(h?ST(h,stat):0),parts=opt.mod===undefined&&h?stParts(h,stat):[],hz=!!(h&&h.hidden&&h.hidden.hazz),dc=opt.dc||0;
+  /* 6.32: in a fight the action layer (p155.js) throws the dice on the stage instead of this window */
+  if(typeof rcAlt==='function'){const ap=rcAlt(stat,opt,mod,dc,hz);if(ap)return ap}
   return new Promise(resolve=>{
     const D=$('#dice'),dz=$('#dz'),din=$('#dIn'),pw=$('#power');
     D.classList.remove('hidden');$('#dRes').classList.add('hidden');$('#dAdv').textContent='';
@@ -4793,6 +4795,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.32',d:'14 أكتوبر',add:['«القتال بالإيد»: القتال بقى على مسرح بالليل، والوحوش قدامك {وانت|وانتي} ورفيقك جنبهم، والحركات بقت أيقونات كبيرة من غير كلام كتير.','النرد بقى في إيدك: {اسحب|اسحبي} لفوق عشان ترمي، {وشوف|وشوفي} الرقم قبل ما {تختار|تختاري}. {اسحب|اسحبي} النرد على حركة أو قدرة أو حاجة من الشنطة، أو على الوحش نفسه عشان {تضربه|تضربيه}.','دبل في النردين (غير 1 و1) بيديك طاقة زيادة.','الضربة في وقتها: دايرة بتقفل على الوحش، {دوس|دوسي} لما تقابل الدايرة الصغيرة. بالظبط = النتيجة بتطلع درجة والضربة أقوى، متأخر = الضربة أضعف.','الصد: لما وحش يهجم {عليك|عليكي} بينوّر ويجري، ودايرة زرقا بتقفل {عليك|عليكي}. صد بالظبط = مفيش ولا خدش وطاقة زيادة (مرة كل دور)، ولو فاتك الوقت الضربة بتبقى أوجع.','الاستراحة والطاقة والقدرات والشنطة والأكل للوحوش والعفو والكلام كلهم زي ما هما، تحت «اتصرّف» و«قدرات» و«الشنطة».','سجل القتال في زرار الورقة فوق. واللي {عايز|عايزة} القتال القديم {يقفل|تقفل} «القتال بالإيد» من الإعدادات.'],fix:['المنجم: نسبة العروق الجانبية اللي بتبان بقت بتحسب «خرايط العروق» (+50%)، والنسبة نفسها كانت شغالة صح من الأول']},
 {v:'6.31',d:'14 أكتوبر',add:['منافس: «عصام» من الكفر اللي جنبكم، بيكبر معاك. من مستوى 3 بييجي البلد كل 3 أيام، وبيكلمك على حسب الحساب اللي بينكم. لو {غلبته|غلبتيه}: فلوس، وهو بيتمرن وبيرجع أقوى. لو غلبك: {بتخسر|بتخسري} شوية فلوس {وترجع|وترجعي} البلد','«الرحلة» في بيتك: دفتر بيكتب لوحده اللحظات الكبيرة برسمة صغيرة جنب كل واحدة: كل مستوى، أول مرة {تهزم|تهزمي} زعيم، السلاح لما ياخد اسم، أسرار الطقس، تغييرات البلد، عصام، والوقفة الأخيرة','المنطقة بتتغير بعد الزعيم: لما زعيم منطقة في الخلا يقع، الوحوش هناك بتبقى هادية وضربتها أخف 3 أيام، وعلى الخريطة بيبان علم أبيض على المكان']},
 {v:'6.30',d:'14 أكتوبر',add:['جروح: الضربة الجامدة ممكن تسيب جرح بيفضل بعد القتال: إيد مكسورة (ضربك أضعف)، رجل متعورة (الوحوش بتصيبك أسهل)، أو نزيف (صحة أقل). الجرح بيخف لوحده بعد يومين في البلد، أو {اتعالج|اتعالجي} على طول عند عم رجب بـ 30 جنيه من كارت البلد','«وقفة أخيرة»: مرة في اليوم، لو {وقعت|وقعتي} ومفيش قزازة صحيان، {بتقوم|بتقومي} تاني بربع صحتك {وتكمل|وتكملي}، بس بتاخد جرح','«التحدي»: قتال صعب مرة في اليوم من البلد (من مستوى 3) قدام وحش أقوى من العادي. لو {كسبت|كسبتي}: فلوس كتير وحجر تقوية وخبرة زيادة. لو {خسرت|خسرتي}: {بترجع|بترجعي} البلد بتلت صحتك ومفيش حاجة تضيع','«بيتك» و«حال البلد» و«التحدي» بقوا ليهم مكان على خريطة البلد']},
 {v:'6.29',d:'14 أكتوبر',add:['السلاح اللي في إيدك بيعدّ قتلاته وبيكتب حكايته: أول قتلة، وكل زعيم هزمه. {افتح|افتحي} «حكايته» من كارت الحتة','السلاح بياخد اسم: أول زعيم يهزمه بيسمّيه «قاتل …»، أو بعد 30 قتلة بياخد «صياد …» على النوع اللي قتل منه أكتر. السلاح اللي ليه اسم ضربته +1 (+2 بعد 100 قتلة)، و+2 كمان على النوع اللي اتسمّى عليه','غنايم ملعونة: بعد ما {تهزم|تهزمي} زعيم ممكن تلاقي حتة ملعونة، فيها فايدة كبيرة وتمن واضح: «عطشان دم» (ضرب +3 بس بيشرب من صحتك أول كل قتال)، «تقيل» (درع أقوى بس الوحوش بتصيبك أسهل)، «بيوشوش» (كل الصفات +1 بس الصحة أقل)','الصنعة اللي تطلع «بايظة» ممكن تطلع غريبة: فيها حاجة زيادة الحتة العادية مفيهاش (أخف، بتلمع، أو صحة زيادة)']},
@@ -42295,7 +42298,7 @@ const MN_W=[[2,{stone:50,copper:35,iron:15}],[5,{stone:30,copper:20,coal:28,iron
   [13,{stone:22,silver:45,gold:18,coal:15}],[16,{stone:40,silver:25,gold:35}],[19,{stone:25,iron:25,gold:30,silver:20}],[20,{stone:22,gold:48,silver:30}]];
 function mfPct(n,k){try{const h=S.hero,L=lifeLvl(h,'mine'),B=(MN_W.find(x=>n<=x[0])||MN_W[MN_W.length-1])[1];
     if(B[k]!=null){const w=Object.entries(B).map(([kk,v])=>[kk,kk==='stone'?v*Math.max(.4,1-.05*L):v]),t=w.reduce((a,x)=>a+x[1],0);return Math.round(w.find(x=>x[0]===k)[1]/t*100)}
-    let lo=1;for(const b of CR_MINE){if(n>=lo&&n<=b.to)return b.w[k]?Math.round(b.w[k]*1000)/10:null;lo=b.to+1}}catch(e){}return null}
+    let lo=1;for(const b of CR_MINE){if(n>=lo&&n<=b.to)return b.w[k]?Math.round(b.w[k]*(typeof wkOwn==='function'?wkOwn(h,'mine','veins',1):1)*1000)/10:null;/* 6.32: the vein maps (×1.5) show in the number too (Twister 10:20) */lo=b.to+1}}catch(e){}return null}
 function mfAdd(d){const L=d&&d.querySelector('.mn-fls');if(!L||d.querySelector('.mf-row'))return;
     /* the floor's ores, read from its own line of names (p9b's mnFlOres is not reachable from here) */
     const N2K={};Object.keys(MAT).forEach(k=>{try{N2K[resN(k)]=k}catch(e){}});/* 6.15.2 (Twister 01:35): each floor also lists its side veins (CR_MINE, p115), and the filter knows them */
@@ -49802,6 +49805,310 @@ const RG_FLAG=['k.....','kwwww.','kwwwww','kwwww.','k.....','k.....','k.....'];
 .jr-l{display:flex;flex-direction:column;gap:6px}.jr-e{display:flex;gap:10px;align-items:center}.jr-i{flex:0 0 28px;width:28px;height:28px}.jr-i svg{width:100%;height:100%}
 .jr-t{display:flex;flex-direction:column}.jr-t small{opacity:.7;font-size:12px}.hm-tabs{flex-wrap:wrap}.hm-tb{min-width:72px}
 .rg-fl{position:absolute;top:-6px;inset-inline-end:-6px;width:16px;height:18px;pointer-events:none}.rg-fl svg{width:100%;height:100%}`;document.head.appendChild(s)})();
+/* ---------- 6.32 (acc1, Twister 2026-10-14): «القتال بالإيد» — the action fight on the real game ----------
+   Twister played the prototype («البروتو تايب تحفه … طبقه علي اللعبه الاساسيه … متنساش اوبشنات الاستراحه، والاينرجي، وازاي تأكل
+   وحش او تعفو عنه»). This part lays it over the real fight; nothing under it changes: the same moves, skills, energy, bag, rest,
+   talk, feeding and sparing, with every wrapper they carry.
+   - The look (afDress, after every combat() render): the foes and your side stand on a night stage; the four moves are big icons;
+     the text log hides behind a button; the turn shows as a big word.
+   - The dice (AF.st): on your turn the dice wait in the tray. Swipe up (or tap) to throw them; the numbers show before you pick.
+     Drag the dice onto a move, a skill, an item, or straight onto a foe (= hit it); or just tap a move. The move's roll uses the
+     thrown dice (rcAlt, called by rollCheck in p5.js), so the old dice window never opens in a fight. Doubles (not 1-1) give 1 energy.
+   - The hit ring (afRing): after the dice, a ring closes on the foe. Tap when it meets the inner ring: perfect = the result goes one
+     step up and the hit is ×1.2; good = as rolled; missed = the hit is ×0.8.
+   - The block (afBlock): when a foe comes for you, it flashes and lunges while a ring closes on you. Perfect = full dodge (and 1
+     energy, once a round); good = as the dice say; missed = one step worse.
+   - Off for the online live night (coRollOn) and in the test builds (window.__r / __t), unless window.__afForce says otherwise.
+     Settings has a switch «القتال بالإيد» to go back to the old fight. */
+const AF={C:null,ph:'',st:'',vals:null,q:'',eg:0,atk:null,wt:null,need:0,drag:0};
+const AF_QM={perfect:1.2,good:1,miss:.8};
+function afOn(){try{if(window.__afForce!==undefined)return !!window.__afForce;if(window.__r||window.__t)return false;return store('sirdab.af')!==false}catch(e){return true}}
+const afUp=t=>t==='fail'?'part':'full',afDown=t=>t==='full'?'part':'fail';
+/* pixel art: the dice faces and the move icons */
+const AFP={W:'#eef0f6',L:'#b9c2d6',G:'#8a93ab',Y:'#f2c14e',O:'#ef7a3a',R:'#e2483f',P:'#ffb3b8',B:'#6b4425',K:'#0b0d1c',S:'#2f5fb8',F:'#7fb6ff',H:'#ffd9b0',N:'#a8743a',M:'#7c4f22',V:'#c9a8ff'};
+function afPix(rows){const h=rows.length,w=rows[0].length;let s=`<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`;
+  rows.forEach((r,y)=>{let x=0;while(x<w){const c=r[x];if(c==='.'){x++;continue}let n=1;while(x+n<w&&r[x+n]===c)n++;s+=`<rect x="${x}" y="${y}" width="${n}" height="1" fill="${AFP[c]}"/>`;x+=n}});return s+'</svg>'}
+const AF_PIPS={1:[[5,5]],2:[[2,2],[8,8]],3:[[2,2],[5,5],[8,8]],4:[[2,2],[8,2],[2,8],[8,8]],5:[[2,2],[8,2],[5,5],[2,8],[8,8]],6:[[2,2],[8,2],[2,5],[8,5],[2,8],[8,8]]};
+const AF_FACE={};
+function afFace(n,gold){const k=n+(gold?'g':'');if(AF_FACE[k])return AF_FACE[k];const g=[];
+  for(let y=0;y<12;y++){let r='';for(let x=0;x<12;x++){const edge=x===0||y===0||x===11||y===11,corner=(x===0||x===11)&&(y===0||y===11);
+    r+=corner?'.':edge?'K':(x===10||y===10)?(gold?'O':'L'):(gold?'Y':'W')}g.push(r.split(''))}
+  if(n)AF_PIPS[n].forEach(([x,y])=>{const c=n===1?'R':'K';g[y][x]=g[y][x+1]=g[y+1][x]=g[y+1][x+1]=c});
+  else [[4,3],[5,3],[6,3],[7,4],[6,5],[5,6],[5,8]].forEach(([x,y])=>{g[y][x]=g[y][x+1]='G'});
+  return AF_FACE[k]=afPix(g.map(r=>r.join('')))}
+function afD20(n){const c=n===20?'#f2c14e':n===1?'#e2483f':'#eef0f6';
+  return `<svg viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><polygon points="12,0 23,6 23,18 12,24 1,18 1,6" fill="#0b0d1c"/><polygon points="12,2 21,7 21,17 12,22 3,17 3,7" fill="${c}"/><polygon points="12,2 21,7 12,9 3,7" fill="#fff" opacity=".35"/><text x="12" y="16.5" text-anchor="middle" font-size="${n>9?9:10}" font-family="monospace" font-weight="900" fill="#0b0d1c">${n||'?'}</text></svg>`}
+const afDie=(n,gold)=>S.dice==='2d6'?afFace(n,gold):afD20(n);
+const AF_IC={
+  sword:afPix(['..........KK','.........KWK','........KWLK','.......KWLK.','......KWLK..','..K..KWLK...','..KKKWLK....','...KYLK.....','...KYYK.....','..KBKKYK....','.KBK..KK....','.KK.........']),
+  star:afPix(['.....K.....','....KYK....','....KYK....','KKKKYWYKKKK','KYYYWWWYYYK','.KYYWWWYYK.','..KYYYYYK..','..KYYKYYK..','.KYYK.KYYK.','.KYK...KYK.','.KK.....KK.']),
+  bag:afPix(['....KKKK....','...KMMMMK...','...KM..MK...','..KKKKKKKK..','.KNNNNNNNNK.','KNNNNYYNNNNK','KNNNNYYNNNNK','KNNNNNNNNNNK','KMNNNNNNNNMK','KMMNNNNNNMMK','.KMMMMMMMMK.','..KKKKKKKK..']),
+  hand:afPix(['....KK......','...KHHK.....','...KHHK.....','...KHHK.....','...KHHKKK...','...KHHKHHKK.','.KKKHHKHHKHK','KHHKHHHHHHHK','KHHHHHHHHHHK','.KHHHHHHHHK.','..KHHHHHHHK.','...KKKKKKK..']),
+  shield:afPix(['.KKKKKKKKKK.','KSSSSSSSSSSK','KSFFFFFFFFSK','KSFWWFFFFFSK','KSFWFFFFFFSK','KSFFFFFFFFSK','.KSFFFFFFSK.','.KSFFFFFFSK.','..KSFFFFSK..','...KSFFSK...','....KSSK....','.....KK.....']),
+  moon:afPix(['....KKKK....','..KKYYYYK...','.KYYYYKK....','.KYYYK......','KYYYK.......','KYYYK.......','KYYYK.......','KYYYYK......','.KYYYYKK..K.','.KYYYYYYKKK.','..KKYYYYYK..','....KKKK....']),
+  talk:afPix(['..KKKKKKKK..','.KWWWWWWWWK.','KWWWWWWWWWWK','KWWKWWKWWKWK','KWWKWWKWWKWK','KWWWWWWWWWWK','.KWWWWWWWWK.','..KKWWKKKK..','....KWK.....','....KK......']),
+  ear:afPix(['...KKKK...','..KHHHHK..','.KHHKKHHK.','.KHK..KHK.','.KHK..KHK.','..K..KHK..','....KHK...','...KHK....','...KHK....','....KK....']),
+  scroll:afPix(['.KKKKKKKK.','KWLLLLLLWK','KWKKKKKKWK','.KWWWWWWK.','.KWKKKKWK.','.KWWWWWWK.','.KWKKKKWK.','.KWWWWWWK.','KWLLLLLLWK','.KKKKKKKK.']),
+  ptr:afPix(['KKKKKKKKK','KYYYYYYYK','.KYYYYYK.','..KYYYK..','...KYK...','....K....'])};
+const AF_ACT={atk:'sword',sk:'star',bag:'bag',more:'hand',def:'shield',rest:'moon',talk:'talk'};
+/* the layer over the whole app: the ring canvas, the dice, the tap catcher, the big word, the hand */
+let afL=null,afCv=null,afCx=null;const AF_FX=new Set();
+function afLayer(){if(afL&&afL.isConnected)return afL;afL=document.createElement('div');afL.id='afL';
+  afL.innerHTML='<canvas id="afCv"></canvas><div id="afDice"></div><div id="afCap" hidden></div><div id="afBan"></div><div id="afHand" hidden>'+AF_IC.hand+'</div>';
+  document.body.appendChild(afL);afCv=afL.querySelector('#afCv');afCx=afCv.getContext('2d');afSize();afBindDice();return afL}
+function afSize(){if(!afCv)return;const d=Math.min(2,window.devicePixelRatio||1);afCv.width=innerWidth*d;afCv.height=innerHeight*d;afCx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',()=>{afSize();afLay()});
+let afRaf=0;function afLoop(t){afCx&&afCx.clearRect(0,0,innerWidth,innerHeight);for(const f of [...AF_FX]){try{if(f(t)===false)AF_FX.delete(f)}catch(e){AF_FX.delete(f)}}afRaf=AF_FX.size?requestAnimationFrame(afLoop):0}
+function afFx(f){AF_FX.add(f);if(!afRaf)afRaf=requestAnimationFrame(afLoop)}
+const afMid=el=>{const r=el.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width,h:r.height}};
+function afBan(t,red,hold){const b=afLayer().querySelector('#afBan');b.textContent=t;b.className=red?'red':'';try{b.getAnimations().forEach(a=>a.cancel());
+  return b.animate([{opacity:0,transform:'scale(1.8)'},{opacity:1,transform:'scale(.95)',offset:.25},{opacity:1,transform:'scale(1)',offset:.8},{opacity:0,transform:'translateY(-14px)'}],{duration:(hold||420)+420,easing:'ease-out'}).finished.catch(()=>{})}catch(e){return Promise.resolve()}}
+function afRingFx(x,y,col,R,d){const s=performance.now();afFx(t=>{const p=(t-s)/d;if(p>1)return false;afCx.globalAlpha=1-p;afCx.strokeStyle=col;afCx.lineWidth=6*(1-p)+1;afCx.beginPath();afCx.arc(x,y,R*(.3+.7*p),0,7);afCx.stroke();afCx.globalAlpha=1})}
+/* sounds, through the game's mixer (silent when muted) */
+const AFS={roll(){try{tone(300+Math.random()*300,280,.03,'square',.03)}catch(e){}},thud(i){try{noise(.08,160,.22);tone(150+i*30,55,.12,'square',.07)}catch(e){}},
+  perfect(){try{noise(.16,250,.24);tone(110,40,.25,'square',.1);tone(990,1480,.16,'square',.05)}catch(e){}},block(){try{tone(1200,1800,.1,'square',.05);noise(.05,3000,.08)}catch(e){}},
+  pair(){try{noise(.25,300,.2);[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,f*1.01,.14,'square',.05),i*50))}catch(e){}},
+  snap(v){try{noise(.04,2500,.1);tone(523*Math.pow(2,v/12),1046,.08,'square',.05)}catch(e){}},go(){try{tone(330,660,.08,'square',.06);noise(.1,1500,.1)}catch(e){}},
+  turn(){try{tone(440,450,.06,'square',.04);setTimeout(()=>tone(660,670,.08,'square',.04),70)}catch(e){}},growl(){try{tone(90,60,.35,'sawtooth',.05)}catch(e){}}};
+/* the first-time hands (no words) */
+let AF_SEEN=null;const afSeenGet=()=>{if(!AF_SEEN){AF_SEEN=store('sirdab.afSeen')||{};if(typeof AF_SEEN!=='object')AF_SEEN={}}return AF_SEEN};
+let afHandA=null;
+function afHint(key,kind,a){if(window.__afAuto||afSeenGet()[key]>=2)return ()=>{};const el=afLayer().querySelector('#afHand');el.hidden=false;
+  const o=(x,y,s)=>`translate(${x-17}px,${y-2}px) scale(${s||1})`;let k,d=1100;
+  if(kind==='tap')k=[{transform:o(a.x+18,a.y+30)},{transform:o(a.x,a.y),offset:.35},{transform:o(a.x,a.y,.82),offset:.5},{transform:o(a.x,a.y),offset:.65},{transform:o(a.x+18,a.y+30)}];
+  else if(kind==='up'){k=[{transform:o(a.x,a.y),opacity:0},{transform:o(a.x,a.y),opacity:1,offset:.15},{transform:o(a.x,a.y-80),opacity:1,offset:.75},{transform:o(a.x,a.y-90),opacity:0}];d=1000}
+  else{k=[{transform:o(a.x,a.y),opacity:0},{transform:o(a.x,a.y),opacity:1,offset:.1},{transform:o(a.x2,a.y2,.9),opacity:1,offset:.7},{transform:o(a.x2,a.y2,1.1),opacity:0}];d=1300}
+  try{afHandA&&afHandA.cancel();afHandA=el.animate(k,{duration:d,iterations:Infinity,easing:'ease-in-out'})}catch(e){}
+  let done=0;return ok=>{if(done)return;done=1;if(ok!==false){const S0=afSeenGet();S0[key]=(S0[key]|0)+1;store('sirdab.afSeen',S0)}try{afHandA&&afHandA.cancel()}catch(e){}afHandA=null;el.hidden=true}}
+/* ---------- the dice ---------- */
+function afDiceEl(){return afLayer().querySelector('#afDice')}
+function afTray(){return view.querySelector('.af-tray')}
+function afShow(){const C=S.combat;return !!(C&&afOn()&&S.screen==='combat'&&C.phase==='me'&&AF.C===C&&(AF.st==='wait'||AF.st==='throw'||AF.st==='rolled')&&(!C.busy||AF.wt||AF.st==='throw'))}
+function afLay(){const D=afL&&afDiceEl();if(!D)return;const tr=afTray();if(!afShow()||!tr){if(!AF.drag)D.hidden=true;const pw=tr&&tr.querySelector('.af-pw');if(pw)pw.classList.remove('on');return}D.hidden=false;
+  const n=(AF.vals||[]).length||(S.dice==='2d6'?2:1);const fk=AF.st+':'+(AF.vals||[]).join();if(D.children.length!==n){D.innerHTML=Array.from({length:n},()=>'<div class="afd"><div class="fc"></div></div>').join('');AF.fk=''}
+  if(AF.st!=='throw'&&AF.fk!==fk){AF.fk=fk;afPaintFaces()}
+  D.classList.toggle('wait',AF.st==='wait');D.classList.toggle('need',AF.st==='wait'&&!!AF.need);D.classList.toggle('rolled',AF.st==='rolled');
+  if(AF.drag)return;const r=afMid(tr);D.style.left=r.x+'px';D.style.top=r.y+'px';
+  const pw=tr.querySelector('.af-pw');if(pw){const v=AF.st==='rolled'&&AF.vals?AF.vals.reduce((a,b)=>a+b,0):'';pw.textContent=v;pw.classList.toggle('on',!!v)}}
+function afPaintFaces(){const D=afDiceEl();[...D.children].forEach((el,i)=>{el.firstChild.innerHTML=afDie(AF.vals?AF.vals[i]:0)})}
+let afThrowP=null;
+function afThrow(pw){if(AF.st!=='wait')return afThrowP;AF.st='throw';AF.need=0;const D=afDiceEl(),two=S.dice==='2d6',n=two?2:1;
+  if(D.children.length!==n){D.innerHTML=Array.from({length:n},()=>'<div class="afd"><div class="fc"></div></div>').join('')}
+  D.classList.remove('wait','need');let vals=Array.from({length:n},()=>two?rnd(6):rnd(20));
+  if(Array.isArray(window.__afVals)&&window.__afVals.length){vals=window.__afVals.splice(0,n);while(vals.length<n)vals.push(two?rnd(6):rnd(20))}
+  try{SFX.tick(700);vib(14)}catch(e){}const H=110+(pw||.4)*90;
+  afThrowP=Promise.all([...D.children].map((el,i)=>new Promise(done=>{const dur=(window.__afAuto?260:620)+i*110,spin=(540+Math.random()*360)*(i%2?-1:1),dx=(Math.random()*2-1)*30;
+    const iv=setInterval(()=>{el.firstChild.innerHTML=afDie(two?rnd(6):rnd(20));if(Math.random()<.35)AFS.roll()},60);
+    try{el.firstChild.animate([{transform:'rotate(0)'},{transform:`rotate(${spin}deg)`,offset:.86},{transform:`rotate(${spin}deg)`}],{duration:dur,easing:'cubic-bezier(.3,.6,.4,1)'});
+      el.animate([{transform:'translate(0,0) scale(1)',easing:'cubic-bezier(.2,.7,.4,1)'},{transform:`translate(${dx}px,${-H-i*20}px) scale(1.4)`,offset:.42,easing:'cubic-bezier(.6,0,.9,.5)'},{transform:'translate(0,0) scale(1.18,.72)',offset:.86},{transform:'translate(0,-10px) scale(.94,1.1)',offset:.93},{transform:'translate(0,0) scale(1)'}],{duration:dur})}catch(e){}
+    setTimeout(()=>{clearInterval(iv);el.firstChild.innerHTML=afDie(vals[i]);AFS.thud(i);try{vib(25)}catch(e){}},dur*.86);setTimeout(done,dur+20)}))).then(()=>{
+    AF.vals=vals;AF.st='rolled';afLay();const S0=afSeenGet();
+    /* doubles (not snake eyes) pour into energy */
+    if(two&&vals[0]===vals[1]&&vals[0]>1){AFS.pair();afBan(ae('دبل!','Double!'),false,300);const h=S.hero;try{flash('#f3d48f')}catch(e){}
+      if(h&&h.energy<MXE(h)){h.energy++;saveHero();setTimeout(()=>{try{const m=$('#meCard');if(m){floatAt(m,'+1 ⚡','#8cc4ff','',26);glow(m)}const en=m&&m.querySelector('.enl');if(en)en.innerHTML=`${ae('طاقة','Energy')} ${bolts(h.energy,MXE(h))}`}catch(e){}},300)}}
+    if(AF.wt){const w=AF.wt;AF.wt=null;w(vals.slice())}
+    else if(!S0.drag||S0.drag<2)setTimeout(()=>{if(AF.st!=='rolled')return;const d=afDiceEl(),a=view.querySelector('.af .act[data-a="atk"]')||view.querySelector('.act[data-a="atk"]');if(!d||!a)return;
+      const p=afMid(d),q=afMid(a);AF.hintStop=afHint('drag','drag',{x:p.x,y:p.y,x2:q.x,y2:q.y})},400);
+    return vals});
+  return afThrowP}
+function afWaitRoll(){return new Promise(res=>{AF.wt=res;AF.need=1;if(AF.st!=='wait')AF.st='wait';afLay();
+  if(window.__afAuto){setTimeout(()=>afThrow(.5),120);return}
+  const d=afDiceEl();if(d){const p=afMid(d);AF.hintStop&&AF.hintStop(false);AF.hintStop=afHint('throw','up',{x:p.x,y:p.y+10})}})}
+/* a second roll inside one move throws by itself */
+function afQuick(){AF.st='wait';afLay();return afThrow(.3)}
+function afBindDice(){const D=afDiceEl();let st=null;
+  D.addEventListener('pointerdown',ev=>{const C=S.combat;if(!C||!afShow())return;ev.preventDefault();try{D.setPointerCapture(ev.pointerId)}catch(e){}
+    st={x:ev.clientX,y:ev.clientY,moved:0,ox:parseFloat(D.style.left)||0,oy:parseFloat(D.style.top)||0};try{ac()}catch(e){}});
+  D.addEventListener('pointermove',ev=>{if(!st)return;const dx=ev.clientX-st.x,dy=ev.clientY-st.y;
+    if(AF.st==='wait'){if(dy<-26){const s0=st;st=null;afThrowGo(Math.min(1,-dy/90))}return}
+    if(AF.st!=='rolled'||S.combat.busy&&!AF.wt)return;if(!st.moved&&Math.hypot(dx,dy)<8)return;
+    if(!st.moved){st.moved=1;AF.drag=1;D.classList.add('drag');AF.hintStop&&AF.hintStop()}
+    D.style.left=(st.ox+dx)+'px';D.style.top=(st.oy+dy)+'px';const t=afDropAt(ev.clientX,ev.clientY);
+    document.querySelectorAll('.af-hov').forEach(x=>{if(x!==t)x.classList.remove('af-hov')});if(t&&!t.classList.contains('af-hov')){t.classList.add('af-hov');AFS.snap(2)}});
+  const up=ev=>{if(!st)return;const s0=st;st=null;D.classList.remove('drag');document.querySelectorAll('.af-hov').forEach(x=>x.classList.remove('af-hov'));
+    if(AF.st==='wait'){afThrowGo(.4);return}
+    if(!s0.moved){AF.drag=0;afLay();const a=view.querySelector('.act[data-a="atk"]');if(a&&AF.st==='rolled')try{a.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:320})}catch(e){}return}
+    const t=afDropAt(ev.clientX,ev.clientY);AF.drag=0;
+    if(!t){afLay();try{SFX.tick(300)}catch(e){}return}
+    const C=S.combat;const r=afMid(t);AFS.snap(7);afRingFx(r.x,r.y,'#fff6c8',40,260);try{pop(t,['#f2c14e','#fff6c8','#fff'],14)}catch(e){}
+    afLay();const S0=afSeenGet();S0.drag=(S0.drag|0)+1;store('sirdab.afSeen',S0);
+    if(t.classList.contains('foe')){const f=C.foes[+t.dataset.f];if(!f||f.hp<=0)return;if(C.picking){if(pickOk(C.picking,f)){C.tgt=f.id;heroAct(C.picking,true)}return}
+      if(C.bag||C.more||C.busy)return;C.tgt=f.id;heroAct('atk',true);return}
+    if(!t.disabled)t.click()};
+  D.addEventListener('pointerup',up);D.addEventListener('pointercancel',up);
+  D.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();if(AF.st==='wait')afThrowGo(.5)}});D.tabIndex=0}
+function afThrowGo(p){AF.hintStop&&AF.hintStop();afThrow(p)}
+function afDropAt(x,y){const els=document.elementsFromPoint(x,y);for(const e of els){if(e.closest&&e.closest('#afL'))continue;
+  const t=e.closest&&e.closest('.act,.sheet [data-s],.sheet [data-k],.sheet [data-t],.sheet [data-tk],.foe');if(!t)continue;
+  if(t.classList.contains('foe')){const C=S.combat,f=C&&C.foes[+t.dataset.f];if(!f||f.hp<=0)return null;if(C.picking&&!pickOk(C.picking,f))return null}
+  if(t.disabled||t.hasAttribute('disabled'))return null;return t}return null}
+/* ---------- the timing ring ---------- */
+function afRing(el,o){o=o||{};return new Promise(res=>{afLayer();const PERF=o.perf||70,GOOD=o.good||170,dur=o.dur||780,t0=performance.now(),tHit=t0+dur,col=o.col||'#f2c14e';let done=0;
+  const cap=afL.querySelector('#afCap');const R0=Math.min(o.r0||100,innerWidth/2-12);
+  const C0=()=>{const e=typeof el==='function'?el():el;const p=e&&e.isConnected?afMid(e):{x:innerWidth/2,y:innerHeight*.35};p.x=Math.max(R0+8,Math.min(innerWidth-R0-8,p.x));return p};
+  const fin=q=>{if(done)return;done=1;cap.hidden=true;cap.onpointerdown=null;setTimeout(()=>AF_FX.delete(draw),60);
+    const p=C0();if(q==='perfect'){AFS.perfect();afRingFx(p.x,p.y,'#fff',70,300);afRingFx(p.x,p.y,col,110,420)}else if(q==='good'){afRingFx(p.x,p.y,col,60,260);try{SFX.tick(900)}catch(e){}}else{try{SFX.tick(260)}catch(e){}}
+    res(q)};
+  const ri=o.ri||28;
+  const draw=t=>{const p=C0(),k=(t-t0)/dur,r=Math.max(3,ri+(R0-ri)*(1-k)),dt=Math.abs(t-tHit);
+    afCx.lineWidth=4;afCx.strokeStyle='rgba(255,255,255,.9)';afCx.fillStyle='rgba(255,255,255,.12)';afCx.beginPath();afCx.arc(p.x,p.y,ri,0,7);afCx.fill();afCx.stroke();
+    afCx.lineWidth=dt<GOOD?7:5;afCx.strokeStyle=done?'rgba(255,255,255,.3)':dt<PERF?'#ffffff':dt<GOOD?col:'rgba(242,193,78,.75)';afCx.beginPath();afCx.arc(p.x,p.y,r,0,7);afCx.stroke();
+    afCx.lineWidth=2;afCx.strokeStyle='rgba(11,13,28,.8)';afCx.beginPath();afCx.arc(p.x,p.y,r+4,0,7);afCx.stroke();
+    if(!done&&t>tHit+GOOD)fin('miss');if(done)return false};
+  afFx(draw);
+  if(window.__afAuto){setTimeout(()=>fin(window.__afAuto),Math.min(dur,200));return}
+  cap.hidden=false;cap.onpointerdown=ev=>{ev.preventDefault();const q=Math.abs(performance.now()-tHit);o.onTap&&o.onTap();fin(q<=PERF?'perfect':q<=GOOD?'good':'miss')}})}
+const afTgtEl=()=>()=>{const C=S.combat;const f=C&&(C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(x=>x.hp>0));return (f&&$('#foe'+f.id))||$('#meCard')};
+/* the dice math, the same as rollCheck's */
+function afTier(faces,two,mod,dc,hz){let used=faces.slice();
+  if(two&&faces.length===3){const i=faces.indexOf(Math.min(...faces));used=faces.filter((_,j)=>j!==i)}
+  if(!two&&faces.length===2)used=[Math.max(...faces)];
+  const base=used.reduce((a,b)=>a+b,0),total=base+mod-dc;
+  const crit=two?(hz?used[0]+used[1]>=11:used[0]===6&&used[1]===6):used[0]>=(hz?19:20),fumble=two?(used[0]===1&&used[1]===1):used[0]===1;
+  let tier=two?(total>=10?'full':total>=7?'part':'fail'):(total>=15?'full':total>=10?'part':'fail');if(crit)tier='full';if(fumble)tier='fail';
+  return {tier,total,crit,fumble,used}}
+/* ---------- rollCheck in a fight ---------- */
+function rcAlt(stat,opt,mod,dc,hz){const C=S.combat;if(!C||S.screen!=='combat'||!afOn())return null;try{if(typeof coRollOn==='function'&&coRollOn())return null}catch(e){}
+  if(AF.C!==C)afSync();return afRoll(stat,opt||{},mod,dc,hz)}
+async function afRoll(stat,opt,mod,dc,hz){const C=S.combat,h=S.hero,two=S.dice==='2d6',me=C.phase==='me',rf=()=>two?rnd(6):rnd(20);let q='good',R;
+  afLayer();
+  if(me){let base;
+    if(AF.st==='rolled'&&AF.vals)base=AF.vals.slice();
+    else if(AF.st==='throw'&&afThrowP)base=await afThrowP;
+    else if(AF.st==='wait')base=await afWaitRoll();
+    else base=await afQuick();
+    AF.st='used';afLay();
+    const faces=base.concat(opt.adv?[rf()]:[]);
+    if(opt.adv){const tr=afTray()||$('#meCard');try{floatAt(tr,`+${afNum(faces[faces.length-1])}`,'#a6e3a0','',24)}catch(e){}await sleep(window.__afAuto?60:380)}
+    R=afTier(faces,two,mod,dc,hz);
+    if(!R.fumble){const S0=afSeenGet();const tg=afTgtEl();let stop=()=>{};if(!window.__afAuto&&(S0.ring|0)<2){const p=afMid(tg());stop=afHint('ring','tap',{x:p.x,y:p.y})}
+      q=await afRing(tg,{dur:760,col:'#f2c14e',onTap:()=>stop()});stop(q!=='miss');
+      if(q==='perfect'){R.tier=afUp(R.tier);try{const e=tg();floatAt(e,ae('بالظبط!','Perfect!'),'#ffd36a','crit',28);vib([30,20,60])}catch(e){}}
+      else if(q==='miss')try{floatAt(tg(),ae('فاتتك','Late'),'#b9b2c8','',20)}catch(e){}}
+    AF.q=q}
+  else if(stat!=='خفة'){const faces=Array.from({length:(two?2:1)+(opt.adv?1:0)},rf);R=afTier(faces,two,mod,dc,hz)}
+  else{const e=AF.atk;q=await afBlock(e);
+    const faces=Array.from({length:(two?2:1)+(opt.adv?1:0)},rf);R=afTier(faces,two,mod,dc,hz);
+    if(q==='perfect'&&!R.fumble){R.tier='full';const m=$('#meCard');try{floatAt(m,ae('صد!','Blocked!'),'#9fd0ff','crit',30);glow(m);vib([20,20,50])}catch(x){}
+      if(!AF.eg&&h.energy<MXE(h)){AF.eg=1;h.energy++;saveHero();setTimeout(()=>{try{floatAt($('#meCard'),'+1 ⚡','#8cc4ff','',24)}catch(x){}},420)}}
+    else if(q==='miss')R.tier=afDown(R.tier);}
+  /* what the old window did besides the number */
+  S.streak=R.tier==='fail'?0:(S.streak||0)+1;if(S.streak===5)try{ach('hot')}catch(e){}
+  if(R.crit){try{SFX.crit();flash('#f3d48f');band('',ae('ضربة حظ!','Lucky hit!'),'',{dur:1100,sound:false});ach('crit')}catch(e){}if(S.run)S.run.crits++;
+    if(S.run&&S.run.crits>=3&&h&&h.hidden&&!h.hidden.hazz)setTimeout(()=>{try{unlockHidden('hazz')}catch(e){}},400)}
+  else if(R.fumble)try{flash('#d0483b');SFX.bad()}catch(e){}
+  return {tier:R.tier,total:R.total,crit:R.crit,fumble:R.fumble,af:q}}
+const afNum=n=>String(n);
+/* the block: the foe flashes, then lunges, and a blue ring closes on you */
+async function afBlock(e){const C=S.combat,me=$('#meCard'),fe=e&&$('#foe'+e.id);afLayer();
+  await afBan(ae('دفاع!','Block!'),true,200);
+  try{if(fe)fe.animate([{filter:'none'},{filter:'brightness(1.7) sepia(1) saturate(5) hue-rotate(-40deg)'},{filter:'none'},{filter:'brightness(1.7) sepia(1) saturate(5) hue-rotate(-40deg)'},{filter:'none'}],{duration:480});AFS.growl()}catch(x){}
+  const boss=e&&(e.boss||e.base&&e.base.boss),dur=boss?700:840;
+  setTimeout(()=>{try{const a=$('#foe'+(e&&e.id)),m=$('#meCard');if(!a||!m)return;const p=afMid(a),q=afMid(m);
+    a.animate([{transform:'translate(0,0)'},{transform:`translate(${(q.x-p.x)*.55}px,${(q.y-p.y)*.55}px) scale(1.12)`,offset:.5},{transform:'translate(0,0)'}],{duration:340,easing:'cubic-bezier(.5,0,.5,1)'})}catch(x){}},Math.max(0,dur-200));
+  const S0=afSeenGet();let stop=()=>{};if(!window.__afAuto&&(S0.block|0)<2&&me){const p=afMid(me);stop=afHint('block','tap',{x:p.x,y:p.y})}
+  const q=await afRing(()=>$('#meCard'),{dur,col:'#7fb6ff',r0:96,ri:30,onTap:()=>stop()});stop(q!=='miss');
+  if(q==='perfect'){AFS.block();try{pop($('#meCard'),['#7fb6ff','#fff','#2f5fb8'],26)}catch(x){}}else if(q==='good')AFS.block();
+  return q}
+/* ---------- the look, after every render of the fight ---------- */
+function afSync(){const C=S.combat;if(C!==AF.C){AF.C=C;AF.ph='';AF.st='';AF.vals=null;AF.q='';AF.wt=null}
+  if(!C)return false;let fresh=false;if(C.phase==='me'&&AF.ph!=='me'){AF.st='wait';AF.vals=null;AF.eg=0;fresh=true}AF.ph=C.phase;return fresh}
+function afDress(){const C=S.combat,on=afOn()&&S.screen==='combat'&&!!C;app.classList.toggle('af',on);
+  if(!on){if(afL)afDiceEl().hidden=true;return}
+  afLayer();const fresh=afSync();
+  if(view.querySelector('.af-stage'))return afLay();
+  const fo=view.querySelector('.foes'),sd=view.querySelector('.side');if(!fo||!sd)return;
+  const st=document.createElement('div');st.className='af-stage';fo.before(st);st.appendChild(sd);st.appendChild(fo);
+  st.insertAdjacentHTML('afterbegin','<i class="af-moon"></i><i class="af-hill"></i>');
+  const tr=document.createElement('div');tr.className='af-tray';tr.innerHTML='<b class="af-pw"></b>';st.after(tr);
+  view.querySelectorAll('.act').forEach(b=>{if(b.querySelector('.af-ic'))return;const k=AF_ACT[b.dataset.a]||(b.id==='xWake'?'ear':'star');b.insertAdjacentHTML('afterbegin',`<span class="af-ic">${AF_IC[k]||AF_IC.star}</span>`)});
+  const top=view.querySelector('.top > span:last-child');if(top&&!$('#afLg')){const b=document.createElement('button');b.className='qbtn';b.id='afLg';b.setAttribute('aria-label',ae('اللي حصل','What happened'));b.innerHTML=AF_IC.scroll;
+    b.onclick=()=>{app.classList.toggle('af-log');const lg=$('#log');if(lg)lg.scrollTop=lg.scrollHeight};top.prepend(b)}
+  const lg=$('#log');if(lg&&!lg.querySelector('.af-x')){const x=document.createElement('button');x.className='btn ghost small af-x';x.textContent=ae('اقفل','Close');x.onclick=()=>app.classList.remove('af-log');lg.appendChild(x)}
+  if(fresh||view.querySelector('.turn.turn-in')){AFS.turn();afBan(ae('دورك','Your turn'),false,300)}
+  afLay();requestAnimationFrame(afLay)}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{afDress()}catch(e){console.warn(e);(window.__xErr=window.__xErr||[]).push('af: '+(e&&e.message))}return r}}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{if(S.screen!=='combat'){app.classList.remove('af','af-log');if(afL)afDiceEl().hidden=true}}catch(e){}return r}}
+try{view.addEventListener('scroll',()=>{if(AF.C)afLay()},{passive:true})}catch(e){}
+/* the hit is scaled by the ring */
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;try{if(AF.q&&AF.q!=='good'&&C&&C.phase==='me'&&afOn()&&!(o&&o.fx==='poison')&&d>0){d=Math.max(1,Math.round(d*AF_QM[AF.q]));if(AF.q==='perfect')o=Object.assign({},o||{},{crit:true})}}catch(e){}
+  return h0.call(this,f,d,o)}}
+{const a0=afterHero;afterHero=function(){AF.q='';return a0.apply(this,arguments)}}
+{const t0=foeTurn;foeTurn=function(e){AF.atk=e;return t0.apply(this,arguments)}}
+/* fewer words, so the pace is quicker */
+{const s0=say;say=function(t,k,w){try{if(afOn()&&S.screen==='combat')w=Math.max(220,Math.round((w===undefined?PACE:w)*.55))}catch(e){}return s0.call(this,t,k,w)}}
+/* the switch in settings */
+{const o0=openSettings;openSettings=function(){const r=o0.apply(this,arguments);try{const ok=$('#stOk');if(ok&&!$('#stAf')){const b=document.createElement('button');b.className='setrow';b.id='stAf';
+  b.innerHTML=`<span>${ae('القتال بالإيد (النرد والضربة في وقتها)','Hands-on fights (dice and timed hits)')}</span><span class="sw${store('sirdab.af')!==false?' on':''}"><i></i></span>`;
+  b.onclick=()=>{const v=store('sirdab.af')===false;store('sirdab.af',v);b.querySelector('.sw').classList.toggle('on',v);try{SFX.tick(900)}catch(e){}if(S.screen==='combat')render()};ok.before(b)}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+#afL{position:fixed;inset:0;pointer-events:none;z-index:70}
+#afCv{position:absolute;inset:0;width:100%;height:100%}
+#afCap{position:absolute;inset:0;pointer-events:auto;touch-action:none}
+#afBan{position:absolute;top:24%;left:0;right:0;text-align:center;font-family:'Cairo',sans-serif;font-weight:800;font-size:50px;line-height:1.2;color:#f2c14e;opacity:0;
+  text-shadow:4px 4px 0 #0b0d1c,-2px -2px 0 #0b0d1c,2px -2px 0 #0b0d1c,-2px 2px 0 #0b0d1c}
+#afBan.red{color:#e2483f}
+#afHand{position:absolute;left:0;top:0;width:40px;height:40px;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.5))}#afHand svg{width:100%;height:100%}
+#afDice{position:absolute;display:flex;gap:12px;transform:translate(-50%,-50%);pointer-events:auto;touch-action:none;cursor:grab;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45));transition:left .14s cubic-bezier(.2,.9,.3,1.3),top .14s cubic-bezier(.2,.9,.3,1.3)}
+#afDice[hidden]{display:none}
+#afDice .afd{width:52px;height:52px}#afDice .fc,#afDice .fc svg{width:100%;height:100%;display:block}
+#afDice.wait .fc{animation:afWig 1.1s ease-in-out infinite}
+#afDice.need .afd{filter:drop-shadow(0 0 8px #f2c14e)}
+#afDice.drag{transition:none;transform:translate(-50%,-50%) scale(1.15)}
+#afDice.rolled .afd{animation:afGl .9s ease-in-out infinite alternate}
+@keyframes afWig{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-10deg)}86%{transform:rotate(9deg)}94%{transform:rotate(-4deg)}}
+@keyframes afGl{to{filter:brightness(1.2) drop-shadow(0 0 4px #fff6c8)}}
+#app.af .coach,#app.af .turn,#app.af .log{display:none}
+#app.af.af-log .log{display:block;position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,480px);max-height:60vh;z-index:75;margin:0;border-radius:18px 18px 0 0;box-shadow:0 -10px 40px #000a}
+#app.af .log .af-x{margin-top:8px}
+#app.af #afLg svg{width:20px;height:20px}
+#app.af .af-stage{position:relative;height:clamp(300px,46vh,430px);margin:6px 0 0;border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,#141a3a 0%,#1d2550 48%,#243022 49%,#1a2416 100%);box-shadow:inset 0 0 0 2px #0b0d1c,inset 0 0 40px #0008}
+#app.af .af-moon{position:absolute;top:18px;inset-inline-start:26px;width:34px;height:34px;border-radius:50%;background:#f3e6b0;box-shadow:0 0 30px #f3e6b066}
+#app.af .af-hill{position:absolute;left:-10%;right:-10%;top:43%;height:40px;border-radius:50% 50% 0 0;background:#1b2a1c}
+#app.af .af-stage .foes{position:absolute;inset-inline-end:6px;top:12%;width:62%;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px;margin:0;grid-template-columns:none}
+#app.af .af-stage .foe{background:none;border:0;box-shadow:none;padding:2px;min-width:0;flex:0 1 31%;max-width:118px;position:relative}
+#app.af .af-stage .foes:has(.foe:nth-child(2):last-child) .foe{flex-basis:46%}
+#app.af .af-stage .foes .foe:only-child{flex-basis:70%;max-width:150px}
+#app.af .af-stage .foe>svg{width:100%;height:auto;max-height:110px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+#app.af .af-stage .foe .lv,#app.af .af-stage .foe .hpn{display:none}
+#app.af .af-stage .foe .nm{font-size:11px;line-height:1.2;color:#e9dcc4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app.af .af-stage .foe .hb{height:7px}
+#app.af .af-stage .foe.af-hov,#app.af .af-stage .foe.pick{outline:3px solid #fff6c8;outline-offset:2px;border-radius:12px}
+#app.af .af-stage .side{position:absolute;inset-inline-start:8px;bottom:10px;width:34%;display:flex;flex-direction:column;gap:6px;margin:0}
+#app.af .af-stage .mate{background:#0b0d1c99;border:0;padding:6px;border-radius:12px;display:flex;align-items:center;gap:6px;min-height:0}
+#app.af .af-stage .mate .pic{width:54px;height:54px;flex:0 0 54px}
+#app.af .af-stage .mate:not(.me) .pic{width:40px;height:40px;flex-basis:40px}
+#app.af .af-stage .mate .info{font-size:0;line-height:1;min-width:0;flex:1}
+#app.af .af-stage .mate .info>b{display:none}
+#app.af .af-stage .mate .info .enl{font-size:0;display:block;margin-top:4px}
+#app.af .af-stage .mate .info .enl *{font-size:12px}
+#app.af .af-stage .mate .info .dn{font-size:12px}
+#app.af .af-stage .mate .info>span:not(.enl):not(.dn){font-size:0}
+#app.af .af-stage .mate.down .pic{transform:rotate(-70deg);filter:grayscale(1) brightness(.6)}
+#app.af .af-tray{position:relative;height:78px;margin:8px auto 4px;width:200px;border-radius:10px;background:#0b0d1c;box-shadow:0 0 0 3px #3d3266,0 0 0 6px #0b0d1c;
+  background-image:repeating-linear-gradient(0deg,transparent 0 6px,rgba(255,255,255,.025) 6px 9px)}
+#app.af .af-pw{position:absolute;top:-12px;inset-inline-end:-12px;min-width:30px;height:30px;padding:0 4px;box-sizing:border-box;display:grid;place-items:center;font:900 14px monospace;color:#0b0d1c;background:#f2c14e;box-shadow:0 0 0 2px #0b0d1c;border-radius:6px;opacity:0;transition:opacity .2s;direction:ltr}
+#app.af .af-pw.on{opacity:1}
+#app.af .acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:6px}
+#app.af .acts .act{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;min-height:96px;padding:6px 2px;background:none;border:0;box-shadow:none;text-align:center}
+#app.af .acts .act .af-ic{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#2a2148;box-shadow:0 0 0 3px #0b0d1c,0 0 0 5px #3d3266,0 5px 0 5px #0b0d1c;transition:transform .12s}
+#app.af .acts .act .af-ic svg{width:32px;height:32px}
+#app.af .acts .act>b{font-size:13px;line-height:1.2}
+#app.af .acts .act>small,#app.af .acts .act>.cost{display:none}
+#app.af .acts .act.main .af-ic{box-shadow:0 0 0 3px #0b0d1c,0 0 0 5px #f2c14e,0 5px 0 5px #0b0d1c}
+#app.af .acts .act:disabled{opacity:.35}
+#app.af .acts .act.af-hov .af-ic,#app.af .sheet .af-hov{transform:scale(1.12);box-shadow:0 0 0 3px #0b0d1c,0 0 0 6px #fff,0 0 18px 6px rgba(242,193,78,.6)}
+#app.af .acts .act:not(:disabled):active .af-ic{transform:translateY(3px) scale(.95)}
+#app.af .sheet.xmore .act{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:10px;align-items:center;text-align:start;min-height:56px;background:#2a2148;border-radius:14px}
+#app.af .sheet.xmore .act .af-ic{grid-row:1/span 3}#app.af .sheet.xmore .act>.cost{justify-self:start}
+#app.af .sheet.xmore .act .af-ic{width:40px;height:40px;flex:0 0 40px;box-shadow:none;background:#0b0d1c}
+#app.af .sheet.xmore .act .af-ic svg{width:24px;height:24px}
+#app.af .sheet.xmore .act>small{display:block;font-size:12px;opacity:.75}
+#app.af .sheet.sks .it.sk .tx small:not(.why):not(.lk){display:none}
+@media (prefers-reduced-motion:reduce){#afDice.wait .fc,#afDice.rolled .afd{animation:none}}
+`;document.head.appendChild(s)})();
+L10NG({'القتال بالإيد (النرد والضربة في وقتها)':'Hands-on fights (dice and timed hits)'});
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
