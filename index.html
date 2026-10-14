@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.41',d:'14 أكتوبر',add:['البلد بقت فيها ناس ماشية في الشوارع. {دوس|دوسي} على حد يقف ويكلمك: كلام البلد ونصايح بجد. وساعات حد {يديك|يديكي} قرشين عشان {ساعدته|ساعدتيه} قبل كده.','الصندوق بقا {بتفتحه|بتفتحيه} بإيدك: {اخبط|اخبطي} على القفل لحد ما يتكسر. كل خبطة بتشرخه وتطيّر شرار، والصندوق الأغلى قفله أنشف.','دكان عم رمضان بالليل بقا رفوف خشب والحاجات متصفصفة عليها.']},
 {v:'6.40',d:'14 أكتوبر',add:['الكلام بقا كوميكس: اللي بيحصل في صناديق صفرا، وكلام الناس في فقاعات جنب وشهم، وكل واحد له وش ثابت. النتيجة بعد الرمية كمان فيها فقاعة اللي بيكلمك.','الاختيارات بقت كروت بأيقونة كبيرة: قبضة للقوة، جري للخفة، فقاعة للحضور، عملة للشرا، رجلين للي {عايز|عايزة} تمشي وبس. فرصتك في شريطة ملونة تحت.','كارت الدفع أو الإدية تقدر {تسحبه|تسحبيه} على وش الشخص بدل ما {تدوس|تدوسي} عليه.']},
 {v:'6.39',d:'14 أكتوبر',add:['الليلة بقت مكان: في كل وقفة {بتشوف|بتشوفي} نفسك على الطريق، وقدامك 3 أماكن بتنوّر بصورتها واسمها ونجوم خطرها. {دوس|دوسي} على مكان وهتمشي لحد عنده.','الاختيارات بقت حركة {بتعملها|بتعمليها} قبل النرد: شد بسرعة للقوة، اتسحّب في الوقت الصح للخفة، استحمل للتحمّل، افتكر للذكاء، خلّي بالك للحكمة، وفي وقتك للحضور. لو {عملتها|عملتيها} حلو بتاخد لحد +2 على الرمية.','مش {عايز|عايزة} تلعبها؟ «{سيبها|سيبيها} للحظ» وارمي النرد على طول.']},
 {v:'6.38',d:'14 أكتوبر',add:['الحدادة والخياطة والطبخ والعطارة اتنظموا: فوق فيه تابات («اعمل»، «خامات»، «العدّة»، «جاهز»…)، وكل حاجة {بتعملها|بتعمليها} بقت كارت صغير فيه صورتها واسمها. {دوس|دوسي} عليه يفتح بكل تفاصيله وزراره.','النقطة الخضرا على الكارت = {تقدر تعملها|تقدري تعمليها} دلوقتي، والدهبي = {تقدر تشتريها|تقدري تشتريها} جاهزة. صفحة الحداد بقت أقصر بكتير.']},
@@ -51212,8 +51213,99 @@ function cmStory(){if(S.screen!=='story'||!cmOn())return;const st=view.querySele
 .cm-nd{margin-top:auto;align-items:center!important}
 .cm-chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:800;background:#0b0d1c;color:#e9dcc4;box-shadow:0 0 0 1px #ffffff22}
 .cm-chip.c-good{color:#7fd88a}.cm-chip.c-mid{color:#f3c14d}.cm-chip.c-low{color:#f0a090}
+.cm-dr{touch-action:none}
 .cm-gh{position:fixed;z-index:95;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:#0b0d1c;box-shadow:0 0 0 2px var(--c),0 6px 16px #000a;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.cm-cap,.cm-say{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.41 (acc1, Twister 13:02) · update 4: the town is alive, and you open things with your hands ----------
+   - People walk the town map: a few townsfolk stroll up and down the streets (pixel people made like the comic faces). Tap one and
+     they stop and say something in a bubble (talk of the town and small tips that are true in this game). Now and then one of
+     them hands you a few coins for last time's help (at most 2 a town day).
+   - A chest is opened by hand: tap its lock until it breaks. Each tap shakes it, cracks it and throws sparks; a better chest has a
+     stiffer lock (3 taps, one more for each rarity step), then it opens exactly as before.
+   - عم رمضان's shop at night is a set of wooden shelves.
+   Test builds keep the old behaviour unless window.__tw4 is set. */
+const T4={pop:null};
+const t4On=()=>!((window.__r||window.__t||window.__q)&&!window.__tw4);
+const T4_SAY=[
+  ['الليلة دي الغيطان ساكتة زيادة عن اللزوم.','The fields are far too quiet tonight.'],
+  ['النوم في البيت ببلاش، {وبتصحى|وبتصحي} صحتك كاملة.','Sleeping at home is free, and you wake up whole.'],
+  ['الصندوق الغالي قفله ناشف. {اخبط|اخبطي} عليه كويس.','A good chest has a stiff lock. Knock it hard.'],
+  ['سمعت حد بينده بالليل عند الترعة.. ما {تردش|ترديش}.','I heard someone calling by the canal at night. Don\'t answer.'],
+  ['شاي القهوة هنا يصحّي الميت.','The tea at the café would wake the dead.'],
+  ['الجرنال النهارده فيه وصفة جديدة، {بص|بصي} عليه.','Today\'s paper has a new recipe. Take a look.'],
+  ['البنك بيدي فايدة لو {سبت|سبتي} فلوسك فيه شوية.','The bank pays you if you leave your money there a while.'],
+  ['الملح بيبعد حاجات كتير بالليل.','Salt keeps a lot of things away at night.'],
+  ['النار بتخوّف حاجات كتير في الغيطان.','Fire scares a lot of things in the fields.'],
+  ['عم حسن الحداد إيده تتلف في حرير.','Uncle Hassan the smith has golden hands.'],
+  ['ابني راح الدهاليز ورجع ساكت. ربنا يستر.','My son went down the passages and came back silent.'],
+  ['السوق النهارده زحمة، الأسعار نار.','The market is packed today. Prices are on fire.'],
+  ['{انت|انتي} اللي {بتطلع|بتطلعي} بالليل؟ ربنا معاك.','You\'re the one who goes out at night? God be with you.'],
+  ['العمدة بيدوّر على حد زيك من زمان.','The mayor has been looking for someone like you.'],
+  ['ما {تشيلش|تشيليش} أكتر من اللي شنطتك تقدر عليه.','Don\'t carry more than your bag can hold.']];
+const T4_GIFT=['{خد|خدي} دول، {ساعدتنا|ساعدتينا} المرة اللي فاتت.','Here, take these. You helped us last time.'];
+function t4Look(r){const P=(typeof PD!=='undefined'&&PD.RAMPS)||{},pick=(o,n)=>{const k=Object.keys(o||{});return k[(r>>>n)%Math.max(1,k.length)]};
+  const f=(r>>>2)%2===1,old=(r>>>3)%4===0;
+  const L={name:'',g:f?'f':'m',cls:'ابن البلد',skin:pick(P.skin,1),hairColor:old?'#d9d4cc':['#1b1412','#4a2c1a','#8a5a2b'][(r>>>4)%3],eyes:pick(P.eyes,6),outfit:pick(P.outfit,8),
+    age:old?'كبير':'شاب',hair:f?((r>>>5)%2?'غطا راس':'طويل'):['قصير','مموج','كيرلي','أصلع'][(r>>>5)%4]};
+  if(!f)L.beard=old?'شنب':['من غير','شنب','سكسوكة'][(r>>>7)%3];return L}
+function t4Walkers(){if(S.screen!=='town'||!t4On())return;const mp=$('#tmMap');if(!mp||mp.querySelector('.t4-w'))return;const W=+mp.dataset.w||0;if(W<120)return;
+  const seed=cmHash('t4|'+Math.floor(Date.now()/9e5)),n=W>300?7:4,out=[];
+  for(let i=0;i<n;i++){const r=cmHash(seed+'|'+i),row=i%2,y=row?TM_FY+8:TM_BY+8,len=40+r%50,x=TM_EDGE+((r>>>3)%Math.max(1,W-TM_EDGE*2-len));let svg='';
+    try{svg=PX.body(t4Look(r))}catch(e){}if(!svg)continue;
+    out.push(`<button class="t4-w" data-t4="${i}" data-r="${r}" style="left:${x*TM_SC}px;top:${y*TM_SC}px;--dx:${len*TM_SC}px;--t:${(len/6).toFixed(1)}s;--dl:-${(r%9)}s" aria-label="${esc(ae('واحد من البلد','A local'))}"><span class="t4-s">${svg}</span></button>`)}
+  mp.insertAdjacentHTML('beforeend',out.join(''));
+  mp.querySelectorAll('.t4-w').forEach(b=>{b.addEventListener('pointerdown',e=>e.stopPropagation());b.onclick=e=>{e.stopPropagation();t4Talk(b)}})}
+function t4Talk(b){const h=S.hero;if(!h)return;const mp=$('#tmMap');if(!mp)return;mp.querySelectorAll('.t4-bb').forEach(x=>x.remove());mp.querySelectorAll('.t4-w.stop').forEach(x=>x.classList.remove('stop'));
+  b.classList.add('stop');const r=+b.dataset.r,w=Math.floor(Date.now()/9e5);let G0=h.t4g;if(!G0||G0.w!==w)G0=h.t4g={w,n:0,who:[]};
+  const gift=G0.n<2&&!G0.who.includes(b.dataset.t4)&&Math.random()<.3;let line,amt=0;
+  if(gift){amt=5+Math.floor(Math.random()*11)+(h.lvl|0);G0.n++;G0.who.push(b.dataset.t4);h.money=(h.money|0)+amt;line=ae(T4_GIFT[0],T4_GIFT[1]);try{saveHero()}catch(e){}}
+  else{T4.k=((T4.k|0)+1+(r%5))%T4_SAY.length;const L=T4_SAY[T4.k];line=ae(L[0],L[1])}
+  const bb=document.createElement('div');bb.className='t4-bb';const br=b.getBoundingClientRect(),mr=mp.getBoundingClientRect();
+  bb.style.left=(br.left-mr.left+br.width/2)+'px';bb.style.top=(br.top-mr.top-4)+'px';bb.innerHTML=`${esc(T(line))}${amt?`<b class="t4-g">+${amt} ${ae('جنيه','coins')}</b>`:''}`;mp.appendChild(bb);
+  try{amt?(SFX.coin&&SFX.coin()):SFX.tick(700)}catch(e){}if(amt){try{pop(bb,['#ffd36a','#fff'],14)}catch(e){}const m=$('#money');if(m)m.textContent=m.textContent.replace(/\d+/,h.money)}
+  clearTimeout(T4.pop);T4.pop=setTimeout(()=>{bb.remove();b.classList.remove('stop')},amt?4200:3600)}
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{t4Walkers()}catch(e){console.warn(e)}return r}}
+
+/* ---- chests: break the lock by hand ---- */
+const T4_HIT=new WeakMap();
+function t4ChestDress(){if(!t4On())return;const L=S.loot;if(!L||!L.chests)return;view.querySelectorAll('.chest:not(.open)').forEach(el=>{if(el.dataset.t4)return;const c=L.chests[+el.dataset.c];if(!c)return;el.dataset.t4=1;
+  const need=3+(c.tier|0),n=T4_HIT.get(c)|0;el.insertAdjacentHTML('beforeend',`<svg class="t4-ck" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 L17 13 L23 18 L16 27 L21 36" class="k1"/><path d="M17 13 L9 16 M23 18 L32 15 M16 27 L8 30" class="k2"/></svg>`);
+  const rn=el.querySelector('.rn');if(rn){rn.dataset.t4n=need;rn.innerHTML=t4Dots(n,need)}el.style.setProperty('--ck',(n/need).toFixed(2))})}
+const t4Dots=(n,need)=>`<span class="t4-ht">${T(ae('{اخبط|اخبطي} على القفل','Knock the lock open'))}</span><span class="t4-dt">${Array.from({length:need},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span>`;
+document.addEventListener('click',e=>{if(!t4On())return;const el=e.target.closest&&e.target.closest('.chest:not(.open)');if(!el||!el.dataset.t4)return;const L=S.loot,c=L&&L.chests&&L.chests[+el.dataset.c];if(!c||c.busy||c.open)return;
+  const need=3+(c.tier|0),n=(T4_HIT.get(c)|0)+1;if(n>=need){T4_HIT.delete(c);el.classList.add('t4-brk');return}
+  e.stopImmediatePropagation();e.preventDefault();T4_HIT.set(c,n);el.style.setProperty('--ck',(n/need).toFixed(2));
+  el.classList.remove('t4-kn');void el.offsetWidth;el.classList.add('t4-kn');const rn=el.querySelector('.rn');if(rn)rn.innerHTML=t4Dots(n,need);
+  try{SFX.chest&&n===need-1?SFX.chest():SFX.tick(380+n*140)}catch(x){}try{vib(15+n*8)}catch(x){}
+  try{const r=el.getBoundingClientRect(),s=document.createElement('span');s.className='t4-sp';s.style.left=(e.clientX||r.left+r.width/2)+'px';s.style.top=(e.clientY||r.top+r.height/2)+'px';document.body.appendChild(s);pop(s,['#ffd36a','#fff','#c9a46a'],8+n*2);setTimeout(()=>s.remove(),600)}catch(x){}},true);
+
+/* ---- عم رمضان's shelves ---- */
+function t4Shelf(){if(S.screen!=='shop'||!t4On())return;const g=view.querySelector('.sgrid');if(!g||g.classList.contains('t4-sh'))return;g.classList.add('t4-sh');
+}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{t4ChestDress();t4Shelf()}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.t4-w{position:absolute;z-index:2;width:44px;height:48px;margin:0;padding:0;border:0;background:none;transform:translate(-50%,-100%);cursor:pointer;animation:t4Go var(--t) linear var(--dl) infinite}
+.t4-w .t4-s{position:absolute;left:8px;bottom:0;width:28px;height:37px;filter:drop-shadow(0 1px 0 #000);animation:t4Fl var(--t) steps(1) var(--dl) infinite}
+.t4-w .t4-s svg{width:100%;height:100%;animation:khBob 1s steps(2) infinite}
+.t4-w.stop,.t4-w.stop .t4-s{animation-play-state:paused}
+@keyframes t4Go{0%,100%{transform:translate(-50%,-100%)}48%,52%{transform:translate(calc(-50% + var(--dx)),-100%)}}
+@keyframes t4Fl{0%{transform:scaleX(-1)}50%{transform:scaleX(1)}}
+.t4-bb{position:absolute;z-index:6;transform:translate(-50%,-100%);max-width:200px;width:max-content;padding:7px 11px;border-radius:14px;background:#fff;color:#1a1410;border:2px solid #2b1b22;box-shadow:2px 2px 0 #0008;font-size:12px;font-weight:700;line-height:1.5;text-align:center;animation:cmIn .25s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
+.t4-bb::after{content:'';position:absolute;left:50%;bottom:-8px;margin-left:-6px;border:6px solid transparent;border-top:7px solid #2b1b22;border-bottom:0}
+.t4-g{display:block;color:#b8860b;font-size:13px}
+.chest[data-t4]{position:relative}
+.t4-ck{position:absolute;left:50%;top:30%;width:44%;height:auto;transform:translateX(-50%);pointer-events:none;opacity:calc(var(--ck,0)*1.2);fill:none;stroke:#fff6d8;stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 4px #ffd36a)}
+.t4-ck .k1{stroke-dasharray:40;stroke-dashoffset:calc(40 - var(--ck,0)*40)}.t4-ck .k2{opacity:calc(var(--ck,0)*1.5 - .5)}
+.chest.t4-kn{animation:t4Kn .28s cubic-bezier(.3,1.8,.5,1)}
+@keyframes t4Kn{25%{transform:translateX(-5px) rotate(-4deg) scale(1.04)}55%{transform:translateX(4px) rotate(3deg)}}
+.t4-ht{display:block;font-size:11px}.t4-dt{display:flex;gap:4px;justify-content:center;margin-top:3px}.t4-dt i{width:8px;height:8px;border-radius:50%;background:#ffffff22;box-shadow:inset 0 0 0 1px #ffffff44}.t4-dt i.on{background:#ffd36a;box-shadow:0 0 6px #ffd36a}
+.t4-sp{position:fixed;width:1px;height:1px;pointer-events:none;z-index:96}
+.sgrid.t4-sh{column-gap:0!important;row-gap:16px!important;padding:12px 8px 4px;border-radius:10px;background:repeating-linear-gradient(90deg,#2a1b12 0 38px,#24170f 38px 40px);border:5px solid #5a3820;box-shadow:inset 0 0 20px #000a}
+.sgrid.t4-sh .sitem{background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;position:relative}
+.sgrid.t4-sh .sitem .ic{position:relative;padding-bottom:6px}
+.sgrid.t4-sh .sitem .ic::after{content:'';position:absolute;left:-12px;right:-12px;bottom:0;height:8px;background:linear-gradient(#a8743e,#6b4226);box-shadow:0 4px 0 #3a2414}
+.sgrid.t4-sh .sitem .ic svg{filter:drop-shadow(0 3px 0 #0008)}
+@media (prefers-reduced-motion:reduce){.t4-w,.t4-w .t4-s{animation:none}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
