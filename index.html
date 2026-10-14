@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.38',d:'14 أكتوبر',add:['الحدادة والخياطة والطبخ والعطارة اتنظموا: فوق فيه تابات («اعمل»، «خامات»، «العدّة»، «جاهز»…)، وكل حاجة {بتعملها|بتعمليها} بقت كارت صغير فيه صورتها واسمها. {دوس|دوسي} عليه يفتح بكل تفاصيله وزراره.','النقطة الخضرا على الكارت = {تقدر تعملها|تقدري تعمليها} دلوقتي، والدهبي = {تقدر تشتريها|تقدري تشتريها} جاهزة. صفحة الحداد بقت أقصر بكتير.']},
 {v:'6.37',d:'14 أكتوبر',add:['شجرة كل شغلانة بقت سما بالليل بنجوم: الشمس تحت، والفروع طالعة نجوم متوصلة، والروابط والتاج فوق، والاختيارات تحت. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}، والنجمة بتنوّر لما {تاخدها|تاخديها}.','«شجرة الصنايعي» اللي كانت لكل الشغلانات اتشالت. اللي {اشتريته|اشتريتيه} منها لسه شغال.','القتال: القدرات والشنطة و«اتصرّف» بقوا كروت مكتوب عليها كل حاجة بتعمل إيه. دوسة واحدة {بتستعملها|بتستعمليها}، ولو محتاجة وحش {بتدوس|بتدوسي} على الوحش على طول.','السلاح اللي {بيصحى|بيصحى} أو بيتولد بروح أو بيكبر: مشهد كامل بنور وصوت واسمه بيظهر كبير.']},
 {v:'6.36',d:'14 أكتوبر',add:['القتال: أول ما {ترمي|ترمي} النرد، تحته مكتوب الرمية دي هتعمل إيه في الضربة: النرد + الصفة − صعوبة العدو = النتيجة.','أرقام الصحة بقت جوه البار نفسه، فوق كل وحش وفوقك.','الشعلة وأي حاجة {بترميها|بترميها} على عدو: {دوس|دوسي} على العدو نفسه زي الضربة، من غير زراير.','الوحوش بقت بتتنفس وبتتحرك في مكانها، ونقط الضعف بقت أيقونات صغيرة من غير بوكسات.','اسم «علقة» و«تثبيت» بقى فوق الزرار.','في «بيتك» بقى فيه سرير: لو صحتك ناقصة {ارتاح|ارتاحي} ببلاش وصحتك وطاقتك يرجعوا كاملين. صحتك ما بترجعش لوحدها في البلد.','التحدي والمنافس وطلب العمدة لما {تكون تعبان|تكوني تعبانة} بيودّوك على السرير على طول، ومربع «بيتك» بيقولك {ترتاح|ترتاحي} هناك.','الجرنال مابقاش بيجيب وصفة {انت عارفها|انتي عارفاها} خلاص.']},
 {v:'6.35.1',d:'14 أكتوبر',add:['تصليح: على الكمبيوتر، المحارب اللي معاه تخصص كانت اللعبة بتقف عنده أول ما تفتح. اتصلحت','مربع الغلط (لو حصل) بقى ينفع {تحدد|تحددي} الكلام اللي فيه، وفيه زرار «انسخ الغلط» عشان {تبعته|تبعتيه} بسهولة']},
@@ -50884,6 +50885,83 @@ function soulFx(o){if(SOUL_FX)return SOUL_FX.p;let done;const p=new Promise(r=>d
 @keyframes sxMote{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-70vh);opacity:0}}
 #soulFx.sx-grew .sx-ttl{font-size:26px}
 @media (prefers-reduced-motion:reduce){#soulFx *{animation-duration:.01s!important;animation-delay:0s!important}}`;document.head.appendChild(s)})();
+/* ---------- 6.38 (acc1, Twister 2026-10-14 13:04): «عايزين نسهل الحدادة لأن في ٤٧٣٨٢٧٢٧٢٧٢ حاجه والصفحه طويله جدا (نفس الأمر فباقي الحرف)» ----------
+   The craft screens (smith, tailor, cook, attar) were one long page (the smith ~15,000 px). Now, after the screen draws:
+   - Tabs under the top cards: «اعمل» (the things you make, plus the newspaper recipes), then the screen's other parts grouped
+     («خامات وسبك», «العدّة», «جاهز», «كُل», …). Only the open tab shows; the choice is kept while you are on that screen.
+   - In «اعمل» every piece is a small tile (picture, name, rarity, and a dot: green = you can make it now, gold = you can buy it).
+     A tap opens the tile into the full card with its buttons; one open at a time, kept across redraws.
+   Nothing about making or buying changes: the same cards and buttons, only grouped and folded.
+   Test builds (window.__r/__t/__q) keep the old long page unless window.__cro is set, so older tests still find their buttons. */
+const CRO_SC=['smith','tailor','cook','attar'],CRO={};
+const CRO_G=[
+  {id:'mats',n:['خامات وسبك','Materials'],rx:/خامات|السبك|السبايك|رماد|عجين|قماش|جلد|أعشاب|عشب|Materials|Smelt|Alloy|ash|dough|cloth|herb/i},
+  {id:'tools',n:['العدّة','Tools'],rx:/عدّة|عدة|طُعم|طعم|Tools|bait/i},
+  {id:'ready',n:['جاهز','Ready-made'],rx:/جاهز|Ready/i},
+  {id:'eat',n:['كُل','Eat'],rx:/كُل|كل وارج|Eat/i}];
+const croOn=()=>!((window.__r||window.__t||window.__q)&&!window.__cro);
+function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;const tw=view.querySelector('.tw');if(!tw||tw.dataset.cro)return;
+  const kids=[...tw.children];const firstL=kids.findIndex(c=>c.classList.contains('tw-lbl'));if(firstL<0)return;
+  /* the top: everything before the list of things to make (the npc, the level card, the workshop, the tool) */
+  let top=kids.findIndex(c=>c.classList.contains('tw-stk')||c.classList.contains('col')||c.classList.contains('tw-lbl'));if(top<0)top=firstL;
+  const secs=[{id:'make',n:ae(sc==='cook'?'اطبخ':sc==='attar'?'اعمل جرع':'اعمل','Make'),el:[]}];let cur=secs[0];
+  kids.slice(top).forEach(c=>{if(c.classList.contains('tw-lbl')){const t=(c.innerText||'').split('\n')[0].trim();
+      const nx=c.nextElementSibling,mkList=nx&&nx.classList.contains('col')&&nx.querySelector(':scope>.tw-it');
+      if(mkList||/وصفات|Recipes|بإيدك|by hand|المخبوزات|Baking|^اعمل|^اطبخ|^Make|^Cook/i.test(t)){cur=secs[0];cur.el.push(c);return}
+      const g=CRO_G.find(G0=>G0.rx.test(t));const id=g?g.id:'s'+secs.length;let s=secs.find(x=>x.id===id);
+      if(!s){s={id,n:g?(g.id==='mats'&&sc!=='smith'?ae('خامات','Materials'):ae(g.n[0],g.n[1])):t.slice(0,18),el:[]};secs.push(s)}cur=s}
+    cur.el.push(c)});
+  if(secs.length<2&&!secs[0].el.some(e=>e.querySelectorAll&&e.querySelectorAll('.tw-it').length>6))return;
+  tw.dataset.cro=1;const st=CRO[sc]=CRO[sc]||{tab:'make',open:''};if(!secs.find(s=>s.id===st.tab))st.tab='make';
+  const bar=document.createElement('div');bar.className='cro-tabs';
+  bar.innerHTML=secs.map(s=>`<button class="cro-t${s.id===st.tab?' on':''}" data-cro="${s.id}">${esc(s.n)}</button>`).join('');
+  kids[top].before(bar);
+  /* the top is shorter: the level card keeps its bar and tree button */
+  const show=()=>{secs.forEach(s=>s.el.forEach(e=>e.classList.toggle('cro-hide',s.id!==st.tab)));bar.querySelectorAll('.cro-t').forEach(b=>b.classList.toggle('on',b.dataset.cro===st.tab))};
+  bar.querySelectorAll('.cro-t').forEach(b=>b.onclick=()=>{st.tab=b.dataset.cro;try{SFX.page&&SFX.page()}catch(e){}show();const y=bar.getBoundingClientRect().top+view.scrollTop-view.getBoundingClientRect().top-6;if(view.scrollTop>y)view.scrollTop=y});
+  show();
+  /* the tiles: gear cards (.tw-it with a .hd) and recipe rows (.tw-row) */
+  secs[0].el.forEach(e=>{if(!e.classList||!e.classList.contains('col'))return;const its=[...e.children].filter(x=>(x.classList.contains('tw-it')&&x.querySelector(':scope>.hd'))||(x.classList.contains('tw-row')&&x.querySelector(':scope>.tx>b')));if(its.length<4)return;
+    e.classList.add('cro-g');e.classList.toggle('cro-3',its.length>=10);its.forEach(it=>{const row=it.classList.contains('tw-row'),hd=row?it:it.querySelector(':scope>.hd'),nm=((hd.querySelector('b')||{}).textContent||'').trim();it.dataset.cron=nm;it.classList.add('cro-i');if(row)it.classList.add('cro-r');
+      const bs=[...it.querySelectorAll('button')].filter(b=>!b.classList.contains('cr-from-l')),mk=bs.some(b=>!b.disabled&&!b.classList.contains('by')&&b.dataset.buy===undefined),by=bs.some(b=>!b.disabled&&(b.classList.contains('by')||b.dataset.buy!==undefined));
+      if(!it.querySelector('.cro-st'))(row?it:hd).insertAdjacentHTML('beforeend',`<i class="cro-st${mk?' mk':by?' by':''}" aria-hidden="true"></i>`);
+      it.classList.toggle('cro-open',st.open===nm);
+      const tog=ev=>{if(row&&it.classList.contains('cro-open')&&ev&&ev.target.closest('button,input,a'))return;const was=it.classList.contains('cro-open');
+        if(was&&row&&ev&&!ev.target.closest('.ic,.tx>b'))return;
+        e.querySelectorAll('.cro-i.cro-open').forEach(x=>x.classList.remove('cro-open'));if(!was){it.classList.add('cro-open');st.open=nm}else st.open='';
+        try{SFX.tick&&SFX.tick(was?600:820)}catch(x){}if(!was)try{it.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(x){}};
+      hd.addEventListener('click',tog)})})}
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{if(croOn())croOrg()}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.cro-tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:6px 0;margin:4px 0 6px;background:var(--bg,#1a1220);scrollbar-width:none}
+.cro-tabs::-webkit-scrollbar{display:none}
+.cro-t{flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:2px solid #74412a;background:#2a1c18;color:#fff0b0;font:inherit;font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap}
+.cro-t.on{background:#74412a;color:#fff}
+.tw[data-cro] .tw-life>.tw-sm{display:none}
+.tw[data-cro] .tw-stk{position:static!important;top:auto!important}
+.tw .cro-hide,.tw .col.cro-g.cro-hide{display:none!important}
+.col.cro-g{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+.col.cro-g.cro-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.col.cro-g>:not(.cro-i){grid-column:1/-1}
+.cro-g.cro-3 .cro-i:not(.cro-open) .ic svg{width:34px;height:34px}
+.cro-g .tw-it{margin:0!important;min-width:0}
+.cro-g .tw-it:not(.cro-open)>:not(.hd){display:none!important}
+.cro-g .tw-it:not(.cro-open) .hd{flex-direction:column;align-items:center;text-align:center;gap:4px;cursor:pointer;min-height:96px;justify-content:center;position:relative}
+.cro-g .tw-it:not(.cro-open) .hd .tx>:not(.nmr){display:none!important}
+.cro-g .tw-it:not(.cro-open) .hd .nmr{flex-direction:column;align-items:center;gap:2px}
+.cro-g .tw-it:not(.cro-open) .hd .nmr b{font-size:13px;line-height:1.3}
+.cro-g .tw-it:not(.cro-open) .hd .rr-tag{font-size:10px}
+.cro-g .tw-it.cro-open{grid-column:1/-1}.cro-g .tw-it.cro-open .hd{cursor:pointer}
+.cro-st{position:absolute;top:6px;inset-inline-end:6px;width:10px;height:10px;border-radius:50%;background:#ffffff22}
+.cro-st.mk{background:#7fe07a;box-shadow:0 0 8px #7fe07a}.cro-st.by{background:#f3c14d}
+.cro-g .cro-open .cro-st{display:none}
+.cro-g .tw-it .hd{position:relative}
+.cro-g .cro-r{position:relative;margin:0!important;min-width:0}
+.cro-g .cro-r:not(.cro-open){flex-direction:column!important;align-items:center!important;justify-content:center;text-align:center;gap:4px;min-height:96px;cursor:pointer}
+.cro-g .cro-r:not(.cro-open)>:not(.ic):not(.tx):not(.cro-st){display:none!important}
+.cro-g .cro-r:not(.cro-open) .tx>:not(b){display:none!important}
+.cro-g .cro-r:not(.cro-open) .tx b{font-size:13px;line-height:1.3}
+.cro-g .cro-r.cro-open{grid-column:1/-1}.cro-g .cro-r.cro-open .ic,.cro-g .cro-r.cro-open .tx>b{cursor:pointer}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
