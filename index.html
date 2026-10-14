@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.54',d:'14 أكتوبر',add:['«سكك مخفية»: تلات سكك سرية (الحداد، الفلاح، المقاتل) بتفضل مقفولة لحد ما {تشتغل|تشتغلي} في شغلتها كفاية، وساعتها حد من البلد بينده عليك. كل سكة 3 مراحل، كل مرحلة بتسيبلك ميزة على طول (الحدادة أحسن، خبرة زراعة زيادة، صحة زيادة)، وفي الآخر لقب مخفي. السكة ما بتغيرش صنفك.','«مشاريع البلد»: بير البلد وكوبري الترعة بيتبنوا على 3 مراحل. {دوس|دوسي} على كل حاجة {تسلّم|تسلّمي} اللي معاك منها، شوية شوية. كل مرحلة بتتبني بتدفعلك مرة واحدة وبتسيب ميزة للحرف اللي بتستخدمها (زراعة وطبخ، صيد وتنقيب).','اتصلح: رسالة «نقطة جديدة في مهارات الصنعة» كانت بتطلع بالعربي واللعبة بالإنجليزي.']},
 {v:'6.53',d:'14 أكتوبر',add:['«ناس البلد»: كارت جديد فوق «حال البلد» فيه حكايات وعقود مع ناس البلد، وكل واحد ليه وش.','«حكاية النهارده»: حكاية واحدة كل يوم بلد (عشر حكايات لحد دلوقتي، بتتفتح بالمستوى): جاموسة هربانة، خناقة عند القهوة، فرح، حرامي في بيتك... وفيها حاجات {بتعملها|بتعمليها} بإيدك: «امسك» ({سيب|سيبي} لما الدايرة توصل للأخضر) أو «بسرعة» (7 دوسات في 3 ثواني). لو فاتتك بتاخد النهاية الوحشة.','اللي {بتختاره|بتختاريه} بيفضل: لو {سلّفت|سلّفتي} الريس صابر بيرجعلك 150 بعد يومين وعقده بيدفع أكتر، والكلب اللي {بتأكّله|بتأكّليه} بيرجع ينقذك بعدين. كل اللي حصل مكتوب تحت «اللي حصل».','«العقود»: 8 عقود من ناس البلد، كل عقد 3 خطوات بتلف بيك على الحرف (تزرع وتطبخ وتصطاد، أو تكسر صخر وتشتغل عند الحداد). {بتسلّم|بتسلّمي} الحاجة بإيدك، وأجره بيتدفع مرة واحدة، وولاء صاحبه في «حال البلد» بيزيد. لو {سبت|سبتي} العقد اللي {سلّمته|سلّمتيه} بيرجعلك.']},
 {v:'6.52.1',d:'14 أكتوبر',add:['«حال الغيط» بقى بيقول سعر البيع: كل أرض مزروعة مكتوب تحتها الواحدة بتتباع بكام عند عم رمضان النهارده، والأرض كلها هتجيب حوالي كام. وجدول «كل زرعة بتاخد قد إيه» فيه سعر البيع جنب التقاوي والمحصول.']},
 {v:'6.52',d:'14 أكتوبر',add:['«سرداب الطاحونة»: أول سرداب بأوض. سبع أوض تحت الطاحونة القديمة {بتمشي|بتمشي} فيهم أوضة أوضة على خريطة: {دوس|دوسي} على الأوضة اللي جنبك وبعدين «ادخل». بتلاقيه في «الخلا» جنب المأوى أو من «الدهاليز».','جوه السرداب: جرار {بتفتكر|بتفتكري} نورها بالترتيب، عتلات {بتظبطها|بتظبطيها} بإيدك عشان الباب الحديد يتفتح، فيران {تقدر|تقدري} تتسحب من جنبها وعينها مغمضة، خزنة فيها فلوس وتمثال (لو {خدته|خدتيه} الغول بيتعصب ويبقى أقوى)، والغول في الآخر.','مكانك محفوظ: لو {طلعت|طلعتي} ورجعت {بتلاقي|بتلاقي} نفسك في نفس الأوضة. لو {وقعت|وقعتي} {بتصحى|بتصحي} عند المدخل والسرداب بيرجع من الأول وبيضيع منك شوية فلوس. ولما {تطلع|تطلعي} للنور السرداب بيتغيّر المرة الجاية.','اتصلح: لما {بتهزم|بتهزمي} وحش كبير واللعبة بالإنجليزي، كان بيظهر كلام عربي في الآخر.']},
@@ -6649,7 +6650,7 @@ function treeBuy(k,bid){const h=S.hero,t=treeOf(h,k),b=TREE[k].br.find(x=>x.id==
 function treeRespec(k){const h=S.hero,c=treeCost(h,k);if(!treeSpent(h,k)||h.money<c)return;if(!TS.conf){TS.conf=1;SFX.meh();return twRender()}
   TS.conf=0;h.money-=c;const t=treeOf(h,k);Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};if(h.treeF)h.treeF[k]={};saveHero();SFX.whoosh();SFX.reg();TS.sel=null;twRender();toast(`النقط رجعت كلها · ${G('دفعت','دفعتي')} ${c} جنيه`)}
 /* a new skill level = a new point */
-{const lx=lifeXP;lifeXP=function(h,k){const r=lx.apply(this,arguments);if(r&&TREE[k]&&h&&treeCan(h,k))setTimeout(()=>toast(`<span style="color:#d9cbff">نقطة جديدة في مهارات الصنعة (${LIFE[k].n})!</span>`),900);return r}}
+{const lx=lifeXP;lifeXP=function(h,k){const r=lx.apply(this,arguments);if(r&&TREE[k]&&h&&treeCan(h,k))setTimeout(()=>toast(`<span style="color:#d9cbff">${EN?`A new point in Craft skills (${LIFE[k].n})!`:`نقطة جديدة في مهارات الصنعة (${LIFE[k].n})!`}</span>`),900);return r}}
 /* the cook screen gets the tree button through its skill box; this binds it */
 {const c0=SCREENS.cook;SCREENS.cook=function(){c0.apply(this,arguments);treeBind()}}
 /* the mountain and the canal: a small tree button by the skill level (added after the screen draws) */
@@ -52723,6 +52724,126 @@ SCREENS.nas=function(){const h=S.hero;if(!h){S.screen='title';return render()}co
 .ns-ring{width:150px;height:150px;margin:10px auto}.ns-ring svg{width:100%;height:100%;transform:none}.ns-ring .bg{fill:none;stroke:#ffffff18;stroke-width:10}.ns-ring .ok{fill:none;stroke:#7fe07a;stroke-width:12;stroke-linecap:round;opacity:.8}
 .ns-ring .fl{fill:none;stroke:#f3c14d;stroke-width:6;transform:rotate(-90deg);transform-origin:50% 50%}.ns-ring.win .fl{stroke:#7fe07a}.ns-ring.miss .fl{stroke:#e2483f}
 .ns-bar,.ns-time{height:16px;border-radius:8px;background:#ffffff14;overflow:hidden;margin:8px 0}.ns-bar i,.ns-time i{display:block;height:100%;width:0;background:#f3c14d;transition:width .08s}.ns-time{height:8px}.ns-time i{width:100%;background:#e2483f;transition:none}`;document.head.appendChild(s)})();
+/* ---------- 6.54 (acc1, R20 first batch): «سكك مخفية» and «مشاريع البلد» ----------
+   A new screen (SCREENS.sekka), opened from a card on «حال البلد».
+   1. Hidden paths (HP_PATH, 3 of 16 planned: the smith, the farmer, the fighter). Each one is hidden until you have done enough of its
+      kind (hpSeen: trade level + a counter); then a person of the town calls you (a band) and the path opens. It has 3 stages; a stage
+      is «اعمل» (a counter that must grow by n after the stage starts: crafted, harvest, kills = every k_* counter, lowWins, dgRun)
+      or «سلّم» (materials by hand, hasRes/takeRes). Each stage leaves a lasting perk (HP_PATH[].perk: craftQ / lifeXP / health),
+      the last one a hidden title (sec). A path never changes your class, and its rewards are given once.
+   2. Village projects (HP_PRJ, 2 of 12 planned: the well and the canal bridge). Built in 3 stages; each stage asks for materials and
+      money, handed in a little at a time (tap a chip: it gives what you have, up to what is left). A finished stage pays once and
+      leaves a lasting bonus for the trades that use it (lifeXP / craftQ).
+   Saved in h.hpth = {p:{id:{s: stage, b: counter at the stage's start}}, seen:{id:1}, j:{prj:{s: stage, g:{k:n given}}}}.
+   Tests: window.__hp (off in test builds unless set). */
+const hpOn=()=>!((window.__r||window.__t||window.__q||window.__y)&&!window.__hp);
+const HPX={tab:'p'};
+function hpFix(h){let H=h.hpth;if(!H||typeof H!=='object'||Array.isArray(H))H=h.hpth={};H.p=H.p||{};H.seen=H.seen||{};H.j=H.j||{};return H}
+const hpKills=h=>Object.keys(h.cnt||{}).reduce((a,k)=>a+(k.startsWith('k_')?(h.cnt[k]|0):0),0);
+const hpCnt=(h,k)=>k==='kills'?hpKills(h):(h.cnt&&h.cnt[k])|0;
+const hpLv=(h,k)=>(h.life&&h.life[k]&&h.life[k].lvl)|0;
+const HP_CN={crafted:['{اعمل|اعملي} حاجة عند الحداد أو الخياط','Make things at the smith or tailor'],harvest:['{احصد|احصدي} من الغيط','Harvest in the field'],
+  kills:['{وقّع|وقّعي} وحوش','Bring down beasts'],lowWins:['{اكسب|اكسبي} خناقة وصحتك تحت التلت','Win a fight under a third of your health'],dgRun:['{اطلع|اطلعي} من سرداب الطاحونة','Get out of the mill cellar']};
+const HP_PATH=[
+  {id:'smith',ic:'⚒',n:['سكة الكور القديم','The old forge path'],who:['عم مرسي، حداد البلد القديم','Uncle Morsi, the town\'s old smith'],
+    call:['«{شفتك|شفتك} واقف قدام الكور. الشغل ده ليه سكة قديمة محدش يعرفها غيري.»','«I have watched you at the forge. This craft has an old path only I know.»'],
+    hint:['من مستوى حدادة 4 وبعد 10 حاجات بإيدك','From smith level 4 and 10 things made by hand'],seen:h=>hpLv(h,'smith')>=4&&hpCnt(h,'crafted')>=10,
+    st:[{do:'crafted',n:5},{give:{iron:6,coal:6}},{do:'crafted',n:10}],perk:[{q:{smith:.03}},{q:{smith:.03}},{q:{smith:.04}}],
+    pk:['الحدادة إيدك فيها أحسن','Better hands at the smith'],title:'hp_smith'},
+  {id:'farm',ic:'🌾',n:['سكة الأرض','The land path'],who:['الحاج سعيد، أقدم فلاح في الكفر','Hajj Saeed, the oldest farmer in the village'],
+    call:['«الأرض بتعرف اللي بيحبها. {تعالى|تعالي} أوريك حاجات أبويا علمهالي.»','«The land knows who loves it. Come, I\'ll show you what my father taught me.»'],
+    hint:['من مستوى زراعة 4 وبعد 40 حصدة','From farm level 4 and 40 harvests'],seen:h=>hpLv(h,'farm')>=4&&hpCnt(h,'harvest')>=40,
+    st:[{do:'harvest',n:30},{give:{ful:10,tamatem:6}},{do:'harvest',n:60}],perk:[{x:{farm:.1}},{x:{farm:.1}},{x:{farm:.15}}],
+    pk:['خبرة زراعة زيادة','More farm XP'],title:'hp_farm'},
+  {id:'fight',ic:'⚔',n:['سكة السلاح','The fighter\'s path'],who:['عم شعبان، غفير قديم ليه علامات في دراعه','Uncle Shaaban, an old watchman with scars on his arms'],
+    call:['«الضربة الحلوة مش بالقوة بس. لو عايز {تتعلم|تتعلمي} {تعالى|تعالي}.»','«A good hit is not only strength. If you want to learn, come.»'],
+    hint:['من المستوى 6 وبعد 40 وحش','From level 6 and 40 beasts down'],seen:h=>(h.lvl|0)>=6&&hpKills(h)>=40,
+    st:[{do:'kills',n:20},{do:'lowWins',n:3},{do:'dgRun',n:1}],perk:[{hp:2},{hp:2},{hp:3}],
+    pk:['صحة زيادة','More health'],title:'hp_fight'}];
+TITLES.push(
+  {id:'hp_smith',m:'وريث الكور',f:'وريثة الكور',how:'{تكمّل|تكمّلي} سكة الكور القديم',sec:1,ok:(c,h)=>!!(h.hpth&&h.hpth.p.smith&&h.hpth.p.smith.s>=3),st:{'قوة':1},b:'قوة +1'},
+  {id:'hp_farm',m:'ابن الأرض',f:'بنت الأرض',how:'{تكمّل|تكمّلي} سكة الأرض',sec:1,ok:(c,h)=>!!(h.hpth&&h.hpth.p.farm&&h.hpth.p.farm.s>=3),st:{'تحمّل':1},hp:2,b:'تحمّل +1 · صحة +2'},
+  {id:'hp_fight',m:'تلميذ عم شعبان',f:'تلميذة عم شعبان',how:'{تكمّل|تكمّلي} سكة السلاح',sec:1,ok:(c,h)=>!!(h.hpth&&h.hpth.p.fight&&h.hpth.p.fight.s>=3),dmg:1,b:'ضربك +1'});
+try{I18NA(TITLES,{hp_smith:{m:'Heir of the forge',f:'Heir of the forge',how:'Finish the old forge path',b:'Strength +1'},hp_farm:{m:'Child of the land',f:'Child of the land',how:'Finish the land path',b:'Endurance +1 · Health +2'},
+  hp_fight:{m:'Shaaban\'s pupil',f:'Shaaban\'s pupil',how:'Finish the fighter\'s path',b:'Your hits +1'}})}catch(e){}
+const HP_PRJ=[
+  {id:'well',ic:'🪣',n:['بير البلد','The village well'],d:['البلد بتشرب من الترعة. بير نضيف هيفرق مع الغيطان والطبيخ.','The village drinks from the canal. A clean well will help the fields and the cooking.'],
+    st:[{need:{copper:6,coal:4},m:150},{need:{iron:6,cloth:3},m:250},{need:{iron:8,copper:8},m:400}],
+    bon:[{x:{farm:.05}},{x:{farm:.05},q:{cook:.02}},{x:{farm:.05},q:{cook:.03}}],pay:[[120,1],[200,1],[350,2]],
+    bt:[['خبرة زراعة +5%','Farm XP +5%'],['خبرة زراعة +5% · الطبخ أحسن','Farm XP +5% · better cooking'],['خبرة زراعة +5% · الطبخ أحسن','Farm XP +5% · better cooking']]},
+  {id:'bridge',ic:'🌉',n:['كوبري الترعة','The canal bridge'],d:['الناس بتلف ساعة عشان تعدي الترعة. كوبري يقرّب المنجم والشط.','People walk an hour round to cross the canal. A bridge brings the mine and the bank closer.'],
+    st:[{need:{coal:6,copper:4},m:150},{need:{iron:8,cloth:2},m:300},{need:{iron:10,coal:10},m:450}],
+    bon:[{x:{fish:.05}},{x:{fish:.05,mine:.05}},{x:{fish:.05,mine:.05}}],pay:[[120,1],[220,1],[380,2]],
+    bt:[['خبرة صيد +5%','Fishing XP +5%'],['خبرة صيد وتنقيب +5%','Fishing and mining XP +5%'],['خبرة صيد وتنقيب +5%','Fishing and mining XP +5%']]}];
+HP_PRJ.forEach(P=>P.st.forEach(s=>{Object.keys(s.need).forEach(k=>{if(!s.need[k]||!MAT[k])delete s.need[k]})}));
+/* every lasting bonus held now: path perks of finished stages + project bonuses of finished stages */
+function hpBon(h){const H=h&&h.hpth;if(!H)return [];const out=[];HP_PATH.forEach(P=>{const s=(H.p[P.id]&&H.p[P.id].s)|0;for(let i=0;i<Math.min(s,3);i++)out.push(P.perk[i])});
+  HP_PRJ.forEach(P=>{const s=(H.j[P.id]&&H.j[P.id].s)|0;for(let i=0;i<Math.min(s,3);i++)out.push(P.bon[i])});return out}
+{const c0=craftQ;craftQ=function(h,at,score){try{let b=0;hpBon(h).forEach(B=>{if(B.q&&B.q[at])b+=B.q[at]});if(b)arguments[2]=Math.min(1,(+score||0)+b)}catch(e){}return c0.apply(this,arguments)}}
+{const l0=lifeXP;lifeXP=function(h,k,n){try{if(h&&h===S.hero){let m=0;hpBon(h).forEach(B=>{if(B.x&&B.x[k])m+=B.x[k]});if(m){const v=(n||1)*(1+m);arguments[2]=Math.floor(v)+(Math.random()<v%1?1:0)}}}catch(e){}return l0.apply(this,arguments)}}
+{const m0=MXH;MXH=function(h){let v=m0.apply(this,arguments);try{hpBon(h).forEach(B=>{if(B.hp)v+=B.hp})}catch(e){}return v}}
+/* a path opens when its kind of work reaches it: checked after every counter bump and when the screen opens */
+function hpCheck(h){if(!h||!hpOn())return;const H=hpFix(h);HP_PATH.forEach(P=>{if(H.seen[P.id])return;let ok=false;try{ok=P.seen(h)}catch(e){}if(!ok)return;H.seen[P.id]=1;saveHero();
+  try{band(ae('سكة مخفية اتفتحت','A hidden path opened'),T(P.n[EN?1:0]),T(P.who[EN?1:0]),{dur:2600,sound:SFX.levelup})}catch(e){}})}
+{const b0=bump;bump=function(k){const r=b0.apply(this,arguments);try{hpCheck(S.hero)}catch(e){}return r}}
+function hpStepOk(h,s,a){return s.give?hasRes(h,s.give):hpCnt(h,s.do)-a.b>=s.n}
+function hpStepTxt(h,s,a,cur){if(s.give)return Object.keys(s.give).map(k=>`${twMat(k,20)} ${esc(fsNm(k))} × ${s.give[k]}`).join(' ');
+  const d=cur&&a?Math.max(0,hpCnt(h,s.do)-a.b):0;return `${T(ae(HP_CN[s.do][0],HP_CN[s.do][1]))} × ${s.n}${cur?` <small>(${Math.min(d,s.n)}/${s.n})</small>`:''}`}
+function hpGo(h,id){const H=hpFix(h),P=HP_PATH.find(x=>x.id===id);if(!P||!H.seen[id])return;const A=H.p[id];
+  if(!A){const s=P.st[0];H.p[id]={s:0,b:s.do?hpCnt(h,s.do):0};saveHero();try{SFX.page()}catch(e){}return hpRender()}
+  if(A.s>=3)return;const s=P.st[A.s];if(!hpStepOk(h,s,A))return toast(T(ae('لسه ما {خلصتش|خلصتيش} المرحلة دي.','This stage is not done yet.')));
+  if(s.give)takeRes(h,s.give);A.s++;const nx=P.st[A.s];A.b=nx&&nx.do?hpCnt(h,nx.do):0;bump('hpStage');checkTitles(h);saveHero();
+  try{band(T(P.n[EN?1:0]),A.s>=3?ae('السكة خلصت','Path complete'):ae(`المرحلة ${A.s} خلصت`,`Stage ${A.s} done`),T(ae(P.pk[0],P.pk[1])),{dur:2200,sound:SFX.levelup})}catch(e){}hpRender()}
+/* a project: tap a material to hand in what you have of it (up to what is left); the money is paid with one button */
+function hpGive(h,id,k){const H=hpFix(h),P=HP_PRJ.find(x=>x.id===id);if(!P)return;const J=H.j[id]=H.j[id]||{s:0,g:{}};if(J.s>=3)return;const s=P.st[J.s];J.g=J.g||{};
+  const left=k==='$'?s.m-(J.g.$|0):(s.need[k]|0)-(J.g[k]|0);if(left<=0)return;
+  let n=0;if(k==='$'){n=Math.min(left,Math.max(0,h.money));h.money-=n}else{const have=(h.res[k]|0)+((h.overR&&h.overR[k])|0);n=Math.min(left,have);if(n>0)takeRes(h,{[k]:n})}
+  if(n<=0){toast(ae('مش معاك منها.','You have none of it.'));try{SFX.meh()}catch(e){}return}
+  J.g[k]=(J.g[k]|0)+n;try{SFX.coin&&SFX.coin();vib(10)}catch(e){}
+  const done=Object.keys(s.need).every(q=>(J.g[q]|0)>=s.need[q])&&(J.g.$|0)>=s.m;
+  if(done){const pay=P.pay[J.s];J.s++;J.g={};h.money+=pay[0];try{addRes(h,'stone1',pay[1])}catch(e){}bump('prjStage');saveHero();
+    try{band(T(P.n[EN?1:0]),J.s>=3?ae('المشروع خلص!','The project is finished!'):ae(`المرحلة ${J.s} اتبنت`,`Stage ${J.s} built`),`${T(ae(P.bt[J.s-1][0],P.bt[J.s-1][1]))} · +${pay[0]} ${ae('جنيه','coins')}`,{dur:2400,sound:SFX.levelup})}catch(e){}}
+  else{saveHero();toast(`+${n} ${k==='$'?ae('جنيه','coins'):esc(fsNm(k))}`)}hpRender()}
+function hpRender(){if(S.screen==='sekka'){const y=view.scrollTop;render();view.scrollTop=y}}
+function hpPaths(h){const H=hpFix(h);return HP_PATH.map(P=>{const A=H.p[P.id],seen=H.seen[P.id];
+  if(!seen)return `<div class="card hp-c lk"><div class="hp-h"><span class="ic">❔</span><span><b>${ae('سكة لسه مقفولة','A path still closed')}</b><small>${T(ae(P.hint[0],P.hint[1]))}</small></span></div></div>`;
+  const s=A?A.s:-1,cur=A&&s<3?P.st[s]:null,ok=cur&&hpStepOk(h,cur,A);
+  return `<div class="card hp-c${A&&s>=3?' dn':''}${A&&s<3?' on':''}"><div class="hp-h"><span class="ic">${P.ic}</span><span><b>${T(P.n[EN?1:0])}</b><small>${T(P.who[EN?1:0])}</small></span></div>
+    ${A?'':`<div class="hp-q">${T(P.call[EN?1:0])}</div>`}
+    <div class="hp-sts">${P.st.map((x,i)=>`<div class="hp-st ${A&&i<s?'dn':A&&i===s?'cu':''}"><span class="n">${A&&i<s?'✓':i+1}</span><span>${x.give?ae('سلّم: ','Hand in: '):''}${hpStepTxt(h,x,A,A&&i===s)}</span></div>`).join('')}</div>
+    <div class="hp-pk">${ae('كل مرحلة','Each stage')}: ${T(ae(P.pk[0],P.pk[1]))} · ${ae('في الآخر لقب مخفي','a hidden title at the end')}</div>
+    ${A&&s>=3?`<div class="hp-ok">✓ ${ae('السكة خلصت','Path complete')}</div>`:`<button class="btn${A&&!ok?' ghost':''}" data-hp="${P.id}" ${A&&!ok?'aria-disabled="true"':''}>${!A?T(ae('{امشي|امشي} في السكة','Walk the path')):cur.give?T(ae('{سلّم|سلّمي}','Hand in')):T(ae('{خلّصت|خلّصتي} المرحلة','Stage done'))}</button>`}</div>`}).join('')}
+function hpPrjs(h){const H=hpFix(h);return HP_PRJ.map(P=>{const J=H.j[P.id]||{s:0,g:{}},s=J.s|0,cur=s<3?P.st[s]:null,g=J.g||{};
+  const bar=`<div class="hp-stage">${[0,1,2].map(i=>`<i class="${i<s?'dn':i===s?'cu':''}"></i>`).join('')}</div>`;
+  return `<div class="card hp-c${s>=3?' dn':''}"><div class="hp-h"><span class="ic">${P.ic}</span><span><b>${T(P.n[EN?1:0])}</b><small>${s>=3?ae('اتبنى','built'):ae(`المرحلة ${s+1} من 3`,`Stage ${s+1} of 3`)}</small></span></div>${bar}
+    <div class="hp-q">${T(P.d[EN?1:0])}</div>
+    ${cur?`<div class="hp-need">${Object.keys(cur.need).map(k=>{const v=g[k]|0,n=cur.need[k];return `<button class="hp-m${v>=n?' ok':''}" data-pj="${P.id}" data-k="${k}">${twMat(k,26)}<b>${esc(fsNm(k))}</b><small>${v}/${n}</small></button>`}).join('')}
+      <button class="hp-m${(g.$|0)>=cur.m?' ok':''}" data-pj="${P.id}" data-k="$"><span class="mi">🪙</span><b>${ae('فلوس','Money')}</b><small>${g.$|0}/${cur.m}</small></button></div>
+      <div class="hp-pk">${ae('لما المرحلة تتبني','When the stage is built')}: ${T(ae(P.bt[s][0],P.bt[s][1]))} · +${P.pay[s][0]} ${ae('جنيه','coins')}</div>`:
+      `<div class="hp-ok">✓ ${P.bt.map(b=>T(ae(b[0],b[1]))).slice(-1)[0]}</div>`}</div>`}).join('')}
+SCREENS.sekka=function(){const h=S.hero;if(!h){S.screen='title';return render()}hpFix(h);hpCheck(h);const tab=HPX.tab==='j'?'j':'p';
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('سكك ومشاريع','Paths and projects')}</h2><span class="tag">💰 ${h.money}</span></div>
+    <div class="tw hp" style="direction:${EN?'ltr':'rtl'}"><div class="ns-tabs"><button class="${tab==='p'?'on':''}" id="hpTp">${ae('سكك مخفية','Hidden paths')}</button><button class="${tab==='j'?'on':''}" id="hpTj">${ae('مشاريع البلد','Village projects')}</button></div>
+    ${tab==='p'?hpPaths(h):hpPrjs(h)}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};
+  on('back',()=>{try{SFX.page()}catch(e){}S.screen=S.hpFrom||'balad';render()});on('hpTp',()=>{HPX.tab='p';hpRender()});on('hpTj',()=>{HPX.tab='j';hpRender()});
+  view.querySelectorAll('[data-hp]').forEach(b=>b.onclick=()=>hpGo(h,b.dataset.hp));view.querySelectorAll('[data-pj]').forEach(b=>b.onclick=()=>hpGive(h,b.dataset.pj,b.dataset.k))};
+{const b0=SCREENS.balad;SCREENS.balad=function(){const r=b0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='balad'||!h||!hpOn()||$('#hpGo'))return r;const box=view.querySelector('.tw.tb');if(!box)return r;hpCheck(h);const H=hpFix(h);
+  const open=HP_PATH.filter(P=>H.seen[P.id]).length,bl=HP_PRJ.reduce((a,P)=>a+((H.j[P.id]&&H.j[P.id].s)|0),0);
+  const html=`<button class="card jn-go hp-go" id="hpGo"><span class="jn-ic">🧭</span><span class="jn-tx"><b>${ae('سكك مخفية ومشاريع البلد','Hidden paths and village projects')}</b><small>${ae(`سكك اتفتحت ${open}/3 · مراحل اتبنت ${bl}/6`,`Paths open ${open}/3 · stages built ${bl}/6`)}</small></span><span class="go">‹</span></button>`;
+  const ns=$('#nsGo');if(ns)ns.insertAdjacentHTML('afterend',html);else box.insertAdjacentHTML('afterbegin',html);
+  $('#hpGo').onclick=()=>{S.hpFrom='balad';try{SFX.page&&SFX.page()}catch(e){}S.screen='sekka';render()}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.hp-go{border:2px solid #7fb6ff88}
+.hp-c{display:flex;flex-direction:column;gap:10px}.hp-c.lk{opacity:.6}.hp-c.on{border:2px solid #f3c14d}.hp-c.dn{border:2px solid #7fe07a66}
+.hp-h{display:flex;align-items:center;gap:10px}.hp-h .ic{font-size:28px}.hp-h>span:last-child{display:flex;flex-direction:column}.hp-h b{font-size:16px}.hp-h small{color:var(--dim);font-size:12px}
+.hp-q{font-size:14px;line-height:1.6;color:#f3e2b0}.hp-sts{display:flex;flex-direction:column;gap:6px}.hp-st{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 8px;border-radius:10px;background:#ffffff08;flex-wrap:wrap}
+.hp-st .n{width:24px;height:24px;flex:none;display:grid;place-items:center;border-radius:50%;background:#ffffff18;font-weight:900;font-size:12px}.hp-st.dn{opacity:.6}.hp-st.dn .n{background:#7fe07a55}.hp-st.cu{border:2px solid #f3c14d}.hp-st small{color:var(--dim)}
+.hp-pk{font-size:12px;color:#ffd36a}.hp-ok{color:#7fe07a;font-weight:800}.hp-c .btn{min-height:48px}
+.hp-stage{display:flex;gap:6px}.hp-stage i{flex:1;height:10px;border-radius:5px;background:#ffffff14}.hp-stage i.dn{background:#7fe07a}.hp-stage i.cu{background:#f3c14d88}
+.hp-need{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.hp-m{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:84px;padding:8px 4px;border-radius:12px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;cursor:pointer}
+.hp-m b{font-size:12px}.hp-m small{font-variant-numeric:tabular-nums;color:var(--dim)}.hp-m.ok{border-color:#7fe07a;background:#7fe07a14}.hp-m.ok small{color:#7fe07a}.hp-m .mi{font-size:24px;line-height:26px}.hp-m:active{transform:translateY(2px)}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
