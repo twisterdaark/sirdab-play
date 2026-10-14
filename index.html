@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.63',d:'14 أكتوبر',add:['القتال في الأونلاين بقى نفس القتال الجديد: في الليلة الجماعية صاحبك بيشوف نفس الساحة ونفس الأيقونات المدوّرة، {وبيرمي|وبيرمي} الزهر بإيده من الصينية ({يسحب|يسحب} لفوق أو {يدوس|يدوس})، وبعدها الدايرة بتقفل على الوحش. ولما وحش يهجم عليه بيرمي للتفادي والدايرة بتقفل عليه هو.','المبارزة الأونلاين كمان: الضربة بقت زهر من الصينية وبعده الدايرة على خصمك (في الوقت بالظبط = ضربة قاضية، متأخر = فاتت).','الليلة الجماعية: صاحبك في الآخر بيشوف شاشة النهاية بالنجوم والأهداف واللي خده فعلًا، مش سطر واحد.','«قرارات الفريق»: زرار بيوريك كل اختيار في الحكاية: المشهد، الاختيار اللي كسب، ومين اختار إيه، من غير ما يوقّف الليلة.','صندوق آخر الليلة صاحب الأوضة بس هو اللي بيفتحه، وقدرة صاحبك بتبان باسمها مش بكود غريب.','«ارجع لليلة» ما بقاش بيطلع لليلة اتقفلت، والليلة اللي اتلغت قبل ما تبدأ بتتمسح. والسوق بيجيب العروض الجديدة كل ما {تفتحه|تفتحيه}.']},
 {v:'6.62',d:'14 أكتوبر',add:['الليلة الجماعية: لو وحش هجم على صاحبك، صاحبك هو اللي بيرمي زهر التفادي على تليفونه بخفته هو، مش صاحب الأوضة. ولو ما ردّش في 15 ثانية، اللعبة بترميله.','الليلة الجماعية: لو النت فصل وانت بتبعت اختيارك أو زهرك، اللعبة بتحاول تاني لوحدها، ولو ما وصلش {تقدر|تقدري} {تدوس|تدوسي} تاني بدل ما يفضل متعلّق.','لو اتنين دخلوا الأوضة في نفس اللحظة، واحد بس بياخد المكان التاني، واللي زيادة عن 5 بيخرج لوحده برسالة «الليلة كاملة».','صحابك كلهم بيظهروا في «صحابي» وفي اختيار رفيق الليلة، مش أول 60 بطل في اللعبة بس.','مكافأة الليلة الجماعية ليها حد أقصى، وجدول الأوائل بقى أصعب في التزوير.']},
 {v:'6.61',d:'14 أكتوبر',add:['المنجم: أول مرة صخرة تقع أو غاز أو الهوا يخلص أو عِرق نادر، المنجم بيقف ويشرحلك {تعمل|تعملي} إيه، والوقت ما بيبدأش غير لما {تدوس|تدوسي} «جاهز». بعد كده بتطلع «{انتبه|انتبهي}!» الأول ثانية، عشان دوستك على الصخرة ما تقعش على اللعبة بالغلط.','المنجم: الوقت بقى أطول في الأربع ألعاب، وزرار «اكتم نفسك» وزرار «انفخ!» ما بقوش بيتحركوا من مكانهم وانت بتدوس.','الجو ما بقاش بيحط «مبلول» أو «هايج» أو «متعفّر» قدام اسم كل وحش. الجو لسه بيأثر في الخناقة زي ما هو، بس الاسم بيفضل نضيف، إلا الوحش اللي تاه في الشبورة.']},
 {v:'6.60',d:'14 أكتوبر',add:['في الحوار، كل واحد بيتكلم بقى ليه صورته جنب كلامه: لو خالد اتكلم تشوف خالد، ولو مراته ردّت تشوف مراته. وكل شخص بيفضل بنفس الوش طول المشهد، ولو انت اللي بتتكلم بتشوف صورتك.']},
@@ -20849,7 +20850,7 @@ function coBegin(){const h=S.hero,p=coGuestSnap();if(!p)return;
   coRef(CO.code).update({st:'on'}).catch(()=>{});CO.pub=setInterval(coPublish,1500);
   S.screen='setup';render();toast(G('صاحبك جاهز. ابدأ الليلة لما تحب.','صاحبك جاهز. ابدأي الليلة لما تحبي.'))}
 function coEnd(won){if(CO.role!=='host'||!CO.code)return;const h=S.hero,N=S.night||{},st=N.stops||0;
-  CO.endXs=coXs();const rw={hg:h&&h.g==='f'?'f':'m',won:won?1:0,xp:won?25+st*4:8+st*2,m:won?40+st*5:0};
+  CO.endXs=coXs();const E=S.endRes||{},rw={hg:h&&h.g==='f'?'f':'m',won:won?1:0,xp:won?25+st*4:8+st*2,m:won?40+st*5:0,ns:E.ns|0,s:(E.stars||[]).map(x=>x?1:0).slice(0,3),a:String(E.adv||'').slice(0,16)};
   coRef(CO.code).update({st:'end',rw:JSON.stringify(rw)}).catch(()=>{});
   if(h&&h.pal&&h.pal.live){h.pal=h.palPrev||null;delete h.palPrev;saveHero()}
   const code=CO.code;clearInterval(CO.pub);CO.pub=0;if(CO.unsub)try{CO.unsub()}catch(e){}CO.unsub=null;if(CO.xun)try{CO.xun()}catch(e){}CO.xun=null;CO.code='';CO.role='';
@@ -20962,7 +20963,7 @@ async function coGive(u){const R=CO.room,h=S.hero;if(!R||CO.role!=='host'||R.st!
       await coPRef(code,me).set({n:nm,gp:snap,ans:'',t:window.firebase.firestore.FieldValue.serverTimestamp()})}
     coAsGuest(code);S.screen='coopg';toast('الليلة بقت مع صاحبك.')}catch(e){CO.err=coNet(e)}render()}
 function coReward(){const R=CO.room,h=S.hero,rw=R&&coJ(R.rw);if(!rw||!h)return;h.coopDone=h.coopDone||[];if(h.coopDone.includes(CO.code))return;
-  h.coopDone=h.coopDone.slice(-20).concat([CO.code]);const cap=coRwCap(h,rw);h.money+=cap.m;CO.ups=gainXP(cap.xp);saveHero();if(typeof fbSoon==='function')fbSoon()}
+  h.coopDone=h.coopDone.slice(-20).concat([CO.code]);const cap=coRwCap(h,rw);CO.got=cap;h.money+=cap.m;CO.ups=gainXP(cap.xp);saveHero();if(typeof fbSoon==='function')fbSoon()}
 async function coAnswer(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!=null)return;CO.ans[a.id]=i;SFX.page&&SFX.page();render();
   const v=JSON.stringify({id:a.id,a:i});if(!(await coPutAns(v))){delete CO.ans[a.id];render()}}
 const coBar=(hp,mx,c)=>`<div class="co-bar"><i style="width:${Math.max(0,Math.min(100,Math.round(100*hp/Math.max(1,mx))))}%;background:${c}"></i></div><small>${Math.max(0,hp)}/${mx}</small>`;
@@ -22416,7 +22417,7 @@ function coTally(){if(!coVoting()||!CO.vsig||CO.V.sig!==CO.vsig)return;const P=c
   if(L.length===1)win=0;else Object.keys(cnt).forEach(i=>{if(cnt[i]>=need)win=+i});
   if(win<0&&(nv>=n||Date.now()-CO.V.t0>30000)){const mx=Math.max(...Object.values(cnt)),top=Object.keys(cnt).filter(i=>cnt[i]===mx).map(Number);const hv=v[coMe()];win=top.includes(hv)?hv:pick(top)}
   if(win<0)return;const b=L[win];if(!b)return;
-  CO.V={sig:'',v:{},t0:0};CO.vsig='';
+  try{coDlogAdd(b,v)}catch(e){}CO.V={sig:'',v:{},t0:0};CO.vsig='';
   setTimeout(()=>{if(!b.isConnected)return;CO.pass=1;try{b.click()}finally{CO.pass=0}setTimeout(coPublish,200)},450)}
 function coAddVote(u,i){if(CO.V.sig!==CO.vsig)CO.V={sig:CO.vsig,v:{},t0:0};if(!CO.V.t0)CO.V.t0=Date.now();CO.V.v[u]=i;coMarkHost();coTally();coPublish()}
 function coVotes(){if(CO.role!=='host'||!CO.code)return;const R=CO.room;{const L=coHostEls();CO.vsig=L.length?coSigOf(L):''}if(!CO.vsig)return;
@@ -22741,13 +22742,13 @@ setInterval(()=>{try{if(CO.role!=='host'||!CO.code||!CO.room||CO.room.st!=='on')
 CO.gp={id:'',m:'',sk:''};
 const coFightAsk=a=>a&&Array.isArray(a.o)&&a.o.length&&a.o.every(o=>o&&['atk','sk','pot','hide'].includes(o.k));
 function coGPanel(a){const h=S.hero,K=CLASSES[h.cls]||CLASSES['محارب'],O=a.o,P=CO.gp,en=(O.find(o=>o.k==='hide')||{}).e|0;
-  const SK=skillsOf(h),skN=id=>(SK.find(s=>s.id===id)||{}).n||id,ids=[...new Set(O.filter(o=>o.k==='sk').map(o=>o.id))];
+  const SK=skillsOf(h),skN=id=>(SK.find(s=>s.id===id)||{}).n||coSkNm(id),ids=[...new Set(O.filter(o=>o.k==='sk').map(o=>o.id))];
   const turn=`<div class="turn me co-gturn">${G('دورك! اختار حركتك','دورك! اختاري حركتك')}</div>`;
   if(P.m==='pick'){const sk=P.sk?SK.find(s=>s.id===P.sk):null;
     return `<div class="turn pick co-gturn">${sk?sk.n+' على مين؟':G('هتضرب مين؟','هتضربي مين؟')} ${G('دوس','دوسي')} على العدو</div><div style="margin-top:10px"><button class="btn ghost small" data-cg="back">رجوع</button></div>`}
   if(P.m==='sk'){const rows=ids.map(id=>{const s=SK.find(x=>x.id===id)||{};
       if(id==='raise')return O.map((o,i)=>o.k==='sk'&&o.id==='raise'?`<button class="act" data-cg="o:${i}"><b>${s.n}: ${esc(o.n||'')}</b><small>${T(s.d||'')}</small><span class="cost en">${BOLT} ${s.cost||1}</span></button>`:'').join('');
-      return `<button class="act" data-cg="s:${id}"><b>${s.n||id}</b><small>${T(s.d||'')}</small><span class="cost en">${BOLT} ${s.cost||1}</span></button>`}).join('');
+      return `<button class="act" data-cg="s:${id}"><b>${s.n||coSkNm(id)}</b><small>${T(s.d||'')}</small><span class="cost en">${BOLT} ${s.cost||1}</span></button>`}).join('');
     return `${turn}<div class="acts co-gacts">${rows}</div><div style="margin-top:10px"><button class="btn ghost small" data-cg="back">رجوع</button></div>`}
   const pot=O.findIndex(o=>o.k==='pot');
   return `${turn}<div class="acts co-gacts">
@@ -53603,6 +53604,131 @@ async function coMyDodge(a){if(CO.myRoll||CO.dgDone[a.id]||!S.hero)return;CO.dgD
   const v=JSON.stringify({id:a.id,a:{i:0,t:x&&x.tier||'fail',n:(x&&x.total)|0}});if(!(await coPutAns(v)))delete CO.dgDone[a.id];if(S.screen==='coopg')render()}
 {const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,a=coJ(R&&R.ask),me=coMe();
     if(coDgOk(a)){view.querySelectorAll('.co-ask').forEach(x=>x.style.display='none');view.querySelectorAll('[data-co]').forEach(b=>{const c=b.closest('.col');if(c){c.style.display='none';const l=c.previousElementSibling;if(l&&l.classList.contains('tw-lbl'))l.style.display='none'}});if(R&&R.st==='on'&&me&&a.to===me&&!CO.dgDone[a.id]&&!CO.myRoll)setTimeout(()=>coMyDodge(a),200)}}catch(e){console.warn(e)}return r}}
+/* ---------- 6.63 (acc1, Roadmap R07 part 2): the live night's screens and the market ----------
+   B18 a friend's game ended the night with one line; now it shows the night's stars (the host's, ns/s/a in rw), the
+       adventure's goals ticked as the host got them, and what this friend actually took (capped, CO.got).
+   B16 «قرارات الفريق»: every story choice the room made is kept (scene, the choice that won, who picked what) and sent in
+       the view (vw.dl); a friend opens it from a button on their screen, the host from a small button on the night's screens.
+       It never stops the night.
+   B14 the chest after the night is opened by the room's owner only: friends' taps on the loot screen are not votes.
+   B07/B08 a friend's fight panel named a move the friend doesn't have by its raw id; now by its name from any class or kit.
+   B06 «ارجع لليلة …» showed a room that was gone or over: it is checked first and dropped if so; a host who cancels a room
+       that never started deletes it.
+   F-04 a friend who went back to town after the night still listened to the room: the listeners stop.
+   B21 the market reloads its offers every time you open it (it kept the old list until you switched tabs). */
+function coSkNm(id){const all=Object.values(CSK).flat().concat(Object.values(typeof SPK==='object'?SPK:{}).flat());const s=all.find(x=>x&&x.id===id&&x.n);return s?T(s.n):ae('قدرة','A skill')}
+/* ---- B16: the team's choices ---- */
+CO.dlog=[];
+function coDlogAdd(b,v){if(CO.role!=='host')return;const P=coPlayers(),L=coHostEls();if(L.length<2)return;const nm=u=>{const p=P.find(x=>x.u===u);return p?p.n:''},tx=el=>String(el&&(el.innerText||el.textContent)||'').replace(/\s+/g,' ').trim().slice(0,70);
+  const sc=$('#view .story,#view .cm-cap,#view h2'),who=Object.keys(v||{}).map(u=>({n:String(nm(u)).slice(0,20),c:tx(L[v[u]])})).filter(x=>x.n);
+  CO.dlog.push({s:tx(sc).slice(0,90),c:tx(b),w:who.slice(0,5),t:Date.now()});CO.dlog=CO.dlog.slice(-15)}
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{if(CO.dlog.length)o.dl=CO.dlog}catch(e){}return o}}
+function coDlogSheet(L){const s=document.createElement('div');s.className='cmg co-dls';
+  s.innerHTML=`<div class="ag-box" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>${ae('قرارات الفريق','Team decisions')}</b></div>
+    ${(L||[]).length?(L||[]).slice().reverse().map((d,i)=>`<div class="co-dl${i?'':' now'}"><small>${i?ae('قبل كده','Earlier'):ae('آخر قرار','Latest')}</small><div class="sc">${esc(d.s||'')}</div><b>➜ ${esc(d.c||'')}</b>${(d.w||[]).map(w=>`<div class="w"><span>${esc(w.n)}</span><i>${esc(w.c)}</i></div>`).join('')}</div>`).join('')
+      :`<small class="dim">${ae('لسه مفيش قرارات.','No decisions yet.')}</small>`}
+    <button class="btn" id="coDlX">${ae('تمام','OK')}</button></div>`;document.body.appendChild(s);s.querySelector('#coDlX').onclick=()=>s.remove();s.onclick=e=>{if(e.target===s)s.remove()}}
+/* ---- B14: the owner opens the chest ---- */
+{const h0=coHostEls;coHostEls=function(){if(S.screen==='loot')return [];return h0.apply(this,arguments)}}
+/* ---- the friend's screen: the end (B18), the decisions button (B16), the loot note (B14) ---- */
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,V=coJ(R&&R.vw);
+    if(R&&R.st==='end'){const rw=coJ(R.rw)||{},c=view.querySelector('.co-end');if(c&&!c.dataset.v2){c.dataset.v2=1;const A=rw.a&&typeof ADVS==='object'?ADVS[rw.a]:null,G0=A&&A.end&&A.end.goals||[],st=rw.s||[],got=CO.got||{m:0,xp:0};
+        const STAR='<path d="M12 2l3 6.9 7.5.6-5.7 5 1.8 7.4L12 18l-6.6 3.9 1.8-7.4-5.7-5 7.5-.6z" fill="#f3c14d" stroke="#8a5a1a" stroke-width=".8"/>';
+        c.innerHTML=`<b class="co-eh">${rw.won?ae('الليلة خلصت بالفوز!','The night is won!'):ae('الليلة خلصت','The night is over')}</b>
+          <div class="stars co-st">${[0,1,2].map(i=>`<svg class="st${st[i]?' on':''}" viewBox="0 0 24 24">${STAR}</svg>`).join('')}</div>
+          ${G0.length?`<div class="goals">${G0.slice(0,3).map((g,i)=>`<div class="${st[i]?'ok':''}">${st[i]?'✓':'○'} ${T(g.t)}</div>`).join('')}</div>`:''}
+          <small>${esc(R.hn||'')} · ${T(ae(`{كنت|كنتي} في الليلة دي`,'you were in this night'))}</small>
+          <div class="nrow"><span>${ae('الخبرة','XP')}</span><b style="color:#a6e3a0">+${got.xp|0}</b></div><div class="nrow"><span>${ae('الفلوس','Money')}</span><b style="color:var(--gold2)">+${got.m|0} ${ae('جنيه','coins')}</b></div>
+          ${(rw.xp|0)>(got.xp|0)||(rw.m|0)>(got.m|0)?`<small class="dim">${ae('مكافأة الليالي الجماعية ليها حد في اليوم.','Shared nights have a daily reward limit.')}</small>`:''}
+          <button class="btn" id="coEndOk">${ae('تمام، ارجع البلد','OK, back to town')}</button>`;
+        const b=c.querySelector('#coEndOk');if(b)b.onclick=()=>{const x=$('#back');if(x)x.click()};try{st.forEach((on,i)=>{if(on)setTimeout(()=>{try{SFX.coin(1.1+i*.3)}catch(e){}},300+i*350)})}catch(e){}}}
+    if(R&&R.st==='on'&&V&&V.dl&&V.dl.length&&!$('#coDlB')){const t=view.querySelector('.top,.co-bar0');if(t)t.insertAdjacentHTML('afterend',`<button class="btn ghost co-dlb" id="coDlB">🗳 ${ae('قرارات الفريق','Team decisions')} (${V.dl.length})</button>`);const b=$('#coDlB');if(b)b.onclick=()=>coDlogSheet(coJ(CO.room&&CO.room.vw).dl)}
+    if(R&&R.st==='on'&&V&&V.s==='loot'&&!$('#coLootN')){const m=$('#coM')||view;m.insertAdjacentHTML('afterbegin',`<div class="nnote" id="coLootN">${esc(R.hn||'')}: ${ae('صاحب الأوضة هو اللي بيفتح الصندوق.','the room owner opens the chest.')}</div>`)}}catch(e){console.warn(e)}return r}}
+/* the host: a small button on the night's screens */
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{const on=CO.role==='host'&&CO.code&&CO.room&&CO.room.st==='on'&&CO.dlog.length&&CO_MIR.includes(S.screen);let b=$('#coDlH');
+    if(on&&!b){document.body.insertAdjacentHTML('beforeend',`<button class="co-dlh" id="coDlH" aria-label="${ae('قرارات الفريق','Team decisions')}">🗳</button>`);b=$('#coDlH');b.onclick=()=>coDlogSheet(CO.dlog)}else if(!on&&b)b.remove()}catch(e){}return r}}
+/* ---- B06: a kept room that is gone or over is dropped; a cancelled room that never started is deleted ---- */
+{const c0=SCREENS.coop;SCREENS.coop=function(){const r=c0.apply(this,arguments);try{const k=typeof coKept==='function'&&coKept();if(k&&!CO.code&&CO.kChk!==k&&FB.user){CO.kChk=k;
+    coRef(k).get().then(d=>{const R=d.exists?d.data():null,me=FB.user&&FB.user.uid,inn=R&&(R.h===me||R.g===me);if(!R||R.st==='end'||!inn&&R.st!=='on'){coKeep('');if(S.screen==='coop')render()}}).catch(()=>{})}
+    const x=$('#coX');if(x&&CO.role==='host'&&CO.room&&CO.room.st==='wait'){const f0=x.onclick;x.onclick=function(){const code=CO.code;try{if(code)coRef(code).delete().catch(()=>{})}catch(e){}return f0&&f0.apply(this,arguments)}}}catch(e){console.warn(e)}return r}}
+/* ---- F-04: a friend back in town after the night stops listening to the room ---- */
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{if(CO.role==='guest'&&CO.code&&CO.room&&CO.room.st==='end'&&!['coopg','coop'].includes(S.screen)){coStop();coKeep('')}}catch(e){}return r}}
+/* ---- B21: the market reloads when you open it ---- */
+{const r0=render;let last='';render=function(){if(S.screen==='pmarket'&&last!=='pmarket'&&!MK.load){MK.rows=null}last=S.screen;return r0.apply(this,arguments)}}
+(function(){const s=document.createElement('style');s.textContent=`
+.co-end .co-eh{font-size:20px;color:#ffd36a;text-align:center;display:block}.co-st{display:flex;justify-content:center;gap:6px;margin:6px 0}.co-st .st{width:40px;height:40px;opacity:.25}.co-st .st.on{opacity:1}
+.co-end .goals{display:flex;flex-direction:column;gap:2px;font-size:13px;margin:4px 0}.co-end .goals .ok{color:#a6e3a0}.co-end .btn{min-height:48px;width:100%;margin-top:8px}
+.co-dlb{width:100%;min-height:44px;margin:6px 0}.co-dlh{position:fixed;inset-inline-start:10px;bottom:84px;z-index:40;width:48px;height:48px;border-radius:50%;border:2px solid #f3c14d;background:#2a2038;color:#fff;font-size:22px;box-shadow:0 3px 0 #0008}
+.co-dls .ag-box{max-height:84vh;overflow:auto;gap:8px}.co-dl{padding:8px 10px;border-radius:10px;background:#ffffff0a;display:flex;flex-direction:column;gap:3px}.co-dl.now{border:2px solid #f3c14d}
+.co-dl small{color:var(--dim);font-size:11px}.co-dl .sc{font-size:13px;color:var(--dim)}.co-dl b{color:#ffd36a}.co-dl .w{display:flex;justify-content:space-between;gap:8px;font-size:12px}.co-dl .w i{font-style:normal;color:var(--dim);text-align:end}`;document.head.appendChild(s)})();
+L10N({'اخرج':'Leave'});
+/* ---------- 6.63 (acc1, Twister 18:26 «اتاكد ان الكومبات في الاونلاين نفس الجديد الي عملناه») the online fights are the new fight ----------
+   The host of a live night already fought with the hands-on fight (p155); a friend's phone did not: it showed the host's stage
+   without its look, the old list of moves, and the old dice window. Now on a friend's phone:
+   - the host's stage looks the same as on the host's phone (#app gets .af while the night's view is a fight);
+   - the friend's own turn shows the same four round icons (hit, skills, bag, hide), and the friend's rolls are the same
+     dice: they wait in the tray, swipe up (or tap) to throw, then the hit ring closes on the foe they picked (perfect = one
+     step up, late = one step down), all on their own phone (gfRoll, through rcAlt like the host's);
+   - a foe coming for the friend: they throw for the dodge and a block ring closes on them (perfect = no hit at all).
+   The live duel (p190) uses the same: the three moves are round icons, a hit is the dice throw and then the ring on the rival.
+   Tests: window.__afAuto answers the rings, window.__afVals sets the dice. */
+const GF={on:0};
+const gfFight=()=>{const R=CO.room,V=coJ(R&&R.vw);return CO.role==='guest'&&S.screen==='coopg'&&R&&R.st==='on'&&V&&V.s==='combat'};
+{const r0=render;render=function(){const r=r0.apply(this,arguments);try{const on=afOn()&&(gfFight()||S.screen==='duo');if(on){app.classList.add('af','co-af')}else if(app.classList.contains('co-af')){app.classList.remove('co-af');if(S.screen!=='combat')app.classList.remove('af')}}catch(e){}return r}}
+/* the friend's four moves look like the host's */
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{if(!afOn())return r;
+    view.querySelectorAll('.co-gp .act').forEach(b=>{if(b.querySelector('.af-ic'))return;const k=b.dataset.cg||'';const ic=k==='atk'?'sword':k==='sk'||k.startsWith('s:')?'star':/hide/.test(b.textContent)||b.textContent.includes(ae('استخب','Hide'))?'shield':k.startsWith('o:')||k==='x'?'bag':'hand';
+      b.insertAdjacentHTML('afterbegin',`<span class="af-ic">${AF_IC[ic]||AF_IC.hand}</span>`)});
+    const gp=view.querySelector('.co-gp');if(gp&&!gp.dataset.mv){gp.dataset.mv=1;const ht=view.querySelector('#coM .af-tray:not(.co-tray)');if(ht){ht.style.display='none';ht.after(gp)}else{const m=$('#coM');if(m)m.appendChild(gp)}}
+    if(gp&&!gp.querySelector('.af-tray')&&view.querySelector('.co-gp .acts')){gp.insertAdjacentHTML('afterbegin','<div class="af-tray co-tray"><div class="gf-d"></div><b class="af-pw"></b></div>');gfPaint()}}catch(e){console.warn(e)}return r}}
+/* ---- the dice in the tray ---- */
+function gfTray(){if(gfFight()){let f=$('#gfT');if(f&&f.isConnected)return f;const at=view.querySelector('.co-tray');f=document.createElement('div');f.id='gfT';f.className='af-tray co-tray gf-float';f.innerHTML='<div class="gf-d"></div><b class="af-pw"></b>';
+    if(at){const r=at.getBoundingClientRect();f.style.cssText=`left:${r.left+r.width/2}px;top:${r.top}px;bottom:auto;width:${r.width}px;height:${r.height}px`}document.body.appendChild(f);return f}
+  let t=view.querySelector('.co-tray')||view.querySelector('.du .af-tray');if(t)return t;t=document.createElement('div');t.className='af-tray co-tray gf-float';t.innerHTML='<div class="gf-d"></div><b class="af-pw"></b>';(view.querySelector('.du')||view).appendChild(t);return t}
+function gfPaint(vals){const t=($('#gfT')&&$('#gfT').isConnected?$('#gfT'):null)||view.querySelector('.co-tray')||view.querySelector('.du .af-tray');if(!t)return;const d=t.querySelector('.gf-d'),n=S.dice==='2d6'?2:1;if(!d)return;
+  d.innerHTML=Array.from({length:n},(_,i)=>`<div class="afd"><div class="fc">${afDie(vals?vals[i]:0)}</div></div>`).join('')}
+function gfThrow(){return new Promise(res=>{const t=gfTray(),two=S.dice==='2d6',n=two?2:1;gfPaint();const d=t.querySelector('.gf-d');d.classList.add('wait');
+    let vals=Array.from({length:n},()=>two?rnd(6):rnd(20));if(Array.isArray(window.__afVals)&&window.__afVals.length){vals=window.__afVals.splice(0,n);while(vals.length<n)vals.push(two?rnd(6):rnd(20))}
+    let gone=0;const go=pw=>{if(gone)return;gone=1;d.classList.remove('wait');try{SFX.tick(700);vib(14)}catch(e){}const H=70+(pw||.4)*70;
+      Promise.all([...d.children].map((el,i)=>new Promise(done=>{const dur=(window.__afAuto?220:600)+i*110,spin=(540+Math.random()*360)*(i%2?-1:1);
+        const iv=setInterval(()=>{el.firstChild.innerHTML=afDie(two?rnd(6):rnd(20))},60);
+        try{el.animate([{transform:'translate(0,0)'},{transform:`translate(0,${-H-i*16}px) scale(1.35) rotate(${spin/2}deg)`,offset:.42},{transform:`translate(0,0) scale(1.15,.75) rotate(${spin}deg)`,offset:.86},{transform:'translate(0,0) scale(1)'}],{duration:dur})}catch(e){}
+        setTimeout(()=>{clearInterval(iv);el.firstChild.innerHTML=afDie(vals[i]);try{AFS.thud(i);vib(25)}catch(e){}},dur*.86);setTimeout(done,dur+20)}))).then(()=>{const pw=t.querySelector('.af-pw');if(pw){pw.textContent=vals.reduce((a,b)=>a+b,0);pw.classList.add('on')}res(vals)})};
+    if(window.__afAuto){setTimeout(()=>go(.5),80);return}
+    let st=null;d.onpointerdown=e=>{e.preventDefault();st={y:e.clientY};try{d.setPointerCapture(e.pointerId)}catch(x){}};
+    d.onpointermove=e=>{if(st&&e.clientY-st.y<-26){st=null;go(.8)}};d.onpointerup=()=>{if(st){st=null;go(.4)}};
+    t.classList.add('gf-need')})}
+/* a friend's roll in a fight: the dice, then the ring */
+async function gfRoll(stat,opt,mod,dc,hz){const two=S.dice==='2d6',rf=()=>two?rnd(6):rnd(20);afLayer();
+  const base=await gfThrow(),faces=base.concat(opt.adv?[rf()]:[]),R=afTier(faces,two,mod|0,dc|0,hz);const t=gfTray();t.classList.remove('gf-need');let q='good';
+  const tgt=GF.tgt;GF.tgt=null;
+  if(!R.fumble){q=await afRing(()=>(typeof tgt==='function'?tgt():tgt)||t,{dur:Math.round(760*(typeof afSpd==='function'?afSpd():1)),col:stat==='خفة'?'#7fb6ff':'#f2c14e'});
+    if(stat==='خفة'&&GF.dodge){if(q==='perfect'){R.tier='full';try{floatAt(t,ae('صد!','Blocked!'),'#9fd0ff','crit',28)}catch(e){}}else if(q==='miss')R.tier=afDown(R.tier)}
+    else{if(q==='perfect'){R.tier=afUp(R.tier);try{floatAt(t,ae('بالظبط!','Perfect!'),'#ffd36a','crit',28);vib([30,20,60])}catch(e){}}else if(q==='miss')R.tier=afDown(R.tier)}}
+  GF.dodge=0;setTimeout(()=>{const f=$('#gfT');if(f)f.remove()},700);if(R.crit)try{SFX.crit();flash('#f3d48f')}catch(e){}else if(R.fumble)try{flash('#d0483b');SFX.bad()}catch(e){}
+  return {tier:R.tier,total:R.total,crit:R.crit,fumble:R.fumble,af:q}}
+{const r0=rcAlt;rcAlt=function(stat,opt,mod,dc,hz){try{if(afOn()&&gfFight())return gfRoll(stat,opt||{},mod,dc,hz)}catch(e){}return r0.apply(this,arguments)}}
+/* the ring closes on the foe the friend picked, or on the friend for a dodge */
+{const a0=coAnswerR;coAnswerR=function(i){try{const a=coJ(CO.room&&CO.room.ask),o=a&&a.o[i];if(o&&o.i!=null)GF.tgt=()=>view.querySelector(`#coM .foe[data-f="${o.i}"]`)}catch(e){}return a0.apply(this,arguments)}}
+{const d0=coMyDodge;coMyDodge=function(a){GF.dodge=1;GF.tgt=()=>{const me=coMe(),R=CO.room;if(R&&R.g===me)return view.querySelector('#coM #compCard');const n=S.hero&&S.hero.name;return [...view.querySelectorAll('#coM .mate')].find(m=>n&&m.textContent.includes(n))||view.querySelector('.co-tray')};return d0.apply(this,arguments)}}
+/* ---- the live duel: round icons, the dice, the ring ---- */
+{const s0=SCREENS.duo;SCREENS.duo=function(){const r=s0.apply(this,arguments);try{if(!afOn())return r;const A=view.querySelector('.du-acts');
+    if(A&&!A.dataset.af){A.dataset.af=1;A.classList.add('acts');const I={hit:'sword',heavy:'star',guard:'shield'};
+      A.querySelectorAll('.du-a').forEach(b=>{b.classList.add('act');const sp=b.querySelector(':scope>span');if(sp)sp.outerHTML=`<span class="af-ic">${AF_IC[I[b.dataset.mv]]}</span>`;const sm=b.querySelector('small');if(sm)sm.outerHTML=`<b>${sm.innerHTML}</b>`});
+      if(!view.querySelector('.du .af-tray'))A.insertAdjacentHTML('beforebegin','<div class="af-tray co-tray"><div class="gf-d"></div><b class="af-pw"></b></div>');gfPaint()}}catch(e){console.warn(e)}return r}}
+/* a hit in the duel: throw (full ×1.25, part ×1, fail ×0.6), then the ring on the rival (perfect = crit, late = a miss) */
+{const r0=duRing;duRing=async function(heavy){if(!afOn()||duAuto())return r0.apply(this,arguments);afLayer();
+  const two=S.dice==='2d6',D=DUX.doc,me=D&&duSide(D),P=duP(D&&D['p'+me])||{};const base=await gfThrow(),R=afTier(base,two,Math.floor((P.l|0)/4),heavy?2:0,false);
+  if(R.fumble){try{SFX.bad()}catch(e){}return 'miss'}
+  const q=await afRing(()=>$('#duHimP .du-pic')||$('#duHimP'),{dur:heavy?620:760,col:'#f2c14e'});
+  if(q==='miss')return 'miss';if(q==='perfect'||R.crit)return 'cr';return R.tier==='fail'?'miss':'ok'}}
+(function(){const s=document.createElement('style');s.textContent=`
+#app.af .co-gp .acts,#app.af .du-acts.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}#app.af .du-acts.acts{grid-template-columns:repeat(3,1fr)}
+#app.af .co-tray{width:180px;height:74px;display:flex;align-items:center;justify-content:center}
+.co-tray .gf-d{display:flex;gap:12px;touch-action:none;cursor:grab;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}.co-tray .afd{width:48px;height:48px}.co-tray .fc,.co-tray .fc svg{width:100%;height:100%;display:block}
+.co-tray .gf-d.wait .fc{animation:afWig 1.1s ease-in-out infinite}.co-tray.gf-need{box-shadow:0 0 0 3px #f3c14d,0 0 16px #f3c14d88}
+.co-tray.gf-float{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;background:#0b0d1c;border-radius:10px}
+#app.af .du-a.act{min-height:96px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
