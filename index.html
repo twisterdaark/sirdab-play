@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.37',d:'14 أكتوبر',add:['شجرة كل شغلانة بقت سما بالليل بنجوم: الشمس تحت، والفروع طالعة نجوم متوصلة، والروابط والتاج فوق، والاختيارات تحت. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}، والنجمة بتنوّر لما {تاخدها|تاخديها}.','«شجرة الصنايعي» اللي كانت لكل الشغلانات اتشالت. اللي {اشتريته|اشتريتيه} منها لسه شغال.','القتال: القدرات والشنطة و«اتصرّف» بقوا كروت مكتوب عليها كل حاجة بتعمل إيه. دوسة واحدة {بتستعملها|بتستعمليها}، ولو محتاجة وحش {بتدوس|بتدوسي} على الوحش على طول.','السلاح اللي {بيصحى|بيصحى} أو بيتولد بروح أو بيكبر: مشهد كامل بنور وصوت واسمه بيظهر كبير.']},
 {v:'6.36',d:'14 أكتوبر',add:['القتال: أول ما {ترمي|ترمي} النرد، تحته مكتوب الرمية دي هتعمل إيه في الضربة: النرد + الصفة − صعوبة العدو = النتيجة.','أرقام الصحة بقت جوه البار نفسه، فوق كل وحش وفوقك.','الشعلة وأي حاجة {بترميها|بترميها} على عدو: {دوس|دوسي} على العدو نفسه زي الضربة، من غير زراير.','الوحوش بقت بتتنفس وبتتحرك في مكانها، ونقط الضعف بقت أيقونات صغيرة من غير بوكسات.','اسم «علقة» و«تثبيت» بقى فوق الزرار.','في «بيتك» بقى فيه سرير: لو صحتك ناقصة {ارتاح|ارتاحي} ببلاش وصحتك وطاقتك يرجعوا كاملين. صحتك ما بترجعش لوحدها في البلد.','التحدي والمنافس وطلب العمدة لما {تكون تعبان|تكوني تعبانة} بيودّوك على السرير على طول، ومربع «بيتك» بيقولك {ترتاح|ترتاحي} هناك.','الجرنال مابقاش بيجيب وصفة {انت عارفها|انتي عارفاها} خلاص.']},
 {v:'6.35.1',d:'14 أكتوبر',add:['تصليح: على الكمبيوتر، المحارب اللي معاه تخصص كانت اللعبة بتقف عنده أول ما تفتح. اتصلحت','مربع الغلط (لو حصل) بقى ينفع {تحدد|تحددي} الكلام اللي فيه، وفيه زرار «انسخ الغلط» عشان {تبعته|تبعتيه} بسهولة']},
 {v:'6.35',d:'14 أكتوبر',add:['القتال بقى أحلى: الصحة والطاقة فوق راس كل واحد، {انت|انتي} واللي معاك، والصحة مكتوبة بالأرقام (كام من كام) حتى للوحوش','كل قدرة بقت ليها رسمة بيكسل خاصة بيها، ومفيش قدرتين بنفس الرسمة','لما {تضرب|تضربي}، شخصيتك بتجري على الوحش، والضربة بتنوّر وتهز المسرح وتطلع شرار','بعد كل رمية النتيجة بتتكتب كبيرة تحت النرد (نجاح، نص نص، فشل) وتحتها إزاي اتحسبت','«علقة» و«تثبيت» بقوا زرارين كبار في النص، كل واحد برسمته ولونه','سجل القتال بيفتح جوه إطار اللعبة على الكمبيوتر، مش برّه']},
@@ -50689,6 +50690,200 @@ setInterval(()=>{try{if(fx7On())fx7Bars()}catch(e){}},200);
 #app.af .fx7-turn{display:flex;align-items:center;justify-content:center;gap:8px}.fx7-ic svg{width:26px;height:26px}
 #app.af .acts.xbig .act.xbb>b{order:-1;margin-bottom:4px}
 @media (prefers-reduced-motion:reduce){#app.af .af-stage .fx7-body{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.37 (acc1, Twister 2026-10-14 10:16 + 12:57): «شجرة النجوم» ----------
+   Every trade's tree (mining, fishing, smithing, tailoring, cooking, farming, attar) is one night sky instead of three tabs:
+   - the trade's sun at the bottom; its 4 branches climb as lines of stars (4 small stars, then a big one for the strong perk);
+   - the two links sit between the branches they need, joined to those stars; the crown shines on top, joined to both links;
+   - the two forks hang under the sun: 3 stars each (f1 also has a star after each choice); a choice dims the other two.
+   Tap a star: the card under the sky says what it does and buys it (treeInfo/lkInfo/fkInfo, treeBuy/lkBuy/fkBuy from p9t).
+   A bought star lights up, its line fills in, and sparks fly. The data and the rules are p9t's, so nothing changes in play.
+   «شجرة الصنايعي» (p147, one tree for all trades) is retired: no way in any more; nodes already bought keep working. */
+const SKY={W:400,H:650,SUN:{x:200,y:452},COL:[52,148,252,348],Y0:392,DY:68};
+const skyHash=s=>{let x=2166136261;for(let i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619)}return ()=>{x=Math.imul(x^x>>>15,2246822507);x=Math.imul(x^x>>>13,3266489909);return ((x^=x>>>16)>>>0)/4294967296}};
+/* where each star sits */
+function skyPos(k){const T0=TREE[k],P={},sw=[0,-6,5,-4,6];
+  T0.br.forEach((b,c)=>{for(let i=0;i<5;i++)P['n:'+b.id+':'+i]={x:SKY.COL[c]+(c<2?-1:1)*sw[i]*(i/4+.4),y:SKY.Y0-i*SKY.DY}});
+  (TREE_LK[k]||[]).forEach(L=>{if(L.id==='crown')return;const [[a,ra],[b,rb]]=L.need,A=P['n:'+a+':'+(ra-1)],B=P['n:'+b+':'+(rb-1)];if(A&&B)P['l:'+L.id]={x:(A.x+B.x)/2,y:Math.min(A.y,B.y)-30}});
+  if((TREE_LK[k]||[]).some(L=>L.id==='crown'))P['l:crown']={x:200,y:42};
+  const D=TREE_FK[k];if(D){[['a',44,540],['b',100,566],['c',156,592]].forEach(([s,x,y])=>{if(D.f1&&D.f1[s])P['f:f1:'+s]={x,y};if(D.f1&&D.f1[s+'x'])P['f:f1:'+s+'x']={x,y:y+56}});
+    [['a',244,592],['b',300,566],['c',356,540]].forEach(([s,x,y])=>{if(D.f2&&D.f2[s])P['f:f2:'+s]={x,y}})}
+  return P}
+/* state of a star: got / open (can buy now) / ok (next, points short) / no (locked) / lock (closed by a fork choice) */
+function skySt(h,k,id,p){const [t,a,b]=id.split(':');
+  if(t==='n'){const r=treeRank(h,k,a),i=+b;return r>i?'got':r===i?(p>=i+1?'open':'ok'):'no'}
+  if(t==='l'){const L=TREE_LK[k].find(x=>x.id===a);if(treeLink(h,k,a))return 'got';if(!lkOk(h,k,L))return 'no';return p>=lkCost(L)?'open':'ok'}
+  return fkState(h,k,a+':'+b,p)}
+const skySel=id=>{const [t,a,b]=id.split(':');return t==='n'?a+b:t==='l'?'L:'+a:'F:'+a+':'+b};
+const skyStar=(r,n)=>{let d='';for(let i=0;i<n*2;i++){const R=i%2?r*.45:r,an=-Math.PI/2+i*Math.PI/n;d+=(i?'L':'M')+(Math.cos(an)*R).toFixed(1)+' '+(Math.sin(an)*R).toFixed(1)}return d+'Z'};
+function skySVG(h,k,p){const T0=TREE[k],P=skyPos(k),c=T0.c,R=skyHash('sky'+k),sel=TS.sel;
+  let bg='';for(let i=0;i<70;i++){const x=R()*SKY.W,y=R()*SKY.H,s=R();bg+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(.4+s*1.1).toFixed(1)}" fill="#fff" opacity="${(.15+s*.5).toFixed(2)}"${s>.8?` class="sk-tw" style="animation-delay:-${(R()*4).toFixed(1)}s"`:''}/>`}
+  const ln=(A,B,on,dash)=>`<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" class="sk-l${on?' on':''}${dash?' dash':''}"/>`;
+  let L='';const S0=SKY.SUN;
+  T0.br.forEach(b=>{for(let i=0;i<5;i++){const A=i?P['n:'+b.id+':'+(i-1)]:S0,B=P['n:'+b.id+':'+i];L+=ln(A,B,treeRank(h,k,b.id)>i)}});
+  (TREE_LK[k]||[]).forEach(Lk=>{const me=P['l:'+Lk.id];if(!me)return;const on=treeLink(h,k,Lk.id);
+    if(Lk.id==='crown'){['l1','l2'].forEach(x=>{if(P['l:'+x])L+=ln(P['l:'+x],me,on,!on)})}
+    else Lk.need.forEach(([b,r])=>{const A=P['n:'+b+':'+(r-1)];if(A)L+=ln(A,me,on,!on)})});
+  const F=tfOf(h,k)||{};
+  Object.keys(P).filter(id=>id.indexOf('f:')===0).forEach(id=>{const [,f,s]=id.split(':'),x=s.length>1,from=x?P['f:f1:'+s[0]]:S0;L+=ln(from,P[id],x?!!F.f1x&&F.f1===s[0]:F[f]===s,true)});
+  const node=id=>{const q=P[id],st=skySt(h,k,id,p),[t,a,b]=id.split(':'),big=(t==='n'&&b==='4'),crown=id==='l:crown',on=sel===skySel(id);
+    const r=crown?17:big?14:t==='l'?11:t==='f'?10:8;
+    const shape=t==='f'?`<polygon points="${[0,1,2,3,4,5].map(j=>{const an=Math.PI/6+j*Math.PI/3;return (Math.cos(an)*r).toFixed(1)+','+(Math.sin(an)*r).toFixed(1)}).join(' ')}"/>`:
+      t==='l'&&!crown?`<path d="M0 ${-r}L${r} 0L0 ${r}L${-r} 0Z"/>`:big||crown?`<path d="${skyStar(r,5)}"/>`:`<path d="${skyStar(r,4)}"/>`;
+    const tag=t==='n'?`data-n="${a}" data-i="${b}"`:t==='l'?`data-lk="${a}"`:`data-fk="${a}:${b}"`;
+    return `<g class="sk-n ${st}${on?' sel':''}${TS.just===id?' just':''}" transform="translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})" ${tag} role="button" tabindex="0" aria-label="${esc(skyName(k,id))}">
+      <circle r="27" class="sk-hit"/>${st==='got'||st==='open'?`<circle r="${r+9}" class="sk-glow"/>`:''}<g class="sk-s">${shape}</g>${on?`<circle r="${r+6}" class="sk-ring"/>`:''}${st==='lock'?`<path d="M-5 -5L5 5M5 -5L-5 5" class="sk-x"/>`:''}</g>`};
+  const labels=T0.br.map((b,c)=>`<text x="${SKY.COL[c]}" y="${SKY.Y0+30}" class="sk-t">${esc(T(b.n))}</text>`).join('')
+    +(TREE_FK[k]?`<text x="100" y="634" class="sk-t dim">${ae('اختيار ١','Choice 1')}</text><text x="300" y="634" class="sk-t dim">${ae('اختيار ٢','Choice 2')}</text>`:'');
+  return `<svg class="sky" viewBox="0 0 ${SKY.W} ${SKY.H}" style="--tc:${c}" xmlns="http://www.w3.org/2000/svg">
+    <defs><radialGradient id="skSun"><stop offset="0" stop-color="#fff7d0"/><stop offset=".45" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>
+      <radialGradient id="skNeb" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="${c}" stop-opacity=".16"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>
+    <rect width="${SKY.W}" height="${SKY.H}" fill="url(#skNeb)"/>${bg}${L}
+    <g transform="translate(${S0.x} ${S0.y})"><circle r="44" fill="url(#skSun)" class="sk-sun"/><g transform="translate(-16 -16) scale(1.34)">${TREE_IC[k]||''}</g></g>
+    ${labels}${Object.keys(P).map(node).join('')}</svg>`}
+function skyName(k,id){const [t,a,b]=id.split(':');try{if(t==='n')return T(TREE[k].br.find(x=>x.id===a).n)+' '+(+b+1);if(t==='l')return T(TREE_LK[k].find(x=>x.id===a).n);return T(TREE_FK[k][a][b].n)}catch(e){return ''}}
+SCREENS.tree=function(){const h=S.hero;if(!h){S.screen='title';return render()}const k=TREE[TS.k]?TS.k:'smith',T0=TREE[k],p=treePts(h,k),c=T0.c;treeOf(h,k);
+  const who=T0.who&&TW_NPC[T0.who]?TW_NPC[T0.who][0]:null,cost=treeCost(h,k),spent=treeSpent(h,k),sel=TS.sel;
+  let info='';try{if(sel&&sel.indexOf('F:')===0)info=fkInfo(h,k,sel.slice(2),p);else if(sel&&sel.indexOf('L:')===0)info=lkInfo(h,k,sel.slice(2),p);
+    else if(sel){const b=T0.br.find(x=>sel.indexOf(x.id)===0&&/^\d$/.test(sel.slice(x.id.length)));if(b)info=treeInfo(h,k,b,+sel.slice(b.id.length),p)}}catch(e){console.warn(e)}
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('شجرة','Tree:')} ${LIFE[k].n}</h2><span style="width:44px"></span></div>
+  <div class="tw tr sk" style="--tc:${c}">
+    <div class="card sk-top"><span class="ic">${treeIco(k,34)}</span><div class="tx"><b>${LIFE[k].n} · ${ae('مستوى','level')} ${treeLvl(h,k)}</b>
+      <small>${T(ae(`كل مستوى = ${TREE_PPL} نقط. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}.`,`Each level = ${TREE_PPL} points. Tap any star to read it and buy it.`))}</small></div>
+      <span class="sk-pts${treeCan(h,k)?' on':''}"><b>${p}</b><small>${ae('نقط','pts')}</small></span></div>
+    <div class="card sk-box">${skySVG(h,k,p)}</div>
+    <div class="card tr-info${info?'':' empty'}" id="trInfo">${info||`<div class="tw-sm" style="text-align:center">${T(ae('{دوس|دوسي} على نجمة','Tap a star'))} ✦ ${ae('النجوم اللي بتنوّر تقدر تشتريها دلوقتي','glowing stars can be bought now')}</div>`}</div>
+    <div class="card tr-re"><div class="tw-sm">${who?`${who} ${T0.who==='umsayed'?'بترجّعلك':'بيرجّعلك'} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`:`${G('تقدر ترجّع','تقدري ترجّعي')} كل النقط ${G('وتوزّعها','وتوزّعيها')} تاني، بـ${cost} جنيه.`}</div>
+      <button class="btn ghost${TS.conf?' q-cf':''}" id="trRe" ${spent&&h.money>=cost?'':'disabled'}>${TS.conf?G('متأكد؟ رجّع النقط','متأكدة؟ رجّعي النقط'):G('رجّع النقط','رجّعي النقط')} · ${cost} جنيه</button></div></div>`;
+  $('#back').onclick=()=>{SFX.page();S.screen=TS.from&&SCREENS[TS.from]?TS.from:'town';TS.just=null;render();view.scrollTop=0};
+  const pick=(s,f)=>{TS.sel=s;TS.conf=0;TS.just=null;try{SFX.tick(f)}catch(e){}twRender();const i=$('#trInfo');if(i)try{i.animate([{transform:'translateY(10px)',opacity:.4},{transform:'none',opacity:1}],{duration:200})}catch(e){}};
+  view.querySelectorAll('.sk-n[data-n]').forEach(g=>g.onclick=()=>pick(g.dataset.n+g.dataset.i,800+(+g.dataset.i)*120));
+  view.querySelectorAll('.sk-n[data-lk]').forEach(g=>g.onclick=()=>pick('L:'+g.dataset.lk,1100));
+  view.querySelectorAll('.sk-n[data-fk]').forEach(g=>g.onclick=()=>pick('F:'+g.dataset.fk,950));
+  view.querySelectorAll('.sk-n').forEach(g=>g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.onclick()}});
+  const bb=$('#trBuy');if(bb)bb.onclick=()=>{TS.just='n:'+bb.dataset.b+':'+treeRank(h,k,bb.dataset.b);treeBuy(k,bb.dataset.b);skyBurst()};
+  const lb=$('#lkBuy');if(lb)lb.onclick=()=>{TS.just='l:'+lb.dataset.b;lkBuy(k,lb.dataset.b);skyBurst()};
+  const fb=$('#fkBuy');if(fb)fb.onclick=()=>{TS.just='f:'+fb.dataset.b;fkBuy(k,fb.dataset.b);skyBurst()};
+  $('#trRe').onclick=()=>treeRespec(k);
+  if(h.treeReset){delete h.treeReset;saveHero();setTimeout(()=>toast(T('الشجرة اتجددت: 4 فروع و5 درجات. نقطك رجعتلك كلها {وزّعها|وزّعيها} من الأول ببلاش.')),300)}};
+/* the bought star: sparks from it and its lines draw in */
+function skyBurst(){const g=view.querySelector('.sk-n.just');if(!g)return;try{pop(g,[TREE[TS.k].c,'#ffffff','#fff3b0'],30)}catch(e){}try{vib([20,30,60])}catch(e){}}
+/* «شجرة الصنايعي» is retired: no way in */
+{const t0=SCREENS.tree;SCREENS.tree=function(){const r=t0.apply(this,arguments);try{const x=$('#ctIn');if(x)x.remove()}catch(e){}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.tr.sk{display:flex;flex-direction:column;gap:10px}
+.sk-top{display:flex;align-items:center;gap:10px}.sk-top .tx{flex:1;display:flex;flex-direction:column;gap:3px}.sk-top .tx b{color:var(--tc)}.sk-top .tx small{font-size:12px;opacity:.8;line-height:1.5}
+.sk-pts{display:flex;flex-direction:column;align-items:center;min-width:52px;padding:4px 6px;border-radius:12px;background:#0b0d1c;border:2px solid #ffffff22}.sk-pts b{font-size:22px;line-height:1}.sk-pts small{font-size:10px;opacity:.7}
+.sk-pts.on{border-color:var(--tc);box-shadow:0 0 14px var(--tc);animation:skP 1.4s ease-in-out infinite}@keyframes skP{50%{box-shadow:0 0 4px var(--tc)}}
+.sk-box{padding:0;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#1c1f48 0%,#0d0f26 60%,#07081a 100%);border-color:#2a2f60}
+.sky{display:block;width:100%;height:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.sk-l{stroke:#ffffff;stroke-opacity:.16;stroke-width:1.6}.sk-l.dash{stroke-dasharray:3 5}.sk-l.on{stroke:var(--tc);stroke-opacity:.95;stroke-width:2.6;stroke-dasharray:none;filter:drop-shadow(0 0 3px var(--tc))}
+.sk-tw{animation:skTw 4s ease-in-out infinite}@keyframes skTw{50%{opacity:.1}}
+.sk-sun{animation:skSun 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes skSun{50%{transform:scale(1.08)}}
+.sk-t{font-size:11px;font-weight:800;fill:#e9dcc4;text-anchor:middle;paint-order:stroke;stroke:#07081a;stroke-width:3px}.sk-t.dim{fill:#9aa0c8;font-size:10px}
+.sk-n{cursor:pointer;outline:none}.sk-hit{fill:transparent}
+.sk-s{transition:transform .2s}.sk-s>*{fill:#2a2d52;stroke:#5a5f90;stroke-width:1.4;stroke-linejoin:round}
+.sk-n.ok .sk-s>*{fill:#3a3f72;stroke:#c9cdf0}
+.sk-n.open .sk-s>*{fill:#fff6d8;stroke:#fff}.sk-n.open .sk-s{animation:skOpen 1.2s ease-in-out infinite}
+.sk-n.got .sk-s>*{fill:var(--tc);stroke:#fff}
+.sk-n.lock .sk-s>*{fill:#1a1c33;stroke:#3a3d60}.sk-x{stroke:#8a4a5a;stroke-width:2;stroke-linecap:round}
+.sk-n.no .sk-s{opacity:.55}
+.sk-glow{fill:var(--tc);opacity:.22}.sk-n.open .sk-glow{fill:#fff;opacity:.18;animation:skG 1.2s ease-in-out infinite}
+.sk-ring{fill:none;stroke:#ffd36a;stroke-width:2;stroke-dasharray:4 3;animation:skR 6s linear infinite;transform-box:fill-box;transform-origin:center}
+.sk-n.just .sk-s{animation:skJust .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes skOpen{50%{transform:scale(1.18)}}@keyframes skG{50%{opacity:.04}}@keyframes skR{to{transform:rotate(360deg)}}@keyframes skJust{0%{transform:scale(.3)}60%{transform:scale(1.6)}100%{transform:scale(1)}}
+.sk .tr-re{margin-top:0}
+@media (prefers-reduced-motion:reduce){.sk-n.open .sk-s,.sk-tw,.sk-sun,.sk-ring{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.37 (acc1, a player's note via Twister 12:58): «لازم يبقا مكتوب بيعملوا ايه منغير ما تدوس عليهم، ولما تدوس عليهم
+   تقدر تدوس عالوحش علي طول منغير ما تدوس عالكلمة» ----------
+   The fight sheets (skills, bag, «اتصرّف») show each choice as a card: icon, name and what it does, with its cost. One tap uses it
+   (a move that needs a foe goes straight to «tap the foe»). Greyed choices still say why on a tap. */
+function fx8Dress(sh){if(sh.dataset.fx8)return;sh.dataset.fx8=1;sh.classList.add('fx8');
+  sh.querySelectorAll('.cg-c').forEach(b=>{if(b.querySelector('.fx8-t'))return;const x=b.dataset.cgx?`<i class="fx8-x${b.dataset.cgxb?' en':''}">${esc(b.dataset.cgx)}</i>`:'';
+    b.insertAdjacentHTML('beforeend',`<span class="fx8-t"><b>${esc(b.dataset.cgn||'')}${x}</b><small>${esc(b.dataset.cgd||'')}</small></span>`)});
+  const d=sh.querySelector('.cg-d');if(d&&!d.querySelector('.cg-go'))return;if(d)d.hidden=true}
+function fx8All(){if(!cgOn())return;view.querySelectorAll('.sheet.af-cg').forEach(fx8Dress)}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{fx8All()}catch(e){console.warn(e)}return r}}
+/* one tap: mark the choice as already picked before the sheet's own two-tap gate sees the click */
+document.addEventListener('click',ev=>{try{const b=ev.target.closest&&ev.target.closest('.sheet.af-cg.fx8 .cg-c');if(!b||!ev.isTrusted)return;if(b.classList.contains('cg-dis')){const d=b.closest('.sheet').querySelector('.cg-d');if(d)d.classList.remove('fx8-off');return}
+  CGS.sel=b.dataset.cgk;const d=b.closest('.sheet').querySelector('.cg-d');if(d){d.hidden=false;d.classList.add('fx8-off')}}catch(e){}},true);
+(function(){const s=document.createElement('style');s.textContent=`
+#app.af .sheet.af-cg.fx8 .cg-grid{grid-template-columns:1fr 1fr!important;gap:6px}
+#app.af .sheet.af-cg.fx8 .cg-c{display:grid!important;grid-template-columns:44px 1fr!important;place-items:center start;column-gap:8px;height:auto;min-height:64px;padding:6px 8px;text-align:start}
+#app.af .sheet.af-cg.fx8 .cg-c>.fx8-t{display:flex!important;flex-direction:column;gap:2px;min-width:0;width:100%}
+#app.af .sheet.af-cg.fx8 .fx8-t b{display:flex;justify-content:space-between;gap:4px;font-size:13px;line-height:1.25;color:#fff}
+#app.af .sheet.af-cg.fx8 .fx8-t small{font-size:11px;line-height:1.35;color:#c9c2dc;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#app.af .sheet.af-cg.fx8 .fx8-x{font-style:normal;font-size:11px;color:#8cc4ff;white-space:nowrap}
+#app.af .sheet.af-cg.fx8 .cg-n{inset-inline-end:auto;inset-inline-start:30px;bottom:4px}
+#app.af .sheet.af-cg.fx8 .cg-d.fx8-off{display:none!important}
+#app.af .sheet.af-cg.fx8 .cg-c.cg-sel{border-color:#3d3266;box-shadow:none}`;document.head.appendChild(s)})();
+/* ---------- 6.37 (acc1, Twister 12:57): «لما سلاح يتعمله Awakening … يبقا في انيميشن وكاتسين هايب اكتر ودوبامين اكتر» ----------
+   The three soul-weapon moments (p152: born with a soul at the forge, woke up after a boss, grew a level) used a plain band.
+   Now each one is a full-screen scene: the weapon trembles in the dark with a heartbeat, light cracks out of it, a white flash,
+   rays and a shockwave, sparks, then its name slams in letter by letter with its temper (or its new level and perk) and a gold
+   «إنجاز» ribbon. A tap after the slam closes it (it closes by itself after a while too). */
+const SFXW={beat(){try{tone(70,40,.22,'sine',.25)}catch(e){}},rise(){try{tone(180,900,1.2,'sawtooth',.03)}catch(e){}},boom(){try{tone(110,30,.7,'square',.12);tone(880,1760,.5,'triangle',.06)}catch(e){}}};
+let SOUL_FX=null;
+function soulFx(o){if(SOUL_FX)return SOUL_FX.p;let done;const p=new Promise(r=>done=r);const id=o.id,lv=o.lv|0;
+  const el=document.createElement('div');el.id='soulFx';el.className='sx-'+o.kind;
+  let ic='';try{ic=gearIcon(id,120)}catch(e){}
+  const nm=String(o.name||'');const letters=`<span>${esc(nm)}</span>`;   /* one span: Arabic letters must stay joined, so the name wipes in instead of letter by letter */
+  el.innerHTML=`<div class="sx-rays"></div><div class="sx-ring"></div><div class="sx-flash"></div>
+    <div class="sx-mid"><div class="sx-w"><div class="sx-aura"></div><div class="sx-ic">${ic}</div><i class="sx-c c1"></i><i class="sx-c c2"></i><i class="sx-c c3"></i></div>
+      <div class="sx-ttl">${esc(o.title)}</div><div class="sx-nm">${letters}</div><div class="sx-gn">${esc(o.gear||'')}</div>
+      ${lv?`<div class="sx-lv">${Array.from({length:10},(_,i)=>`<i class="${i<lv?'on':''}${i===lv-1?' new':''}"></i>`).join('')}</div>`:''}
+      <div class="sx-sub">${esc(o.sub||'')}</div><div class="sx-rib">✦ ${ae('إنجاز','Achievement')} ✦</div>
+      <button class="btn sx-go">${ae('يلا!','Let\'s go!')}</button></div>
+    <div class="sx-motes">${Array.from({length:18},(_,i)=>`<i style="left:${(5+Math.random()*90).toFixed(0)}%;animation-delay:${(Math.random()*1.4).toFixed(2)}s;animation-duration:${(1.4+Math.random()*1.2).toFixed(2)}s"></i>`).join('')}</div>`;
+  document.body.appendChild(el);const T0=[];const at=(ms,f)=>T0.push(setTimeout(()=>{try{f()}catch(e){}},ms));
+  [0,450,900,1250].forEach((ms,i)=>at(ms,()=>{SFXW.beat();vib(i<2?30:50)}));at(300,()=>SFXW.rise());
+  at(1500,()=>{SFXW.boom();try{SFX.crit()}catch(e){}vib([60,40,120]);try{shake()}catch(e){}const w=el.querySelector('.sx-ic');try{pop(w,['#ffd36a','#fff6c8','#ffffff','#f39a4d'],60)}catch(e){}});
+  at(2050,()=>{try{SFX.fanfare()}catch(e){}});at(2700,()=>{try{const w=el.querySelector('.sx-ic');pop(w,['#ffd36a','#fff'],30)}catch(e){}});
+  let ok=false;at(2300,()=>{ok=true;el.classList.add('can')});
+  const close=()=>{if(!SOUL_FX)return;T0.forEach(clearTimeout);el.classList.add('out');setTimeout(()=>el.remove(),300);SOUL_FX=null;done()};
+  el.addEventListener('click',()=>{if(ok)close()});at(9000,close);
+  SOUL_FX={p,close};return p}
+/* the three moments arrive through band() with these titles (p152); the rest of band() is untouched */
+{const b0=band;band=function(s1,t,s2,o){try{const K={[ae('سلاح بروح','A weapon with a soul')]:'born',[ae('سلاحك صحي!','Your weapon woke up!')]:'woke',[ae('سلاحك كبر','Your weapon grew')]:'grew'}[s1];
+  if(K&&typeof t==='string'){const id=Object.keys(GEAR).find(k=>GEAR[k]&&t.indexOf(GEAR[k].n+' «')===0);const m=t.match(/«([^»]+)»/),lv=K==='grew'?+((t.match(/(\d+)\s*$/)||[])[1]||0):0;
+    if(id&&m)return soulFx({kind:K,id,name:m[1],gear:GEAR[id].n,lv,sub:s2,title:K==='born'?ae('اتولد بروح!','Born with a soul!'):K==='woke'?ae('سلاحك صحي!','Your weapon woke up!'):ae(`سلاحك كبر · مستوى ${lv}`,`Your weapon grew · level ${lv}`)})}}catch(e){console.warn(e)}
+  return b0.apply(this,arguments)}}
+(function(){const s=document.createElement('style');s.textContent=`
+#soulFx{position:fixed;inset:0;z-index:300;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 42%,#1a1030 0%,#07040e 70%);animation:sxIn .35s ease-out both;direction:rtl}
+#soulFx.out{animation:sxOut .3s ease-in both}@keyframes sxIn{from{opacity:0}}@keyframes sxOut{to{opacity:0;transform:scale(1.08)}}
+#soulFx .sx-mid{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;text-align:center;max-width:360px}
+#soulFx .sx-w{position:relative;width:150px;height:150px;display:grid;place-items:center;margin-bottom:6px}
+#soulFx .sx-ic{position:relative;z-index:2;animation:sxShk .09s linear 0s 15 alternate,sxUp .6s cubic-bezier(.2,1.8,.4,1) 1.5s both}
+#soulFx .sx-ic svg{width:120px;height:120px;image-rendering:pixelated;filter:drop-shadow(0 0 0 #ffd36a);animation:sxGlow 1.5s ease-in forwards}
+@keyframes sxShk{from{transform:translate(-2px,1px) rotate(-2deg)}to{transform:translate(2px,-1px) rotate(2deg)}}
+@keyframes sxUp{0%{transform:scale(.8)}60%{transform:scale(1.35)}100%{transform:scale(1.15)}}
+@keyframes sxGlow{to{filter:drop-shadow(0 0 18px #ffd36a) drop-shadow(0 0 40px #f39a4d) brightness(1.4)}}
+#soulFx .sx-aura{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(closest-side,#ffd36acc,#f39a4d44 55%,transparent);opacity:0;animation:sxAu 1.5s ease-in forwards,sxPulse 1.6s ease-in-out 1.6s infinite}
+@keyframes sxAu{to{opacity:.9}}@keyframes sxPulse{50%{transform:scale(1.15);opacity:.6}}
+#soulFx .sx-c{position:absolute;z-index:3;width:3px;height:0;background:linear-gradient(#fff,#ffd36a);box-shadow:0 0 8px #ffd36a;border-radius:2px;left:50%;top:50%;transform-origin:top}
+#soulFx .c1{transform:rotate(30deg);animation:sxCr .3s ease-out .6s forwards}#soulFx .c2{transform:rotate(160deg);animation:sxCr .3s ease-out .95s forwards}#soulFx .c3{transform:rotate(260deg);animation:sxCr .3s ease-out 1.25s forwards}
+@keyframes sxCr{to{height:70px}}
+#soulFx .sx-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:sxFl .7s ease-out 1.5s}
+@keyframes sxFl{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
+#soulFx .sx-rays{position:absolute;left:50%;top:42%;width:240vmax;height:240vmax;margin:-120vmax 0 0 -120vmax;background:repeating-conic-gradient(from 0deg,#ffd36a33 0deg 6deg,transparent 6deg 18deg);opacity:0;animation:sxRy .5s ease-out 1.5s forwards,sxSpin 18s linear 1.5s infinite;pointer-events:none}
+@keyframes sxRy{to{opacity:1}}@keyframes sxSpin{to{transform:rotate(360deg)}}
+#soulFx .sx-ring{position:absolute;left:50%;top:42%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:4px solid #ffd36a;opacity:0;animation:sxRg .9s ease-out 1.5s;pointer-events:none}
+@keyframes sxRg{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(18)}}
+#soulFx .sx-ttl{font-size:30px;font-weight:900;color:#ffd36a;text-shadow:0 3px 0 #000,0 0 20px #f39a4d;opacity:0;animation:sxSlam .5s cubic-bezier(.2,1.6,.4,1) 1.7s forwards}
+@keyframes sxSlam{0%{opacity:0;transform:scale(3)}100%{opacity:1;transform:scale(1)}}
+#soulFx .sx-nm{font-size:40px;font-weight:900;color:#fff;text-shadow:0 0 14px #ffd36a,0 3px 0 #000;line-height:1.2}
+#soulFx .sx-nm span{display:inline-block;clip-path:inset(0 0 0 100%);animation:sxL .7s cubic-bezier(.3,.8,.3,1) 2.05s forwards,sxNm 2s ease-in-out 2.8s infinite}
+@keyframes sxL{0%{clip-path:inset(0 0 0 100%);transform:scale(1.6)}100%{clip-path:inset(0 0 0 0);transform:none}}@keyframes sxNm{50%{text-shadow:0 0 26px #ffd36a,0 3px 0 #000}}
+#soulFx .sx-gn{font-size:14px;color:#c9c2dc;opacity:0;animation:sxF .4s ease 2.4s forwards}
+#soulFx .sx-sub{font-size:15px;color:#ffe9b0;opacity:0;animation:sxF .4s ease 2.6s forwards;line-height:1.6}
+#soulFx .sx-lv{display:flex;gap:4px;opacity:0;animation:sxF .4s ease 2.4s forwards}#soulFx .sx-lv i{width:12px;height:12px;transform:rotate(45deg);background:#2a2148;border:1px solid #5a4f90}
+#soulFx .sx-lv i.on{background:#ffd36a;border-color:#fff}#soulFx .sx-lv i.new{animation:sxNew .6s ease 2.8s 3;box-shadow:0 0 10px #ffd36a}@keyframes sxNew{50%{transform:rotate(45deg) scale(1.7)}}
+#soulFx .sx-rib{margin-top:4px;padding:4px 18px;font-size:13px;font-weight:900;letter-spacing:1px;color:#2b1b22;background:linear-gradient(90deg,#f3c14d,#fff3b0,#f3c14d);border-radius:4px;box-shadow:0 0 16px #f3c14d88;opacity:0;animation:sxRib .5s cubic-bezier(.2,1.6,.4,1) 2.9s forwards}
+@keyframes sxRib{0%{opacity:0;transform:scaleX(0)}100%{opacity:1;transform:none}}@keyframes sxF{to{opacity:1}}
+#soulFx .sx-go{min-height:48px;min-width:160px;margin-top:10px;opacity:0;pointer-events:none}#soulFx.can .sx-go{animation:sxF .3s ease forwards;pointer-events:auto}
+#soulFx .sx-motes i{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:#ffd36a;box-shadow:0 0 6px #ffd36a;animation:sxMote 2s linear infinite}
+@keyframes sxMote{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-70vh);opacity:0}}
+#soulFx.sx-grew .sx-ttl{font-size:26px}
+@media (prefers-reduced-motion:reduce){#soulFx *{animation-duration:.01s!important;animation-delay:0s!important}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
