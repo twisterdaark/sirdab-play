@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.52.1',d:'14 أكتوبر',add:['«حال الغيط» بقى بيقول سعر البيع: كل أرض مزروعة مكتوب تحتها الواحدة بتتباع بكام عند عم رمضان النهارده، والأرض كلها هتجيب حوالي كام. وجدول «كل زرعة بتاخد قد إيه» فيه سعر البيع جنب التقاوي والمحصول.']},
 {v:'6.52',d:'14 أكتوبر',add:['«سرداب الطاحونة»: أول سرداب بأوض. سبع أوض تحت الطاحونة القديمة {بتمشي|بتمشي} فيهم أوضة أوضة على خريطة: {دوس|دوسي} على الأوضة اللي جنبك وبعدين «ادخل». بتلاقيه في «الخلا» جنب المأوى أو من «الدهاليز».','جوه السرداب: جرار {بتفتكر|بتفتكري} نورها بالترتيب، عتلات {بتظبطها|بتظبطيها} بإيدك عشان الباب الحديد يتفتح، فيران {تقدر|تقدري} تتسحب من جنبها وعينها مغمضة، خزنة فيها فلوس وتمثال (لو {خدته|خدتيه} الغول بيتعصب ويبقى أقوى)، والغول في الآخر.','مكانك محفوظ: لو {طلعت|طلعتي} ورجعت {بتلاقي|بتلاقي} نفسك في نفس الأوضة. لو {وقعت|وقعتي} {بتصحى|بتصحي} عند المدخل والسرداب بيرجع من الأول وبيضيع منك شوية فلوس. ولما {تطلع|تطلعي} للنور السرداب بيتغيّر المرة الجاية.','اتصلح: لما {بتهزم|بتهزمي} وحش كبير واللعبة بالإنجليزي، كان بيظهر كلام عربي في الآخر.']},
 {v:'6.51',d:'14 أكتوبر',add:['«حال الغيط» تحت الأرض: سطر لكل أرض فيه الزرعة، حالها (بتكبر، عطشانة، اتسقت، اتاكل منها، جاهزة، محتاجة حرت) والوقت الفاضل من وقتها كله، والعداد ماشي قدامك.','«كل زرعة بتاخد قد إيه»: جدول بكل الزرع، وقت كل واحدة على مستواك، سعر التقاوي، المحصول، والمستوى اللي بتتفتح فيه.','الحرت لسه بإيدك، بس فيه زرار يخليه «تلقائي» والأرض الفاضية بتتحرت لوحدها. أو {أجّر|أجّري} عامل على شغلانة «الحرت» الجديدة من «العمال»، وفيه عامل جديد اسمه زكي شغلته الحرت.']},
 {v:'6.50.1',d:'14 أكتوبر',add:['لما {بتاخد|بتاخدي} ميزة «الكارت الرابع» من الحكواتي، الليلة كانت بتفتح من غير ولا اختيار. اتصلحت: المحطات الأربعة بتبان على الطريق، ولو حصل أي عطل الاختيارات بترجع تبان كقايمة.']},
@@ -52275,17 +52276,22 @@ function fsState(h,p){if(!p||!p.c)return p&&p.til?['til',ae('محروتة، جا
   if(farmReady(h,p))return ['rd',ae('جاهزة للحصاد','Ready to harvest')];const a=[];a.push(ae('بتكبر','Growing'));if(p.w)a.push(ae('اتسقت','watered'));else a.push(ae('عطشانة: تقدر تسقيها','thirsty: you can water it'));
   if(p.e)a.push(ae('اتاكل منها','something ate from it'));return ['gr',a.join(' · ')]}
 function fsRow(h,p,i){const [k,tx]=fsState(h,p),c=p&&p.c,left=c?farmLeft(h,p):0,f=c?Math.min(1,1-left/(p.d||1)):0;
-  return `<div class="fs-r ${k}" data-fs="${i}"><span class="fs-ic">${c?twMat(c,28):`<i class="fs-soil${k==='til'?' t':''}"></i>`}</span><span class="fs-tx"><b>${ae('أرض','Plot')} ${i+1}${c?` · ${fsNm(c)}`:''}</b><small>${tx}</small>
+  return `<div class="fs-r ${k}" data-fs="${i}"><span class="fs-ic">${c?twMat(c,28):`<i class="fs-soil${k==='til'?' t':''}"></i>`}</span><span class="fs-tx"><b>${ae('أرض','Plot')} ${i+1}${c?` · ${fsNm(c)}`:''}</b>${c?`<em class="fs-sp">${fsSell(h,c)}</em>`:''}<small>${tx}</small>
     ${c&&k!=='rd'?`<span class="fs-bar"><i style="width:${(f*100).toFixed(1)}%"></i></span>`:''}</span><span class="fs-tm">${c?(k==='rd'?'✓':`<b data-fl="${i}">${fsT(left)}</b><small>${ae('من','of')} ${fsT(p.d)}</small>`):''}</span></div>`}
+/* 6.52.1 (Twister 16:50): what a crop sells for. fsSP: one unit at عم رمضان's today (the day's sales lower it, p84);
+   fsSell: that price and what the plot's harvest is worth at it, using the middle of the crop's yield */
+function fsSP(h,k){try{return satTotal(h,k,1)}catch(e){return Math.floor(((MAT[k]&&MAT[k].p)|0)*.75)}}
+function fsSell(h,k){const u=fsSP(h,k),y=(CROPS[k]&&CROPS[k].y)||[1,1],n=Math.round((y[0]+y[1])/2);let t=u*n;try{t=satTotal(h,k,n)}catch(e){}
+  return `${ae('البيع','Sells')} ${u} ${ae('جنيه للواحدة','coins each')} · ${ae('الأرض دي','this plot')} ≈ ${t} ${ae('جنيه','coins')}`}
 function fsCrops(h){const L=farmL(h);return Object.keys(CROPS).filter(k=>MAT[k]).sort((a,b)=>(CROPS[a].lv||1)-(CROPS[b].lv||1)||CROPS[a].min-CROPS[b].min).map(k=>{const c=CROPS[k],lock=L<(c.lv||1);let pr='',d='';try{pr=farmPrice(h,k)}catch(e){}try{d=fsT(farmDur(h,k))}catch(e){}
-  return `<div class="fs-c${lock?' lk':''}"><span class="fs-ic">${twMat(k,24)}</span><b>${fsNm(k)}</b><span>${d}</span><small>${lock?`${ae('مستوى','level')} ${c.lv}`:`${pr} ${ae('جنيه','coins')} · ${(c.y||[1,1]).join('–')}`}</small></div>`}).join('')}
+  return `<div class="fs-c${lock?' lk':''}"><span class="fs-ic">${twMat(k,24)}</span><b>${fsNm(k)}</b><span>${d}</span><small>${lock?`${ae('مستوى','level')} ${c.lv}`:`${ae('تقاوي','seed')} ${pr} · <i class="fs-sv">${ae('بيع','sells')} ${fsSP(h,k)}</i> · ${(c.y||[1,1]).join('–')}`}</small></div>`}).join('')}
 function fsHTML(h){const n=farmN(h),P=h.farm.p,au=fsAuto(h),open=!!(h.farm.fsC);
   return `<div class="card fs-card" id="fsCard"><div class="fs-h"><b>${ae('حال الغيط','The field now')}</b>
     <button class="fs-sw${au?' on':''}" id="fsAuto" aria-pressed="${au}"><span>${ae('الحرت','Tilling')}:</span><b>${au?ae('تلقائي','Automatic'):ae('بإيدك','By hand')}</b><i></i></button></div>
     <div class="fs-note">${au?T(ae('الأرض الفاضية بتتحرت لوحدها.','Empty plots come tilled by themselves.')):T(ae('{بتحرت|بتحرتي} بإيدك. {اقلب|اقلبي} الزرار لتلقائي، أو {أجّر|أجّري} عامل على «الحرت» من «العمال».','You till by hand. Flip the switch to automatic, or hire a worker for «Tilling» under «Workers».'))}</div>
     ${P.slice(0,n).map((p,i)=>fsRow(h,p,i)).join('')}
     <button class="fs-ct" id="fsCt" aria-expanded="${open}">${ae('كل زرعة بتاخد قد إيه','How long each crop takes')} <span>${open?'▴':'▾'}</span></button>
-    ${open?`<div class="fs-cs"><div class="fs-c hd"><span></span><b>${ae('الزرعة','Crop')}</b><span>${ae('الوقت','Time')}</span><small>${ae('التقاوي · المحصول','Seed · yield')}</small></div>${fsCrops(h)}</div>`:''}</div>`}
+    ${open?`<div class="fs-cs"><div class="fs-c hd"><span></span><b>${ae('الزرعة','Crop')}</b><span>${ae('الوقت','Time')}</span><small>${ae('التقاوي · البيع · المحصول','Seed · sells · yield')}</small></div>${fsCrops(h)}</div>`:''}</div>`}
 function fsTick(){const h=S.hero,c=$('#fsCard');if(S.screen!=='farm'||!h||!h.farm||!c){clearInterval(FS2.tm);FS2.tm=0;return}const P=h.farm.p;let re=0;
   c.querySelectorAll('[data-fl]').forEach(b=>{const i=+b.dataset.fl,p=P[i];if(!p||!p.c){re=1;return}const l=farmLeft(h,p);if(l<=0){re=1;return}b.textContent=fsT(l);const bar=b.closest('.fs-r').querySelector('.fs-bar i');if(bar)bar.style.width=(Math.min(1,1-l/(p.d||1))*100).toFixed(1)+'%'});
   if(re)fsMount(h)}
@@ -52314,6 +52320,7 @@ function fsMount(h){const old=$('#fsCard');const html=fsHTML(h);if(old)old.outer
 .fs-cs{display:flex;flex-direction:column;gap:4px}
 .fs-c{display:grid;grid-template-columns:28px 1fr 64px 1.1fr;gap:6px;align-items:center;padding:4px 6px;border-radius:10px;background:#ffffff06;font-size:13px}
 .fs-c>span:nth-child(3){font-variant-numeric:tabular-nums;color:#f3d48f;font-weight:800}.fs-c small{font-size:11px;color:var(--dim);text-align:end}
+.fs-sp{display:block;font-style:normal;font-size:11px;color:#f3d48f}.fs-sv{font-style:normal;color:#f3d48f}
 .fs-c.hd{background:none;font-size:11px;color:var(--dim)}.fs-c.hd b{font-weight:700}.fs-c.lk{opacity:.5}`;document.head.appendChild(s)})();
 /* ---------- 6.52 (acc1, Roadmap R19 / N08): «سرداب الطاحونة», the first dungeon of linked rooms ----------
    A place on «الخلا» (and a card in «الدهاليز»). Seven rooms on a map: المدخل → two ways (a puzzle room and a fight room, they swap
