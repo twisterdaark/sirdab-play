@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.48',d:'14 أكتوبر',add:['السبك عند عم حسن بقا بإيدك: البوتقة فوق القالب، {دوس|دوسي} {وامسك|وامسكي} عشان {تصب|تصبي} المعدن {وسيب|وسيبي} لما يوصل للخط الأخضر. الصبّة الصافية بتديك خبرة حدادة زيادة، ولو فاض أو نقص بيتسبك برضه.','التسقية (لما {تعلّي|تعلّي} قطعة +1، +2 …) بقت بإيدك: الإبرة بتتحرك على النار من البارد للأبيض، {دوس|دوسي} «اسقي!» وهي في الأحمر. في النص بالظبط الفرصة بتزيد 6%، وقريب منه 3%.','الصيد: {اسحب|اسحبي} لتحت على المية {وسيب|وسيبي} عشان {ترمي|ترمي} السنارة. لو العداد وقف في الأخضر الرمية بعيدة والسمك النادر بيقرب، ولو {زوّدت|زوّدتي} الخيط بيتشبك. الدوسة العادية لسه بترمي زي الأول.','الكارت المفتوح في الحِرف بيقفل بأنيميشن وهو بيصغر.','الدواير اللي سرعتها بتتغير بقت في القتال بس. الطبلة وطرق الحدادة رجعوا بسرعة ثابتة.']},
 {v:'6.47',d:'14 أكتوبر',add:['القتال: {تقدر|تقدري} {تسحب|تسحبي} أي حاجة من الشنطة بصباعك و{ترميها|ترميها} على اللي {عايزه|عايزاه}. الجرعة على نفسك {تشربها|تشربيها}، والأكل على اللي معاك {تأكّله|تأكّليه}، والملح أو قزازة النار على الوحش {تضربه|تضربيه}. وانت {بتسحب|بتسحبي} الحاجة اللي تحت صباعك بتنوّر أخضر لو تنفع عليه، وأحمر لو لأ. والدوسة العادية لسه شغالة زي الأول.']},
 {v:'6.46',d:'14 أكتوبر',add:['الطريق بالليل بقا فيه مفاجآت: وانت {ماشي|ماشية} لوقفة خناقة ممكن حاجة تنط عليك من الضلمة، {دوس|دوسي} عليها بسرعة {تضربها|تضربيها} الأول وتبدأ الخناقة مجروحة، ولو {اتأخرت|اتأخرتي} تخربشك. ولوقفات تانية ممكن يطلع فخ تحت رجلك، {اسحب|اسحبي} لفوق {تنط|تنطي} عليه وإلا يعضك. الخفة بتديك وقت أكتر، والحرامي أكتر.','القتال: لو {اخترت|اخترتي} الحركة الأول وبعدين {رميت|رميتي} النرد، الرمية بتقف في كارت في النص وتشوف الأرقام والنتيجة (نجاح، نص نص، فشل) قبل الضربة. {دوس|دوسي} عليه لو {عايز|عايزة} {تكمل|تكملي} بسرعة. ومجموع النرد بيفضل ظاهر لحد ما الحركة تخلص.','الدواير اللي بتقفل (الضربة، الصد، الطبلة، طرق الحدادة) بقت سرعتها مختلفة كل مرة: مرة أسرع ومرة أبطأ.','كلمة «دفاع!» بقت بتطلع فوق الوحش اللي هيضربك.','جرنال البلد: العلامة الحمرا اللي جنبه بقت «!» بدل الكلمة الغريبة.','«شجرة» كل شغلانة اسمها بقى «مهارات الصنعة»، والنجوم اللي تحت («اختيار ١» و«اختيار ٢») مبقتش متغطية ولا مقصوصة.','في الحِرف: الخانة بتكبر شوية لما الماوس يعدّي عليها، والكارت لما يتفتح بيفرد بشكل أحلى والخانات اللي بعده بتملا مكانها من غير فراغات.','تصليح: الدايرة كانت بتفضل لازقة على الشخصية بعد الصد أو الضربة. خلاص مبقتش.']},
 {v:'6.45',d:'14 أكتوبر',add:['المفاصلة مع عم رمضان: لما {تبيع|تبيعي} في السوق {بتسحب|بتسحبي} السعر بإيدك لفوق، ووشه بيحمر ويعرق ويزعق كل ما {تزوّد|تزوّدي}. {اعرض|اعرضي} وهو يا يوافق يا يرفض، ولو {زودتها|زودتيها} بيشتري بسعره بس لدقيقتين. «بسعره» بتبيع على طول زي الأول.','الحضور بيخليه يستحمل أكتر.']},
@@ -5667,7 +5668,7 @@ function sHammer(C){const hm=C.hm||(C.hm={i:0,i0:0,sc:[],np:0,miss:0,streak:0,fo
     down(){if(ph==='ring')hit(r)},peek:()=>({id:'hammer',ph,r,RT,spd,PW,GW,i:hm.i})};
   function pip(i,q){const c=E.mgPips&&E.mgPips.children[i];if(c)sa(c,{fill:q>=.999?'#ffd36a':q>=.55?'#7fe07a':q>0?'#c8b070':'#d0483b',stroke:'#000'})}
   function next(){if(hm.i>=N){ph='end';t0=t;setBtn('','',1);return}const j=hm.last<0?Math.floor(Math.random()*HM_SP.length):(hm.last+1+Math.floor(Math.random()*(HM_SP.length-1)))%HM_SP.length;hm.last=j;[sx,sy]=HM_SP[j];
-    spd=(150+14*hm.i)*C.sp/afSpd();r=R0;ph='ring';t0=t;sf('mgTick',1+hm.i*.08);if(hm.i)hint(`${C.g('اطرق','اطرقي')} لما الدايرة تقفل على النقطة · الطرقة ${hm.i+1} من ${N}`)}
+    spd=(150+14*hm.i)*C.sp;r=R0;ph='ring';t0=t;sf('mgTick',1+hm.i*.08);if(hm.i)hint(`${C.g('اطرق','اطرقي')} لما الدايرة تقفل على النقطة · الطرقة ${hm.i+1} من ${N}`)}
   function hit(rv){const e=rv==null?99:Math.abs(rv-RT);let q,gr;
     if(e<=PW){q=1;gr='p'}else if(e<=GW){q=1-.42*(e-PW)/(GW-PW);gr='g'}else{q=0;gr='m'}
     if(gr==='m'&&fr>=4&&!hm.forg){hm.forg=1;q=.6;gr='f'}
@@ -50944,7 +50945,8 @@ function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;cons
       it.classList.toggle('cro-open',st.open===nm);
       const tog=ev=>{if(row&&it.classList.contains('cro-open')&&ev&&ev.target.closest('button,input,a'))return;const was=it.classList.contains('cro-open');
         if(was&&row&&ev&&!ev.target.closest('.ic,.tx>b'))return;
-        e.querySelectorAll('.cro-i.cro-open').forEach(x=>x.classList.remove('cro-open'));if(!was){it.classList.add('cro-open');st.open=nm}else st.open='';
+        const shut=x=>{/* 6.48 (Twister 15:27): an open card folds back with a little shrink instead of snapping shut */try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&x.animate){x.classList.add('cro-closing');x.animate([{transform:'none',opacity:1},{transform:'scale(.9)',opacity:.35}],{duration:170,easing:'ease-in'}).onfinish=()=>{x.classList.remove('cro-open','cro-closing');try{x.animate([{transform:'scale(.85)',opacity:.4},{transform:'none',opacity:1}],{duration:200,easing:'cubic-bezier(.2,1.4,.4,1)'})}catch(y){}};return}}catch(y){}x.classList.remove('cro-open')};
+        e.querySelectorAll('.cro-i.cro-open').forEach(x=>{if(x!==it||was)shut(x)});if(!was){it.classList.add('cro-open');st.open=nm}else st.open='';
         try{SFX.tick&&SFX.tick(was?600:820)}catch(x){}if(!was)try{it.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(x){}};
       hd.addEventListener('click',tog)})})}
 {const r0=render;render=function(){const r=r0.apply(this,arguments);try{if(croOn())croOrg()}catch(e){console.warn(e)}return r}}
@@ -51136,8 +51138,8 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
   else if(stat==='حضور'){
     /* a darbuka; a ring closes on it, hit the drum as the ring touches its skin */
     A.innerHTML=sc(`<div class="ag-stage">${AGD.crowd}</div><div class="ag-ring"><i id="agC"></i>${AGD.drum}</div><span class="ag-tip">${T(ae('{اضرب|اضربي} لما الدايرة تقفل','Hit it as the ring closes'))}</span>`,'ag-pre');
-    let t0=performance.now(),P=1500*afSpd();let v=0;const m=A.querySelector('#agC');
-    iv.push(setInterval(()=>{let t=(performance.now()-t0)/P;if(t>=1){t0=performance.now();P=1500*afSpd();t=0}v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`},16));
+    const t0=performance.now(),P=1500;let v=0;const m=A.querySelector('#agC');
+    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`},16));
     A.querySelector('#agT').onclick=()=>{const d=Math.abs(v*1.65+.35-1);A.querySelector('.ag-ring').classList.add('hit');try{SFX.tick(180)}catch(x){}end(d<.08?2:d<.22?1:0)};tm.push(setTimeout(()=>end(0),5200))}
   else if(stat==='تحمّل'){
     /* something pushes on the door; hold, and the wooden bar slides into its latch */
@@ -51725,7 +51727,8 @@ function nvTrap(sp,st,done){const h=S.hero,win=nvWin(h,1400);
    When a move is picked first and the dice are thrown after, the hit used to play at once and the number was gone. Now the dice
    stop in a card in the middle of the stage for a moment: the faces, «+ الصفة − الصعوبة = النتيجة», and success/partly/fail
    in its colour. A tap skips it. The sum also stays on the tray while the move plays (p155 afLay shows it in 'used' too). */
-/* 6.47 (Twister 15:02): every closing ring has its own speed each time, sometimes faster, sometimes slower */
+/* 6.46 (Twister 15:02): every closing ring in a fight has its own speed each time, sometimes faster, sometimes slower.
+   6.48 (Twister 15:27): fights only; the craft and stat games keep a steady speed. */
 function afSpd(){return window.__afAuto?1:.7+Math.random()*.65}
 const AFR_TX={full:['نجاح','Success','#7fe07a'],part:['نص نص','Partly','#f3c14d'],fail:['فشل','Fail','#f0806a']};
 const AFR_ST={'قوة':'Strength','خفة':'Agility','تحمّل':'Endurance','ذكاء':'Intellect','حكمة':'Wisdom','حضور':'Presence'};
@@ -51779,6 +51782,92 @@ document.addEventListener('click',e=>{if(Date.now()-BD.eat<400&&e.target.closest
 .sheet.bd-fade{opacity:.25;pointer-events:none;transition:opacity .15s}
 .bd-ok{outline:4px solid #7fe07a;outline-offset:2px;border-radius:14px;filter:drop-shadow(0 0 10px #7fe07a)}
 .bd-no{outline:4px solid #e2483f;outline-offset:2px;border-radius:14px}`;document.head.appendChild(s)})();
+/* ---------- 6.48 (acc1, Twister 14:26 «عايزين نزود ميني جيمز لكل الحرف حسب الي بيتعمل», major 5/5) ----------
+   The two smith jobs that were still one plain button get their own little game:
+   - السبك (steel and every alloy): a crucible over a mould. Hold to tip it and pour; let go when the metal reaches the line.
+     A clean pour (right on the line) gives +1 smith experience; over or under is only a rough cast, nothing is lost.
+     The pour speed changes every time (Twister 15:02).
+   - التسقية (making a piece +1, +2 …): the piece sits in the fire and a needle swings over the heat bar, cold to white.
+     Tap when it's cherry red: right in the middle adds +6% to this try's chance, near it +3%. Too cold or too hot adds nothing.
+   The game is only played when the job can really go ahead; otherwise the old button says why, as before.
+   Test builds skip both unless window.__cmg is set; window.__cmgAuto = 'perfect'|'good'|'miss' plays them by itself. */
+const CMG={pass:0,heat:0};
+const cmgOn=()=>!((window.__r||window.__t||window.__q)&&!window.__cmg);
+function cmgPanel(id,title,sub,body){const s=document.createElement('div');s.id=id;s.className='cmg';s.style.direction=EN?'ltr':'rtl';
+  s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${title}</b><span class="ag-st">${sub}</span></div>${body}</div>`;document.body.appendChild(s);return s}
+function cmgSay(s,q,txt){const m=s.querySelector('.cmg-m');if(m){m.innerHTML=txt;m.dataset.q=q}try{q==='perfect'?(SFX.anvil?SFX.anvil():SFX.tick(900)):q==='good'?SFX.tick(700):SFX.tick(260);vib(q==='perfect'?[20,20,40]:20)}catch(e){}}
+/* ---- the pour ---- */
+const CMG_CRU=`<svg viewBox="0 0 30 22" shape-rendering="crispEdges"><rect x="2" y="2" width="26" height="3" fill="#2b1b22"/><rect x="4" y="5" width="22" height="13" fill="#3a3340"/><rect x="6" y="18" width="18" height="3" fill="#2b1b22"/>
+  <rect x="5" y="5" width="20" height="3" fill="#ff9a3c"/><rect x="7" y="5" width="10" height="2" fill="#ffe08a"/><rect x="0" y="3" width="3" height="2" fill="#2b1b22"/><rect x="26" y="8" width="4" height="2" fill="#6a5a50"/></svg>`;
+function cmgPour(what){return new Promise(res=>{const T0=.62+Math.random()*.18;
+  const s=cmgPanel('cmgP',ae('السبك','Smelting'),esc(what),`<div class="cmg-sc" id="cmgSc"><div class="cmg-cr" id="cmgCr">${CMG_CRU}</div><i class="cmg-st" id="cmgSt"></i>
+    <div class="cmg-mo"><i class="cmg-fill" id="cmgFi"></i><i class="cmg-ln" style="bottom:${(T0*100).toFixed(1)}%"></i></div></div>
+    <div class="cmg-m">${T(ae('{دوس|دوسي} {وامسك|وامسكي} عشان {تصب|تصبي}، {وسيب|وسيبي} لما المعدن يوصل للخط','Hold to pour, let go when the metal reaches the line'))}</div>`);
+  const sc=s.querySelector('#cmgSc'),cr=s.querySelector('#cmgCr'),st=s.querySelector('#cmgSt'),fi=s.querySelector('#cmgFi');let lv=0,on=0,over=0,last=0,raf=0;const sp=.34;
+  const draw=()=>{fi.style.height=(Math.min(1,lv)*100).toFixed(1)+'%';cr.classList.toggle('tip',!!on);st.classList.toggle('on',!!on)};
+  const tick=t=>{if(over)return;if(last&&on){lv+=(t-last)/1000*sp*(1+lv*.6);if(lv>=1){lv=1;fin()}}last=t;draw();raf=requestAnimationFrame(tick)};
+  const fin=()=>{if(over)return;over=1;on=0;draw();cancelAnimationFrame(raf);const d=Math.abs(lv-T0),q=window.__cmgAuto||(d<=.04?'perfect':d<=.1?'good':'miss');
+    cmgSay(s,q,T(q==='perfect'?ae('صبّة صافية! (+1 خبرة حدادة)','A clean pour! (+1 smithing XP)'):q==='good'?ae('صبّة كويسة.','A good pour.'):lv>T0?ae('فاض شوية، بس اتسبك.','It spilled a bit, but it cast.'):ae('ناقص شوية، بس اتسبك.','A bit short, but it cast.')));
+    setTimeout(()=>{s.remove();res(q)},window.__cmgAuto?60:900)};
+  if(window.__cmgAuto){setTimeout(fin,40);return}
+  sc.addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;on=1;try{sc.setPointerCapture(e.pointerId)}catch(x){}try{SFX.tick(200)}catch(x){}});
+  const up=()=>{if(on&&!over){on=0;if(lv>.05)fin()}};sc.addEventListener('pointerup',up);sc.addEventListener('pointercancel',up);raf=requestAnimationFrame(tick)})}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-smelt],[data-alloy]');if(!b||CMG.pass||!cmgOn()||S.screen!=='smith'||TWN.busy)return;const h=S.hero;if(!h)return;
+  let ok=false,what='';try{if(b.dataset.alloy!=null){const k=b.dataset.alloy;ok=!crSmeltLock(h,k)&&hasRes(h,CR_CAT[k].need)&&h.money>=crFee(k);what=resN(k)}
+    else{ok=spLv(h,'smith')>=SM_STEEL.lv&&hasRes(h,SM_STEEL.need)&&h.money>=SM_STEEL.fee;what=resN('steel')}}catch(x){ok=false}
+  if(!ok)return;e.stopImmediatePropagation();e.preventDefault();TWN.busy=1;
+  cmgPour(what).then(q=>{TWN.busy=0;CMG.pass=1;try{b.click()}finally{CMG.pass=0}if(q==='perfect'){try{lifeXP(h,'smith',1);saveHero()}catch(x){}}})},true);
+/* ---- the quench ---- */
+function cmgHeat(what,p){return new Promise(res=>{const Z=.55+Math.random()*.2,ZW=.07;
+  const s=cmgPanel('cmgH',ae('التسقية','Tempering'),esc(what)+' · '+Math.round(p*100)+'%',`<div class="cmg-hs"><div class="cmg-fire"><span></span><span></span><span></span></div>
+    <div class="cmg-bar"><i class="cmg-z" style="left:${((Z-ZW*2.2)*100).toFixed(1)}%;width:${(ZW*4.4*100).toFixed(1)}%"></i><i class="cmg-zz" style="left:${((Z-ZW)*100).toFixed(1)}%;width:${(ZW*2*100).toFixed(1)}%"></i><i class="cmg-nd" id="cmgNd"></i></div></div>
+    <div class="cmg-m">${T(ae('{دوس|دوسي} لما الإبرة تبقى في الأحمر بالظبط','Tap when the needle is right in the cherry red'))}</div><button class="btn" id="cmgGo" style="min-height:52px">${ae('اسقي!','Quench!')}</button>`);
+  const nd=s.querySelector('#cmgNd');let x=0,dir=1,over=0,last=0,raf=0,sp=.55;
+  const tick=t=>{if(over)return;if(last){x+=dir*(t-last)/1000*sp;if(x>=1){x=1;dir=-1}if(x<=0){x=0;dir=1}}last=t;nd.style.left=(x*100).toFixed(1)+'%';raf=requestAnimationFrame(tick)};
+  const fin=()=>{if(over)return;over=1;cancelAnimationFrame(raf);const d=Math.abs(x-Z),q=window.__cmgAuto||(d<=ZW?'perfect':d<=ZW*2.2?'good':'miss');
+    cmgSay(s,q,q==='perfect'?ae('أحمر بالظبط! +6% على الفرصة','Cherry red! +6% chance'):q==='good'?ae('قريب! +3% على الفرصة','Close! +3% chance'):x<Z?ae('لسه بارد. الفرصة زي ما هي.','Still cold. Chance as it was.'):ae('سخن زيادة. الفرصة زي ما هي.','Too hot. Chance as it was.'));
+    setTimeout(()=>{s.remove();res(q)},window.__cmgAuto?60:800)};
+  if(window.__cmgAuto){setTimeout(fin,40);return}
+  s.querySelector('#cmgGo').addEventListener('pointerdown',e=>{e.preventDefault();fin()});raf=requestAnimationFrame(tick)})}
+{const r0=qEnhBtn;qEnhBtn=async function(u){const h=S.hero;if(!cmgOn()||!h||TWN.busy)return r0.apply(this,arguments);let f=null,k='',p=1,nm='';
+  try{f=qFind(h,u);if(f&&qCanEnh(f.id)&&f.I.e<10){[k,p]=ENH[f.I.e+1];nm=GEAR[f.id].n+' +'+(f.I.e+1)}}catch(e){f=null}
+  if(!f||!k||!(h.res[k]>0)||p>=1)return r0.apply(this,arguments);
+  TWN.busy=1;let q='miss';try{q=await cmgHeat(nm,p)}finally{TWN.busy=0}CMG.heat=q==='perfect'?.06:q==='good'?.03:0;try{return await r0.apply(this,arguments)}finally{CMG.heat=0}}}
+{const t0=qEnhTry;qEnhTry=function(h,u){if(!CMG.heat)return t0.apply(this,arguments);let f=null;try{f=qFind(h,u)}catch(e){}const nx=f&&f.I.e+1,E=nx&&ENH[nx];if(!E)return t0.apply(this,arguments);
+  const old=E[1];E[1]=Math.min(1,old+CMG.heat);try{return t0.apply(this,arguments)}finally{E[1]=old}}}
+/* ---- the cast by hand (fishing): pull back on the water and let go; a long cast reaches rarer fish ----
+   Pull down from the water and release: the further you pull (up to the green), the further the float flies. In the green
+   band rarer fish bite more (+20% luck for that cast, +10% near it); pulled past it, the line snags and it's a short cast.
+   A plain tap still casts as before; the pull's own click is what casts (p9b keeps its state to itself). */
+const FLK={on:0,y0:0,p:0,el:null,luck:0};
+{const l0=fcLuck;fcLuck=function(h){return Math.min(FC_LUCK_CAP+.2,l0.apply(this,arguments)+(FLK.luck||0))}}
+function fcxBar(p){let b=document.getElementById('fcxB');const st=$('#gxStage');if(!st)return;if(!b){b=document.createElement('div');b.id='fcxB';b.innerHTML='<i class="fcx-g"></i><i class="fcx-f"></i><b></b>';st.appendChild(b)}
+  b.querySelector('.fcx-f').style.height=(p*100).toFixed(1)+'%';b.querySelector('b').textContent=p>.97?ae('كتير!','Too far!'):p>=.72?ae('بعيد!','Far!'):'';b.dataset.z=p>.97?'x':p>=.72?'g':''}
+document.addEventListener('pointerdown',e=>{if(S.screen!=='fish')return;const st=e.target.closest&&e.target.closest('#gxStage');if(!st||e.target.closest('button'))return;const ph=st.dataset.ph||'idle';if(ph!=='idle'&&ph!=='done')return;FLK.on=1;FLK.y0=e.clientY;FLK.p=0},true);
+document.addEventListener('pointermove',e=>{if(!FLK.on)return;const d=e.clientY-FLK.y0;if(d<12&&!FLK.p)return;FLK.p=Math.max(0,Math.min(1.05,d/160));fcxBar(Math.min(1,FLK.p))},true);
+document.addEventListener('pointerup',e=>{if(!FLK.on)return;FLK.on=0;const p=FLK.p;FLK.p=0;const b=document.getElementById('fcxB');if(b)b.remove();if(p<.15)return;
+  FLK.luck=p>.97?0:p>=.72?.2:p>=.55?.1:0;try{toast(p>.97?ae('الخيط اتشبك.. رمية قصيرة.','The line snagged.. a short cast.'):p>=.72?ae('رمية بعيدة! السمك النادر بيقرب.','A long cast! Rare fish come closer.'):ae('رمية قريبة.','A short cast.'))}catch(x){}
+  /* the click that ends this gesture casts as a tap does; the luck holds until the catch is picked */
+  setTimeout(()=>{FLK.luck=0},1200)},true);
+(function(){const s=document.createElement('style');s.textContent=`
+.cmg{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both}
+.cmg-m{text-align:center;font-weight:800;font-size:15px;color:#fff;min-height:44px;display:grid;place-items:center}.cmg-m[data-q="perfect"]{color:#ffd36a}.cmg-m[data-q="good"]{color:#7fe07a}.cmg-m[data-q="miss"]{color:#f0a090}
+.cmg-sc{position:relative;height:230px;border-radius:16px;background:radial-gradient(ellipse at 50% 100%,#5a2a14 0%,#1a1012 70%);touch-action:none;cursor:pointer;overflow:hidden;user-select:none}
+.cmg-cr{position:absolute;left:50%;top:14px;width:96px;height:70px;margin-left:-70px;transform-origin:80% 70%;transition:transform .25s ease}.cmg-cr svg{width:100%;height:100%;image-rendering:pixelated}
+.cmg-cr.tip{transform:rotate(38deg)}
+.cmg-st{position:absolute;left:50%;top:70px;width:10px;height:0;margin-left:-5px;background:linear-gradient(#ffe08a,#ff9a3c);border-radius:5px;box-shadow:0 0 12px #ff9a3c;transition:height .12s}.cmg-st.on{height:92px}
+.cmg-mo{position:absolute;left:50%;bottom:16px;width:120px;height:68px;margin-left:-60px;border:6px solid #3a3340;border-top:0;border-radius:0 0 10px 10px;background:#120c10;overflow:hidden}
+.cmg-fill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#ffe08a,#ff7a2a);box-shadow:0 0 14px #ff9a3c}
+.cmg-ln{position:absolute;left:-4px;right:-4px;height:3px;background:#7fe07a;box-shadow:0 0 6px #7fe07a}
+.cmg-hs{display:flex;flex-direction:column;gap:12px;align-items:center;padding:6px 0}
+.cmg-fire{display:flex;gap:4px;height:54px;align-items:flex-end}.cmg-fire span{width:22px;height:40px;border-radius:50% 50% 30% 30%;background:linear-gradient(#ffe08a,#ff7a2a 60%,#c2361a);animation:cmgF .5s ease-in-out infinite alternate}
+.cmg-fire span:nth-child(2){height:54px;animation-delay:-.2s}.cmg-fire span:nth-child(3){animation-delay:-.35s}@keyframes cmgF{to{transform:scaleY(.75) skewX(6deg)}}
+.cmg-bar{position:relative;width:100%;height:34px;border-radius:17px;background:linear-gradient(90deg,#3a3f6a,#8a3a2a 35%,#e2483f 60%,#ff9a3c 80%,#fff3d0);box-shadow:inset 0 0 0 2px #0008;direction:ltr}
+.cmg-z{position:absolute;top:0;bottom:0;border-radius:6px;box-shadow:inset 0 0 0 2px #ffffff88}.cmg-zz{position:absolute;top:-4px;bottom:-4px;border-radius:6px;box-shadow:inset 0 0 0 3px #fff;background:#ffffff22}
+#fcxB{position:absolute;right:10px;top:18%;bottom:18%;width:18px;border-radius:9px;background:#0008;box-shadow:inset 0 0 0 2px #fff4;z-index:5;pointer-events:none}
+#fcxB .fcx-g{position:absolute;left:0;right:0;top:3%;height:25%;background:#7fe07a55;border-radius:9px}#fcxB .fcx-f{position:absolute;left:3px;right:3px;bottom:3px;height:0;border-radius:6px;background:linear-gradient(#ffd36a,#f39a4d)}
+#fcxB b{position:absolute;right:24px;top:0;white-space:nowrap;font-weight:900;color:#fff;text-shadow:0 2px 0 #000}#fcxB[data-z="g"] b{color:#7fe07a}#fcxB[data-z="x"] b{color:#f0806a}
+.cmg-nd{position:absolute;top:-8px;bottom:-8px;width:6px;margin-left:-3px;border-radius:3px;background:#fff;box-shadow:0 0 0 2px #2b1b22}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
