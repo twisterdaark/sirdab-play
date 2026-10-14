@@ -3278,7 +3278,8 @@ I18N(BAGUPS,{"0": {"n": "Big cloth bag"}, "1": {"n": "Salawa-hide bag"}, "2": {"
 
 /* 5.90 (R03): this screen's English words (shown only in English, p2c.js / p80.js) */
 L10N({"البلد": "The Village", "كفر الصفصاف": "Kafr El-Safsaf", "فاضلك": "Need", "مجهود": "Effort", "مليان": "Full", "الشنطة": "Bag", "فاضية": "Empty", "المنجم والترعة بياخدوا مجهود، والأكل بيرجّعه.": "The mine and the canal take effort; food brings it back.", "السوق": "Market", "عم رمضان البياع": "Uncle Ramadan the seller", "قماش وعيش": "Cloth and bread", "بضاعة جديدة": "New stock", "جديد:": "New:", "الحداد": "The Smith", "عم حسن": "Uncle Hassan", "الخياط": "The Tailor", "عم فتحي": "Uncle Fathy", "شنط أكبر وهدوم": "Bigger bags and clothes", "الطباخة": "The Cook", "أم سيد": "Umm Sayed", "فول وسمك مشوي": "Beans and grilled fish", "المنجم": "The Mine", "عجوز الجبل": "The Mountain Elder", "نحاس وحديد وفضة": "Copper, iron and silver", "الترعة": "The Canal", "صيد السمك": "Fishing", "بلطي وقرموط وبوري": "Tilapia, catfish and mullet", "عدّتي": "My gear", "سلاحك وهدومك": "Your weapon and clothes", "القهوة": "The Café", "قهوة عم صابر": "Uncle Saber's café", "دكة وشاي وكلام": "A bench, tea and talk", "عم حسن الحداد": "Uncle Hassan the smith", "عم فتحي الخياط": "Uncle Fathy the tailor", "أم سيد الطباخة": "Umm Sayed the cook", "العمدة": "The Mayor", "عم عبده الفلاح": "Uncle Abdo the farmer", "عم رجب العطّار": "Uncle Ragab the herbalist"},[[/^خبرة وتطلع المستوى (\d+)$/,'more XP to level $1'],[/^خبرة وتطلعي المستوى (\d+)$/,'more XP to level $1'],[/^(.+) · المستوى (\d+)$/,'$1 · Level $2'],[/^لابس (\d) من 6$/,'Wearing $1 of 6'],[/^لابسة (\d) من 6$/,'Wearing $1 of 6'],[/^حدادة مستوى (\d+)$/,'Smithing level $1'],[/^خياطة مستوى (\d+)$/,'Tailoring level $1'],[/^عطارة مستوى (\d+)$/,'Herbalism level $1'],[/^السوق: بضاعة جديدة$/,'Market: new stock']]);
-L10N({},[[/^فاضل (.+?) وتعملي? (.+)$/,(m,a,b)=>`Still need ${a.replace(/^(.+) (واحدة?)$/,'1 $1').replace(/^(\d+) (.+)$/,'$1 $2')} to make ${b}`],[/^([^·]+) من السوق$/,'$1 from the market'],[/^فاضلك (\d+) جنيه وتعملي? (.+)$/,'Need $1 more coins to make $2']]);
+L10N({},[[/^فاضل (.+?) وتعملي? (.+)$/,(m,a,b)=>`Still need ${a.replace(/^(.+) (واحدة?)$/,'1 $1').replace(/^(\d+) (.+)$/,'$1 $2')} to make ${b}`],[/^([^·]+) من السوق$/,'$1 from the market'],[/^فاضلك (\d+) جنيه وتعملي? (.+)$/,'Need $1 more coins to make $2'],
+  [/^معاكي? كل حاجة! روحي? ل(عم حسن|عم فتحي) واعملي? (.+)$/,(m,w,n)=>`You have everything! Go to ${w==='عم حسن'?'Uncle Hassan':'Uncle Fathy'} and make ${n}`],[/^(.+) \+ (\d+) جنيه شغل$/,'$1 + $2 coins for the work'],[/^(عم حسن|عم فتحي) بياخد (\d+) جنيه في الشغل$/,(m,w,n)=>`${w==='عم حسن'?'Uncle Hassan':'Uncle Fathy'} takes ${n} coins for the work`]]);
 /* 6.06 (R03b): the town's voices in English — names, what they say in passing, how they greet you (L10NG: one English for both forms) */
 L10N({'عم صابر':'Uncle Saber','منصور':'Mansour','أبو حمدي':'Abu Hamdy','سامح':'Sameh','الحاج سليمان':'Hajj Soliman','سعاد بتاعة الفطير':'Soad the pastry woman','عم حمدي بتاع الحلاوة':'Uncle Hamdy the sweets seller',
   'سماح الكوافيرة':'Samah the hairdresser','عم سعيد بياع الجرايد':'Uncle Saeed the newspaper seller','أستاذ فوزي، مدير البنك':'Mr Fawzy, the bank manager','أستاذ مجدي، مدير البورصة':'Mr Magdy, the exchange manager'});
@@ -4806,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.65',d:'14 أكتوبر',add:['الساحة بقت فيها حاجات {تستعملها|تستعمليها}: زلعة جاز، طوب سايب، شبكة صياد، بير قديم، فانوس، حيطة. {دوس|دوسي} عليها في دورك والدايرة بتقفل عليها، وكل ما التوقيت أحسن كل ما الحركة تنفع أكتر. كل حاجة مرة واحدة في القتال.','{تقدر|تقدري} {تكسب|تكسبي} من غير ما {تموّت|تموّتي}: {زق|زقي} وحش متعور في البير، أو {خوّف|خوّفي} الوحوش المتعورة بالفانوس فيهربوا. {بتاخد|بتاخدي} خبرتهم من غير غنايمهم، والزعما ما بيتزقوش.','ضربة مشتركة مع رفيق الليلة: ضرباتكم بتملا عداد، ولما يتملى زرار «مع …» بيخليكم تضربوا وحش واحد سوا بضربة كبيرة.','العدة اللي بتتكسر مش بتضيع خلاص: «حرامي الكراكيب» بيلمها، وفي البلد كارت «حاجة ضايعة» {تروح|تروحي} {تغلبه|تغلبيه} فيه {وترجعها|وترجعيها} مصلّحة لنص عمرها. لو غلبك {ترجع|ترجعي} بكرة.']},
 {v:'6.64',d:'14 أكتوبر',add:['«الشات»: من «صحابي» {دوس|دوسي} 💬 جنب أي صاحب {وكلمه|وكلميه} على طول. ولما حد يبعتلك {وانت مش فاتح|وانتي مش فاتحة} الشات بتطلعلك رسالة صغيرة ونقطة حمرا على «صحابي».','«القهوة الكبيرة»: أوضة كلام لكل اللعيبة، واحدة بالعربي وواحدة بالإنجليزي. رسالة كل 5 ثواني، وتقدر {تقفلها|تقفليها} عندك لو مش {عايزها|عايزاها}.','جمل جاهزة تحت الكتابة («يلا ليلة؟»، «تعالى مبارزة»، «شكرًا!») تتبعت بدوسة واحدة.','الأمان: الشتايم بتتغطى بنجوم، وأي رسالة {تقدر تبلّغ|تقدري تبلّغي} عنها أو {تسكّت|تسكّتي} صاحبها فميظهرلكش تاني.']},
 {v:'6.63',d:'14 أكتوبر',add:['القتال في الأونلاين بقى نفس القتال الجديد: في الليلة الجماعية صاحبك بيشوف نفس الساحة ونفس الأيقونات المدوّرة، {وبيرمي|وبيرمي} الزهر بإيده من الصينية ({يسحب|يسحب} لفوق أو {يدوس|يدوس})، وبعدها الدايرة بتقفل على الوحش. ولما وحش يهجم عليه بيرمي للتفادي والدايرة بتقفل عليه هو.','المبارزة الأونلاين كمان: الضربة بقت زهر من الصينية وبعده الدايرة على خصمك (في الوقت بالظبط = ضربة قاضية، متأخر = فاتت).','الليلة الجماعية: صاحبك في الآخر بيشوف شاشة النهاية بالنجوم والأهداف واللي خده فعلًا، مش سطر واحد.','«قرارات الفريق»: زرار بيوريك كل اختيار في الحكاية: المشهد، الاختيار اللي كسب، ومين اختار إيه، من غير ما يوقّف الليلة.','صندوق آخر الليلة صاحب الأوضة بس هو اللي بيفتحه، وقدرة صاحبك بتبان باسمها مش بكود غريب.','«ارجع لليلة» ما بقاش بيطلع لليلة اتقفلت، والليلة اللي اتلغت قبل ما تبدأ بتتمسح. والسوق بيجيب العروض الجديدة كل ما {تفتحه|تفتحيه}.']},
 {v:'6.62',d:'14 أكتوبر',add:['الليلة الجماعية: لو وحش هجم على صاحبك، صاحبك هو اللي بيرمي زهر التفادي على تليفونه بخفته هو، مش صاحب الأوضة. ولو ما ردّش في 15 ثانية، اللعبة بترميله.','الليلة الجماعية: لو النت فصل وانت بتبعت اختيارك أو زهرك، اللعبة بتحاول تاني لوحدها، ولو ما وصلش {تقدر|تقدري} {تدوس|تدوسي} تاني بدل ما يفضل متعلّق.','لو اتنين دخلوا الأوضة في نفس اللحظة، واحد بس بياخد المكان التاني، واللي زيادة عن 5 بيخرج لوحده برسالة «الليلة كاملة».','صحابك كلهم بيظهروا في «صحابي» وفي اختيار رفيق الليلة، مش أول 60 بطل في اللعبة بس.','مكافأة الليلة الجماعية ليها حد أقصى، وجدول الأوائل بقى أصعب في التزوير.']},
@@ -53832,6 +53834,134 @@ function chMsgMenu(id){const h=S.hero,m=(CHX.rows[CHX.path]||[]).find(x=>x._id==
 .ch-with{display:flex;align-items:center;gap:10px}.ch-with .btn{width:auto;min-height:44px;padding:0 12px}.ch-empty{text-align:center;padding:20px 6px}.ch-pof{min-height:44px;font-size:13px}
 .ch-o .ag-box{gap:8px}.ch-o .btn{min-height:48px}.fr-bt .btn{min-width:0;padding-inline:6px}.fr-bt [data-fch],.fr-bt [data-fd]{flex:0 0 48px}.fr-bt [data-fo]{flex:0 0 56px}
 .ch-list,.ch-q,.ch-in,.ch-frs,.ch-with,.ch-pof{align-self:stretch;width:100%;box-sizing:border-box}.ch-m{min-width:0;box-sizing:border-box}`;document.head.appendChild(s)})();
+/* ---------- 6.65 (acc1, approved ideas D16, D07, D17, D50): «الساحة بتتكلم» ----------
+   D16: things on the fight stage. A fight may have one or two of them (FP, FP_N): a jar of kerosene, loose bricks, a fishing net,
+        an old well, a lantern, a wall. Tap one on your turn: a ring closes on it (the same hand timing as a hit) and the result
+        decides how well it works. It takes your turn, costs no energy, and each one works once a fight.
+   D07: two of them win without killing: push a hurt foe into the well, or scare hurt foes off with the lantern. A foe gone that way
+        gives its experience but no loot (FP_OUT in endFight), and bosses never go that way.
+   D17: a joint move with your friend of the night (JT): your hits and your friend's fill a meter (a perfect hit counts twice); full,
+        the «مع …» button on the stage lets you both hit one foe together, with a ring for the timing. Not when you go alone.
+   D50: a piece of gear that breaks is not gone for good: «حرامي الكراكيب» picks it up (h.lost, at most RC_MAX, one entry per piece).
+        A card in town lets you go get it back: a fight with him at your level, once a town day per piece. Win = the piece comes
+        back as it was, mended to half its wear. Lose = back in town with a third of your health, nothing else lost.
+   Only on the hands-on fight (afOn), never in the tutorial, the online night (coRollOn) or a duel.
+   Tests: window.__fpSet = ['jar','well'] forces the things of the next fight; window.__afAuto picks the ring result. */
+const FP_N=[.35,.45,.2],JT_MAX=4,RC_MAX=3,RC_HP=.5;
+const FP_PX={
+  jar:['....OY....','....RO....','...KKKK...','..KNNNNK..','.KNNHNNNK.','.KNNNNNNK.','.KNMMMMNK.','.KNNNNNNK.','..KNNNNK..','...KKKK...'],
+  rocks:['..........','...KKKK...','..KGLLGK..','..KLLLGK..','...KKKK...','.KKKK.KKK.','KGLLGKLLGK','KLLGGKGLLK','KGGGGKGGGK','.KKKKKKKK.'],
+  net:['N...N...N.','.N.N.N.N..','..N...N...','.N.N.N.N..','N...N...N.','.N.N.N.N..','..N...N...','.N.N.N.N..','N...N...N.','..........'],
+  well:['..........','..KKKKKK..','.KLGLGLGK.','KLSSSSSSLK','KGSFSSFSGK','KLSSSSSSLK','.KGLGLGLK.','..KKKKKK..','..........','..........'],
+  lamp:['....KK....','...K..K...','..KKKKKK..','..KYOOYK..','..KOYYOK..','..KYOOYK..','..KOYYOK..','..KKKKKK..','...KNNK...','..........'],
+  wall:['KKKKKKKKKK','KNNMKNNNMK','KKKKKKKKKK','KNMKNNNMNK','KKKKKKKKKK','KNNMKNNNMK','KKKKKKKKKK','KNMKNNNMNK','KKKKKKKKKK','..........'],
+  joint:['.HH....HH.','HHHH..HHHH','HKHH..HHKH','HHHHHHHHHH','.HHHHHHHH.','..HHHHHH..','...YYYY...','..Y.YY.Y..','.Y..YY..Y.','....YY....']};
+const FP_IC={};const fpIc=k=>FP_IC[k]||(FP_IC[k]=afPix(FP_PX[k]));
+/* what each one is: n name, t whom it reaches (all foes / one foe / you), col the ring colour */
+const FP={
+  jar:{n:['زلعة جاز','Oil jar'],t:'all',col:'#ef7a3a'},
+  rocks:{n:['طوب سايب','Loose bricks'],t:'one',col:'#b9c2d6'},
+  net:{n:['شبكة صياد','Fishing net'],t:'one',col:'#a8743a'},
+  well:{n:['بير قديم','Old well'],t:'one',col:'#7fb6ff'},
+  lamp:{n:['فانوس','Lantern'],t:'all',col:'#f2c14e'},
+  wall:{n:['حيطة','Wall'],t:'me',col:'#c9a8ff'}};
+const fpNm=k=>ae(FP[k].n[0],FP[k].n[1]);
+const fpBoss=f=>!!(f&&(f.boss||f.base&&f.base.boss||f.art==='nadaha'||f.rival));
+function fpOk(C){try{if(!C||C.tutorial||C.du||C.duo||!afOn())return false;if(typeof coRollOn==='function'&&coRollOn())return false}catch(e){return false}return true}
+function fpDeal(C){if(Array.isArray(window.__fpSet)){const s=window.__fpSet.filter(k=>FP[k]);window.__fpSet=null;return s.map(k=>({k}))}
+  let r=Math.random(),n=0;while(n<FP_N.length-1&&r>FP_N[n]){r-=FP_N[n];n++}
+  const ks=Object.keys(FP).sort(()=>Math.random()-.5);return ks.slice(0,n).map(k=>({k}))}
+{const s0=startCombat;startCombat=function(){const r=s0.apply(this,arguments);try{const C=S.combat;if(C&&!C.props&&fpOk(C)){C.props=fpDeal(C);C.jt=0;combat()}}catch(e){console.warn(e)}return r}}
+const fpEn=n=>EN?(L10N_W.get(String(n||'').trim())||n):n;
+const jtOn=C=>!!(C&&C.props&&S.comp&&S.comp.hp>0&&!S.comp.ghost);
+/* the look: a row of things at the foot of the stage, plus the joint button when a friend fights with you */
+function fpDraw(){const C=S.combat,st=view.querySelector('.af-stage');if(!C||!C.props||!st||!app.classList.contains('af'))return;
+  const can=C.phase==='me'&&!C.busy&&AF.st!=='throw';let row=view.querySelector('.af-props');if(!row){row=document.createElement('div');row.className='af-props';st.after(row)}
+  let hm=C.props.map((P,i)=>`<button class="af-prop${P.used?' used':''}" data-fp="${i}" ${!can||P.used?'disabled':''} aria-label="${fpNm(P.k)}"><span>${fpIc(P.k)}</span><small>${fpNm(P.k)}</small></button>`).join('');
+  if(jtOn(C)){const full=(C.jt|0)>=JT_MAX,c=S.comp;hm+=`<button class="af-prop jt${full?' full':''}" id="jtGo" ${!can||!full?'disabled':''} aria-label="${esc(ae('مع ','With ')+fpEn(c.name))}"><span>${fpIc('joint')}</span><small>${esc(ae('مع ','With ')+fpEn(c.name))}</small><i class="jt-m"><b style="width:${Math.round(Math.min(1,(C.jt|0)/JT_MAX)*100)}%"></b></i></button>`}
+  if(row.dataset.h!==hm){row.innerHTML=hm;row.dataset.h=hm}
+  row.querySelectorAll('[data-fp]').forEach(b=>b.onclick=()=>fpUse(+b.dataset.fp));const j=row.querySelector('#jtGo');if(j)j.onclick=()=>jtUse()}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{fpDraw()}catch(e){console.warn(e)}return r}}
+const fpTgt=C=>C.foes[C.tgt]&&C.foes[C.tgt].hp>0?C.foes[C.tgt]:C.foes.find(x=>x.hp>0);
+const fpMul={perfect:1.5,good:1,miss:.5};
+function fpGone(f,how){f.hp=0;f.fled=1;f.fpOut=1;const el=$('#foe'+f.id);try{SFX.flee()}catch(e){}if(el){el.classList.add('fledf');floatAt(el,how,'#a6e3a0','',24)}}
+async function fpUse(i){const C=S.combat,h=S.hero;if(!C||C.busy||C.phase!=='me'||!C.props)return;const P=C.props[i];if(!P||P.used)return;const D=FP[P.k],L=Math.max(1,h.lvl|0);
+  const tg=fpTgt(C);if(!tg)return;C.busy=true;P.used=1;combat();try{SFX.tick(640)}catch(e){}
+  const pel=()=>D.t==='me'?$('#meCard'):D.t==='one'?$('#foe'+tg.id):view.querySelector('.af-stage .foes');
+  await afBan(fpNm(P.k),false,240);
+  const q=await afRing(pel,{dur:820,col:D.col});C.fpNow=1;const up=C.foes.filter(f=>f.hp>0);let line='';
+  try{
+    if(P.k==='jar'){const d=Math.max(1,Math.round((2+Math.ceil(L*.6))*fpMul[q]));up.forEach(f=>hurtFoe(f,d,{fx:'storm'}));
+      line=ae(`الجاز ولّع: -${d} في الكل.`,`The oil caught fire: -${d} to all.`)}
+    else if(P.k==='rocks'){if(q==='miss')line=ae('الطوب نزل جنبه.','The bricks missed.');
+      else{const d=Math.round((4+L)*(q==='perfect'?1.4:1));hurtFoe(tg,d);if(q==='perfect'&&tg.hp>0){tg.fx.skip={n:1,daze:1,t:Date.now()}}
+        line=ae(`الطوب نزل على ${tg.name}: -${d}${q==='perfect'?'، '+FF(tg,'ودايخ','ودايخة')+' دور':''}.`,`The bricks hit ${tg.name}: -${d}${q==='perfect'?', dazed a turn':''}.`)}}
+    else if(P.k==='net'){const n=q==='perfect'?(fpBoss(tg)?1:2):q==='good'&&!fpBoss(tg)?1:0;
+      if(n){tg.fx.skip={n,daze:1,t:Date.now()};const el=$('#foe'+tg.id);if(el)floatAt(el,ae('اتلف!','Tangled!'),'#d8b07a','',24)}
+      line=n?ae(`الشبكة لفّت ${tg.name}: مش ${FF(tg,'هيتحرك','هتتحرك')} ${n>1?'دورين':'دور'}.`,`The net holds ${tg.name} for ${n} turn${n>1?'s':''}.`):ae(`${tg.name} ${FF(tg,'فلت','فلتت')} من الشبكة.`,`${tg.name} slipped out of the net.`)}
+    else if(P.k==='well'){const lim=q==='perfect'?.5:q==='good'?.35:0;
+      if(!fpBoss(tg)&&tg.hp<=tg.max*lim){fpGone(tg,ae('في البير!','Down the well!'));line=ae(`${tg.name} ${FF(tg,'وقع','وقعت')} في البير ومش ${FF(tg,'طالع','طالعة')}.`,`${tg.name} fell down the well.`)}
+      else if(q!=='miss'){const d=Math.max(1,Math.round(2+L/2));hurtFoe(tg,d);line=ae(`{زقّيت|زقّيتي} ${tg.name} في حافة البير: -${d}.`,`You shoved ${tg.name} into the well's edge: -${d}.`)}
+      else line=ae('الزقة ما جاتش.','The shove missed.')}
+    else if(P.k==='lamp'){const lim=q==='perfect'?.6:q==='good'?.4:0,run=up.filter(f=>!fpBoss(f)&&f.hp<=f.max*lim);run.forEach(f=>fpGone(f,ae(FF(f,'هرب!','هربت!'),'Ran!')));
+      if(!run.length&&q!=='miss')up.forEach(f=>hurtFoe(f,1,{fx:'storm'}));
+      line=run.length?ae(`النور خوّف ${run.map(f=>f.name).join(' و')}: ${run.length>1?'هربوا':FF(run[0],'هرب','هربت')}.`,`The light scared off ${run.map(f=>f.name).join(' and ')}.`):ae(up.length>1?'النور لسعهم بس ما هربوش.':FF(up[0],'النور لسعه بس ما هربش.','النور لسعها بس ما هربتش.'),'The light singed them, but they stayed.')}
+    else if(P.k==='wall'){if(q==='perfect'){C.me.smoke={n:1};line=ae('{استخبيت|استخبيتي} ورا الحيطة: الضربة الجاية مش هتوصلك.','Behind the wall: the next blow won\'t reach you.')}
+      else if(q==='good'){C.guard=1;line=ae('{استخبيت|استخبيتي} ورا الحيطة: التفادي أسهل الدور ده.','Behind the wall: dodging is easier this turn.')}
+      else line=ae('{ما لحقتش|ما لحقتيش} الحيطة.','You didn\'t make it to the wall.');try{SFX.guard()}catch(e){}}
+  }finally{C.fpNow=0}
+  combat();await say(T(line),q==='miss'?'':'good');return afterHero()}
+/* D17: the meter fills from real hits; the joint blow */
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat;try{if(C&&C.props&&d>0&&!(o&&o.fx==='poison')&&!C.fpNow&&!C.jtNow){
+    if(C.inComp)C.jt=Math.min(JT_MAX,(C.jt|0)+1);else if(C.phase==='me'&&!C.jtA){C.jtA=1;C.jt=Math.min(JT_MAX,(C.jt|0)+(AF.q==='perfect'?2:1))}}}catch(e){}return h0.apply(this,arguments)}}
+{const c0=compTurn;compTurn=async function(){const C=S.combat;if(C)C.inComp=1;try{return await c0.apply(this,arguments)}finally{if(C)C.inComp=0}}}
+{const a0=afterHero;afterHero=function(){const C=S.combat;if(C)C.jtA=0;return a0.apply(this,arguments)}}
+const JT_NM={'محارب':['كتف في كتف','Shoulder to shoulder'],'حرامي':['من قدام ومن ورا','Front and back'],'ساحر':['نار وإيد','Fire and fist'],'معالج':['بركة وضربة','Blessing and blow'],'مصارع':['الرفعة','The lift'],'ابن البلد':['حركة بلدي','Street move']};
+async function jtUse(){const C=S.combat,h=S.hero,c=S.comp;if(!C||C.busy||C.phase!=='me'||!jtOn(C)||(C.jt|0)<JT_MAX)return;const tg=fpTgt(C);if(!tg)return;
+  C.busy=true;C.jt=0;combat();const nm=JT_NM[h.cls]||JT_NM['محارب'];await afBan(ae(nm[0],nm[1]),false,320);
+  try{burst($('#compCard'),$('#foe'+tg.id),'#ffd9b0',30)}catch(e){}
+  const q=await afRing(()=>$('#foe'+tg.id),{dur:760,col:'#ffd9b0'});const L=Math.max(1,h.lvl|0),cl=Math.max(1,c.lvl|0||L);
+  const d=Math.max(2,Math.round((4+L*1.2+cl*.6)*{perfect:1.5,good:1.15,miss:.8}[q]));C.jtNow=1;try{hurtFoe(tg,d,{crit:q==='perfect'})}finally{C.jtNow=0}
+  if(q==='perfect'&&tg.hp>0&&!fpBoss(tg))tg.fx.skip={n:1,daze:1,t:Date.now()};
+  combat();await say(T(ae(`${nm[0]}: {انت|انتي} و${c.name} ضربتوا ${tg.name} مع بعض: -${d}.`,`${nm[1]}: ${h.name} and ${fpEn(c.name)} hit ${tg.name} together: -${d}.`)),'good');return afterHero()}
+/* D07: a foe pushed or scared off gives its experience (not its loot) */
+{const e0=endFight;endFight=function(won){const C=S.combat;let bx=0;try{if(won&&C&&!C.tutorial)C.foes.filter(f=>f.fpOut).forEach(f=>{const L=LOOT[f.art]||LOOT.dummy;bx+=L.xp|0})}catch(e){}
+  const r=e0.apply(this,arguments);try{if(bx&&S.loot&&S.hero){const ups=gainXP(bx);S.loot.xp+=bx;S.loot.ups=(S.loot.ups||[]).concat(ups||[]);saveHero();if(S.screen==='loot')render()}}catch(e){console.warn(e)}return r}}
+/* ---------- D50: «حاجة ضايعة» ---------- */
+const RC={on:null};
+function rcL(h){if(!h)return [];if(!Array.isArray(h.lost))h.lost=[];h.lost=h.lost.filter(x=>x&&GEAR[x.id]&&x.I&&x.I.u);return h.lost}
+function rcLose(h,id,I){const L=rcL(h);if(L.some(x=>x.I.u===I.u))return;L.push({id,I:JSON.parse(JSON.stringify(I)),d:-99});while(L.length>RC_MAX)L.shift();
+  setTimeout(()=>{try{toast(T(ae(`«حرامي الكراكيب» لمّ ${GEAR[id].n}. {تقدر|تقدري} {ترجعها|ترجعيها} من البلد.`,`«The junk thief» took your ${GEAR[id].n}. You can get it back from town.`)))}catch(e){}},3200)}
+{const w0=qWear;qWear=function(h){RC.on=h;try{return w0.apply(this,arguments)}finally{RC.on=null}}}
+{const d0=giDel;giDel=function(h,id,u){const I=d0.apply(this,arguments);try{if(I&&RC.on&&RC.on===h)rcLose(h,id,I)}catch(e){console.warn(e)}return I}}
+const rcFree=(h,x)=>(h.nDone|0)!==(x.d|0);
+function rcFoe(h){const L=Math.max(1,h.lvl|0);return {name:ae('حرامي الكراكيب','The junk thief'),art:'k_thief',hp:Math.round(5+L*2),dmg:Math.round(2+L*.4),rcv:1}}
+function rcGo(h,u){const L=rcL(h),x=L.find(y=>y.I.u===u);if(!x||!rcFree(h,x)||S.combat)return;x.d=h.nDone|0;saveHero();
+  S.comp=cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;S.roamFight=null;
+  startCombat([rcFoe(h)],()=>{S.screen='town';render()},false);const C=S.combat;if(C){C.rcv=u;C.log.push({t:ae(`الحرامي ماسك ${GEAR[x.id].n} بتاعتك.`,`The thief holds your ${GEAR[x.id].n}.`)});try{combat()}catch(e){}}}
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero;if(!C||!C.rcv||!h)return e0.apply(this,arguments);const L=rcL(h),i=L.findIndex(y=>y.I.u===C.rcv),x=L[i];
+  if(won){if(x){L.splice(i,1);const I=x.I;if(qDur(x.id))I.d=Math.max(1,Math.ceil(qMaxD(x.id,I)*RC_HP));giAdd(h,x.id,I);saveHero();
+      setTimeout(()=>{try{band(ae('رجعت','Back'),GEAR[x.id].n+(I.e?' +'+I.e:''),ae('اتصلحت لنص عمرها','Mended to half its wear'),{dur:2200,sound:SFX.good})}catch(e){}},900)}
+    return e0.apply(this,arguments)}
+  const rr=render;render=function(){};try{e0.apply(this,arguments)}catch(e){console.warn(e)}finally{render=rr}
+  S.lost=null;S.combat=null;h.hp=Math.max(1,Math.ceil(MXH(h)/3));saveHero();
+  band(ae('الحرامي هرب','The thief got away'),ae('{جرّب|جرّبي} بكرة','Try again tomorrow'),'',{color:'red',dur:1800,sound:SFX.down});twGo('town')}}
+{const t0=SCREENS.town;SCREENS.town=function(){const r=t0.apply(this,arguments);try{const h=S.hero;if(S.screen!=='town'||!h||view.querySelector('.rc-card'))return r;const L=rcL(h);if(!L.length)return r;
+  const me=view.querySelector('.tw-me'),box=me&&me.closest('.card');if(!box)return r;
+  box.insertAdjacentHTML('afterend',`<div class="card rc-card"><b>🧺 ${ae('حاجة ضايعة','Lost gear')}</b><small class="dim">${T(ae('«حرامي الكراكيب» بيلم العدة اللي بتتكسر. {اغلبه|اغلبيه} {وخدها|وخديها} مصلّحة.','«The junk thief» picks up broken gear. Beat him and take it back, mended.'))}</small>
+    ${L.map(x=>{const ok=rcFree(h,x);return `<div class="rc-row"><span class="rc-n">${esc(GEAR[x.id].n)}${x.I.e?' +'+x.I.e:''}</span><button class="tw-buy" data-rc="${esc(x.I.u)}" ${ok?'':'disabled'}>${ok?T(ae('{هاتها|هاتيها}','Get it')):ae('بكرة','Tomorrow')}</button></div>`}).join('')}</div>`);
+  view.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{if(h.hp<MXH(h)*.5){toast(T(ae('{انت تعبان|انتي تعبانة} أوي. {ارتاح|ارتاحي} الأول.','Rest first.')));return}rcGo(h,b.dataset.rc)})}catch(e){console.warn(e)}return r}}
+/* English: a guarding or armoured foe adds «(بيحمي نفسه)» after a number in our English lines (p11 X_calc) */
+L10N({},[[/^([^\u0600-\u06ff]+?) \(([\u0600-\u06ff ]+)\)([^\u0600-\u06ff]*)$/,(m,a,w,b)=>{const y=xWhyEn(w);return y?`${a} (${y})${b}`:m}]]);
+(function(){const s=document.createElement('style');s.textContent=`
+#app.af .af-props{display:flex;justify-content:center;gap:8px;margin:8px 0 2px;direction:ltr}#app.af .af-props:empty{display:none}
+.af-prop{width:64px;min-height:56px;padding:4px 2px 3px;border-radius:12px;border:2px solid #f3c14d99;background:#1a1226e6;color:#fff;display:flex;flex-direction:column;align-items:center;gap:1px;position:relative;font:inherit}
+.af-prop span{width:30px;height:30px;display:block}.af-prop span svg{width:100%;height:100%}.af-prop small{font-size:10px;line-height:1.1;white-space:nowrap;overflow:hidden;max-width:60px;text-overflow:ellipsis}
+.af-prop:disabled{opacity:.45}.af-prop.used{opacity:.22;filter:grayscale(1)}.af-prop:not(:disabled){animation:fpGlow 1.6s ease-in-out infinite}
+.af-prop.jt{border-color:#ffd9b0aa}.af-prop.jt.full:not(:disabled){border-color:#ffd9b0;box-shadow:0 0 12px #ffd9b0aa}
+.jt-m{position:absolute;left:4px;right:4px;bottom:-5px;height:5px;border-radius:3px;background:#0009;overflow:hidden}.jt-m b{display:block;height:100%;background:#ffd9b0}
+@keyframes fpGlow{50%{box-shadow:0 0 10px #f3c14d88}}
+.rc-card{display:flex;flex-direction:column;gap:6px}.rc-row{display:flex;align-items:center;gap:8px;min-height:44px}.rc-n{flex:1}.rc-row .tw-buy{min-height:44px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
