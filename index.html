@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.58',d:'14 أكتوبر',add:['اتصلح: لو عندك ليلة متسابة، أدوات الصنايعية (زي الفاس البرونز) وأدوات العطارة ومراحل الورش كانت بتقفل زرار «اعمل» من غير ما تقول ليه، حتى لو الخامات والفلوس معاك. دلوقتي {بتعملها|بتعمليها} عادي، والقفل بقى بس وانت جوه الليلة أو في خناقة.','«المبارزة الودية»: من «صحابي» {دوس|دوسي} ⚔ جنب صاحبك و{بارز|بارزي} بطله بالقتال الجديد، واللعبة هي اللي بتلعبه. مفيش رهان ومفيش حاجة بتضيع، وصحتك بترجع زي ما كانت.','«جدول الأسبوع»: كل مكسب بيتحسب في جدول المبارزات بينك وبين صحابك (3 مكاسب في اليوم مع نفس الصاحب)، وكل مكسب بيتحسب بيدي شوية خبرة.']},
 {v:'6.57',d:'14 أكتوبر',add:['«المقايضة وش لوش»: من «صحابي» {افتح|افتحي} ترابيزة وابعت الكود لصاحبك، أو {ادخل|ادخلي} بالكود بتاعه. كل واحد بيحط خاماته أو فلوسه على الترابيزة ({دوسة|دوسة} تحط واحدة، {واسحب|واسحبي} تحط 5).','اللي بتحطه على الترابيزة بيطلع من شنطتك على طول. لما الاتنين يدوسوا «موافق» التبديل بيحصل مرة واحدة بس، ولو حد غيّر حاجة الموافقة بتتشال من الاتنين. لو حد لغى، أو اللعبة اتقفلت قبل ما التبديل يتم، حاجتك بترجعلك.']},
 {v:'6.56',d:'14 أكتوبر',add:['«صحابي»: من البروفايل (أو من «رفيق الليلة») {تقدر|تقدري} تشوف صحابك، مين فيهم أونلاين دلوقتي وآخر مرة دخل إمتى، والأونلاين بيظهروا الأول.','بروفايل صاحبك: وشه، صنفه ومستواه، لابس إيه، ألقابه، وكام مرة طلع من السرداب وكام عقد وحكاية خلّص. و«بروفايلي» بيوريك نفسك زي ما صحابك شايفينك.','الهدايا: {ابعت|ابعتي} لصاحبك خامة من اللي معاك (من 1 لـ 20، خمس هدايا في اليوم). اللي يوصلك بيظهر فوق في «هدايا وصلتلك» و{بتستلمه|بتستلميه} مرة واحدة. لو الهدية ما اتبعتتش الحاجة بترجعلك.']},
 {v:'6.55',d:'14 أكتوبر',add:['«ناس البلد» كبرت: 20 حكاية جديدة (بقوا 30) بناس جديدة: أمل المدرسة، حمدي البنّا، سمير المحصّل، علي الحلاق، أشرف التاجر وغيرهم. الحكايات بتتفتح بالمستوى، واللي تحت مستواك وما {لعبتهاش|لعبتيهاش} بتيجي الأول.','16 عقد جديد (بقوا 24)، منهم 6 سلاسل: العقد الجاي بيتفتح بعد ما {تخلص|تخلصي} اللي قبله، والحكاية بتكمل مع نفس الشخص (فرن سعاد، دكان الحلاق، صيادين الترعة، جبنة هدى، المدرسة الجديدة، قافلة أشرف).','اختياراتك بتفرق أكتر: لو {نزلت|نزلتي} تطلّع ابن حمدي من الحفرة بيرجع يدفعلك الضعف بعدين، ولو {عالجت|عالجتي} معزة هدى عقد الجبنة بيدفع أكتر، ولو {وقفت|وقفتي} قدام سمير المحصّل هيرجعلك.']},
@@ -42779,7 +42780,7 @@ function wkOwn(h,w,key,def){if(!h||!h.wks||!h.wks[w])return def;const n=h.wks[w]
 /* can this stage be bought now? */
 function wkCan(h,s){const o={open:wkOpen(s),order:!!s&&wkSt(h,s.ws)===s.st-1,lv:true,miss:[],money:true};if(!s||!h)return Object.assign(o,{ok:false});
   const L=WK_DEF[s.ws].life;o.lv=!L||(h.life&&h.life[L]&&h.life[L].lvl>=s.lv);o.miss=Object.keys(s.need).map(k=>[k,s.need[k]-(h.res[k]||0)]).filter(x=>x[1]>0);
-  o.money=h.money>=s.p;o.ok=o.open&&o.order&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbLock(h));return o}
+  o.money=h.money>=s.p;o.ok=o.open&&o.order&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbIn(h));return o}
 /* the one place a stage is bought: checked, paid once, written once, saved */
 function wkBuy(h,id){const s=WK_BY[id];if(!h||!s)return null;const c=wkCan(h,s);if(!c.ok)return null;
   takeRes(h,s.need);h.money-=s.p;const x=h.wks[s.ws];x.st=s.st;x.log.push({id:s.id,t:Date.now(),m:s.p});if(s.ws==='smith')h.ws=Math.min(3,x.st);
@@ -42962,7 +42963,7 @@ function wkNeedHTML(h,s){return Object.keys(s.need).map(k=>{const have=h.res[k]|
   return `<span class="wk-nd ${ok?'ok':'no'}">${twMat(k,22)}<b>${Math.min(have,n)}/${n}</b> ${resN(k)}</span>`}).join('')}
 function wkSrcLine(k){const s=TW_SRC[k];if(!s)return '';return EN?(TW_SRC_EN[s]||s):s}
 function wkNextHTML(h,s){const c=wkCan(h,s),conf=WKU.conf===s.id;
-  const why=!c.lv?`${ae(G('محتاج','محتاجة'),'You need')} ${wkLvTxt(s)}`:c.miss.length?ae('ناقصك خامات','Materials missing'):!c.money?`${ae('ناقصك','You need')} ${s.p-h.money} ${ae('جنيه','coins')}`:(typeof gbLock==='function'&&gbLock(h))?ae('مش وانت في ليلة','Not during a night'):'';
+  const why=!c.lv?`${ae(G('محتاج','محتاجة'),'You need')} ${wkLvTxt(s)}`:c.miss.length?ae('ناقصك خامات','Materials missing'):!c.money?`${ae('ناقصك','You need')} ${s.p-h.money} ${ae('جنيه','coins')}`:(typeof gbIn==='function'&&gbIn(h))?ae('مش وانت في ليلة','Not during a night'):'';
   const src=c.miss.map(([k])=>`<div><b>${resN(k)}:</b> ${wkSrcLine(k)||ae('من السوق','from the market')}</div>`).join('');
   return `<div class="wk-nx"><div class="hd"><span class="wk-icb">${WKA.icon(s.ws,s.st-1,44)}</span><div class="tx"><small>${ae('المرحلة','Stage')} ${s.st} ${ae('من','of')} 8</small><b>${wkSN(s)}</b><span>${wkSD(s)}</span></div></div>
     <div class="wk-req"><span class="wk-nd ${c.lv?'ok':'no'}">${wkLvTxt(s)}</span>${wkNeedHTML(h,s)}<span class="wk-nd ${c.money?'ok':'no'}"><b>${s.p}</b> ${ae('جنيه','coins')}</span></div>
@@ -45369,7 +45370,7 @@ function tlFx(h,tr,key){const t=tlOn(h,tr);return t&&t.fx&&t.fx[key]?+t.fx[key]:
 {const t0=tf;tf=function(h,k,key){const v=t0.apply(this,arguments);try{return v+tlFx(h,k,key)}catch(e){return v}}}
 const tlFee=(h,t)=>t.fee?twCm(h,t.fee,'smith'):0;
 function tlCan(h,t){const o={open:!!(t&&t.open),own:!!t&&tlOwn(h,t.id),lv:!!t&&lifeLvl(h,'smith')>=t.lv,miss:t?twMiss(h,t.need):[],fee:t?tlFee(h,t):0};
-  o.money=!!h&&h.money>=o.fee;o.ok=!!h&&o.open&&!o.own&&t.t>0&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbLock(h));return o}
+  o.money=!!h&&h.money>=o.fee;o.ok=!!h&&o.open&&!o.own&&t.t>0&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbIn(h));return o}
 /* made in one step at the smith: taken, given and saved together (nothing waits on a game, so nothing can be lost) */
 function tlMake(h,id){const t=TOOL_CATALOG[id];if(!h||!t)return null;tlFix(h);const c=tlCan(h,t);if(!c.ok)return null;
   takeRes(h,t.need);h.money-=c.fee;h.tools.own[id]=1;const cur=tlOn(h,t.tr);if(!cur||cur.t<=t.t)h.tools.on[t.tr]=id;
@@ -46888,7 +46889,7 @@ const apFamTot=(h,fam)=>{const t=acOn(h,fam);return t?Object.keys(t.fx).reduce((
 
 /* ---------- making and using ---------- */
 function apCan(h,t){const need=t?apNeed(t):{};const o={open:apOpen(t),own:!!t&&apOwn(h,t.id),lv:!!t&&!!h&&atLv(h)>=t.lv,miss:t&&h?twMiss(h,need):[],need};
-  o.lock=!!h&&typeof gbLock==='function'&&gbLock(h);o.ok=!!h&&o.open&&!o.own&&o.lv&&!o.miss.length&&!o.lock;return o}
+  o.lock=!!h&&typeof gbLock==='function'&&gbIn(h);o.ok=!!h&&o.open&&!o.own&&o.lv&&!o.miss.length&&!o.lock;return o}
 function apMake(h,id){const t=AP_T[id];if(!h||!t)return null;apTlFix(h);const c=apCan(h,t);if(!c.ok)return null;
   takeRes(h,c.need);const A=h.apTl;A.own[id]=1;const cur=acOn(h,t.fam);if(!cur||cur.lv<=t.lv)A.on[t.fam]=id;
   try{bump('apTool')}catch(e){}saveHero();return t}
@@ -46975,12 +46976,12 @@ const apIc=(k,w)=>ITEMS[k]?twFood(k,w):MAT[k]?twMat(k,w):'';
 /* how many you have: a material from h.res; an item of any quality in the bag, and in storage while no night is open */
 function apHas(h,k){if(!h)return 0;if(MAT[k]&&!ITEMS[k])return Math.max(0,h.res&&h.res[k]|0);let n=0;const B=h.bag||{},O=h.over||{};
   for(const x in B)if(x===k||bagBase(x)===k)n+=Math.max(0,B[x]|0);
-  if(!(typeof gbLock==='function'&&gbLock(h)))for(const x in O)if(x===k||bagBase(x)===k)n+=Math.max(0,O[x]|0);return n}
+  if(!(typeof gbLock==='function'&&gbIn(h)))for(const x in O)if(x===k||bagBase(x)===k)n+=Math.max(0,O[x]|0);return n}
 /* takes one: the lowest quality first, the bag before storage */
 function acTake(h,k){if(MAT[k]&&!ITEMS[k]){if((h.res[k]|0)<1)return false;h.res[k]--;return true}
   const q=x=>{try{const p=fqParse(x);return x===k?1:(p&&p.q!=null?p.q:1)}catch(e){return 1}};
   const from=(o)=>{const ks=Object.keys(o||{}).filter(x=>(x===k||bagBase(x)===k)&&(o[x]|0)>0).sort((a,b)=>q(a)-q(b));if(!ks.length)return false;o[ks[0]]--;if(o[ks[0]]<=0&&ks[0]!==k)delete o[ks[0]];return true};
-  if(from(h.bag))return true;if(!(typeof gbLock==='function'&&gbLock(h))&&from(h.over))return true;return false}
+  if(from(h.bag))return true;if(!(typeof gbLock==='function'&&gbIn(h))&&from(h.over))return true;return false}
 
 /* today's repeatable request (one at a time; a new one only on a later town day than the last one finished) */
 function apRq(h){if(!h)return null;const A=apCs(h),d=klDay(h);let q=A.rq;
@@ -48965,7 +48966,7 @@ const tlQM=c=>c?(TLQ[c.q]||1)*(c.w?TLW:1):1;
 /* the one in hand: its numbers grow with its best copy */
 {const x0=tlFx;tlFx=function(h,tr,key){const v=x0.apply(this,arguments);if(!v)return v;try{const t=tlOn(h,tr);const m=t?tlQM(tlBest(tlCopies(h,t.id))):1;return key==='win'?Math.round(v*m):Math.round(v*m*1e4)/1e4}catch(e){return v}}}
 /* at the smith you can make another even when you have one */
-{const c0=tlCan;tlCan=function(h,t){const o=c0.apply(this,arguments);if(TLX.mk&&o.own){o.own=false;o.ok=!!h&&o.open&&t.t>0&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbLock(h))}return o}}
+{const c0=tlCan;tlCan=function(h,t){const o=c0.apply(this,arguments);if(TLX.mk&&o.own){o.own=false;o.ok=!!h&&o.open&&t.t>0&&o.lv&&!o.miss.length&&o.money&&!(typeof gbLock==='function'&&gbIn(h))}return o}}
 const tlMatV=t=>Object.keys(t.need||{}).reduce((a,k)=>a+((MAT[k]&&MAT[k].p)||0)*t.need[k],0);
 const tlVal=(t,c)=>Math.max(1,Math.round(((t.fee||0)+tlMatV(t))*.6*(QSELL[c.q]||1)*(c.w?1.15:1)));
 const tlWN=t=>t.fem?ae('موزونة','balanced'):ae('موزون','balanced');
@@ -53250,6 +53251,52 @@ async function trFixLoad(h){const E=h&&h.trEsc;if(!E||trMk()||!FB.user)return;fo
 .tr-c small{font-size:10px;line-height:1.2;text-align:center}.tr-c i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;color:#ffd36a}.tr-c .mi{font-size:24px;line-height:26px}
 .tr-sh{display:flex;flex-direction:column;gap:8px}.tr .row .btn{min-height:48px}
 .tr-gh{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-60%) scale(1.1);display:flex;flex-direction:column;align-items:center;width:72px;padding:6px 2px;border-radius:10px;border:2px solid #f3c14d;background:#2a2038;color:#fff;opacity:.9}.tr-gh i{display:none}`;document.head.appendChild(s)})();
+/* ---------- 6.58 (acc1, R22 / N06): «المبارزة الودية» — duel a friend's hero, no bets, a weekly table ----------
+   From «صحابي» (⚔ on a friend's row) or the duel screen (SCREENS.duel): you fight your friend's best hero with the hands-on fight.
+   The hero is played by the game (its health from their published card, its hit from their level), so a friend does not have to be
+   on at the same time. Friendly: nothing is bet and nothing is lost; your health is put back as it was when the duel ends.
+   A win counts for the week's table (duel/{week}/s/{uid} = {n, w, t}, the week starts Saturday like the leaderboard); only
+   DL_DAY wins a day against the same friend count, and a counted win gives a little XP. The table shows you and your friends.
+   Firestore: duel/{week}/s/{uid} needs the rules in firebase/firestore.rules deployed from the PC.
+   Tests: window.__dlMock = {rows(uids) -> {uid:{n,w}}, push(n,w)} replaces the cloud. */
+const DL_DAY=3,DL_XP=6;
+const DLX={rows:null,busy:0,err:''};
+const dlMk=()=>window.__dlMock||null;
+function dlFix(h){let D=h.dl;if(!D||typeof D!=='object')D=h.dl={};if(D.wk!==lbWeek()){D.wk=lbWeek();D.w=0;D.l=0}if(D.d!==new Date().toDateString()){D.d=new Date().toDateString();D.by={}}D.by=D.by||{};return D}
+const DLA={
+  async rows(uids){const M=dlMk();if(M)return M.rows(uids);const wk=lbWeek(),out={};await Promise.all(uids.map(async u=>{try{const d=await FB.db.collection('duel').doc(wk).collection('s').doc(u).get();if(d.exists)out[u]=d.data()}catch(e){}}));return out},
+  async push(n,w){const M=dlMk();if(M)return M.push(n,w);if(!FB.user||!FB.db)return;return FB.db.collection('duel').doc(lbWeek()).collection('s').doc(FB.user.uid).set({n:String(n||'').slice(0,20),w,t:window.firebase.firestore.FieldValue.serverTimestamp()})}};
+function dlFoe(x){const L=Math.max(1,x.l|0);return {name:x.n,art:'q_hunter',hp:Math.max(8,Math.round((x.hp|0)*.9)),dmg:Math.round(2+L*.45),rival:1,fem:x.g==='f'?1:0}}
+function dlGo(h,g){if(S.combat||!g)return;const x=g.heroes[0];S.dlF={o:g.o,n:x.n,hp:h.hp,from:S.screen};S.comp=cmGhost(h);S.flags={};S.training=false;S.run=null;S.lost=null;S.loot=null;S.endRes=null;S.roamFight=null;
+  startCombat([dlFoe(x)],()=>{S.screen=S.dlF0||'duel';render()},false);const C=S.combat;if(!C)return;C.dl=1;C.log.push({t:`${x.n}: «${T(ae('ودي يا {صاحبي|صاحبتي}. {وريني|وريني}.','Friendly, my friend. Show me.'))}»`});try{combat()}catch(e){}}
+{const e0=endFight;endFight=function(won){const C=S.combat,h=S.hero,F=S.dlF;if(!C||!C.dl||!h||!F)return e0.apply(this,arguments);S.dlF=null;S.dlF0=F.from==='frs'?'frs':'duel';
+  const D=dlFix(h);let cnt=false;if(won){const n=D.by[F.o]|0;if(n<DL_DAY){D.by[F.o]=n+1;D.w=(D.w|0)+1;cnt=true;try{gainXP(DL_XP)}catch(e){}DLA.push(h.name,D.w).catch(()=>{})}bump('duelWin')}else D.l=(D.l|0)+1;
+  const m0=h.money,rr=render;render=function(){};try{e0.apply(this,arguments)}catch(e){console.warn(e)}finally{render=rr}
+  h.money=m0;S.lost=null;S.combat=null;S.loot=null;S.endRes=null;h.hp=Math.max(1,Math.min(MXH(h),F.hp|0||MXH(h)));saveHero();DLX.rows=null;
+  band(T(ae('مبارزة ودية','A friendly duel')),won?T(ae(`{غلبت|غلبتي} ${F.n}!`,`You beat ${F.n}!`)):T(ae(`${F.n} {غلبك|غلبك} المرة دي`,`${F.n} won this time`)),won?(cnt?`+1 ${ae('في جدول الأسبوع','on the weekly table')} · +${DL_XP} ${ae('خبرة','XP')}`:ae(`ما اتحسبتش: ${DL_DAY} في اليوم مع نفس الصاحب`,`Not counted: ${DL_DAY} a day against the same friend`)):ae('مفيش حاجة ضاعت. ودي.','Nothing lost. Friendly.'),{color:won?'':'red',dur:2000,sound:won?SFX.good:SFX.down});
+  S.screen=S.dlF0;render()}}
+async function dlLoad(h){if(DLX.busy)return;DLX.busy=1;DLX.err='';try{if(!frMk())await fbLoad();if(!frUid()){DLX.rows={};return}const rows=await FRA.rows();FRS.rows=rows;const gs=frGroups(rows);DLX.rows=await DLA.rows(gs.map(g=>g.o))}
+  catch(e){DLX.err=e&&e.code==='permission-denied'?ae('المبارزات لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','Duels are still being set up (needs an update from the PC).'):ae('مش قادر أوصل دلوقتي.','Can\'t connect right now.');DLX.rows=DLX.rows||{}}finally{DLX.busy=0}if(S.screen==='duel'){const y=view.scrollTop;render();view.scrollTop=y}}
+SCREENS.duel=function(){const h=S.hero;if(!h){S.screen='title';return render()}const D=dlFix(h),me=frUid();if(me&&DLX.rows==null&&!DLX.busy)dlLoad(h);
+  const gs=frGroups(FRS.rows||[]),Rw=DLX.rows||{};
+  const table=[{me:1,n:h.name,w:D.w|0}].concat(gs.map((g,i)=>({i,n:g.heroes[0].n,w:(Rw[g.o]&&Rw[g.o].w)|0,l:g.heroes[0].l|0,left:DL_DAY-(D.by[g.o]|0)}))).sort((a,b)=>b.w-a.w);
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('المبارزات','Duels')}</h2><span class="tag">⚔ ${D.w|0}</span></div>
+    <div class="tw dl" style="direction:${EN?'ltr':'rtl'}"><div class="card dim">${T(ae(`{بتبارز|بتبارزي} بطل صاحبك بالقتال الجديد، واللعبة هي اللي بتلعبه. ودي: مفيش رهان، ومفيش حاجة بتضيع، وصحتك بترجع زي ما كانت. كل مكسب بيتحسب في جدول الأسبوع (${DL_DAY} في اليوم مع نفس الصاحب).`,`You duel your friend's hero with the new fight, and the game plays it. Friendly: no bets, nothing lost, your health comes back. Each win counts on the weekly table (${DL_DAY} a day against the same friend).`))}</div>
+    ${!me?`<div class="card">${T(ae('{ادخل|ادخلي} بحساب جوجل عشان {تبارز|تبارزي} صحابك.','Sign in with Google to duel your friends.'))}</div>`:DLX.err?`<div class="card nnote">${DLX.err}</div>`:DLX.rows==null?`<div class="card nnote">${ae('بيحمّل…','Loading…')}</div>`:
+    `<div class="card dl-tb"><b>${ae('جدول الأسبوع','This week')}</b>${table.map((r,k)=>`<div class="dl-r${r.me?' me':''}"><span class="k">${k+1}</span><span class="n">${esc(r.n)}${r.me?` <small>(${ae('انت','you')})</small>`:` <small>${ae('مستوى','lv')} ${r.l}</small>`}</span><b>${r.w}</b>${r.me?'<span class="sp"></span>':`<button class="btn" data-dl="${r.i}" ${S.combat?'disabled':''}>⚔</button>`}</div>`).join('')}
+      ${gs.length?'':`<small class="dim">${T(ae('{ضيف|ضيفي} صحاب من البروفايل عشان {تبارزهم|تبارزيهم}.','Add friends from your profile to duel them.'))}</small>`}</div>`}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};on('back',()=>{try{SFX.page()}catch(e){}S.screen=S.dlFrom||'frs';render()});
+  view.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>dlGo(h,gs[+b.dataset.dl]))};
+/* the ways in: a ⚔ on every friend's row in «صحابي», and a duel button on top */
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs'||$('#dlGo'))return r;const tg=$('#trGo');
+  if(tg)tg.insertAdjacentHTML('afterend',`<button class="btn ghost" id="dlGo" style="width:100%;min-height:48px">⚔ ${ae('المبارزات وجدول الأسبوع','Duels and the weekly table')}</button>`);
+  const g=$('#dlGo');if(g)g.onclick=()=>{S.dlFrom='frs';DLX.rows=null;S.screen='duel';render()};
+  const gs=frGroups(FRS.rows||[]);view.querySelectorAll('[data-fg]').forEach(b=>{const i=+b.dataset.fg;b.insertAdjacentHTML('afterend',`<button class="btn ghost" data-fd="${i}" aria-label="${ae('مبارزة','Duel')}">⚔</button>`)});
+  view.querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{const gg=gs[+b.dataset.fd];if(gg)dlGo(S.hero,gg)})}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.dl-tb{display:flex;flex-direction:column;gap:6px}.dl-r{display:grid;grid-template-columns:28px 1fr 40px 64px;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;background:#ffffff08}
+.dl-r.me{border:2px solid #f3c14d}.dl-r .k{font-weight:900;color:#ffd36a;text-align:center}.dl-r .n small{color:var(--dim);font-size:11px}.dl-r b{font-size:20px;text-align:center;color:#7fe07a}.dl-r .btn{min-height:44px;width:100%;padding:0}
+.fr-bt [data-fd]{flex:0 0 56px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
