@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.51',d:'14 أكتوبر',add:['«حال الغيط» تحت الأرض: سطر لكل أرض فيه الزرعة، حالها (بتكبر، عطشانة، اتسقت، اتاكل منها، جاهزة، محتاجة حرت) والوقت الفاضل من وقتها كله، والعداد ماشي قدامك.','«كل زرعة بتاخد قد إيه»: جدول بكل الزرع، وقت كل واحدة على مستواك، سعر التقاوي، المحصول، والمستوى اللي بتتفتح فيه.','الحرت لسه بإيدك، بس فيه زرار يخليه «تلقائي» والأرض الفاضية بتتحرت لوحدها. أو {أجّر|أجّري} عامل على شغلانة «الحرت» الجديدة من «العمال»، وفيه عامل جديد اسمه زكي شغلته الحرت.']},
 {v:'6.50.1',d:'14 أكتوبر',add:['لما {بتاخد|بتاخدي} ميزة «الكارت الرابع» من الحكواتي، الليلة كانت بتفتح من غير ولا اختيار. اتصلحت: المحطات الأربعة بتبان على الطريق، ولو حصل أي عطل الاختيارات بترجع تبان كقايمة.']},
 {v:'6.50',d:'14 أكتوبر',add:['المنجم من الدور 6 وتحت بقى فيه مخاطر {بتردّ|بتردّي} عليها بإيدك: صخرة بتقع على ناحية ({اطلع|اطلعي} الناحية التانية)، وغاز من الشقوق من الدور 9 ({اكتم|اكتمي} نفسك {وامسك|وامسكي} الزرار لحد ما يعدّي)، ومن الدور 12 عداد «الهوا» بيقل مع كل صخرة، ولما يخلص {انفخ|انفخي} في المنفاخ بسرعة. لو فاتتك بتخسر صحة.','«عِرق نادر» من الدور 6: تلات لمعات بتنوّر في الصخر، {المسهم|المسيهم} كلهم بسرعة {وتطلّع|وتطلّعي} أحسن حجر في الدور. الفيروز والزمرد في الصخر بقوا أقل شوية عشان العِرق بقى طريقهم.','الدور بيكتبلك المخاطر اللي فيه تحت في الأهداف، وعلامة ⚠ جنب رقم الدور.','إعلانات المنجم بقت بلون الحجر نفسه: الزمرد أخضر، والدهب دهبي، والفضة فضي، والفيروز فيروزي.','قدرتين جداد لكل نوع (مستوى 11 و13): المحارب «ضربة كاسحة» و«ثبّت رجلك»، الحرامي «طعنة في الضلمة» و«اختفاء»، الساحر «نار ماسكة» و«مراية»، المعالج «نور الفجر» و«بركة»، المصارع «كتفة» و«نفَس المصارع»، وابن البلد «فهلوة» و«زفّة».','الزعماء ليهم مراحل: تحت النص بيتجننوا، وتحت الربع آخر نفس. في المراحل دي الزعيم بيلم نفسه لضربة كبيرة وناحية من الشاشة بتحمر: {اسحب|اسحبي} للناحية التانية {وتفاداها|وتفاديها} كلها، ولو اتأخرت بتيجي تقيلة.']},
 {v:'6.49',d:'14 أكتوبر',add:['«الدولاب» عند عم فتحي الخياط: طبقة لبس فوق الدرع، والدرع زي ما هو. فيه 3 طبقات: «جوّه» (فانلة، شراب صوف، حزام…)، «اللبس» (جلابية، قفطان، صديري، بالطو…) و«فوق» (شال، وشاح، عباية…).','اللبس الجوّاني واللبس العادي بيدوك صفة أو صحة أو زيادة في صنعة (بدلة الصياد للصيد، ومريلة الصنايعي للحدادة والخياطة والطبيخ). أقصى زيادة من اللبس +3 لكل صفة. اللي «فوق» شكل بس.','النول: {انسج|انسجي} 24 نوع قماش من القماش والكتان والصوف والجلد والحرير والريش. المكوك بيجري يمين وشمال، {ودوس|ودوسي} «اضرب!» لما يوصل للطرف المنوّر. النسجة النضيفة بتطلع اتنين.','{فصّل|فصّلي} 60 قطعة من القماش بلعبة الخياطة. لو القطعة طلعت «كويس» أو أحسن بتاخد +1 زيادة.','{اسحب|اسحبي} اللبس بصباعك على رسمة شخصيتك {تلبسه|تلبسيه}، ولونه بيبان عليك في الرسمة. وفيه 30 باترون (تقليم، منقّط، مربعات، تطريز…) {تشتريه|تشتريها} مرة {وتحطه|وتحطيه} على لبسك وقت ما {تحب|تحبي}.']},
@@ -52245,6 +52246,74 @@ function bpDodge(e){return new Promise(res=>{const h=S.hero,side=Math.random()<.
 .bp-say{white-space:normal;position:absolute;left:10px;right:10px;top:18%;padding:10px 12px;border-radius:14px;background:#1a1410f0;border:2px solid #e2483f;color:#fff;font-weight:900;font-size:16px;text-align:center}
 .bp-arr{position:absolute;top:48%;width:0;height:0;border:26px solid transparent}.bp-arr.l{left:calc(75% - 26px);border-left:0;border-right:40px solid #7fe07a}.bp-arr.r{left:calc(25% - 14px);border-right:0;border-left:40px solid #7fe07a}
 .bp-l.won .bp-say{border-color:#7fe07a}.bp-l.won .bp-h.bad,.bp-l.lost .bp-h.bad{animation:none}.bp-l .mr-bar{bottom:6%}`;document.head.appendChild(s)})();
+/* ---------- 6.51 (acc1, Twister 16:28): the field at a glance, and tilling your way ----------
+   «عايز حاجة في الغيط تخليني أشوف كل زرعة وقتها بيقعد قد إيه وحالها … وعدّل على حوار الحرت: خليه، بس خلّي في أوبشن يبقى
+   تلقائي أو يبقى في شخص عامل يعمل كلام ده».
+   - «حال الغيط» under the plots: one row per plot (crop, state, time left of its full time, watered / eaten), live every second,
+     and «كل زرعة بتاخد قد إيه»: every crop's growing time at your level, its seed price, its yield and the level it opens at.
+   - Tilling stays by hand (p174), with a switch for «تلقائي» (empty plots come tilled), or a worker: زكي (and any worker) can take
+     the new job «الحرت» from «العمال» and tills every empty plot (one job each, the daily cap as the other jobs). */
+try{WR_JOB.till={n:['الحرت','Tilling'],cap:12};
+  if(!WR_BY.zaki){const z={id:'zaki',n:['زكي','Zaki'],g:'m',job:'till',w:20,look:{g:'m',cls:'محارب',skin:'#b07850',hairColor:'#1b1412',hair:'قصير',eyes:'#3a2414',outfit:'#5a4a2a',age:'شاب'}};WR_POOL.push(z);WR_BY.zaki=z}}catch(e){console.warn(e)}
+const fsAuto=h=>!!(h&&h.farm&&h.farm.atil);
+/* the worker on «الحرت»: every empty, untilled plot, up to the day's cap */
+{const w0=wrWork;wrWork=function(h){let out=w0.apply(this,arguments);try{if(!h||!h.farm||h!==S.hero||S.combat)return out;const X=WR_FIX(h),n=farmN(h),P=h.farm.p;let any=0;
+  X.on.filter(w=>w.job==='till').forEach(w=>{let left=wrLeft(w,h),c=0;for(let i=0;i<n&&left>0;i++){const p=P[i]||(P[i]={});if(p.c||p.til)continue;p.til=1;w.dn.n++;left--;c++}
+    if(c){any=1;out=out||{};out[w.id]=Object.assign(out[w.id]||{},{til:c});const L=X.log[X.log.length-1];if(L&&L.t==='work'&&L.id===w.id&&L.d===wrDay(h))L.g.til=(L.g.til|0)+c;else wrLog(X,{t:'work',id:w.id,d:wrDay(h),g:{til:c}})}});
+  if(any)saveHero()}catch(e){console.warn(e)}return out}}
+{const l0=wrLogTxt;wrLogTxt=function(t){if(!t||t.t!=='work'||!t.g||!t.g.til)return l0.apply(this,arguments);const P=WR_BY[t.id];if(!P)return '';const g=Object.assign({},t.g),n=g.til;delete g.til;
+  const tx=ae(`${wrVb(P,'حرت','حرتت')} ${n} أرض`,`tilled ${n} plot${n>1?'s':''}`);if(!Object.keys(g).length)return `${EN?P.n[1]:P.n[0]}: ${tx}`;
+  return `${l0.call(this,Object.assign({},t,{g}))}${EN?', ':'، '}${tx}`}}
+/* «تلقائي»: empty plots come tilled */
+{const d0=fhDress;fhDress=function(){try{const h=S.hero;if(h&&h.farm&&fsAuto(h)){const n=farmN(h),P=h.farm.p;let ch=0;for(let i=0;i<n;i++){const p=P[i]||(P[i]={});if(!p.c&&!p.til){p.til=1;ch=1}}if(ch)saveHero()}}catch(e){}return d0.apply(this,arguments)}}
+/* ---- the panel ---- */
+const fsT=ms=>{const s=Math.max(0,Math.ceil(ms/1000)),hh=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return hh?`${hh}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`:`${m}:${String(x).padStart(2,'0')}`};
+const FS_EN={barsim:'Clover'};
+const fsNm=k=>{const m=MAT[k];if(!m)return k;if(!EN)return (m._ar&&m._ar.n)||m.n;const e=m.i18n&&m.i18n.en&&m.i18n.en.n;return e||FS_EN[k]||(/[؀-ۿ]/.test(m.n)?(L10N_W.get(m.n)||k):m.n)};
+function fsState(h,p){if(!p||!p.c)return p&&p.til?['til',ae('محروتة، جاهزة للزرع','Tilled, ready to sow')]:['un',ae('أرض ناشفة، محتاجة حرت','Hard ground, needs tilling')];
+  if(farmReady(h,p))return ['rd',ae('جاهزة للحصاد','Ready to harvest')];const a=[];a.push(ae('بتكبر','Growing'));if(p.w)a.push(ae('اتسقت','watered'));else a.push(ae('عطشانة: تقدر تسقيها','thirsty: you can water it'));
+  if(p.e)a.push(ae('اتاكل منها','something ate from it'));return ['gr',a.join(' · ')]}
+function fsRow(h,p,i){const [k,tx]=fsState(h,p),c=p&&p.c,left=c?farmLeft(h,p):0,f=c?Math.min(1,1-left/(p.d||1)):0;
+  return `<div class="fs-r ${k}" data-fs="${i}"><span class="fs-ic">${c?twMat(c,28):`<i class="fs-soil${k==='til'?' t':''}"></i>`}</span><span class="fs-tx"><b>${ae('أرض','Plot')} ${i+1}${c?` · ${fsNm(c)}`:''}</b><small>${tx}</small>
+    ${c&&k!=='rd'?`<span class="fs-bar"><i style="width:${(f*100).toFixed(1)}%"></i></span>`:''}</span><span class="fs-tm">${c?(k==='rd'?'✓':`<b data-fl="${i}">${fsT(left)}</b><small>${ae('من','of')} ${fsT(p.d)}</small>`):''}</span></div>`}
+function fsCrops(h){const L=farmL(h);return Object.keys(CROPS).filter(k=>MAT[k]).sort((a,b)=>(CROPS[a].lv||1)-(CROPS[b].lv||1)||CROPS[a].min-CROPS[b].min).map(k=>{const c=CROPS[k],lock=L<(c.lv||1);let pr='',d='';try{pr=farmPrice(h,k)}catch(e){}try{d=fsT(farmDur(h,k))}catch(e){}
+  return `<div class="fs-c${lock?' lk':''}"><span class="fs-ic">${twMat(k,24)}</span><b>${fsNm(k)}</b><span>${d}</span><small>${lock?`${ae('مستوى','level')} ${c.lv}`:`${pr} ${ae('جنيه','coins')} · ${(c.y||[1,1]).join('–')}`}</small></div>`}).join('')}
+function fsHTML(h){const n=farmN(h),P=h.farm.p,au=fsAuto(h),open=!!(h.farm.fsC);
+  return `<div class="card fs-card" id="fsCard"><div class="fs-h"><b>${ae('حال الغيط','The field now')}</b>
+    <button class="fs-sw${au?' on':''}" id="fsAuto" aria-pressed="${au}"><span>${ae('الحرت','Tilling')}:</span><b>${au?ae('تلقائي','Automatic'):ae('بإيدك','By hand')}</b><i></i></button></div>
+    <div class="fs-note">${au?T(ae('الأرض الفاضية بتتحرت لوحدها.','Empty plots come tilled by themselves.')):T(ae('{بتحرت|بتحرتي} بإيدك. {اقلب|اقلبي} الزرار لتلقائي، أو {أجّر|أجّري} عامل على «الحرت» من «العمال».','You till by hand. Flip the switch to automatic, or hire a worker for «Tilling» under «Workers».'))}</div>
+    ${P.slice(0,n).map((p,i)=>fsRow(h,p,i)).join('')}
+    <button class="fs-ct" id="fsCt" aria-expanded="${open}">${ae('كل زرعة بتاخد قد إيه','How long each crop takes')} <span>${open?'▴':'▾'}</span></button>
+    ${open?`<div class="fs-cs"><div class="fs-c hd"><span></span><b>${ae('الزرعة','Crop')}</b><span>${ae('الوقت','Time')}</span><small>${ae('التقاوي · المحصول','Seed · yield')}</small></div>${fsCrops(h)}</div>`:''}</div>`}
+function fsTick(){const h=S.hero,c=$('#fsCard');if(S.screen!=='farm'||!h||!h.farm||!c){clearInterval(FS2.tm);FS2.tm=0;return}const P=h.farm.p;let re=0;
+  c.querySelectorAll('[data-fl]').forEach(b=>{const i=+b.dataset.fl,p=P[i];if(!p||!p.c){re=1;return}const l=farmLeft(h,p);if(l<=0){re=1;return}b.textContent=fsT(l);const bar=b.closest('.fs-r').querySelector('.fs-bar i');if(bar)bar.style.width=(Math.min(1,1-l/(p.d||1))*100).toFixed(1)+'%'});
+  if(re)fsMount(h)}
+const FS2={tm:0};
+function fsMount(h){const old=$('#fsCard');const html=fsHTML(h);if(old)old.outerHTML=html;else{const g=view.querySelector('.fm-g');if(!g)return;const all=$('#fmAll');(all||g).insertAdjacentHTML('afterend',html)}
+  const a=$('#fsAuto');if(a)a.onclick=()=>{h.farm.atil=h.farm.atil?0:1;saveHero();try{SFX.tick(h.farm.atil?880:520);vib(12)}catch(e){}toast(h.farm.atil?T(ae('الحرت بقى تلقائي','Tilling is automatic now')):T(ae('الحرت رجع بإيدك','Tilling is by hand again')));farmRe()};
+  const t=$('#fsCt');if(t)t.onclick=()=>{h.farm.fsC=h.farm.fsC?0:1;saveHero();try{SFX.page()}catch(e){}fsMount(h)};
+  if(!FS2.tm)FS2.tm=setInterval(fsTick,1000)}
+{const f0=SCREENS.farm;SCREENS.farm=function(){const r=f0.apply(this,arguments);try{const h=S.hero;if(h&&h.farm&&S.screen==='farm')fsMount(h)}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.fs-card{display:flex;flex-direction:column;gap:6px}
+.fs-h{display:flex;align-items:center;justify-content:space-between;gap:8px}.fs-h>b{font-size:16px}
+.fs-sw{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;border-radius:22px;border:2px solid #ffffff2a;background:#ffffff0d;color:inherit;font:inherit;font-size:13px;cursor:pointer}
+.fs-sw b{color:#f3d48f}.fs-sw i{width:34px;height:20px;border-radius:10px;background:#ffffff22;position:relative;transition:background .2s}.fs-sw i::after{content:'';position:absolute;top:2px;inset-inline-start:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:inset-inline-start .2s}
+.fs-sw.on i{background:#7fe07a}.fs-sw.on i::after{inset-inline-start:16px}.fs-sw.on b{color:#a6e3a0}
+.fs-note{font-size:12px;color:var(--dim)}
+.fs-r{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:6px 8px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff12}
+.fs-r.rd{border-color:#7fe07a88;background:#7fe07a14}.fs-r.un{opacity:.85}
+.fs-ic{width:34px;height:34px;display:grid;place-items:center}.fs-soil{width:26px;height:16px;border-radius:5px;background:#4a3424;box-shadow:inset 0 0 0 2px #3a2818}.fs-soil.t{background:repeating-linear-gradient(0deg,#6b4428 0 3px,#3a2414 3px 6px)}
+.fs-tx{display:flex;flex-direction:column;gap:2px;min-width:0}.fs-tx b{font-size:14px}.fs-tx small{font-size:12px;color:var(--dim)}
+.fs-r.rd .fs-tx small{color:#a6e3a0}
+.fs-bar{height:6px;border-radius:3px;background:#0b0d1c;overflow:hidden}.fs-bar i{display:block;height:100%;background:linear-gradient(90deg,#5aa04a,#a6e3a0);transition:width .9s linear}
+.fs-tm{display:flex;flex-direction:column;align-items:flex-end;text-align:end;font-variant-numeric:tabular-nums}.fs-tm b{font-size:15px;color:#f3d48f}.fs-tm small{font-size:11px;color:var(--dim)}
+.fs-r.rd .fs-tm{color:#7fe07a;font-size:20px;font-weight:900}
+.fs-ct{min-height:44px;border-radius:12px;border:1px dashed #ffffff33;background:none;color:inherit;font:inherit;font-weight:800;cursor:pointer}
+.fs-cs{display:flex;flex-direction:column;gap:4px}
+.fs-c{display:grid;grid-template-columns:28px 1fr 64px 1.1fr;gap:6px;align-items:center;padding:4px 6px;border-radius:10px;background:#ffffff06;font-size:13px}
+.fs-c>span:nth-child(3){font-variant-numeric:tabular-nums;color:#f3d48f;font-weight:800}.fs-c small{font-size:11px;color:var(--dim);text-align:end}
+.fs-c.hd{background:none;font-size:11px;color:var(--dim)}.fs-c.hd b{font-weight:700}.fs-c.lk{opacity:.5}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
