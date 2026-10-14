@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.60',d:'14 أكتوبر',add:['في الحوار، كل واحد بيتكلم بقى ليه صورته جنب كلامه: لو خالد اتكلم تشوف خالد، ولو مراته ردّت تشوف مراته. وكل شخص بيفضل بنفس الوش طول المشهد، ولو انت اللي بتتكلم بتشوف صورتك.']},
 {v:'6.59',d:'14 أكتوبر',add:['«مبارزة أونلاين»: من «صحابي» {دوس|دوسي} 🔴⚔ جنب صاحبك و{ابعت|ابعتي} له دعوة، وتلعبوا مع بعض في نفس الوقت دور بدور: ضربة، تقيلة، أو حماية، و{اضرب|اضربي} في الأخضر عشان الضربة تصيب (والدهبي ضربة قاضية).','الرهان: ولا حاجة، فلوس، أو حاجة من شنطتك. الرهان بيتحجز أول ما {تبعت|تبعتي}، وصاحبك بيحط نفس الفلوس أو حاجة قيمتها قريبة. الكسبان بياخد الرهانين، ولو اترفضت أو اتلغت رهانك بيرجعلك.','لو صاحبك ما ردّش في دوره دقيقة، {تقدر|تقدري} {تاخد|تاخدي} المكسب. والمكسب بيتحسب كمان في جدول الأسبوع.']},
 {v:'6.58',d:'14 أكتوبر',add:['اتصلح: لو عندك ليلة متسابة، أدوات الصنايعية (زي الفاس البرونز) وأدوات العطارة ومراحل الورش كانت بتقفل زرار «اعمل» من غير ما تقول ليه، حتى لو الخامات والفلوس معاك. دلوقتي {بتعملها|بتعمليها} عادي، والقفل بقى بس وانت جوه الليلة أو في خناقة.','«المبارزة الودية»: من «صحابي» {دوس|دوسي} ⚔ جنب صاحبك و{بارز|بارزي} بطله بالقتال الجديد، واللعبة هي اللي بتلعبه. مفيش رهان ومفيش حاجة بتضيع، وصحتك بترجع زي ما كانت.','«جدول الأسبوع»: كل مكسب بيتحسب في جدول المبارزات بينك وبين صحابك (3 مكاسب في اليوم مع نفس الصاحب)، وكل مكسب بيتحسب بيدي شوية خبرة.']},
 {v:'6.57',d:'14 أكتوبر',add:['«المقايضة وش لوش»: من «صحابي» {افتح|افتحي} ترابيزة وابعت الكود لصاحبك، أو {ادخل|ادخلي} بالكود بتاعه. كل واحد بيحط خاماته أو فلوسه على الترابيزة ({دوسة|دوسة} تحط واحدة، {واسحب|واسحبي} تحط 5).','اللي بتحطه على الترابيزة بيطلع من شنطتك على طول. لما الاتنين يدوسوا «موافق» التبديل بيحصل مرة واحدة بس، ولو حد غيّر حاجة الموافقة بتتشال من الاتنين. لو حد لغى، أو اللعبة اتقفلت قبل ما التبديل يتم، حاجتك بترجعلك.']},
@@ -53466,6 +53467,53 @@ SCREENS.duo=function(){const h=S.hero;if(!h){S.screen='title';return render()}co
 .du-a span{font-size:32px}.du-a small{font-size:12px;font-weight:700}.du-a:disabled{opacity:.4}.du-a:active{transform:translateY(2px)}
 .du-tm{text-align:center;font-weight:800;color:#ffd36a}.du .btn{min-height:48px}
 .du-ring{width:170px;height:170px}.du-ring .bg{fill:none;stroke:#ffffff18;stroke-width:10}.du-ring .ok{fill:none;stroke:#7fe07a;stroke-width:12;stroke-linecap:round}.du-ring .cr{fill:none;stroke:#ffd36a;stroke-width:14;stroke-linecap:round}.du-ring .mk{fill:#fff;stroke:#e2483f;stroke-width:3}`;document.head.appendChild(s)})();
+/* ---------- 6.60 (acc1, Twister 18:07 «حط صوره لكل شخصيه»): a face for every speaker in the comic panels ----------
+   6.40 gave one face per scene (the first person named), and a scene that named nobody, or named someone by name only
+   («خالد»), had bare bubbles. Now every bubble gets the face of whoever says it:
+   - the speaker is the last person named in the caption before the quote (a plain name like خالد/Khaled, a word like
+     «الراجل»/«عم», or a relation like «مراته»/«his wife»); a quote that opens the scene takes the first person named after it;
+     with no one named, the bubble keeps the last speaker, or the scene's own stranger.
+   - each person keeps one face for the whole scene and its result (CMX.sp), built the same way as 6.40's faces
+     (gender, old, kid from the words around the name). A quote said by the hero («{بتقول|...}») shows the hero. */
+const CM_NM_M='محمد|أحمد|احمد|محمود|مصطفى|علي|حسن|حسين|إبراهيم|ابراهيم|خالد|سيد|عادل|كريم|طارق|عمرو|شريف|ياسر|هشام|جمال|سامح|منصور|رجب|فتحي|حمدي|عبده|سعيد|رمضان|شعبان|صابر|فاروق|عثمان|يوسف|يحيى|مجدي|ناصر|وليد|سمير|عزت|عوض|عرفة|زكي|بكر|مينا|جرجس|عماد|رضا|حمادة|سلامة|متولي|درويش|فوزي|نبيل|عاطف|جابر|شوقي|راضي|مدحت|سالم|عيد|حمزة|عصام|توفيق|فهمي|حنفي|مرسي|عبدالله|عبد الله|ربيع|نادر|كمال';
+const CM_NM_F='فاطمة|زينب|عائشة|مريم|سعاد|نادية|هدى|منى|سارة|ساره|سماح|نجلاء|أمل|امل|سهام|فايزة|عزيزة|نعمة|حميدة|زكية|رحمة|بثينة|هند|دعاء|إيمان|ايمان|رشا|شيماء|ولاء|نوال|كريمة|صفاء|سناء|جميلة|تحية|أنيسة|انيسة|بهية|صباح|سعدية|وردة|خديجة|نفيسة|ليلى|فريدة|سلمى|دينا|مروة|نسمة|زهرة|سميرة|حنان|فوزية|عفاف';
+const CM_EN_M='Mohamed|Muhammad|Ahmed|Mahmoud|Mostafa|Ali|Hassan|Hasan|Hussein|Ibrahim|Khaled|Khalid|Sayed|Adel|Karim|Tarek|Amr|Sherif|Yasser|Hesham|Gamal|Sameh|Mansour|Ragab|Fathy|Hamdy|Abdou|Saeed|Ramadan|Shaaban|Saber|Farouk|Osman|Youssef|Yehia|Magdy|Nasser|Walid|Samir|Ezzat|Awad|Zaki|Bakr|Mina|Girgis|Emad|Reda|Hamada|Salama|Metwally|Darwish|Fawzy|Nabil|Atef|Gaber|Shawky|Medhat|Salem|Eid|Hamza|Essam|Tawfik|Fahmy|Hanafy|Morsy|Abdallah|Rabie|Nader|Kamal';
+const CM_EN_F='Fatma|Fatima|Zeinab|Aisha|Mariam|Maryam|Soad|Nadia|Hoda|Mona|Sara|Sarah|Samah|Naglaa|Amal|Siham|Fayza|Aziza|Neama|Hamida|Zakia|Rahma|Bothaina|Hind|Doaa|Eman|Iman|Rasha|Shaimaa|Walaa|Nawal|Karima|Safaa|Sanaa|Gamila|Tahia|Anisa|Bahia|Sabah|Saadia|Warda|Khadiga|Nafisa|Laila|Layla|Farida|Salma|Dina|Marwa|Nesma|Zahra|Samira|Hanan|Fawzia|Afaf';
+const CM_REL_F='مراته|مرات|مراتك|أمه|امه|أمها|امها|أخته|اخته|أختها|بنته|بنتها|جدته|جدتها|حماته|خالته|عمته|his wife|the wife|wife|his mother|her mother|his sister|her sister|his daughter|her daughter|grandmother';
+const CM_REL_M='جوزها|جوز|أبوه|ابوه|أبوها|ابوها|أخوه|اخوه|أخوها|اخوها|ابنه|ابنها|جده|جدها|حماه|خاله|صاحبه|صاحبها|her husband|the husband|husband|his father|her father|his brother|her brother|his son|her son|grandfather|his friend';
+const CM_HERO=/(بتقول|تقول|بتقوله|بتقولها|تقوله|تقولها|قلت|قلتي|بترد|ترد|رديت|زعقت|بتزعق|you say|you tell|you answer|you shout|you said)\s*[:،,]?\s*$/i;
+const CM_ANY=new RegExp(`(^|[\\s«(،,.:!؟?—-])(?:[وف](?=[^\\s]))?(${CM_REL_F}|${CM_REL_M}|${CM_NM_F}|${CM_NM_M}|${CM_EN_F}|${CM_EN_M})(?=[\\s،,.:!؟?»)'’]|$)|`+CM_HUM.source.replace(/^\(\^\|\[\\s«\(\]\)/,'(^|[\\s«(،,.:!؟?—-])(?:[وف](?=[^\\s]))?'),'gi');
+const cmNmF=new RegExp(`^(${CM_REL_F}|${CM_NM_F}|${CM_EN_F})$`,'i');
+/* one person found in a piece of text: {id, f, old, kid} */
+function cmMention(m,txt){const w=(m[2]||m[4]||'').trim();if(!w)return null;const near=txt.slice(Math.max(0,m.index-6),m.index+m[0].length+14);
+  const f=cmNmF.test(w)||CM_FEM.test(' '+w+' ');return {id:w.toLowerCase().replace(/^ال/,''),w,f,old:CM_OLD.test(near),kid:CM_KID.test(w)}}
+function cmFind(txt,last){const rx=new RegExp(CM_ANY.source,'gi');let m,x=null,prev=null;
+  while((m=rx.exec(txt))){const p=cmMention(m,txt);if(!p)continue;
+    /* «أبو حسن» / «أم سيد»: the title word and the name are one person */
+    if(prev&&/^(أبو|ابو|أم|ام|ابن|بنت|Umm|Abu|عم|الحاج|خالة)$/i.test(prev.w)&&m.index<=prev.end+2){prev.id=prev.id+' '+p.id;prev.end=m.index+m[0].length;x=prev;continue}
+    p.end=m.index+m[0].length;x=prev=p;if(!last)return x}
+  return x}
+function cmFaceOf(p,key){const r=cmHash(key+'|'+p.id),P=(typeof PD!=='undefined'&&PD.RAMPS)||{},f=p.f,old=p.old,kid=p.kid;
+  const pick=(o,n)=>{const k=Object.keys(o||{});return k.length?k[(r>>>n)%k.length]:undefined};
+  const L={name:'',g:f?'f':'m',cls:'ابن البلد',skin:pick(P.skin,1),hairColor:old?'#d9d4cc':pick({'#1b1412':1,'#4a2c1a':1,'#8a5a2b':1},4),eyes:pick(P.eyes,6),outfit:pick(P.outfit,8),
+    age:old?((r>>>3)%2?'عجوز':'كبير'):'شاب',hair:f?(old||(r>>>5)%2?'غطا راس':'طويل'):['قصير','مموج','كيرلي','أصلع','مفروق'][(r>>>5)%5]};
+  if(!f)L.beard=old?['شنب','دقن كاملة','دقن طويلة','شنب مبروم'][(r>>>7)%4]:kid?'من غير':['من غير','شنب','سكسوكة','شعر خفيف'][(r>>>7)%4];
+  try{return PX.pic(L,'cm')}catch(e){return null}}
+function cmHeroFace(){const h=S.hero;if(!h)return null;try{return (typeof frPic==='function'?frPic(h,'cmh'):portrait(h,'cmh'))||null}catch(e){return null}}
+const cmTxt=h=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ');
+/* give each «say» its speaker: s.f = face html */
+function cmSpeakers(segs){const key=CMX.key||'';if(!CMX.sp||CMX.spKey!==key){CMX.sp={};CMX.spKey=key;CMX.last=null}
+  const face=p=>{if(p==='hero')return cmHeroFace();if(!CMX.sp[p.id])CMX.sp[p.id]=cmFaceOf(p,key);return CMX.sp[p.id]};
+  segs.forEach((s,i)=>{if(s.t!=='say')return;const pre=segs[i-1]&&segs[i-1].t==='cap'?cmTxt(segs[i-1].h):'',post=segs[i+1]&&segs[i+1].t==='cap'?cmTxt(segs[i+1].h):'';
+    let p=null;if(pre&&CM_HERO.test(pre.trim()))p='hero';
+    if(!p&&pre)p=cmFind(pre,true);
+    if(!p&&!CMX.last&&post)p=cmFind(post.slice(0,60),false);
+    if(!p)p=CMX.last||{id:'~stranger',f:false,old:false,kid:false};
+    CMX.last=p;s.who=p==='hero'?'hero':p.id;s.f=face(p)})}
+{const s0=cmSplit;cmSplit=function(html){const segs=s0.apply(this,arguments);try{if(S.screen==='story'&&segs.some(s=>s.t==='say'))cmSpeakers(segs)}catch(e){console.warn(e)}return segs}}
+{const p0=cmPanels;cmPanels=function(segs,face){if(!segs||!segs.some(s=>s.f))return p0.apply(this,arguments);let n=0;
+  return segs.map(s=>{const d=`style="--d:${(n++*.22).toFixed(2)}s"`,f=s.t==='say'?(s.f||face):null;
+    return s.t==='cap'?`<div class="cm-cap" ${d}>${s.h}</div>`:`<div class="cm-say${f?'':' nof'}" ${d}>${f?`<span class="cm-who" data-cmwho>${f}</span>`:''}<div class="cm-bb">${s.h}</div></div>`}).join('')}}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
