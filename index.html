@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.76',d:'14 أكتوبر',add:['كل حاجة بتتعمل بالإيد بقى عليها «🧠 فهمك 0/5». {دوس|دوسي} عليه يقولك النقط اللي معاك من كام للمستوى الجاي، وكل مستوى بيديك إيه.','لو {عملت|عملتي} «بديع» فهمك بيزيد 3 نقط زيادة، و«أعجوبة» 5.']},
 {v:'6.75',d:'14 أكتوبر',add:['«بيتك»: الأوض بقت مربعات مرسومة زي الفرش: الورشة والأوضة والمتحف كل واحدة بصورتها ومستواها والتمن تحتها، {دوس|دوسي} عليها {تبنيها|تبنيها} أو {تكبّرها|تكبّريها}.']},
 {v:'6.74',d:'14 أكتوبر',add:['«بديع» و«أعجوبة» اتظبطوا في النص: أسهل من زمان بس مش ببلاش. لو {عملت|عملتي} تحفة 15 مرة ورا بعض من غيرهم، اللي بعدها أكيد «بديع».','«دوار العمدة» بقى بالصور: كل رخصة ليها أيقونة، والسمعة والفلوس اللي محتاجاها قدامها.']},
 {v:'6.73',d:'14 أكتوبر',add:['«بيتك» بقى صور وأفعال: الأوض بأيقوناتها ومستواها نقط والتمن قدامها، والفرش بقى مربعات مرسومة، والراحة نقط.','جديد في الحدادة والخياطة والعطارة: «فهمك». كل ما {تفك|تفكي} حاجة أو {تعملها|تعمليها} بإيدك، فهمك ليها بيزيد (5 مستويات)، وكل مستوى بيخليها تطلع أجود، ومن مستوى 3 ممكن تاخد صفة زيادة، ومن 4 التحفة ممكن تبقى «بديع».','«بديع» و«أعجوبة» بقوا أسهل بكتير: الشغل البيرفكت بيجيبهم أكتر، ولو التحفة طلعت 8 مرات ورا بعض من غيرهم، المرة الجاية أكيد «بديع».']},
@@ -55100,7 +55101,7 @@ function undAdd(h,k,n){if(!h||!k||!(n>0))return;const U=undFix(h),l0=undLv(h,k);
     if(l>=3&&at!=='attar'&&Q.q>=2&&Q.traits.length<2&&Math.random()<.15*(l-2)){const pool=at==='cook'||at==='attar'?['shabaa','sokhn']:(id&&GEAR[id]?QT_SLOT[GEAR[id].slot]:QT_SLOT.weapon);
       const f=(pool||[]).filter(t=>!Q.traits.includes(t));if(f.length)Q.traits.push(pick(f))}
     if(l>=4&&Q.q===4&&id&&typeof q5Cap==='function'&&q5Cap(h,at,id)>=5&&Math.random()<.03*(l-3)){Q.q=5;Q.wow=5}
-    if(score!=null)undAdd(h,k,(+score||0)>=.8?2:1)}}catch(e){console.warn(e)}
+    if(score!=null)undAdd(h,k,((+score||0)>=.8?2:1)+(Q.q===5?3:Q.q>=6?5:0))   /* 6.76: a «بديع» teaches 3 more, an «أعجوبة» 5 */}}catch(e){console.warn(e)}
   return Q}}
 {const d0=qDismantle;qDismantle=function(h,u){const r=d0.apply(this,arguments);try{if(r&&r.id){undAdd(h,'g:'+r.id,3);saveHero()}}catch(e){}return r}}
 {const b0=atBrew;atBrew=async function(k){UND.cur='at:'+k;try{return await b0.apply(this,arguments)}finally{UND.cur=null}}}
@@ -55110,6 +55111,24 @@ function undAdd(h,k,n){if(!h||!k||!(n>0))return;const U=undFix(h),l0=undLv(h,k);
 {const q0=qPrep;qPrep=function(o){const r=q0.apply(this,arguments);try{const h=S.hero,k=UND.cur;if(h&&k&&o&&o.at){const l=undLv(h,k),p=(h.und&&h.und[k])|0,nx=UND_LV[l+1];
   const tx=document.querySelector('#twSh .q-pre .tx');if(tx)tx.insertAdjacentHTML('beforeend',`<div class="tw-sm und-l">🧠 ${ae('فهمك','Your grasp')} ${pgPips(l,5,'#8fd3ff')}${nx?`<small>${p}/${nx}</small>`:`<small>${ae('على الآخر','maxed')}</small>`}${l?`<small>${ae(`جودة +${2*l}%`,`quality +${2*l}%`)}</small>`:`<small>${ae('{فكّ|فكّي} أو {اعمل|اعملي} بإيدك عشان {تفهم|تفهمي}','Take apart or make by hand to learn it')}</small>`}</div>`.replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>G(a,b)))}}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend',`<style>.und-l{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#8fd3ff;margin-top:4px}.und-l small{opacity:.85}</style>`);
+/* 6.76 (Twister 23:12): the craft card says «🧠 فهمك N/5»; a tap opens what it gives and how many points to the next level */
+function undChip(h,k){const l=undLv(h,k);return `<button class="tw-ch und-ch" data-und="${k}">🧠 ${ae('فهمك','Grasp')} ${l}/5</button>`}
+function undSheet(k){const h=S.hero;if(!h)return;const l=undLv(h,k),p=(h.und&&h.und[k])|0,nx=UND_LV[l+1];document.getElementById('undSh')?.remove();
+  const row=(lv,t)=>`<div class="und-r${l>=lv?' on':''}"><b>${lv}</b><span>${t}</span></div>`;
+  const d=document.createElement('div');d.id='undSh';d.className='und-sh';d.innerHTML=`<div class="card und-in"><b class="und-t">🧠 ${ae('فهمك لـ','Your grasp of ')}«${undName(k)}»</b>
+    <div class="und-bar"><i style="width:${nx?Math.round(100*(p-UND_LV[l])/(nx-UND_LV[l])):100}%"></i></div>
+    <small>${ae('المستوى','Level')} ${l}/5 · ${nx?`${p}/${nx} ${ae('نقطة للمستوى الجاي','points to the next level')}`:ae('على الآخر','maxed')}</small>
+    <small class="und-how">${T(ae('{فكّها|فكّيها} = 3 نقط · {اعملها|اعمليها} بإيدك = نقطة (2 لو 80% أو أكتر) · بديع +3 · أعجوبة +5','Take apart = 3 points · make by hand = 1 (2 at 80% or more) · Splendid +3 · Marvel +5'))}</small>
+    ${row(1,ae('الجودة +2% (وكل مستوى +2%)','Quality +2% (each level +2%)'))}${row(3,ae('فرصة صفة زيادة: 15% لكل مستوى من 3','Extra trait chance: 15% a level from 3'))}${row(4,ae('التحفة ممكن تبقى «بديع»: 3% لكل مستوى من 4','A masterwork may turn «Splendid»: 3% a level from 4'))}
+    <button class="btn" id="undX">${ae('تمام','OK')}</button></div>`;
+  document.body.appendChild(d);const x=()=>d.remove();d.onclick=e=>{if(e.target===d)x()};d.querySelector('#undX').onclick=x}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-und]');if(!b)return;e.stopPropagation();e.preventDefault();try{SFX.page&&SFX.page()}catch(x){}undSheet(b.dataset.und)},true);
+{const c0=twGearCard;twGearCard=function(h,id){let s=c0.apply(this,arguments);try{if(GEAR[id]&&GEAR[id].craft&&s.includes('<div class="tw-chs">'))s=s.replace('<div class="tw-chs">',`<div class="tw-chs">${undChip(h,'g:'+id)}`)}catch(e){}return s}}
+document.head.insertAdjacentHTML('beforeend',`<style>.und-ch{color:#8fd3ff;border:1px solid #8fd3ff88;background:#8fd3ff1a;font:inherit;cursor:pointer;min-height:32px}
+.und-sh{position:fixed;inset:0;background:#000a;z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl}.und-in{max-width:360px;width:100%;display:flex;flex-direction:column;gap:8px}
+.und-t{color:#8fd3ff;font-size:17px}.und-bar{height:10px;border-radius:6px;background:#ffffff22;overflow:hidden}.und-bar i{display:block;height:100%;background:#8fd3ff}
+.und-how{opacity:.8}.und-r{display:flex;gap:8px;align-items:center;opacity:.5}.und-r.on{opacity:1}.und-r b{width:26px;height:26px;border-radius:50%;background:#8fd3ff33;display:flex;align-items:center;justify-content:center;flex:none}.und-r.on b{background:#8fd3ff;color:#111}
+.und-in .btn{min-height:44px}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
