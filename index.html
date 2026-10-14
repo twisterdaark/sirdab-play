@@ -4793,6 +4793,9 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.28',d:'14 أكتوبر',add:['«حال البلد»: كل يوم في البلد فيه 3 طلبيات من ناس البلد (عم حسن، عم فتحي، أم سيد، عم رجب، عم رمضان). {هات|هاتي} لهم الخامات اللي محتاجينها وهيدفعوا أكتر من السوق بكتير','ناس البلد ليهم ولاء {ليك|ليكي} وحلم كل واحد فيهم. لما الولاء يعلى بيبقوا صحابك: كلامهم دايمًا صح وطلبياتهم بتدفع أكتر','البلد بتتغير: لما حد يحقق حلمه البلد بتتغير على طول: كور جديد عند عم حسن، ماكينة خياطة، فرن بلدي، رفوف في العطارة، والسوق بيكبر. وكل تغيير ليه فايدة','إشاعة كل يوم: حد من ناس البلد بيقول حاجة (السمك كتير، عرق في المنجم، الوحوش تايهة…). ممكن تبقى صح وممكن تبقى كدب، وأول ما {تجرب|تجربي} {هتعرف|هتعرفي}']},
+{v:'6.27',d:'14 أكتوبر',add:['«بيتك» في البلد: بيت {ليك|ليكي} فيه 3 أوض بتبنيها {وتكبّرها|وتكبّريها} بالفلوس والخامات: الورشة (كل الحِرف إيدك فيها أحسن)، وأوضتك (خبرة الشغلانات أكتر)، والمتحف','الفرش: كليم وفانوس وزرعة وصورة ورف كتب وكنبة، وكل حاجة بتترسم في البيت. الراحة بتزوّد خبرة القتال لحد 10%','المتحف: كل زعيم {بتهزمه|بتهزميه} بيتحط على رف، وبعده الوحوش اللي {هزمتها|هزمتيها} أكتر. كل ما المتحف يكبر الرفوف تزيد','«أهدافي»: {اختار|اختاري} لنفسك لحد 3 أهداف (مستوى، شغلانة، وحوش، أسرار الطقس، زعيم)، وكل هدف {بتخلصه|بتخلصيه} بيدّيك فلوس']},
+{v:'6.26',d:'14 أكتوبر',add:['الوحوش بتشيل منك: لو {قتلت|قتلتي} كتير من نوع واحد، اللي زيه بيجوا «حاقدين»: ضربتهم أقوى وبيعرفوا يصيبوك أكتر. الحقد بيخف لو {سبتهم|سبتيهم} في حالهم كام يوم','الوحوش بتتعلم: لو {عملت|عملتي} نفس الحركة 3 مرات ورا بعض، الوحش بيتعلمها وبيصد جزء منها. {غيّر|غيّري} الضرب','الزعما بيردوا: لما صحة الزعيم تنزل للنص بيتعصب وضربته تقوى، ولو {استخبيت|استخبيتي} ممكن يكسر دفاعك','القطيع ليه كبير: لو قدامك 3 وحوش أو اتنين من نفس النوع، واحد منهم «الكبير» وصحته أكتر. {وقّع|وقّعي} الكبير والباقيين ممكن يهربوا']},
 {v:'6.25',d:'14 أكتوبر',add:['الطقس: الجو واحد لكل اللاعبين في نفس الوقت، وبيتغير كل 3 ساعات: صافي، مطر، شبورة، حر، ريح. هتلاقيه فوق جنب الساعة، {ودوس|ودوسي} عليه عشان تعرف بيعمل إيه','المطر بيزوّد خبرة الصيد والزراعة 25%، والحر بيحسّن إيدك في الحدادة والطبخ، والريح بتحسّن العطارة وبتزوّد خبرة التنقيب','الوحوش بتتغير مع الجو: في المطر بتبقى مبلولة وضربتها أضعف، وفي الحر هايجة وضربتها أقوى بس صحتها أقل، وفي الريح التراب مدوّخها، وفي الشبورة ممكن تتوه وتفوّت أول دور','أسرار الخلا: كل جو غير الصافي ليه حاجة مستخبية على خريطة «الخلا» من مستوى 3، مش بتبان غير وهو موجود: عين مية في المطر، ضي في الشبورة، سراب في الحر، وحاجة طايرة في الريح. كل واحدة مرة في اليوم، والضي اللي في الشبورة بالليل بيدّي أحسن']},
 {v:'6.24',d:'14 أكتوبر',add:['مستوى اللبس بقى على حسب الخامة اللي الحتة معمولة منها: النحاس من أول مستوى، والحديد 4، والفضة 8، والدهب 12، والفولاذ 15، والزمرد 20، والمعادن النادرة لحد 28. الجودة العالية بتزوده مستوى أو اتنين بس','«شجرة الصنايعي»: كل 3 مستويات في الشغلانات كلها مع بعض {بتديك|بتديكي} نقطة. كل عقدة بتربط شغلانتين (زي التنقيب والحدادة، أو الصيد والطبخ) وبتقوّي الاتنين، وفي الآخر «الصنايعي الكبير». الدخول من فوق أي شجرة شغلانة','«الخلا»: البلد والدفتر بقوا رسمتين على الخريطة نفسها بدل الزرارين اللي تحت']},
 {v:'6.23',d:'14 أكتوبر',add:['كل لبس وسلاح ليه مستوى عشان {تلبسه|تلبسيه}، على قد ندرته (من مستوى 1 للعادي لحد مستوى 10 لأندر حاجة). اللي {لابسه|لابساه} دلوقتي مش هيتقلع، والكارت بيقولك المستوى المطلوب','كل وحش ليه أكل بيحبه: التور والجمل بيحبوا البرسيم، الفار بيحب العيش، الضبع بيحب البيض، والكلب والديب بيحبوا السمك. العيش والبيض والبرسيم بقوا ينفعوا يترموا للوحوش','الأكل المفضّل بيهدّي حتى الوحش الشرس لما يبقى متعوّر جامد: ياكله ويمشي من غير خناقة. ولو {رميت|رميتي} أكل مش بتاعه، بيشمه ويلف وشه، والأكل بيفضل {معاك|معاكي} والدور ما بيضيعش','الوحوش بتفتكرك: لو {عفيت|عفيتي} عن وحش أو {أكّلته|أكّلتيه}، اللي من نوعه ممكن {يعرفك|يعرفكي} المرة الجاية، يتردد أول دور، وأكله المفضّل يهدّيه على طول. بس لو حد من النوع ده غدر {بيك|بيكي}، الذكرى بتتمسح','المأوى فيه «الطريق للعهد»: الثقة بتاعة السلعوة الصغيرة وجرو الديب باينة (كام من 3، ونوع المساعدة اللي {عملتها|عملتيها})، وفين {تقابلهم|تقابليهم} تاني. وكل ما الثقة تزيد بيطلعلك سطر بيقولك {وصلت|وصلتي} لفين'],fix:['{المروّض|المروّضة} بقى مأواه يشيل 4 وحوش بدل 2','«الخلا»: الوصلة بين النص والصحرا والنهر بقت أنعم، والخط اللي كان بيبان بينهم اختفى']},
@@ -49356,6 +49359,250 @@ L10N({'الطقس والأسرار':'Weather and secrets'});
 .wx-sec{position:absolute;z-index:3;width:44px;height:44px;margin:-22px 0 0 -22px;padding:6px;border:0;background:radial-gradient(circle,#fff6d880,#fff6d800 70%);cursor:pointer;animation:wxS 1.1s ease-in-out infinite alternate}
 .wx-sec svg{display:block;width:100%;height:100%}@keyframes wxS{from{transform:scale(.9);filter:drop-shadow(0 0 2px #fff6d8)}to{transform:scale(1.08);filter:drop-shadow(0 0 7px #ffd36a)}}
 @media (prefers-reduced-motion: reduce){.wx-fx,.wx-sec{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.26 D03/D18/D12/D15 (acc1): «وحوش أذكى» ----------
+   D03: a kind you kill a lot holds a grudge (h.grd[art] = {n kills, d town day of the last}). Every GR_STEP kills is one step (at most 3);
+        it fades by GR_FADE kills a town day you leave them alone. A foe of that kind comes «حاقد»: hit + step, and it reads your dodge
+        better (acc + step). Spared, fed or tamed ones don't count (only real kills).
+   D18: the foes learn a move you repeat. The same move AD_N times in a row (bosses: 2) and every hit of it after that is partly blocked:
+        the foe takes the hit, then a quarter of it back (AD_CUT) with «اتعلم». Any other move breaks it. Hits from your companion don't count.
+   D12: bosses react: under half health a boss gets angry once (hit +2), and a boss may break your guard (BS_BRK) when you hide.
+   D15: a pack of 3 or more (or 2 of the same kind) has a leader «الكبير»: more health and hit. Drop the leader and each of the others
+        may run (PK_RUN).
+   Everything rides on wrappers: startCombat (tags, leader, grudge), heroAct/afterHero/compTurn (who is hitting, the streak), hurtFoe
+   (the block, the leader's fall, the anger), foeTurn (the guard break), endFight (counting kills). */
+const GR_STEP=12,GR_FADE=4,GR_MAX=3,AD_N=3,AD_CUT=.25,BS_BRK=.4,PK_RUN=.6;
+function grFix(h){if(!h)return {};if(!h.grd||typeof h.grd!=='object'||Array.isArray(h.grd))h.grd={};return h.grd}
+function grLv(h,art){const g=art&&grFix(h)[art];if(!g)return 0;const n=Math.max(0,(g.n|0)-GR_FADE*Math.max(0,(h.nDone|0)-(g.d|0)));return Math.min(GR_MAX,Math.floor(n/GR_STEP))}
+function grAdd(h,art){const G0=grFix(h),g=G0[art]||(G0[art]={n:0,d:h.nDone|0});const fade=GR_FADE*Math.max(0,(h.nDone|0)-(g.d|0));g.n=Math.max(0,(g.n|0)-fade)+1;g.d=h.nDone|0;return g.n}
+const smNm=f=>(f.base&&f.base.name)||String(f.name||'').split(' ')[0];
+const smNoGo=f=>!f||f.hp<=0||f.fled;
+function smFloat(f,t,c){setTimeout(()=>{try{const el=$('#foe'+f.id);if(el)floatAt(el,t,c||'#ffd36a','',22)}catch(e){}},700)}
+/* the start of a fight: grudge, leader */
+{const s0=startCombat;startCombat=function(foes,win,tutorial){const r=s0.apply(this,arguments);try{const h=S.hero,C=S.combat;if(tutorial||!h||!C||!C.foes)return r;
+  C.mv={k:'',n:0};const live=C.foes.filter(f=>!smNoGo(f)),lines=[];
+  live.forEach(f=>{const g=grLv(h,f.art);if(!g)return;f.grd=g;f.dmg=(f.dmg|0)+g;f.acc=(f.acc|0)+g;f.name=`${f.name} ${FF(f,'حاقد','حاقدة')}`});
+  const gr=live.filter(f=>f.grd);if(gr.length)lines.push(ae(`اللي زي ${smNm(gr[0])} عارفين إنك بتقتل منهم كتير، وجايين {عليك|عليكي} بغل.`,`The ${smNm(gr[0])} kind know you kill many of them, and they come at you with spite.`));
+  const pk=live.filter(f=>!f.boss);if(pk.length>=3||pk.length===2&&pk[0].art&&pk[0].art===pk[1].art){const L=pk.reduce((a,b)=>b.max>a.max?b:a);L.lead=1;
+    const full=L.hp>=L.max;L.max=Math.round(L.max*1.25);L.hp=full?L.max:L.hp;L.dmg=(L.dmg|0)+1;L.name=`${L.name} ${FF(L,'الكبير','الكبيرة')}`;
+    lines.push(ae(`${L.name} ${FF(L,'هو كبيرهم','هي كبيرتهم')}: لو ${FF(L,'وقع','وقعت')} الباقيين ممكن يهربوا.`,`${L.name} leads them: drop the leader and the rest may run.`))}
+  if(lines.length){lines.forEach(t=>C.log.push({t:T(t)}));if(S.screen==='combat'&&S.combat===C)render()}}catch(e){console.warn(e)}return r}}
+/* who is hitting: only your own moves build a streak */
+{const a0=heroAct;heroAct=function(a,chosen){const C=S.combat;try{if(C&&!C.busy&&C.phase==='me'&&a&&a!=='bag'&&a!=='sk'&&C.mv){const k=a==='sp'?'sk:sp':String(a);
+  if(C.mv.k===k)C.mv.n++;else{C.mv.k=k;C.mv.n=1;C.mv.said=0}C.mvOn=1}}catch(e){}return a0.apply(this,arguments)}}
+{const f0=afterHero;afterHero=function(){const C=S.combat;if(C)C.mvOn=0;return f0.apply(this,arguments)}}
+{const f0=compTurn;compTurn=function(){const C=S.combat;if(C)C.mvOn=0;return f0.apply(this,arguments)}}
+const adNeed=f=>f&&(f.boss||f.base&&f.base.boss)?2:AD_N;
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const C=S.combat,was=f&&f.hp;const r=h0.apply(this,arguments);try{if(!C||C.tutorial||!f||S.combat!==C)return r;
+  /* D18: the learned move */
+  const soft=o&&o.fx==='poison';
+  if(C.mvOn&&!soft&&C.mv&&C.mv.n>adNeed(f)-1&&f.hp>0&&was-f.hp>1){const cut=Math.max(1,Math.floor((was-f.hp)*AD_CUT));f.hp=Math.min(f.max,f.hp+cut);
+    setTimeout(()=>{try{const el=$('#foe'+f.id);if(!el)return;setBar(el,'f'+f.id,f.hp/f.max*100);const hn=el.querySelector('.hpn');if(hn)hn.textContent=f.hp+'/'+f.max;floatAt(el,`🛡 ${cut}`,'#9fd0ff','',22)}catch(e){}},650);
+    if(!C.mv.said){C.mv.said=1;C.log.push({t:T(`${f.name} ${FF(f,'اتعلم','اتعلمت')} حركتك: {غيّر|غيّري} الضرب عشان ${FF(f,'ميصدّهوش','متصدّهوش')}.`),k:'bad'});smFloat(f,FF(f,'اتعلم!','اتعلمت!'),'#9fd0ff')}}
+  /* D12: the angry boss */
+  if((f.boss||f.base&&f.base.boss)&&!f.enr&&f.hp>0&&f.hp<=f.max/2){f.enr=1;f.dmg=(f.dmg|0)+2;C.log.push({t:`${f.name} ${FF(f,'اتعصب','اتعصبت')}: ضربت${FF(f,'ه','ها')} بقت أقوى!`,k:'bad'});smFloat(f,FF(f,'اتعصب!','اتعصبت!'),'#ff7a5a');try{SFX.foeCry&&SFX.foeCry(f.art)}catch(e){}}
+  /* D15: the leader falls */
+  if(f.lead&&was>0&&f.hp<=0&&!f.yielded){const rest=C.foes.filter(x=>x!==f&&!smNoGo(x)),run=rest.filter(()=>Math.random()<PK_RUN);
+    run.forEach(x=>{x.hp=0;x.fled=1;setTimeout(()=>{try{const el=$('#foe'+x.id);if(el)el.classList.add('fledf');floatAt(el,FF(x,'هرب!','هربت!'),'#f3d48f','',24)}catch(e){}},500)});
+    if(rest.length)C.log.push({t:run.length?`${smNm(f)} ${FF(f,'وقع','وقعت')}، و${run.length===rest.length?'الباقيين هربوا كلهم':run.length+' منهم هربوا'}!`:`${FF(f,'كبيرهم وقع','كبيرتهم وقعت')}، بس الباقيين ثابتين.`,k:'good'});
+    try{if(run.length)SFX.flee&&SFX.flee()}catch(e){}}}catch(e){console.warn(e)}return r}}
+/* D12: a boss may break your guard */
+{const t0=foeTurn;foeTurn=function(e,o){const C=S.combat;try{if(C&&C.guard&&e&&(e.boss||e.base&&e.base.boss)&&Math.random()<BS_BRK){C.guard=0;C.log.push({t:T(`${e.name} ${FF(e,'شاف','شافت')} {إنك مستخبي|إنك مستخبية} و${FF(e,'كسر','كسرت')} دفاعك!`),k:'bad'});
+  try{const el=$('#meCard');if(el)floatAt(el,ae('الدفاع اتكسر!','Guard broken!'),'#ff7a5a','',22)}catch(x){}}}catch(x){}return t0.apply(this,arguments)}}
+/* D03: count the real kills */
+{const e0=endFight;endFight=function(won){try{const C=S.combat,h=S.hero;if(C&&h&&!C.tutorial)C.foes.forEach(f=>{if(f.hp<=0&&!f.fled&&!f.yielded&&!f.out&&f.art){const was=grLv(h,f.art);grAdd(h,f.art);const now=grLv(h,f.art);
+  if(now>was)setTimeout(()=>{try{toast(T(ae(`اللي زي ${smNm(f)} بقوا شايلين منك (${now} من ${GR_MAX})`,`The ${smNm(f)} kind bear a grudge against you (${now} of ${GR_MAX})`)))}catch(e){}},900)}})}catch(e){console.warn(e)}return e0.apply(this,arguments)}}
+/* ---------- 6.27 D10/D38/D48 (acc1): «البيت والمتحف» — your own house in the village ----------
+   D10: «بيتك» is a town tile (TW_EXTRA, in «الخدمات»). Three rooms grow with money and materials (HM_R): the workshop (every craft
+        a little better: craftQ score +.02 a level), your room (trade experience +5% a level: lifeXP ×) and the museum (more shelves).
+        Decorations (HM_D) are bought once and drawn in the room's pixel picture; each gives comfort, and comfort is +1% fight
+        experience a point (gainXP ×), at most HM_CMAX.
+   D38: the museum keeps what you beat: every boss kind you won against (h.tro[art] = {n, d first town day, nm}) and the kinds you
+        killed most (h.kc[art]). Its level is how many shelves show (HM_SHELF).
+   D48: «أهدافي»: up to 3 goals you pick yourself from a few offers made from where you are now (glOffers): a level, a trade level,
+        more kills of a kind you know, weather secrets (p148 h.wx.n), a boss. Progress is read from the hero, so nothing is lost;
+        a finished goal pays when you take it (money). Saved in h.home = {r:{room:lv}, d:{deco:1}, g:[goals], gd done count}. */
+const HM_R=[
+  {id:'warsha',n:['الورشة','The workshop'],d:['كل الحِرف إيدك فيها أحسن شوية','Every craft goes a little better'],c:[[300,{iron:4,coal:4}],[900,{iron:8,steel:2}],[2200,{steel:5,gold:1}]]},
+  {id:'oda',n:['أوضتك','Your room'],d:['خبرة الشغلانات +5% كل مستوى','Trade experience +5% a level'],c:[[250,{cloth:4}],[800,{cloth:8,salskin:2}],[2000,{cloth:10,silver:2}]]},
+  {id:'mathaf',n:['المتحف','The museum'],d:['رفوف أكتر للي هزمته','More shelves for what you beat'],c:[[400,{copper:6}],[1200,{silver:3}],[3000,{gold:2,emerald:1}]]}];
+const HM_D=[
+  {id:'rug',n:['كليم','A rug'],p:120,cf:1},{id:'lamp',n:['فانوس','A lantern'],p:150,cf:1},{id:'plant',n:['زرعة في قصرية','A potted plant'],p:180,cf:1},
+  {id:'frame',n:['صورة على الحيطة','A picture'],p:260,cf:2},{id:'shelf',n:['رف كتب','A bookshelf'],p:380,cf:2},{id:'sofa',n:['كنبة','A sofa'],p:600,cf:3}];
+const HM_CMAX=10,HM_SHELF=[0,4,8,99];
+function hmFix(h){if(!h)return {r:{},d:{},g:[],gd:0};let H=h.home;if(!H||typeof H!=='object'||Array.isArray(H))H=h.home={};
+  if(!H.r||typeof H.r!=='object')H.r={};if(!H.d||typeof H.d!=='object')H.d={};if(!Array.isArray(H.g))H.g=[];H.gd=H.gd|0;
+  if(!h.tro||typeof h.tro!=='object'||Array.isArray(h.tro))h.tro={};if(!h.kc||typeof h.kc!=='object'||Array.isArray(h.kc))h.kc={};return H}
+const hmLv=(h,id)=>(h&&h.home&&h.home.r&&h.home.r[id])|0;
+const hmComfort=h=>Math.min(HM_CMAX,HM_D.reduce((a,D)=>a+(h&&h.home&&h.home.d&&h.home.d[D.id]?D.cf:0),0));
+const hmN=x=>ae(x[0],x[1]);
+/* the bonuses */
+{const c0=craftQ;craftQ=function(h,at,score){try{const l=hmLv(h,'warsha');if(l)arguments[2]=Math.min(1,(+score||0)+.02*l)}catch(e){}return c0.apply(this,arguments)}}
+{const l0=lifeXP;lifeXP=function(h,k,n){try{const l=h&&h===S.hero&&hmLv(h,'oda');if(l){const v=(n||1)*(1+.05*l);arguments[2]=Math.floor(v)+(Math.random()<v%1?1:0)}}catch(e){}return l0.apply(this,arguments)}}
+{const g0=gainXP;gainXP=function(n){try{const c=hmComfort(S.hero);if(c&&n>0)arguments[0]=Math.round(n*(1+c/100))}catch(e){}return g0.apply(this,arguments)}}
+/* D38: what the museum keeps */
+{const e0=endFight;endFight=function(won){try{const C=S.combat,h=S.hero;if(won&&C&&h&&!C.tutorial){hmFix(h);C.foes.forEach(f=>{if(!f.art||f.fled||f.yielded||f.out||f.hp>0)return;
+  h.kc[f.art]=(h.kc[f.art]|0)+1;if(f.boss||f.art==='nadaha'||f.base&&f.base.boss){const T0=h.tro[f.art];const nm=(f.base&&f.base.name)||f.name;
+    if(T0)T0.n=(T0.n|0)+1;else{h.tro[f.art]={n:1,d:h.nDone|0,nm};setTimeout(()=>{try{toast(ae(`${nm} اتحط في المتحف بتاعك`,`${nm} goes into your museum`))}catch(e){}},1200)}}})}}catch(e){console.warn(e)}return e0.apply(this,arguments)}}
+/* D48: the goals */
+const GL_TN={mine:'التنقيب',fish:'الصيد',cook:'الطبخ',smith:'الحدادة',tailor:'الخياطة',farm:'الزراعة',attar:'العطارة'};
+function glNow(h,g){try{if(g.t==='lvl')return h.lvl|0;if(g.t==='life')return (h.life&&h.life[g.k]&&h.life[g.k].lvl)|0;if(g.t==='kill')return (h.kc&&h.kc[g.k])|0;
+  if(g.t==='wx')return (h.wx&&h.wx.n)|0;if(g.t==='boss')return Object.values(h.tro||{}).reduce((a,x)=>a+(x.n|0),0)}catch(e){}return 0}
+function glTxt(g){const n=g.to-g.from;if(g.t==='lvl')return ae(`{وصّل|وصّلي} للمستوى ${g.to}`,`Reach level ${g.to}`);if(g.t==='life')return ae(`{وصّل|وصّلي} ${GL_TN[g.k]} لمستوى ${g.to}`,`Get ${g.k} to level ${g.to}`);
+  if(g.t==='kill')return ae(`{اهزم|اهزمي} ${n} ${g.nm} كمان`,`Beat ${n} more ${g.nm}`);if(g.t==='wx')return ae(`لاقي ${n} ${n>1?'أسرار':'سر'} في الخلا وقت الطقس`,`Find ${n} weather secrets in the wilds`);
+  return ae('{اهزم|اهزمي} زعيم كمان','Beat one more boss')}
+function glOffers(h){const H=hmFix(h),L=Math.max(1,h.lvl|0),o=[],have=t=>H.g.some(g=>g.t===t.t&&g.k===t.k);
+  const add=(t,k,to,nm)=>{const g={t,k,from:glNow(h,{t,k}),to,nm};if(g.to>g.from&&!have(g))o.push(g)};
+  add('lvl','',L+1);
+  Object.keys(GL_TN).filter(k=>h.life&&h.life[k]).sort((a,b)=>(h.life[a].lvl|0)-(h.life[b].lvl|0)).slice(0,2).forEach(k=>add('life',k,(h.life[k].lvl|0)+2));
+  const kk=Object.keys(h.kc||{}).filter(a=>!h.tro[a]).sort((a,b)=>(h.kc[b]|0)-(h.kc[a]|0))[0];if(kk){const nm=glKind(kk);add('kill',kk,(h.kc[kk]|0)+8,nm)}
+  if(L>=WX_LV)add('wx','',((h.wx&&h.wx.n)|0)+2);add('boss','',glNow(h,{t:'boss'})+1);
+  o.forEach(g=>g.r=Math.round((40+15*L)*(g.t==='boss'?2:g.t==='life'?1.5:1)/5)*5);return o.slice(0,5)}
+function glKind(art){try{if(typeof ROAM_ENCOUNTERS!=='undefined'){const e=Object.values(ROAM_ENCOUNTERS).find(x=>x&&x.art===art);if(e&&e.name)return e.name}}catch(e){}return art}
+const glDone=(h,g)=>glNow(h,g)>=g.to;
+const glReady=h=>!!h&&hmFix(h).g.some(g=>glDone(h,g));
+/* the screen */
+const HMS={tab:'home',pick:0};
+function hmRoomArt(h){const H=hmFix(h),D=H.d,W=64,Hh=40;let s='';const R=(x,y,w,hh,c)=>{s+=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="${c}"/>`};
+  R(0,0,W,26,hmLv(h,'oda')>=2?'#7a5a4a':'#6a4e3e');R(0,26,W,14,'#4a3226');for(let x=0;x<W;x+=8)R(x,26,1,14,'#3e2a20');R(0,25,W,1,'#2b1b22');
+  R(26,5,12,10,'#2b1b22');R(27,6,10,8,klPh(klHr(h))==='n'?'#1f2a4a':'#8fd0f0');R(31,6,1,8,'#2b1b22');R(27,10,10,1,'#2b1b22');
+  R(52,10,9,16,'#2b1b22');R(53,11,7,15,'#8d5b36');R(58,18,1,1,'#ffd36a');
+  if(hmLv(h,'warsha')){R(2,18,14,2,'#5c3a22');R(3,20,2,6,'#5c3a22');R(13,20,2,6,'#5c3a22');R(5,15,3,3,'#9aa4ae');R(10,16,4,2,'#b47c4b')}
+  if(D.rug){R(18,30,26,6,'#963c2c');R(19,31,24,4,'#c75b3d');for(let x=20;x<42;x+=4)R(x,32,2,2,'#ffd36a')}
+  if(D.lamp){R(22,3,1,3,'#2b1b22');R(21,6,3,4,'#ffd36a');R(20,6,1,4,'#2b1b22');R(24,6,1,4,'#2b1b22')}
+  if(D.plant){R(47,22,4,4,'#b06b3d');R(46,16,2,6,'#4f8a3a');R(49,14,2,8,'#7fe07a');R(51,17,2,5,'#4f8a3a')}
+  if(D.frame){R(40,6,8,7,'#ffd36a');R(41,7,6,5,'#4f8a3a');R(42,9,3,3,'#8fd0f0')}
+  if(D.shelf){R(4,4,16,1,'#5c3a22');R(4,9,16,1,'#5c3a22');[5,7,9,12,14,17].forEach((x,i)=>R(x,1+(i%2),2,3,['#c75b3d','#45a8b4','#e0b84a'][i%3]));[6,9,11,15].forEach((x,i)=>R(x,6,2,3,['#a578d6','#7fe07a'][i%2]))}
+  if(D.sofa){R(20,20,22,6,'#45507a');R(19,18,3,8,'#35406a');R(40,18,3,8,'#35406a');R(22,18,18,3,'#5a68a0')}
+  return `<svg viewBox="0 0 ${W} ${Hh}" shape-rendering="crispEdges" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`}
+function hmCost(c){return `${c[0]} ${ae('جنيه','EGP')}${Object.keys(c[1]).map(k=>` · ${c[1][k]} ${resN(k)} <small>(${(S.hero.res&&S.hero.res[k])|0})</small>`).join('')}`}
+function hmCan(h,c){return (h.money|0)>=c[0]&&hasRes(h,c[1])}
+function hmHomeHTML(h){const H=hmFix(h),cf=hmComfort(h);
+  return `<div class="card hm-pic">${hmRoomArt(h)}</div><div class="card hm-cf"><b>${ae('الراحة','Comfort')} ${cf}/${HM_CMAX}</b><small>${ae(`كل نقطة راحة بتزوّد خبرة القتال 1%. دلوقتي +${cf}%.`,`Each comfort point is +1% fight experience. Now +${cf}%.`)}</small></div>
+  <h3 class="hm-h">${ae('الأوض','Rooms')}</h3>${HM_R.map(R0=>{const l=hmLv(h,R0.id),c=R0.c[l];return `<div class="card hm-r"><div class="hm-t"><b>${hmN(R0.n)}</b><small>${ae('مستوى','Level')} ${l}/${R0.c.length}</small></div><small>${hmN(R0.d)}</small>
+    ${c?`<div class="hm-c">${hmCost(c)}</div><button class="tw-buy" data-hr="${R0.id}" ${hmCan(h,c)?'':'disabled'}>${l?ae('{كبّرها|كبّريها}','Upgrade'):ae('ابنيها','Build')}</button>`:`<div class="hm-ok">✓ ${ae('آخر مستوى','Max level')}</div>`}</div>`}).join('')}
+  <h3 class="hm-h">${ae('الفرش','Decorations')}</h3><div class="hm-dg">${HM_D.map(D=>H.d[D.id]?`<div class="card hm-d on"><b>${hmN(D.n)}</b><small>✓ ${ae('في البيت','In the house')} · +${D.cf}</small></div>`:
+    `<button class="card hm-d" data-hd="${D.id}" ${(h.money|0)>=D.p?'':'disabled'}><b>${hmN(D.n)}</b><small>${D.p} ${ae('جنيه','EGP')} · ${ae('راحة','comfort')} +${D.cf}</small></button>`).join('')}</div>`}
+function hmMuseumHTML(h){hmFix(h);const l=hmLv(h,'mathaf');if(!l)return `<div class="card hm-empty">${ae('لسه مفيش متحف. ابنيه من «البيت».','No museum yet. Build it from the house.')}</div>`;
+  const tro=Object.keys(h.tro).map(a=>({a,n:h.tro[a].n|0,nm:h.tro[a].nm,b:1})),kc=Object.keys(h.kc).filter(a=>!h.tro[a]).sort((a,b)=>(h.kc[b]|0)-(h.kc[a]|0)).map(a=>({a,n:h.kc[a]|0,nm:glKind(a)}));
+  const all=tro.concat(kc),cap=HM_SHELF[l],sh=all.slice(0,cap);
+  return `<div class="card hm-cf"><b>${ae('المتحف','The museum')}</b><small>${ae(`${sh.length} من ${all.length} على الرفوف. الزعما الأول، وبعدين اللي {هزمته|هزمتيه} أكتر.`,`${sh.length} of ${all.length} on the shelves. Bosses first, then what you beat most.`)}${all.length>cap?ae(' {كبّر|كبّري} المتحف عشان رفوف أكتر.',' Upgrade the museum for more shelves.'):''}</small></div>
+    <div class="hm-mg">${sh.length?sh.map(x=>`<div class="card hm-m${x.b?' boss':''}"><span class="hm-mi">${(()=>{try{return foeArt(x.a)}catch(e){return ''}})()}</span><b>${esc(x.nm||x.a)}</b><small>${x.b?'👑 ':''}×${x.n}</small></div>`).join(''):`<div class="card hm-empty">${ae('لسه مفيش حاجة. {اهزم|اهزمي} وحوش وزعما.','Nothing yet. Beat monsters and bosses.')}</div>`}</div>`}
+function hmGoalsHTML(h){const H=hmFix(h);const cur=H.g.map((g,i)=>{const now=glNow(h,g),pct=Math.max(0,Math.min(100,Math.round(100*(now-g.from)/Math.max(1,g.to-g.from)))),done=now>=g.to;
+    return `<div class="card hm-g${done?' done':''}"><div class="hm-t"><b>${glTxt(g)}</b><small>${g.r} ${ae('جنيه','EGP')}</small></div><i class="hm-bar"><b style="width:${pct}%"></b></i>
+      <div class="hm-gr">${done?`<button class="tw-buy" data-gt="${i}">${ae('{استلم|استلمي}','Collect')}</button>`:`<small>${Math.min(now,g.to)}/${g.to}</small><button class="btn ghost hm-x" data-gx="${i}">${ae('{شيله|شيليه}','Drop')}</button>`}</div></div>`}).join('');
+  const room=H.g.length<3,off=room?glOffers(h):[];
+  return `<div class="card hm-cf"><b>${ae('أهدافي','My goals')} ${H.g.length}/3</b><small>${ae(`{اختار|اختاري} لنفسك لحد 3 أهداف. كل هدف {بتخلصه|بتخلصيه} بيدّيك فلوس. {خلصت|خلصتي} ${H.gd} لحد دلوقتي.`,`Pick up to 3 goals yourself. Each one pays when done. ${H.gd} done so far.`)}</small></div>${cur}
+    ${room&&off.length?`<h3 class="hm-h">${ae('{اختار|اختاري} هدف','Pick a goal')}</h3>${off.map((g,i)=>`<button class="card hm-o" data-go2="${i}"><b>${glTxt(g)}</b><small>${g.r} ${ae('جنيه','EGP')}</small></button>`).join('')}`:''}`}
+SCREENS.dar=function(){const h=S.hero;if(!h){S.screen='title';return render()}hmFix(h);const t=HMS.tab;
+  view.innerHTML=`${twTop(ae('بيتك','Your house'))}<div class="tw hm"><div class="hm-tabs">${[['home',ae('البيت','House')],['mus',ae('المتحف','Museum')],['goal',ae('أهدافي','Goals')+(glReady(h)?' <i class="ct-dot"></i>':'')]].map(([k,n])=>`<button class="hm-tb${t===k?' on':''}" data-tb="${k}">${n}</button>`).join('')}</div>
+    ${T(t==='mus'?hmMuseumHTML(h):t==='goal'?hmGoalsHTML(h):hmHomeHTML(h))}</div>`;
+  const b=$('#back');if(b)b.onclick=()=>{S.screen='town';render()};
+  view.querySelectorAll('[data-tb]').forEach(x=>x.onclick=()=>{HMS.tab=x.dataset.tb;try{SFX.page&&SFX.page()}catch(e){}render()});
+  view.querySelectorAll('[data-hr]').forEach(x=>x.onclick=()=>{const R0=HM_R.find(r=>r.id===x.dataset.hr),l=hmLv(h,R0.id),c=R0.c[l];if(!c||!hmCan(h,c))return;
+    h.money-=c[0];takeRes(h,c[1]);hmFix(h).r[R0.id]=l+1;saveHero();try{SFX.reg&&SFX.reg()}catch(e){}toast(ae(`${hmN(R0.n)}: مستوى ${l+1}`,`${hmN(R0.n)}: level ${l+1}`));render()});
+  view.querySelectorAll('[data-hd]').forEach(x=>x.onclick=()=>{const D=HM_D.find(d=>d.id===x.dataset.hd);if(!D||(h.money|0)<D.p||hmFix(h).d[D.id])return;
+    h.money-=D.p;h.home.d[D.id]=1;saveHero();try{SFX.coin&&SFX.coin()}catch(e){}toast(ae(`${hmN(D.n)} في البيت · راحة +${D.cf}`,`${hmN(D.n)} is home · comfort +${D.cf}`));render()});
+  view.querySelectorAll('[data-go2]').forEach(x=>x.onclick=()=>{const H=hmFix(h);if(H.g.length>=3)return;const g=glOffers(h)[+x.dataset.go2];if(!g)return;H.g.push(g);saveHero();try{SFX.page&&SFX.page()}catch(e){}render()});
+  view.querySelectorAll('[data-gx]').forEach(x=>x.onclick=()=>{const H=hmFix(h);H.g.splice(+x.dataset.gx,1);saveHero();render()});
+  view.querySelectorAll('[data-gt]').forEach(x=>x.onclick=()=>{const H=hmFix(h),g=H.g[+x.dataset.gt];if(!g||!glDone(h,g))return;H.g.splice(+x.dataset.gt,1);H.gd++;h.money=(h.money|0)+g.r;saveHero();
+    try{band(ae('هدف','Goal'),ae('خلص!','Done!'),T(glTxt(g))+` · ${g.r} ${ae('جنيه','EGP')}`,{dur:1800,sound:SFX.good})}catch(e){toast(`+${g.r}`)}render()})};
+/* the town tile */
+TW_EXTRA.push(h=>{if(!h)return null;const r=glReady(h);return {id:'dar',go:'dar',n:'بيتك',w:'أوضك والمتحف وأهدافك',s:r?`<span class="ok">${ae('فيه هدف خلص','A goal is done')}</span>`:ae(`راحة ${hmComfort(h)} · ${hmFix(h).g.length} أهداف`,`Comfort ${hmComfort(h)} · ${hmFix(h).g.length} goals`),bell:r?1:0}});
+{const g=TW_GROUPS.find(x=>x.n==='الخدمات');if(g&&!g.go.includes('dar'))g.go.unshift('dar')}
+{const pa=placeArt;placeArt=function(id){if(id==='dar'&&S.hero)return hmRoomArt(S.hero).replace('viewBox="0 0 64 40"','viewBox="0 4 64 32"');return pa.apply(this,arguments)}}
+L10N({'بيتك':'Your house','أوضك والمتحف وأهدافك':'Rooms, museum and goals'});
+(function(){const s=document.createElement('style');s.textContent=`.hm-pic{padding:0;overflow:hidden}.hm-pic svg{display:block;width:100%;height:auto;aspect-ratio:64/40}
+.hm-tabs{display:flex;gap:6px;margin-bottom:8px}.hm-tb{flex:1;min-height:44px;border:2px solid #74412a;background:#2a1c18;color:#fff0b0;font:inherit;font-weight:800;border-radius:8px;cursor:pointer}.hm-tb.on{background:#74412a}
+.hm-cf{display:flex;flex-direction:column;gap:4px}.hm-cf b{color:#ffd36a}.hm-cf small{opacity:.85}.hm-h{margin:12px 2px 6px;font-size:15px;color:#ffd36a}
+.hm-r,.hm-g{display:flex;flex-direction:column;gap:6px}.hm-t{display:flex;justify-content:space-between;align-items:center;gap:8px}.hm-t small{color:#ffd36a;white-space:nowrap}
+.hm-c{font-size:13px;opacity:.9}.hm-c small{opacity:.7}.hm-ok{color:#9be08a;font-weight:800}.hm-r .tw-buy,.hm-g .tw-buy{min-height:44px}
+.hm-dg,.hm-mg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hm-d{display:flex;flex-direction:column;gap:2px;min-height:56px;font:inherit;color:inherit;text-align:start;cursor:pointer}
+.hm-d.on{border-color:#7fe07a}.hm-d small{font-size:12px;opacity:.8}.hm-d[disabled]{opacity:.55}
+.hm-m{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}.hm-m.boss{border-color:#f3c14d}.hm-mi{display:block;width:64px;height:64px}.hm-mi svg{width:100%;height:100%}
+.hm-empty{grid-column:1/-1;opacity:.8;text-align:center}.hm-bar{display:block;height:6px;border-radius:4px;background:#0006;overflow:hidden}.hm-bar b{display:block;height:100%;background:linear-gradient(90deg,#f3c14d,#7fe07a)}
+.hm-gr{display:flex;justify-content:space-between;align-items:center;gap:8px}.hm-x{min-height:44px;padding:0 12px}.hm-g.done{border-color:#7fe07a}
+.hm-o{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:48px;font:inherit;color:inherit;text-align:start;cursor:pointer;margin-bottom:6px}.hm-o small{color:#ffd36a;white-space:nowrap}`;document.head.appendChild(s)})();
+/* ---------- 6.28 D04/D09/D24/D36 (acc1): «البلد بتتغير» ----------
+   D24: «حال البلد» (a town tile in «الناس والحكايات») has 3 orders a town day from the town's people (TB_NPC): bring them materials
+        they need, get paid well above the market (TB_PAY × the price) and their loyalty grows. The orders come from a seed of the
+        hero and the town day (h.nDone), so a reload or the phone clock never changes them.
+   D09: each one has a loyalty (0..100, +TB_LOY an order) and a goal of their own (TB_GOAL orders). Loyalty TB_FRIEND or more: they
+        are a friend: their orders pay +20% and what they tell you is always true.
+   D04: when someone's goal is reached the town changes for good (TB_NPC[].ch): a new forge, a sewing machine, a new oven, shelves
+        at the attar, a bigger market. Each change is a lasting bonus (craftQ / lifeXP / order pay) and is listed on the screen.
+   D36: one rumour a town day, told by one of them (TB_RUM): it may be true or a lie (the chance grows with the teller's loyalty).
+        Nobody tells you which: the first time you do the thing it is about, you find out (a toast), and if true it pays.
+   Saved in h.tb = {l:{npc:loyalty}, o:{npc:orders done}, ch:{npc:1}, d:town day of od, od:[order index done today], rv:{day:1|-1}}. */
+const TB_PAY=1.8,TB_LOY=12,TB_GOAL=3,TB_FRIEND=70;
+const TB_NPC=[
+  {id:'hasan',n:'عم حسن',at:'smith',want:[['copper',6],['iron',4],['coal',6],['ore_hematite',4],['silver',1]],goal:'عايز يبني كور جديد',ch:{n:'كور جديد عند عم حسن',d:'الحدادة إيدك فيها أحسن',q:{smith:.03}}},
+  {id:'fathi',n:'عم فتحي',at:'tailor',want:[['cloth',5],['salskin',2],['animal_wool',3],['reag_flax',4],['hyhide',1]],goal:'نفسه في ماكينة خياطة',ch:{n:'ماكينة خياطة عند عم فتحي',d:'الخياطة إيدك فيها أحسن',q:{tailor:.03}}},
+  {id:'omsayed',n:'أم سيد',f:1,at:'cook',want:[['bolti',4],['qarmout',2],['tamatem',5],['egg',4],['crop_potato',4],['milk',2]],goal:'عايزة تبني فرن بلدي',ch:{n:'فرن بلدي جديد عند أم سيد',d:'الطبخ إيدك فيه أحسن',q:{cook:.03}}},
+  {id:'ragab',n:'عم رجب',at:'attar',want:[['mint',4],['helba',3],['hb_rihan',3],['shih',1],['nileh',1]],goal:'عايز رفوف جديدة للعطارة',ch:{n:'رفوف جديدة في العطارة',d:'خبرة العطارة +10%',x:{attar:.1}}},
+  {id:'ramadan',n:'عم رمضان',at:'market',want:[['crop_wheat',6],['crop_garlic',3],['animal_honey',1],['crop_carrot',5],['bisaria',4]],goal:'عايز يوسّع السوق',ch:{n:'السوق بقى أكبر',d:'كل الطلبيات بتدفع 10% أكتر',pay:.1}}];
+const TB_RUM=[
+  {k:'fish',t:'السمك في الترعة كتير النهارده',ok:'خبرة الصيد +40% النهارده',x:{fish:.4}},
+  {k:'mine',t:'ظهر عرق جديد في المنجم',ok:'خبرة التنقيب +40% النهارده',x:{mine:.4}},
+  {k:'farm',t:'الأرض طارحة النهارده',ok:'خبرة الزراعة +40% النهارده',x:{farm:.4}},
+  {k:'smith',t:'الحديد بيتسقّى أحسن النهارده',ok:'الحدادة إيدك فيها أحسن النهارده',q:{smith:.06}},
+  {k:'cook',t:'النار النهارده حلوة للطبيخ',ok:'الطبخ إيدك فيه أحسن النهارده',q:{cook:.06}},
+  {k:'fight',t:'الوحوش في الخلا تايهة ومش عارفة تتلم',ok:'خبرة القتال +25% النهارده',xp:.25}];
+function tbFix(h){if(!h)return {l:{},o:{},ch:{},od:[],rv:{}};let B=h.tb;if(!B||typeof B!=='object'||Array.isArray(B))B=h.tb={};
+  ['l','o','ch','rv'].forEach(k=>{if(!B[k]||typeof B[k]!=='object'||Array.isArray(B[k]))B[k]={}});if(!Array.isArray(B.od))B.od=[];
+  const d=h.nDone|0;if(B.d!==d){B.d=d;B.od=[]}Object.keys(B.rv).map(Number).filter(x=>x<d-3).forEach(x=>delete B.rv[x]);return B}
+function tbSeed(h,salt){let x=(h.nDone|0)*2654435761^salt;const nm=String(h.name||'')+(h.cls||'');for(let i=0;i<nm.length;i++)x=Math.imul(x^nm.charCodeAt(i),16777619);
+  x=Math.imul(x^(x>>>15),0x2c1b3c6d);x^=x>>>13;return (x>>>0)/4294967296}
+const tbNpc=id=>TB_NPC.find(n=>n.id===id);
+const tbLoy=(h,id)=>Math.min(100,(tbFix(h).l[id]|0));
+const tbFriend=(h,id)=>tbLoy(h,id)>=TB_FRIEND;
+const tbCh=(h,id)=>!!(h&&h.tb&&h.tb.ch&&h.tb.ch[id]);
+function tbOrders(h){const L=TB_NPC.slice(),o=[];for(let i=0;i<3;i++){const j=Math.floor(tbSeed(h,17+i)*L.length),N=L.splice(j,1)[0];const w=N.want[Math.floor(tbSeed(h,41+i)*N.want.length)];
+    const lv=Math.max(1,h.lvl|0),n=Math.max(1,Math.round(w[1]*(1+Math.min(2,lv/10))));const base=((MAT[w[0]]&&MAT[w[0]].p)|0)*n;
+    const mul=TB_PAY*(1+(tbFriend(h,N.id)?.2:0)+(tbCh(h,'ramadan')?.1:0));o.push({i,npc:N.id,k:w[0],n,pay:Math.round(base*mul/5)*5+10})}return o}
+const tbHave=(h,k)=>(h&&h.res&&h.res[k])|0;
+function tbGive(h,i){const B=tbFix(h),O=tbOrders(h)[i];if(!O||B.od.includes(i)||!hasRes(h,{[O.k]:O.n}))return false;const N=tbNpc(O.npc);
+  takeRes(h,{[O.k]:O.n});h.money=(h.money|0)+O.pay;B.od.push(i);const l0=B.l[N.id]|0;B.l[N.id]=Math.min(100,l0+TB_LOY);B.o[N.id]=(B.o[N.id]|0)+1;
+  const fr=l0<TB_FRIEND&&B.l[N.id]>=TB_FRIEND,gl=!B.ch[N.id]&&B.o[N.id]>=TB_GOAL;if(gl)B.ch[N.id]=1;saveHero();
+  try{SFX.coin&&SFX.coin()}catch(e){}toast(`${N.n}: «تسلم إيدك» · +${O.pay} جنيه`);
+  if(gl)setTimeout(()=>{try{band('البلد اتغيرت',N.ch.n,N.ch.d,{dur:2400,sound:SFX.good})}catch(e){}},500);
+  else if(fr)setTimeout(()=>{try{toast(N.f?`${N.n} بقت صاحبتك: كلامها دايمًا صح وطلبياتها بتدفع أكتر`:`${N.n} بقى صاحبك: كلامه دايمًا صح وطلبياته بتدفع أكتر`)}catch(e){}},600);return true}
+/* D36: today's rumour */
+function tbRum(h){const N=TB_NPC[Math.floor(tbSeed(h,7)*TB_NPC.length)],R=TB_RUM[Math.floor(tbSeed(h,9)*TB_RUM.length)];
+  const p=tbFriend(h,N.id)?1:.5+tbLoy(h,N.id)/200,ok=tbSeed(h,13)<p;return {N,R,ok,p}}
+function tbRumHit(h,match){try{if(!h||h!==S.hero||(typeof N_on==='function'&&N_on()&&!match.fight))return null;const r=tbRum(h);if(!match(r.R))return null;const B=tbFix(h),d=h.nDone|0;
+  if(!B.rv[d]){B.rv[d]=r.ok?1:-1;saveHero();setTimeout(()=>{try{toast(r.ok?`🗣️ الإشاعة طلعت صح: ${r.R.ok}`:`🗣️ «${r.R.t}» طلعت كلام وخلاص`)}catch(e){}},300)}return r.ok?r.R:null}catch(e){return null}}
+/* the effects: town changes and true rumours */
+{const c0=craftQ;craftQ=function(h,at,score){try{let b=0;TB_NPC.forEach(N=>{if(tbCh(h,N.id)&&N.ch.q&&N.ch.q[at])b+=N.ch.q[at]});const R=tbRumHit(h,R0=>R0.q&&R0.q[at]);if(R)b+=R.q[at];
+  if(b)arguments[2]=Math.min(1,(+score||0)+b)}catch(e){}return c0.apply(this,arguments)}}
+{const l0=lifeXP;lifeXP=function(h,k,n){try{if(h&&h===S.hero){let m=0;TB_NPC.forEach(N=>{if(tbCh(h,N.id)&&N.ch.x&&N.ch.x[k])m+=N.ch.x[k]});const R=tbRumHit(h,R0=>R0.x&&R0.x[k]);if(R)m+=R.x[k];
+  if(m){const v=(n||1)*(1+m);arguments[2]=Math.floor(v)+(Math.random()<v%1?1:0)}}}catch(e){}return l0.apply(this,arguments)}}
+{const g0=gainXP;gainXP=function(n){try{const f=R0=>!!R0.xp;f.fight=1;const R=n>0&&S.combat===null&&tbRumHit(S.hero,f);if(R)arguments[0]=Math.round(n*(1+R.xp))}catch(e){}return g0.apply(this,arguments)}}
+/* the screen */
+function tbHTML(h){const B=tbFix(h),O=tbOrders(h),r=tbRum(h),rv=B.rv[h.nDone|0];
+  const rum=`<div class="card tb-rum"><small>🗣️ ${r.N.n} ${ae(r.N.f?'بتقول':'بيقول','says')}:</small><b>«${r.R.t}»</b><small>${rv?rv>0?`✓ ${ae('طلعت صح','It was true')}: ${r.R.ok}`:`✗ ${ae('طلعت كلام وخلاص','It was only talk')}`:tbFriend(h,r.N.id)?ae(r.N.f?`${r.N.n} صاحبتك، وكلامها دايمًا صح.`:`${r.N.n} صاحبك، وكلامه دايمًا صح.`,'A friend: always true.'):ae('صح ولا كدب؟ {هتعرف|هتعرفي} لما {تجرب|تجربي}.','True or a lie? Try it and see.')}</small></div>`;
+  const ord=O.map(o=>{const N=tbNpc(o.npc),done=B.od.includes(o.i),have=tbHave(h,o.k),can=!done&&have>=o.n;
+    return `<div class="card tb-o${done?' done':''}"><div class="tb-t"><b>${N.n}</b><small>${o.pay} ${ae('جنيه','EGP')}</small></div><span>${ae(`محتاج ${o.n} ${resN(o.k)}`,`Needs ${o.n} ${resN(o.k)}`)} <small>(${ae('معاك','you have')} ${have})</small></span>
+      ${done?`<div class="tb-ok">✓ ${ae('اتسلمت','Delivered')}</div>`:`<button class="tw-buy" data-tbo="${o.i}" ${can?'':'disabled'}>${can?ae('{سلّم|سلّمي}','Deliver'):ae('مش معاك كفاية','Not enough')}</button>`}</div>`}).join('');
+  const ppl=TB_NPC.map(N=>{const l=tbLoy(h,N.id),o=Math.min(TB_GOAL,B.o[N.id]|0),c=!!B.ch[N.id];
+    return `<div class="card tb-p"><div class="tb-t"><b>${N.n}${tbFriend(h,N.id)?` <em>${ae(N.f?'صاحبتك':'صاحبك','friend')}</em>`:''}</b><small>${ae('الولاء','Loyalty')} ${l}</small></div><i class="tb-bar"><b style="width:${l}%"></b></i>
+      <small>${c?`✓ ${N.ch.n}`:`${N.goal} (${o}/${TB_GOAL} ${ae('طلبيات','orders')})`}</small></div>`}).join('');
+  const chs=TB_NPC.filter(N=>B.ch[N.id]);
+  return `${rum}<h3 class="hm-h">${ae('طلبيات النهارده','Today\'s orders')}</h3>${ord}<small class="tb-sm">${ae('طلبيات جديدة كل يوم في البلد.','New orders every town day.')}</small>
+    <h3 class="hm-h">${ae('ناس البلد','The townsfolk')}</h3>${ppl}
+    ${chs.length?`<h3 class="hm-h">${ae('اللي اتغير في البلد','What changed in town')}</h3><div class="card tb-ch">${chs.map(N=>`<span>🏗️ <b>${N.ch.n}</b> · ${N.ch.d}</span>`).join('')}</div>`:''}`}
+SCREENS.balad=function(){const h=S.hero;if(!h){S.screen='title';return render()}tbFix(h);
+  view.innerHTML=`${twTop(ae('حال البلد','The town'))}<div class="tw tb">${T(tbHTML(h))}</div>`;
+  const b=$('#back');if(b)b.onclick=()=>{S.screen='town';render()};
+  view.querySelectorAll('[data-tbo]').forEach(x=>x.onclick=()=>{if(tbGive(h,+x.dataset.tbo))render()})};
+TW_EXTRA.push(h=>{if(!h)return null;const B=tbFix(h),O=tbOrders(h),can=O.filter(o=>!B.od.includes(o.i)&&tbHave(h,o.k)>=o.n).length,left=O.filter(o=>!B.od.includes(o.i)).length;
+  return {id:'balad',go:'balad',n:'حال البلد',w:'طلبيات وإشاعات وناس البلد',s:can?`<span class="ok">${ae(`${can===1?'طلبية':can+' طلبيات'} ${G('تقدر تسلمها','تقدري تسلميها')}`,`${can} ready to deliver`)}</span>`:left?ae(`${left} ${left===1?'طلبية':'طلبيات'} النهارده`,`${left} orders today`):ae('خلصت طلبيات النهارده','All orders done today'),bell:can?1:0}});
+{const g=TW_GROUPS.find(x=>x.n==='الناس والحكايات');if(g&&!g.go.includes('balad'))g.go.unshift('balad')}
+{const pa=placeArt;placeArt=function(id){if(id==='balad')return pa.call(this,'market')||pa.call(this,'town');return pa.apply(this,arguments)}}
+L10N({'حال البلد':'The town','طلبيات وإشاعات وناس البلد':'Orders, rumours and people'});
+(function(){const s=document.createElement('style');s.textContent=`.tb-rum{display:flex;flex-direction:column;gap:4px}.tb-rum b{color:#ffd36a;font-size:16px}.tb-rum small{opacity:.85}
+.tb-o,.tb-p{display:flex;flex-direction:column;gap:6px}.tb-o.done{opacity:.7;border-color:#7fe07a}.tb-t{display:flex;justify-content:space-between;align-items:center;gap:8px}.tb-t small{color:#ffd36a;white-space:nowrap}
+.tb-t em{font-style:normal;font-size:12px;color:#9be08a;margin-inline-start:4px}.tb-o .tw-buy{min-height:44px}.tb-ok{color:#9be08a;font-weight:800}.tb-sm{display:block;opacity:.7;margin:4px 2px}
+.tb-bar{display:block;height:6px;border-radius:4px;background:#0006;overflow:hidden}.tb-bar b{display:block;height:100%;background:linear-gradient(90deg,#f3c14d,#7fe07a)}.tb-ch{display:flex;flex-direction:column;gap:6px}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
