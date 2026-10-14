@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.62',d:'14 أكتوبر',add:['الليلة الجماعية: لو وحش هجم على صاحبك، صاحبك هو اللي بيرمي زهر التفادي على تليفونه بخفته هو، مش صاحب الأوضة. ولو ما ردّش في 15 ثانية، اللعبة بترميله.','الليلة الجماعية: لو النت فصل وانت بتبعت اختيارك أو زهرك، اللعبة بتحاول تاني لوحدها، ولو ما وصلش {تقدر|تقدري} {تدوس|تدوسي} تاني بدل ما يفضل متعلّق.','لو اتنين دخلوا الأوضة في نفس اللحظة، واحد بس بياخد المكان التاني، واللي زيادة عن 5 بيخرج لوحده برسالة «الليلة كاملة».','صحابك كلهم بيظهروا في «صحابي» وفي اختيار رفيق الليلة، مش أول 60 بطل في اللعبة بس.','مكافأة الليلة الجماعية ليها حد أقصى، وجدول الأوائل بقى أصعب في التزوير.']},
 {v:'6.61',d:'14 أكتوبر',add:['المنجم: أول مرة صخرة تقع أو غاز أو الهوا يخلص أو عِرق نادر، المنجم بيقف ويشرحلك {تعمل|تعملي} إيه، والوقت ما بيبدأش غير لما {تدوس|تدوسي} «جاهز». بعد كده بتطلع «{انتبه|انتبهي}!» الأول ثانية، عشان دوستك على الصخرة ما تقعش على اللعبة بالغلط.','المنجم: الوقت بقى أطول في الأربع ألعاب، وزرار «اكتم نفسك» وزرار «انفخ!» ما بقوش بيتحركوا من مكانهم وانت بتدوس.','الجو ما بقاش بيحط «مبلول» أو «هايج» أو «متعفّر» قدام اسم كل وحش. الجو لسه بيأثر في الخناقة زي ما هو، بس الاسم بيفضل نضيف، إلا الوحش اللي تاه في الشبورة.']},
 {v:'6.60',d:'14 أكتوبر',add:['في الحوار، كل واحد بيتكلم بقى ليه صورته جنب كلامه: لو خالد اتكلم تشوف خالد، ولو مراته ردّت تشوف مراته. وكل شخص بيفضل بنفس الوش طول المشهد، ولو انت اللي بتتكلم بتشوف صورتك.']},
 {v:'6.59',d:'14 أكتوبر',add:['«مبارزة أونلاين»: من «صحابي» {دوس|دوسي} 🔴⚔ جنب صاحبك و{ابعت|ابعتي} له دعوة، وتلعبوا مع بعض في نفس الوقت دور بدور: ضربة، تقيلة، أو حماية، و{اضرب|اضربي} في الأخضر عشان الضربة تصيب (والدهبي ضربة قاضية).','الرهان: ولا حاجة، فلوس، أو حاجة من شنطتك. الرهان بيتحجز أول ما {تبعت|تبعتي}، وصاحبك بيحط نفس الفلوس أو حاجة قيمتها قريبة. الكسبان بياخد الرهانين، ولو اترفضت أو اتلغت رهانك بيرجعلك.','لو صاحبك ما ردّش في دوره دقيقة، {تقدر|تقدري} {تاخد|تاخدي} المكسب. والمكسب بيتحسب كمان في جدول الأسبوع.']},
@@ -20732,8 +20733,8 @@ const palCol=()=>FB.db.collection('pal');
 function palSnap(h){const lk={};PAL_LOOK.forEach(k=>{const v=h[k];if(typeof v==='string'&&v.length<=40||typeof v==='number')lk[k]=v});
   if(h.eq){const e={};Object.keys(h.eq).forEach(s=>{if(typeof h.eq[s]==='string')e[s]=h.eq[s]});lk.eq=e}
   return {n:String(h.name||'').slice(0,20),g:h.g==='f'?'f':'m',c:String(h.cls||'').slice(0,12),l:Math.max(1,Math.min(999,h.lvl|0)),hp:Math.max(1,Math.min(9999,MXH(h)|0)),lk:JSON.stringify(lk).slice(0,1800)}}
-async function palPush(){if(!FB.user||!FB.db)return;for(const h of HEROES.filter(Boolean)){const s=palSnap(h),key=JSON.stringify(s),id=FB.user.uid+'_'+lbId(h);
-  if(PAL.sent[id]===key)continue;try{await palCol().doc(id).set(Object.assign({o:FB.user.uid,t:window.firebase.firestore.FieldValue.serverTimestamp()},s));PAL.sent[id]=key;saveHero()}catch(e){console.warn('pal: '+(e&&e.code||e));return}}}
+async function palPush(){if(!FB.user||!FB.db)return;for(const h of HEROES.filter(Boolean)){const s=palSnap(h),key='fc|'+JSON.stringify(s),id=FB.user.uid+'_'+lbId(h);
+  if(PAL.sent[id]===key)continue;try{await palCol().doc(id).set(Object.assign({o:FB.user.uid,fc:frCode(FB.user.uid),t:window.firebase.firestore.FieldValue.serverTimestamp()},s));PAL.sent[id]=key;saveHero()}catch(e){console.warn('pal: '+(e&&e.code||e));return}}}
 {const u0=fbUp;fbUp=async function(){const r=await u0.apply(this,arguments);if(FB.user&&!FB.locked)palPush();return r}}
 {const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);palPush();return R}}
 
@@ -20748,8 +20749,7 @@ compFor=function(h){const p=h&&h.pal;if(p&&p.n&&!S.training)return palComp(h,p);
 {const ct=compTurn;compTurn=async function(){const C=S.combat;if(C)C.compHit=1;try{return await ct.apply(this,arguments)}finally{if(S.combat)S.combat.compHit=0}}}
 
 async function palLoad(){PAL.err='';PAL.rows=null;
-  try{await fbLoad();if(!FB.user){PAL.rows=[];return}await palPush();const q=await palCol().limit(60).get();
-    PAL.rows=q.docs.map(d=>Object.assign({_id:d.id},d.data())).filter(x=>x.o!==FB.user.uid).sort((a,b)=>(b.l|0)-(a.l|0))}
+  try{await fbLoad();if(!FB.user){PAL.rows=[];return}await palPush();PAL.rows=(await palQuery()).filter(x=>x.o!==FB.user.uid).sort((a,b)=>(b.l|0)-(a.l|0))}
   catch(e){PAL.err=e&&e.code==='permission-denied'?'الرفقة لسه بتتجهز.':'مش قادر أوصل دلوقتي. اتأكد إن فيه نت.';PAL.rows=[]}
   if(S.screen==='pals')render()}
 SCREENS.pals=function(){const h=S.hero;if(!h){S.screen='title';return render()}
@@ -20940,10 +20940,8 @@ async function coJoin(v){const h=S.hero,code=String(v||'').toUpperCase().replace
       else if((R.kk||'').split(',').includes(FB.user.uid))CO.err='صاحب الليلة طلّعك منها.';
       else if(R.g&&R.g!==FB.user.uid&&R.st!=='wait'&&!(await coPRef(code,FB.user.uid).get()).exists)CO.err='الليلة دي بدأت خلاص.';
       else{const snap=JSON.stringify(palSnap(h)).slice(0,2000),nm=String(h.name||'').slice(0,20);
-        if(!R.g)await coRef(code).update({g:FB.user.uid,gn:nm,gp:snap});
-        else if(R.g!==FB.user.uid){const q=await coRef(code).collection('p').get();const n=q.docs.filter(d=>d.id!==FB.user.uid).length;
-          if(n>=CO_MAXX){CO.err='الليلة دي كاملة (5 لاعيبة).';CO.busy=0;return render()}
-          const me=coPRef(code,FB.user.uid);if(!(await me.get()).exists)await me.set({n:nm,gp:snap,ans:'',t:window.firebase.firestore.FieldValue.serverTimestamp()})}
+        const first=!R.g&&await coTakeG(code,nm,snap);
+        if(!first&&R.g!==FB.user.uid&&!(await coSeat(code,nm,snap))){CO.busy=0;return render()}
         coAsGuest(code);S.screen='coopg'}}}
   catch(e){CO.err=coNet(e)}CO.busy=0;render()}
 function coAsGuest(code){CO.code=code;CO.role='guest';coKeep(code);clearInterval(CO.hbT);
@@ -20964,9 +20962,9 @@ async function coGive(u){const R=CO.room,h=S.hero;if(!R||CO.role!=='host'||R.st!
       await coPRef(code,me).set({n:nm,gp:snap,ans:'',t:window.firebase.firestore.FieldValue.serverTimestamp()})}
     coAsGuest(code);S.screen='coopg';toast('الليلة بقت مع صاحبك.')}catch(e){CO.err=coNet(e)}render()}
 function coReward(){const R=CO.room,h=S.hero,rw=R&&coJ(R.rw);if(!rw||!h)return;h.coopDone=h.coopDone||[];if(h.coopDone.includes(CO.code))return;
-  h.coopDone=h.coopDone.slice(-20).concat([CO.code]);h.money+=rw.m|0;CO.ups=gainXP(rw.xp|0);saveHero();if(typeof fbSoon==='function')fbSoon()}
+  h.coopDone=h.coopDone.slice(-20).concat([CO.code]);const cap=coRwCap(h,rw);h.money+=cap.m;CO.ups=gainXP(cap.xp);saveHero();if(typeof fbSoon==='function')fbSoon()}
 async function coAnswer(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!=null)return;CO.ans[a.id]=i;SFX.page&&SFX.page();render();
-  const v=JSON.stringify({id:a.id,a:i});try{if(R.g===FB.user.uid)await coRef(CO.code).update({ans:v});else await coPRef(CO.code,FB.user.uid).update({ans:v})}catch(e){CO.err=coNet(e);render()}}
+  const v=JSON.stringify({id:a.id,a:i});if(!(await coPutAns(v))){delete CO.ans[a.id];render()}}
 const coBar=(hp,mx,c)=>`<div class="co-bar"><i style="width:${Math.max(0,Math.min(100,Math.round(100*hp/Math.max(1,mx))))}%;background:${c}"></i></div><small>${Math.max(0,hp)}/${mx}</small>`;
 SCREENS.coopg=function(){const h=S.hero,R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask),mine=a&&CO.ans[a.id]==null&&R&&R.st==='on'&&FB.user&&(a.to||R.g)===FB.user.uid,first=R&&FB.user&&R.g===FB.user.uid;
   let body='';
@@ -22452,7 +22450,7 @@ function coSafe(html){const t=document.createElement('template');t.innerHTML=htm
   const d=document.createElement('div');d.appendChild(t.content);return d.innerHTML}
 CO.vote={};CO.rpGot=null;CO.mh='';CO.dOrig=null;
 async function coVote(i){const R=CO.room,V=coJ(R&&R.vw);if(!R||!V||!V.cs)return;CO.vote[V.cs]=i;SFX.page&&SFX.page();vib&&vib(15);coMarkGuest(V);
-  const v=JSON.stringify({id:'v:'+V.cs,a:i,n:Date.now()%100000});try{if(R.g===FB.user.uid)await coRef(CO.code).update({ans:v});else await coPRef(CO.code,FB.user.uid).update({ans:v})}catch(e){CO.err=coNet(e);render()}}
+  const v=JSON.stringify({id:'v:'+V.cs,a:i,n:Date.now()%100000});if(!(await coPutAns(v))){delete CO.vote[V.cs];render()}}
 const coGEls=()=>{const V=coJ(CO.room&&CO.room.vw);if(V&&V.s==='setup'){const g=$('#coM #go');return g?[g]:[]}return coEls($('#coM'),coDiceOpen()&&CO.dOrig!=null?$('#dice'):null)};
 function coMarkGuest(V){const L=coGEls(),VT=(V&&V.vt)||[],mine=V?CO.vote[V.cs]:null;
   L.forEach((b,i)=>{let t=b.querySelector('.co-vt');const names=VT[i]||[];if(names.length){if(!t){t=document.createElement('span');t.className='co-vt';b.appendChild(t)}t.textContent='✋ '+names.join('، ')}else if(t)t.remove();
@@ -22596,8 +22594,8 @@ setInterval(()=>{try{coRollRead()}catch(e){}},800);
 /* the friend's phone opens its own dice */
 async function coMyRoll(rl){if(CO.myRoll||CO.rlDone[rl.id]||!S.hero)return;CO.myRoll=rl.id;CO.rlDone[rl.id]=1;coDiceRestore();const d0=S.dice;if(rl.dz)S.dice=rl.dz;
   let x=null;try{x=await rollCheck(rl.st,{label:G('دورك ترمي زهرك! كل واحد ليه نتيجته','دورك ترمي زهرك! كل واحدة ليها نتيجتها'),dc:rl.dc|0,adv:!!rl.adv})}finally{S.dice=d0;CO.myRoll=''}
-  if(!x||x.cancel||!CO.code)return;const R=CO.room,v=JSON.stringify({id:'r:'+rl.id,t:x.tier,n:x.total|0});
-  try{if(R&&R.g===coMe())await coRef(CO.code).update({ans:v});else await coPRef(CO.code,coMe()).update({ans:v})}catch(e){}
+  if(!x||x.cancel||!CO.code)return;const v=JSON.stringify({id:'r:'+rl.id,t:x.tier,n:x.total|0});
+  await coPutAns(v);
   if(S.screen==='coopg')render()}
 {const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,V=coJ(R&&R.vw);
     if(R&&R.st==='on'&&V&&V.rl&&V.rl.id&&!CO.rlDone[V.rl.id]&&!CO.myRoll)setTimeout(()=>coMyRoll(V.rl),300)}catch(e){}return r}}
@@ -22868,7 +22866,7 @@ async function coAnswerR(i){const R=CO.room,a=coJ(R&&R.ask);if(!a||CO.ans[a.id]!
   const V=coJ(R.vw),d0=S.dice;if(V&&V.dz)S.dice=V.dz;coDiceRestore();CO.myRoll='f'+a.id;let x=null;
   try{setTimeout(()=>coDiceClock(1),60);x=await rollCheck(st,{label:`${nm}: ${G('ارمي','ارمي')} زهرك`})}finally{S.dice=d0;CO.myRoll=''}
   const v=JSON.stringify({id:a.id,a:{i,t:x&&x.tier||'fail',n:(x&&x.total)|0}});
-  try{if(R.g===coMe())await coRef(CO.code).update({ans:v});else await coPRef(CO.code,coMe()).update({ans:v})}catch(e){}if(S.screen==='coopg')render()}
+  if(!(await coPutAns(v)))delete CO.ans[a.id];if(S.screen==='coopg')render()}
 {const v0=coView;coView=function(){const o=v0.apply(this,arguments);o.dz=S.dice||'';if(S.combat&&S.screen==='combat'){const t=coTurnWho();o.tu=t.n;o.tuU=t.u}return o}}
 /* whose turn it is right now, by name: a friend, your companion, the host, or the foes */
 function coTurnWho(){const C=S.combat,u=CO.turnU,R=CO.room;
@@ -53545,6 +53543,66 @@ function mrPre(k,go){const h=S.hero;if(!mrOn()||mrAuto()||!h||!$('#gxStage'))ret
 .mr-how .mr-hi{font-size:40px;line-height:1}.mr-how b{font-size:18px;color:#ffd36a}.mr-how p{margin:0;font-size:14px;line-height:1.6}.mr-how .btn{min-height:48px;min-width:160px}
 .mr-l.warn{background:#e2483f22;pointer-events:auto}.mr-warn{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:56px;animation:mrWarn .25s ease-in-out infinite alternate}
 @keyframes mrWarn{to{transform:scale(1.15)}}`;document.head.appendChild(s)})();
+/* ---------- 6.62 (acc1, Roadmap R07): the live night and the online lists, made fair and sturdy ----------
+   B24 an answer (a vote, a move, a roll) counted as sent before it reached the room: now coPutAns() tries up to 4 times and
+       only then marks it; a failed send can be tapped again.
+   B23 a friend's dodge was rolled on the host's phone: now the friend rolls it on their own phone with their own dice and
+       their own خفة (the foe's aim is the difficulty). If they don't answer in 15 s the host's old roll is used.
+   B25 two friends joining at once: the second seat is taken in a transaction, and a player who lands past the last seat
+       (CO_MAXX) steps back out by himself with «الليلة كاملة».
+   B27 the night's reward comes from the host's room: a friend's game takes at most CO_RW_M money / CO_RW_X XP a night and
+       CO_RW_DAY rewarded nights a day.
+   B31 «صحابي» and the night's companion list read the first 60 heroes of everybody and kept the friends among them, so many
+       friends never showed: every hero card now carries its friend code (fc) and friends are read by code, 10 codes a query.
+   LB  firebase/firestore.rules: a leaderboard score can rise by at most 8000 a write, and a hero writes at most once a
+       minute (with pal fc), needs a rules deploy from the PC.
+   Tests: window.__coMock replaces the room writes (coPutAns), window.__palMock the pal queries. */
+const CO_RW_M=300,CO_RW_X=250,CO_RW_DAY=6;
+async function coPutAns(v){for(let k=0;k<4;k++){try{const M=window.__coMock;if(M){await M.put(v);return true}
+    const R=CO.room,me=coMe();if(!R||!CO.code||!me)return false;if(R.g===me)await coRef(CO.code).update({ans:v});else await coPRef(CO.code,me).update({ans:v});CO.err='';return true}
+  catch(e){CO.err=coNet(e);await new Promise(r=>setTimeout(r,window.__coMock?5:600*(k+1)))}}
+  try{toast(T(ae('ردّك ما وصلش. {جرب|جربي} تاني.','Your answer did not get through. Try again.')))}catch(e){}return false}
+async function coTakeG(code,nm,snap){const uid=FB.user.uid;let got=false;
+  try{await FB.db.runTransaction(async tr=>{got=false;const d=await tr.get(coRef(code)),X=d.exists?d.data():null;if(X&&!X.g&&X.st==='wait'&&X.h!==uid){tr.update(coRef(code),{g:uid,gn:nm,gp:snap});got=true}})}catch(e){got=false}
+  return got}
+async function coSeat(code,nm,snap){const uid=FB.user.uid,me=coPRef(code,uid);
+  if(!(await me.get()).exists){const q=await coRef(code).collection('p').get();if(q.docs.filter(d=>d.id!==uid).length>=CO_MAXX){CO.err=ae('الليلة دي كاملة (5 لاعيبة).','This night is full (5 players).');return false}
+    await me.set({n:nm,gp:snap,ans:'',t:window.firebase.firestore.FieldValue.serverTimestamp()});
+    /* two joined at once: the latest ones past the last seat step back */
+    const q2=await coRef(code).collection('p').get(),L=q2.docs.map(d=>({u:d.id,t:(d.data().t&&d.data().t.toMillis&&d.data().t.toMillis())||Date.now()})).sort((a,b)=>a.t-b.t||(a.u<b.u?-1:1));
+    if(L.findIndex(x=>x.u===uid)>=CO_MAXX){try{await me.delete()}catch(e){}CO.err=ae('الليلة دي كاملة (5 لاعيبة).','This night is full (5 players).');return false}}
+  return true}
+function coRwCap(h,rw){const d=new Date().toDateString();let D=h.coDay;if(!D||D.d!==d)D=h.coDay={d,n:0};D.n=(D.n|0)+1;if(D.n>CO_RW_DAY)return {m:0,xp:0};
+  return {m:Math.max(0,Math.min(CO_RW_M,rw.m|0)),xp:Math.max(0,Math.min(CO_RW_X,rw.xp|0))}}
+/* friends' hero cards by friend code (10 a query), plus the newest cards for older ones that have no code yet */
+async function palQuery(){const M=window.__palMock;const codes=[...new Set(frList().map(c=>String(c).toUpperCase()))].filter(Boolean);
+  const out=new Map(),add=L=>L.forEach(x=>{if(x&&x._id)out.set(x._id,x)});
+  for(let i=0;i<codes.length;i+=10){const part=codes.slice(i,i+10);try{add(M?M.byFc(part):(await palCol().where('fc','in',part).get()).docs.map(d=>Object.assign({_id:d.id},d.data())))}catch(e){console.warn('pal fc',e&&e.code||e)}}
+  try{add(M?M.recent():(await palCol().orderBy('t','desc').limit(80).get()).docs.map(d=>Object.assign({_id:d.id},d.data())))}catch(e){try{add((await palCol().limit(60).get()).docs.map(d=>Object.assign({_id:d.id},d.data())))}catch(x){}}
+  return [...out.values()]}
+/* ---- B23: the friend dodges on their own phone ---- */
+const coDgOk=a=>a&&Array.isArray(a.o)&&a.o.length===1&&a.o[0]&&a.o[0].k==='dodge';
+{const hB=coHitAl;coHitAl=async function(e,a,o){const C=S.combat,R=CO.room,u=a===S.comp?(R&&R.g):a&&a.u;
+  if(!C||!a||a.hide||!u||!coLive()||!coHere(u)||window.__coNoDodge)return hB.apply(this,arguments);
+  const g=coGx(a),wk=!!(e.fx&&e.fx.weak),dm=Math.max(1,Math.round(e.dmg*((o&&o.mul)||1)));
+  SFX.foeCry(e.art);await say(T(ae(`${e.name} ${FF(e,'بيهجم','بتهجم')} على ${a.name}! ${a.name} ${g('بيحاول يتفادى','بتحاول تتفادى')}…`,`${e.name} attacks ${a.name}! ${a.name} tries to dodge…`)),'bad',300);
+  const r=await coAsk([{k:'dodge',n:String(e.name||'').slice(0,30),dc:e.acc|0,m:a===S.comp?1:0}],u,15000);
+  const t=r&&typeof r==='object'&&['full','part','fail'].includes(r.t)?r.t:null;if(!t||!S.combat)return hB.apply(this,arguments);
+  if(e.fx)delete e.fx.weak;let d=t==='full'?0:t==='part'?Math.ceil(dm/2):dm;if(d&&wk)d=Math.ceil(d/2);
+  if(a===S.comp){if(d){hurtComp(d);await say(`${e.name} ${FF(e,'ضرب','ضربت')} ${a.name}: -${d} ${ae('صحة','health')}.${a.hp<=0?` ${a.name} ${g('وقع','وقعت')}!`:''}`,'bad')}
+    else{floatAt($('#compCard'),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة بزهره','the hit with their own dice')}.`,'good',900)}return {d,me:0}}
+  if(d){a.hp=Math.max(0,a.hp-d);combat();const el=$('#al_'+a.k);shake();SFX.hit();vib(50);floatAt(el,'-'+d,'#ff8a7a');if(a.hp<=0)SFX.down();
+    await say(`${e.name} ${FF(e,'ضرب','ضربت')} ${a.name}: -${d} ${ae('صحة','health')}.${a.hp<=0?` ${a.name} ${g('وقع','وقعت')}!`:''}`,'bad')}
+  else{combat();floatAt($('#al_'+a.k),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة بزهره','the hit with their own dice')}.`,'good',900)}
+  return {d,me:0}}}
+/* the friend's phone: a dodge ask opens their own dice at once */
+CO.dgDone={};
+async function coMyDodge(a){if(CO.myRoll||CO.dgDone[a.id]||!S.hero)return;CO.dgDone[a.id]=1;CO.myRoll='d'+a.id;const o=a.o[0];coDiceRestore();
+  const R=CO.room,V=coJ(R&&R.vw),d0=S.dice;if(V&&V.dz)S.dice=V.dz;let x=null;
+  try{x=await rollCheck('خفة',{label:T(ae(`${o.n} {بيهجم عليك|بيهجم عليكي}! {اتفادى|اتفادي}`,`${o.n} goes for you! Dodge`)),dc:o.dc|0})}finally{S.dice=d0;CO.myRoll=''}
+  const v=JSON.stringify({id:a.id,a:{i:0,t:x&&x.tier||'fail',n:(x&&x.total)|0}});if(!(await coPutAns(v)))delete CO.dgDone[a.id];if(S.screen==='coopg')render()}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,a=coJ(R&&R.ask),me=coMe();
+    if(coDgOk(a)){view.querySelectorAll('.co-ask').forEach(x=>x.style.display='none');view.querySelectorAll('[data-co]').forEach(b=>{const c=b.closest('.col');if(c){c.style.display='none';const l=c.previousElementSibling;if(l&&l.classList.contains('tw-lbl'))l.style.display='none'}});if(R&&R.st==='on'&&me&&a.to===me&&!CO.dgDone[a.id]&&!CO.myRoll)setTimeout(()=>coMyDodge(a),200)}}catch(e){console.warn(e)}return r}}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
