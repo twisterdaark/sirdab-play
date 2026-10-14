@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.57',d:'14 أكتوبر',add:['«المقايضة وش لوش»: من «صحابي» {افتح|افتحي} ترابيزة وابعت الكود لصاحبك، أو {ادخل|ادخلي} بالكود بتاعه. كل واحد بيحط خاماته أو فلوسه على الترابيزة ({دوسة|دوسة} تحط واحدة، {واسحب|واسحبي} تحط 5).','اللي بتحطه على الترابيزة بيطلع من شنطتك على طول. لما الاتنين يدوسوا «موافق» التبديل بيحصل مرة واحدة بس، ولو حد غيّر حاجة الموافقة بتتشال من الاتنين. لو حد لغى، أو اللعبة اتقفلت قبل ما التبديل يتم، حاجتك بترجعلك.']},
 {v:'6.56',d:'14 أكتوبر',add:['«صحابي»: من البروفايل (أو من «رفيق الليلة») {تقدر|تقدري} تشوف صحابك، مين فيهم أونلاين دلوقتي وآخر مرة دخل إمتى، والأونلاين بيظهروا الأول.','بروفايل صاحبك: وشه، صنفه ومستواه، لابس إيه، ألقابه، وكام مرة طلع من السرداب وكام عقد وحكاية خلّص. و«بروفايلي» بيوريك نفسك زي ما صحابك شايفينك.','الهدايا: {ابعت|ابعتي} لصاحبك خامة من اللي معاك (من 1 لـ 20، خمس هدايا في اليوم). اللي يوصلك بيظهر فوق في «هدايا وصلتلك» و{بتستلمه|بتستلميه} مرة واحدة. لو الهدية ما اتبعتتش الحاجة بترجعلك.']},
 {v:'6.55',d:'14 أكتوبر',add:['«ناس البلد» كبرت: 20 حكاية جديدة (بقوا 30) بناس جديدة: أمل المدرسة، حمدي البنّا، سمير المحصّل، علي الحلاق، أشرف التاجر وغيرهم. الحكايات بتتفتح بالمستوى، واللي تحت مستواك وما {لعبتهاش|لعبتيهاش} بتيجي الأول.','16 عقد جديد (بقوا 24)، منهم 6 سلاسل: العقد الجاي بيتفتح بعد ما {تخلص|تخلصي} اللي قبله، والحكاية بتكمل مع نفس الشخص (فرن سعاد، دكان الحلاق، صيادين الترعة، جبنة هدى، المدرسة الجديدة، قافلة أشرف).','اختياراتك بتفرق أكتر: لو {نزلت|نزلتي} تطلّع ابن حمدي من الحفرة بيرجع يدفعلك الضعف بعدين، ولو {عالجت|عالجتي} معزة هدى عقد الجبنة بيدفع أكتر، ولو {وقفت|وقفتي} قدام سمير المحصّل هيرجعلك.']},
 {v:'6.54',d:'14 أكتوبر',add:['«سكك مخفية»: تلات سكك سرية (الحداد، الفلاح، المقاتل) بتفضل مقفولة لحد ما {تشتغل|تشتغلي} في شغلتها كفاية، وساعتها حد من البلد بينده عليك. كل سكة 3 مراحل، كل مرحلة بتسيبلك ميزة على طول (الحدادة أحسن، خبرة زراعة زيادة، صحة زيادة)، وفي الآخر لقب مخفي. السكة ما بتغيرش صنفك.','«مشاريع البلد»: بير البلد وكوبري الترعة بيتبنوا على 3 مراحل. {دوس|دوسي} على كل حاجة {تسلّم|تسلّمي} اللي معاك منها، شوية شوية. كل مرحلة بتتبني بتدفعلك مرة واحدة وبتسيب ميزة للحرف اللي بتستخدمها (زراعة وطبخ، صيد وتنقيب).','اتصلح: رسالة «نقطة جديدة في مهارات الصنعة» كانت بتطلع بالعربي واللعبة بالإنجليزي.']},
@@ -53146,6 +53147,109 @@ small.fr-on,.fr-on{color:#7fe07a!important;font-weight:800}.fr-off{color:var(--d
 .fr-mats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-height:40vh;overflow:auto;padding:6px 0}.fr-m{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:72px;padding:6px 2px;border-radius:10px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;position:relative;cursor:pointer}
 .fr-m small{font-size:10px;line-height:1.2;text-align:center}.fr-m i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;color:#ffd36a}.fr-m.on{border-color:#f3c14d;background:#f3c14d22}
 .fr-n{display:flex;gap:8px}.fr-n .btn{flex:1;min-height:44px}.fr-n .btn.on{border-color:#f3c14d;color:#ffd36a}`;document.head.appendChild(s)})();
+/* ---------- 6.57 (acc1, R21 / N05): «المقايضة» — a safe swap face to face ----------
+   Two players at one table (trade/{code}, 4 letters): one opens it, the other joins with the code (from «صحابي» or the profile).
+   - Each side drags materials from their bag shelf onto the table (or taps a chip: +1), and can add money. Tapping a thing on the
+     table takes one back. What is on the table leaves your bag at once (h.trEsc, saved), so it can't be sold or used twice.
+   - «موافق» locks your side. Any change to either side clears both «موافق». When both have agreed, the one who opened the table
+     closes it in a transaction that checks both agreed on the same version (v): the swap is then «done» exactly once.
+   - On «done» each side gets what the other put down (h.trGot[code] keeps it from being taken twice) and the escrow is cleared.
+     On «gone» (either side leaves, or the table closes) your own things come back from escrow.
+   Firestore: trade/{code} needs the rules in firebase/firestore.rules deployed from the PC.
+   Tests: window.__trMock = {create, join, update, commit, listen} replaces the cloud. */
+const TRX={code:null,me:null,doc:null,unsub:null,err:'',busy:0,inp:''};
+const trMk=()=>window.__trMock||null;
+const trUid=()=>{const M=trMk();return M?M.me:(FB.user&&FB.user.uid)};
+const trCol=()=>FB.db.collection('trade');
+const TRA={
+  async create(n){const M=trMk();if(M)return M.create(n);const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
+    await trCol().doc(code).set({a:FB.user.uid,an:n,b:'',bn:'',ia:'[]',ib:'[]',oka:false,okb:false,v:0,st:'wait',t:window.firebase.firestore.FieldValue.serverTimestamp()});return code},
+  async join(code,n){const M=trMk();if(M)return M.join(code,n);const ref=trCol().doc(code);
+    return FB.db.runTransaction(async tx=>{const d=await tx.get(ref);if(!d.exists)throw new Error('none');const x=d.data();if(x.st!=='wait'||x.b||x.a===FB.user.uid)throw new Error('busy');tx.update(ref,{b:FB.user.uid,bn:n,st:'on'});return true})},
+  async update(code,p){const M=trMk();if(M)return M.update(code,p);return trCol().doc(code).update(p)},
+  async commit(code,v){const M=trMk();if(M)return M.commit(code,v);const ref=trCol().doc(code);
+    return FB.db.runTransaction(async tx=>{const d=await tx.get(ref);const x=d.data();if(!x||x.st!=='on'||!x.oka||!x.okb||x.v!==v)throw new Error('changed');tx.update(ref,{st:'done'});return true})},
+  listen(code,cb){const M=trMk();if(M)return M.listen(code,cb);return trCol().doc(code).onSnapshot(d=>cb(d.exists?d.data():null),e=>{TRX.err=String(e&&e.code||e);trRender()})}};
+const trSide=()=>TRX.doc&&TRX.doc.a===TRX.me?'a':'b';
+const trParse=s=>{try{const L=JSON.parse(s||'[]');return Array.isArray(L)?L.filter(x=>x&&typeof x.k==='string'&&(x.n|0)>0).slice(0,12):[]}catch(e){return []}};
+function trEsc(h){if(!h.trEsc||typeof h.trEsc!=='object')h.trEsc={};return h.trEsc}
+/* my side of the table <-> my escrow: the table is always written from the escrow */
+function trMine(h){const E=trEsc(h)[TRX.code]||{};return Object.keys(E).filter(k=>(E[k]|0)>0).map(k=>({k,n:E[k]|0}))}
+async function trPush(h){const s=trSide(),D=TRX.doc;if(!D||D.st!=='on')return;const p={v:(D.v|0)+1,oka:false,okb:false};p['i'+s]=JSON.stringify(trMine(h));
+  try{await TRA.update(TRX.code,p)}catch(e){toast(ae('ما اتبعتش، جرّب تاني.','Not sent, try again.'))}}
+function trPut(h,k,n){const D=TRX.doc;if(!D||D.st!=='on')return;const E=trEsc(h)[TRX.code]=trEsc(h)[TRX.code]||{};
+  if(k==='$'){const m=Math.min(n,Math.max(0,h.money));if(m<=0)return;h.money-=m;E.$=(E.$|0)+m}
+  else{if(!MAT[k])return;const have=h.res[k]|0,m=Math.min(n,have);if(m<=0)return;if(!E[k]&&Object.keys(E).length>=12)return toast(ae('الترابيزة مليانة.','The table is full.'));h.res[k]=have-m;E[k]=(E[k]|0)+m}
+  saveHero();try{SFX.tick(520);vib(8)}catch(e){}trPush(h);trRender()}
+function trTake(h,k,n){const E=trEsc(h)[TRX.code];if(!E||!(E[k]|0))return;const m=Math.min(n,E[k]);E[k]-=m;if(k==='$')h.money+=m;else h.res[k]=(h.res[k]|0)+m;if(!E[k])delete E[k];saveHero();trPush(h);trRender()}
+/* what happens to my escrow when the table ends */
+function trEnd(h,D){const code=TRX.code;if(!code)return;const E=trEsc(h)[code];h.trGot=h.trGot||{};
+  if(D&&D.st==='done'&&!h.trGot[code]){const other=trParse(trSide()==='a'?D.ib:D.ia);other.forEach(x=>{if(x.k==='$')h.money+=Math.min(x.n|0,1e6);else if(MAT[x.k])addRes(h,x.k,Math.min(x.n|0,999))});
+    h.trGot[code]=1;delete trEsc(h)[code];bump('trades');saveHero();try{SFX.levelup&&SFX.levelup()}catch(e){}
+    band(ae('المقايضة تمت','The swap is done'),T(ae('كل واحد خد اللي اتفقتوا عليه','Each of you got what you agreed on')),'',{dur:1800});}
+  else if(E&&!(D&&D.st==='done')){Object.keys(E).forEach(k=>{if(k==='$')h.money+=E[k]|0;else h.res[k]=(h.res[k]|0)+(E[k]|0)});delete trEsc(h)[code];saveHero()}}
+function trOn(h,D){const old=TRX.doc;TRX.doc=D;if(!D){trEnd(h,{st:'gone'});trStop();toast(ae('الترابيزة اتقفلت.','The table closed.'));return trRender()}
+  if(D.st==='done'||D.st==='gone'){trEnd(h,D);if(D.st==='gone')toast(ae('المقايضة اتلغت، حاجتك رجعتلك.','The swap was called off; your things are back.'));trStop(1);return trRender()}
+  /* the opener closes the deal when both agreed */
+  if(D.st==='on'&&D.oka&&D.okb&&D.a===TRX.me&&!TRX.busy){TRX.busy=1;TRA.commit(TRX.code,D.v).catch(()=>{}).finally(()=>TRX.busy=0)}
+  if(old&&old.st==='wait'&&D.st==='on')try{SFX.good()}catch(e){}
+  trRender()}
+function trStop(keep){try{TRX.unsub&&TRX.unsub()}catch(e){}TRX.unsub=null;if(!keep){TRX.code=null;TRX.doc=null}}
+async function trOpen(h){TRX.err='';try{if(!trMk())await fbLoad();TRX.me=trUid();if(!TRX.me){TRX.err=ae('لازم {تدخل|تدخلي} بحساب جوجل.','You need to sign in with Google.');return trRender()}
+  const code=await TRA.create(String(h.name||'').slice(0,20));TRX.code=code;trEsc(h)[code]={};saveHero();TRX.unsub=TRA.listen(code,D=>trOn(h,D))}catch(e){TRX.err=trErr(e)}trRender()}
+async function trJoin(h,code){TRX.err='';code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(code.length!==4){TRX.err=ae('الكود 4 حروف.','The code is 4 letters.');return trRender()}
+  try{if(!trMk())await fbLoad();TRX.me=trUid();if(!TRX.me){TRX.err=ae('لازم {تدخل|تدخلي} بحساب جوجل.','You need to sign in with Google.');return trRender()}
+    await TRA.join(code,String(h.name||'').slice(0,20));TRX.code=code;trEsc(h)[code]={};saveHero();TRX.unsub=TRA.listen(code,D=>trOn(h,D))}catch(e){TRX.err=e&&e.message==='none'?ae('مفيش ترابيزة بالكود ده.','No table with that code.'):e&&e.message==='busy'?ae('الترابيزة دي فيها حد.','Someone is already at that table.'):trErr(e)}trRender()}
+const trErr=e=>e&&e.code==='permission-denied'?ae('المقايضة لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','Swapping is still being set up (needs an update from the PC).'):ae('مش قادر أوصل دلوقتي.','Can\'t connect right now.');
+async function trOk(h){const D=TRX.doc;if(!D||D.st!=='on')return;const s=trSide(),p={};p['ok'+s]=!D['ok'+s];try{await TRA.update(TRX.code,p);try{SFX.reg()}catch(e){}}catch(e){toast(trErr(e))}}
+async function trLeave(h){const D=TRX.doc;if(TRX.code&&D&&(D.st==='on'||D.st==='wait')){try{await TRA.update(TRX.code,{st:'gone'})}catch(e){}trEnd(h,{st:'gone'})}trStop();trRender()}
+/* drag a chip from the shelf onto the table */
+function trDrag(h,b){let st=null,gh=null;b.addEventListener('pointerdown',e=>{st={x:e.clientX,y:e.clientY,id:e.pointerId}});
+  b.addEventListener('pointermove',e=>{if(!st||e.pointerId!==st.id)return;if(!gh&&Math.hypot(e.clientX-st.x,e.clientY-st.y)>10){gh=b.cloneNode(true);gh.className='tr-gh';document.body.appendChild(gh);try{b.setPointerCapture(e.pointerId)}catch(x){}}
+    if(gh){gh.style.left=e.clientX+'px';gh.style.top=e.clientY+'px';const t=$('#trMy');if(t){const r=t.getBoundingClientRect();t.classList.toggle('hov',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)}}});
+  const up=e=>{if(!st)return;const was=gh;if(gh){gh.remove();gh=null;const t=$('#trMy');const r=t&&t.getBoundingClientRect();if(t)t.classList.remove('hov');if(r&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)trPut(h,b.dataset.tk,b.dataset.tk==='$'?50:5)}
+    st=null;if(was)b.dataset.drag='1'};
+  b.addEventListener('pointerup',up);b.addEventListener('pointercancel',()=>{if(gh)gh.remove();gh=null;st=null});
+  b.addEventListener('click',()=>{if(b.dataset.drag){delete b.dataset.drag;return}trPut(h,b.dataset.tk,b.dataset.tk==='$'?10:1)})}
+function trRender(){if(S.screen==='barter'){const y=view.scrollTop;render();view.scrollTop=y}}
+const trChip=(x,tag)=>`<button class="tr-c" ${tag}="${x.k}">${x.k==='$'?'<span class="mi">🪙</span>':MAT[x.k]?twMat(x.k,26):'❔'}<small>${x.k==='$'?ae('جنيه','coins'):MAT[x.k]?esc(fsNm(x.k)):'?'}</small><i>${x.n}</i></button>`;
+SCREENS.barter=function(){const h=S.hero;if(!h){S.screen='title';return render()}const D=TRX.doc;let body='';
+  if(!TRX.code){body=`<div class="card tr-st"><div class="tr-big">🤝</div><div>${T(ae('{افتح|افتحي} ترابيزة وابعت الكود لصاحبك، أو {ادخل|ادخلي} بالكود اللي معاه. كل واحد بيحط حاجته، والاتنين يدوسوا «موافق»، والتبديل بيحصل مرة واحدة.','Open a table and send the code to your friend, or join with theirs. Each puts their things down, both press «Agree», and the swap happens once.'))}</div>
+      <button class="btn" id="trNew">${T(ae('{افتح|افتحي} ترابيزة','Open a table'))}</button>
+      <div class="fr-add"><input id="trIn" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="${ae('كود الترابيزة','Table code')}" value="${esc(TRX.inp)}"><button class="btn" id="trJn" style="width:auto">${T(ae('{ادخل|ادخلي}','Join'))}</button></div>
+      ${TRX.err?`<div class="nnote">${T(TRX.err)}</div>`:''}</div>`}
+  else if(!D||D.st==='wait'){body=`<div class="card tr-st"><div>${ae('ابعت الكود ده لصاحبك:','Send this code to your friend:')}</div><b class="tr-code">${TRX.code}</b><div class="dim">${ae('مستني صاحبك يدخل…','Waiting for your friend…')}</div><button class="btn ghost" id="trX">${ae('اقفل الترابيزة','Close the table')}</button></div>`}
+  else if(D.st==='done'||D.st==='gone'){body=`<div class="card tr-st"><div class="tr-big">${D.st==='done'?'✅':'↩'}</div><b>${D.st==='done'?ae('المقايضة تمت','The swap is done'):ae('المقايضة اتلغت','The swap was called off')}</b><button class="btn" id="trAgain">${ae('تمام','OK')}</button></div>`}
+  else{const s=trSide(),o=s==='a'?'b':'a',mine=trMine(h),his=trParse(D['i'+o]),okM=!!D['ok'+s],okO=!!D['ok'+o],who=esc(D[o+'n']||'');
+    const shelf=Object.keys(h.res||{}).filter(k=>MAT[k]&&(h.res[k]|0)>0&&!MAT[k].junk).sort((a,b)=>(MAT[b].p|0)-(MAT[a].p|0)).slice(0,32).map(k=>({k,n:h.res[k]|0}));
+    body=`<div class="tr-tb"><div class="tr-half his${okO?' ok':''}"><div class="tr-h"><b>${ae(`${who} بيدي`,`${who} gives`)}</b><span>${okO?'✓ '+ae('موافق','agreed'):ae('لسه','not yet')}</span></div><div class="tr-row">${his.length?his.map(x=>trChip(x,'data-hk')).join(''):`<small class="dim">${ae('لسه ما حطش حاجة','Nothing yet')}</small>`}</div></div>
+      <div class="tr-mid">⇅</div>
+      <div class="tr-half my${okM?' ok':''}" id="trMy"><div class="tr-h"><b>${T(ae('انت {بتدي|بتدي}','You give'))}</b><span>${okM?'✓ '+ae('موافق','agreed'):''}</span></div><div class="tr-row">${mine.length?mine.map(x=>trChip(x,'data-mk')).join(''):`<small class="dim">${T(ae('{اسحب|اسحبي} حاجة من تحت لهنا','Drag something here from below'))}</small>`}</div></div></div>
+      <div class="row"><button class="btn${okM?' ghost':''}" id="trOk">${okM?ae('شيل الموافقة','Take back'):ae('موافق','Agree')}</button><button class="btn ghost" id="trX">${ae('الغي','Call off')}</button></div>
+      <div class="card tr-sh"><b>${ae('شنطتك','Your bag')}</b><div class="tr-row">${trChip({k:'$',n:h.money},'data-tk')}${shelf.map(x=>trChip(x,'data-tk')).join('')}</div><small class="dim">${T(ae('{دوس|دوسي} على حاجة تحط واحدة، أو {اسحبها|اسحبيها} للترابيزة تحط 5. {دوس|دوسي} على اللي على الترابيزة ترجّع واحدة.','Tap a thing to put one down, or drag it to the table to put 5. Tap one on the table to take one back.'))}</small></div>`}
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('المقايضة','Swap')}</h2><span class="tag">${TRX.code?TRX.code:'🤝'}</span></div><div class="tw tr" style="direction:${EN?'ltr':'rtl'}">${body}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};
+  on('back',()=>{if(TRX.code&&D&&D.st==='on'){toast(T(ae('{الغي|الغي} المقايضة الأول أو {كمّلها|كمّليها}.','Call off or finish the swap first.')));return}if(TRX.code&&(!D||D.st==='wait'))trLeave(h);S.screen=S.trFrom||'frs';render()});
+  on('trNew',()=>trOpen(h));on('trJn',()=>{TRX.inp=$('#trIn').value;trJoin(h,TRX.inp)});on('trX',()=>trLeave(h));on('trOk',()=>trOk(h));on('trAgain',()=>{trStop();trRender()});
+  view.querySelectorAll('[data-tk]').forEach(b=>trDrag(h,b));view.querySelectorAll('[data-mk]').forEach(b=>b.onclick=()=>trTake(h,b.dataset.mk,b.dataset.mk==='$'?10:1))};
+/* a table left open when the game closed: once signed in, each escrow is settled from the cloud: a done swap gives what the other
+   side put down, anything else (still open, gone, missing) is called off and your things come back. Never settled offline. */
+async function trFixLoad(h){const E=h&&h.trEsc;if(!E||trMk()||!FB.user)return;for(const code of Object.keys(E)){if(code===TRX.code)continue;
+  try{const d=await trCol().doc(code).get(),D=d.exists?d.data():null;const keep={code:TRX.code,doc:TRX.doc,me:TRX.me};TRX.code=code;TRX.me=FB.user.uid;TRX.doc=D;
+    if(D&&(D.st==='on'||D.st==='wait')){try{await trCol().doc(code).update({st:'gone'})}catch(e){}trEnd(h,{st:'gone'})}else trEnd(h,D||{st:'gone'});Object.assign(TRX,keep)}catch(e){console.warn('trFix',e)}}}
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);try{await trFixLoad(S.hero)}catch(e){}return R}}
+/* the ways in: «صحابي» and the profile's friend box */
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs'||$('#trGo'))return r;const me=view.querySelector('.fr-me2');if(!me)return r;
+  me.insertAdjacentHTML('afterend',`<button class="btn" id="trGo" style="width:100%;min-height:48px">🤝 ${ae('مقايضة وش لوش','Swap face to face')}</button>`);$('#trGo').onclick=()=>{S.trFrom='frs';S.screen='barter';render()}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.tr-st{display:flex;flex-direction:column;gap:10px;align-items:stretch;text-align:center}.tr-st .btn{min-height:48px}.tr-big{font-size:44px}.tr-code{font-size:40px;letter-spacing:8px;color:var(--gold2);direction:ltr}
+.tr-tb{display:flex;flex-direction:column;gap:6px;width:100%;align-self:stretch}.tr-half{width:100%;box-sizing:border-box;border-radius:16px;border:2px dashed #ffffff33;padding:10px;min-height:110px;background:#3a2a1a66;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,background .15s}
+.tr-half.my.hov{border-color:#f3c14d;background:#f3c14d22}.tr-half.ok{border-style:solid;border-color:#7fe07a}.tr-h{display:flex;justify-content:space-between;font-size:14px}.tr-h span{color:var(--dim)}.tr-half.ok .tr-h span{color:#7fe07a;font-weight:800}
+.tr-mid{text-align:center;font-size:22px;color:var(--gold2)}.tr-row{display:flex;flex-wrap:wrap;gap:6px}
+.tr-c{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;min-height:72px;padding:6px 2px;border-radius:10px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;cursor:pointer;touch-action:none}
+.tr-c small{font-size:10px;line-height:1.2;text-align:center}.tr-c i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;color:#ffd36a}.tr-c .mi{font-size:24px;line-height:26px}
+.tr-sh{display:flex;flex-direction:column;gap:8px}.tr .row .btn{min-height:48px}
+.tr-gh{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-60%) scale(1.1);display:flex;flex-direction:column;align-items:center;width:72px;padding:6px 2px;border-radius:10px;border:2px solid #f3c14d;background:#2a2038;color:#fff;opacity:.9}.tr-gh i{display:none}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
