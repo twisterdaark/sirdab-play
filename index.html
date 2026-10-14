@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.56',d:'14 أكتوبر',add:['«صحابي»: من البروفايل (أو من «رفيق الليلة») {تقدر|تقدري} تشوف صحابك، مين فيهم أونلاين دلوقتي وآخر مرة دخل إمتى، والأونلاين بيظهروا الأول.','بروفايل صاحبك: وشه، صنفه ومستواه، لابس إيه، ألقابه، وكام مرة طلع من السرداب وكام عقد وحكاية خلّص. و«بروفايلي» بيوريك نفسك زي ما صحابك شايفينك.','الهدايا: {ابعت|ابعتي} لصاحبك خامة من اللي معاك (من 1 لـ 20، خمس هدايا في اليوم). اللي يوصلك بيظهر فوق في «هدايا وصلتلك» و{بتستلمه|بتستلميه} مرة واحدة. لو الهدية ما اتبعتتش الحاجة بترجعلك.']},
 {v:'6.55',d:'14 أكتوبر',add:['«ناس البلد» كبرت: 20 حكاية جديدة (بقوا 30) بناس جديدة: أمل المدرسة، حمدي البنّا، سمير المحصّل، علي الحلاق، أشرف التاجر وغيرهم. الحكايات بتتفتح بالمستوى، واللي تحت مستواك وما {لعبتهاش|لعبتيهاش} بتيجي الأول.','16 عقد جديد (بقوا 24)، منهم 6 سلاسل: العقد الجاي بيتفتح بعد ما {تخلص|تخلصي} اللي قبله، والحكاية بتكمل مع نفس الشخص (فرن سعاد، دكان الحلاق، صيادين الترعة، جبنة هدى، المدرسة الجديدة، قافلة أشرف).','اختياراتك بتفرق أكتر: لو {نزلت|نزلتي} تطلّع ابن حمدي من الحفرة بيرجع يدفعلك الضعف بعدين، ولو {عالجت|عالجتي} معزة هدى عقد الجبنة بيدفع أكتر، ولو {وقفت|وقفتي} قدام سمير المحصّل هيرجعلك.']},
 {v:'6.54',d:'14 أكتوبر',add:['«سكك مخفية»: تلات سكك سرية (الحداد، الفلاح، المقاتل) بتفضل مقفولة لحد ما {تشتغل|تشتغلي} في شغلتها كفاية، وساعتها حد من البلد بينده عليك. كل سكة 3 مراحل، كل مرحلة بتسيبلك ميزة على طول (الحدادة أحسن، خبرة زراعة زيادة، صحة زيادة)، وفي الآخر لقب مخفي. السكة ما بتغيرش صنفك.','«مشاريع البلد»: بير البلد وكوبري الترعة بيتبنوا على 3 مراحل. {دوس|دوسي} على كل حاجة {تسلّم|تسلّمي} اللي معاك منها، شوية شوية. كل مرحلة بتتبني بتدفعلك مرة واحدة وبتسيب ميزة للحرف اللي بتستخدمها (زراعة وطبخ، صيد وتنقيب).','اتصلح: رسالة «نقطة جديدة في مهارات الصنعة» كانت بتطلع بالعربي واللعبة بالإنجليزي.']},
 {v:'6.53',d:'14 أكتوبر',add:['«ناس البلد»: كارت جديد فوق «حال البلد» فيه حكايات وعقود مع ناس البلد، وكل واحد ليه وش.','«حكاية النهارده»: حكاية واحدة كل يوم بلد (عشر حكايات لحد دلوقتي، بتتفتح بالمستوى): جاموسة هربانة، خناقة عند القهوة، فرح، حرامي في بيتك... وفيها حاجات {بتعملها|بتعمليها} بإيدك: «امسك» ({سيب|سيبي} لما الدايرة توصل للأخضر) أو «بسرعة» (7 دوسات في 3 ثواني). لو فاتتك بتاخد النهاية الوحشة.','اللي {بتختاره|بتختاريه} بيفضل: لو {سلّفت|سلّفتي} الريس صابر بيرجعلك 150 بعد يومين وعقده بيدفع أكتر، والكلب اللي {بتأكّله|بتأكّليه} بيرجع ينقذك بعدين. كل اللي حصل مكتوب تحت «اللي حصل».','«العقود»: 8 عقود من ناس البلد، كل عقد 3 خطوات بتلف بيك على الحرف (تزرع وتطبخ وتصطاد، أو تكسر صخر وتشتغل عند الحداد). {بتسلّم|بتسلّمي} الحاجة بإيدك، وأجره بيتدفع مرة واحدة، وولاء صاحبه في «حال البلد» بيزيد. لو {سبت|سبتي} العقد اللي {سلّمته|سلّمتيه} بيرجعلك.']},
@@ -53027,6 +53028,124 @@ NS_SC.forEach(s=>s.ch.forEach(c=>{if(c.cost&&c.cost.res)Object.keys(c.cost.res).
 /* sc16: helping Hoda's goat makes her cheese contract pay +20%; sc21: the saved net makes Saber's contract pay +20% too */
 {const t0=nsTake;nsTake=function(h){try{const a=h&&h.ct&&h.ct.a,c=a&&nsCt(a.id),A=h&&h.sc;if(c&&a.s===c.st.length-1&&A&&A.f&&((c.bonus==='hoda'&&A.f.hoda)||(c.id==='ct6'&&A.f.net&&!A.f.saber))&&nsStepOk(h,c.st[a.s],a)){
   const m0=c.pay.m;c.pay.m=Math.round(m0*1.2);try{return t0.apply(this,arguments)}finally{c.pay.m=m0}}}catch(e){}return t0.apply(this,arguments)}}
+/* ---------- 6.56 (acc1, R08 / N02+N03): «صحابي» — friends you can see, visit and send gifts to ----------
+   The friend codes and the heroes friends publish (pal/, p29) were only used to pick a companion. Now:
+   - SCREENS.frs «صحابي»: one row per friend (grouped by account), with their best hero's face, class, level and whether they are
+     on now («أونلاين» = their game wrote to pres/{uid} in the last FR_ON ms; else «آخر مرة من …»).
+   - A friend's public profile (a sheet): face, class, level, what they wear, their titles and a few numbers
+     (dungeon runs, contracts, stories). «بروفايلي زي ما صحابي شايفينه» shows your own the same way.
+   - Gifts: «هدية» sends a material you hold (1 to 20 of it, FR_GIFTS a day). The material leaves your bag first and comes back if
+     the write fails. Gifts waiting for you are listed on top with «استلم»; a claim is a transaction (new → got), so one gift is
+     taken once, and a material this build does not know stays unclaimed.
+   - Your game keeps pres/{uid} fresh every FR_BEAT ms while open and signed in ({n, t, ti: titles JSON, st: numbers JSON}).
+   Firestore: pres/{uid} and gift/{id} need the rules in firebase/firestore.rules deployed from the PC.
+   Tests: window.__frMock = {rows, pres(uids), send(o), inbox(), claim(id), me} replaces the cloud. */
+const FR_ON=5*60000,FR_BEAT=4*60000,FR_GIFTS=5;
+const FRS={pres:null,inbox:null,busy:0,err:'',view:null,gift:null,gn:1};
+const frMk=()=>window.__frMock||null;
+const frUid=()=>{const M=frMk();return M?M.me:(FB.user&&FB.user.uid)};
+const frT=t=>t==null?0:typeof t==='number'?t:t.toMillis?t.toMillis():(t.seconds|0)*1000;
+function frPub(h){const ti=(h.titles||[]).slice(0,12);let dg=0,ct=0,sc=0;try{dg=(h.dg&&h.dg.got&&h.dg.got.runs)|0;ct=Object.keys((h.ct&&h.ct.done)||{}).length;sc=Object.keys((h.sc&&h.sc.done)||{}).length}catch(e){}
+  return {n:String(h.name||'').slice(0,20),ti:JSON.stringify(ti).slice(0,400),st:JSON.stringify({l:h.lvl|0,c:String(h.cls||'').slice(0,12),g:h.g==='f'?'f':'m',dg,ct,sc,rep:h.rep|0}).slice(0,600)}}
+const FRA={
+  async beat(){const M=frMk();if(M)return;if(!FB.user||!FB.db||FB.locked||document.hidden)return;const h=S.hero;if(!h)return;
+    try{await FB.db.collection('pres').doc(FB.user.uid).set(Object.assign(frPub(h),{t:window.firebase.firestore.FieldValue.serverTimestamp()}))}catch(e){console.warn('pres: '+(e&&e.code||e))}},
+  async rows(){const M=frMk();if(M)return M.rows;if(PAL.rows==null)await palLoad();return PAL.rows||[]},
+  async pres(uids){const M=frMk();if(M)return M.pres(uids);const out={};await Promise.all(uids.map(async u=>{try{const d=await FB.db.collection('pres').doc(u).get();if(d.exists)out[u]=d.data()}catch(e){}}));return out},
+  async send(o){const M=frMk();if(M)return M.send(o);return FB.db.collection('gift').add(Object.assign({},o,{f:FB.user.uid,t:window.firebase.firestore.FieldValue.serverTimestamp(),st:'new'}))},
+  async inbox(){const M=frMk();if(M)return M.inbox();const q=await FB.db.collection('gift').where('to','==',FB.user.uid).where('st','==','new').limit(30).get();return q.docs.map(d=>Object.assign({_id:d.id},d.data()))},
+  async claim(id){const M=frMk();if(M)return M.claim(id);const ref=FB.db.collection('gift').doc(id);
+    return FB.db.runTransaction(async tx=>{const d=await tx.get(ref);if(!d.exists||d.data().st!=='new'||d.data().to!==FB.user.uid)throw new Error('gone');tx.update(ref,{st:'got'});return d.data()})}};
+setInterval(()=>{try{FRA.beat()}catch(e){}},FR_BEAT);
+{const a0=fbAfterIn;fbAfterIn=async function(){const R=await a0.apply(this,arguments);try{FRA.beat()}catch(e){}return R}}
+/* friends = the accounts behind my friend codes that published a hero */
+function frGroups(rows){const FR=frList(),me=frUid(),G0={};(rows||[]).forEach(x=>{if(!x||x.o===me||!FR.includes(frCode(x.o)))return;(G0[x.o]=G0[x.o]||[]).push(x)});
+  return Object.keys(G0).map(o=>({o,heroes:G0[o].sort((a,b)=>(b.l|0)-(a.l|0))}))}
+async function frLoad(){if(FRS.busy)return;FRS.busy=1;FRS.err='';try{if(!frMk())await fbLoad();if(!frUid()){FRS.pres={};FRS.inbox=[];return}
+    const rows=await FRA.rows();FRS.rows=rows;const gs=frGroups(rows);FRS.pres=await FRA.pres(gs.map(g=>g.o));try{FRS.inbox=await FRA.inbox()}catch(e){FRS.inbox=[];console.warn(e)}}
+  catch(e){FRS.err=e&&e.code==='permission-denied'?ae('الصحاب لسه بيتجهزوا (محتاجين تحديث من الكمبيوتر).','Friends are still being set up (needs an update from the PC).'):ae('مش قادر أوصل دلوقتي. اتأكد إن فيه نت.','Can\'t connect right now. Check your internet.');FRS.pres=FRS.pres||{};FRS.inbox=FRS.inbox||[]}
+  finally{FRS.busy=0}if(S.screen==='frs')frRender()}
+function frRender(){if(S.screen==='frs'){const y=view.scrollTop;render();view.scrollTop=y}}
+function frAgo(ms){const m=Math.floor(ms/60000);if(m<60)return ae(`من ${m} دقيقة`,`${m} min ago`);const hh=Math.floor(m/60);if(hh<48)return ae(`من ${hh} ساعة`,`${hh} h ago`);return ae(`من ${Math.floor(hh/24)} يوم`,`${Math.floor(hh/24)} days ago`)}
+function frLook(x){let lk={};try{lk=JSON.parse(x.lk||'{}')}catch(e){}return Object.assign({},lk,{name:x.n,g:x.g,cls:x.c})}
+const frCls=(c,g)=>{const n=g==='f'?(typeof CLS_F!=='undefined'&&CLS_F[c])||c:c;if(!EN)return n;try{return (CLASSES[c]&&loc(CLASSES[c],'n'))||(typeof L10N_W!=='undefined'&&L10N_W.get(n))||'Hero'}catch(e){return 'Hero'}};
+function frPic(c,id){try{return portrait(c,id)}catch(e){return ''}}
+/* the public profile sheet (a friend's, or mine as they see it) */
+function frSheet(o){const s=document.createElement('div');s.className='cmg fr-o';const P=o.p||{};let st={},ti=[];try{st=JSON.parse(P.st||'{}')}catch(e){}try{ti=JSON.parse(P.ti||'[]')}catch(e){}
+  const g=o.g==='f'?'f':'m',eq=o.eq||{},on=o.on;
+  const tn=ti.map(id=>TITLES.find(t=>t.id===id)).filter(Boolean).map(t=>`<span class="fr-ti">${esc(t[g]||t.m)}</span>`).join('');
+  const gn=Object.keys(eq).map(k=>GEAR[eq[k]]?`<span class="fr-eq">${esc(GEAR[eq[k]].n)}</span>`:'').join('');
+  s.innerHTML=`<div class="ag-box fr-pf" style="direction:${EN?'ltr':'rtl'}"><div class="fr-ph"><div class="fr-big">${o.pic||''}</div><div><b>${esc(o.n)}</b><small>${esc(frCls(o.c,g))} · ${ae('مستوى','level')} ${o.l|0}</small>
+    <small class="${on?'fr-on':'fr-off'}">${on?ae('● أونلاين','● online'):o.seen?ae('آخر مرة ','last seen ')+frAgo(Date.now()-o.seen):ae('مش ظاهر لسه','not seen yet')}</small></div></div>
+    ${gn?`<div class="fr-sec"><b>${ae('لابس','Wearing')}</b><div class="fr-wr">${gn}</div></div>`:''}
+    <div class="fr-sec"><b>${ae('الألقاب','Titles')}</b><div class="fr-wr">${tn||`<small class="dim">${ae('لسه مفيش','none yet')}</small>`}</div></div>
+    <div class="fr-nums"><span><b>${st.dg|0}</b><small>${ae('مرة طلع من السرداب','cellar runs')}</small></span><span><b>${st.ct|0}</b><small>${ae('عقد خلّصه','contracts')}</small></span><span><b>${st.sc|0}</b><small>${ae('حكاية','stories')}</small></span></div>
+    <button class="btn" id="frX">${ae('تمام','OK')}</button></div>`;
+  document.body.appendChild(s);const close=()=>s.remove();s.querySelector('#frX').onclick=close;s.addEventListener('pointerdown',e=>{if(e.target===s)close()});return s}
+function frMine(h){const eq={};Object.keys(h.eq||{}).forEach(k=>{if(typeof h.eq[k]==='string')eq[k]=h.eq[k]});
+  return {n:h.name,c:h.cls,g:h.g,l:h.lvl,eq,p:frPub(h),on:1,pic:frPic(h,'frme')}}
+/* gifts */
+function frGiftsToday(h){const d=new Date().toDateString();if(!h.gf||h.gf.d!==d)h.gf={d,n:0};return h.gf}
+function frGiftSheet(h,g){const mats=Object.keys(h.res||{}).filter(k=>MAT[k]&&(h.res[k]|0)>0&&!MAT[k].junk).sort((a,b)=>(MAT[b].p|0)-(MAT[a].p|0)).slice(0,40);
+  const s=document.createElement('div');s.className='cmg fr-o';const left=FR_GIFTS-frGiftsToday(h).n;
+  s.innerHTML=`<div class="ag-box" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>${T(ae(`هدية لـ ${esc(g.heroes[0].n)}`,`A gift for ${esc(g.heroes[0].n)}`))}</b></div>
+    <small class="dim">${T(ae(`فاضلك ${left} هدايا النهارده. {اختار|اختاري} حاجة وعدد.`,`${left} gifts left today. Pick a thing and how many.`))}</small>
+    <div class="fr-mats">${mats.length?mats.map(k=>`<button class="fr-m" data-k="${k}">${twMat(k,26)}<small>${esc(fsNm(k))}</small><i>${h.res[k]}</i></button>`).join(''):`<div class="dim">${ae('مفيش معاك خامات تتبعت.','You have no materials to send.')}</div>`}</div>
+    <div class="fr-n"><button class="btn ghost" data-n="1">1</button><button class="btn ghost" data-n="5">5</button><button class="btn ghost" data-n="20">20</button></div>
+    <div class="row"><button class="btn" id="frSend" disabled>${ae('ابعت','Send')}</button><button class="btn ghost" id="frNo">${ae('لأ','Cancel')}</button></div></div>`;
+  document.body.appendChild(s);let k=null,n=1;const upd=()=>{s.querySelectorAll('.fr-m').forEach(b=>b.classList.toggle('on',b.dataset.k===k));s.querySelectorAll('[data-n]').forEach(b=>b.classList.toggle('on',+b.dataset.n===n));
+    const b=s.querySelector('#frSend');b.disabled=!k||left<=0;if(k)b.textContent=ae(`ابعت ${Math.min(n,h.res[k]|0)} ${fsNm(k)}`,`Send ${Math.min(n,h.res[k]|0)} ${fsNm(k)}`)};
+  s.querySelectorAll('.fr-m').forEach(b=>b.onclick=()=>{k=b.dataset.k;upd()});s.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{n=+b.dataset.n;upd()});upd();
+  s.querySelector('#frNo').onclick=()=>s.remove();
+  s.querySelector('#frSend').onclick=async()=>{if(!k||left<=0)return;const m=Math.min(n,h.res[k]|0,20);if(m<1)return;const btn=s.querySelector('#frSend');btn.disabled=true;
+    h.res[k]-=m;frGiftsToday(h).n++;saveHero();
+    try{await FRA.send({fn:String(h.name||'').slice(0,20),to:g.o,k,n:m});s.remove();try{SFX.coin()}catch(e){}toast(T(ae(`{بعت|بعتي} ${m} ${fsNm(k)} لـ ${g.heroes[0].n}.`,`You sent ${m} ${fsNm(k)} to ${g.heroes[0].n}.`)));bump('giftSent')}
+    catch(e){h.res[k]+=m;frGiftsToday(h).n--;saveHero();btn.disabled=false;toast(ae('الهدية ما اتبعتتش، الحاجة رجعتلك.','The gift didn\'t go through; it\'s back in your bag.'))}}}
+async function frClaim(h,x){if(!MAT[x.k]){toast(ae('الحاجة دي مش معروفة في نسختك. حدّث اللعبة.','Your version doesn\'t know this item. Update the game.'));return}
+  try{await FRA.claim(x._id)}catch(e){toast(ae('الهدية دي اتاخدت خلاص.','That gift was already taken.'));FRS.inbox=(FRS.inbox||[]).filter(y=>y._id!==x._id);return frRender()}
+  addRes(h,x.k,Math.max(1,Math.min(20,x.n|0)));saveHero();FRS.inbox=(FRS.inbox||[]).filter(y=>y._id!==x._id);try{SFX.coin()}catch(e){}
+  toast(T(ae(`{استلمت|استلمتي} ${x.n} ${fsNm(x.k)} من ${x.fn}.`,`You got ${x.n} ${fsNm(x.k)} from ${x.fn}.`)));frRender()}
+SCREENS.frs=function(){const h=S.hero;if(!h){S.screen='title';return render()}const me=frUid();
+  if(me&&FRS.pres==null&&!FRS.busy)frLoad();
+  const gs=frGroups(FRS.rows||[]),P=FRS.pres||{},now=Date.now(),mine=me?frCode(me):'';
+  gs.forEach(g=>{const p=P[g.o];g.seen=p?frT(p.t):0;g.on=g.seen&&now-g.seen<FR_ON});gs.sort((a,b)=>(b.on|0)-(a.on|0)||b.seen-a.seen);
+  const inbox=FRS.inbox||[];
+  view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('صحابي','My friends')}</h2><span class="tag">${gs.filter(g=>g.on).length} ${ae('أونلاين','online')}</span></div>
+    <div class="tw fr" style="direction:${EN?'ltr':'rtl'}">
+    ${!me?`<div class="card">${T(ae('{ادخل|ادخلي} بحساب جوجل من الإعدادات (من لينك اللعب) عشان تشوف صحابك.','Sign in with Google from the settings (on the play link) to see your friends.'))}</div>`:`
+    <div class="card fr-me2"><span>${ae('كودك','Your code')}</span><b>${mine}</b><button class="btn ghost" id="frPf">${ae('بروفايلي','My profile')}</button></div>
+    ${inbox.length?`<div class="card fr-in"><b>🎁 ${ae('هدايا وصلتلك','Gifts for you')}</b>${inbox.map(x=>`<div class="fr-gi">${MAT[x.k]?twMat(x.k,26):'❔'}<span>${esc(x.fn)}: ${x.n|0} ${MAT[x.k]?esc(fsNm(x.k)):'?'}</span><button class="btn" data-gi="${esc(x._id)}">${ae('استلم','Take')}</button></div>`).join('')}</div>`:''}
+    ${FRS.err?`<div class="card nnote">${FRS.err}</div>`:FRS.pres==null?`<div class="card nnote">${ae('بيحمّل…','Loading…')}</div>`:!gs.length?`<div class="card">${T(ae('لسه مفيش صحاب ظاهرين. {ضيف|ضيفي} كود صاحبك من البروفايل، وهو {يضيف|يضيف} كودك.','No friends showing yet. Add a friend\'s code from your profile, and have them add yours.'))}</div>`:
+      gs.map((g,i)=>{const x=g.heroes[0];return `<div class="card fr-r${g.on?' on':''}"><div class="fr-pp">${frPic(frLook(x),'fr'+i)}<i class="${g.on?'d on':'d'}"></i></div>
+        <div class="tx"><b>${esc(x.n)}</b><small>${esc(frCls(x.c,x.g))} · ${ae('مستوى','level')} ${x.l|0}${g.heroes.length>1?` · +${g.heroes.length-1} ${ae('أبطال','heroes')}`:''}</small><small class="${g.on?'fr-on':'fr-off'}">${g.on?ae('● أونلاين','● online'):g.seen?ae('آخر مرة ','last seen ')+frAgo(now-g.seen):ae('مش ظاهر لسه','not seen yet')}</small></div>
+        <div class="fr-bt"><button class="btn ghost" data-fv="${i}">${ae('بروفايل','Profile')}</button><button class="btn" data-fg="${i}">🎁 ${ae('هدية','Gift')}</button></div></div>`}).join('')}`}</div>`;
+  const on=(id,f)=>{const b=$('#'+id);if(b)b.onclick=f};
+  on('back',()=>{try{SFX.page()}catch(e){}S.screen=S.frFrom||'profile';render()});
+  on('frPf',()=>frSheet(frMine(h)));
+  view.querySelectorAll('[data-fv]').forEach(b=>b.onclick=()=>{const g=gs[+b.dataset.fv],x=g.heroes[0];let lk={};try{lk=JSON.parse(x.lk||'{}')}catch(e){}frSheet({n:x.n,c:x.c,g:x.g,l:x.l,eq:lk.eq||{},p:P[g.o],on:g.on,seen:g.seen,pic:frPic(frLook(x),'frs'+b.dataset.fv)})});
+  view.querySelectorAll('[data-fg]').forEach(b=>b.onclick=()=>frGiftSheet(h,gs[+b.dataset.fg]));
+  view.querySelectorAll('[data-gi]').forEach(b=>b.onclick=()=>{const x=inbox.find(y=>y._id===b.dataset.gi);if(x){b.disabled=true;frClaim(h,x)}})};
+/* the ways in: the profile's friend box and the companion picker */
+{const p0=SCREENS.profile;SCREENS.profile=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='profile'||$('#frGo'))return r;const box=$('#pfFr');if(!box)return r;
+  box.insertAdjacentHTML('beforeend',`<button class="btn" id="frGo" style="margin-top:8px;width:100%;min-height:48px">👥 ${ae('صحابي: مين أونلاين، بروفايلاتهم، وهدايا','My friends: who\'s on, profiles and gifts')}</button>`);
+  $('#frGo').onclick=()=>{S.frFrom='profile';FRS.pres=null;FRS.inbox=null;try{SFX.page()}catch(e){}S.screen='frs';render()}}catch(e){console.warn(e)}return r}}
+{const p0=SCREENS.pals;SCREENS.pals=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='pals'||$('#frGo2')||!FB.user)return r;const box=view.querySelector('.fr-box');if(!box)return r;
+  box.insertAdjacentHTML('afterend',`<button class="btn ghost" id="frGo2" style="width:100%;min-height:48px">👥 ${ae('صحابي','My friends')}</button>`);
+  $('#frGo2').onclick=()=>{S.frFrom='pals';FRS.pres=null;FRS.inbox=null;S.screen='frs';render()}}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.fr-me2{display:flex;align-items:center;gap:10px}.fr-me2 b{flex:1;font-size:22px;letter-spacing:3px;color:var(--gold2);direction:ltr;text-align:center}.fr-me2 .btn{min-height:44px;width:auto;flex:none}
+.fr-in{display:flex;flex-direction:column;gap:8px;border:2px solid #f3c14d}.fr-gi{display:flex;align-items:center;gap:8px}.fr-gi span{flex:1;font-size:14px}.fr-gi .btn{width:auto;flex:none;min-height:44px}
+.fr-r{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}.fr-r.on{border:2px solid #7fe07a88}.fr-r .tx{display:flex;flex-direction:column;min-width:0}.fr-r .tx small{font-size:12px;color:var(--dim)}
+.fr-pp{position:relative;width:56px;height:56px;border-radius:50%;overflow:hidden;background:#0006}.fr-pp svg{width:100%;height:100%}.fr-pp .d{position:absolute;bottom:3px;inset-inline-end:3px;width:12px;height:12px;border-radius:50%;background:#777;border:2px solid #1a1530}.fr-pp .d.on{background:#7fe07a}
+.fr-bt{grid-column:1/-1;display:flex;gap:8px}.fr-bt .btn{flex:1;min-height:44px}
+small.fr-on,.fr-on{color:#7fe07a!important;font-weight:800}.fr-off{color:var(--dim)}
+.fr-pf{gap:12px}.fr-ph{display:flex;gap:12px;align-items:center}.fr-ph>div:last-child{display:flex;flex-direction:column}.fr-ph b{font-size:20px}.fr-ph small{font-size:13px;color:var(--dim)}
+.fr-big{width:84px;height:84px;border-radius:50%;overflow:hidden;background:#0006;flex:none}.fr-big svg{width:100%;height:100%}
+.fr-sec{display:flex;flex-direction:column;gap:6px}.fr-wr{display:flex;flex-wrap:wrap;gap:6px}.fr-ti{padding:3px 10px;border-radius:99px;background:#f3c14d22;color:#ffd36a;font-size:13px}.fr-eq{padding:3px 10px;border-radius:99px;background:#ffffff12;font-size:13px}
+.fr-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.fr-nums span{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-radius:10px;background:#ffffff0a}.fr-nums b{font-size:20px;color:#ffd36a}.fr-nums small{font-size:11px;color:var(--dim);text-align:center}
+.fr-mats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-height:40vh;overflow:auto;padding:6px 0}.fr-m{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:72px;padding:6px 2px;border-radius:10px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;position:relative;cursor:pointer}
+.fr-m small{font-size:10px;line-height:1.2;text-align:center}.fr-m i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;color:#ffd36a}.fr-m.on{border-color:#f3c14d;background:#f3c14d22}
+.fr-n{display:flex;gap:8px}.fr-n .btn{flex:1;min-height:44px}.fr-n .btn.on{border-color:#f3c14d;color:#ffd36a}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
