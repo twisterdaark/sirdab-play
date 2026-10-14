@@ -4806,6 +4806,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.55',d:'14 أكتوبر',add:['«ناس البلد» كبرت: 20 حكاية جديدة (بقوا 30) بناس جديدة: أمل المدرسة، حمدي البنّا، سمير المحصّل، علي الحلاق، أشرف التاجر وغيرهم. الحكايات بتتفتح بالمستوى، واللي تحت مستواك وما {لعبتهاش|لعبتيهاش} بتيجي الأول.','16 عقد جديد (بقوا 24)، منهم 6 سلاسل: العقد الجاي بيتفتح بعد ما {تخلص|تخلصي} اللي قبله، والحكاية بتكمل مع نفس الشخص (فرن سعاد، دكان الحلاق، صيادين الترعة، جبنة هدى، المدرسة الجديدة، قافلة أشرف).','اختياراتك بتفرق أكتر: لو {نزلت|نزلتي} تطلّع ابن حمدي من الحفرة بيرجع يدفعلك الضعف بعدين، ولو {عالجت|عالجتي} معزة هدى عقد الجبنة بيدفع أكتر، ولو {وقفت|وقفتي} قدام سمير المحصّل هيرجعلك.']},
 {v:'6.54',d:'14 أكتوبر',add:['«سكك مخفية»: تلات سكك سرية (الحداد، الفلاح، المقاتل) بتفضل مقفولة لحد ما {تشتغل|تشتغلي} في شغلتها كفاية، وساعتها حد من البلد بينده عليك. كل سكة 3 مراحل، كل مرحلة بتسيبلك ميزة على طول (الحدادة أحسن، خبرة زراعة زيادة، صحة زيادة)، وفي الآخر لقب مخفي. السكة ما بتغيرش صنفك.','«مشاريع البلد»: بير البلد وكوبري الترعة بيتبنوا على 3 مراحل. {دوس|دوسي} على كل حاجة {تسلّم|تسلّمي} اللي معاك منها، شوية شوية. كل مرحلة بتتبني بتدفعلك مرة واحدة وبتسيب ميزة للحرف اللي بتستخدمها (زراعة وطبخ، صيد وتنقيب).','اتصلح: رسالة «نقطة جديدة في مهارات الصنعة» كانت بتطلع بالعربي واللعبة بالإنجليزي.']},
 {v:'6.53',d:'14 أكتوبر',add:['«ناس البلد»: كارت جديد فوق «حال البلد» فيه حكايات وعقود مع ناس البلد، وكل واحد ليه وش.','«حكاية النهارده»: حكاية واحدة كل يوم بلد (عشر حكايات لحد دلوقتي، بتتفتح بالمستوى): جاموسة هربانة، خناقة عند القهوة، فرح، حرامي في بيتك... وفيها حاجات {بتعملها|بتعمليها} بإيدك: «امسك» ({سيب|سيبي} لما الدايرة توصل للأخضر) أو «بسرعة» (7 دوسات في 3 ثواني). لو فاتتك بتاخد النهاية الوحشة.','اللي {بتختاره|بتختاريه} بيفضل: لو {سلّفت|سلّفتي} الريس صابر بيرجعلك 150 بعد يومين وعقده بيدفع أكتر، والكلب اللي {بتأكّله|بتأكّليه} بيرجع ينقذك بعدين. كل اللي حصل مكتوب تحت «اللي حصل».','«العقود»: 8 عقود من ناس البلد، كل عقد 3 خطوات بتلف بيك على الحرف (تزرع وتطبخ وتصطاد، أو تكسر صخر وتشتغل عند الحداد). {بتسلّم|بتسلّمي} الحاجة بإيدك، وأجره بيتدفع مرة واحدة، وولاء صاحبه في «حال البلد» بيزيد. لو {سبت|سبتي} العقد اللي {سلّمته|سلّمتيه} بيرجعلك.']},
 {v:'6.52.1',d:'14 أكتوبر',add:['«حال الغيط» بقى بيقول سعر البيع: كل أرض مزروعة مكتوب تحتها الواحدة بتتباع بكام عند عم رمضان النهارده، والأرض كلها هتجيب حوالي كام. وجدول «كل زرعة بتاخد قد إيه» فيه سعر البيع جنب التقاوي والمحصول.']},
@@ -52588,7 +52589,7 @@ const NS_SC=[
       {ic:'📣',t:['{اصرخ|اصرخي} على الجيران','Shout for the neighbours'],ok:{rep:1,lose:.02,t:['الجيران جم بس هو كان هرب ومعاه 2% من فلوسك.','The neighbours came but he had fled with 2% of your money.']}}]}];
 /* the dog of SC08 turns SC10: it holds him for you */
 const NS_DOG=['الكلب البلدي اللي {أكلته|أكلتيه} نط من ورا الحيطة ومسك في رجله. ما احتجتش {تمسكه|تمسكيه}!','The street dog you fed leapt over the wall and grabbed his leg. You did not even need to hold him!'];
-function nsToday(h){const A=nsFix(h);if(A.d===nsDay(h))return {wait:1};const s=NS_SC.find(x=>!A.done[x.id]);if(!s)return {all:1};if(h.lvl<s.lv)return {lv:s.lv};return {s}}
+function nsToday(h){const A=nsFix(h);if(A.d===nsDay(h))return {wait:1};const L=NS_SC.filter(x=>!A.done[x.id]);if(!L.length)return {all:1};const s=L.find(x=>h.lvl>=x.lv);if(!s)return {lv:Math.min(...L.map(x=>x.lv))};return {s}}
 /* ---- 2. the contracts ---- */
 const NS_CNT={cooked:['{اطبخ|اطبخي}','Cook'],crafted:['{اعمل|اعملي} عند الحداد أو الخياط','Make at the smith or tailor'],brewed:['{اعمل|اعملي} دوا في العطارة','Brew at the herbalist'],
   harvest:['{احصد|احصدي} من الغيط','Harvest in the field'],rocks:['{اكسر|اكسري} صخر في المنجم','Break rocks in the mine'],fish:['{اصطاد|اصطادي} سمك','Catch fish']};
@@ -52622,7 +52623,7 @@ function nsTake(h){const C=h.ct,a=C.a;if(!a)return;const c=nsCt(a.id),s=c.st[a.s
     nsLog(h,`${p.n[0]}: ${c.t[0]} خلص (+${m} جنيه)`,`${p.n[1]}: ${c.t[1]} done (+${m} coins)`);saveHero();
     band(ae('العقد خلص','Contract done'),T(c.t[EN?1:0]),`+${m} ${ae('جنيه','coins')} · +${P.x} ${ae('خبرة','XP')} · +${P.st} ${ae('حجر تعزيز','enhancement stone')}`,{dur:2200,sound:SFX.levelup});return nsRender()}
   a.b=c.st[a.s].do?nsCnt(h,c.st[a.s].do):0;saveHero();toast(T(ae('تمام! الخطوة الجاية.','Done! On to the next step.')));nsRender()}
-function nsStart(h,id){const C=h.ct,c=nsCt(id);if(!c||C.a||C.done[id]||h.lvl<c.lv)return;C.a={id,s:0,b:c.st[0].do?nsCnt(h,c.st[0].do):0,g:{}};saveHero();try{SFX.page()}catch(e){}nsRender()}
+function nsStart(h,id){const C=h.ct,c=nsCt(id);if(!c||C.a||C.done[id]||h.lvl<c.lv||(c.after&&!C.done[c.after]))return;C.a={id,s:0,b:c.st[0].do?nsCnt(h,c.st[0].do):0,g:{}};saveHero();try{SFX.page()}catch(e){}nsRender()}
 function nsDrop(h){const C=h.ct,a=C.a;if(!a)return;Object.keys(a.g||{}).forEach(k=>addRes(h,k,a.g[k]));C.a=null;saveHero();toast(T(ae('{سبت|سبتي} العقد. اللي {سلّمته|سلّمتيه} رجعلك.','You left the contract. What you handed in is back with you.')));nsRender()}
 /* ---- hand actions ---- */
 const nsAuto=()=>window.__nsAuto!=null;
@@ -52682,8 +52683,8 @@ function nsCts(h){const C=h.ct,a=C.a;let out='';
       <div class="ns-sts">${c.st.map((x,i)=>`<div class="ns-st ${i<a.s?'dn':i===a.s?'cu':''}"><span class="n">${i<a.s?'✓':i+1}</span><span>${x.give?ae('سلّم: ','Hand in: '):''}${nsStepTxt(h,x,i===a.s?a:null,i===a.s)}</span></div>`).join('')}</div>
       <div class="row"><button class="btn${ok?'':' ghost'}" id="nsGive" ${ok?'':'aria-disabled="true"'}>${s.give?T(ae('{سلّم|سلّمي}','Hand in')):T(ae('{خلّصت|خلّصتي}','I did it'))}</button><button class="btn ghost" id="nsDrop">${T(ae('{سيب|سيبي} العقد','Leave it'))}</button></div>
       <div class="dim ns-pay">${ae('الأجر','Pay')}: ${Math.round(c.pay.m*(c.who==='saber'&&nsFix(h).f.saber?1.2:1))} ${ae('جنيه','coins')} · ${c.pay.x} ${ae('خبرة','XP')} · ${c.pay.st} ${ae('حجر','stone')}</div></div>`}
-  out+=NS_CT.filter(c=>!a||c.id!==a.id).map(c=>{const p=NS_P[c.who],done=C.done[c.id],lock=h.lvl<c.lv;
-    return `<div class="card ns-ct${done?' dn':''}${lock?' lk':''}"><div class="ns-h"><span class="ns-f">${nsFace(p)}</span><span><b>${c.ic} ${T(c.t[EN?1:0])}</b><small>${esc(nsPN(c.who))}${done?' · '+ae('خلص','done'):lock?' · '+ae(`مستوى ${c.lv}`,`level ${c.lv}`):''}</small></span></div>
+  out+=NS_CT.filter(c=>!a||c.id!==a.id).map(c=>{const p=NS_P[c.who],done=C.done[c.id],aft=c.after&&!C.done[c.after],lock=h.lvl<c.lv||aft;
+    return `<div class="card ns-ct${done?' dn':''}${lock?' lk':''}"><div class="ns-h"><span class="ns-f">${nsFace(p)}</span><span><b>${c.ic} ${T(c.t[EN?1:0])}</b><small>${esc(nsPN(c.who))}${done?' · '+ae('خلص','done'):aft?' · '+ae(`بعد «${nsCt(c.after).t[0]}»`,`after «${nsCt(c.after).t[1]}»`):lock?' · '+ae(`مستوى ${c.lv}`,`level ${c.lv}`):''}</small></span></div>
       ${done||lock?'':`<div class="ns-sts sm">${c.st.map((x,i)=>`<div class="ns-st"><span class="n">${i+1}</span><span>${x.give?ae('سلّم: ','Hand in: '):''}${nsStepTxt(h,x,null,false)}</span></div>`).join('')}</div>
       <button class="btn ${a?'ghost':''}" data-nst="${c.id}" ${a?'disabled':''}>${a?ae('خلّص عقدك الأول','Finish your contract first'):T(ae('{اقبل|اقبلي} العقد','Take the contract'))}</button>`}</div>`}).join('');
   return out}
@@ -52844,6 +52845,188 @@ SCREENS.sekka=function(){const h=S.hero;if(!h){S.screen='title';return render()}
 .hp-need{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .hp-m{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:84px;padding:8px 4px;border-radius:12px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;cursor:pointer}
 .hp-m b{font-size:12px}.hp-m small{font-variant-numeric:tabular-nums;color:var(--dim)}.hp-m.ok{border-color:#7fe07a;background:#7fe07a14}.hp-m.ok small{color:#7fe07a}.hp-m .mi{font-size:24px;line-height:26px}.hp-m:active{transform:translateY(2px)}`;document.head.appendChild(s)})();
+/* ---------- 6.55 (acc1, R18 part 2): «ناس البلد» grows ----------
+   20 more town stories (sc11–sc30) and 16 more contracts (ct9–ct24) on the p184 screen, same rules (one story a town day, paid once).
+   The new contracts come in 6 linked craft loops: a loop's next contract opens only after the one before it is done (c.after, p184),
+   so one person's story goes on over two or three contracts and walks you through the trades in order.
+   The stories are sorted by level after this (a story above your level waits; a lower one you have not played comes first).
+   Marks read later: sc13 (the well digger's son) → sc24 pays more; sc16 (Hoda's sick goat) → ct16 pays +20% (nsBonus);
+   sc19 (the debt collector) → sc27; sc21 (the stolen net) → ct19. */
+Object.assign(NS_P,{
+  saeed:{id:'saeed',n:['الحاج سعيد','Hajj Saeed'],old:1},morsi:{id:'morsi',n:['عم مرسي','Uncle Morsi'],old:1},shaaban:{id:'shaaban',n:['عم شعبان','Uncle Shaaban'],old:1},
+  amal:{id:'amal',n:['أمل المدرسة','Amal the teacher'],g:'f'},yousef:{id:'yousef',n:['يوسف','Youssef']},samir:{id:'samir',n:['سمير المحصّل','Samir the collector']},
+  fatma:{id:'fatma',n:['فاطمة','Fatma'],g:'f'},hamdi:{id:'hamdi',n:['حمدي البنّا','Hamdi the builder']},nabil:{id:'nabil',n:['نبيل','Nabil']},
+  zeinab:{id:'zeinab',n:['الحاجة زينب','Hajja Zeinab'],g:'f',old:1},tarek:{id:'tarek',n:['طارق','Tarek']},soad:{id:'soad',n:['سعاد','Soad'],g:'f'},
+  ali:{id:'ali',n:['علي الحلاق','Ali the barber']},mostafa:{id:'mostafa',n:['مصطفى','Mostafa']},ashraf:{id:'ashraf',n:['أشرف التاجر','Ashraf the trader']}});
+NS_SC.push(
+  {id:'sc11',lv:2,who:'amal',ic:'📚',t:['كتب المدرسة','The school books'],
+    cap:['أمل المدرسة شايلة كرتونة كتب، والمطر بدأ ينزل والكرتونة بتتبل.','Amal the teacher carries a box of books, the rain is starting and the box is soaking.'],
+    say:['الكتب دي بتاعة العيال كلهم!','These books belong to all the kids!'],
+    ch:[{ic:'🏃',t:['{شيل|شيلي} الكرتونة و{اجري|اجري}','Take the box and run'],act:'tap',ok:{rep:3,x:6,t:['{وصلت|وصلتي} المدرسة والكتب ناشفة. العيال صقفولك من الشباك.','You reached the school with the books dry. The kids clapped at the window.']},
+        no:{rep:1,t:['{اتزحلقت|اتزحلقتي} في الطين، وكام كتاب اتبلوا.','You slipped in the mud and a few books got wet.']}},
+      {ic:'🧥',t:['{غطّيها|غطّيها} بهدومك','Cover it with your clothes'],ok:{rep:2,t:['هدومك اتبلت، بس الكتب نجيت.','Your clothes got soaked, but the books were saved.']}}]},
+  {id:'sc12',lv:2,who:'yousef',ic:'🎲',t:['رهان على الطاولة','A bet at backgammon'],
+    cap:['يوسف قاعد على القهوة بيتحدى أي حد في الطاولة على 30 جنيه.','Youssef sits at the café, challenging anyone to backgammon for 30 coins.'],
+    say:['محدش هنا يقدر يغلبني. {تيجي|تيجي}؟','Nobody here can beat me. Want to try?'],
+    ch:[{ic:'🎲',t:['{العب|العبي} قدامه بسرعة','Play him fast'],act:'tap',cost:{m:30},ok:{m:60,rep:1,t:['{قفلت|قفلتي} عليه في الآخر. القهوة كلها ضحكت عليه.','You shut him out at the end. The whole café laughed at him.']},
+        no:{t:['الزهر جه معاه. خد الـ 30 وضحك.','The dice went his way. He took the 30 and laughed.']}},
+      {ic:'☕',t:['{اشرب|اشربي} شايك و{اتفرج|اتفرجي}','Drink your tea and watch'],ok:{t:['{اتفرجت|اتفرجتي} عليه بيكسب واحد ورا التاني.','You watched him beat one man after another.']}}]},
+  {id:'sc13',lv:3,who:'hamdi',ic:'🕳',t:['ابن الحفار','The well digger\'s son'],
+    cap:['ابن حمدي البنّا وقع في حفرة بير قديم، وبيعيط تحت.','Hamdi the builder\'s son fell into an old well pit and is crying down there.'],
+    say:['الحبل قصير! حد ينزل يمسكه!','The rope is short! Someone go down and grab him!'],
+    ch:[{ic:'🪢',t:['{انزل|انزلي} و{امسكه|امسكيه}','Climb down and hold him'],act:'hold',ok:{f:'hamdi',rep:6,x:10,t:['{طلعته|طلعتيه} على كتفك. حمدي قال «ليك عندي جميل عمري ما أنساه.»','You brought him up on your shoulder. Hamdi said «I owe you one I will never forget.»']},
+        no:{hp:-3,rep:3,t:['الحبل جرح إيدك، بس الواد طلع.','The rope cut your hands, but the boy came up.']}},
+      {ic:'📣',t:['{نادي|نادي} على الرجالة','Call the men'],ok:{rep:1,t:['الرجالة جم بعد شوية وطلّعوه.','The men came a while later and got him out.']}}]},
+  {id:'sc14',lv:3,who:'fatma',ic:'🧺',t:['الغسيل والريح','Laundry and wind'],
+    cap:['ريح جامدة شالت غسيل فاطمة من على السطح وبتطيّره في الشارع.','A strong wind blew Fatma\'s laundry off the roof and down the street.'],
+    say:['جهاز بنتي! {الحقه|الحقيه}!','My daughter\'s trousseau! Catch it!'],
+    ch:[{ic:'🏃',t:['{الحق|الحقي} الهدوم','Chase the clothes'],act:'tap',ok:{rep:3,res:{egg:3},t:['{لميت|لميتي} الهدوم كلها. فاطمة ادتك 3 بيض من عندها.','You gathered every piece. Fatma gave you 3 eggs.']},
+        no:{rep:1,t:['{لحقت|لحقتي} نصهم والباقي راح في الترعة.','You caught half; the rest went into the canal.']}},
+      {ic:'🙈',t:['مش شغلتك','Not your business'],ok:{t:['الريح خلصت على كل حاجة.','The wind took it all.']}}]},
+  {id:'sc15',lv:4,who:'nabil',ic:'🐍',t:['التعبان في الجرن','The snake in the barn'],
+    cap:['نبيل واقف برا الجرن مش قادر يدخل: تعبان كبير ملفوف على شوال القمح.','Nabil stands outside the barn: a big snake is coiled on the wheat sack.'],
+    say:['ده بيعض! محدش يقرب!','It bites! Don\'t go near!'],
+    ch:[{ic:'🪵',t:['{امسكه|امسكيه} بعصاية من راسه','Pin its head with a stick'],act:'hold',ok:{m:50,x:10,t:['{مسكته|مسكتيه} و{رميته|رميتيه} بعيد في الغيط. نبيل ادالك 50 جنيه.','You pinned it and threw it far into the field. Nabil gave you 50 coins.']},
+        no:{hp:-4,t:['عضّك في إيدك قبل ما يهرب. الإيد ورمت.','It bit your hand before it fled. Your hand swelled.']}},
+      {ic:'🔥',t:['{ولّع|ولّعي} قش عند الباب','Burn straw by the door'],ok:{rep:-1,m:20,t:['الدخان طرده، بس الشوال اسودّ شوية.','The smoke drove it out, but the sack blackened a bit.']}}]},
+  {id:'sc16',lv:4,who:'hoda',ic:'🐐',t:['معزة هدى','Hoda\'s goat'],
+    cap:['معزة هدى نايمة ومش عايزة تاكل، وهدى قاعدة جنبها بتعيط.','Hoda\'s goat lies there and won\'t eat, and Hoda sits beside it crying.'],
+    say:['دي كل اللي حيلتي من جوزي الله يرحمه.','She is all I have left from my late husband.'],
+    ch:[{ic:'🌿',t:['{أكّلها|أكّليها} 2 نعناع','Feed her 2 mint'],cost:{res:{mint:2}},ok:{f:'hoda',rep:4,x:6,t:['المعزة قامت وأكلت من إيدك. هدى بتدعيلك.','The goat stood up and ate from your hand. Hoda prayed for you.']}},
+      {ic:'🪙',t:['{ابعتها|ابعتيها} للبيطري بـ 40 جنيه','Pay 40 coins for the vet'],cost:{m:40},ok:{f:'hoda',rep:3,t:['البيطري اداها حقنة وقامت.','The vet gave her a shot and she got up.']}},
+      {ic:'🫂',t:['{طبطب|طبطبي} على هدى وبس','Just comfort Hoda'],ok:{t:['هدى شكرتك، والمعزة لسه نايمة.','Hoda thanked you. The goat is still down.']}}]},
+  {id:'sc17',lv:5,who:'tarek',ic:'🏍',t:['الموتوسيكل في الترعة','The motorbike in the canal'],
+    cap:['طارق وقع بالموتوسيكل في الترعة، وهو طلع بس الموتوسيكل غرقان في الطين.','Tarek fell into the canal on his motorbike. He got out, but the bike is stuck in the mud.'],
+    say:['ده رزقي! بوصّل عليه الطلبات!','That\'s my living! I deliver on it!'],
+    ch:[{ic:'💪',t:['{شد|شدي} معاه','Pull with him'],act:'hold',ok:{m:40,rep:3,x:8,t:['الموتوسيكل طلع بالطين. طارق ادالك 40 ووعدك بتوصيلة ببلاش.','The bike came out, muddy. Tarek gave you 40 and a free ride.']},
+        no:{hp:-2,t:['{اتزحلقت|اتزحلقتي} في الطين. الموتوسيكل طلع بعد ساعة.','You slipped in the mud. The bike came out an hour later.']}},
+      {ic:'🚶',t:['{سيبه|سيبيه} يجيب ناس','Let him fetch people'],ok:{t:['طارق جري يجيب ناس.','Tarek ran to get help.']}}]},
+  {id:'sc18',lv:5,who:'zeinab',ic:'💊',t:['دوا الحاجة زينب','Hajja Zeinab\'s medicine'],
+    cap:['الحاجة زينب نسيت دواها في البندر، والليل داخل.','Hajja Zeinab left her medicine in the city, and night is falling.'],
+    say:['من غيره صدري بيقفل بالليل يا {ابني|بنتي}.','Without it my chest closes up at night.'],
+    ch:[{ic:'🏃',t:['{روح|روحي} جيبه بسرعة','Run and get it'],act:'tap',ok:{rep:5,x:10,t:['{رجعت|رجعتي} بالدوا قبل المغرب. الحاجة زينب نامت مرتاحة.','You were back with the medicine before sunset. Hajja Zeinab slept easy.']},
+        no:{rep:2,hp:-2,t:['{وصلت|وصلتي} متأخر و{تعبت|تعبتي}، بس الدوا وصل.','You got back late and worn out, but the medicine arrived.']}},
+      {ic:'🌿',t:['{اعملها|اعمليها} نعناع وحلبة','Make her mint and fenugreek'],cost:{res:{mint:1,helba:1}},ok:{rep:3,x:4,t:['الشربة هدّتها لحد الصبح.','The drink calmed her until morning.']}}]},
+  {id:'sc19',lv:6,who:'samir',ic:'📒',t:['المحصّل','The collector'],
+    cap:['سمير المحصّل واقف على باب ست نعمات بيزعّق عشان قسط متأخر.','Samir the collector shouts at Mrs Neamat\'s door over a late payment.'],
+    say:['النهارده يا إما الفلوس يا إما العفش!','Today it\'s the money or the furniture!'],
+    ch:[{ic:'🪙',t:['{ادفع|ادفعي} عنها 80 جنيه','Pay 80 coins for her'],cost:{m:80},ok:{f:'neamat',rep:6,t:['سمير مشي. ست نعمات مش لاقية كلام.','Samir left. Mrs Neamat had no words.']}},
+      {ic:'😠',t:['{اقف|اقفي} قدامه','Stand in his way'],act:'hold',ok:{f:'samir',rep:4,t:['بصيت في عينه لحد ما مشي وهو بيبرطم. «هتشوف.»','You stared him down until he left muttering. «You\'ll see.»']},
+        no:{f:'samir',hp:-2,rep:1,t:['زقّك ومشي. «هتشوف.»','He shoved you and left. «You\'ll see.»']}},
+      {ic:'🚶',t:['{امشي|امشي}','Walk on'],ok:{rep:-2,t:['سمعت صوت العفش بيطلع وانت ماشي.','You heard the furniture being carried out as you left.']}}]},
+  {id:'sc20',lv:6,who:'ali',ic:'💈',t:['الحلاق والعريس','The barber and the groom'],
+    cap:['علي الحلاق إيده بتترعش، والعريس لازم يتحلق قبل الزفة بساعة.','Ali the barber\'s hand is shaking, and the groom must be shaved an hour before the parade.'],
+    say:['{امسكلي|امسكيلي} راسه ثابتة، الله يخليك.','Hold his head still for me, please.'],
+    ch:[{ic:'✋',t:['{امسك|امسكي} راس العريس','Hold the groom\'s head'],act:'hold',ok:{m:30,rep:3,t:['الحلاقة طلعت زي الفل. علي ادالك 30 من البقشيش.','A perfect shave. Ali gave you 30 from the tip.']},
+        no:{rep:-1,t:['العريس اتحرك، وطلع بجرح صغير في دقنه. الكل بصلك.','The groom moved and got a small nick on his chin. Everyone looked at you.']}},
+      {ic:'😅',t:['{اعتذر|اعتذري}','Excuse yourself'],ok:{t:['علي كمّل لوحده بإيد بتترعش.','Ali carried on alone with a shaking hand.']}}]},
+  {id:'sc21',lv:7,who:'saber',ic:'🕸',t:['الشبكة المسروقة','The stolen net'],
+    cap:['الريس صابر صحي لقى شبكته الجديدة مقطوعة من المركب.','Captain Saber woke to find his new net cut from the boat.'],
+    say:['شفت واحد بيجري ناحية الجسر ومعاه شوال.','I saw someone running to the bridge with a sack.'],
+    ch:[{ic:'🏃',t:['{اجري|اجري} وراه','Run after him'],act:'tap',ok:{f:'net',m:40,rep:4,t:['{لحقته|لحقتيه} على الجسر ورمى الشوال ونط. الشبكة رجعت.','You caught him at the bridge; he dropped the sack and jumped. The net is back.']},
+        no:{rep:1,t:['سبقك واختفى في الغيطان.','He outran you into the fields.']}},
+      {ic:'🧵',t:['{ساعده|ساعديه} يخيط القديمة (2 قماش)','Help him mend the old one (2 cloth)'],cost:{res:{cloth:2}},ok:{f:'net',rep:3,x:6,t:['الشبكة القديمة رجعت تشتغل.','The old net works again.']}}]},
+  {id:'sc22',lv:7,who:'soad',ic:'🍞',t:['فرن سعاد','Soad\'s oven'],
+    cap:['فرن سعاد البلدي ولّع زيادة والعيش بيتحرق، وهي لوحدها.','Soad\'s clay oven is too hot, the bread is burning, and she is alone.'],
+    say:['{طلّع|طلّعي} العيش قبل ما يتفحم!','Pull the bread out before it chars!'],
+    ch:[{ic:'🔥',t:['{طلّع|طلّعي} العيش بسرعة','Pull the bread out fast'],act:'tap',ok:{heal:1,rep:3,t:['العيش طلع سخن ومقرمش. أكلت لحد ما شبعت.','The bread came out hot and crisp. You ate until full.']},
+        no:{hp:-2,t:['{اتلسعت|اتلسعتي}، ونص العيش اتحرق.','You got burned, and half the bread charred.']}},
+      {ic:'💧',t:['{رش|رشي} مية على النار','Splash water on the fire'],ok:{rep:1,t:['النار هديت، والعيش طلع نيّ.','The fire calmed, but the bread came out raw.']}}]},
+  {id:'sc23',lv:8,who:'mostafa',ic:'🌀',t:['الدوامة','The whirlpool'],
+    cap:['مصطفى بيعوم في الترعة ومية الهويس اتفتحت فجأة، والدوامة بتسحبه.','Mostafa is swimming when the lock gates open, and the current pulls him under.'],
+    say:['الحقوني!','Help!'],
+    ch:[{ic:'🏊',t:['{نط|نطي} وراه','Jump in after him'],act:'hold',ok:{rep:8,x:14,t:['{شديته|شديتيه} من الدوامة. البلد كلها بتحكي عليك.','You pulled him out. The whole village is talking about it.']},
+        no:{hp:-5,rep:4,t:['المية خبطتك في الحيطة، بس الاتنين طلعتوا.','The water slammed you into the wall, but you both got out.']}},
+      {ic:'🪢',t:['{ارميله|ارميله} حبل','Throw him a rope'],ok:{rep:4,x:6,t:['مسك الحبل وطلع بالعافية.','He grabbed the rope and barely got out.']}}]},
+  {id:'sc24',lv:8,who:'hamdi',ic:'🧱',t:['سور الجامع','The mosque wall'],
+    cap:['حمدي البنّا بيبني سور الجامع، والسقالة بتميل.','Hamdi the builder is building the mosque wall, and the scaffold is leaning.'],
+    say:['{سند|سندي} معايا!','Hold it with me!'],
+    ch:[{ic:'💪',t:['{اسند|اسندي} السقالة','Brace the scaffold'],act:'hold',ok:{m:60,x:10,t:['السقالة ثبتت. حمدي ادالك 60 جنيه.','The scaffold held. Hamdi gave you 60 coins.']},
+        no:{hp:-3,t:['السقالة نزلت شوية على كتفك، بس محدش وقع.','The scaffold dropped onto your shoulder, but nobody fell.']}},
+      {ic:'🏃',t:['{ابعد|ابعدي}','Step back'],ok:{rep:-1,t:['السقالة وقعت والطوب اتكسر.','The scaffold fell and the bricks broke.']}}]},
+  {id:'sc25',lv:9,who:'ashraf',ic:'🧾',t:['تاجر من بره','A trader from outside'],
+    cap:['أشرف التاجر جاي من البندر وعايز يشتري قمح البلد كله بنص تمنه.','Ashraf the trader came from the city and wants the whole village\'s wheat at half price.'],
+    say:['الفلوس دلوقتي في إيدكم. ولا {تستنى|تستني} لما يبوظ؟','Cash now. Or would you rather wait until it rots?'],
+    ch:[{ic:'🗣',t:['{قول|قولي} للناس متبيعش','Tell people not to sell'],act:'tap',ok:{rep:6,loy:['ramadan',8],t:['الناس سمعت كلامك وأشرف رجع البندر فاضي.','People listened and Ashraf went back empty-handed.']},
+        no:{rep:2,t:['نص البلد باعت قبل ما {تلحق|تلحقي}.','Half the village sold before you got there.']}},
+      {ic:'🤝',t:['{خد|خدي} عمولة منه (+70)','Take his commission (+70)'],ok:{m:70,rep:-5,t:['أخدت الفلوس. البلد مش هتنسى.','You took the money. The village won\'t forget.']}}]},
+  {id:'sc26',lv:9,who:'amal',ic:'✏',t:['امتحان العيال','The kids\' exam'],
+    cap:['أمل المدرسة محتاجة حد يراقب الفصل التاني وهي بتصحح.','Amal needs someone to watch the other class while she marks papers.'],
+    say:['بس نص ساعة. وهما بيغشوا لو سبتهم.','Just half an hour. They cheat if left alone.'],
+    ch:[{ic:'👀',t:['{راقب|راقبي} الفصل','Watch the class'],ok:{rep:3,x:8,t:['محدش غش. العيال بيقولوا عليك «{الأستاذ|الأستاذة} اللي ما بيضحكش».','Nobody cheated. The kids call you «the one who never smiles».']}},
+      {ic:'😄',t:['{احكيلهم|احكيلهم} حدوتة','Tell them a story'],ok:{rep:4,t:['العيال سكتوا يسمعوا الحدوتة، والامتحان ضاع.','The kids fell silent for the story, and forgot the exam.']}}]},
+  {id:'sc27',lv:10,who:'samir',ic:'🔥',t:['سمير راجع','Samir is back'],
+    cap:['سمير المحصّل راجع ومعاه اتنين، واقفين قدام بيتك.','Samir the collector is back with two men, standing at your door.'],
+    say:['فاكر لما {وقفت|وقفتي} قدامي؟','Remember when you stood in my way?'],
+    ch:[{ic:'🤼',t:['{اطلع|اطلعي} لهم','Go out to them'],act:'hold',ok:{rep:5,x:14,m:50,t:['{وقّعت|وقّعتي} واحد والتاني جري. سمير ساب 50 جنيه ومشي.','You dropped one and the other ran. Samir left 50 coins behind.']},
+        no:{hp:-6,lose:.04,t:['التلاتة كانوا كتير. خدوا 4% من فلوسك.','Three was too many. They took 4% of your money.']}},
+      {ic:'📣',t:['{نادي|نادي} على الجيران','Call the neighbours'],ok:{rep:2,t:['الجيران طلعوا بالعصيان، وسمير مشي.','The neighbours came out with sticks, and Samir left.']}}]},
+  {id:'sc28',lv:10,who:'zeinab',ic:'🕯',t:['الفرح الأخير','The last feast'],
+    cap:['الحاجة زينب عاملة عزومة لكل اللي ساعدوها، وانت من أولهم.','Hajja Zeinab threw a feast for everyone who helped her, and you are first in line.'],
+    say:['{كُل|كُلي} يا {ابني|بنتي}، ده من خيرك.','Eat, this comes from your kindness.'],
+    ch:[{ic:'🍽',t:['{كُل|كُلي} و{اقعد|اقعدي} معاهم','Eat and stay'],ok:{heal:1,x:8,rep:2,t:['{قعدت|قعدتي} للفجر. الحاجة زينب حكتلك حكايات البلد القديمة.','You stayed until dawn. Hajja Zeinab told you the old village tales.']}},
+      {ic:'🎁',t:['{جيبلها|جيبيلها} عسل','Bring her honey'],cost:{res:{animal_honey:1}},ok:{rep:5,x:10,t:['الحاجة زينب عيطت من الفرحة.','Hajja Zeinab cried with joy.']}}]},
+  {id:'sc29',lv:11,who:'tarek',ic:'🌫',t:['الشبورة','The fog'],
+    cap:['شبورة تقيلة على الطريق، وطارق اتأخر بالأدوية للمستشفى.','Thick fog on the road, and Tarek is late taking medicine to the hospital.'],
+    say:['مش شايف قدامي. {تيجي|تيجي} معايا {توريني|توريني} الطريق؟','I can\'t see. Will you come and show me the way?'],
+    ch:[{ic:'🧭',t:['{ركّز|ركّزي} في الطريق','Focus on the road'],act:'hold',ok:{rep:5,m:60,t:['{وصلته|وصلتيه} على الميعاد. المستشفى ادتك 60 جنيه.','You got him there on time. The hospital gave you 60 coins.']},
+        no:{hp:-3,rep:2,t:['دخلتوا في حفرة، بس الأدوية وصلت متأخر شوية.','You hit a ditch, but the medicine arrived a little late.']}},
+      {ic:'🏠',t:['{قوله|قوليله} يستنى','Tell him to wait'],ok:{t:['طارق استنى والشبورة ما خلصتش غير الضهر.','Tarek waited; the fog lasted until noon.']}}]},
+  {id:'sc30',lv:12,who:'shaaban',ic:'⚔',t:['تحدي عم شعبان','Uncle Shaaban\'s challenge'],
+    cap:['عم شعبان الغفير القديم واقف في الساحة وفي إيده عصايتين.','Old Uncle Shaaban stands in the square with two sticks in hand.'],
+    say:['{وريني|وريني} اتعلمت إيه. {امسك|امسكي}.','Show me what you have learned. Take one.'],
+    ch:[{ic:'🥢',t:['{العب|العبي} بالعصاية','Fight with the stick'],act:'tap',ok:{x:25,rep:4,t:['آخر ضربة لمست كتفه. ضحك وقال «كده {بقيت ابن|بقيتي بنت} البلد.»','Your last strike touched his shoulder. He laughed: «Now you are the village\'s own.»']},
+        no:{hp:-3,x:10,t:['وقّعك تلات مرات، وفي كل مرة بيمد إيده يقوّمك.','He dropped you three times, and each time reached out to lift you.']}},
+      {ic:'🙏',t:['{بوس|بوسي} إيده و{اعتذر|اعتذري}','Kiss his hand and decline'],ok:{rep:2,t:['«العين بتشوف قبل الإيد. {تعالى|تعالي} لما تبقى جاهز.»','«The eye learns before the hand. Come when you are ready.»']}}]});
+/* sc24 pays more if you saved Hamdi's son (sc13) */
+{const s=NS_SC.find(x=>x.id==='sc24');if(s){const o=s.ch[0].ok;Object.defineProperty(o,'m',{get(){try{return S.hero&&S.hero.sc&&S.hero.sc.f.hamdi?120:60}catch(e){return 60}},enumerable:true})}}
+NS_SC.sort((a,b)=>a.lv-b.lv);
+NS_CT.push(
+  /* loop 1: the bakery (farm → cook) */
+  {id:'ct9',lv:3,who:'soad',ic:'🌾',t:['قمح الفرن','Wheat for the oven'],say:['الفرن عايز قمح من أرضنا مش من البندر.','The oven wants wheat from our land, not the city\'s.'],
+    st:[{do:'harvest',n:12},{give:{crop_wheat:6}},{do:'cooked',n:2}],pay:{m:200,x:22,st:1}},
+  {id:'ct10',lv:5,who:'soad',ic:'🍞',after:'ct9',t:['عيش العيد','Feast bread'],say:['العيد داخل والبلد كلها عايزة كحك.','The feast is coming and the whole village wants cakes.'],
+    st:[{give:{egg:6,milk:3}},{do:'cooked',n:4},{give:{animal_honey:1}}],pay:{m:320,x:32,st:2}},
+  /* loop 2: the barber's shop (mine → smith → tailor) */
+  {id:'ct11',lv:4,who:'ali',ic:'✂',t:['مقص جديد','A new pair of scissors'],say:['المقص بقى بيشد الشعر. عايز واحد من حديد البلد.','My scissors pull hair now. I want one of village iron.'],
+    st:[{do:'rocks',n:10},{give:{iron:4}},{do:'crafted',n:1}],pay:{m:220,x:24,st:1}},
+  {id:'ct12',lv:6,who:'ali',ic:'💈',after:'ct11',t:['كرسي الحلاقة','The barber\'s chair'],say:['الكرسي اتهرى. عايز جلد وقماش وإيد صنايعي.','The chair is worn out. I need leather, cloth and a craftsman\'s hand.'],
+    st:[{give:{salskin:2,cloth:4}},{do:'crafted',n:2},{give:{copper:4}}],pay:{m:320,x:34,st:2}},
+  /* loop 3: the fishermen (fish → tailor → cook) */
+  {id:'ct13',lv:5,who:'mostafa',ic:'🦐',t:['جمبري الترعة','Canal shrimp'],say:['المطعم في البندر عايز جمبري، وأنا مش بعرف أصطاد.','The city restaurant wants shrimp, and I can\'t fish.'],
+    st:[{do:'fish',n:10},{give:{shrimp:3}},{give:{bouri:2}}],pay:{m:260,x:28,st:1}},
+  {id:'ct14',lv:7,who:'mostafa',ic:'🐟',after:'ct13',t:['سمك مشوي للبندر','Grilled fish for the city'],say:['المطعم عجبه. عايز سمك مشوي جاهز كمان.','The restaurant liked it. Now they want grilled fish too.'],
+    st:[{give:{bolti:6}},{do:'cooked',n:3},{give:{basal:4}}],pay:{m:360,x:38,st:2}},
+  /* loop 4: Hoda's dairy (farm → herbs → cook) */
+  {id:'ct15',lv:5,who:'hoda',ic:'🥛',t:['لبن المعزة','The goat\'s milk'],say:['المعزة رجعت تدر لبن، بس عايزة أكل كويس.','The goat gives milk again, but she needs good food.'],
+    st:[{give:{molokhia:4}},{do:'harvest',n:10},{give:{milk:2}}],pay:{m:240,x:26,st:1}},
+  {id:'ct16',lv:7,who:'hoda',ic:'🧀',after:'ct15',t:['جبنة قديمة','Aged cheese'],say:['عايزة أعمل جبنة قديمة وأبيعها في السوق.','I want to make aged cheese and sell it at the market.'],
+    st:[{give:{milk:4,salt:3}},{do:'brewed',n:1},{do:'cooked',n:2}],pay:{m:340,x:36,st:2},bonus:'hoda'},
+  /* loop 5: the builder (mine → smith → farm) */
+  {id:'ct17',lv:6,who:'hamdi',ic:'🧱',t:['طوب ومحارة','Bricks and plaster'],say:['البلد عايزة تبني مدرسة جديدة. عايز رمل وحجر.','The village wants a new school. I need sand and stone.'],
+    st:[{give:{sand:6}},{do:'rocks',n:15},{give:{stone:6}}],pay:{m:300,x:32,st:2}},
+  {id:'ct18',lv:8,who:'hamdi',ic:'🏫',after:'ct17',t:['المدرسة الجديدة','The new school'],say:['الحيطان قامت. فاضل الأبواب والشبابيك.','The walls are up. The doors and windows are left.'],
+    st:[{give:{iron:8,copper:6}},{do:'crafted',n:3},{give:{cloth:4}}],pay:{m:440,x:46,st:3}},
+  {id:'ct19',lv:9,who:'amal',ic:'📚',after:'ct18',t:['فصل أمل','Amal\'s classroom'],say:['المدرسة خلصت. العيال محتاجين أكل الضهر وكراريس.','The school is done. The kids need lunch and notebooks.'],
+    st:[{give:{roz:6,ful:6}},{do:'cooked',n:4},{give:{silver:1}}],pay:{m:480,x:50,st:3}},
+  /* loop 6: the trader's caravan (everything, high level) */
+  {id:'ct20',lv:9,who:'ashraf',ic:'🐪',t:['قافلة أشرف','Ashraf\'s caravan'],say:['المرة دي هشتري بالسعر الصح. عايز أحسن ما عندكم.','This time I\'ll pay a fair price. I want your best.'],
+    st:[{give:{asab:8}},{give:{basal:6,crop_garlic:4}},{do:'harvest',n:30}],pay:{m:420,x:44,st:2}},
+  {id:'ct21',lv:10,who:'ashraf',ic:'💎',after:'ct20',t:['هدية الباشا','The pasha\'s gift'],say:['زبون كبير في البندر عايز هدية تتعمل بإيد.','A big buyer in the city wants a handmade gift.'],
+    st:[{give:{gold:1,silver:2}},{do:'crafted',n:2},{give:{emerald:1}}],pay:{m:600,x:60,st:3}},
+  {id:'ct22',lv:11,who:'ashraf',ic:'🚢',after:'ct21',t:['المركب الكبير','The big boat'],say:['هبعت بضاعة البلد في مركب. عايز سمك ناشف وتوابل.','I\'ll ship the village\'s goods by boat. I want dried fish and spices.'],
+    st:[{do:'fish',n:20},{give:{qarmout:4,bisaria:6}},{do:'brewed',n:2}],pay:{m:640,x:64,st:3}},
+  /* two on their own */
+  {id:'ct23',lv:8,who:'saeed',ic:'🐂',t:['ساقية الحاج سعيد','Hajj Saeed\'s water wheel'],say:['الساقية واقفة من سنة. لو اشتغلت الغيطان كلها هتشرب.','The water wheel has stood still a year. If it turns, every field drinks.'],
+    st:[{give:{iron:6,coal:6}},{do:'crafted',n:2},{do:'harvest',n:20}],pay:{m:400,x:42,st:2}},
+  {id:'ct24',lv:12,who:'morsi',ic:'🔥',t:['آخر سيف لعم مرسي','Uncle Morsi\'s last sword'],say:['قبل ما إيدي تقف، عايز أعمل سيف أخير وتشيله انت.','Before my hands stop, I want to make one last sword and have you carry it.'],
+    st:[{give:{iron:10,coal:10,silver:2}},{do:'crafted',n:4},{give:{gold:2}}],pay:{m:800,x:80,st:4}});
+/* a give step whose material is not in this build would block the contract: it becomes «make one thing» */
+NS_CT.forEach(c=>c.st.forEach((s,i)=>{if(!s.give)return;Object.keys(s.give).forEach(k=>{if(!MAT[k])delete s.give[k]});if(!Object.keys(s.give).length)c.st[i]={do:'crafted',n:1}}));
+NS_SC.forEach(s=>s.ch.forEach(c=>{if(c.cost&&c.cost.res)Object.keys(c.cost.res).forEach(k=>{if(!MAT[k])delete c.cost.res[k]})}));
+/* sc16: helping Hoda's goat makes her cheese contract pay +20%; sc21: the saved net makes Saber's contract pay +20% too */
+{const t0=nsTake;nsTake=function(h){try{const a=h&&h.ct&&h.ct.a,c=a&&nsCt(a.id),A=h&&h.sc;if(c&&a.s===c.st.length-1&&A&&A.f&&((c.bonus==='hoda'&&A.f.hoda)||(c.id==='ct6'&&A.f.net&&!A.f.saber))&&nsStepOk(h,c.st[a.s],a)){
+  const m0=c.pay.m;c.pay.m=Math.round(m0*1.2);try{return t0.apply(this,arguments)}finally{c.pay.m=m0}}}catch(e){}return t0.apply(this,arguments)}}
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
