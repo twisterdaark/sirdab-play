@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.40',d:'14 أكتوبر',add:['الكلام بقا كوميكس: اللي بيحصل في صناديق صفرا، وكلام الناس في فقاعات جنب وشهم، وكل واحد له وش ثابت. النتيجة بعد الرمية كمان فيها فقاعة اللي بيكلمك.','الاختيارات بقت كروت بأيقونة كبيرة: قبضة للقوة، جري للخفة، فقاعة للحضور، عملة للشرا، رجلين للي {عايز|عايزة} تمشي وبس. فرصتك في شريطة ملونة تحت.','كارت الدفع أو الإدية تقدر {تسحبه|تسحبيه} على وش الشخص بدل ما {تدوس|تدوسي} عليه.']},
 {v:'6.39',d:'14 أكتوبر',add:['الليلة بقت مكان: في كل وقفة {بتشوف|بتشوفي} نفسك على الطريق، وقدامك 3 أماكن بتنوّر بصورتها واسمها ونجوم خطرها. {دوس|دوسي} على مكان وهتمشي لحد عنده.','الاختيارات بقت حركة {بتعملها|بتعمليها} قبل النرد: شد بسرعة للقوة، اتسحّب في الوقت الصح للخفة، استحمل للتحمّل، افتكر للذكاء، خلّي بالك للحكمة، وفي وقتك للحضور. لو {عملتها|عملتيها} حلو بتاخد لحد +2 على الرمية.','مش {عايز|عايزة} تلعبها؟ «{سيبها|سيبيها} للحظ» وارمي النرد على طول.']},
 {v:'6.38',d:'14 أكتوبر',add:['الحدادة والخياطة والطبخ والعطارة اتنظموا: فوق فيه تابات («اعمل»، «خامات»، «العدّة»، «جاهز»…)، وكل حاجة {بتعملها|بتعمليها} بقت كارت صغير فيه صورتها واسمها. {دوس|دوسي} عليه يفتح بكل تفاصيله وزراره.','النقطة الخضرا على الكارت = {تقدر تعملها|تقدري تعمليها} دلوقتي، والدهبي = {تقدر تشتريها|تقدري تشتريها} جاهزة. صفحة الحداد بقت أقصر بكتير.']},
 {v:'6.37',d:'14 أكتوبر',add:['شجرة كل شغلانة بقت سما بالليل بنجوم: الشمس تحت، والفروع طالعة نجوم متوصلة، والروابط والتاج فوق، والاختيارات تحت. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}، والنجمة بتنوّر لما {تاخدها|تاخديها}.','«شجرة الصنايعي» اللي كانت لكل الشغلانات اتشالت. اللي {اشتريته|اشتريتيه} منها لسه شغال.','القتال: القدرات والشنطة و«اتصرّف» بقوا كروت مكتوب عليها كل حاجة بتعمل إيه. دوسة واحدة {بتستعملها|بتستعمليها}، ولو محتاجة وحش {بتدوس|بتدوسي} على الوحش على طول.','السلاح اللي {بيصحى|بيصحى} أو بيتولد بروح أو بيكبر: مشهد كامل بنور وصوت واسمه بيظهر كبير.']},
@@ -51104,6 +51105,115 @@ function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,lab
 .ag-r{min-height:28px;text-align:center;font-size:20px}.ag-up{color:#7fd88a}.ag-dn{color:#e2483f}.ag-eq{color:#e9dcc4}
 .ag-b{display:flex;gap:8px;justify-content:space-between}.ag-b .btn{min-height:44px;flex:1}
 #actG.ag-shk .ag-box{animation:agShk .08s linear infinite alternate}@keyframes agShk{to{transform:translate(1px,-1px)}}`;document.head.appendChild(s)})();
+/* ---------- 6.40 (acc1, Twister 13:02) · update 3: talking is a comic ----------
+   A story scene was a paragraph and a list of long buttons. Now:
+   - The paragraph is cut into comic panels: what happens sits in yellow caption boxes, and every «quoted line» is a speech
+     bubble from the person who says it (a pixel face made from the scene, so the same person looks the same each time).
+     The panels pop in one after another. The result box after a roll gets the same bubbles.
+   - The choices are reply tiles in two columns: a big icon for what you do (the stat it rolls, money, fight, give, walk on),
+     the action in a few words, and one coloured chip for the chance. Tapping works as before.
+   - A tile that pays or gives something can also be dragged onto the person's face to do it.
+   The scene, the choices and their rolls do not change: the old buttons are restyled in place and keep their handlers.
+   Test builds keep the old look unless window.__cm is set. */
+const cmOn=()=>!((window.__r||window.__t||window.__q)&&!window.__cm);
+const CM_HUM=/(^|[\s«(])(عم|الحاج|الشيخ|ست|الست|أم|ام|خالة|بنت|البنت|ولد|الولد|راجل|الراجل|واحد|واحدة|بياع|بياعة|العمدة|الغفير|الحلاق|القهوجي|عيل|العيل|شاب|عروسة|العروسة|العريس|الصياد|الفلاح|الفلاحة|حارس|الحارس|ابن|أبو|ابو|الداية|جدة|عجوز|العجوز|التاجر|الواد|البت|man|woman|old|girl|boy|vendor|seller|Uncle|Aunt|Hajj|Sheikh|kid|guard|fisherman|farmer|bride|groom|mayor|merchant|lady)(?=[\s،,.:!؟?]|$)/i;
+const CM_FEM=/(^|[\s«(])(ست|الست|أم|ام|خالة|بنت|البنت|واحدة|بياعة|عروسة|العروسة|الفلاحة|الداية|جدة|البت|woman|girl|Aunt|bride|lady|grandma|Umm)(?=[\s،,.:!؟?]|$)/i;
+const CM_OLD=/(عم |الحاج|الشيخ|عجوز|جدة|الحاجة|الداية|old|Uncle|Hajj|Sheikh|grandma)/i;
+const CM_KID=/(عيل|العيل|الواد|طفل|kid|little boy|little girl)/i;
+const cmHash=s=>{let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h};
+/* the speaker is the last person named before the first quote (or the first one after it) */
+function cmWho(txt,key){const q=txt.indexOf('«'),rx=new RegExp(CM_HUM.source,'gi');let m=null,x;while((x=rx.exec(txt))){if(m&&x.index<=m.index+m[0].length+1&&/^(أبو|ابو|أم|ام|ابن|بنت|Umm|Abu)$/i.test(m[2]))continue;if(q>=0&&x.index>q){if(!m)m=x;break}m=x}if(!m)return null;
+  const w=m[2],near=txt.slice(m.index,m.index+m[0].length+14);
+  const f=CM_FEM.test(' '+w+' '),old=CM_OLD.test(near),kid=CM_KID.test(w),r=cmHash(key+'|'+m[2]),P=(typeof PD!=='undefined'&&PD.RAMPS)||{};
+  const pick=(o,n)=>{const k=Object.keys(o||{});return k.length?k[(r>>>n)%k.length]:undefined};
+  const L={name:'',g:f?'f':'m',cls:'ابن البلد',skin:pick(P.skin,1),hairColor:old?'#d9d4cc':pick({'#1b1412':1,'#4a2c1a':1,'#8a5a2b':1},4),eyes:pick(P.eyes,6),outfit:pick(P.outfit,8),
+    age:old?((r>>>3)%2?'عجوز':'كبير'):'شاب',hair:f?(old||(r>>>5)%2?'غطا راس':'طويل'):['قصير','مموج','كيرلي','أصلع','مفروق'][(r>>>5)%5]};
+  if(!f)L.beard=old?['شنب','دقن كاملة','دقن طويلة','شنب مبروم'][(r>>>7)%4]:kid?'من غير':['من غير','شنب','سكسوكة','شعر خفيف'][(r>>>7)%4];
+  try{return PX.pic(L,'cm')}catch(e){return null}}
+/* html -> [{t:'cap'|'say',h}] ; quotes are «…» in both languages */
+function cmSplit(html){const out=[];let last=0;html.replace(/«([^»]{1,400})»/g,(m,q,i)=>{const pre=html.slice(last,i);if(pre.replace(/<[^>]+>/g,'').replace(/[\s:،,.\-—]/g,'').length>1)out.push({t:'cap',h:pre.trim().replace(/[:،,]\s*$/,'')});out.push({t:'say',h:q});last=i+m.length;return m});
+  const rest=html.slice(last);if(rest.replace(/<[^>]+>/g,'').replace(/[\s.،,]/g,'').length>1)out.push({t:'cap',h:rest.trim().replace(/^[.،,]\s*/,'')});return out}
+function cmPanels(segs,face){let n=0;return segs.map(s=>{const d=`style="--d:${(n++*.22).toFixed(2)}s"`;
+  return s.t==='cap'?`<div class="cm-cap" ${d}>${s.h}</div>`:`<div class="cm-say${face?'':' nof'}" ${d}>${face?`<span class="cm-who" data-cmwho>${face}</span>`:''}<div class="cm-bb">${s.h}</div></div>`}).join('')}
+const CMX={face:null,key:''};
+const CM_IC={
+  'قوة':'<path d="M7 10.5V7.2a1.6 1.6 0 0 1 3.2 0v3M10.2 10V6.2a1.6 1.6 0 0 1 3.2 0V10M13.4 10V6.8a1.6 1.6 0 0 1 3.2 0v4M16.6 10.8V9a1.6 1.6 0 0 1 3.2 0v4.6c0 4.2-2.8 7.4-7 7.4h-.8c-3 0-5.2-1.6-6.4-4.2L4 13.6a1.7 1.7 0 0 1 2.9-1.6L7 12.2" fill="currentColor" stroke="#0006" stroke-width=".8"/>',
+  'خفة':'<path d="M13.5 4.5a2 2 0 1 1 0 .1M9 21l2.6-5.4L9.2 13l1.4-5 3.6 1.2 2 3.3 3 .8M11.6 15.6l3 2.2.4 3.2M10.6 8l-3.6 1.6-1.4 3.2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 9h3M1.5 13h2.5M3 17h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".6"/>',
+  'تحمّل':'<path d="M12 2.5l7.5 3v5.5c0 5-3.2 8.3-7.5 10.5C7.7 19.3 4.5 16 4.5 11V5.5z" fill="currentColor"/><path d="M12 16.5s-4-2.4-4-5.3a2.2 2.2 0 0 1 4-1.3 2.2 2.2 0 0 1 4 1.3c0 2.9-4 5.3-4 5.3z" fill="#0008"/>',
+  'ذكاء':'<path d="M12 2.8a6.6 6.6 0 0 0-3.9 11.9c.7.6 1.1 1.4 1.1 2.3v.8h5.6V17c0-.9.4-1.7 1.1-2.3A6.6 6.6 0 0 0 12 2.8z" fill="currentColor"/><path d="M9.5 19.6h5M10.3 21.6h3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 6.5v4.5M10 8.6l2 2.4 2-2.4" stroke="#0008" stroke-width="1.5" fill="none" stroke-linecap="round"/>',
+  'حكمة':'<path d="M1.8 12C4.4 7.2 8 5 12 5s7.6 2.2 10.2 7c-2.6 4.8-6.2 7-10.2 7s-7.6-2.2-10.2-7z" fill="currentColor"/><circle cx="12" cy="12" r="3.9" fill="#0009"/><circle cx="13.3" cy="10.6" r="1.3" fill="currentColor"/>',
+  'حضور':'<path d="M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-8.5L6.5 20.5v-4H4A1.5 1.5 0 0 1 2.5 15V6A1.5 1.5 0 0 1 4 4.5z" fill="currentColor"/><circle cx="8" cy="10.5" r="1.4" fill="#0008"/><circle cx="12" cy="10.5" r="1.4" fill="#0008"/><circle cx="16" cy="10.5" r="1.4" fill="#0008"/>',
+  coin:'<circle cx="12" cy="12" r="9" fill="currentColor"/><circle cx="12" cy="12" r="6.4" fill="none" stroke="#0007" stroke-width="1.4"/><path d="M12 8v8M9.8 10.2h4.4M9.8 13.8h4.4" stroke="#0008" stroke-width="1.6" stroke-linecap="round"/>',
+  walk:'<path d="M8.5 3.5c1.8 0 2.6 2.2 2.4 4.6-.2 2.3-1 3.9-2.6 3.9S6 10.6 6 8.3c0-2.6.8-4.8 2.5-4.8zM6.4 13.6l4.4.4-.3 2.3c-.2 1.2-1.2 1.9-2.3 1.8-1.2-.1-2-1.1-1.9-2.3zM15.5 8.5c1.7 0 2.5 2.2 2.3 4.6-.2 2.3-1 3.9-2.6 3.9S13 15.6 13 13.3c0-2.6.8-4.8 2.5-4.8zM13.4 18.6l4.4.4-.3 2c-.2 1.1-1.2 1.8-2.3 1.7-1.2-.1-2-1.1-1.9-2.3z" fill="currentColor"/>',
+  fight:N_ICON.fight,
+  give:'<path d="M2.5 14.5c2.2-1.2 4.4-1.2 6.5 0l4 1c1.1.3 1.1 1.8 0 2.1l-4 .6M2.5 14.5v6h9.5l7.5-4.2c1.2-.7.6-2.4-.7-2.1l-5.3 1.3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M14 11.5s-4.5-2.6-4.5-5.8A2.4 2.4 0 0 1 14 4.4a2.4 2.4 0 0 1 4.5 1.3c0 3.2-4.5 5.8-4.5 5.8z" fill="currentColor"/>',
+  do:'<path d="M9 11V5a1.5 1.5 0 0 1 3 0v5.5M12 10.5V4a1.5 1.5 0 0 1 3 0v6.5M15 10.5V6a1.5 1.5 0 0 1 3 0v8c0 4-2.7 7-6.6 7-2.6 0-4.2-1-5.6-3.2L3.4 13a1.6 1.6 0 0 1 2.6-1.8L9 14.5" fill="currentColor" stroke="#0006" stroke-width=".8"/>'};
+const CM_COL={'قوة':'#ff8a5a','خفة':'#7fe07a','تحمّل':'#e0605a','ذكاء':'#6aa8ff','حكمة':'#c79bff','حضور':'#f3c14d',coin:'#f3c14d',walk:'#b9a88f',fight:'#e2483f',give:'#ff9ab8',do:'#e9dcc4'};
+const CM_STEN={Strength:'قوة',Agility:'خفة',Endurance:'تحمّل',Intellect:'ذكاء',Wisdom:'حكمة',Presence:'حضور'};
+function cmKind(txt,stat,ghost){if(/أشتري|اشتري|أدفع|ادفع|جنيه|buy|pay|pound/i.test(txt))return 'coin';
+  if(/أدّي|أدي|اديله|أديله|أديها|اديها|أدّيله|أدّيها|أأكّل|أأكل|أعطي|give|feed|hand (him|her)/i.test(txt))return 'give';
+  if(stat)return stat;
+  if(/أضرب|اضرب|أهجم|اهجم|أقاتل|أحارب|أدبح|fight|attack|strike|hit /i.test(txt))return 'fight';
+  if(ghost||/أكمّل|أكمل|أمشي|امشي|أسيب|اسيب|أرجع|ارجع|أبعد|أفوت|walk on|keep going|move on|leave|go back|walk away/i.test(txt))return 'walk';
+  return 'do'}
+function cmTiles(col){const bs=[...col.querySelectorAll(':scope>.ch')];if(bs.length<2||col.classList.contains('cm-g'))return;col.classList.add('cm-g');
+  bs.forEach(b=>{const sp=b.querySelector(':scope>span'),nd=b.querySelector('.need'),sb=nd&&nd.querySelector('b'),st0=sb?sb.textContent.trim():'',stat=CM_STEN[st0]||st0;
+    const txt=(sp&&sp.childNodes[0]?sp.childNodes[0].textContent:b.textContent)||'',k=cmKind(txt,ACT_G[stat]?stat:'',b.classList.contains('ghost')),c=CM_COL[k]||'#e9dcc4';
+    b.classList.add('cm-t');b.style.setProperty('--c',c);b.dataset.cmk=k;
+    const ch=nd&&nd.querySelector('.chance');
+    b.insertAdjacentHTML('afterbegin',`<span class="cm-ic"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">${CM_IC[k]||CM_IC.do}</svg></span>`);
+    if(nd){nd.classList.add('cm-nd');nd.innerHTML=`<span class="cm-chip ${ch?[...ch.classList].filter(x=>x!=='chance').join(' '):''}">${esc(st0)} · ${esc(ch?ch.textContent.replace(/^فرصتك\s*|^Your chance:?\s*/,''):'')}</span>`}
+    else{const ar=b.querySelector(':scope>span:last-child');if(ar&&ar!==sp&&/‹|›/.test(ar.textContent))ar.remove()}
+    if((k==='coin'||k==='give')&&view.querySelector('[data-cmwho]'))cmDrag(b)})}
+/* drag a pay/give tile onto the face; a plain tap still works */
+function cmDrag(b){b.classList.add('cm-dr');let st=null,gh=null;
+  b.addEventListener('pointerdown',e=>{if(e.button)return;st={x:e.clientX,y:e.clientY,id:e.pointerId};gh=null});
+  b.addEventListener('pointermove',e=>{if(!st||e.pointerId!==st.id)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;
+    if(!gh&&Math.hypot(dx,dy)>14){gh=document.createElement('div');gh.className='cm-gh';gh.style.setProperty('--c',b.style.getPropertyValue('--c'));gh.innerHTML=b.querySelector('.cm-ic').innerHTML;document.body.appendChild(gh);try{b.setPointerCapture(e.pointerId)}catch(x){}
+      view.querySelectorAll('[data-cmwho]').forEach(w=>w.classList.add('cm-tg'))}
+    if(gh){gh.style.left=e.clientX+'px';gh.style.top=e.clientY+'px';const w=cmOver(e.clientX,e.clientY);view.querySelectorAll('[data-cmwho]').forEach(x=>x.classList.toggle('cm-hot',x===w))}});
+  const up=e=>{if(!st)return;const was=gh;st=null;if(!was)return;const w=cmOver(e.clientX,e.clientY);was.remove();gh=null;view.querySelectorAll('[data-cmwho]').forEach(x=>x.classList.remove('cm-tg','cm-hot'));
+    b.dataset.cmNo=1;setTimeout(()=>delete b.dataset.cmNo,50);if(w){try{pop(w,[b.style.getPropertyValue('--c')||'#fff','#fff'],14)}catch(x){}try{SFX.coin&&SFX.coin()}catch(x){}setTimeout(()=>{delete b.dataset.cmNo;b.click()},180)}};
+  b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
+  b.addEventListener('click',e=>{if(b.dataset.cmNo){e.stopImmediatePropagation();e.preventDefault()}},true)}
+function cmOver(x,y){return [...view.querySelectorAll('[data-cmwho]')].find(w=>{const r=w.getBoundingClientRect();return x>=r.left-16&&x<=r.right+16&&y>=r.top-16&&y<=r.bottom+16})||null}
+function cmStory(){if(S.screen!=='story'||!cmOn())return;const st=view.querySelector(':scope>.story'),rs=view.querySelector(':scope>.res');
+  const key=(S.adv||'')+'|'+(S.scene||'');if(CMX.key!==key){CMX.key=key;CMX.face=undefined}
+  if(st&&!st.dataset.cm){const html=st.innerHTML,segs=cmSplit(html);if(CMX.face===undefined)CMX.face=segs.some(s=>s.t==='say')?cmWho(st.textContent,key):null;
+    st.dataset.cm=1;st.classList.add('cm');st.innerHTML=cmPanels(segs.length?segs:[{t:'cap',h:html}],CMX.face)}
+  if(rs&&!rs.dataset.cm){const tx=rs.childNodes,first=[...tx].filter(n=>n.nodeType===3||!(n.classList&&(n.classList.contains('cm-x')||n.tagName==='DIV'))),
+      html=first.map(n=>n.nodeType===3?esc(n.textContent):n.outerHTML).join(''),segs=cmSplit(html);
+    if(segs.some(s=>s.t==='say')){rs.dataset.cm=1;rs.classList.add('cm-res');const w=document.createElement('div');w.className='cm';w.innerHTML=cmPanels(segs,CMX.face||cmWho(rs.textContent,key+'|r'));first.forEach(n=>n.remove());rs.prepend(w)}}
+  view.querySelectorAll(':scope>.col').forEach(cmTiles)}
+/* English swaps the text in a MutationObserver after the screen draws, so there the panels are cut a tick later */
+{const r0=render;render=function(){const r=r0.apply(this,arguments);const go=()=>{try{cmStory()}catch(e){console.warn(e)}};if(EN)setTimeout(go,0);else go();return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.story.cm{display:flex;flex-direction:column;gap:10px;font-size:17px;line-height:1.75}
+.cm-cap{align-self:stretch;padding:9px 12px;border-radius:4px;background:#f3e2b0;color:#2b1b22;border:2px solid #2b1b22;box-shadow:3px 3px 0 #0008;font-size:15px;line-height:1.7;animation:cmIn .35s cubic-bezier(.2,1.5,.4,1) var(--d) both}
+.cm-cap b{color:#8a2a1c}
+.cm-say{display:flex;align-items:flex-end;gap:8px;animation:cmIn .35s cubic-bezier(.2,1.5,.4,1) var(--d) both}
+.cm-who{flex:none;width:58px;height:58px;border-radius:12px;overflow:hidden;border:2px solid #2b1b22;box-shadow:0 0 0 2px #f3e2b0,3px 3px 0 2px #0008;background:#1a1530;transition:transform .15s}
+.cm-who.cm-tg{animation:cmTg .8s ease-in-out infinite}.cm-who.cm-hot{transform:scale(1.15);box-shadow:0 0 0 3px #ffd36a,0 0 18px #ffd36a}
+.cm-bb{position:relative;flex:1;min-width:0;padding:10px 14px;border-radius:18px;background:#fff;color:#1a1410;border:2px solid #2b1b22;box-shadow:3px 3px 0 #0008;font-size:16px;font-weight:700;line-height:1.6}
+.cm-bb::before{content:'';position:absolute;bottom:10px;inset-inline-start:-15px;border:6px solid transparent;border-inline-end:9px solid #2b1b22}
+.cm-bb::after{content:'';position:absolute;bottom:12px;inset-inline-start:-9px;border:4px solid transparent;border-inline-end:7px solid #fff}
+.cm-say.nof .cm-bb::before,.cm-say.nof .cm-bb::after{display:none}
+.res.cm-res .cm{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}.res.cm-res .cm-cap{font-size:14px}
+@keyframes cmIn{from{opacity:0;transform:translateY(10px) scale(.92)}}
+@keyframes cmTg{50%{transform:scale(1.08);box-shadow:0 0 0 3px #ffd36a,0 0 12px #ffd36a}}
+.col.cm-g{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+.col.cm-g>:not(.cm-t){grid-column:1/-1}
+.ch.cm-t{flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;gap:6px;padding:10px 8px;min-height:118px;border:2px solid color-mix(in srgb,var(--c) 45%,#2b1b22);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 14%,var(--card)),var(--card));box-shadow:0 3px 0 #0007;font-size:14px;line-height:1.45;touch-action:manipulation}
+.ch.cm-t:active{transform:translateY(2px);box-shadow:0 1px 0 #0007}
+.ch.cm-t>span:not(.cm-ic):not(.cm-nd){display:block}
+.ch.cm-t small{font-size:11px}
+.cm-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:var(--c);background:#0b0d1c;box-shadow:0 0 0 2px var(--c),0 0 12px color-mix(in srgb,var(--c) 50%,transparent)}
+.ch.cm-t.ghost{border-style:dashed;background:transparent}
+.cm-nd{margin-top:auto;align-items:center!important}
+.cm-chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:800;background:#0b0d1c;color:#e9dcc4;box-shadow:0 0 0 1px #ffffff22}
+.cm-chip.c-good{color:#7fd88a}.cm-chip.c-mid{color:#f3c14d}.cm-chip.c-low{color:#f0a090}
+.cm-gh{position:fixed;z-index:95;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:#0b0d1c;box-shadow:0 0 0 2px var(--c),0 6px 16px #000a;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.cm-cap,.cm-say{animation:none}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
