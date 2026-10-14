@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.77',d:'14 أكتوبر',add:['الصحاب بقوا بالـID والاسم بدل الأكواد: {اختار|اختاري} الـID بتاعك من البروفايل أو «صحابي»، وصحابك {يضيفوك|يضيفوكي} بـ@الـID (الكود القديم لسه شغال).','«صحابي» بقى مربع في البلد على طول، وفيه بحث عن صاحب بالاسم أو الـID.','الهدايا: {تقدر|تقدري} تبعت أي حاجة من الشنطة أو المخزن (خامات، جرع، أكل، قزايز…)، وفيه بحث.','المبارزة بقت أونلاين بس: طلب بيوصل لصاحبك وهو أونلاين، و{بتلعبوا|بتلعبوا} انتو الاتنين بشكلكم وصحتكم الحقيقية، وفيه زرار «🏳️ انسحب». المبارزة ضد البوت اتشالت.','الشات: الساعة تحت كل رسالة، وإيموجي أكتر.','زرار «عدّل الشكل» بقى في النص ومش داخل في الكارت اللي تحته.','في القتال: النرد بيفضل في الصندوق برقمه بعد ما {تختار|تختاري} الحركة، وشنطة القتال فيها بحث. ولو الصد في وقته قلب الرمية نجاح، بيكتب «في وقته!» بدل «نجاح!» لوحدها.','«قدراتي»: كارت كل قدرة بقى بلونه ومترتب، و«أعلى مستوى» مش بتتكتب مرتين.','صوت السبك بقى بيشتغل وانت بتصب، والميني جيم بتخلص أول ما الصب يخلص.']},
 {v:'6.76',d:'14 أكتوبر',add:['كل حاجة بتتعمل بالإيد بقى عليها «🧠 فهمك 0/5». {دوس|دوسي} عليه يقولك النقط اللي معاك من كام للمستوى الجاي، وكل مستوى بيديك إيه.','لو {عملت|عملتي} «بديع» فهمك بيزيد 3 نقط زيادة، و«أعجوبة» 5.']},
 {v:'6.75',d:'14 أكتوبر',add:['«بيتك»: الأوض بقت مربعات مرسومة زي الفرش: الورشة والأوضة والمتحف كل واحدة بصورتها ومستواها والتمن تحتها، {دوس|دوسي} عليها {تبنيها|تبنيها} أو {تكبّرها|تكبّريها}.']},
 {v:'6.74',d:'14 أكتوبر',add:['«بديع» و«أعجوبة» اتظبطوا في النص: أسهل من زمان بس مش ببلاش. لو {عملت|عملتي} تحفة 15 مرة ورا بعض من غيرهم، اللي بعدها أكيد «بديع».','«دوار العمدة» بقى بالصور: كل رخصة ليها أيقونة، والسمعة والفلوس اللي محتاجاها قدامها.']},
@@ -24758,7 +24759,7 @@ function wsCost(h){let c=1;for(let i=0;i<wsN(h);i++)c*=WS[i].c;return c}
 {const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;
   {const b=view.querySelector('#wsBlk'),k=view.querySelector('.tw-stk');if(b&&k&&k.previousElementSibling!==b)k.parentNode.insertBefore(b,k)}
   view.querySelectorAll('[data-smelt]').forEach(b=>b.onclick=()=>{if(TWN.busy||spLv(h,'smith')<SM_STEEL.lv||!hasRes(h,SM_STEEL.need)||h.money<SM_STEEL.fee)return;
-    takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);bump('smelt');S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();smeltSnd();
+    takeRes(h,SM_STEEL.need);h.money-=SM_STEEL.fee;const n=wsN(h)>=3?2:1;addRes(h,'steel',n);bump('smelt');S.spQuick=Date.now();lifeXP(h,'smith',1);S.spQuick=0;saveHero();
     toast(`${G('سبكت','سبكتي')} ${n===2?'فولاذتين':'فولاذ'} · ${G('عندك','عندك')} ${h.res.steel}`);twRender()});
   view.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{const n=wsN(h),nx=WS[n];if(!nx||+b.dataset.ws!==n||!hasRes(h,nx.need)||h.money<nx.p)return;
     takeRes(h,nx.need);h.money-=nx.p;h.ws=n+1;saveHero();band('الورشة',nx.n,nx.d,{dur:2200,sound:SFX.fanfare});twRender()})}catch(e){console.warn(e)}return r}}
@@ -43033,7 +43034,7 @@ function crAlloyRow(h,k){const c=CR_CAT[k],R=RARE[c.tier],lk=crSmeltLock(h,k),fe
 {const s0=twSmHTML;twSmHTML=function(h){let s=s0.apply(this,arguments);try{const i=s.indexOf('<div id="wsBlk">');if(i>=0)s=s.slice(0,i);
   const L=CR_ALLOYS();if(L.length)s+=`<div class="tw-lbl">${ae('السبايك','Alloys')} <small>${ae('بتدخل في مراحل الورش','they go into workshop stages')}</small></div><div class="col">${L.map(k=>crAlloyRow(h,k)).join('')}</div>`}catch(e){console.warn(e)}return s}}
 {const sm0=SCREENS.smith;SCREENS.smith=function(){const r=sm0.apply(this,arguments);try{const h=S.hero;view.querySelectorAll('[data-alloy]').forEach(b=>b.onclick=()=>{const k=b.dataset.alloy;if(TWN.busy||!crSmelt(h,k))return;
-  smeltSnd();toast(`${ae(G('سبكت','سبكتي'),'You smelted')} ${resN(k)} · ${ae(G('عندك','عندك'),'you have')} ${h.res[k]}`);twRender()})}catch(e){console.warn(e)}return r}}
+  toast(`${ae(G('سبكت','سبكتي'),'You smelted')} ${resN(k)} · ${ae(G('عندك','عندك'),'you have')} ${h.res[k]}`);twRender()})}catch(e){console.warn(e)}return r}}
 
 /* ---------- looks ---------- */
 (function(){const st=document.createElement('style');st.textContent=`
@@ -51848,7 +51849,7 @@ const CMG={pass:0,heat:0};
 const cmgOn=()=>!((window.__r||window.__t||window.__q)&&!window.__cmg);
 function cmgPanel(id,title,sub,body){const s=document.createElement('div');s.id=id;s.className='cmg';s.style.direction=EN?'ltr':'rtl';
   s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${title}</b><span class="ag-st">${sub}</span></div>${body}</div>`;document.body.appendChild(s);return s}
-function cmgSay(s,q,txt,pour){const m=s.querySelector('.cmg-m');if(m){m.innerHTML=txt;m.dataset.q=q}try{q==='perfect'?(pour?smeltSnd():SFX.anvil?SFX.anvil():SFX.tick(900)):q==='good'?SFX.tick(700):SFX.tick(260);vib(q==='perfect'?[20,20,40]:20)}catch(e){}}
+function cmgSay(s,q,txt,pour){const m=s.querySelector('.cmg-m');if(m){m.innerHTML=txt;m.dataset.q=q}try{q==='perfect'?(pour?SFX.tick(900):SFX.anvil?SFX.anvil():SFX.tick(900)):q==='good'?SFX.tick(700):SFX.tick(260);vib(q==='perfect'?[20,20,40]:20)}catch(e){}}
 /* ---- the pour ---- */
 const CMG_CRU=`<svg viewBox="0 0 30 22" shape-rendering="crispEdges"><rect x="2" y="2" width="26" height="3" fill="#2b1b22"/><rect x="4" y="5" width="22" height="13" fill="#3a3340"/><rect x="6" y="18" width="18" height="3" fill="#2b1b22"/>
   <rect x="5" y="5" width="20" height="3" fill="#ff9a3c"/><rect x="7" y="5" width="10" height="2" fill="#ffe08a"/><rect x="0" y="3" width="3" height="2" fill="#2b1b22"/><rect x="26" y="8" width="4" height="2" fill="#6a5a50"/></svg>`;
@@ -51863,7 +51864,7 @@ function cmgPour(what){return new Promise(res=>{const T0=.62+Math.random()*.18;
     cmgSay(s,q,T(q==='perfect'?ae('صبّة صافية! (+1 خبرة، وممكن سبيكة زيادة)','A clean pour! (+1 XP, maybe an extra ingot)'):q==='good'?ae('صبّة كويسة.','A good pour.'):lv>T0?ae('فاض شوية، بس اتسبك.','It spilled a bit, but it cast.'):ae('ناقص شوية، بس اتسبك.','A bit short, but it cast.')),1);
     setTimeout(()=>{s.remove();res(q)},window.__cmgAuto?60:900)};
   if(window.__cmgAuto){setTimeout(fin,40);return}
-  sc.addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;on=1;try{sc.setPointerCapture(e.pointerId)}catch(x){}try{SFX.tick(200)}catch(x){}});
+  sc.addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;on=1;try{sc.setPointerCapture(e.pointerId)}catch(x){}try{SFX.tick(200);smeltSnd()}catch(x){}clearInterval(sc._ps);sc._ps=setInterval(()=>{if(!on||over)return clearInterval(sc._ps);try{SFX.pour&&SFX.pour()}catch(x){}},650)});   /* 6.77 (Twister 23:33): the pour sound plays while pouring, not after */
   const up=()=>{if(on&&!over){on=0;if(lv>.05)fin()}};sc.addEventListener('pointerup',up);sc.addEventListener('pointercancel',up);raf=requestAnimationFrame(tick)})}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-smelt],[data-alloy]');if(!b||CMG.pass||!cmgOn()||S.screen!=='smith'||TWN.busy)return;const h=S.hero;if(!h)return;
   let ok=false,what='';try{if(b.dataset.alloy!=null){const k=b.dataset.alloy;ok=!crSmeltLock(h,k)&&hasRes(h,CR_CAT[k].need)&&h.money>=crFee(k);what=resN(k)}
@@ -55129,6 +55130,173 @@ document.head.insertAdjacentHTML('beforeend',`<style>.und-ch{color:#8fd3ff;borde
 .und-t{color:#8fd3ff;font-size:17px}.und-bar{height:10px;border-radius:6px;background:#ffffff22;overflow:hidden}.und-bar i{display:block;height:100%;background:#8fd3ff}
 .und-how{opacity:.8}.und-r{display:flex;gap:8px;align-items:center;opacity:.5}.und-r.on{opacity:1}.und-r b{width:26px;height:26px;border-radius:50%;background:#8fd3ff33;display:flex;align-items:center;justify-content:center;flex:none}.und-r.on b{background:#8fd3ff;color:#111}
 .und-in .btn{min-height:44px}</style>`);
+/* ==========================================================================
+   سرداب 6.77: الصحاب والأونلاين (p212.js) — Twister 23:20-23:22
+   «تعال نغير الصحاب لUserID & Display Name بدل الأكواد ونظبط زرار عدل الشكل … ونخلي اسهل انك تلاقي قايمه الأصحاب …
+    وخليني اقدر ابعت اي حاجه في الشنطة اوالمخزن كهديه وضيف سيرش وحسن الشات» · «خلي المبارزة بردو تبقا ريكويست بيظهر للي
+    قدامك، ومتقدرش تبعته الا لو هو اونلاين … متخلييهاش ضد بوتات وضيف زرار انسحاب» · «ضيف هنا سيرش» (the fight bag).
+   Ideas taken from the owner's other game (Qadaya): unique handles kept in their own collection, the profile shows @handle and a
+   display name, friends are found by @handle.
+   - @ID: hd/{handle} = {u, t}. A handle is 3–16 of a-z, 0-9, _ and starts with a letter; first come, first served; changing it
+     frees the old one. Every hero keeps h.hd (the handle) and h.dn (the display name), so they ride the cloud save.
+     pres/{uid} carries h and dn too (a write with them that the old rules refuse is sent again without them).
+     The friend code stays underneath (friend requests still go by code): «ابعت طلب» takes @ID or a code.
+   - The profile: «✎ عدّل الشكل» is its own centred row under the hero; the friend box shows @ID and the name with «غيّر».
+   - «صحابي» is a tile in town (online count, a bell for gifts and messages) and has a search box (name, @ID, class).
+   - Gifts: anything in the bag or the storage: every material, and every bag item (potions, food, bottles…), with a search box.
+     The receiver's game adds a bag item to the bag (in town what doesn't fit goes to storage by itself).
+   - Chat: the time under each message, more one-tap emoji.
+   - Duels: only live, only by request, only to a friend who is online now. The «by the game» duel (a bot with a stand-in look)
+     is gone; the live duel shows both heroes as they really look (their pixel body, gear on) with their real full health,
+     and «🏳️ انسحب» is a clear button.
+   - The fight bag (list view) has a search box.
+   Firestore: hd/ and the new pres keys need the rules in firebase/firestore.rules deployed from the PC.
+   ========================================================================== */
+const HD_RX=/^[a-z][a-z0-9_]{2,15}$/;
+const hdMe=()=>{const h=HEROES.filter(Boolean).find(x=>x.hd);return h?{hd:h.hd,dn:h.dn||''}:{hd:'',dn:''}};
+function hdSet(hd,dn){HEROES.filter(Boolean).forEach(h=>{h.hd=hd;h.dn=dn});saveHero();if(typeof fbSoon==='function')fbSoon()}
+const hdCol=()=>FB.db.collection('hd');
+const hdClean=v=>String(v||'').trim().replace(/^@/,'').toLowerCase();
+async function hdFind(v){const x=hdClean(v);if(!HD_RX.test(x)||!FB.db)return null;try{const d=await hdCol().doc(x).get();return d.exists?d.data().u:null}catch(e){return null}}
+async function hdClaim(nw,dn){const me=FB.user&&FB.user.uid;if(!me)throw new Error('in');const old=hdMe().hd;
+  if(nw!==old){const ref=hdCol().doc(nw);await FB.db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists&&d.data().u!==me)throw new Error('taken');if(!d.exists)tx.set(ref,{u:me,t:window.firebase.firestore.FieldValue.serverTimestamp()})});
+    if(old)try{await hdCol().doc(old).delete()}catch(e){}}
+  hdSet(nw,dn);try{await FRA.beat()}catch(e){}}
+/* pres carries @ID and the name; the old rules refuse the new keys, so the write is tried again without them */
+FRA.beat=async function(){if(frMk()||!FB.user||!FB.db||FB.locked||document.hidden)return;const h=S.hero;if(!h)return;const ref=FB.db.collection('pres').doc(FB.user.uid),t=window.firebase.firestore.FieldValue.serverTimestamp(),M=hdMe();
+  try{await ref.set(Object.assign(frPub(h),M.hd?{h:M.hd,dn:String(M.dn||h.name||'').slice(0,20)}:{},{t}))}catch(e){if(!M.hd)return console.warn('pres: '+(e&&e.code||e));try{await ref.set(Object.assign(frPub(h),{t}))}catch(e2){console.warn('pres: '+(e2&&e2.code||e2))}}};
+/* the ID sheet */
+function hdSheet(after){const M=hdMe(),h=S.hero;const s=document.createElement('div');s.className='cmg fr-o';
+  s.innerHTML=`<div class="ag-box hd-box" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>🪪 ${ae('الـID والاسم','Your ID and name')}</b></div>
+    <small class="dim">${T(ae('صحابك {هيلاقوك|هيلاقوكي} بالـID. حروف إنجليزي صغيرة وأرقام و _، من 3 لـ 16، وأول حاجة حرف.','Friends find you by your ID: small English letters, digits and _, 3 to 16, starting with a letter.'))}</small>
+    <label class="hd-l">ID<div class="hd-in"><span>@</span><input id="hdId" maxlength="16" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr" value="${esc(M.hd)}" placeholder="twister"></div></label>
+    <label class="hd-l">${ae('الاسم اللي بيظهر','Display name')}<input id="hdDn" maxlength="20" autocomplete="off" value="${esc(M.dn||(h&&h.name)||'')}"></label>
+    <small id="hdM" class="dim"></small>
+    <div class="row"><button class="btn" id="hdOk">${ae('احفظ','Save')}</button><button class="btn ghost" id="hdNo">${ae('رجوع','Back')}</button></div></div>`;
+  document.body.appendChild(s);const m=s.querySelector('#hdM'),ok=s.querySelector('#hdOk'),idI=s.querySelector('#hdId');
+  idI.oninput=()=>{const v=hdClean(idI.value);if(v!==idI.value)idI.value=v;m.textContent=v&&!HD_RX.test(v)?ae('لسه مش مظبوط.','Not valid yet.'):''};
+  s.querySelector('#hdNo').onclick=()=>s.remove();
+  ok.onclick=async()=>{const id=hdClean(idI.value),dn=String(s.querySelector('#hdDn').value||'').replace(/\s+/g,' ').trim().slice(0,20);
+    if(!HD_RX.test(id))return m.textContent=ae('الـID: من 3 لـ 16، حروف إنجليزي صغيرة وأرقام و _، وأوله حرف.','ID: 3 to 16 small letters, digits or _, starting with a letter.');
+    if(!dn)return m.textContent=ae('اكتب اسم.','Write a name.');ok.disabled=true;m.textContent=ae('بيحفظ…','Saving…');
+    try{await hdClaim(id,dn);s.remove();toast(`🪪 @${id}`);try{SFX.reg&&SFX.reg()}catch(e){}if(after)after();else render()}
+    catch(e){ok.disabled=false;m.textContent=String(e&&e.message)==='taken'?ae('الـID ده متاخد. جرب غيره.','That ID is taken. Try another.'):e&&e.code==='permission-denied'?ae('الـIDs لسه بتتجهز (محتاجة تحديث من الكمبيوتر).','IDs are still being set up (needs an update from the PC).'):ae('ما اتحفظش. اتأكد إن فيه نت.','Not saved. Check the connection.')}}}
+/* «ابعت طلب» takes @ID or a code: an ID is looked up and turned into its friend code first */
+async function hdAdd(v){const raw=String(v||'').trim();if(!raw)return ae('اكتب الـID بتاع صاحبك.','Write your friend\'s ID.');
+  const asId=hdClean(raw),looksCode=/^[A-Za-z0-9]{6}$/.test(raw)&&raw[0]!=='@';
+  if(HD_RX.test(asId)){if(asId===hdMe().hd)return T(ae('ده الـID بتاعك {انت|انتي}!','That\'s your own ID!'));const u=await hdFind(asId);if(u)return frAddCode(frCode(u));if(!looksCode)return ae('مفيش حد بالـID ده.','No one has that ID.')}
+  return frAddCode(raw)}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#pfFrGo,#frqGo,#frGo');if(!b)return;const inp=$(b.id==='pfFrGo'?'#pfFrIn':b.id==='frqGo'?'#frqIn':'#frIn');if(!inp)return;
+  e.stopImmediatePropagation();e.preventDefault();b.disabled=true;hdAdd(inp.value).then(m=>{b.disabled=false;const el=$('#pfFrM')||$('#frqM');if(m){if(el)el.textContent=m;else toast(m)}else inp.value=''})},true);
+function hdInputs(){['#pfFrIn','#frqIn','#frIn'].forEach(q=>{const i=$(q);if(i&&!i.dataset.hd){i.dataset.hd=1;i.maxLength=17;i.removeAttribute('autocapitalize');i.setAttribute('autocapitalize','none');i.dir='ltr';i.placeholder=ae('@ID بتاع صاحبك','@friend\'s ID');i.classList.add('hd-inp')}})}
+function hdRowHTML(){const M=hdMe();return `<div class="hd-me">${M.hd?`<div class="hd-who"><b dir="ltr">@${esc(M.hd)}</b><small>${esc(M.dn||'')}</small></div><button class="tw-buy" id="hdEd">${ae('غيّر','Change')}</button><button class="tw-buy" id="hdCp">${ae('انسخ','Copy')}</button>`
+  :`<div class="hd-who"><b>${T(ae('{اختار|اختاري} الـID بتاعك','Pick your ID'))}</b><small>${ae('صحابك هيلاقوك بيه بدل الكود','Friends find you by it, not a code')}</small></div><button class="btn" id="hdEd">🪪 ${ae('اختار','Pick')}</button>`}</div>`}
+function hdBind(){const e=$('#hdEd'),c=$('#hdCp');if(e)e.onclick=()=>hdSheet();if(c)c.onclick=()=>{const t='@'+hdMe().hd;try{navigator.clipboard.writeText(t).then(()=>toast(ae('الـID اتنسخ','ID copied')),()=>toast(t))}catch(x){toast(t)}}}
+/* the profile: the edit button gets its own centred row; the friend box shows @ID */
+{const p0=SCREENS.profile;SCREENS.profile=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='profile')return r;
+  const ed=$('#edit'),hd=view.querySelector('.pf-head');if(ed&&hd&&!ed.dataset.mv){ed.dataset.mv=1;const w=document.createElement('div');w.className='pf-edw';w.appendChild(ed);hd.insertAdjacentElement('afterend',w)}
+  const box=$('#pfFr');if(box&&FB.user&&!$('#hdEd')){const me=box.querySelector('.fr-me');if(me)me.style.display='none';box.insertAdjacentHTML('afterbegin',hdRowHTML());hdBind()}
+  const go=$('#frGo');if(go&&!go.dataset.hd){go.dataset.hd=1;go.textContent='👥 '+ae('صحابي','My friends')}hdInputs()}catch(e){console.warn(e)}return r}}
+{const p0=SCREENS.pals;SCREENS.pals=function(){const r=p0.apply(this,arguments);try{if(S.screen==='pals')hdInputs()}catch(e){}return r}}
+/* «صحابي»: @ID on top, a search box, @ID and name on every row; duels are live only, to friends who are on */
+function frSorted(){const gs=frGroups(FRS.rows||[]),P=FRS.pres||{},now=Date.now();gs.forEach(g=>{const p=P[g.o];g.seen=p?frT(p.t):0;g.on=!!(g.seen&&now-g.seen<FR_ON);g.p=p||{}});return gs}
+const FRQS={q:''};
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs')return r;const h=S.hero;
+  const me2=view.querySelector('.fr-me2');if(me2&&!$('#hdEd')){[...me2.children].forEach(c=>{if(c.id!=='frPf')c.remove()});me2.insertAdjacentHTML('afterbegin',hdRowHTML());me2.classList.add('hd-wrap');hdBind()}
+  hdInputs();
+  /* the old by-the-game duel is gone */
+  view.querySelectorAll('[data-fd]').forEach(b=>b.remove());
+  const gsU=frGroups(FRS.rows||[]),gs=frSorted();
+  view.querySelectorAll('.fr-r').forEach((row,i)=>{const g=gs[i];if(!g)return;const tx=row.querySelector('.tx');if(tx&&g.p.h&&!tx.querySelector('.hd-sub'))tx.insertAdjacentHTML('beforeend',`<small class="hd-sub" dir="ltr">@${esc(g.p.h)}${g.p.dn?` · ${esc(g.p.dn)}`:''}</small>`);row.dataset.q=(row.textContent+' '+(g.p.h||'')+' '+(g.p.dn||'')).toLowerCase()});
+  view.querySelectorAll('[data-fo]').forEach(b=>{const gu=gsU[+b.dataset.fo],g=gu&&gs.find(x=>x.o===gu.o);b.textContent='⚔';b.classList.toggle('hd-off',!(g&&g.on));b.setAttribute('aria-label',ae('مبارزة','Duel'));
+    b.onclick=()=>{if(!g)return;if(!g.on)return toast(ae(`${g.heroes[0].n} مش أونلاين دلوقتي. المبارزة بتتبعت للي أونلاين بس.`,`${g.heroes[0].n} isn't online. Duels go only to friends who are on.`));duInvite(h,g)}});
+  const rows=view.querySelectorAll('.fr-r');if(rows.length>2&&!$('#frSq')){rows[0].insertAdjacentHTML('beforebegin',`<input id="frSq" class="hd-sq" type="search" autocomplete="off" placeholder="🔍 ${ae('دوّر على صاحب: اسم أو @ID','Find a friend: name or @ID')}" value="${esc(FRQS.q)}">`);
+    const sq=$('#frSq'),run=()=>{FRQS.q=sq.value;const q=sq.value.trim().toLowerCase().replace(/^@/,'');view.querySelectorAll('.fr-r').forEach(x=>x.style.display=!q||(x.dataset.q||'').includes(q)?'':'none')};sq.oninput=run;run()}}catch(e){console.warn(e)}return r}}
+/* the duel table screen: no bot button, live only */
+dlGo=function(){toast(ae('المبارزة بقت أونلاين بس: {ابعت|ابعتي} طلب لصاحب أونلاين من «صحابي».','Duels are live only now: send a request to an online friend from «My friends».').replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>G(a,b)))};
+{const d0=SCREENS.duel;SCREENS.duel=function(){const r=d0.apply(this,arguments);try{if(S.screen!=='duel')return r;view.querySelectorAll('[data-dl]').forEach(b=>b.remove());const n=$('#duNote');if(n)n.textContent='⚔ '+T(ae('المبارزة أونلاين بس: {ابعت|ابعتي} طلب لصاحب أونلاين، وتلعبوا انتو الاتنين بأبطالكم الحقيقيين.','Duels are live only: send a request to an online friend and you both play with your real heroes.'))}catch(e){}return r}}
+/* an invite goes only to a friend who is on right now (checked again at the moment it is sent) */
+{const i0=duInvite;duInvite=async function(h,g){if(!g)return;if(!duMk()&&!frMk()){try{const P=await FRA.pres([g.o]),p=P[g.o],t=p?frT(p.t):0;if(!t||Date.now()-t>FR_ON)return toast(ae(`${g.heroes[0].n} مش أونلاين دلوقتي.`,`${g.heroes[0].n} isn't online right now.`))}catch(e){}}return i0.apply(this,arguments)}}
+/* the live duel: both heroes as they really look, full body with gear; a clear give-up button */
+{const s0=SCREENS.duo;SCREENS.duo=function(){const r=s0.apply(this,arguments);try{if(S.screen!=='duo')return r;const D=DUX.doc,h=S.hero;if(!D||!h)return r;const me=duSide(D),op=me==='a'?'b':'a',Q=duP(D['p'+op])||{};let lk={};try{lk=JSON.parse(Q.lk||'{}')}catch(e){}
+  const body=c=>{try{return PX.body(c)}catch(e){return ''}};const a=$('#duHimP .du-pic'),b=$('#duMeP .du-pic');
+  const hb=body(Object.assign({},lk,{name:Q.n,g:Q.g,cls:Q.c})),mb=body(h);if(a&&hb){a.innerHTML=hb;a.classList.add('du-body')}if(b&&mb){b.innerHTML=mb;b.classList.add('du-body')}
+  const x=$('#duX');if(x&&D.st==='on'){x.classList.remove('ghost');x.classList.add('du-surr');x.textContent='🏳️ '+T(ae('{انسحب|انسحبي}','Give up'))}}catch(e){console.warn(e)}return r}}
+/* «صحابي» as a town tile */
+TW_EXTRA.push(h=>{if(!h)return null;const gs=FRS.pres?frSorted():[],on=gs.filter(g=>g.on).length,gi=(FRS.inbox||[]).length,dot=typeof CHX!=='undefined'&&Object.values(CHX.dots||{}).some(Boolean);
+  return {id:'frs',go:'frs',n:ae('صحابي','My friends'),w:ae('الصحاب والشات والهدايا والمبارزة','Friends, chat, gifts and duels'),s:gi?`<span class="ok">🎁 ${gi}</span>`:dot?`<span class="ok">💬</span>`:FRS.pres?ae(`${on} أونلاين`,`${on} online`):ae('مين أونلاين؟','Who\'s on?'),bell:gi||dot?1:0}});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.tw-tile[data-go="frs"]');if(b){S.frFrom='town';FRS.pres=null;FRS.inbox=null}},true);
+/* gifts: anything in the bag or the storage, with a search box */
+const GF_SKIP=['amulet'];
+function gfList(h){const L=[];Object.keys(h.res||{}).forEach(k=>{if(MAT[k]&&(h.res[k]|0)>0)L.push({k,m:1,n:h.res[k]|0,nm:fsNm(k),p:MAT[k].p|0})});
+  const it={};[h.bag||{},h.over||{}].forEach(B=>Object.keys(B).forEach(k=>{if(ITEMS[k]&&(B[k]|0)>0&&!GF_SKIP.includes(k)&&k.length<=24)it[k]=(it[k]|0)+(B[k]|0)}));
+  Object.keys(it).forEach(k=>L.push({k,m:0,n:it[k],nm:ITEMS[k].name||k,p:ITEMS[k].price|0}));return L.sort((a,b)=>b.p-a.p)}
+function gfTake(h,x,m){if(x.m){h.res[x.k]-=m;return}let left=m;const b=Math.min(left,h.bag[x.k]|0);if(b){h.bag[x.k]-=b;left-=b}if(left&&h.over){h.over[x.k]=Math.max(0,(h.over[x.k]|0)-left)}}
+function gfGive(h,x,m){if(x.m)addRes(h,x.k,m);else h.bag[x.k]=(h.bag[x.k]|0)+m}
+frGiftSheet=function(h,g){const L=gfList(h),s=document.createElement('div');s.className='cmg fr-o';const left=FR_GIFTS-frGiftsToday(h).n;
+  s.innerHTML=`<div class="ag-box" style="direction:${EN?'ltr':'rtl'}"><div class="ag-h"><b>${T(ae(`هدية لـ ${esc(g.heroes[0].n)}`,`A gift for ${esc(g.heroes[0].n)}`))}</b></div>
+    <small class="dim">${T(ae(`فاضلك ${left} هدايا النهارده. {اختار|اختاري} أي حاجة من الشنطة أو المخزن وعدد.`,`${left} gifts left today. Pick anything from the bag or the storage, and how many.`))}</small>
+    <input class="hd-sq" id="gfQ" type="search" autocomplete="off" placeholder="🔍 ${ae('دوّر…','Search…')}">
+    <div class="fr-mats" id="gfL">${L.length?L.map((x,i)=>`<button class="fr-m" data-i="${i}" data-k="${x.k}" data-q="${esc(String(x.nm).toLowerCase())}">${x.m?twMat(x.k,26):twFood(x.k,26)}<small>${esc(x.nm)}</small><i>${x.n}</i></button>`).join(''):`<div class="dim">${ae('مفيش معاك حاجة تتبعت.','You have nothing to send.')}</div>`}</div>
+    <div class="fr-n"><button class="btn ghost" data-n="1">1</button><button class="btn ghost" data-n="5">5</button><button class="btn ghost" data-n="20">20</button></div>
+    <div class="row"><button class="btn" id="frSend" disabled>${ae('ابعت','Send')}</button><button class="btn ghost" id="frNo">${ae('لأ','Cancel')}</button></div></div>`;
+  document.body.appendChild(s);let x=null,n=1;const upd=()=>{s.querySelectorAll('.fr-m').forEach(b=>b.classList.toggle('on',x&&+b.dataset.i===L.indexOf(x)));s.querySelectorAll('[data-n]').forEach(b=>b.classList.toggle('on',+b.dataset.n===n));
+    const b=s.querySelector('#frSend');b.disabled=!x||left<=0;if(x)b.textContent=ae(`ابعت ${Math.min(n,x.n,20)} ${x.nm}`,`Send ${Math.min(n,x.n,20)} ${x.nm}`)};
+  s.querySelector('#gfQ').oninput=e=>{const q=e.target.value.trim().toLowerCase();s.querySelectorAll('.fr-m').forEach(b=>b.style.display=!q||b.dataset.q.includes(q)?'':'none')};
+  s.querySelectorAll('.fr-m').forEach(b=>b.onclick=()=>{x=L[+b.dataset.i];upd()});s.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{n=+b.dataset.n;upd()});upd();
+  s.querySelector('#frNo').onclick=()=>s.remove();
+  s.querySelector('#frSend').onclick=async()=>{if(!x||left<=0)return;const m=Math.min(n,x.n,20);if(m<1)return;const btn=s.querySelector('#frSend');btn.disabled=true;
+    gfTake(h,x,m);frGiftsToday(h).n++;saveHero();
+    try{await FRA.send({fn:String(h.name||'').slice(0,20),to:g.o,k:x.k,n:m});s.remove();try{SFX.coin()}catch(e){}toast(T(ae(`{بعت|بعتي} ${m} ${x.nm} لـ ${g.heroes[0].n}.`,`You sent ${m} ${x.nm} to ${g.heroes[0].n}.`)));bump('giftSent')}
+    catch(e){gfGive(h,x,m);frGiftsToday(h).n--;saveHero();btn.disabled=false;toast(ae('الهدية ما اتبعتتش، الحاجة رجعتلك.','The gift didn\'t go through; it\'s back with you.'))}}};
+const gfKnow=k=>{if(MAT[k])return 1;if(ITEMS[k])return 2;try{if(typeof aqReg==='function'&&aqReg(k))return 2}catch(e){}try{if(typeof fqReg==='function'&&fqReg(k))return 2}catch(e){}return 0};
+frClaim=async function(h,x){const kind=gfKnow(x.k);if(!kind){toast(ae('الحاجة دي مش معروفة في نسختك. حدّث اللعبة.','Your version doesn\'t know this item. Update the game.'));return}
+  try{await FRA.claim(x._id)}catch(e){toast(ae('الهدية دي اتاخدت خلاص.','That gift was already taken.'));FRS.inbox=(FRS.inbox||[]).filter(y=>y._id!==x._id);return frRender()}
+  const n=Math.max(1,Math.min(20,x.n|0)),nm=kind===1?fsNm(x.k):ITEMS[x.k].name;gfGive(h,{k:x.k,m:kind===1},n);saveHero();FRS.inbox=(FRS.inbox||[]).filter(y=>y._id!==x._id);try{SFX.coin()}catch(e){}
+  toast(T(ae(`{استلمت|استلمتي} ${n} ${nm} من ${x.fn}.`,`You got ${n} ${nm} from ${x.fn}.`)));frRender()};
+/* the gift inbox shows bag items with their picture and name too */
+{const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs')return r;view.querySelectorAll('[data-gi]').forEach(b=>{const x=(FRS.inbox||[]).find(y=>y._id===b.dataset.gi),row=b.parentElement;if(!x||MAT[x.k]||!gfKnow(x.k)||!row)return;
+  row.innerHTML=`${twFood(x.k,26)}<span>${esc(x.fn)}: ${x.n|0} ${esc(ITEMS[x.k].name)}</span>`;row.appendChild(b)})}catch(e){}return r}}
+/* chat: the time under each message, and more one-tap emoji */
+CH_QUICK.push(['😂','😂'],['🔥','🔥'],['❤️','❤️'],['⚔','⚔'],['🎁','🎁']);
+{const c0=chDraw;chDraw=function(){const r=c0.apply(this,arguments);try{const L=CHX.rows[CHX.path]||[];view.querySelectorAll('.ch-m[data-m]').forEach(el=>{const m=L.find(x=>x._id===el.dataset.m);if(!m||el.querySelector('.ch-t'))return;const d=new Date(chT(m.t));
+  el.insertAdjacentHTML('beforeend',`<small class="ch-t">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</small>`)})}catch(e){}return r}}
+/* the fight bag: a search box over the list */
+{const b0=bagSheet;bagSheet=function(){const r=b0.apply(this,arguments);try{if(S.combat&&typeof r==='string'&&/class="it/.test(r)&&!/id="bgQ"/.test(r)){const q=esc((S.combat.bgQ)||'');
+  return r.replace(/(<div class="h">[^<]*<\/div>)/,`$1<input id="bgQ" class="hd-sq bg-q" type="search" autocomplete="off" placeholder="🔍 ${ae('دوّر في الشنطة…','Search the bag…')}" value="${q}">`)}}catch(e){}return r}}
+function bgQRun(){const i=$('#bgQ');if(!i)return;const q=i.value.trim().toLowerCase(),sh=i.parentElement;if(S.combat)S.combat.bgQ=i.value;if(!sh)return;
+  sh.querySelectorAll('.it').forEach(b=>b.style.display=!q||b.textContent.toLowerCase().includes(q)?'':'none')}
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='bgQ')bgQRun()},true);
+new MutationObserver(()=>{const i=document.getElementById('bgQ');if(i&&i.value&&!i.dataset.run){i.dataset.run=1;bgQRun()}}).observe(document.body,{childList:true,subtree:true});
+document.head.insertAdjacentHTML('beforeend',`<style>
+.pf-edw{display:flex;justify-content:center;margin:12px 0 4px}.pf-edw #edit{margin:0!important;min-width:180px}
+#pfFr{margin-top:12px}
+.fr-me2.hd-wrap{flex-wrap:wrap}.fr-me2.hd-wrap .hd-me{flex:1 1 100%}.hd-me{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.hd-who{flex:1;min-width:140px;display:flex;flex-direction:column}.hd-who b{font-size:20px;color:var(--gold2)}.hd-who small{color:var(--mute);font-size:12px}
+.hd-me .tw-buy,.hd-me .btn{min-height:44px;width:auto;padding-inline:14px;margin:0}
+.fr-add input.hd-inp{letter-spacing:0;text-transform:none;font-size:16px}
+.hd-sq{width:100%;box-sizing:border-box;min-height:44px;border-radius:12px;border:1px solid #ffffff2e;background:#120d08;color:var(--ink);font:inherit;font-size:15px;padding:0 12px;margin:6px 0}
+.hd-sub{color:#8fd3ff!important;font-size:12px}
+.fr-bt [data-fo].hd-off{opacity:.45;filter:grayscale(1)}
+.hd-box{gap:10px}.hd-l{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute)}.hd-l input{min-height:44px;border-radius:10px;border:1px solid #ffffff2e;background:#120d08;color:var(--ink);font:inherit;font-size:16px;padding:0 10px}
+.hd-in{display:flex;align-items:center;gap:4px;direction:ltr}.hd-in span{font-size:18px;color:var(--gold2)}.hd-in input{flex:1;min-width:0}
+.du-pic.du-body{width:96px;height:120px;border-radius:14px;display:flex;align-items:flex-end;justify-content:center}.du-pic.du-body svg{width:auto;height:100%}
+.du .du-surr{background:#7a2a24;border-color:#e2483f;color:#fff}
+.ch-t{display:block;font-size:10px;opacity:.6;text-align:end;margin-top:2px}
+.bg-q{margin:4px 0 8px}</style>`);
+/* the dice stay in their box with their number after a move is picked (Twister 23:24), until the next throw */
+{const l0=afLay;afLay=function(){const r=l0.apply(this,arguments);try{const tr=afTray();if(!tr)return r;let k=tr.querySelector('.af-keep');const D=afDiceEl&&afDiceEl();
+  const keep=AF.vals&&AF.vals.length&&(AF.st==='used'||AF.st==='rolled')&&(!D||D.hidden);
+  if(!keep){if(k)k.remove();return r}const key=AF.vals.join(',');if(k&&k.dataset.k===key)return r;if(!k){k=document.createElement('div');k.className='af-keep';tr.appendChild(k)}
+  k.dataset.k=key;k.innerHTML=AF.vals.map(v=>`<div class="afd"><div class="fc">${afDie(v)}</div></div>`).join('')}catch(e){}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>#app.af .af-tray .af-keep{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;pointer-events:none}#app.af .af-tray .af-keep .afd{width:52px;height:52px}</style>`);
+/* a low total turned into a success by a timed block said «نجاح!» under «-4»: it now says why (Twister 23:24) */
+{const b0=cgBig;cgBig=function(){const r=b0.apply(this,arguments);try{const R=CGS.roll&&CGS.roll.R,el=$('#cgBig');if(R&&el&&!R.crit&&!R.fumble){const two=S.dice==='2d6',raw=two?(R.total>=10?'full':R.total>=7?'part':'fail'):(R.total>=15?'full':R.total>=10?'part':'fail');
+  if(raw!==R.tier){const sp=el.querySelector('span');if(sp)sp.textContent=R.tier==='full'?ae('في وقته! نجاح','On time! Success'):R.tier==='part'?ae('في وقته! نص نص','On time! Partly'):ae('فشل','Fail')}}}catch(e){}return r}}
+/* «قدراتي»: the level box took the star tree's navy «.sk-box» look; it now sits in the card's own colours with room inside,
+   and a maxed move no longer says «أعلى مستوى» twice (Twister 23:25) */
+{const p0=SCREENS.profile;SCREENS.profile=function(){const r=p0.apply(this,arguments);try{if(S.screen!=='profile')return r;view.querySelectorAll('.pf-sk').forEach(c=>{const nx=c.querySelector('.sk-nx'),x=c.querySelector('.skx');if(nx&&x&&/✦/.test(nx.textContent)&&!x.querySelector('.bar'))x.remove()})}catch(e){}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>.pf-sk .sk-box{background:#00000038!important;border:1px solid #ffffff14;border-radius:12px;padding:10px 12px!important;display:flex;flex-direction:column;gap:6px;box-sizing:border-box}
+.pf-sk .sk-box .sk-up{width:100%;min-height:44px;margin:4px 0 0}.pf-sk .sk-box .skx{margin-top:2px}.pf-sk .sk-gots{gap:3px}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
