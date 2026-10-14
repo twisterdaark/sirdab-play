@@ -4804,6 +4804,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.39',d:'14 أكتوبر',add:['الليلة بقت مكان: في كل وقفة {بتشوف|بتشوفي} نفسك على الطريق، وقدامك 3 أماكن بتنوّر بصورتها واسمها ونجوم خطرها. {دوس|دوسي} على مكان وهتمشي لحد عنده.','الاختيارات بقت حركة {بتعملها|بتعمليها} قبل النرد: شد بسرعة للقوة، اتسحّب في الوقت الصح للخفة، استحمل للتحمّل، افتكر للذكاء، خلّي بالك للحكمة، وفي وقتك للحضور. لو {عملتها|عملتيها} حلو بتاخد لحد +2 على الرمية.','مش {عايز|عايزة} تلعبها؟ «{سيبها|سيبيها} للحظ» وارمي النرد على طول.']},
 {v:'6.38',d:'14 أكتوبر',add:['الحدادة والخياطة والطبخ والعطارة اتنظموا: فوق فيه تابات («اعمل»، «خامات»، «العدّة»، «جاهز»…)، وكل حاجة {بتعملها|بتعمليها} بقت كارت صغير فيه صورتها واسمها. {دوس|دوسي} عليه يفتح بكل تفاصيله وزراره.','النقطة الخضرا على الكارت = {تقدر تعملها|تقدري تعمليها} دلوقتي، والدهبي = {تقدر تشتريها|تقدري تشتريها} جاهزة. صفحة الحداد بقت أقصر بكتير.']},
 {v:'6.37',d:'14 أكتوبر',add:['شجرة كل شغلانة بقت سما بالليل بنجوم: الشمس تحت، والفروع طالعة نجوم متوصلة، والروابط والتاج فوق، والاختيارات تحت. {دوس|دوسي} على أي نجمة {تقرا|تقري} هي إيه {وتشتريها|وتشتريها}، والنجمة بتنوّر لما {تاخدها|تاخديها}.','«شجرة الصنايعي» اللي كانت لكل الشغلانات اتشالت. اللي {اشتريته|اشتريتيه} منها لسه شغال.','القتال: القدرات والشنطة و«اتصرّف» بقوا كروت مكتوب عليها كل حاجة بتعمل إيه. دوسة واحدة {بتستعملها|بتستعمليها}، ولو محتاجة وحش {بتدوس|بتدوسي} على الوحش على طول.','السلاح اللي {بيصحى|بيصحى} أو بيتولد بروح أو بيكبر: مشهد كامل بنور وصوت واسمه بيظهر كبير.']},
 {v:'6.36',d:'14 أكتوبر',add:['القتال: أول ما {ترمي|ترمي} النرد، تحته مكتوب الرمية دي هتعمل إيه في الضربة: النرد + الصفة − صعوبة العدو = النتيجة.','أرقام الصحة بقت جوه البار نفسه، فوق كل وحش وفوقك.','الشعلة وأي حاجة {بترميها|بترميها} على عدو: {دوس|دوسي} على العدو نفسه زي الضربة، من غير زراير.','الوحوش بقت بتتنفس وبتتحرك في مكانها، ونقط الضعف بقت أيقونات صغيرة من غير بوكسات.','اسم «علقة» و«تثبيت» بقى فوق الزرار.','في «بيتك» بقى فيه سرير: لو صحتك ناقصة {ارتاح|ارتاحي} ببلاش وصحتك وطاقتك يرجعوا كاملين. صحتك ما بترجعش لوحدها في البلد.','التحدي والمنافس وطلب العمدة لما {تكون تعبان|تكوني تعبانة} بيودّوك على السرير على طول، ومربع «بيتك» بيقولك {ترتاح|ترتاحي} هناك.','الجرنال مابقاش بيجيب وصفة {انت عارفها|انتي عارفاها} خلاص.']},
@@ -50962,6 +50963,147 @@ function croOrg(){const sc=S.screen;if(!CRO_SC.includes(sc)||!S.hero)return;cons
 .cro-g .cro-r:not(.cro-open) .tx>:not(b){display:none!important}
 .cro-g .cro-r:not(.cro-open) .tx b{font-size:13px;line-height:1.3}
 .cro-g .cro-r.cro-open{grid-column:1/-1}.cro-g .cro-r.cro-open .ic,.cro-g .cro-r.cro-open .tx>b{cursor:pointer}`;document.head.appendChild(s)})();
+/* ---------- 6.39 (acc1, Twister 13:02/13:04): «نحول اللعبه من Text Based ل Interaction Based» · update 1: the night is a place ----------
+   At every stop of the night the 3 cards were a list of text buttons. Now the picture on top grows into the stop itself:
+   your hero (and whoever is with you) stands on the road at the bottom, the road forks, and the 3 cards stand ahead as glowing
+   spots, each with its picture (a fight, people, a shop, a rest…), its name and its danger stars. Tap a spot: the hero walks
+   there and the card opens. The old card buttons stay in the page, hidden, and the walk clicks them, so every card rule and
+   every later wrapper works as before. Test builds keep the old list unless window.__nw is set. */
+const NW={busy:0};
+const nwOn=()=>!((window.__r||window.__t||window.__q)&&!window.__nw);
+const NW_POS=[[22,44],[50,30],[78,46]];
+const NW_COL={fight:'#e2483f',trade:'#45b4a8',people:'#6aa8ff',test:'#a578d6',shop:'#f3c14d',rest:'#7fe07a',prep:'#f39a4d',rare:'#ffd36a'};
+function nwStage(){if(S.screen!=='stop'||!nwOn()||!N_on())return;const art=view.querySelector('.art'),list=view.querySelector('.ncards');if(!art||!list||art.querySelector('.nw-st'))return;
+  const cards=[...list.querySelectorAll('.ncard[data-nc]')];if(!cards.length)return;const h=S.hero,c=S.comp;
+  art.classList.add('nw-on');list.classList.add('nw-hid');const hint=view.querySelector('.nhint');if(hint)hint.classList.add('nw-hint');
+  let me='',co='';try{me=PX.body(h)}catch(e){}try{if(c&&c.max&&c.hp>0)co=c.art&&typeof foeArt==='function'?foeArt(c.art):PX.body(c)}catch(e){}
+  const pos=cards.length===1?[[50,34]]:cards.length===2?[[30,40],[70,40]]:NW_POS;
+  const road=pos.map(([x,y])=>`<path d="M50 92 Q${(50+x)/2} ${(92+y)/2+8} ${x} ${y+8}" class="nw-rd"/>`).join('');
+  const spots=cards.map((b,i)=>{const id=b.dataset.nc,C=CARD[id]||{},R=b.classList.contains('rare'),t=R?'rare':(N_TYPES[C.type]?C.type:'people'),[x,y]=pos[i];
+    const nm=(b.querySelector('.ntx b')||{}).textContent||'',ty=(b.querySelector('.nty')||{}).textContent||'',st=b.querySelector('.nst');
+    return `<button class="nw-sp t-${t}${R?' rare':''}" data-nw="${esc(id)}" style="left:${x}%;top:${y}%;--c:${NW_COL[t]||'#6aa8ff'};--d:${(i*.12).toFixed(2)}s" aria-label="${esc(nm)}">
+      <span class="nw-md">${N_ico(t,30)}</span><span class="nw-lb"><b>${esc(nm)}</b><small>${esc(ty)} ${st?st.outerHTML:''}</small></span></button>`}).join('');
+  art.insertAdjacentHTML('beforeend',`<div class="nw-st"><div class="nw-gr"></div><svg class="nw-rds" viewBox="0 0 100 100" preserveAspectRatio="none">${road}</svg>${spots}
+    <div class="nw-me" id="nwMe">${co?`<span class="nw-co">${co}</span>`:''}<span class="nw-h">${me}</span></div></div>`);
+  art.querySelectorAll('.nw-sp').forEach(sp=>sp.onclick=()=>nwGo(sp))}
+function nwGo(sp){if(NW.busy)return;const id=sp.dataset.nw,b=view.querySelector(`.ncard[data-nc="${CSS.escape(id)}"]`);if(!b)return;NW.busy=1;
+  const me=$('#nwMe'),st=sp.closest('.nw-st');try{ac()}catch(e){}view.querySelectorAll('.nw-sp').forEach(x=>x.classList.toggle('nw-off',x!==sp));sp.classList.add('nw-pick');
+  const done=()=>{NW.busy=0;try{b.click()}catch(e){console.warn(e)}};
+  if(!me||!st||window.__afAuto){done();return}
+  const A=st.getBoundingClientRect(),P=sp.getBoundingClientRect(),M=me.getBoundingClientRect();const dx=(P.left+P.width/2)-(M.left+M.width/2),dy=(P.top+P.height*.6)-(M.top+M.height);
+  me.classList.toggle('flip',dx<0);let n=0;const step=setInterval(()=>{try{SFX.tick(260+(n++%2)*60)}catch(e){}},170);
+  try{me.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx}px,${dy}px) scale(.72)`}],{duration:720,easing:'cubic-bezier(.4,.1,.5,1)',fill:'forwards'})}catch(e){}
+  try{sp.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.25)'},{transform:'translate(-50%,-50%) scale(1.1)'}],{duration:720,fill:'forwards'})}catch(e){}
+  setTimeout(()=>{clearInterval(step);try{SFX.page&&SFX.page()}catch(e){}try{pop(sp,[sp.style.getPropertyValue('--c')||'#fff','#fff'],16)}catch(e){}},700);setTimeout(done,860)}
+{const s0=SCREENS.stop;SCREENS.stop=function(){NW.busy=0;const r=s0.apply(this,arguments);try{nwStage()}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+.art.nw-on{height:min(400px,56vh)}
+.nw-st{position:absolute;inset:0;z-index:2}
+.nw-gr{position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(180deg,transparent,#0c0a08cc 30%,#14100c 100%)}
+.nw-rds{position:absolute;inset:0;width:100%;height:100%}
+.nw-rd{fill:none;stroke:#c9a46a;stroke-opacity:.35;stroke-width:5;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:2 9}
+.nw-sp{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:118px;min-height:44px;padding:0;background:none;border:0;color:#fff;font:inherit;cursor:pointer;animation:nwIn .5s cubic-bezier(.2,1.6,.4,1) var(--d) both}
+.nw-md{position:relative;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;color:var(--c);background:radial-gradient(circle at 50% 35%,#2a2240,#0b0d1c);box-shadow:0 0 0 3px #0b0d1c,0 0 0 5px var(--c),0 0 22px var(--c);animation:nwBob 2.2s ease-in-out var(--d) infinite}
+.nw-md::after{content:'';position:absolute;left:10%;right:10%;bottom:-14px;height:8px;border-radius:50%;background:#000a;filter:blur(2px)}
+.nw-sp.rare .nw-md{animation:nwBob 2.2s ease-in-out infinite,nwRare 1.2s ease-in-out infinite}
+.nw-lb{display:flex;flex-direction:column;align-items:center;gap:1px;margin-top:8px;padding:3px 8px;border-radius:10px;background:#0b0d1ccc;box-shadow:0 0 0 1px #ffffff22;max-width:118px}
+.nw-lb b{font-size:12px;line-height:1.3;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nw-lb small{font-size:10px;color:var(--c);white-space:nowrap}.nw-lb .nst{font-size:10px}
+.nw-sp:active .nw-md{transform:scale(.92)}
+.nw-sp.nw-off{opacity:.35;filter:grayscale(.7);transition:opacity .3s}
+.nw-me{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:2px;pointer-events:none;z-index:3}
+.nw-me>span{display:block;width:62px;height:62px;animation:nwIdle 1.6s ease-in-out infinite}.nw-me .nw-co{width:50px;height:50px;animation-delay:-.6s}
+.nw-me svg{width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 4px 0 #0008)}
+.nw-me.flip svg{transform:scaleX(-1)}
+.ncards.nw-hid{display:none!important}
+@keyframes nwIn{from{opacity:0;transform:translate(-50%,-30%) scale(.6)}}
+@keyframes nwBob{50%{transform:translateY(-5px)}}
+@keyframes nwIdle{50%{transform:translateY(-2px) scaleY(.98)}}
+@keyframes nwRare{50%{box-shadow:0 0 0 3px #0b0d1c,0 0 0 5px #fff3b0,0 0 34px #ffd36a}}
+@media (prefers-reduced-motion:reduce){.nw-md,.nw-me>span{animation:none}}`;document.head.appendChild(s)})();
+/* ---------- 6.39 (acc1, Twister 13:02) · update 2: a choice is something you do ----------
+   A story choice (or an errand's trade choice) that rolls a stat used to open the dice window straight away. Now you first DO it,
+   with a short move that fits the stat, and how well you do it adds to the roll (the dice and the stat still decide):
+     قوة  «شد!»       tap as fast as you can until the bar fills             +2 / +1 / 0
+     خفة  «اتسحّب»    tap while the moving mark is in the green              +2 / +1 / −1
+     تحمّل «استحمل»   hold and do not let go until the bar is full           +2 / +1 / 0
+     ذكاء «افتكر»     three signs light up, tap them back in order          +2 / +1 / 0
+     حكمة «خلي بالك»  one of the signs flickers once, tap that one          +2 / 0
+     حضور «في وقتك»   tap as the ring closes on the word                     +2 / +1 / 0
+   «سيبها للحظ» skips it (no bonus) and «رجوع» backs out as before. The bonus is lent to the stat while the roll reads it, so the dice
+   window, potions, curses and every other rollCheck wrapper see an ordinary roll. Not in fights, the training yard, or the live night with friends.
+   Test builds skip it unless window.__act is set. */
+const ACT={on:0};
+const actOn=()=>!((window.__r||window.__t||window.__q)&&!window.__act);
+const ACT_G={'قوة':['شد!','Pull!','{دوس|دوسي} بسرعة لحد ما البار يتملا','Tap fast until the bar fills'],
+  'خفة':['اتسحّب','Sneak','{دوس|دوسي} والعلامة جوه الأخضر','Tap while the mark is in the green'],
+  'تحمّل':['استحمل','Hold on','{امسك|امسكي} الزرار وما {تسيبوش|تسيبيهوش} لحد ما يتملا','Hold the button until it fills'],
+  'ذكاء':['افتكر','Remember','3 علامات هتنوّر، {دوس|دوسي} عليهم بنفس الترتيب','Three signs light up; tap them back in order'],
+  'حكمة':['خلّي بالك','Watch','علامة واحدة هترمش، {دوس|دوسي} عليها','One sign will flicker; tap it'],
+  'حضور':['في وقتك','On cue','{دوس|دوسي} لما الدايرة تقفل على الكلمة','Tap as the ring closes on the word']};
+const ACT_SG=['☾','✦','♣','◆','✋','☀'];
+function actPanel(stat,label){const g=ACT_G[stat]||ACT_G['قوة'];const el=document.createElement('div');el.id='actG';
+  el.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${T(ae(g[0],g[1]))}</b><span class="ag-st">${esc(EN?((typeof L10N_W!=='undefined'&&L10N_W.get(stat))||stat):stat)}</span></div>
+    <div class="ag-l">${esc(label||'')}</div><div class="ag-how">${T(ae(g[2],g[3]))}</div><div class="ag-a" id="agA"></div><div class="ag-r" id="agR"></div>
+    <div class="ag-b"><button class="btn ghost small" id="agSkip">${T(ae('{سيبها|سيبيها} للحظ','Leave it to luck'))}</button><button class="btn ghost small" id="agBack">${ae('رجوع','Back')}</button></div></div>`;
+  document.body.appendChild(el);return el}
+function actPlay(stat,label){return new Promise(res=>{const el=actPanel(stat,label),A=el.querySelector('#agA'),Rr=el.querySelector('#agR');let over=false,tm=[],iv=[];
+  const end=(b,cancel)=>{if(over)return;over=true;tm.forEach(clearTimeout);iv.forEach(clearInterval);
+    if(cancel){el.remove();return res({cancel:true})}
+    const tx=b>=2?ae('ممتاز!','Spot on!'):b===1?ae('كويس','Good'):b===0?ae('عادي','So-so'):ae('وحشة','Clumsy');
+    Rr.innerHTML=`<b class="ag-${b>0?'up':b<0?'dn':'eq'}">${tx} ${b?`${b>0?'+':'−'}${Math.abs(b)}`:''}</b>`;try{b>0?SFX.good():b<0?SFX.bad():SFX.tick(500)}catch(e){}if(b>=2)try{pop(Rr,['#ffd36a','#fff'],18)}catch(e){}
+    setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),200);res({bonus:b})},window.__actFast?40:900)};
+  el.querySelector('#agSkip').onclick=()=>end(0);el.querySelector('#agBack').onclick=()=>end(0,true);
+  const auto=window.__actAuto;   /* tests: a number = the bonus to get */
+  if(stat==='قوة'){A.innerHTML=`<div class="ag-bar"><i id="agF"></i></div><button class="ag-big" id="agT">${ae('شد!','Pull!')}</button>`;let n=0,t0=0;const need=14,f=A.querySelector('#agF');
+    A.querySelector('#agT').onpointerdown=e=>{e.preventDefault();if(!t0){t0=1;tm.push(setTimeout(()=>end(n>=need?2:n>=need*.6?1:0),2600))}n++;f.style.width=Math.min(100,n/need*100)+'%';try{SFX.tick(300+n*25);vib(8)}catch(x){}if(n>=need)end(2)}}
+  else if(stat==='خفة'||stat==='حضور'){const ring=stat==='حضور';
+    A.innerHTML=ring?`<div class="ag-ring"><i id="agC"></i><b>${T(ae('دلوقتي','Now'))}</b></div><button class="ag-big" id="agT">${ae('دوس','Tap')}</button>`:`<div class="ag-sw"><i class="g"></i><i class="m" id="agM"></i></div><button class="ag-big" id="agT">${ae('دوس','Tap')}</button>`;
+    const t0=performance.now(),P=ring?1500:1100;let v=0;const m=A.querySelector(ring?'#agC':'#agM');
+    iv.push(setInterval(()=>{const t=((performance.now()-t0)%P)/P;if(ring){v=1-t;m.style.transform=`scale(${(.35+v*1.65).toFixed(3)})`}else{v=t<.5?t*2:2-t*2;m.style.left=(v*100).toFixed(1)+'%'}},16));
+    const score=()=>ring?Math.abs(v*1.65+.35-1):Math.abs(v-.5);
+    A.querySelector('#agT').onclick=()=>{const d=score();end(ring?(d<.08?2:d<.22?1:0):(d<.06?2:d<.14?1:-1))};tm.push(setTimeout(()=>end(ring?0:-1),5200))}
+  else if(stat==='تحمّل'){A.innerHTML=`<div class="ag-bar"><i id="agF"></i></div><button class="ag-big" id="agT">${T(ae('{امسك|امسكي}','Hold'))}</button>`;const f=A.querySelector('#agF'),bt=A.querySelector('#agT');let t0=0,h=0;
+    bt.onpointerdown=e=>{e.preventDefault();t0=performance.now();bt.classList.add('on');h=setInterval(()=>{const p=(performance.now()-t0)/2400;f.style.width=Math.min(100,p*100)+'%';el.classList.toggle('ag-shk',p>.5);if(p>=1){clearInterval(h);end(2)}},30);iv.push(h)};
+    const up=()=>{if(!t0||over)return;clearInterval(h);const p=(performance.now()-t0)/2400;end(p>=.7?1:0)};bt.onpointerup=up;bt.onpointerleave=up;bt.onpointercancel=up}
+  else{const mem=stat==='ذكاء',sg=ACT_SG.slice().sort(()=>Math.random()-.5).slice(0,mem?4:5);A.innerHTML=`<div class="ag-sg">${sg.map((s,i)=>`<button class="ag-s" data-i="${i}">${s}</button>`).join('')}</div>`;
+    const bs=[...A.querySelectorAll('.ag-s')];bs.forEach(b=>b.disabled=true);
+    if(mem){const seq=[0,1,2].map(()=>Math.floor(Math.random()*4));let k=0;
+      seq.forEach((i,j)=>{tm.push(setTimeout(()=>{bs[i].classList.add('lit');try{SFX.tick(600+j*150)}catch(x){}},400+j*650));tm.push(setTimeout(()=>bs[i].classList.remove('lit'),400+j*650+450))});
+      let right=0;tm.push(setTimeout(()=>{bs.forEach(b=>b.disabled=false);bs.forEach(b=>b.onclick=()=>{if(+b.dataset.i===seq[k])right++;b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),150);k++;if(k>=3)end(right===3?2:right===2?1:0)})},400+3*650))}
+    else{const w=Math.floor(Math.random()*bs.length);tm.push(setTimeout(()=>{bs[w].classList.add('lit');try{SFX.tick(1200)}catch(x){}},700+Math.random()*900));
+      tm.push(setTimeout(()=>{bs.forEach(b=>b.classList.remove('lit'));bs.forEach(b=>{b.disabled=false;b.onclick=()=>end(+b.dataset.i===w?2:0)})},1900))}}
+  if(typeof auto==='number')tm.push(setTimeout(()=>end(auto),60))})}
+{const r0=rollCheck;rollCheck=async function(stat,opt){opt=opt||{};let skip=!actOn()||!!S.combat||S.screen==='combat'||!!S.training||!opt.cancel||opt.mod!==undefined||!ACT_G[stat]||ACT.on;
+  try{if(typeof CO!=='undefined'&&CO&&CO.code&&CO.room)skip=true}catch(e){}
+  if(skip)return r0.apply(this,arguments);
+  ACT.on=1;let g;try{g=await actPlay(stat,opt.label)}finally{ACT.on=0}
+  if(g.cancel)return {cancel:true};
+  const b=g.bonus|0;if(!b)return r0.call(this,stat,opt);
+  /* the bonus is lent to the stat for the moment the roll reads it, so every wrapper (potions, curses) still sees an ordinary roll */
+  const h=S.hero,st=h&&h.st;if(!st)return r0.call(this,stat,opt);const had=Object.prototype.hasOwnProperty.call(st,stat),v0=st[stat];st[stat]=(v0||0)+b;
+  try{return r0.call(this,stat,Object.assign({},opt,{label:(opt.label||'')+` · ${ae('حركتك','your move')} ${b>0?'+':'−'}${Math.abs(b)}`}))}
+  finally{if(had)st[stat]=v0;else delete st[stat]}}}
+(function(){const s=document.createElement('style');s.textContent=`
+#actG{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#0008;animation:agIn .2s ease-out both;direction:rtl}
+#actG.out{animation:agOut .2s ease-in both}@keyframes agIn{from{opacity:0}}@keyframes agOut{to{opacity:0}}
+.ag-box{width:min(100%,480px);box-sizing:border-box;padding:16px 16px 20px;border-radius:20px 20px 0 0;background:#1a1530;border-top:2px solid #f2c14e;box-shadow:0 -10px 30px #000a;display:flex;flex-direction:column;gap:10px;animation:agUp .3s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes agUp{from{transform:translateY(60%)}}
+.ag-h{display:flex;justify-content:space-between;align-items:center}.ag-h b{font-size:22px;color:#ffd36a;text-shadow:0 2px 0 #000}.ag-st{font-size:12px;font-weight:800;padding:2px 10px;border-radius:10px;background:#2a2148;color:#d9cbff}
+.ag-l{font-size:14px;line-height:1.5;opacity:.9}.ag-how{font-size:12px;color:#c9c2dc}
+.ag-a{display:flex;flex-direction:column;align-items:center;gap:12px;min-height:150px;justify-content:center}
+.ag-big{min-width:160px;min-height:64px;border-radius:32px;border:0;background:linear-gradient(#f3c14d,#d9962e);color:#2b1b22;font:inherit;font-size:20px;font-weight:900;box-shadow:0 5px 0 #8a5a1a;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.ag-big:active,.ag-big.on{transform:translateY(4px);box-shadow:0 1px 0 #8a5a1a}
+.ag-bar{width:100%;height:18px;border-radius:9px;background:#0b0d1c;box-shadow:inset 0 0 0 2px #3d3266;overflow:hidden}.ag-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f39a4d,#ffd36a);transition:width .08s}
+.ag-sw{position:relative;width:100%;height:30px;border-radius:15px;background:#0b0d1c;box-shadow:inset 0 0 0 2px #3d3266}.ag-sw .g{position:absolute;left:42%;width:16%;top:3px;bottom:3px;border-radius:10px;background:#7fe07a88}
+.ag-sw .m{position:absolute;top:-4px;width:6px;height:38px;margin-left:-3px;border-radius:3px;background:#fff;box-shadow:0 0 8px #fff}
+.ag-ring{position:relative;width:110px;height:110px;display:grid;place-items:center}.ag-ring b{font-size:16px;font-weight:900;color:#fff;padding:14px;border-radius:50%;background:#2a2148;width:70px;height:70px;display:grid;place-items:center;box-sizing:border-box}
+.ag-ring i{position:absolute;inset:20px;border-radius:50%;border:3px solid #f2c14e;box-shadow:0 0 10px #f2c14e}
+.ag-sg{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.ag-s{width:56px;height:56px;border-radius:14px;border:2px solid #3d3266;background:#2a2148;color:#e9dcc4;font-size:26px;cursor:pointer}
+.ag-s.lit{background:#ffd36a;color:#2b1b22;border-color:#fff;box-shadow:0 0 18px #ffd36a}.ag-s.hit{transform:scale(.9)}.ag-s:disabled{cursor:default}
+.ag-r{min-height:28px;text-align:center;font-size:20px}.ag-up{color:#7fd88a}.ag-dn{color:#e2483f}.ag-eq{color:#e9dcc4}
+.ag-b{display:flex;gap:8px;justify-content:space-between}.ag-b .btn{min-height:44px;flex:1}
+#actG.ag-shk .ag-box{animation:agShk .08s linear infinite alternate}@keyframes agShk{to{transform:translate(1px,-1px)}}`;document.head.appendChild(s)})();
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
