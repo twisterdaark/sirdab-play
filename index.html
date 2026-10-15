@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.95',d:'15 أكتوبر',add:['الأوتوماتيك في المنجم بقى بيرد على المخاطر لوحده، وبياكل من الشنطة لما المجهود يخلص، وبيضرب أسرع، ولو مفيش مجهود بيضرب على الشق. وبيقف بس لما الصحة تقرب تخلص.','العدة الملحمية والأسطورية (زي معول الأعماق) كانت بتتشال منك كل ما تفتح اللعبة ويرجعلك أداة التدريب. اتصلحت، واللي {عملتها|عملتيها} واتشالت رجعتلك.','شجرة الشغلانات: كل مستوى بقى بـ4 نقط، فمستوى 10 بيفتح حوالي 3 فروع من 4 على آخرهم مش الشجرة كلها. لو الشجرة كانت فيها نقط أكتر من كده، نقطها رجعتلك {توزعها|توزعيها} من الأول ببلاش.','كروت «حال البلد» بتنوّر لو جواها حاجة مستنياك.']},
 {v:'6.94',d:'15 أكتوبر',add:['زرار «أوتوماتيك» في المنجم والترعة: بيشتغل لوحده بسرعة عادية، بس بيطلّع أقل: الفاس مش بتلاقي الشق، مش بينزل أدوار، ومخاطر المنجم مش بيرد عليها لو {انت|انتي} مش موجود. في الصيد ساعات بيشد متأخر والسمك الكبير ممكن يهرب. بيقف لوحده لما المجهود يخلص أو الصحة تقل أو {تمشي|تمشي} من المكان.']},
 {v:'6.93',d:'15 أكتوبر',add:['الفاترينة: العدة (معول، صنارة، فاس، سكينة…) بقت تتعرض كمان. اللي في إيدك (الأحسن) بيفضل معاك، والنسخ الزيادة هي اللي تتعرض.']},
 {v:'6.92',d:'15 أكتوبر',add:['الإشعارات الصغيرة اللي بتتكرر (فضة!، دهب!، فيروز!، زمرد، أحجار التعزيز في المنجم، وسمك الترعة) بقت شريط صغير فوق بدل ما تغطي نص الشاشة.']},
@@ -6644,7 +6645,7 @@ function treeRank(h,skill,branch){if(!h)return 0;treeMig(h);if(!h.tree||!h.tree[
 function treeR(h,skill,branch){const r=treeRank(h,skill,branch);return r>=5?4:r*.75}
 const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return (t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0)+lkSpent(h,k)+fkSpent(h,k)};
 const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
-const TREE_PPL=8;
+const TREE_PPL=4;   /* 6.95 (Twister): level 10 opens about 3 of the 4 branches, not all of them */
 function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,TREE_PPL*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
 const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
 const treeNum=n=>n===1?'نقطة واحدة':n===2?'نقطتين':n+' نقط';
@@ -45422,8 +45423,9 @@ const tlList=tr=>Object.keys(TOOL_CATALOG).map(id=>TOOL_CATALOG[id]).filter(t=>t
 const tlN=t=>ae(t.n[0],t.n[1]);
 function tlFix(h){if(!h||typeof h!=='object')return h;let T0=h.tools;if(!T0||typeof T0!=='object'||Array.isArray(T0))T0=h.tools={};
   if(!T0.own||typeof T0.own!=='object'||Array.isArray(T0.own))T0.own={};if(!T0.on||typeof T0.on!=='object'||Array.isArray(T0.on))T0.on={};
-  Object.keys(T0.own).forEach(id=>{if(!TOOL_CATALOG[id])delete T0.own[id]});
+  /* 6.95: an id the catalog doesn't know yet (later parts add tools) is kept, never deleted, and the one in hand is remembered in onW */
   TL_TR.forEach(tr=>{const z=tlList(tr).find(t=>t.t===0);if(z)T0.own[z.id]=1;const on=TOOL_CATALOG[T0.on[tr]];
+    if(!on&&T0.on[tr]&&T0.own[T0.on[tr]]&&!(z&&T0.on[tr]===z.id)){T0.onW=T0.onW||{};T0.onW[tr]=T0.on[tr]}
     if(!on||on.tr!==tr||!on.open||!T0.own[on.id])T0.on[tr]=z?z.id:null});
   T0.v=R11_CUR;return h}
 {const f0=fixHero;fixHero=function(h){return tlFix(f0.apply(this,arguments))}}
@@ -49021,7 +49023,7 @@ const tlKey=(id,c)=>'t:'+id+':'+c.q+(c.w?'w':'');
 function tlKP(k){const m=/^t:([a-z0-9_]+):([0-6])(w?)$/.exec(String(k||''));return m&&TOOL_CATALOG[m[1]]?{id:m[1],q:+m[2],w:m[3]?1:0}:null}
 const tlBest=L=>(L||[]).reduce((b,c)=>!b||c.q>b.q||(c.q===b.q&&c.w>b.w)?c:b,null);
 function tlIFix(h){const T=h&&h.tools;if(!T||!T.own)return h;if(!T.inst||typeof T.inst!=='object'||Array.isArray(T.inst))T.inst={};const I=T.inst;
-  Object.keys(I).forEach(id=>{if(!TOOL_CATALOG[id]||!Array.isArray(I[id])){delete I[id];return}I[id]=I[id].filter(c=>c&&c.q>=0&&c.q<=6).slice(0,99).map(c=>({q:c.q|0,w:c.w?1:0}))});
+  Object.keys(I).forEach(id=>{if(!Array.isArray(I[id])){delete I[id];return}I[id]=I[id].filter(c=>c&&c.q>=0&&c.q<=6).slice(0,99).map(c=>({q:c.q|0,w:c.w?1:0}))});
   if(h.res&&typeof h.res==='object')Object.keys(h.res).forEach(k=>{if(k===TLX.hold)return;const p=tlKP(k);if(!p&&String(k).slice(0,2)!=='t:')return;const n=Math.max(0,Math.min(99,Math.floor(+h.res[k]||0)));delete h.res[k];
     if(p&&n){for(let i=0;i<n;i++)(I[p.id]=I[p.id]||[]).push({q:p.q,w:p.w});T.own[p.id]=1}});
   Object.keys(I).forEach(id=>{if(!T.own[id])delete I[id]});   /* own decides: a tool taken away elsewhere takes its copies */
@@ -57115,22 +57117,27 @@ L10NG({'ضربتك ممكن تولّع في الوحش دورين، والحرق
    سرداب 6.94: «أوتوماتيك» in the mine and at the canal (p236.js). Twister 12:00: «an auto button for the mine, a bit slower, so you
    can leave it working; the same for fishing; or normal speed with a bit less out of it».
    Normal speed, less out of it: the auto pick never finds the glowing crack (so every two swings cost effort and no crack bonus),
-   stays on the floor it is on (no ways down), and the deep-mine risks are not answered (you lose health, a vein is lost) unless you
-   tap them yourself. At the canal it hooks a little late at times and holds the reel loosely, so some fish get away.
-   It stops when effort runs out, when health is under a third, or when you leave the place. Tap again to stop it.
+   stays on the floor it is on (no ways down). 6.95 (Twister 12:05): it answers the deep-mine risks by itself (window.__mrAuto). At the canal it hooks a little late at times and holds the reel loosely, so some fish get away.
+   6.95: it eats from the bag when effort runs out, hits faster, and with no effort hits the crack. It stops when effort and food run out, when health is under 12%, or when you leave the place. Tap again to stop it.
    ========================================================================== */
 const AU={on:0,k:null,tm:null,cd:0,bt:0,n:0};
-function auStop(msg){if(AU.tm)clearInterval(AU.tm);AU.tm=null;const was=AU.on;AU.on=0;AU.k=null;AU.bt=0;try{if(gxDev&&gxDev.FS)gxDev.FS.hold=0}catch(e){}
+function auStop(msg){AU.why=msg||AU.why||"";if(AU.tm)clearInterval(AU.tm);AU.tm=null;if(AU.mr){AU.mr=0;try{delete window.__mrAuto}catch(e){window.__mrAuto=undefined}}const was=AU.on;AU.on=0;AU.k=null;AU.bt=0;try{if(gxDev&&gxDev.FS)gxDev.FS.hold=0}catch(e){}
   if(was&&msg)try{toast(msg)}catch(e){}auBtn()}
-function auStart(k){auStop();AU.on=1;AU.k=k;AU.cd=0;AU.bt=0;AU.n=0;AU.tm=setInterval(k==='mine'?auMine:auFish,k==='mine'?650:120);auBtn();try{SFX.tick(820)}catch(e){}}
-const auLow=h=>h.hp<=Math.ceil(MXH(h)/3);
+function auStart(k){auStop();AU.on=1;AU.k=k;AU.cd=0;AU.bt=0;AU.n=0;if(k==='mine'&&window.__mrAuto==null){window.__mrAuto=true;AU.mr=1}   /* 6.95 (Twister 12:05): auto answers the mine's risks too */
+  AU.tm=setInterval(k==='mine'?auMine:auFish,k==='mine'?300:120);auBtn();try{SFX.tick(820)}catch(e){}}
+/* 6.95 (Twister 12:05): out of effort, it eats from the bag: the smallest meal that brings effort back first, so nothing is wasted */
+function auEat(h){try{const ks=eatFoods(h).filter(k=>h.bag[k]>0&&fqEff(h,k)>0).sort((a,b)=>fqEff(h,a)-fqEff(h,b));if(!ks.length)return false;gxEat(ks[0],$('#gxEffN')||$('#gxGo'));return effNow(h)>=1}catch(e){console.warn(e);return false}}
+const auLow=h=>h.hp<=Math.max(8,Math.ceil(MXH(h)*.12));   /* Twister 12:17: 46/159 is not low; stop only near the end */
 function auMine(){const D=gxDev,h=S.hero;if(!D||!h||S.screen!=='mine')return auStop();
   try{if((typeof MR!=='undefined'&&MR.busy)||D.GX.busy||bandBusy2())return;
     if(auLow(h))return auStop(T(ae('صحتك قليلة، الأوتوماتيك وقف. {ارتاح|ارتاحي} الأول.','Your health is low: auto stopped. Rest first.')));
     D.gxMsgOff();
-    if(D.GX.rock){D.mnHit();return}
+    if(D.GX.rock){if(effNow(h)>=1){D.mnHit();return}
+      /* 6.95 (Twister 12:06): out of effort, it hits the glowing crack (free) instead of swinging at the air */
+      const c=$('#mnCrk');if(c&&!c.classList.contains('off')&&D.GX.rock.on){const r=c.getBoundingClientRect();D.mnHit({clientX:r.left+r.width/2,clientY:r.top+r.height/2})}return}
     if(D.gxVisit('mine').hole){const b2=$('#gxGo2');if(b2&&!b2.classList.contains('hidden')){b2.click();return}}
-    if(effNow(h)<1)return auStop(T(ae('المجهود خلص، الأوتوماتيك وقف.','Out of effort: auto stopped.')));
+    if(effNow(h)<1&&!auEat(h))return auStop(T(ae('المجهود خلص ومفيش أكل في الشنطة، الأوتوماتيك وقف.','Out of effort and no food in the bag: auto stopped.')));
+    if(effNow(h)<1)return;
     D.mnSpawn();AU.n++}catch(e){console.warn(e);auStop()}}
 const bandBusy2=()=>{const B=document.getElementById('band');return !!(B&&!B.classList.contains('low')&&B.getAnimations&&B.getAnimations().some(a=>a.playState==='running'))};
 function auFish(){const D=gxDev,h=S.hero;if(!D||!h||S.screen!=='fish')return auStop();const FS=D.FS,go=$('#gxGo'),now=performance.now();if(!go)return;
@@ -57140,7 +57147,8 @@ function auFish(){const D=gxDev,h=S.hero;if(!D||!h||S.screen!=='fish')return auS
     AU.bt=0;
     if((ph==='idle'||ph==='done')&&!bandBusy2()&&now>=AU.cd){
       if(auLow(h))return auStop(T(ae('صحتك قليلة، الأوتوماتيك وقف.','Your health is low: auto stopped.')));
-      if(effNow(h)<1)return auStop(T(ae('المجهود خلص، الأوتوماتيك وقف.','Out of effort: auto stopped.')));
+      if(effNow(h)<1&&!auEat(h))return auStop(T(ae('المجهود خلص ومفيش أكل في الشنطة، الأوتوماتيك وقف.','Out of effort and no food in the bag: auto stopped.')));
+      if(effNow(h)<1){AU.cd=now+800;return}
       AU.cd=now+1100;D.gxMsgOff();go.click();AU.n++}}catch(e){console.warn(e);auStop()}}
 function auBtn(){const b=document.getElementById('gxAuto');if(!b)return;const on=AU.on&&AU.k===S.screen;b.classList.toggle('on',!!on);
   b.innerHTML=on?`<b>${ae('⏸ وقّف الأوتوماتيك','⏸ Stop auto')}</b><small>${ae('شغال لوحده','Working by itself')}</small>`
@@ -57152,6 +57160,44 @@ function auBtn(){const b=document.getElementById('gxAuto');if(!b)return;const on
   $('#gxAuto').onclick=()=>{if(AU.on)auStop();else auStart(sc)}}catch(e){console.warn(e)}})}).observe(document.getElementById('view')||document.body,{childList:true,subtree:true})}
 document.head.insertAdjacentHTML('beforeend',`<style>.gx-auto{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:8px;border-radius:14px;border:1px dashed #8fd3ff88;background:#8fd3ff12;color:#cfeaff;font:inherit;cursor:pointer;line-height:1.2}
 .gx-auto small{font-size:11px;opacity:.8}.gx-auto.on{border-style:solid;border-color:#7fe07a;background:#7fe07a1f;color:#bff5b9;animation:auP 1.6s ease-in-out infinite}@keyframes auP{50%{box-shadow:0 0 14px #7fe07a55}}</style>`);
+/* ==========================================================================
+   سرداب 6.95: tools lost on reload (p237.js) — Twister: «انا عملت معول الأعماق وبعدين خسرته … وحصلي مع عدة الحدادة»
+   The 6.84 tools (p224) are added to TOOL_CATALOG after p126 ran tlFix on the saved heroes, so every page load
+   deleted them from h.tools.own and the next tlFix dropped their copies and put the training tool in hand.
+   p126/p141 now keep ids they don't know yet. Here, once the catalog is whole:
+   - the one in hand that was put aside (tools.onW) goes back in hand;
+   - a 6.84 tool the hero made (h.made['tl_'+id]) but no longer owns comes back once as a «ممتاز» copy (tlRec).
+   ========================================================================== */
+function tlRecFix(h){const T=h&&h.tools;if(!T||!T.own)return h;let back=[];
+  if(!h.tlRec){h.tlRec=1;Object.keys(TOOL_CATALOG).forEach(id=>{const t=TOOL_CATALOG[id];if(!t||t.t<4||T.own[id]||!(h.made&&h.made['tl_'+id]))return;
+    T.inst=T.inst||{};T.inst[id]=[{q:3,w:0}];T.own[id]=1;back.push(id);const cur=TOOL_CATALOG[T.on[t.tr]];if(!cur||cur.t<=t.t)T.on[t.tr]=id})}
+  if(T.onW){Object.keys(T.onW).forEach(tr=>{const id=T.onW[tr],t=TOOL_CATALOG[id];if(!t)return;if(t.tr===tr&&t.open!==false&&T.own[id]){const cur=TOOL_CATALOG[T.on[tr]];if(!cur||cur.t<=t.t)T.on[tr]=id}delete T.onW[tr]});
+    if(!Object.keys(T.onW).length)delete T.onW}
+  if(back.length)h.tlBack=back;return h}
+{const f0=tlFix;tlFix=function(h){const r=f0.apply(this,arguments);try{tlRecFix(h)}catch(e){console.warn(e)}return r}}
+{let ch=0;(HEROES||[]).forEach(h=>{try{const a=JSON.stringify(h&&h.tools);tlFix(h);if(JSON.stringify(h&&h.tools)!==a)ch=1}catch(e){console.warn(e)}});if(ch)try{store('sirdab.heroes',HEROES)}catch(e){}}
+/* tell the player once, in town */
+{const r0=render;render=function(){const o=r0.apply(this,arguments);try{const h=S.hero;if(h&&h.tlBack&&h.tlBack.length&&typeof toast==='function'){const n=h.tlBack.map(id=>tlN(TOOL_CATALOG[id])).join('، ');delete h.tlBack;saveHero();
+  setTimeout(()=>toast(ae(`رجعتلك: ${n} (كانت اتشالت منك بالغلط)`,`Returned to you: ${n} (lost by mistake)`)),600)}}catch(e){}return o}}
+
+/* 6.95 (Twister 12:13): «مش لازم عشان انت لفل 10 اكون فاتح كل حاجه … هتقدر تفتح 3 من اصل 4 على آخرهم».
+   TREE_PPL went from 8 to 4 a level (p9t): level 10 = 40 points (50 with the xp branch full: 3 branches full + 5) against 79 for the whole tree.
+   A tree that now has more spent than it can hold gets all its points back once, free, to pick again (trRb). */
+function trRbFix(h){if(!h||h.trRb)return h;h.trRb=1;const got=[];try{Object.keys(TREE).forEach(k=>{if(!h.tree||!h.tree[k])return;const L=treeLvl(h,k),t=h.tree[k],cap=TREE_PPL*L+(t.xp>=5?L:0);
+  if(treeSpent(h,k)>cap){Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};if(h.treeF)h.treeF[k]={};got.push(k)}})}catch(e){console.warn(e)}
+  if(got.length)h.trRbN=got;return h}
+{const f0=fixHero;fixHero=function(h){return trRbFix(f0.apply(this,arguments))}}
+{let ch=0;(HEROES||[]).forEach(h=>{if(h&&!h.trRb){trRbFix(h);ch=1}});if(ch)try{store('sirdab.heroes',HEROES)}catch(e){}}
+{const r0=render;render=function(){const o=r0.apply(this,arguments);try{const h=S.hero;if(h&&h.trRbN){const n=h.trRbN.map(k=>LIFE[k]?LIFE[k].n:k).join('، ');delete h.trRbN;saveHero();
+  setTimeout(()=>toast(T(ae(`شجرة الشغلانة اتظبطت: كل مستوى بقى بـ4 نقط. نقط ${n} رجعتلك كلها {وزّعها|وزّعيها} من الأول ببلاش.`,`Trade trees rebalanced: 4 points a level. Your points are back, spend them again for free.`))),1400)}}catch(e){}return o}}
+
+/* 6.95 (Twister 12:18): «خليهم ينورو لو في حاجه جوا» — a «حال البلد» tile (and any picture tile) with something waiting
+   inside (a ready errand, today's story, a ready contract, unread news: the card's .ok note or its .jn-n count) glows. */
+function pgHot(){try{view.querySelectorAll('.pg-grid .jn-go').forEach(b=>b.classList.toggle('pg-hot',!!b.querySelector('.jn-tx .ok,.jn-n')))}catch(e){}}
+{const r0=render;render=function(){const o=r0.apply(this,arguments);pgHot();return o}}
+document.head.insertAdjacentHTML('beforeend',`<style>.pg-grid .jn-go.pg-hot{border-color:#ffd36a;box-shadow:0 0 0 1px #ffd36a66,0 0 16px #ffd36a55;animation:pgHot 1.8s ease-in-out infinite}
+.pg-grid .jn-go.pg-hot::after{content:'';position:absolute;top:8px;inset-inline-start:8px;width:10px;height:10px;border-radius:50%;background:#ffd36a;box-shadow:0 0 8px #ffd36a}
+@keyframes pgHot{50%{box-shadow:0 0 0 1px #ffd36aaa,0 0 24px #ffd36a88}}@media (prefers-reduced-motion:reduce){.pg-grid .jn-go.pg-hot{animation:none}}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
