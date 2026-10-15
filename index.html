@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.04',d:'15 أكتوبر',add:['القدرات بقت تستاهل الطاقة: أول ضربة من أي قدرة بقت أقوى بوضوح من الضربة العادية بتاعتك، في كل الأنواع وكل التخصصات (القدرة اللي بتاخد طاقة أكتر بتضرب أكتر)','كل الورش بقت 8 مراحل: الحداد والخياط والطباخ والمنجم والصيد والغيط والعطارة (المراحل الجديدة بتزوّد نفس اللي الورشة بتعمله)','الطباخة والخياط والعطارة بقى ليهم بلاطات فوق زي الحداد، والتابات بقت مترتبة','عمال الغيط: عقد «مفتوح» بيتجدد لوحده كل أسبوع من فلوسك، و{تقدر|تقدري} تخلي اللي بيأكّل البهايم يشتري أكلهم لو مش معاك (أغلى 30%)','أم عطية: {تقدر|تقدري} {تختار|تختاري} الطبع الجديد يروح في أنهي خانة، و{ترجّع|ترجّعي} طبع قديم شفته في أي خانة بفلوس على حسب ندرته ومستواك','الوحش اللي بيخاف من النار: السلاح اللي فيه ياقوت بيضربه أقوى بالنص، وجرعة النار بتوقّعه زي الشعلة','اتصلح: الشاشة كانت بتطلع لفوق بعد ما {تعمل|تعملي} حاجة في الحرف','اتصلح: النرد كان بيفضل لازق على الشنطة وبيمشي مع السكرول','اتصلح: «طلب النهارده» كان بيكتب 0/2 بعد ما {تسلّمه|تسلّميه}','اتصلح: رسالة التعزيز بقت تظهر بعد ما الأنيميشن يخلص، و{تقدر|تقدري} {تصغّر|تصغّري} كارت مقبض السلاح','اتصلح: «حبيبك» بقت «حبيبتك» مع أم سيد، وكلام العمال الستات بقى مظبوط','المقص في لعبة القص بقى أصغر، وزرار «دي إيه؟» مش بيظهر لو مفيش حاجة']},
 {v:'7.03',d:'15 أكتوبر',add:['«أسعار النهارده» رجعت تتغير مع كل يوم جديد في البلد (مش كل ساعة)، ومكتوب جنبها فاضل قد إيه على بكرة','الزيادة الكبيرة بقت بتلف على كل الأنواع بالدور: سمك، محاصيل، معادن، أعشاب، جلود، ومفيش نوع بيغلى يومين ورا بعض']},
 {v:'7.02',d:'15 أكتوبر',add:['البورصة الكبيرة: كل سهم بقى بيكسب لوحده كل ساعة (0.1% من قيمته)، وصاحب الشركة 3 أضعاف. الربح بينزل لوحده كل ما {تفتح|تفتحي} البورصة، ولو {غبت|غبتي} بيتجمع لحد 48 ساعة. زرار «نصيب صاحب الشركة» اللي كان مرة في اليوم اتشال','«أسعار النهارده» في السوق بقت بتتغير كل ساعة، ومكتوب جنبها فاضل قد إيه، والسوق بيتحدّث لوحده لما تتغير','إصلاح: حسبة أسعار السوق كانت بتطلّع نفس الأسعار أيام ورا بعض']},
 {v:'7.01',d:'15 أكتوبر',add:['صفحة «صفاتي»: لما الصفة تكبر (+20 مثلاً) النقط كانت بتزق الصفحة برا الشاشة: دلوقتي بتنزل سطر تاني والصفحة ثابتة']},
@@ -46024,7 +46025,7 @@ function wrLogTxt(t){const P=WR_BY[t.id];if(!P)return '';const nm=EN?P.n[1]:P.n[
   if(t.t==='end')return ae(`${nm} ${wrVb(P,'خلّص','خلّصت')} ${wrVb(P,'عقده','عقدها')}`,`${nm} finished the contract`);
   if(t.t==='quit')return ae(`${G('وقّفت','وقّفتي')} عقد ${nm}، ورجعلك ${t.back} جنيه`,`You ended ${nm}'s contract and got ${t.back} coins back`);
   if(t.t==='work'){const g=Object.assign({},t.g||{}),w=g.water|0,f=g.fed|0;delete g.water;delete g.fed;const l=r12List(g);
-    return ae(`${nm}: ${[w?`سقى ${w} أرض`:'',f?`أكّل ${f}`:'',l?`جاب ${l}`:''].filter(Boolean).join('، ')}`,`${nm}: ${[w?`watered ${w} plot${w>1?'s':''}`:'',f?`fed ${f}`:'',l?`brought ${l}`:''].filter(Boolean).join(', ')}`)}return ''}
+    return ae(`${nm}: ${[w?`${wrVb(P,'سقى','سقت')} ${w} أرض`:'',f?`${wrVb(P,'أكّل','أكّلت')} ${f}`:'',l?`${wrVb(P,'جاب','جابت')} ${l}`:''].filter(Boolean).join('، ')}`,`${nm}: ${[w?`watered ${w} plot${w>1?'s':''}`:'',f?`fed ${f}`:'',l?`brought ${l}`:''].filter(Boolean).join(', ')}`)}return ''}
 function wrSheet(){const h=S.hero;if(!h)return;const X=WR_FIX(h);wrSettle(h);const sl=wrSlots(h),d=wrDay(h);
   const hired=X.on.map(w=>{const P=WR_BY[w.id],left=Math.max(0,w.to-d),paid=w.wage*(w.to-w.from)-w.esc,tot=w.wage*(w.to-w.from),cap=wrCap(w,w.job),done=w.dn&&w.dn.d===d?w.dn.n:0,arm=R12S.arm===w.id;
     const job=k=>`<button class="opt r12-jb${w.job===k?' on':''}" data-wj="${w.id}:${k}" ${X.on.some(x=>x!==w&&x.job===k)?'disabled':''}>${WR_JOB[k].n[EN?1:0]}${P.job===k?' ★':''}</button>`;
@@ -53983,8 +53984,10 @@ function fpDraw(){const C=S.combat,st=view.querySelector('.af-stage');if(!C||!C.
   let hm=C.props.map((P,i)=>`<button class="af-prop${P.used?' used':''}" data-fp="${i}" ${!can||P.used?'disabled':''} aria-label="${fpNm(P.k)}"><span>${fpIc(P.k)}</span><small>${fpNm(P.k)}</small></button>`).join('');
   if(jtOn(C)){const full=(C.jt|0)>=JT_MAX,c=S.comp;hm+=`<button class="af-prop jt${full?' full':''}" id="jtGo" ${!can||!full?'disabled':''} aria-label="${esc(ae('مع ','With ')+fpEn(c.name))}"><span>${fpIc('joint')}</span><small>${esc(ae('مع ','With ')+fpEn(c.name))}</small><i class="jt-m"><b style="width:${Math.round(Math.min(1,(C.jt|0)/JT_MAX)*100)}%"></b></i></button>`}
   /* 6.88 (Twister 11:25 «explain what these are for»): a «؟» at the end of the row opens what each one does */
-  hm+=`<button class="af-prop af-q" data-fpq="1" aria-label="${ae('دي بتعمل إيه؟','What do these do?')}"><span>${ae("؟","?")}</span><small>${ae('دي إيه؟','What?')}</small></button>`;
-  if(C.fpTip)hm+=`<div class="af-tip" style="direction:${EN?"ltr":"rtl"}">${C.props.map(P=>`<div><b>${fpNm(P.k)}</b>: ${ae(FP_D[P.k][0],FP_D[P.k][1])}</div>`).join('')}<small>${T(ae('{دوس|دوسي} عليها في دورك. كل واحدة مرة في القتال، وبتاخد دورك من غير طاقة. فيه دايرة: {اضغط|اضغطي} في وقتها عشان تشتغل أحسن.','Tap one on your turn. Each works once a fight and takes your turn, no energy. A ring closes: tap on time for the best result.'))}</small></div>`;
+  /* 7.04 (Twister 22:31): no «؟» when there is nothing to explain */
+  if(C.props.length)hm+=`<button class="af-prop af-q" data-fpq="1" aria-label="${ae('دي بتعمل إيه؟','What do these do?')}"><span>${ae("؟","?")}</span><small>${ae('دي إيه؟','What?')}</small></button>`;
+  if(C.fpTip&&C.props.length)hm+=`<div class="af-tip" style="direction:${EN?"ltr":"rtl"}">${C.props.map(P=>`<div><b>${fpNm(P.k)}</b>: ${ae(FP_D[P.k][0],FP_D[P.k][1])}</div>`).join('')}<small>${T(ae('{دوس|دوسي} عليها في دورك. كل واحدة مرة في القتال، وبتاخد دورك من غير طاقة. فيه دايرة: {اضغط|اضغطي} في وقتها عشان تشتغل أحسن.','Tap one on your turn. Each works once a fight and takes your turn, no energy. A ring closes: tap on time for the best result.'))}</small></div>`;
+  if(!hm){row.remove();return}
   if(row.dataset.h!==hm){row.innerHTML=hm;row.dataset.h=hm}
   {const qb=row.querySelector('[data-fpq]');if(qb)qb.onclick=()=>{C.fpTip=!C.fpTip;fpDraw()}}
   row.querySelectorAll('[data-fp]').forEach(b=>b.onclick=()=>fpUse(+b.dataset.fp));const j=row.querySelector('#jtGo');if(j)j.onclick=()=>jtUse()}
@@ -54334,7 +54337,7 @@ function mkListHTML(h){const M=mkToday(),ex=k=>{const now=mkWith(k,()=>satNow(h,
         a quarter more work a day, from 6 half more and take 10% less; below 0 they won't take a contract and come round by one
         a town day. Shown on the workers' sheet. */
 const TR_MIN=-6,TR_MAX=10,TR_WHO={ramadan:'market',hassan:'smith',fathy:'tailor',umsayed:'cook'},TR_AT={smith:'hassan',tailor:'fathy',cook:'umsayed'};
-const TR_ST=[{v:-99,n:['زعلان منك','Upset with you'],f:1.15,c:'#f0a090',ic:'💢'},{v:-2,n:['عادي','Neutral'],f:1,c:'#c9c2b4',ic:'🤝'},{v:3,n:['بيحبك','Likes you'],f:.95,c:'#9fd8a0',ic:'💚'},{v:7,n:['حبيبك','Close friend'],f:.9,c:'#f3d48f',ic:'💛'}];
+const TR_ST=[{v:-99,n:['زعلان منك','Upset with you'],nf:'زعلانة منك',f:1.15,c:'#f0a090',ic:'💢'},{v:-2,n:['عادي','Neutral'],f:1,c:'#c9c2b4',ic:'🤝'},{v:3,n:['بيحبك','Likes you'],nf:'بتحبك',f:.95,c:'#9fd8a0',ic:'💚'},{v:7,n:['حبيبك','Close friend'],nf:'حبيبتك',f:.9,c:'#f3d48f',ic:'💛'}];
 const TR_FEM={umsayed:1};
 const TR_LIKE={ramadan:k=>typeof CROPS!=='undefined'&&!!CROPS[k],umsayed:k=>MK_G[0].t(k),hassan:k=>MK_G[1].t(k),fathy:k=>MK_G[3].t(k)};
 const TR_LN={ramadan:['خضار وفاكهة من الغيط','crops from the field'],umsayed:['سمك','fish'],hassan:['معادن وخامات','ores and metals'],fathy:['جلود وريش','hides and feathers']};
@@ -54345,7 +54348,7 @@ const trSt=(h,id)=>{const v=trV(h,id);let s=0;TR_ST.forEach((x,i)=>{if(v>=x.v)s=
 const trF=(h,id)=>TR_WHO[id]?TR_ST[trSt(h,id)].f:1;
 const trNm=id=>{const n=TW_NPC[id]?TW_NPC[id][0]:id;return EN?(L10N_W.get(n)||n):n};
 function trAdd(h,id,n,why){if(!h||!TR_WHO[id]||!n)return 0;const T0=trFix(h)[id],s0=trSt(h,id),v0=T0.v;T0.v=Math.max(TR_MIN,Math.min(TR_MAX,T0.v+n));const s1=trSt(h,id);
-  if(T0.v!==v0&&s1!==s0){const st=TR_ST[s1],fem=TR_FEM[id];setTimeout(()=>{try{toast(`${st.ic} ${s1>s0?ae(`${trNm(id)} ${fem?'بقت':'بقى'}: «${st.n[0]}»`,`${trNm(id)}: «${st.n[1]}»`):ae(`${trNm(id)} ${fem?'زعلت':'زعل'} ${s1===0?'منك':'شوية'}`,`${trNm(id)} is ${s1===0?'upset with you':'cooler with you now'}`)}`)}catch(e){}},300)}
+  if(T0.v!==v0&&s1!==s0){const st=TR_ST[s1],fem=TR_FEM[id];setTimeout(()=>{try{toast(`${st.ic} ${s1>s0?ae(`${trNm(id)} ${fem?'بقت':'بقى'}: «${fem&&st.nf||st.n[0]}»`,`${trNm(id)}: «${st.n[1]}»`):ae(`${trNm(id)} ${fem?'زعلت':'زعل'} ${s1===0?'منك':'شوية'}`,`${trNm(id)} is ${s1===0?'upset with you':'cooler with you now'}`)}`)}catch(e){}},300)}
   return T0.v-v0}
 /* the gift: the liked thing you have most of, 3 of it (1 if it's rare) */
 function trGiftK(h,id){const t=TR_LIKE[id];if(!t)return null;let best=null;Object.keys(h.res||{}).forEach(k=>{const n=h.res[k]|0;if(!MAT[k]||!t(k))return;const need=(MAT[k].tier|0)>=1?1:3;if(n<need)return;
@@ -54369,7 +54372,7 @@ document.addEventListener('click',e=>{try{const b=e.target.closest&&e.target.clo
 function trRowHTML(h,id){const s=trSt(h,id),st=TR_ST[s],v=trV(h,id),T0=h.tru[id],gk=trGiftK(h,id),gave=T0.g===(h.nDone|0),fem=TR_FEM[id];
   const pc=Math.round((st.f-1)*100),pr=pc?ae(`${pc>0?'أغلى':'أرخص'} ${Math.abs(pc)}%`,`${Math.abs(pc)}% ${pc>0?'dearer':'cheaper'}`):'';
   const bar=Math.round((v-TR_MIN)/(TR_MAX-TR_MIN)*100);
-  return `<div class="tr-row" id="trRow" style="--trc:${st.c}"><div class="tr-l"><b>${st.ic} ${ae(st.n[0],st.n[1])}</b>${pr?` <small>${pr}</small>`:''}<i class="tr-m"><b style="width:${bar}%"></b></i>
+  return `<div class="tr-row" id="trRow" style="--trc:${st.c}"><div class="tr-l"><b>${st.ic} ${ae(fem&&st.nf||st.n[0],st.n[1])}</b>${pr?` <small>${pr}</small>`:''}<i class="tr-m"><b style="width:${bar}%"></b></i>
       <small class="dim">${gave?ae(`${fem?'خدت':'خد'} هديتك النهارده.`,'Got your gift today.'):ae(`${fem?'بتحب':'بيحب'} ${TR_LN[id][0]}.`,`Likes ${TR_LN[id][1]}.`)}</small></div>
     <button class="tw-buy tr-gift" id="trGift" ${gk&&!gave?'':'disabled'}>🎁 ${gk&&!gave?ae(`${G('هادي','هادي')} بـ${gk.need} ${resN(gk.k)}`,`Give ${gk.need} ${resN(gk.k)}`):ae('هدية','Gift')}</button></div>`}
 function truPut(id){const h=S.hero;if(!h||$('#trRow'))return;const bub=view.querySelector('.tw-npc .bub');if(!bub)return;trFix(h);
@@ -54385,6 +54388,7 @@ function wlFix(h){const X=WR_FIX(h);if(!X.loy||typeof X.loy!=='object'||Array.is
   const d=h.nDone|0;if(X.ld==null)X.ld=d;if(d>X.ld){Object.keys(X.loy).forEach(id=>{if(X.loy[id]<0)X.loy[id]=Math.min(0,X.loy[id]+(d-X.ld))});X.ld=d}return X}
 const wlV=(h,id)=>wlFix(h).loy[id]|0;
 const wlSt=v=>v<0?0:v>=6?3:v>=3?2:1;
+const WL_NF=['زعلانة منك','جديدة عليك','بترتاح لك','من أهل البيت'];
 const WL_N=[['زعلان منك','Upset with you'],['جديد عليك','New to you'],['بيرتاح لك','At ease with you'],['من أهل البيت','Like family']];
 const wlAdd=(h,id,n)=>{const X=wlFix(h);X.loy[id]=Math.max(WL_MIN,Math.min(WL_MAX,(X.loy[id]|0)+n))};
 const wlExtra=(h,w)=>{const s=wlSt(wlV(h,w.id));return s<2?0:Math.round(wrCap(w,w.job)*(s===3?.5:.25))};
@@ -54405,9 +54409,9 @@ function wlTip(h,id){const X=wlFix(h),w=X.on.find(x=>x.id===id),d=h.nDone|0;if(!
   h.money-=c;X.tip[id]=d;if(wlV(h,id)<WL_TIP)wlAdd(h,id,1);saveHero();return c}
 {const s0=wrSheet;wrSheet=function(){const h=S.hero;const r=h?wlWith(h,()=>s0.apply(this,arguments)):s0.apply(this,arguments);try{if(!h)return r;const X=wlFix(h),d=h.nDone|0;
   document.querySelectorAll('.r12-wc').forEach(c=>{if(c.querySelector('.wl-row'))return;const q=c.querySelector('[data-wq]'),hb=c.querySelector('[data-wh]'),id=(q||hb)&&(q||hb).dataset[q?'wq':'wh'];if(!id||!WR_BY[id])return;
-    const v=wlV(h,id),s=wlSt(v),w=q&&X.on.find(x=>x.id===id),ex=w?wlExtra(h,w):0,tipped=X.tip[id]===d,c2=w?Math.max(1,Math.round(w.wage/2)):0;
-    const fx=s===3?ae('+50% شغل و10% أرخص','+50% work, 10% cheaper'):s===2?ae('+25% شغل','+25% work'):s===0?ae('مش هيشتغل لحد ما يهدى','won\'t work until calmer'):'';
-    const html=`<div class="wl-row wl${s}"><span>${['💢','🤝','💚','💛'][s]} ${ae(WL_N[s][0],WL_N[s][1])}${fx?` <small>· ${fx}</small>`:''}</span>${w?`<button class="tw-buy wl-tip" data-wt="${id}" ${tipped||h.money<c2?'disabled':''}>${tipped?ae('خد البقشيش','Tipped today'):ae(`بقشيش ${c2} جنيه`,`Tip ${c2} coins`)}</button>`:''}</div>`;
+    const fw=WR_BY[id].g==='f',v=wlV(h,id),s=wlSt(v),w=q&&X.on.find(x=>x.id===id),ex=w?wlExtra(h,w):0,tipped=X.tip[id]===d,c2=w?Math.max(1,Math.round(w.wage/2)):0;
+    const fx=s===3?ae('+50% شغل و10% أرخص','+50% work, 10% cheaper'):s===2?ae('+25% شغل','+25% work'):s===0?ae(fw?'مش هتشتغل لحد ما تهدى':'مش هيشتغل لحد ما يهدى','won\'t work until calmer'):'';
+    const html=`<div class="wl-row wl${s}"><span>${['💢','🤝','💚','💛'][s]} ${ae(fw?WL_NF[s]:WL_N[s][0],WL_N[s][1])}${fx?` <small>· ${fx}</small>`:''}</span>${w?`<button class="tw-buy wl-tip" data-wt="${id}" ${tipped||h.money<c2?'disabled':''}>${tipped?ae(fw?'خدت البقشيش':'خد البقشيش','Tipped today'):ae(`بقشيش ${c2} جنيه`,`Tip ${c2} coins`)}</button>`:''}</div>`;
     const hd=c.querySelector('.r12-wh');if(hd)hd.insertAdjacentHTML('afterend',html);if(hb&&v<0)hb.disabled=true});
   document.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{const c=wlTip(h,b.dataset.wt);if(!c)return;try{SFX.coin&&SFX.coin()}catch(e){}
     toast(ae(`${WR_BY[b.dataset.wt].n[0]} ${WR_BY[b.dataset.wt].g==='f'?'فرحت':'فرح'} بالبقشيش.`,`${WR_BY[b.dataset.wt].n[1]} is glad of the tip.`));wrSheet()})}catch(e){console.warn(e)}return r}}
@@ -54779,17 +54783,25 @@ L10N({},[[/^اللي جاي بعد (\d+:\d+)$/,'Next in $1'],[/^(\+?\d+) مجه�
    8. The tailor's scissors are drawn as scissors (blades in metal, ring handles), not as two crossed sticks. */
 /* ---- 1. the dice stay ---- */
 const AFPIN={el:null};
-function afPinAt(x,y,sm){afPinClr(true);try{const D=afDiceEl();if(!D||!D.children.length)return;const g=D.cloneNode(true);g.removeAttribute('id');g.hidden=false;
-  g.className='af-pin'+(sm?' sm':'');g.style.left=x+'px';g.style.top=y+'px';afLayer().appendChild(g);AFPIN.el=g;
+function afPinAt(x,y,sm,t){afPinClr(true);try{AFPIN.t=t||null;const D=afDiceEl();if(!D||!D.children.length)return;const g=D.cloneNode(true);g.removeAttribute('id');g.hidden=false;
+  g.className='af-pin'+(sm?' sm':'');g.style.left=x+'px';g.style.top=y+'px';afLayer().appendChild(g);AFPIN.el=g;afPinFollow();
   try{g.animate([{transform:`translate(-50%,-50%) scale(${sm?.9:1.25})`},{transform:`translate(-50%,-50%) scale(${sm?.6:.82})`}],{duration:220,easing:'cubic-bezier(.3,1.5,.5,1)'})}catch(e){}}catch(e){}}
 function afPinClr(now){const g=AFPIN.el;AFPIN.el=null;if(!g)return;if(now)return g.remove();try{const a=g.animate([{opacity:1},{opacity:0}],{duration:260});a.onfinish=()=>g.remove()}catch(e){g.remove()}}
 {const t0=afThrow;afThrow=function(){if(AF.st==='wait')afPinClr();return t0.apply(this,arguments)}}
 {const d0=afDropAt;afDropAt=function(x,y){const t=d0.apply(this,arguments);AFPIN.last=t?{t,at:Date.now()}:null;return t}}
 document.addEventListener('pointerup',ev=>{try{const L=AFPIN.last;if(!L||Date.now()-L.at>600||!L.t.isConnected)return;AFPIN.last=null;
-  if(AF.st!=='rolled'&&AF.st!=='used')return;const r=L.t.getBoundingClientRect(),f=L.t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f)}catch(e){}},true);
+  if(AF.st!=='rolled'&&AF.st!=='used')return;if(afPinNo(L.t))return;const r=L.t.getBoundingClientRect(),f=L.t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f,L.t)}catch(e){}},true);
+/* 7.04 (Twister): the pinned dice ride with what they sit on when the page scrolls, and go away with it;
+   the bag (and anything in a sheet) only opens a list, so the dice don't stay on it */
+const afPinNo=t=>!!(t&&(t.matches&&t.matches('.act[data-a="bag"]')||t.closest&&t.closest('.sheet')));
+function afPinFollow(){if(AFPIN.raf)return;const go=()=>{AFPIN.raf=0;const g=AFPIN.el,t=AFPIN.t;if(!g)return;
+  if(t&&!t.isConnected){const q=t.classList.contains('foe')&&t.dataset.f!=null?`.foe[data-f="${t.dataset.f}"]`:t.dataset.a?`#view .act[data-a="${t.dataset.a}"]`:t.dataset.s?`[data-s="${t.dataset.s}"]`:'';const n=q&&document.querySelector(q);if(n)AFPIN.t=n}
+  const t2=AFPIN.t;if(t2){if(!t2.isConnected||(S.combat&&S.combat.bag)){afPinClr(true);return}const r=t2.getBoundingClientRect(),f=t2.classList.contains('foe');
+    if(!r.width&&!r.height){g.style.visibility='hidden'}else{g.style.visibility='';g.style.left=(r.left+r.width/2)+'px';g.style.top=(f?r.bottom-14:r.top+r.height/2)+'px'}}
+  AFPIN.raf=requestAnimationFrame(go)};AFPIN.raf=requestAnimationFrame(go)}
 /* a move tapped while the dice are thrown: they go onto it */
 document.addEventListener('click',ev=>{try{if(!app.classList.contains('af')||AF.st!=='rolled'||AFPIN.el)return;const t=ev.target.closest&&ev.target.closest('.af-stage .foe,#view .act[data-a="atk"],#view .act[data-a="def"],#view .act[data-a="talk"]');
-  if(!t||t.disabled)return;const r=t.getBoundingClientRect(),f=t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f)}catch(e){}},true);
+  if(!t||t.disabled)return;const r=t.getBoundingClientRect(),f=t.classList.contains('foe');afPinAt(r.left+r.width/2,f?r.bottom-14:r.top+r.height/2,f,t)}catch(e){}},true);
 {const d0=afDress;afDress=function(){const r=d0.apply(this,arguments);try{if(!S.combat||S.screen!=='combat')afPinClr(true)}catch(e){}return r}}
 setInterval(()=>{try{if(AFPIN.el&&(!S.combat||S.screen!=='combat'))afPinClr(true)}catch(e){}},500);
 /* ---- 2. the lab: what you tried ---- */
@@ -54845,7 +54857,7 @@ setTimeout(()=>{try{let ch=0;HEROES.filter(Boolean).forEach(h=>{if(!h.id)return;
 {const SC=['.KK.......KK','.KMK.....KMK','..KMK...KMK.','..KmMK.KMmK.','...KmMKMmK..','....KmMmK...','.....KWK....','....KHKHK...','...KHK.KHK..','..KHK...KHK.','.KHHHK.KHHHK','KHK.KHKHK.KHK','KHK.KHKHK.KHK','.KHHHK.KHHHK.','..KKK...KKK..'];
   const HC=['R','v','B','Q'];
   Object.keys(TOOL_CATALOG).forEach(id=>{const t=TOOL_CATALOG[id];if(t.tr!=='tailor')return;try{PXI_D[id]=P20_rc(P20_grid(16,SC),{M:'c',m:'g',W:'y',H:HC[Math.min(3,t.t|0)]});delete PXI_K[id]}catch(e){}});
-  TA.tailor={ax:6.5,ay:6.5,rot:-94,s:6.5}}
+  TA.tailor={ax:6.5,ay:6.5,rot:-94,s:3.6}}
 (function(){const s=document.createElement('style');s.textContent=`
 .af-pin{position:absolute;display:flex;gap:6px;transform:translate(-50%,-50%) scale(.82);pointer-events:none;z-index:4;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}
 .af-pin .afd{width:44px;height:44px}.af-pin.sm{transform:translate(-50%,-50%) scale(.6);opacity:.92}.af-pin .fc,.af-pin .fc svg{width:100%;height:100%;display:block}
@@ -56357,7 +56369,7 @@ const xoPay=(h,sc,o)=>Math.round((90+30*(lifeLvl(h,sc)|0))*(1+o.n/4)/5)*5;
 function xoCardHTML(h,sc){const o=xoToday(h,sc);if(!o)return '';const have=xoCount(h,o.w),pay=xoPay(h,sc,o),lv=wdLN(o.from);
   return `<div class="card xo-card${o.ok?' done':''}"><div class="xo-h"><b>📦 ${ae('طلب النهارده','Today\'s order')}</b>${o.ok?`<span class="xo-ok">✓ ${ae('اتسلّم','Delivered')}</span>`:''}</div>
     <small>«${ae(o.why[0],o.why[1])}»</small>
-    <div class="xo-r"><span>${o.n} × ${ae(XO_NM[o.w][0],XO_NM[o.w][1])} <small class="dim">(${lv})</small></span><b class="xo-have${have>=o.n?' ok':''}">${Math.min(have,o.n)}/${o.n}</b></div>
+    <div class="xo-r"><span>${o.n} × ${ae(XO_NM[o.w][0],XO_NM[o.w][1])} <small class="dim">(${lv})</small></span><b class="xo-have${o.ok||have>=o.n?' ok':''}">${o.ok?o.n:Math.min(have,o.n)}/${o.n}</b></div>
     ${o.ok?'':`<button class="btn" data-xo="${sc}" ${have>=o.n?'':'disabled'}>${T(ae(`{سلّم|سلّمي}: ${pay} جنيه + خبرة في الشغلانتين`,`Hand over: ${pay} coins + experience in both trades`))}</button>`}</div>`}
 function xoGive(h,sc,b){const o=xoToday(h,sc);if(!o||o.ok||xoCount(h,o.w)<o.n)return;let left=o.n;
   xoHave(h,o.w).sort((a,b)=>(MAT[a[0]]&&MAT[a[0]].p||0)-(MAT[b[0]]&&MAT[b[0]].p||0)).forEach(([k,n,where])=>{if(left<=0)return;const t=Math.min(left,n);(where==='bag'?h.bag:h.res)[k]-=t;left-=t});
@@ -57254,6 +57266,7 @@ Object.assign(NEWS_EN,{'7.00':{d:'15 October',add:['Swapping: weapons, clothes, 
 Object.assign(NEWS_EN,{'7.01':{d:'15 October',add:['«My stats»: a big stat (+20, say) had so many dots that it pushed the page off the screen. The dots now wrap to a second line and the page stays put.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every share now earns by itself every hour (0.1% of its worth), and the company owner earns 3 times that. The profit is paid by itself whenever you open the exchange, and builds up for up to 48 hours while you are away. The once-a-day owner button is gone.','«Today\'s prices» in the market now change every hour, show how long is left, and the market refreshes itself when they change.','Fixed: the market price maths gave the same prices several days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
+Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 /* ==========================================================================
    سرداب 6.99: the field (p239.js) — Twister: «عايز لما اكون قافل لعبه محاصيل تكبر و تشتغل زي ما هي، و كمان زود عدد ترب في الغيط
    زودها 3 … و كتشف اي خطا في الغيط و صلحه».
@@ -57383,6 +57396,180 @@ const mkLeft=()=>{try{return klLeft(S.hero)}catch(e){return 15}};
 /* the open market redraws itself when a new day turns the prices */
 {let last=null;setInterval(()=>{try{const d=mkDay();if(last!==null&&d!==last&&(S.screen==='market'||S.screen==='pmarket')&&!document.querySelector('.cmg')){const y=view.scrollTop;render();view.scrollTop=y;toast(ae('📰 يوم جديد: أسعار السوق اتغيرت!','📰 A new day: market prices changed!'))}last=d}catch(e){}},5000)}
 document.head.insertAdjacentHTML('beforeend',`<style>.mkl-cd{font-size:11px;color:var(--mute);font-weight:400;margin-inline-start:6px;white-space:nowrap}</style>`);
+/* ==========================================================================
+   سرداب 7.04 (Twister 22:31-22:38)
+   - «التحسين نجح» (rfx RUSH_SMITH_04) showed over the enhancement scene before it ended: a reward moment raised during an
+     enhancement waits until the scene (qEnhFx) closes.
+   - The shops' tiles row (p219 dock) kept its numbers from when it was built, so «طلب 0/2» stayed after the order was handed
+     in until the screen was left: the tiles now re-read their card's numbers whenever the screen changes.
+   - The shops' tabs: the mode tabs (اعمل / خامات / …) and the cook's kinds are a neat grid of equal tiles like the dock,
+     and a dock of 9 tiles is 3×3.
+   ========================================================================== */
+const RFXH={hold:0,q:[],t:0};
+{const r0=rfx;rfx=function(id,ent,o){if(RFXH.hold){RFXH.q.push([id,ent,o]);return true}return r0.apply(this,arguments)}}
+function rfxFlush(){RFXH.hold=0;clearTimeout(RFXH.t);const L=RFXH.q.splice(0);L.forEach((a,i)=>setTimeout(()=>{try{rfx.apply(null,a)}catch(e){}},250+i*400))}
+{const t0=qEnhTry;qEnhTry=function(){RFXH.hold=1;clearTimeout(RFXH.t);RFXH.t=setTimeout(rfxFlush,30000);let r;try{r=t0.apply(this,arguments)}catch(e){rfxFlush();throw e}if(!r)rfxFlush();return r}}
+{const f0=qEnhFx;qEnhFx=async function(){try{return await f0.apply(this,arguments)}finally{rfxFlush()}}}
+/* the dock's numbers follow their cards */
+function dockSync(){const tw=view.querySelector('.tw'),row=tw&&tw.querySelector(':scope>.dock');if(!row)return;
+  row.querySelectorAll('.dock-t').forEach(b=>{const sel=b.dataset.dk,K=DOCK_K.find(k=>k[0]===sel),el=K&&tw.querySelector(':scope>'+sel);if(!el)return;const t=el.innerText||el.textContent||'';
+    const [w,v]=K[2](t),bd=K[3](t),sm=b.querySelector('small'),bi=b.querySelector('.dk-b');
+    if(v&&sm){if(sm.textContent!==v)sm.textContent=v}else if(v&&!sm)b.querySelector('b').insertAdjacentHTML('afterend',`<small>${esc(v)}</small>`);
+    if(bd){if(bi){if(bi.textContent!==bd)bi.textContent=bd}else b.insertAdjacentHTML('beforeend',`<i class="dk-b">${esc(bd)}</i>`)}else if(bi)bi.remove()})}
+{let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;try{dockSync()}catch(e){}})}).observe(view,{childList:true,subtree:true,characterData:true})}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.cro-tabs{display:grid!important;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;overflow:visible}
+.cro-t{min-width:0;height:auto!important;min-height:48px;padding:6px 4px!important;border-radius:12px;white-space:normal;overflow:visible!important;text-overflow:clip!important;line-height:1.15;font-size:12.5px;word-break:normal;overflow-wrap:anywhere}
+.ck-fs{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:6px}
+.ck-f{min-width:0;white-space:normal;line-height:1.15}
+.tw>.dock:has(>.dock-t:nth-child(9):last-child){grid-template-columns:repeat(3,1fr)!important}
+.tw>.dock:has(>.dock-t:nth-child(5):last-child){grid-template-columns:repeat(3,1fr)!important}</style>`);
+/* «مقبض السلاح» (Twister 22:39 «خليني ممكن اصغر دي»): a tap on its title folds it (remembered on this phone) */
+const GPF={on:(()=>{try{return localStorage.getItem('sirdab.gpFold')==='1'}catch(e){return false}})()};
+function gpFoldBind(){view.querySelectorAll('.gp-card').forEach(c=>{const b=c.querySelector(':scope>b');if(!b)return;c.classList.toggle('gp-fold',GPF.on);if(b.dataset.gf)return;b.dataset.gf=1;b.setAttribute('role','button');
+  b.onclick=()=>{GPF.on=!GPF.on;try{localStorage.setItem('sirdab.gpFold',GPF.on?'1':'0')}catch(e){}try{SFX.tick&&SFX.tick(640)}catch(e){}view.querySelectorAll('.gp-card').forEach(x=>x.classList.toggle('gp-fold',GPF.on))}})}
+{let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;try{gpFoldBind()}catch(e){}})}).observe(view,{childList:true,subtree:true})}
+document.head.insertAdjacentHTML('beforeend',`<style>.gp-card>b{cursor:pointer;display:flex;align-items:center;gap:6px;min-height:44px}.gp-card>b::after{content:'▾';margin-inline-start:auto;color:var(--mute);transition:transform .15s}
+.gp-card.gp-fold>b::after{transform:rotate(90deg)}.gp-card.gp-fold>:not(b){display:none!important}</style>`);
+/* 7.04 (Twister): a move that costs energy must hit clearly harder than a plain hit, for every class and specialisation.
+   While a move runs, its first blow on each foe is raised to at least the hero's plain hit × a factor
+   (one target 1.5 + 0.35 a point of energy past the first, every foe 0.9 + 0.25 a point; ×0.8 for a move that also stuns,
+   +8% a move level past the first, ×2 on a lucky roll, ×½ on a half roll). Poison ticks and follow-up blows stay as they are. */
+const SKF={s:null,r:null,hit:null};
+function nhBase(h){const K=CLASSES[h.cls];let a=0;for(let i=0;i<8;i++)a+=K.atk.dmg();return a/8+(h.lvl-1)+WDMG(h)+thb(h)}
+/* what your plain hit really does, follow-up blows and weapon tricks included, learnt from your own hits (a guess until then) */
+const NHM={};function nhOf(h){const b=nhBase(h),k=h.name+'|'+h.cls,m=NHM[k];return m?Math.max(b,Math.min(m,b*3)):b*1.6}
+{const s0=strike;strike=async function(f,r,kind){const C=S.combat,h=S.hero;if(kind!=='atk'||SKF.s||!C||!h||!r||r.tier!=='full'||r.crit)return s0.apply(this,arguments);
+  const hp0=C.foes.map(x=>x.hp);try{return await s0.apply(this,arguments)}finally{try{const C2=S.combat;if(C2===C){let t=0;C.foes.forEach((x,i)=>{if(hp0[i]!=null)t+=Math.max(0,hp0[i]-x.hp)});
+    if(t>0){const k=h.name+'|'+h.cls,b=nhBase(h);t=Math.min(t,b*4);NHM[k]=NHM[k]==null?t:NHM[k]*.8+t*.2}}}catch(e){}}}}
+function skFloor(h,s,r){const x=s.spx||{},all=!!x.all||s.id==='bolt'||s.id==='storm'||(s.id==='sp'&&h.cls==='محارب'),
+  c=Math.max(1,s.cost|0),stun=!!x.skip||s.id==='bash';
+  let m=all?1+.25*(c-1):1.5+.35*(c-1);if(stun)m*=.8;m*=1+.08*Math.max(0,skL(h,s.id)-1);
+  if(r&&r.crit)m*=2;else if(r&&r.tier==='part')m*=.5;return nhOf(h)*m}
+{const a0=skillAct;skillAct=async function(s,f,r){const h=S.hero,o=Object.assign({},SKF);
+  SKF.s=s;SKF.r=r;SKF.hit=new Set();SKF.t=null;SKF.rep=[];
+  try{return await a0.apply(this,arguments)}finally{Object.assign(SKF,o)}}}
+{const h0=hurtFoe;hurtFoe=function(f,d,o){const s=SKF.s;
+  if(s&&S.hero&&f&&!(o&&o.fx==='poison')&&d>0&&!SKF.hit.has(f)){SKF.hit.add(f);
+    if(SKF.t==null)SKF.t=skFloor(S.hero,s,SKF.r);
+    const T=Math.round(SKF.t*(.9+Math.random()*.2));if(T>d){SKF.rep.push([d,T]);d=T}}
+  return h0.call(this,f,d,o)}}
+/* 7.04 (Twister): making something in a shop jumped the page to the top. A redraw of the same screen keeps where you were,
+   also when parts of the screen fill in a moment later (the page was too short for the old spot right after the redraw). */
+const RKS={scr:null,w:0,u:0};
+(function(){const d=Object.getOwnPropertyDescriptor(Element.prototype,'scrollTop');if(!d||typeof view==='undefined'||!view)return;RKS.d=d;
+  /* a scroll the code asks for on purpose (a new tab back to the top) wins over the keeper below */
+  Object.defineProperty(view,'scrollTop',{configurable:true,get(){return d.get.call(this)},set(x){if(RKS.y==null||x!==RKS.y)RKS.w++;d.set.call(this,x)}});
+  ['wheel','touchstart','pointerdown','keydown'].forEach(k=>view.addEventListener(k,()=>{RKS.u=Date.now()},{passive:true,capture:true}))})();
+{const r0=render;render=function(){const v=typeof view!=='undefined'&&view,same=v&&RKS.d&&RKS.scr===S.screen,y=same?v.scrollTop:0;
+  const out=r0.apply(this,arguments);RKS.scr=S.screen;
+  if(same&&y>0){try{typeof dockOn==='function'&&dockOn()}catch(e){}const d=RKS.d,t0=Date.now(),w0=RKS.w;RKS.y=y;d.set.call(v,y);
+    /* parts that fill in a frame later (the tile row at the top of a shop) made the page jump; put it back where it was */
+    const fix=()=>{if(RKS.scr!==S.screen||RKS.w!==w0||RKS.u>t0||RKS.y!==y)return;const cur=d.get.call(v);if(cur!==y&&v.scrollHeight-v.clientHeight>=y-1)d.set.call(v,y)};
+    requestAnimationFrame(()=>{fix();requestAnimationFrame(fix)});[60,180,400,800].forEach(t=>setTimeout(fix,t));setTimeout(()=>{if(RKS.y===y)RKS.y=null},900)}
+  return out}}
+/* 7.04 (Twister): a foe afraid of fire. A weapon that burns (a ruby set in it) hits that weak point with a plain hit,
+   for half again the damage; a fire potion knocks it down like a torch does. */
+const fireWpn=h=>{const id=h&&h.eq&&h.eq.weapon;if(!id||!GEAR[id])return false;if(GEAR[id].fire)return true;try{const o=giL(h,id)[0];return !!(o&&o.g==='yaqout')}catch(e){return false}};
+{const w0=X_wkOf;X_wkOf=function(f,kind){const r=w0.apply(this,arguments);if(r||kind!=='atk')return r;try{const h=S.hero;if(fireWpn(h)&&X_weak(f).includes('fire'))return 'fire'}catch(e){}return r}}
+{const h0=hurtFoe;hurtFoe=function(f,d,o){try{const C=S.combat,X=C&&C.X,h=S.hero;
+    if(X&&X.hitKind==='atk'&&!SKF.s&&d>0&&!(o&&o.fx==='poison')&&fireWpn(h)&&X_weak(f).includes('fire')){d=Math.round(d*1.5);setTimeout(()=>{const el=$('#foe'+f.id);if(el)floatAt(el,ae('بيخاف من النار!','Fears fire!'),'#ff8a3a','',18)},300)}}catch(e){}
+  return h0.call(this,f,d,o)}}
+{const u0=useItem;useItem=async function(k,t){const C=S.combat;if(k==='firepot'&&C&&C.X&&t&&t.who==='foe'){const f=C.foes[t.id];if(f&&X_weak(f).includes('fire'))C.fpot=f}
+  try{return await u0.apply(this,arguments)}finally{if(S.combat)S.combat.fpot=null}}}
+{const a0=afterHero;afterHero=async function(){const C=S.combat,f=C&&C.fpot;if(f&&C.X){C.fpot=null;try{if(f.hp>0&&!f.fled){C.X.hitWk.push({f,k:'fire'});await X_after({tier:'full'},[f])}}catch(e){console.warn(e)}}
+  return a0.apply(this,arguments)}}
+/* the move's own line names the number it worked out; it says the raised one */
+{const s0=say;say=function(t,k,w){try{if(SKF.s&&SKF.rep&&SKF.rep.length&&typeof t==='string'){const seen=new Set();SKF.rep.forEach(([a,b])=>{if(seen.has(a))return;seen.add(a);t=t.replace(new RegExp('-'+a+'(?!\\d)','g'),'-'+b)})}}catch(e){}return s0.call(this,t,k,w)}}
+/* 7.04 (Twister): farm workers on an open contract, and the animal keeper who buys the feed.
+   «مفتوح»: you pay a week (7 town days) up front; when it runs out the next week is taken from your money by itself
+   (only from the day you are back, never for time away). No money for the next week = the contract ends.
+   The animal keeper can be told to buy feed (barley, clover) when you have none, at 30% over the price. */
+const WR_OPEN=7,WR_FEEDX=1.3;
+WR_DAYS.push(0);
+{const h0=wrHire;wrHire=function(h,id,days,job){if(days!==0)return h0.apply(this,arguments);
+  WR_DAYS.push(WR_OPEN);let ok;try{ok=h0.call(this,h,id,WR_OPEN,job)}finally{WR_DAYS.splice(WR_DAYS.lastIndexOf(WR_OPEN),1)}
+  if(ok){const w=WR_FIX(h).on.find(x=>x.id===id);if(w){w.open=1;saveHero()}}return ok}}
+{const s0=wrSettle;wrSettle=function(h){const X=WR_FIX(h),d=wrDay(h);let ch=0;
+  X.on.forEach(w=>{if(!w.open||d<w.to)return;const c=w.wage*WR_OPEN;if(h.money<c){w.open=0;wrLog(X,{t:'nopay',id:w.id,d});return}
+    h.money-=c;w.from=d;w.to=d+WR_OPEN;w.esc=c;wrLog(X,{t:'renew',id:w.id,d,c});try{typeof wlAdd==='function'&&wlAdd(h,w.id,1)}catch(e){}ch=1});
+  const r=s0.apply(this,arguments);if(ch)try{saveHero()}catch(e){}return r||ch}}
+{const l0=wrLogTxt;wrLogTxt=function(t){const P=WR_BY[t.id];if(!P)return '';const nm=EN?P.n[1]:P.n[0];
+  if(t.t==='renew')return ae(`${nm} ${wrVb(P,'كمّل','كمّلت')} أسبوع كمان (${t.c} جنيه)`,`${nm} stayed another week (${t.c} coins)`);
+  if(t.t==='nopay')return ae(`${nm} ${wrVb(P,'مشي','مشيت')}: فلوسك ما كفتش أسبوع كمان`,`${nm} left: not enough money for another week`);
+  if(t.t==='hire'&&t.days===WR_OPEN)return ae(`${nm} ${wrVb(P,'اتفق','اتفقت')} على عقد مفتوح`,`${nm} agreed to an open contract`);
+  return l0.apply(this,arguments)}}
+/* the feed the keeper buys */
+const wfP=k=>Math.max(1,Math.ceil(((MAT[k]&&MAT[k].p)||5)*WR_FEEDX));
+function wfBuy(h,need){let c=0;const miss={};Object.keys(need).forEach(k=>{const n=need[k]-(h.res[k]||0);if(n>0){miss[k]=n;c+=n*wfP(k)}});
+  if(!c)return 0;if(h.money<c)return -1;h.money-=c;Object.keys(miss).forEach(k=>addRes(h,k,miss[k]));return c}
+{const w0=wrWork;wrWork=function(h){try{if(h&&h.farm&&h===S.hero&&!S.combat){const X=WR_FIX(h),w=X.on.find(x=>x.job==='animals');
+    if(w&&X.buy&&wrLeft(w,h)>0){AN_FIX(h);const F=h.farm,d=wrDay(h);if(!X.bd||X.bd.d!==d)X.bd={d,c:0};
+      F.an.forEach(a=>{const A=AN_K[a.k];if(!A||!A.feed||a.t0>0||hasRes(h,A.feed))return;const c=wfBuy(h,A.feed);if(c>0)X.bd.c+=c});
+      if(F.buf&&!F.buf.t0&&typeof FA_FEED!=='undefined'&&(h.res.barsim||0)<FA_FEED){const c=wfBuy(h,{barsim:FA_FEED});if(c>0)X.bd.c+=c}}}}catch(e){console.warn(e)}
+  return w0.apply(this,arguments)}}
+{const s0=wrSheet;wrSheet=function(){const r=s0.apply(this,arguments);try{const h=S.hero;if(!h)return r;const X=WR_FIX(h),d=wrDay(h);
+  document.querySelectorAll('[data-wd$=":0"]').forEach(b=>{b.textContent=ae('مفتوح','Open');const id=b.dataset.wd.split(':')[0];
+    if(WR_SEL[id]===0){b.closest('.r12-jbs').querySelectorAll('.r12-jb').forEach(x=>x.classList.toggle('on',x===b));
+      const hb=document.querySelector(`[data-wh="${id}"]`),P=WR_BY[id];if(hb&&P){const c=P.w*WR_OPEN,sm=hb.querySelector('small');if(sm)sm.textContent=ae(`${c} جنيه أول أسبوع`,`${c} coins for the first week`);
+        hb.disabled=!(wrSlots(h)>X.on.length&&h.money>=c);
+        hb.onclick=e=>{e.stopImmediatePropagation();if(!wrHire(h,id,0,P.job))return;SFX.coin&&SFX.coin();toast(ae(`${P.n[0]} ${wrVb(P,'هيشتغل','هتشتغل')} معاك لحد ما ${G('توقّفه','توقّفيه')}`,`${P.n[1]} will work for you until you stop it`));wrSheet();try{r12Refresh()}catch(x){}}}}});
+  X.on.forEach(w=>{const q=document.querySelector(`[data-wq="${w.id}"]`),card=q&&q.closest('.r12-wc');if(!card)return;const tx=card.querySelector('.tx');
+    if(w.open&&tx&&!tx.querySelector('.wf-open'))tx.insertAdjacentHTML('beforeend',`<small class="wf-open">${ae(`عقد مفتوح: بيتجدد لوحده كل أسبوع بـ${w.wage*WR_OPEN} جنيه`,`Open contract: renews by itself each week for ${w.wage*WR_OPEN} coins`)}</small>`);
+    if(w.job==='animals'&&!card.querySelector('.wf-buy')){const bd=X.bd&&X.bd.d===d?X.bd.c:0;
+      q.insertAdjacentHTML('beforebegin',`<button class="tw-buy wf-buy${X.buy?' on':''}">${X.buy?'✓ ':''}${ae('يشتري الأكل لو مش موجود','Buys feed when you have none')}<small>${ae(`أغلى ${Math.round((WR_FEEDX-1)*100)}%${bd?` · النهارده ${bd} جنيه`:''}`,`${Math.round((WR_FEEDX-1)*100)}% dearer${bd?` · today ${bd} coins`:''}`)}</small></button>`);
+      card.querySelector('.wf-buy').onclick=()=>{X.buy=X.buy?0:1;saveHero();try{SFX.tick&&SFX.tick(800)}catch(e){}wrSheet()}}})}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`.wf-buy{margin-bottom:6px}.wf-buy.on{border-color:#9fd8a0;color:#c8f0c8}.wf-open{color:#9fd8a0}`;document.head.appendChild(s)})();
+L10N({'مفتوح':'Open'});
+/* 7.04 (Twister): every workshop reaches 8 stages. The stages that waited on a later round open now with materials that
+   exist today; each adds more of what its workshop already does (the same tree keys, read through tf or wkOwn).
+   The café's workshop stays shut: it waits for the café's own crafts. */
+{const set=(id,need,ar,en,o)=>{const s=WK_BY[id];if(s)Object.assign(s,{need,d:[ar,en],gate:null},o)};
+  set('WS_smith_07',{alloy_blueiron:2,emerald:1,gold:3},'5% كمان الحاجة اللي {بتعملها|بتعمليها} بإيدك تطلع درجة أعلى','5% more of what you make by hand comes out a grade higher',{fx:{lucky:.05}});
+  set('WS_smith_08',{ore_cobaltite:2,alloy_redseal:2,steel:4},'مرات النحس في الشغل بتتلغي أكتر (3 من 4)، و5% كمان درجة أعلى','Bad luck at work is cancelled more often (3 in 4), and 5% more come out a grade higher',{fx:{halfsafe:.25,lucky:.05}});
+  set('WS_tailor_05',{reag_resin:2,gem_carnelian:1},'المقص أثبت: نتيجة لعبة القص أحسن (+4%)','A steadier cut: better cutting results (+4%)',{fx:{score:.04}});
+  set('WS_tailor_06',{animal_wool:6,reag_leatherstrip:4},'خبرة الخياطة أكتر (+15% كمان)','More tailoring XP (+15% more)',{fx:{xp:.15}});
+  set('WS_tailor_07',{reag_beeswax:2,gem_jasper:2,alloy_brass:2},'5% كمان الحاجة اللي {بتخيطها|بتخيطيها} تطلع درجة أعلى','5% more of what you sew comes out a grade higher',{fx:{lucky:.05}});
+  set('WS_tailor_08',{emerald:1,reag_resin:3,alloy_spring:1},'ماكينة الخياطة الكبيرة: نتيجة أحسن (+5%) و5% درجة أعلى','The big sewing machine: better results (+5%) and 5% a grade higher',{fx:{score:.05,lucky:.05}});
+  set('WS_cook_05',{copper:3,reag_resin:2},'حلل نحاس جديدة: نتيجة لعبة الطبخ أحسن (+4%)','New copper pots: better cooking results (+4%)',{fx:{score:.04}});
+  set('WS_cook_06',{iron:3,wood_willow:4},'خبرة الطبخ أكتر (+15% كمان)','More cooking XP (+15% more)',{fx:{xp:.15}});
+  set('WS_cook_07',{reag_beeswax:2,wood_palm:6,animal_honey:3},'كل أكلة بترجّع 1 مجهود كمان','Every meal gives back 1 more effort',{fx:{food:1}});
+  set('WS_cook_08',{emerald:1,reag_beeswax:3,alloy_brass:2},'فرن الطين الكبير: 5% كمان الأكلة تطلع درجة أعلى، ونتيجة أحسن (+4%)','The big clay oven: 5% more meals a grade higher, and better results (+4%)',{fx:{lucky:.05,score:.04}});
+  set('WS_mine_06',{alloy_spring:2,wood_bamboo:4},'أقصى مجهود +2 كمان','Max effort +2 more',{fx:{effmax:2}});
+  set('WS_mine_07',{ore_manganese:3,gem_jasper:2},'الخامة الأحسن بتطلع أكتر (+4%) والضربة القوية أكتر (+3%)','Better ore more often (+4%) and more strong blows (+3%)',{fx:{ore:.04,crit:.03}});
+  set('WS_mine_08',{ore_cobaltite:2,alloy_blueiron:1},'5% كمان الصخرة ما تاخدش مجهود، والخامة الأحسن أكتر (+4%)','5% more rocks cost no effort, and better ore more often (+4%)',{fx:{free:.05,ore:.04}});
+  set('WS_fish_06',{wood_willow:6,reag_fishoil:3},'المنطقة الخضرا أكبر (+6% كمان)','A bigger green zone (+6% more)',{fx:{zone:.06}});
+  set('WS_fish_07',{wood_bamboo:6,ore_tin:3},'السمك الكبير بيطلع أكتر (+25% كمان)','Big fish more often (+25% more)',{fx:{big:.25}});
+  set('WS_fish_08',{reag_shellpowder:3,alloy_spring:1},'4% كمان السمكة تطلع اتنين، ووقت الشدّة أطول (+0.1 ثانية)','4% more fish come in pairs, and a longer pull window (+0.1 s)',{fx:{two:.04,win:100}});
+  set('WS_farm_08',{alloy_redseal:1,reag_beeswax:2,animal_honey:4},'6% كمان من الزرع بيطلع 1 زيادة، والمحصول الدهب أكتر (+3%)','6% more plantings give 1 more, and more golden harvests (+3%)',{fx:{plus:.06,gold:.03}});
+  set('WS_herbal_05',{reag_glasssand:3,reag_beeswax:1},'هون أتقل: نتيجة الدق أحسن (+4%)','A heavier mortar: better pounding results (+4%)',{fx:{score:.04}});
+  set('WS_herbal_06',{reag_fishoil:3,reag_resin:2},'5% كمان الجرعة تطلع درجة أعلى','5% more potions come out a grade higher',{fx:{lucky:.05}});
+  set('WS_herbal_07',{gem_carnelian:2,wood_bamboo:4},'نتيجة لعبة العطارة أحسن (+4% كمان)','Better herbal results (+4% more)',{fx:{score:.04}});
+  set('WS_herbal_08',{emerald:1,reag_glasssand:3,animal_honey:3},'الإنبيق الكبير: الجرع أقوى 8% (بدل 4%)','The big still: potions 8% stronger (instead of 4%)',{own:{pot:.08}})}
+/* 7.04 (Twister): أم عطية — you pick which slot a new trait goes into, and an old trait you saw before can be put back
+   in any slot (the first one too) for a fee by its rarity and your level. A new throw's trait goes in free. */
+const H_FEE=(h,t)=>Math.round([40,120,350,900][Math.max(0,Math.min(3,t.r|0))]*(1+.15*Math.max(0,((h&&h.lvl)|0)-1))/5)*5;
+{const a0=H_wdAct;H_wdAct=function(h){let s=a0.apply(this,arguments);try{const P=h.tabPend,n=H_SLOTS(h);if(!P||n<2)return s;const nw=H_TABS[P.id];
+  const xs=[];for(let i=1;i<n;i++){const c=(h.tabX||[])[i-1],ct=c&&H_TABS[c];if(c===P.id)continue;
+    xs.push(`<button class="btn ghost" data-wdx="${i}">${ae(`${G('حطه','حطيه')} في خانة ${i+1}`,`Put it in slot ${i+1}`)}${ct?` <small>(${ae('مكان','instead of')} «${H_tabN(ct,h)}»)</small>`:''}</button>`)}
+  if(xs.length)s+=`<div class="wd-xs"><small class="dim">${ae('أو خليه طبع زيادة:','Or keep it as an extra trait:')}</small>${xs.join('')}</div>`}catch(e){console.warn(e)}return s}}
+{const w0=SCREENS.wada;SCREENS.wada=function(){w0.apply(this,arguments);try{const h=S.hero;if(!h)return;
+  /* a new throw into another slot */
+  view.querySelectorAll('[data-wdx]').forEach(b=>b.onclick=()=>{const P=h.tabPend;if(!P)return;const i=+b.dataset.wdx;h.tabX=(h.tabX||[]).slice(0,2);while(h.tabX.length<i)h.tabX.push('');
+    h.tabX=h.tabX.map(x=>x===P.id?'':x);h.tabX[i-1]=P.id;h.tabPend=null;saveHero();SFX.good&&SFX.good();toast(ae(`«${H_tabN(H_TABS[P.id],h)}» بقى في خانة ${i+1}`,`«${H_tabN(H_TABS[P.id],h)}» is in slot ${i+1}`));twRender()});
+  /* the first slot can be picked too */
+  const s0=view.querySelector('.hs-row>.hs-s:not(.pick):not(.off)');
+  if(s0&&h.tab){const b=document.createElement('button');b.className='hs-s pick';b.dataset.hs='3';b.style.cssText=s0.style.cssText;b.innerHTML=s0.innerHTML.replace(/من رمية الودع|From the shell throw/,ae(G('دوس عشان تغيّره','دوسي عشان تغيّريه'),'Tap to change it'));s0.replaceWith(b);
+    b.onclick=()=>{H_WD2.slot=H_WD2.slot===3?0:3;SFX.page&&SFX.page();render()}}
+  /* old traits cost money */
+  const i=H_WD2.slot;view.querySelectorAll('[data-hso]').forEach(b=>{const id=b.dataset.hso,t=id&&H_TABS[id],cur=i===3?h.tab:(h.tabX||[])[i-1];
+    if(!t||id===cur){if(i===3&&!id)b.remove();return}const fee=H_FEE(h,t);b.insertAdjacentHTML('beforeend',`<i class="hs-fee${h.money<fee?' no':''}">${fee} ${ae('جنيه','coins')}</i>`);
+    b.onclick=()=>{if(!H_WD2.slot)return;if(h.money<fee){SFX.meh&&SFX.meh();toast(ae(`محتاج ${fee} جنيه`,`You need ${fee} coins`));return}h.money-=fee;
+      if(i===3){h.tab=id;h.tabX=(h.tabX||[]).map(x=>x===id?'':x)}else{h.tabX=(h.tabX||[]).slice(0,2);while(h.tabX.length<i-1)h.tabX.push('');h.tabX[i-1]=id}
+      H_WD2.slot=0;saveHero();SFX.coin&&SFX.coin();toast(ae(`طبعك بقى <b style="color:${RARE[t.r].c}">${H_tabN(t,h)}</b> · -${fee} جنيه`,`Your trait is now <b style="color:${RARE[t.r].c}">${H_tabN(t,h)}</b> · -${fee} coins`));render()}})}catch(e){console.warn(e)}}}
+(function(){const s=document.createElement('style');s.textContent=`.wd-xs{display:flex;flex-direction:column;gap:6px;margin-top:8px}.wd-xs .btn{min-height:44px}
+.hs-fee{display:block;font-style:normal;font-weight:800;color:#f3d48f;margin-top:2px}.hs-fee.no{color:#ff8a7a}`;document.head.appendChild(s)})();
+L10N({'من رمية الودع':'From the shell throw'});
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
