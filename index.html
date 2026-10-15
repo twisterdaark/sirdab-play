@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.94',d:'15 أكتوبر',add:['زرار «أوتوماتيك» في المنجم والترعة: بيشتغل لوحده بسرعة عادية، بس بيطلّع أقل: الفاس مش بتلاقي الشق، مش بينزل أدوار، ومخاطر المنجم مش بيرد عليها لو {انت|انتي} مش موجود. في الصيد ساعات بيشد متأخر والسمك الكبير ممكن يهرب. بيقف لوحده لما المجهود يخلص أو الصحة تقل أو {تمشي|تمشي} من المكان.']},
 {v:'6.93',d:'15 أكتوبر',add:['الفاترينة: العدة (معول، صنارة، فاس، سكينة…) بقت تتعرض كمان. اللي في إيدك (الأحسن) بيفضل معاك، والنسخ الزيادة هي اللي تتعرض.']},
 {v:'6.92',d:'15 أكتوبر',add:['الإشعارات الصغيرة اللي بتتكرر (فضة!، دهب!، فيروز!، زمرد، أحجار التعزيز في المنجم، وسمك الترعة) بقت شريط صغير فوق بدل ما تغطي نص الشاشة.']},
 {v:'6.91',d:'15 أكتوبر',add:['طلبيات الصنعة: كل قطعة تنفع للطلبية بتظهر لوحدها بجودتها وسعرها و{بتختار|بتختاري} {تسلّم|تسلّمي} أنهي. اللي {لابسها|لابساها} مكتوب عليها «{لابسها|لابساها}» وبتطلب تأكيد قبل ما تتسلّم.']},
@@ -57110,6 +57111,47 @@ L10NG({'ضربتك ممكن تولّع في الوحش دورين، والحرق
   'ساعات بتنزل مع ضربتك رعدة، ضررها بيكبر مع مستواك وحجم الوحش':'Sometimes thunder falls with your hit; it grows with your level and the foe\'s size',
   'كل ضربة {بتضربها|بتضربيها} بترجّعلك صحة، أكتر مع مستواك':'Every hit you land gives you health back, more as you level',
   'اللي يضربك بياخد ضرر، أكتر مع مستواك وحجمه':'Whoever hits you takes damage, more with your level and their size'});
+/* ==========================================================================
+   سرداب 6.94: «أوتوماتيك» in the mine and at the canal (p236.js). Twister 12:00: «an auto button for the mine, a bit slower, so you
+   can leave it working; the same for fishing; or normal speed with a bit less out of it».
+   Normal speed, less out of it: the auto pick never finds the glowing crack (so every two swings cost effort and no crack bonus),
+   stays on the floor it is on (no ways down), and the deep-mine risks are not answered (you lose health, a vein is lost) unless you
+   tap them yourself. At the canal it hooks a little late at times and holds the reel loosely, so some fish get away.
+   It stops when effort runs out, when health is under a third, or when you leave the place. Tap again to stop it.
+   ========================================================================== */
+const AU={on:0,k:null,tm:null,cd:0,bt:0,n:0};
+function auStop(msg){if(AU.tm)clearInterval(AU.tm);AU.tm=null;const was=AU.on;AU.on=0;AU.k=null;AU.bt=0;try{if(gxDev&&gxDev.FS)gxDev.FS.hold=0}catch(e){}
+  if(was&&msg)try{toast(msg)}catch(e){}auBtn()}
+function auStart(k){auStop();AU.on=1;AU.k=k;AU.cd=0;AU.bt=0;AU.n=0;AU.tm=setInterval(k==='mine'?auMine:auFish,k==='mine'?650:120);auBtn();try{SFX.tick(820)}catch(e){}}
+const auLow=h=>h.hp<=Math.ceil(MXH(h)/3);
+function auMine(){const D=gxDev,h=S.hero;if(!D||!h||S.screen!=='mine')return auStop();
+  try{if((typeof MR!=='undefined'&&MR.busy)||D.GX.busy||bandBusy2())return;
+    if(auLow(h))return auStop(T(ae('صحتك قليلة، الأوتوماتيك وقف. {ارتاح|ارتاحي} الأول.','Your health is low: auto stopped. Rest first.')));
+    D.gxMsgOff();
+    if(D.GX.rock){D.mnHit();return}
+    if(D.gxVisit('mine').hole){const b2=$('#gxGo2');if(b2&&!b2.classList.contains('hidden')){b2.click();return}}
+    if(effNow(h)<1)return auStop(T(ae('المجهود خلص، الأوتوماتيك وقف.','Out of effort: auto stopped.')));
+    D.mnSpawn();AU.n++}catch(e){console.warn(e);auStop()}}
+const bandBusy2=()=>{const B=document.getElementById('band');return !!(B&&!B.classList.contains('low')&&B.getAnimations&&B.getAnimations().some(a=>a.playState==='running'))};
+function auFish(){const D=gxDev,h=S.hero;if(!D||!h||S.screen!=='fish')return auStop();const FS=D.FS,go=$('#gxGo'),now=performance.now();if(!go)return;
+  try{const ph=FS.ph;
+    if(ph==='fight'&&FS.R){const R=FS.R,c=R.zy+R.zh/2,err=(Math.random()-.5)*.14;FS.hold=R.fy+err>c?1:0;return}
+    if(ph==='bite'){if(!AU.bt)AU.bt=now+240+Math.random()*520;else if(now>=AU.bt){AU.bt=0;go.click()}return}
+    AU.bt=0;
+    if((ph==='idle'||ph==='done')&&!bandBusy2()&&now>=AU.cd){
+      if(auLow(h))return auStop(T(ae('صحتك قليلة، الأوتوماتيك وقف.','Your health is low: auto stopped.')));
+      if(effNow(h)<1)return auStop(T(ae('المجهود خلص، الأوتوماتيك وقف.','Out of effort: auto stopped.')));
+      AU.cd=now+1100;D.gxMsgOff();go.click();AU.n++}}catch(e){console.warn(e);auStop()}}
+function auBtn(){const b=document.getElementById('gxAuto');if(!b)return;const on=AU.on&&AU.k===S.screen;b.classList.toggle('on',!!on);
+  b.innerHTML=on?`<b>${ae('⏸ وقّف الأوتوماتيك','⏸ Stop auto')}</b><small>${ae('شغال لوحده','Working by itself')}</small>`
+    :`<b>${ae('▶ أوتوماتيك','▶ Auto')}</b><small>${ae('بيشتغل لوحده، بس بيطلّع أقل','Works by itself, brings in less')}</small>`}
+/* the button sits under the main one in the mine and at the canal */
+{let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;try{const sc=S.screen;
+  if(AU.on&&AU.k!==sc)auStop();if(sc!=='mine'&&sc!=='fish')return;const go=$('#gxGo');if(!go||document.getElementById('gxAuto'))return;
+  const after=(sc==='mine'&&$('#gxGo2'))||go;after.insertAdjacentHTML('afterend',`<button class="gx-auto" id="gxAuto"></button>`);auBtn();
+  $('#gxAuto').onclick=()=>{if(AU.on)auStop();else auStart(sc)}}catch(e){console.warn(e)}})}).observe(document.getElementById('view')||document.body,{childList:true,subtree:true})}
+document.head.insertAdjacentHTML('beforeend',`<style>.gx-auto{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:8px;border-radius:14px;border:1px dashed #8fd3ff88;background:#8fd3ff12;color:#cfeaff;font:inherit;cursor:pointer;line-height:1.2}
+.gx-auto small{font-size:11px;opacity:.8}.gx-auto.on{border-style:solid;border-color:#7fe07a;background:#7fe07a1f;color:#bff5b9;animation:auP 1.6s ease-in-out infinite}@keyframes auP{50%{box-shadow:0 0 14px #7fe07a55}}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
