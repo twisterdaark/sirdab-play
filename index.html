@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.96',d:'15 أكتوبر',add:['شجرة الشغلانات: كل مستوى بقى بـ6 نقط بدل 4، فمستوى 10 بيفتح فرع ورابط زيادة. لسه مش بتفتح الشجرة كلها.']},
 {v:'6.95',d:'15 أكتوبر',add:['الأوتوماتيك في المنجم بقى بيرد على المخاطر لوحده، وبياكل من الشنطة لما المجهود يخلص، وبيضرب أسرع، ولو مفيش مجهود بيضرب على الشق. وبيقف بس لما الصحة تقرب تخلص.','العدة الملحمية والأسطورية (زي معول الأعماق) كانت بتتشال منك كل ما تفتح اللعبة ويرجعلك أداة التدريب. اتصلحت، واللي {عملتها|عملتيها} واتشالت رجعتلك.','شجرة الشغلانات: كل مستوى بقى بـ4 نقط، فمستوى 10 بيفتح حوالي 3 فروع من 4 على آخرهم مش الشجرة كلها. لو الشجرة كانت فيها نقط أكتر من كده، نقطها رجعتلك {توزعها|توزعيها} من الأول ببلاش.','كروت «حال البلد» بتنوّر لو جواها حاجة مستنياك.']},
 {v:'6.94',d:'15 أكتوبر',add:['زرار «أوتوماتيك» في المنجم والترعة: بيشتغل لوحده بسرعة عادية، بس بيطلّع أقل: الفاس مش بتلاقي الشق، مش بينزل أدوار، ومخاطر المنجم مش بيرد عليها لو {انت|انتي} مش موجود. في الصيد ساعات بيشد متأخر والسمك الكبير ممكن يهرب. بيقف لوحده لما المجهود يخلص أو الصحة تقل أو {تمشي|تمشي} من المكان.']},
 {v:'6.93',d:'15 أكتوبر',add:['الفاترينة: العدة (معول، صنارة، فاس، سكينة…) بقت تتعرض كمان. اللي في إيدك (الأحسن) بيفضل معاك، والنسخ الزيادة هي اللي تتعرض.']},
@@ -6645,7 +6646,7 @@ function treeRank(h,skill,branch){if(!h)return 0;treeMig(h);if(!h.tree||!h.tree[
 function treeR(h,skill,branch){const r=treeRank(h,skill,branch);return r>=5?4:r*.75}
 const treeSpent=(h,k)=>{if(!h)return 0;treeMig(h);const t=h.tree&&h.tree[k];return (t?Object.values(t).reduce((a,v)=>{v=+v||0;return a+v*(v+1)/2},0):0)+lkSpent(h,k)+fkSpent(h,k)};
 const treeLvl=(h,k)=>(h&&h.life&&h.life[k]&&h.life[k].lvl)||1;
-const TREE_PPL=4;   /* 6.95 (Twister): level 10 opens about 3 of the 4 branches, not all of them */
+const TREE_PPL=6;   /* 6.95 (Twister): level 10 opens about 3 of the 4 branches, not all of them */
 function treePts(h,k){const L=treeLvl(h,k);return Math.max(0,TREE_PPL*L+(treeRank(h,k,'xp')>=5?L:0)-treeSpent(h,k))}
 const treeCost=(h,k)=>Math.max(30,treeSpent(h,k)*10);
 const treeNum=n=>n===1?'نقطة واحدة':n===2?'نقطتين':n+' نقط';
@@ -57181,7 +57182,7 @@ function tlRecFix(h){const T=h&&h.tools;if(!T||!T.own)return h;let back=[];
   setTimeout(()=>toast(ae(`رجعتلك: ${n} (كانت اتشالت منك بالغلط)`,`Returned to you: ${n} (lost by mistake)`)),600)}}catch(e){}return o}}
 
 /* 6.95 (Twister 12:13): «مش لازم عشان انت لفل 10 اكون فاتح كل حاجه … هتقدر تفتح 3 من اصل 4 على آخرهم».
-   TREE_PPL went from 8 to 4 a level (p9t): level 10 = 40 points (50 with the xp branch full: 3 branches full + 5) against 79 for the whole tree.
+   TREE_PPL went from 8 to 4 (6.95), then 6 (6.96, Twister: «زود بوينتس … خليني افتح رابط وفرع زيادة»): level 10 = 60 points (70 with the xp branch full) against 79 for the whole tree.
    A tree that now has more spent than it can hold gets all its points back once, free, to pick again (trRb). */
 function trRbFix(h){if(!h||h.trRb)return h;h.trRb=1;const got=[];try{Object.keys(TREE).forEach(k=>{if(!h.tree||!h.tree[k])return;const L=treeLvl(h,k),t=h.tree[k],cap=TREE_PPL*L+(t.xp>=5?L:0);
   if(treeSpent(h,k)>cap){Object.keys(t).forEach(x=>t[x]=0);if(h.treeL)h.treeL[k]={};if(h.treeF)h.treeF[k]={};got.push(k)}})}catch(e){console.warn(e)}
@@ -57189,7 +57190,7 @@ function trRbFix(h){if(!h||h.trRb)return h;h.trRb=1;const got=[];try{Object.keys
 {const f0=fixHero;fixHero=function(h){return trRbFix(f0.apply(this,arguments))}}
 {let ch=0;(HEROES||[]).forEach(h=>{if(h&&!h.trRb){trRbFix(h);ch=1}});if(ch)try{store('sirdab.heroes',HEROES)}catch(e){}}
 {const r0=render;render=function(){const o=r0.apply(this,arguments);try{const h=S.hero;if(h&&h.trRbN){const n=h.trRbN.map(k=>LIFE[k]?LIFE[k].n:k).join('، ');delete h.trRbN;saveHero();
-  setTimeout(()=>toast(T(ae(`شجرة الشغلانة اتظبطت: كل مستوى بقى بـ4 نقط. نقط ${n} رجعتلك كلها {وزّعها|وزّعيها} من الأول ببلاش.`,`Trade trees rebalanced: 4 points a level. Your points are back, spend them again for free.`))),1400)}}catch(e){}return o}}
+  setTimeout(()=>toast(T(ae(`شجرة الشغلانة اتظبطت: كل مستوى بقى بـ6 نقط. نقط ${n} رجعتلك كلها {وزّعها|وزّعيها} من الأول ببلاش.`,`Trade trees rebalanced: 6 points a level. Your points are back, spend them again for free.`))),1400)}}catch(e){}return o}}
 
 /* 6.95 (Twister 12:18): «خليهم ينورو لو في حاجه جوا» — a «حال البلد» tile (and any picture tile) with something waiting
    inside (a ready errand, today's story, a ready contract, unread news: the card's .ok note or its .jn-n count) glows. */
