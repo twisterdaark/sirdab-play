@@ -3320,7 +3320,7 @@ L10N({'الشغل':'Work','حاجتك':'Yours','الكل':'All','هدوم':'Clot
    [/^(?:وصلت|وصلتي) لآخر مستوى\. (.+)\.$/,(m,how)=>`You reached the top level. ${l10nStr(how)||how}.`],[/^شجرة ([A-Za-z].*|حدادة|خياطة|طبخ|تنقيب|صيد|زراعة|عطارة)$/,(m,n)=>`${l10nStr(n)||n} tree`],[/^(\d+) (?:نقط|نقطة)$/,'$1 points'],
    [/^(?:معاك|معاكي) ×(\d+)$/,'You have ×$1'],[/^(?:محتاج|محتاجة) (.+) مستوى (\d+)$/,(m,n,l)=>`Needs ${l10nStr(n)||n} level ${l}`],[/^([^·]+) \+ (\d+)\s+جنيه$/,(m,a,c)=>{const o=/^(.+) (?:واحد|واحدة)$/.exec(a);return `${o?'1 '+(l10nStr(o[1])||o[1]):(l10nStr(a)||a)} + ${c} coins`}],
    [/^ناقصك (?!\d+\s+جنيه\.?$)([^·:]+)$/,(m,a)=>'Short of '+twEnParts(a)],[/^(?:معاك|معاكي) كل الحاجات، (?:تقدر تعمل|تقدري تعملي)\S* دلوقتي!$/,'You have everything; you can make it now!'],
-   [/^([A-Za-z][A-Za-z' -]*|الحاجات دي) من (.+)$/,(m,a,b)=>{const S=x=>(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[x])||l10nStr(x)||x;return `${a==='الحاجات دي'?'These':a} from ${(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[b])||b.split(/ و(?=\S)/).map(S).join(' and ')}`}],
+   [/^([A-Za-z][A-Za-z' -]*|الحاجات دي) من (.+)$/,(m,a,b)=>{const S=x=>(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[x])||l10nStr(x)||x;return `${a==='الحاجات دي'?'These':a} from ${(typeof TW_SRC_EN!=='undefined'&&TW_SRC_EN[b])||(()=>{const P=b.split(/ و(?=\S)/),o=[];for(let i=0;i<P.length;i++){let x=P[i];while(i+1<P.length&&!(TW_SRC_EN&&TW_SRC_EN[x])&&!l10nStr(x)&&/[؀-ۿ]/.test(x)){x+=' و'+P[++i]}o.push(S(x))}return o.join(' and ')})()}`}],
    [/^(?:شايل|شايلة) ([A-Za-z«].*|الشنطة العادية)$/,(m,n)=>'Carrying '+(n==='الشنطة العادية'?'the plain bag':l10nStr(n)||n)],[/^لازم «(.+)» الأول$/,(m,n)=>`«${l10nStr(n)||n}» first`],
    [/^ده أكتر عدد (?:تقدر تشيله|تقدري تشيليه) في كل قسم من الشنطة\.(?: الأرقام الخضرا هي اللي هتزيد مع «(.+)»\.| دي أكبر شنطة عند عم فتحي\.)$/,(m,n)=>`The most you can carry in each section of the bag.${n?` The green numbers grow with «${l10nStr(n)||n}».`:' This is Uncle Fathy\'s biggest bag.'}`],
    [/^(\d+)\s+جنيه$/,'$1 coins'],[/^بيدخل في: (.+)$/,(m,a)=>'Used in: '+a.split('، ').map(x=>l10nStr(x)||x).join(', ')],[/^عندك (\d+)$/,'you have $1'],
@@ -3878,7 +3878,7 @@ function mnBreak0(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxS
   const L=lifeLvl(h,'mine'),t=tierOf(R.k),drops=[[R.k,(Math.random()<.3+.03*L+(h.hidden.sabr?.1:0)?2:1)+(R.bonus||0)]];
   if(R.k!=='stone'&&Math.random()<.35)drops.push(['stone',1]);
   /* enhancement stones on the deep floors */
-  const s1=F>=4&&MAT.stone1&&Math.random()<Math.min(.14,.03+.012*(F-4)),s2=F>=7&&MAT.stone2&&Math.random()<Math.min(.1,.015+.01*(F-7)),s3=F>=14&&MAT.stone3&&Math.random()<.006+.003*(F-14);
+  const s1=F>=4&&MAT.stone1&&Math.random()<Math.min(.14,.03+.012*(F-4)),s2=F>=7&&MAT.stone2&&Math.random()<Math.min(.1,.015+.01*(F-7)),s3=F>=10&&MAT.stone3&&Math.random()<Math.min(.06,.015+.005*(F-10));
   if(s1)drops.push(['stone1',1]);if(s2)drops.push(['stone2',1]);if(s3)drops.push(['stone3',1]);
   const newChip=drops.some(([k])=>!mnKs(V).includes(k));
   drops.forEach(([k,n])=>{addRes(h,k,n);V.n[k]=(V.n[k]||0)+n});V.rocks++;
@@ -3915,9 +3915,9 @@ function mnDown(){const V=gxVisit('mine');if(!V.hole||GX.busy||GX.rock)return;GX
     if(F===4)gxSay('mine',SAYX.deep);if(F===10)ach('m_floor10');if(F>=FLOOR_MAX)ach('m_floor20')},480)}
 const MN_FLT={3:'فحم',4:'تعزيز',8:'دهب',14:'زمرد',20:'القاع'};
 /* 5.71 (Twister): what each floor can give, for the floor picker: rollRock's ores, the enhancement stones and the attar's herb */
-const MN_FL_AT={stone:1,copper:1,iron:1,silver:1,turq:1,coal:3,stone1:4,shih:5,stone2:7,gold:8,stone3:14,emerald:14};
+const MN_FL_AT={stone:1,copper:1,iron:1,silver:1,turq:1,coal:3,stone1:4,shih:5,stone2:7,gold:8,stone3:10,emerald:14};
 /* B35: ores and gems come from the floor's band; enhancement stones and the herb keep their start floor */
-const MN_FL_EXTRA={stone1:4,shih:5,stone2:7,stone3:14};
+const MN_FL_EXTRA={stone1:4,shih:5,stone2:7,stone3:10};
 const mnFlOres=n=>{const b=mnBand(n);return Object.keys(b.w).concat(b.g||[]).concat(Object.keys(MN_FL_EXTRA).filter(k=>n>=MN_FL_EXTRA[k])).filter(k=>MAT[k])};
 /* pick a floor you already reached: tap the floor tag («الدور N ▾») */
 function mnPick(){const h=S.hero,V=gxVisit('mine'),D=h.mn&&h.mn.deep||1;if(D<=1||GX.busy)return;twSheetX();
@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.83',d:'15 أكتوبر',add:['حجر التعزيز الدهبي بقى أسهل: عم حسن بيبيعه، وعم مجاهد في المنجم معاه واحد كل يوم من مستوى المنجم 7.','جديد عند الحداد: {ادمج|ادمجي} 3 حجارة زرقا و150 جنيه في حجر دهبي.','المنجم بيطلّع الدهبي من الدور 10 بدل 14، وبنسبة أعلى كل ما {تنزل|تنزلي}، وصناديق الوحوش الكبيرة بتطلّعه أكتر من الضعف.','خانة البحث في شاشات الحرف بقت إنجليزي في الوضع الإنجليزي.']},
 {v:'6.82',d:'15 أكتوبر',add:['المبارزة الأونلاين بقت زي باقي المعارك: {اسحب|اسحبي} النرد لفوق {ترميه|ترميه}، وبعدين {اسحبه|اسحبيه} على ضربة أو تقيلة أو حماية، والدايرة بتقفل على خصمك. ولو {دوست|دوستي} على حركة من غير ما {ترمي|ترمي} بترمي لوحدها.','طلب الصداقة مش هيفوتك: بيطلعلك في أي حتة في البلد بـ«قبول» و«بعدين»، ومبنى «صحابي» عليه 🤝 بالعدد، وفي قايمة الأماكن مكتوب كام طلب.','شاشات الحداد والخياط والطباخة والعطار بقت أقصر: المستوى والمسابقة والورشة والعدّة بقوا مربعات صغيرة في صف واحد، {دوس|دوسي} على أي واحد يفتحه.','المبارزة الأونلاين ما بقتش بتعلّق: كانت ساعات بتستنى نرد اختفى من الشاشة فمكنتش {بتقدر|بتقدري} {تدوس|تدوسي} على حاجة.','«صحابي» اتنقل لمكان فاضي في وسط البلد، فمبقاش لازق في السوق، والحكواتي مبقاش لازق في العطارة.','شاشة سلاحك وهدومك بقت إنجليزي كلها في الوضع الإنجليزي.']},
 {v:'6.81',d:'14 أكتوبر',add:['حوادث المنجم بقت ربع اللي كانت: الصخر والغاز أقل بكتير، والهوا بيخلص أبطأ بكتير، ولعبة العِرق بتطلع نص المرات.','العِرق مش زمرد كل مرة: ساعات أحسن خام في الدور، وساعات خام تاني منه.','لو الحادثة جت عليك في المنجم بتخسر صحة بجد (3 أضعاف أو أكتر)، عشان {تاخد|تاخدي} بالك.','الشغل بإيدك بقى ليه فرحة: النجوم بتنزل واحدة واحدة بصوت وشرار، الـ5 نجوم «مثالي!» بموسيقى ورجّة، والنتايج الحلوة ورا بعض بتعد «🔥 ×3». الصبّة الصافية بتلمع، والسبيكة بتنزل قدامك. والصخرة بتتكسر شظايا بلونها، والخام النادر بيلمع.','{دوس|دوسي} على أي علامة على كارت القطعة (بيشرب، متين، ضد العفاريت، الجوهرة، الجودة، الندرة…) وهيقولك بتعمل إيه.','الأيقونات اللي كانت بتظهر مربعات فاضية على بعض الموبايلات اتغيرت.','المنجم أقصر: الدور وثبّتني وخاماتي وعم مجاهد بقوا 4 زراير صغيرة في صف واحد.','والترعة كمان: السطور بقت مربعات صغيرة، و«خاماتي» دخلت صف الزراير.','مبنى التحدي عليه ⚔️ طول ما {معملتهوش|معملتيهوش} النهارده، ولو المتحدي معاه وحش تاني بيظهر جنبه في الصورة.','«صحابي» بقى ليه مبنى في وسط البلد، وعليه عدد الأونلاين.','زرار «✕» على كل صاحب عشان {تشيله|تشيليه}. وقايمة الصحاب القديمة (بالكود) اتمسحت مرة واحدة عشان {تضيفوا|تضيفوا} بعض بالـ@ID.']},
 {v:'6.80',d:'14 أكتوبر',add:['إصلاح: وصفات الجرنال كانت بتتمسح لما حاجة جديدة تتكتب في «الرحلة». دلوقتي كل واحدة ليها مكانها والوصفات بتفضل.','الـID بقى بيتغير مرة كل 7 أيام بس، وبيظهر كله حروف كبيرة. الاسم {تقدر|تقدري} {تغيره|تغيريه} في أي وقت.','الهدايا: {تقدر|تقدري} تبعت سلاح أو درع أو أي قطعة (مش اللي {لابسها|لابساها}) بجودتها وتعزيزها، والقايمة بقت أقسام: سلاح ودروع، خامات، جرع، أكل.','عند «عم مجاهد» العروق الجانبية بقت خامات بجد: هيماتيت، ليمونيت، منجنيز وغيرهم، كل يوم حاجة شكل، والأعمق بييجي مع مستوى التنقيب.','صورة العملة بقت مرسومة، عشان كانت بتظهر مربع فاضي على بعض الموبايلات.','شاشة المنجم كلامها قل: السطور اللي تحت الصخر بقت مربعات صغيرة بصور وأرقام (اللي ناقصك عشان تعمل القطعة، الفاس، ضربة المعلم، الدور، المخاطر). {دوس|دوسي} على أي مربع يقولك التفاصيل.']},
@@ -6141,7 +6142,7 @@ const QADD=[{k:'salfang',t:'hadd'},{k:'cloth',t:'khafif'},{k:'iron',t:'mateen'},
 const QADD_FOOD=[{k:'bread',t:'shabaa'},{k:'salt',bag:1,t:'sokhn'}];
 /* enhancement: the stone and the chance for each level */
 const ENH=[null,['stone1',1],['stone1',1],['stone1',1],['stone2',.8],['stone2',.7],['stone2',.6],['stone2',.5],['stone3',.4],['stone3',.32],['stone3',.25]];
-const STONE_P={stone1:150,stone2:400};
+const STONE_P={stone1:150,stone2:400,stone3:1800};   /* 6.83 (Twister 00:57): the golden stone is sold too */
 
 /* ---------- pieces ---------- */
 let qSeq=0;const qUid=()=>(Date.now()%2e9).toString(36)+(qSeq++).toString(36)+Math.floor(Math.random()*1296).toString(36);
@@ -6196,7 +6197,7 @@ function qGhost(f){return !!f&&(f.spirit||f.ghost||/afreet|ghost|ruh|nadaha|jinn
 {const c0=critChance;critChance=function(h){let c=c0(h);if(h&&h.eq){const a=qTr(h,'hadd');c+=a.n*.05+a.s*.03}return Math.max(.02,Math.min(.4,c))}}
 /* chests: مبروك gives more money; big bosses can drop enhancement stones */
 {const r0=rollChest;rollChest=function(boss){const c=r0.apply(this,arguments),h=S.hero;
-  if(boss&&Math.random()<.35){const r=Math.random(),k=r<.65?'stone1':r<.93?'stone2':'stone3';return {tier:MAT[k].tier,open:false,r:k,n:1}}
+  if(boss&&Math.random()<.35){const r=Math.random(),k=r<.5?'stone1':r<.82?'stone2':'stone3';return {tier:MAT[k].tier,open:false,r:k,n:1}}
   if(h&&c.money){const m=qTr(h,'mabrouk');if(m.n){c.money=Math.round(c.money*(1+.5*m.n+.5*m.s));c.mb=1}}return c}}
 /* the reveal says what a stone is for, and when «مبروك» made the money bigger */
 {const a0=applyChest;applyChest=function(c){const r=a0.apply(this,arguments);if(!c)return r;let s2='';
@@ -6333,12 +6334,12 @@ function qMine(h,at){const out=[];Object.keys(GEAR).forEach(id=>{if(GEAR[id].at!
   return out.sort((a,b)=>(b.on-a.on)||(TW_SLOTS.indexOf(GEAR[a.id].slot)-TW_SLOTS.indexOf(GEAR[b.id].slot))||(qScore(b.I)-qScore(a.I)))}
 function qTabHTML(h,at){const L=qMine(h,at),who=qWhoAt(at),stones=['stone1','stone2','stone3'];
   const sRow=k=>{const p=twGP(h,STONE_P[k]),have=h.res[k]||0,m=MAT[k];
-    return `<div class="tw-row" style="--rc:${RARE[m.tier].c};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${RARE[m.tier].c}">${m.n}</b><small>${k==='stone1'?'للتعزيز من +1 لـ+3 · بينجح على طول':'للتعزيز من +4 لـ+7'}</small>${have?`<small>${G('معاك','معاكي')} ${have}</small>`:''}</div>
+    return `<div class="tw-row" style="--rc:${RARE[m.tier].c};flex-wrap:wrap"><div class="ic">${twMat(k,40)}</div><div class="tx"><b style="color:${RARE[m.tier].c}">${m.n}</b><small>${k==='stone1'?'للتعزيز من +1 لـ+3 · بينجح على طول':k==='stone3'?'للتعزيز من +8 لـ+10':'للتعزيز من +4 لـ+7'}</small>${have?`<small>${G('معاك','معاكي')} ${have}</small>`:''}</div>
       ${twQB('st:'+k,qtyMax(99,h.money/p),p,0,`data-stb="${k}"`,`${p} جنيه${h.money<p?`<small>ناقصك ${p-h.money}</small>`:''}`)}</div>`};
   const have=stones.filter(k=>h.res[k]>0).map(k=>`<span class="tw-nd ok">${twMat(k,18)}${h.res[k]} ${MAT[k].n}</span>`).join('');
   const Q=repairQuote(h,0,at);
-  const stoneH=`<div class="tw-lbl">حجارة التعزيز <small>${at==='smith'?'الحجر الدهبي مش بيتباع: بيطلع من الوحوش الكبيرة وتحت في المنجم':'عم حسن الحداد هو اللي بيبيعها'}</small></div>
-    ${have?`<div class="tw-chs">${have}</div>`:''}${at==='smith'?`<div class="col">${['stone1','stone2'].map(sRow).join('')}</div>`:''}`;
+  const stoneH=`<div class="tw-lbl">حجارة التعزيز <small>${at==='smith'?'الدهبي كمان بيطلع من الوحوش الكبيرة وتحت في المنجم، أو '+G('ادمج','ادمجي')+' 3 زرق في واحد':'عم حسن الحداد هو اللي بيبيعها'}</small></div>
+    ${have?`<div class="tw-chs">${have}</div>`:''}${at==='smith'?`<div class="col">${['stone1','stone2','stone3'].map(sRow).join('')}${stMergeRow(h)}</div>`:''}`;
   let html='';
   if(Q.items.length>1)html+=`<button class="btn q-repall" data-repall="1" ${h.money>=Q.total?'':'disabled'}>${G('صلّح','صلّحي')} الكل <small>${Q.items.length} حاجات · ${Q.total} جنيه${h.money<Q.total?` · ناقصك ${Q.total-h.money}`:''}</small></button>`;
   html+=`<div class="tw-lbl">حاجتك اللي ${who} بيشتغل فيها <small>${L.length?`${L.length===1?'حتة واحدة':L.length===2?'حتتين':L.length+' حتت'}`:''}</small></div>`;
@@ -6370,7 +6371,7 @@ function qEnhPrev(id,I,v){const nx=I.e+1,nv=qView(id,Object.assign({},I,{e:nx}))
   if(nx===4&&(I.t||[]).length)notes.push('الصفات الخاصة بتقوى');if(nx===7)notes.push('بتاخد صفة خاصة جديدة');if(!df.length&&!['weapon','armor','head'].includes(GEAR[id].slot)){const m3=Math.ceil(nx/3)*3;if(m3<=10)notes.push(`الزيادة الجاية عند ${twI('+'+m3)}`)}if(nx>=8)notes.push('لو فشل، بينزل درجة');else if(p<1)notes.push('لو فشل، الحجر بيروح بس');
   return `<div class="q-enhp"><span class="lb">لو ${G('عزّزت','عزّزتي')} لـ${twI('+'+nx)}:</span>${df.length?twChips(df):'<span class="tw-ch">الأرقام لسه زي ما هي</span>'}${notes.map(t=>`<span class="q-enhn">${t}</span>`).join('')}</div>`}
 function qBindTab(at){
-  view.querySelectorAll('[data-stb]').forEach(b=>b.onclick=()=>qBuyStone(b.dataset.stb,b));
+  view.querySelectorAll('[data-stb]').forEach(b=>b.onclick=()=>qBuyStone(b.dataset.stb,b));view.querySelectorAll('[data-stm]').forEach(b=>b.onclick=()=>stMerge(b));
   view.querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>qRepairBtn(b.dataset.rep,!!b.dataset.rm,b));
   const ra=view.querySelector('[data-repall]');if(ra)ra.onclick=()=>{const h=S.hero,r=repairAll(h,0,at);if(!r.fixed.length)return;SFX.repair();twPay(ra,r.paid);
     toast(`${G('صلّحت','صلّحتي')} ${r.fixed.length===1?'حتة':r.fixed.length===2?'حتتين':r.fixed.length+' حتت'} بـ${r.paid} جنيه`);twRender()};
@@ -55489,7 +55490,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>#app.af .af-stage.fbg-on{ba
    (4 of the best ore of the deepest floor you reached), and from mine level 8 one gem a day.
    ========================================================================== */
 const MW_X=1.6;
-const MW_LIST=[{k:'silver',n:6,lv:1},{k:'stone1',n:3,lv:1},{k:'side0',n:5,lv:1},{k:'side1',n:4,lv:3},{k:'side2',n:3,lv:5},{k:'side3',n:2,lv:8},{k:'gold',n:4,lv:3},{k:'stone2',n:1,lv:4},
+const MW_LIST=[{k:'silver',n:6,lv:1},{k:'stone1',n:3,lv:1},{k:'side0',n:5,lv:1},{k:'side1',n:4,lv:3},{k:'side2',n:3,lv:5},{k:'side3',n:2,lv:8},{k:'gold',n:4,lv:3},{k:'stone2',n:1,lv:4},{k:'stone3',n:1,lv:7},
   {k:'turq',n:3,lv:5},{k:'emerald',n:2,lv:7},{k:'gem',n:1,lv:8}].filter(x=>/^side|^gem$/.test(x.k)||MAT[x.k]);
 /* 6.80 (Twister 00:03 «العروق الجانبيه المفروض هيماتيت، ليمونيت، وهكذا»): a «side vein» row is one of the side ores (CR_CAT ores
    found in the mine, open as MAT), one per tier, picked for the day; the deeper tiers come with the mine level */
@@ -55806,6 +55807,26 @@ function frqPop(r){try{if(!r||$('#frqPop')||S.combat||(typeof gbIn==='function'&
   try{SFX.levelup&&SFX.levelup();vib([30,40,30])}catch(e){}}catch(e){console.warn(e)}}
 {const s0=frqSync;frqSync=async function(){const n0=(FRQ.inbox||[]).length;const r=await s0.apply(this,arguments);try{if(FRQ.inbox)frqNew();if(S.screen==='town'&&(FRQ.inbox||[]).length!==n0&&!document.querySelector('.tw-sh,.du-o'))render()}catch(e){}return r}}
 setInterval(()=>{try{if(S.hero&&frqMe()&&!S.combat&&document.visibilityState!=='hidden')frqSync(1)}catch(e){}},60000);
+/* ==========================================================================
+   سرداب 6.83: the golden stone is easier to get (p221.js) — Twister 00:57
+   «يا تسهل انك تجيب حجر تعزيز دهبي سواء بالشرا او النسب يا تزود طرق تجيبه بيها»
+   - عم حسن sells it (STONE_P.stone3, p9q), and عم مجاهد in the mine has one a day from mine level 7 (MW_LIST, p215).
+   - The mine drops it from floor 10 (was 14), 1.5% a rock there, +0.5% a floor, up to 6% (p9b).
+   - A big monster's chest stone is golden 18% of the time (was 7%, p9q).
+   - New at the smith: «ادمج» 3 blue stones + 150 coins into 1 golden one (stMerge).
+   ========================================================================== */
+const ST_MERGE={n:3,money:150};
+function stMergeRow(h){const n=h.res.stone2|0,ok=n>=ST_MERGE.n&&(h.money|0)>=ST_MERGE.money;
+  return `<div class="tw-row st-mg" style="--rc:${RARE[3].c}"><div class="ic st-mgi">${twMat('stone2',22)}${twMat('stone2',22)}${twMat('stone2',22)}<b>→</b>${twMat('stone3',30)}</div>
+    <div class="tx"><b style="color:${RARE[3].c}">${ae('ادمج 3 زرق في دهبي','Merge 3 blue into 1 golden')}</b><small>${T(ae(`3 ${MAT.stone2.n} + ${ST_MERGE.money} جنيه · {معاك|معاكي} ${n}`,`3 blue stones + ${ST_MERGE.money} coins · you have ${n}`))}</small></div>
+    <button class="tw-buy" data-stm="1" ${ok?'':'disabled'}>${T(ae('{ادمج|ادمجي}','Merge'))}</button></div>`}
+function stMerge(b){const h=S.hero;if(!h)return;if((h.res.stone2|0)<ST_MERGE.n||(h.money|0)<ST_MERGE.money)return toast(ae('مش معاك 3 زرق والفلوس.','You need 3 blue stones and the coins.'));
+  h.res.stone2-=ST_MERGE.n;h.money-=ST_MERGE.money;addRes(h,'stone3',1);saveHero();
+  try{SFX.anvil&&SFX.anvil();setTimeout(()=>{try{SFX.turq&&SFX.turq()}catch(e){}},220);jzAt(b,30,['#ffd36a','#fff2b0','#5aa0ff','#ffffff'],120);jzPop(`✨ ${esc(MAT.stone3.n)}`,'#ffd36a',1);vib([20,30,60])}catch(e){}
+  render()}
+document.head.insertAdjacentHTML('beforeend',`<style>.st-mgi{display:flex!important;align-items:center;gap:0;width:auto!important;min-width:96px}.st-mgi b{margin:0 3px;color:#ffd36a}.st-mg .tw-buy{min-height:44px}</style>`);
+L10N({'القتالات الصعبة':'hard fights','للتعزيز من +8 لـ+10':'For enhancing from +8 to +10','الدهبي كمان بيطلع من الوحوش الكبيرة وتحت في المنجم، أو ادمج 3 زرق في واحد':'The golden one also drops from big monsters and deep in the mine, or merge 3 blue into one','الدهبي كمان بيطلع من الوحوش الكبيرة وتحت في المنجم، أو ادمجي 3 زرق في واحد':'The golden one also drops from big monsters and deep in the mine, or merge 3 blue into one'});
+L10N({'دوّر على حاجة…':'Search…','دوّري على حاجة…':'Search…','دوّر: الصيد، البيع، النرد..':'Search: fishing, selling, dice..','دوّري: الصيد، البيع، النرد..':'Search: fishing, selling, dice..'});
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
