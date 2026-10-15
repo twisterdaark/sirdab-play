@@ -4807,6 +4807,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.90',d:'15 أكتوبر',add:['صفة «مصّاص» اسمها بقى «متعطش للدم».','نقل الروح: القطع بقت شبكة صور بالجودة، فيها تقسيم (سلاح، درع، خاتم…) وبتقولك بالظبط ناقصك إيه.','الفاترينة: حاجات التخصص زي «شاكوش الأسطى» بقت {تقدر|تقدري} {تعرضها|تعرضيها}.']},
 {v:'6.89',d:'15 أكتوبر',add:['الفاترينة بقت بتوري شارة الندرة والجودة (فريد، تحفة، أعجوبة…) على كل قطعة زي «حاجتك»، عشان تفرق بينهم بسهولة.']},
 {v:'6.88',d:'15 أكتوبر',add:['صفات جديدة للعدة: «تقيل» (ضرر زيادة على كل ضربة)، «مصّاص» (صحة مع كل ضربة {بتضربها|بتضربيها})، «صخري» (كل ضربة عليك أخف)، «بركة» (خبرة القتال أكتر). ولكل واحدة خامة تضمنها في الصنعة.','«مبروك» بقت أحسن: فلوس كل قتال أكتر، وساعات {بتكسب|بتكسبي} صندوق مقفول. «ضد العفاريت» و«متشرّب ملح» ضربهم بقى أقوى.','الروح {بتنقلها|بتنقليها} لأي قطعة معاك: درع، راس، خاتم، قلادة، تميمة، مش سلاح بس. الدرع والراس بياخدوا حماية، والباقي صحة. النقل بقى أغلى (فلوس أكتر + حجر دهبي).','الفاترينة: كل حرفة ليها فاترينتها بحاجاتها بس. {حط|حطي} السعر اللي {انت|انتي} {عايزه|عايزاه} وهي تقولك هيتباع بسرعة ولا هياخد وقت، فيها بحث وصفحات قصيرة، وكل قطعك بتظهر حتى اللي {لابسها|لابساها} (وبتتقلع لما {تعرضها|تعرضيها}). القطعة اللي فيها روح مكتوب عليها وقيمتها أعلى بكتير.','الطلبيات: اللي فيها تعزيز بتدفع تمن أحجار التعزيز ومصنعية فوقها، والجودة الأعلى من المطلوب بتدفع أكتر ({بتختار|بتختاري} أنهي قطعة {تسلّمها|تسلّميها}). مفيش طلبيات لحاجة {انت|انتي} مش فاتحها، و{تقدر|تقدري} {تسلّم|تسلّمي} قطعة حتى لو {لابسها|لابساها}.','وصفات الجرنال اللي كانت اتمسحت (زي سيف عم حسن القديم وسيف المماليك) بترجع لو {عملتها|عملتيها} قبل كده أو الجرنال اللي فيها {اشتريته|اشتريتيه}، ومش هتضيع تاني.','الأحجار في العدة (نار، رعد، دم، لولية) بقت بتكبر مع مستواك وحجم الوحش وبتقل أو تزيد حسب مقاومته. الزلعة والطوب في الساحة كمان بقوا أقوى على الوحوش الكبيرة.','حاجات الساحة في القتال (بير، شبكة، فانوس…): زرار «دي إيه؟» بيشرح كل واحدة بتعمل إيه.','المربعات السودا اللي فوق الصحة في القتال اتصلحت: دي علامة دورك في الفريق وبقت بترسم.','بورصة البلد: الصفقات بقت بتيجي أكتر بكتير.']},
 {v:'6.87',d:'15 أكتوبر',add:['قناوي لما {تغلبه|تغلبيه} بقى بيدّي جايزة تستاهل: فلوس كتير على حسب مستواك، وخبرة، وحجرين تعزيز أزرق، وساعات حجر دهبي، وكل تالت مرة جوهرة.','طلبيات الحدادة بقت حديد وسلاح بس، وطلبيات الخياطة لبس وعمم بس. كل محل بقى ليه لوحته.','علامات الأدوار فوق الراس في القتال بقت بيكسل وأصغر.']},
@@ -54990,11 +54991,18 @@ function sxMove(h,fromU,toU){const A=qFind(h,fromU),B=qFind(h,toU);if(!A||!B||!A
   SX_F.forEach(k=>{if(A.I[k]!==undefined)B.I[k]=JSON.parse(JSON.stringify(A.I[k]));delete A.I[k]});
   try{ghHis(h,B.I,ae(`اتنقل من ${GEAR[A.id].n} لـ${GEAR[B.id].n}`,`Moved from ${GEAR[A.id].n} to ${GEAR[B.id].n}`))}catch(e){}
   saveHero();return {from:A,to:B}}
-const SXS={u:null};
-function sxHTML(h,id,I){if(!I.soul)return '';const c=sxCost(I),ok=sxHave(h,c),T0=sxTargets(h,I.u);
+const SXS={u:null,f:'all'};
+/* 6.89b (Twister 11:45): the targets are a grid of pictures with a slot filter, and the cost says exactly what is missing */
+function sxMiss(h,c){const m=[];if((h.money|0)<c.money)m.push(`${c.money-(h.money|0)} ${ae('جنيه','coins')}`);['stone2','stone3'].forEach(k=>{const n=c[k]-(h.res[k]|0);if(n>0)m.push(`${n} ${resN(k)}`)});return m}
+function sxHTML(h,id,I){if(!I.soul)return '';const c=sxCost(I),ok=sxHave(h,c),T0=sxTargets(h,I.u).sort((a,b)=>(SOUL_SL.indexOf(GEAR[a.id].slot)-SOUL_SL.indexOf(GEAR[b.id].slot))||((b.I.q|0)-(a.I.q|0)));
   if(SXS.u!==String(I.u))return `<button class="tw-act sx-go" data-sx="${I.u}"><b>${T(ae('{انقل|انقلي} الروح','Move the soul'))}</b><small>${ae('لأي قطعة تانية معاك','to any other piece you have')}</small></button>`;
-  return `<div class="sx-box"><b>${ae(`«${esc(I.en||'')}» هتروح فين؟`,`Where does «${esc(I.en||'')}» go?`)}</b><small>${c.money} ${ae('جنيه','coins')} + ${c.stone2} ${resN('stone2')} + ${c.stone3} ${resN('stone3')}${ok?'':' · '+ae('ناقصك','missing')}</small>
-    ${T0.length?T0.map(x=>`<button class="tw-act sx-to" data-sxto="${x.I.u}" data-sxfrom="${I.u}" ${ok?'':'disabled'}><b>${esc(qView(x.id,x.I).n)}${x.I.e?' +'+x.I.e:''}</b><small>${EN?(SLOTS_EN[GEAR[x.id].slot]||''):`${SLOTS[GEAR[x.id].slot]||''} · ${QN[x.I.q]||''}`}</small></button>`).join('')
+  const sls=SOUL_SL.filter(sl=>T0.some(x=>GEAR[x.id].slot===sl)),f=sls.includes(SXS.f)?SXS.f:'all',L=T0.filter(x=>f==='all'||GEAR[x.id].slot===f),miss=sxMiss(h,c);
+  const have=(n,k)=>`<span class="tw-nd ${(h.res[k]|0)>=n?'ok':'no'}">${twMat(k,16)}${n} ${resN(k)}</span>`;
+  return `<div class="sx-box"><b>${ae(`«${esc(I.en||'')}» هتروح فين؟`,`Where does «${esc(I.en||'')}» go?`)}</b>
+    <div class="tw-chs"><span class="tw-nd ${(h.money|0)>=c.money?'ok':'no'}">${nf(c.money)} ${ae('جنيه','coins')}</span>${have(c.stone2,'stone2')}${have(c.stone3,'stone3')}</div>
+    ${ok?'':`<div class="tw-miss">${ae('ناقصك','You need')}: ${miss.join(' · ')}</div>`}
+    ${sls.length>1?`<div class="sx-f">${['all'].concat(sls).map(sl=>`<button data-sxf="${sl}" class="${f===sl?'on':''}">${sl==='all'?ae('الكل','All'):(EN?SLOTS_EN[sl]:SLOTS[sl])}</button>`).join('')}</div>`:''}
+    ${T0.length?`<div class="sx-g">${L.map(x=>`<button class="sx-to" data-sxto="${x.I.u}" data-sxfrom="${I.u}" ${ok?'':'disabled'}><span class="ic">${gearIcon(x.id,34)}</span><b>${esc(vtGN(x.id))}${x.I.e?` <bdi dir="ltr">+${x.I.e}</bdi>`:''}</b>${qQChip(x.I.q|0)}</button>`).join('')}</div>`
       :`<div class="tw-na">${ae('مفيش قطعة تانية معاك تشيل الروح.','You have no other piece to hold the soul.')}</div>`}
     <button class="tw-act ghost sx-no" data-sxno="1"><b>${ae('خلاص','Never mind')}</b></button></div>`}
 function xbHTML(h,id,I){if(!xbOk(id,I))return '';const n=xbN(I),K=xbK(I);
@@ -55007,6 +55015,7 @@ function xbHTML(h,id,I){if(!xbOk(id,I))return '';const n=xbN(I),K=xbK(I);
   view.querySelectorAll('[data-xb]').forEach(b=>b.onclick=()=>xbBtn(b.dataset.xb,b));
   view.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{SXS.u=b.dataset.sx;try{SFX.tick(700)}catch(e){}twRender()});
   view.querySelectorAll('[data-sxno]').forEach(b=>b.onclick=()=>{SXS.u=null;twRender()});
+  view.querySelectorAll('[data-sxf]').forEach(b=>b.onclick=()=>{SXS.f=b.dataset.sxf;try{SFX.tick(700)}catch(e){}twRender()});
   view.querySelectorAll('[data-sxto]').forEach(b=>b.onclick=()=>{const h=S.hero,r2=sxMove(h,b.dataset.sxfrom,b.dataset.sxto);if(!r2)return;SXS.u=null;
     try{SFX.shimmer&&SFX.shimmer()}catch(e){}flash('#a578d6');
     band(ae('الروح اتنقلت','The soul moved'),`«${r2.to.I.en}» · ${GEAR[r2.to.id].n}`,ae(`${GEAR[r2.from.id].n} بقى عادي`,`${GEAR[r2.from.id].n} is ordinary now`),{dur:2600});twRender()});
@@ -55014,7 +55023,11 @@ function xbHTML(h,id,I){if(!xbOk(id,I))return '';const n=xbN(I),K=xbK(I);
 (function(){const s=document.createElement('style');s.textContent=`.xb-acts{flex-direction:column;align-items:stretch}
 .xb-st{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.xb-stars{color:#ffd36a;font-size:18px;letter-spacing:2px;text-shadow:0 0 6px #ffd36a88}
 .xb-pk{background:#a578d633;border-color:#a578d6}.tw-act.xb-go{border-color:#ffd36a}
-.sx-box{display:flex;flex-direction:column;gap:6px;border:1px dashed #a578d6;border-radius:12px;padding:8px}.sx-box>small{color:var(--dim)}`;document.head.appendChild(s)})();
+.xb-acts{grid-column:1/-1;width:100%}.sx-box{grid-column:1/-1;width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;border:1px dashed #a578d6;border-radius:12px;padding:8px}.sx-box>small{color:var(--dim)}
+.sx-f{display:flex;flex-wrap:wrap;gap:4px}.sx-f button{min-height:36px;padding:0 10px;border-radius:9px;border:1px solid var(--line,#5a4a30);background:#ffffff08;color:inherit;font:inherit;font-size:12px}.sx-f button.on{border-color:#a578d6;background:#a578d633}
+.sx-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;max-height:330px;overflow-y:auto;padding:2px}
+.sx-g .sx-to{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:96px;padding:6px 4px;border-radius:12px;border:1px solid var(--line,#5a4a30);background:#ffffff08;color:inherit;font:inherit;text-align:center}
+.sx-g .sx-to b{font-size:12px;line-height:1.25}.sx-g .sx-to .q-q{font-size:10px}.sx-g .sx-to[disabled]{opacity:.55}.sx-g .ic{width:40px;height:40px;display:flex;align-items:center;justify-content:center}`;document.head.appendChild(s)})();
 
 /* 6.71 (Twister 22:42): the paper swords and a few things that still had no pixel picture */
 if(typeof PXI_G!=='undefined'){PXI_G.jr_mamluk='16x16:...........KK.../..........KWcK../.........KWcgK../.........KWcgK../........KWcgK.../.......KWccgK.../......KWccgK..../.....KWccgK...../...KKWcgKK....../..KyyKggK......./..KoyyKK......../...KKbvK......../....KbvK......../...KbvK........./..KYyK........../...KK...........';
@@ -56647,7 +56660,8 @@ const vtPieceTx=(id,I)=>`${I.soul?`<i class="vt-soul">✦ ${ae('بروح','soul'
 const vtTags=(id,I)=>{try{return `<span class="vt-tags">${typeof rarTag==='function'?rarTag(id):''}${qQChip(I.q|0)}${I.g&&MAT[I.g]?`<span class="tw-ch">◆ ${esc(resN(I.g))}</span>`:''}</span>`}catch(e){return ''}};
 /* the pieces you could put up: gear made at the smith or the tailor or found; 6.88 (Twister 10:58): the one you wear too, marked
    «لابسه», and it comes off when it goes up */
-function vtMine(h,sc){sc=vtSc(sc);const o=[];Object.keys(h.gear||{}).forEach(id=>{const g=GEAR[id];if(!g||!(h.gear[id]>0)||g.sp||vtAt(id)!==sc)return;const w=qWorn(h,id);giL(h,id).forEach((I,i)=>o.push({id,I,w:!!(w&&i===0)}))});
+function vtMine(h,sc){sc=vtSc(sc);const o=[];Object.keys(h.gear||{}).forEach(id=>{const g=GEAR[id];if(!g||!(h.gear[id]>0)||vtAt(id)!==sc)return;   /* 6.90 (Twister 11:46): specialisation gear (شاكوش الأسطى) can go up too */
+  const w=qWorn(h,id);giL(h,id).forEach((I,i)=>o.push({id,I,w:!!(w&&i===0)}))});
   return o.sort((a,b)=>vtFair(b.id,b.I)-vtFair(a.id,a.I))}
 /* 6.88: your own price. The chance a passer-by takes it each visit follows the price against its worth */
 const vtCh=r=>r<=.85?.7:r<=1?.7-(r-.85)/.15*.25:r<=1.3?.45-(r-1)/.3*.23:Math.max(.02,.22*Math.pow(1.3/r,3));
@@ -57015,7 +57029,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>.pxe{display:inline-block;w
    ========================================================================== */
 Object.assign(QT,{
   taqeel:{n:'تقيل',f:'تقيلة',d:s=>`ضرر ${twI(s?'+3':'+2')} على كل ضربة`},
-  massas:{n:'مصّاص',f:'مصّاصة',d:s=>`${twI(s?'+2':'+1')} صحة مع كل ضربة {بتضربها|بتضربيها}`},
+  massas:{n:'متعطش للدم',f:'متعطشة للدم',d:s=>`${twI(s?'+2':'+1')} صحة مع كل ضربة {بتضربها|بتضربيها}`},
   sakhri:{n:'صخري',f:'صخرية',d:s=>`كل ضربة عليك ${twI(s?'−2':'−1')}`},
   baraka:{n:'بركة',f:'بركة',d:s=>`خبرة القتال ${twI(s?'+25%':'+15%')}`}});
 QT.mabrouk.d=s=>`فلوس القتال ${twI(s?'+25%':'+15%')} · الصناديق ${twI(s?'+100%':'+50%')} · ساعات صندوق مقفول`;
@@ -57023,7 +57037,7 @@ QT.afreet.d=s=>`ضرر ${twI(s?'+4':'+3')} على العفاريت والأشب�
 QT.malh.d=s=>`ضرر ${twI(s?'+6':'+4')} على أي وحش بيخاف من الملح`;
 [['weapon',['taqeel','massas']],['armor',['sakhri']],['head',['sakhri']],['ring',['massas','baraka']],['neck',['baraka']],['charm',['baraka']]].forEach(([sl,L])=>{if(QT_SLOT[sl])L.forEach(t=>{if(!QT_SLOT[sl].includes(t))QT_SLOT[sl].push(t)})});
 [{k:'steel',t:'taqeel'},{k:'horn',t:'massas'},{k:'stone',t:'sakhri'},{k:'gold',t:'baraka'}].forEach(a=>{if(MAT[a.k]&&!QADD.some(x=>x.t===a.t))QADD.push(a)});
-L10N({'تقيل':'Heavy','تقيلة':'Heavy','مصّاص':'Leeching','مصّاصة':'Leeching','صخري':'Stony','صخرية':'Stony','بركة':'Blessed luck'},
+L10N({'تقيل':'Heavy','تقيلة':'Heavy','متعطش للدم':'Bloodthirsty','متعطشة للدم':'Bloodthirsty','صخري':'Stony','صخرية':'Stony','بركة':'Blessed luck'},
   [[/^ضرر ⁦\+(\d+)⁩ على كل ضربة$/,'damage +$1 on every hit'],[/^⁦\+(\d+)⁩ صحة مع كل ضربة (?:بتضربها|بتضربيها)$/,'+$1 health with every hit you land'],[/^كل ضربة عليك ⁦−(\d+)⁩$/,'every blow on you −$1'],
    [/^خبرة القتال ⁦\+(\d+)%⁩$/,'fight experience +$1%'],[/^فلوس القتال ⁦\+(\d+)%⁩ · الصناديق ⁦\+(\d+)%⁩ · ساعات صندوق مقفول$/,'fight money +$1% · chests +$2% · now and then a locked box']]);
 p222L({'خبرة القتال':'fight experience','صحة مع كل ضربة':'health with every hit','كل ضربة عليك':'every blow on you','على كل ضربة':'on every hit','فلوس القتال':'fight money','الصناديق':'chests','صندوق مقفول':'locked box'});
