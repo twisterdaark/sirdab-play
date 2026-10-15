@@ -195,6 +195,8 @@ textarea{min-height:64px;resize:vertical}
 #band.go .t{animation:bandText var(--bd,2.4s) forwards}
 #band .s2{font-size:13px;color:#cdbb91;margin-top:2px}
 #band.red .t{color:#ff8a7a;text-shadow:0 0 22px #d0483bcc,0 3px 0 #4a120c}
+#band.low{top:84px;transform:none;left:10%;right:10%;padding:6px 10px 7px;border-radius:14px;background:#000c;border:1px solid #ffffff22}
+#band.low .t{font-size:24px;line-height:1.15}#band.low .s1{font-size:11px}#band.low .s2{font-size:11px}
 #band.blue .t{color:#bfe6ff;text-shadow:0 0 22px #5aa8ffcc,0 3px 0 #10304a}
 @keyframes bandIn{0%{opacity:0}8%{opacity:1}84%{opacity:1}100%{opacity:0}}
 @keyframes bandText{0%{transform:scale(1.35);filter:blur(8px);opacity:0}12%{transform:scale(1);filter:none;opacity:1}100%{transform:scale(1.06)}}
@@ -415,7 +417,8 @@ function band(s1,t,s2,o){o=o||{};let res;const p=new Promise(r=>res=r);
   if(!bandRun)bandPump();return p}
 function bandPump(){bandRun=1;let done;bandDrain=new Promise(r=>done=r);bandQ=bandDrain;
   (async()=>{while(BQ.length){await noReveal();const it=BQ.shift();if(!it)continue;await bandShow(it);it.res()}bandRun=0;done()})()}
-function bandShow(it){const o=it.o;return new Promise(res=>{const B=$('#band');if(!B)return res();B.className='';if(o.color)B.classList.add(o.color);
+function bandShow(it){const o=it.o;return new Promise(res=>{const B=$('#band');if(!B)return res();B.className='';if(o.color)B.classList.add(o.color);if(it.low)B.classList.add('low');   /* 6.92 (Twister 11:57): the small repeated ones sit up top and leave the screen free */
+  
   const t=it.n>1?`${it.t} ×${it.n}`:it.t;
   B.querySelector('.s1').textContent=it.s1||'';B.querySelector('.t').textContent=t;B.querySelector('.s2').textContent=it.s2||'';
   const d=it.low?Math.min(o.dur||BAND_LOWDUR,BAND_LOWDUR+100):(o.dur||2400);bandEnd=Date.now()+d;B.style.setProperty('--bd',d+'ms');
@@ -3887,9 +3890,9 @@ function mnBreak0(R){const h=S.hero,V=gxVisit('mine'),rk=$('#mnRock'),st=$('#gxS
   /* the rare-drop band goes first; level, health, title and achievement bands queue after it */
   if(R.k==='gold')band(RARE[1].n,'دهب!','بيتعمل منه خواتم وقلادات وعمة مطرزة',{low:1,key:'gold',dur:1800,sound:SFX.sparkle});
   else if(t===1)band(RARE[1].n,'فضة!','بتتعمل منها خواتم وتمايم عند الحداد',{low:1,key:'silver',dur:1600,sound:SFX.sparkle});
-  if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في المنجم.. منه سيف وتميمة',{color:'blue',dur:2600,sound:SFX.turq})}
+  if(R.k==='emerald'){flash('#5ef08a');band(RARE[2].n,'زمرد!','أغلى حجر في المنجم.. منه سيف وتميمة',{color:'blue',low:1,key:'emerald',dur:2600,sound:SFX.turq})}
   else if(t>=2){flash('#40c8c0');band(RARE[2].n,'فيروز!','حجر نادر.. منه بتتعمل عصاية الفيروز',{low:1,key:'turq',color:'blue',dur:2400,sound:SFX.turq})}
-  if(s3)band(RARE[tierOf('stone3')].n,`${MAT.stone3.n}!`,'أقوى حجر تعزيز.. بيطلع بس في الأعماق',{dur:2600,sound:SFX.turq});
+  if(s3)band(RARE[tierOf('stone3')].n,`${MAT.stone3.n}!`,'أقوى حجر تعزيز.. بيطلع بس في الأعماق',{low:1,key:'stone3',dur:2600,sound:SFX.turq});
   else if(s2)band(RARE[tierOf('stone2')].n,`${MAT.stone2.n}!`,'بيقوّي العدة جامد عند الحداد',{low:1,key:'stone2',color:'blue',dur:2200,sound:SFX.turq});
   else if(s1)band(RARE[tierOf('stone1')].n,`${MAT.stone1.n}!`,'بيقوّي العدة عند الحداد',{low:1,key:'stone1',dur:1800,sound:SFX.sparkle});
   const xp=1+t,up=lifeXP(h,'mine',xp);bump('rocks');const c=h.cnt.rocks;
@@ -4807,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.92',d:'15 أكتوبر',add:['الإشعارات الصغيرة اللي بتتكرر (فضة!، دهب!، فيروز!، زمرد، أحجار التعزيز في المنجم، وسمك الترعة) بقت شريط صغير فوق بدل ما تغطي نص الشاشة.']},
 {v:'6.91',d:'15 أكتوبر',add:['طلبيات الصنعة: كل قطعة تنفع للطلبية بتظهر لوحدها بجودتها وسعرها و{بتختار|بتختاري} {تسلّم|تسلّمي} أنهي. اللي {لابسها|لابساها} مكتوب عليها «{لابسها|لابساها}» وبتطلب تأكيد قبل ما تتسلّم.']},
 {v:'6.90',d:'15 أكتوبر',add:['صفة «مصّاص» اسمها بقى «متعطش للدم».','نقل الروح: القطع بقت شبكة صور بالجودة، فيها تقسيم (سلاح، درع، خاتم…) وبتقولك بالظبط ناقصك إيه.','الفاترينة: حاجات التخصص زي «شاكوش الأسطى» بقت {تقدر|تقدري} {تعرضها|تعرضيها}.']},
 {v:'6.89',d:'15 أكتوبر',add:['الفاترينة بقت بتوري شارة الندرة والجودة (فريد، تحفة، أعجوبة…) على كل قطعة زي «حاجتك»، عشان تفرق بينهم بسهولة.']},
