@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.02',d:'15 أكتوبر',add:['البورصة الكبيرة: كل سهم بقى بيكسب لوحده كل ساعة (0.1% من قيمته)، وصاحب الشركة 3 أضعاف. الربح بينزل لوحده كل ما {تفتح|تفتحي} البورصة، ولو {غبت|غبتي} بيتجمع لحد 48 ساعة. زرار «نصيب صاحب الشركة» اللي كان مرة في اليوم اتشال','«أسعار النهارده» في السوق بقت بتتغير كل ساعة، ومكتوب جنبها فاضل قد إيه، والسوق بيتحدّث لوحده لما تتغير','إصلاح: حسبة أسعار السوق كانت بتطلّع نفس الأسعار أيام ورا بعض']},
 {v:'7.01',d:'15 أكتوبر',add:['صفحة «صفاتي»: لما الصفة تكبر (+20 مثلاً) النقط كانت بتزق الصفحة برا الشاشة: دلوقتي بتنزل سطر تاني والصفحة ثابتة']},
 {v:'7.00',d:'15 أكتوبر',add:['المقايضة: السلاح والهدوم والخواتم والعدّة الزيادة بقت تتحط على الترابيزة بجودتها وتطويرها، و«الغي» بيرجّعلك كل حاجة','المقايضة كانت مش بتاخد حاجة لما {تدوس|تدوسي} عليها: اتصلحت','سوق اللاعبين: القطعة اللي {لابسها|لابساها} بقت تتعرض كمان (لما تنزل السوق {بتقلعها|بتقلعيها})','المبارزة: زرار ⚔ كان ساعات بيروح لصاحب تاني غير اللي جنبه، فيطلع «مش أونلاين»: اتصلح، والدعوة بتتبعت حتى لو مش ظاهر أونلاين','«أونلاين» بقى أدق: بيتحدّث كل دقيقة، والرسايل منه بتحسب إنه موجود','أسعار المحاصيل اتظبطت: كل زرعة بتجيب حوالي ضعف ونص تمن تقاويها (القصب بيكسب أكتر من 30 بدل 1)','تقاوي البرسيم والشعير والحاجات الرخيصة بقت بسعرها الحقيقي بدل 5 جنيه','الصناديق و«شجرة الصنايعي» كانوا بيقعوا بسبب غلطة في الكود: اتصلحوا']},
 {v:'6.99',d:'15 أكتوبر',add:['الغيط بقى بيشتغل واللعبة مقفولة: لو معاك الحصّادة وصندوق التقاوي، الزرع بيتحصد ويتزرع تاني طول ما {انت|انتي} بره، مش 3 مرات بس.','الغيط بقى فيه 3 أراضي زيادة من الأول، فاللي كان عنده 6 بقى عنده 9.','اتصلح: الإشعار الواحد كان بيطلع 3 مرات ورا بعض، والأرض الجديدة اللي بتتفتح وانت بره بتتزرع على طول بصندوق التقاوي.']},
@@ -54165,7 +54166,9 @@ const MK_G=[{id:'fish',n:['سمك','fish'],t:k=>/^(bolti|qarmout|bouri|shrimp|ee
   {id:'ore',n:['معادن وخامات','ores and metals'],t:k=>/^(ore_|forge_ore_)/.test(k)||['copper','iron','coal','stone','silver','gold'].includes(k)},
   {id:'herb',n:['أعشاب','herbs'],t:k=>!!(MAT[k]&&MAT[k].herb)||/^(hb_|herb_|apoth_herb_)/.test(k)},
   {id:'hide',n:['جلود وريش','hides and feathers'],t:k=>['salskin','salfang','horn','hyhide','vfeather','animal_wool'].includes(k)}];
-const mkDay=()=>window.__mkDay!=null?window.__mkDay:Math.floor((Date.now()+2*3600e3)/864e5);
+/* 7.02 (Twister 17:09 «اتاكد ان اسعار نهارده في سوق ببتغير»): the market's «day» is MK_SLOT long (an hour), the same for everyone */
+const MK_SLOT=3600e3;
+const mkDay=()=>window.__mkDay!=null?window.__mkDay:Math.floor((Date.now()+2*3600e3)/MK_SLOT);
 function mkToday(){const d=mkDay(),n=MK_G.length,u=((d%n)+n)%n;let w=((d*3+1)%n+n)%n;if(w===u)w=(w+1)%n;return {up:MK_G[u],dn:MK_G[w]}}
 function mkMul(k){if(typeof CROPS!=='undefined'&&CROPS[k])return 1;const M=mkToday();return M.up.t(k)?LB_UP:M.dn.t(k)?LB_DN:1}
 /* the market pays from MAT[k].p (p84 satTotal → satBase → twSellP): the day's factor is applied to it inside satTotal only,
@@ -54448,7 +54451,7 @@ const RV_SAY_EN={first:'I\'m Qenawy, from the next village. I heard there\'s som
    with its move; the tab shows that kind's things, what you carry first. */
 MK_G.push({id:'crop',n:['محاصيل الغيط','field crops'],t:k=>typeof CROPS!=='undefined'&&!!CROPS[k]});
 const MKC_F=[1.4,.75,1.2,.85,1.1,.95],MKC_IC={fish:'🐟',crop:'🌾',ore:'⛏️',herb:'🌿',hide:'🪶'};
-const mkcRnd=s=>{s=(s|0)||1;return()=>(s=(s*16807)%2147483647)/2147483647};
+const mkcRnd=s=>{let a=(Math.floor(Math.abs(s))%4294967296)>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}};   /* 7.02: a mixing generator: an hourly «day» overflowed the old one, and close days looked alike */
 const mkcHash=k=>{let x=7;for(let i=0;i<k.length;i++)x=(x*31+k.charCodeAt(i))%1000003;return x};
 function mkcDay(){const d=mkDay();if(MKC.d===d)return MKC.f;const r=mkcRnd(d*7919+13),F=MKC_F.slice();for(let i=F.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[F[i],F[j]]=[F[j],F[i]]}
   MKC.d=d;MKC.f={};MK_G.forEach((g,i)=>MKC.f[g.id]=F[i%F.length]);return MKC.f}
@@ -54469,7 +54472,7 @@ mkListHTML=function(h){const F=mkcDay(),G=mkcOrder();let cur=TWN.mkCat&&G.some(g
   const items=A.length?`<div class="mkl-g">${L.map(e=>{const u=e.f>1?'up':e.f<1?'dn':'';return `<button class="mkl-i ${u}${e.n?' have':''}" data-mkl="${e.k}" ${e.n?'':'tabindex="-1"'}><span class="ic">${twMat(e.k,28)}</span><span class="tx"><b>${esc(fpEn(MAT[e.k].n))}</b><small>${e.was!==e.now?`<s>${e.was}</s> `:''}${e.now} ${ae('جنيه','coins')} <i class="mkc-p">${mkcPc(e.f)}</i></small>${e.n?`<small class="mkl-n">${ae('معاك','You have')} ×${e.n}</small>`:''}</span></button>`}).join('')}</div>
     ${more>0?`<button class="mkl-more" data-mkm="${g.id}">${ae(`شوف الباقي (${more})`,`Show the rest (${more})`)}</button>`:all&&A.length>8?`<button class="mkl-more" data-mkm="${g.id}">${ae('أقل','Less')}</button>`:''}`:`<small class="dim">${ae('لسه مفيش حاجة من النوع ده في السوق.','Nothing of this kind in the market yet.')}</small>`;
   return `<div class="card mkl${fold?' fold':''}" id="mkList"><button class="mkl-t" id="mkListT" aria-expanded="${!fold}">📰 ${ae('أسعار النهارده','Today\'s prices')} <span class="mkl-s">${fold?ae('افتح','Open'):ae('اقفل','Close')}</span></button>
-    ${fold?'':`<small class="mkl-sub">${ae('كل نوع ليه سعر النهارده لحد بكرة، ونفس الكلام لكل الناس. السعر بينزل شوية كل ما تبيع من نفس الحاجة في نفس اليوم.','Each kind has its price today until tomorrow, the same for everyone. A price drops a little each time you sell more of the same thing that day.')}</small>${tabs}${head}${items}`}</div>`};
+    ${fold?'':`<small class="mkl-sub">${ae('كل نوع ليه سعر بيتغير كل ساعة، ونفس الكلام لكل الناس. السعر بينزل شوية كل ما تبيع من نفس الحاجة في نفس اليوم.','Each kind has a price that changes every hour, the same for everyone. A price drops a little each time you sell more of the same thing that day.')}</small>${tabs}${head}${items}`}</div>`};
 {const m0=SCREENS.market;SCREENS.market=function(){const r=m0.apply(this,arguments);try{view.querySelectorAll('[data-mkc]').forEach(b=>b.onclick=()=>{TWN.mkCat=b.dataset.mkc;const y=window.scrollY;twRender();try{window.scrollTo(0,y)}catch(e){}})}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
 .mkc-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:6px 0 4px}
@@ -57245,6 +57248,7 @@ Object.assign(NEWS_EN,{"3":{"d":"October","add":["First version: make your hero 
 Object.assign(NEWS_EN,{'6.99':{d:'15 October',add:['The field keeps working while the game is closed: with the harvester and the seed box, crops are harvested and replanted the whole time you are away, not just 3 times.','The field has 3 more plots from the start, so 6 plots become 9.','Fixed: the same notice showed 3 times in a row, and a new plot that opens while you are away is planted by the seed box right away.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.00':{d:'15 October',add:['Swapping: weapons, clothes, rings and spare tools can go on the table with their quality and upgrades, and «Call off» gives everything back.','Fixed: tapping something in the swap did not put it on the table.','Player market: the piece you are wearing can be listed too (listing it takes it off).','Duels: the ⚔ button sometimes pointed at a different friend and said «not online». Fixed, and an invite is sent even if the friend is not showing as online.','«Online» is more accurate: it refreshes every minute, and a message from a friend counts as them being on.','Crop prices rebalanced: each crop brings about twice and a half what its seeds cost (cane now earns over 30 instead of 1).','Cheap seeds such as clover and barley now cost their real price instead of 5.','Fixed a code mistake that broke chests and the «Crafter\'s tree».'],fix:[]}});
 Object.assign(NEWS_EN,{'7.01':{d:'15 October',add:['«My stats»: a big stat (+20, say) had so many dots that it pushed the page off the screen. The dots now wrap to a second line and the page stays put.'],fix:[]}});
+Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every share now earns by itself every hour (0.1% of its worth), and the company owner earns 3 times that. The profit is paid by itself whenever you open the exchange, and builds up for up to 48 hours while you are away. The once-a-day owner button is gone.','«Today\'s prices» in the market now change every hour, show how long is left, and the market refreshes itself when they change.','Fixed: the market price maths gave the same prices several days in a row.'],fix:[]}});
 /* ==========================================================================
    سرداب 6.99: the field (p239.js) — Twister: «عايز لما اكون قافل لعبه محاصيل تكبر و تشتغل زي ما هي، و كمان زود عدد ترب في الغيط
    زودها 3 … و كتشف اي خطا في الغيط و صلحه».
@@ -57342,6 +57346,38 @@ i.trg-w{position:static;display:inline-block;font-size:11px;vertical-align:middl
 .pf-st .r1>.dots.many i{width:8px;height:8px}
 .pf-src{flex-wrap:wrap;min-width:0}.pf-chip{max-width:100%;white-space:normal}`;document.head.appendChild(s)})();
 {const d0=pfDots;pfDots=function(){const r=d0.apply(this,arguments);try{const n=(r.match(/<i /g)||[]).length;if(n>12)return r.replace('<span class="dots">','<span class="dots many">')}catch(e){}return r}}
+/* ==========================================================================
+   سرداب 7.02 (Twister 17:07 «في واحد عنده ٥٠٠ الف فبورصه اللاعبين وبيطلعله الف ونص كل يوم بس، صلح ربحه»)
+   The big online exchange (p226) paid only the owner, 0.25% once a town day, and only if they tapped the button that day
+   (a day missed was gone). Now every share earns while you hold it: BO_HR of its worth an hour (×BO_OWNX for the company's
+   owner), counted from the last time it was settled, at most BO_MAXH hours back. It is settled (paid into the hero you play)
+   every time the exchange loads and right before each trade, so buying just before a payout earns nothing.
+   The last-settled time is kept per account on this phone (localStorage 'sirdab.boAcc.<uid>'), so other heroes of the
+   same account don't earn the same shares twice.
+   ========================================================================== */
+const BO_HR=.001,BO_OWNX=3,BO_MAXH=48;
+const boAccK=()=>{try{return 'sirdab.boAcc.'+boUid()}catch(e){return ''}};
+function boAccGet(){try{const k=boAccK();const o=k&&JSON.parse(localStorage.getItem(k)||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
+function boAccSet(o){try{const k=boAccK();if(k)localStorage.setItem(k,JSON.stringify(o))}catch(e){}}
+const boRate=(h,C)=>{const own=boOwner(h,C);return BO_HR*(own&&own.u===boUid()?BO_OWNX:1)};
+const boHourly=(h,C)=>{const x=BO.co[C.id];if(!x)return 0;return Math.round((BO.mine[C.id]|0)*boPrice(C,x.f|0)*boRate(h,C))};
+function boSettle(h){if(!h||!boOn()||!BO.co||!Object.keys(BO.co).length)return 0;const A=boAccGet(),now=Date.now();let v=0;
+  BO_CO.forEach(C=>{if(!BO.co[C.id])return;const t=+A[C.id]||0;if(t&&t<now){const hr=Math.min(BO_MAXH,(now-t)/3.6e6);v+=(BO.mine[C.id]|0)*boPrice(C,BO.co[C.id].f|0)*boRate(h,C)*hr}A[C.id]=now});
+  boAccSet(A);v=Math.floor(v);if(v>0){h.money+=v;saveHero();try{SFX.coin&&SFX.coin()}catch(e){}toast(T(ae(`أرباح أسهمك في البورصة الكبيرة: +${v} جنيه`,`Your shares earned: +${v} coins`)))}return v}
+{const r0=boRefresh;boRefresh=async function(force){const was=BO.at;await r0.apply(this,arguments);try{if(BO.at!==was&&!BO.err)boSettle(S.hero)}catch(e){console.warn(e)}}}
+{const t0=boTrade;boTrade=async function(h){try{boSettle(h)}catch(e){console.warn(e)}return t0.apply(this,arguments)}}
+/* the cards: what each company pays you an hour; the owner's once-a-day button is gone (it is in the hourly pay now) */
+{const b0=SCREENS.bourse;SCREENS.bourse=function(){const r=b0.apply(this,arguments);try{if(S.screen!=='bourse'||BO.tab!=='on')return r;const h=S.hero;
+  view.querySelectorAll('[data-bodiv]').forEach(b=>b.remove());
+  view.querySelectorAll('.bo-c').forEach((c,i)=>{const C=BO_CO[i];if(!C||c.querySelector('.bo-hr'))return;const me=c.querySelector('.bo-me');if(!me)return;const v=boHourly(h,C),own=boOwner(h,C),mine=own&&own.u===boUid();
+    me.insertAdjacentHTML('afterend',`<div class="bo-hr">${v?`📈 ${ae('بتكسب','You earn')} <b>${v}</b> ${ae('جنيه في الساعة','coins an hour')}${mine?` · 👑 ${ae('ربح صاحب الشركة ×3','owner ×3')}`:''}<small>${ae(`بتنزل لوحدها كل ما تفتح البورصة، لحد ${BO_MAXH} ساعة`,`Paid by itself whenever you open the exchange, up to ${BO_MAXH} hours`)}</small>`:`<small>${ae(`كل سهم بيكسب ${BO_HR*100}% من قيمته في الساعة (وصاحب الشركة ×${BO_OWNX})`,`Every share earns ${BO_HR*100}% of its worth an hour (the owner ×${BO_OWNX})`)}</small>`}</div>`)})}catch(e){console.warn(e)}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>.bo-hr{font-size:13px;color:#a6e3a0;display:flex;flex-direction:column;gap:2px;margin:4px 0}.bo-hr small{color:var(--mute);font-size:11px}</style>`);
+/* ---------- «أسعار النهارده» (Twister 17:09): they now change every MK_SLOT (p198), and the list says when ---------- */
+const mkLeft=()=>{const t=MK_SLOT-((Date.now()+2*3600e3)%MK_SLOT);return Math.max(1,Math.ceil(t/60000))};
+{const l0=mkListHTML;mkListHTML=function(h){const r=l0.apply(this,arguments);try{const m=mkLeft();return r.replace('<span class="mkl-s">',`<small class="mkl-cd">⏳ ${ae(`بتتغير بعد ${m} دقيقة`,`change in ${m} min`)}</small><span class="mkl-s">`)}catch(e){return r}}}
+/* the open market redraws itself when the prices turn */
+{let last=null;setInterval(()=>{try{const d=mkDay();if(last!==null&&d!==last&&(S.screen==='market'||S.screen==='pmarket')&&!document.querySelector('.cmg')){const y=view.scrollTop;render();view.scrollTop=y;toast(ae('📰 أسعار السوق اتغيرت!','📰 Market prices changed!'))}last=d}catch(e){}},20000)}
+document.head.insertAdjacentHTML('beforeend',`<style>.mkl-cd{font-size:11px;color:var(--mute);font-weight:400;margin-inline-start:6px;white-space:nowrap}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
