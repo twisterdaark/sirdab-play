@@ -4810,6 +4810,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'6.97',d:'15 أكتوبر',add:['مراجعة شاملة للشكل: رأس المنجم والترعة مبقاش بيتكسر لسطرين، وكارت «مستوى» الشغلانة (حدادة، خياطة، طبخ، عطارة) بقى مترتب بدل ما الكلام يتزنق في عمود.','اتصلحت حاجات في الشكل كانت بتبوظ بعضها: أزرار الاختيار في الليلة، نقط الشطرنج في القهوة، كروت المقايضة، وأزرار الودع والدولاب.','قوايم طويلة بقى فيها سيرش: التخصصات، الإنجازات، الألقاب، حواديت الحكواتي، وصفات العطارة، طوابع الودع، المهمات، وصفحة الجديد.','تابات صفحة البطل بقت صفين واضحين بدل سطر بيتقص من الجنب، وكروت القهوة بقى الوش فوق الاسم.']},
 {v:'6.96',d:'15 أكتوبر',add:['شجرة الشغلانات: كل مستوى بقى بـ6 نقط بدل 4، فمستوى 10 بيفتح فرع ورابط زيادة. لسه مش بتفتح الشجرة كلها.']},
 {v:'6.95',d:'15 أكتوبر',add:['الأوتوماتيك في المنجم بقى بيرد على المخاطر لوحده، وبياكل من الشنطة لما المجهود يخلص، وبيضرب أسرع، ولو مفيش مجهود بيضرب على الشق. وبيقف بس لما الصحة تقرب تخلص.','العدة الملحمية والأسطورية (زي معول الأعماق) كانت بتتشال منك كل ما تفتح اللعبة ويرجعلك أداة التدريب. اتصلحت، واللي {عملتها|عملتيها} واتشالت رجعتلك.','شجرة الشغلانات: كل مستوى بقى بـ4 نقط، فمستوى 10 بيفتح حوالي 3 فروع من 4 على آخرهم مش الشجرة كلها. لو الشجرة كانت فيها نقط أكتر من كده، نقطها رجعتلك {توزعها|توزعيها} من الأول ببلاش.','كروت «حال البلد» بتنوّر لو جواها حاجة مستنياك.']},
 {v:'6.94',d:'15 أكتوبر',add:['زرار «أوتوماتيك» في المنجم والترعة: بيشتغل لوحده بسرعة عادية، بس بيطلّع أقل: الفاس مش بتلاقي الشق، مش بينزل أدوار، ومخاطر المنجم مش بيرد عليها لو {انت|انتي} مش موجود. في الصيد ساعات بيشد متأخر والسمك الكبير ممكن يهرب. بيقف لوحده لما المجهود يخلص أو الصحة تقل أو {تمشي|تمشي} من المكان.']},
@@ -51412,7 +51413,7 @@ function cmStory(){if(S.screen!=='story'||!cmOn())return;const st=view.querySele
 .ch.cm-t:active{transform:translateY(2px);box-shadow:0 1px 0 #0007}
 .ch.cm-t>span:not(.cm-ic):not(.cm-nd){display:block}
 .ch.cm-t small{font-size:11px}
-.cm-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:var(--c);background:#0b0d1c;box-shadow:0 0 0 2px var(--c),0 0 12px color-mix(in srgb,var(--c) 50%,transparent)}
+.cm-t .cm-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:var(--c);background:#0b0d1c;box-shadow:0 0 0 2px var(--c),0 0 12px color-mix(in srgb,var(--c) 50%,transparent)}
 .ch.cm-t.ghost{border-style:dashed;background:transparent}
 .cm-nd{margin-top:auto;align-items:center!important}
 .cm-chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:800;background:#0b0d1c;color:#e9dcc4;box-shadow:0 0 0 1px #ffffff22}
@@ -52073,7 +52074,7 @@ function wdCan(h,id){const c=WDC[id];return c&&lifeLvl(h,'tailor')>=c.lv&&!wdMis
 function wdLoom(name,col){return new Promise(res=>{if(WRD.sim||window.__wdAuto!=null){res(window.__wdAuto!=null?+window.__wdAuto:.8);return}
   const s=document.createElement('div');s.className='cmg';s.id='wdLm';s.style.direction='ltr';
   s.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${ae('النول','The loom')}</b><span class="ag-st">${esc(name)}</span></div>
-    <div class="wd-lm"><div class="wd-cl" id="wdCl" style="--fc:${col}"></div><div class="wd-wp">${Array.from({length:14},()=>'<i></i>').join('')}</div><span class="wd-sh" id="wdSh"></span><i class="wd-z l"></i><i class="wd-z r"></i></div>
+    <div class="wd-lm"><div class="wd-cl" id="wdCl" style="--fc:${col}"></div><div class="wd-wp">${Array.from({length:14},()=>'<i></i>').join('')}</div><span class="wdr-sh" id="wdSh"></span><i class="wd-z l"></i><i class="wd-z r"></i></div>
     <div class="cmg-m" id="wdM">${T(ae('{دوس|دوسي} لما المكوك يوصل للطرف المنوّر','Tap as the shuttle reaches the lit side'))}</div><button class="btn" id="wdBeat" style="min-height:52px">${ae('اضرب!','Beat!')}</button></div>`;
   document.body.appendChild(s);const sh=s.querySelector('#wdSh'),cl=s.querySelector('#wdCl'),M=s.querySelector('#wdM');let x=.5,dir=1,n=0,sc=0,over=0,last=0,raf=0;const N=6,sp=.9;
   const tick=t=>{if(over)return;if(last){x+=dir*(t-last)/1000*sp;if(x>1.08||x<-.08){/* missed this side */dir=-dir;x=Math.max(-.08,Math.min(1.08,x));n++;mark(0);if(n>=N)return end()}}last=t;sh.style.left=(x*100).toFixed(1)+'%';raf=requestAnimationFrame(tick)};
@@ -52147,7 +52148,7 @@ function wdDrag(){const doll=$('#wdDoll');if(!doll)return;view.querySelectorAll(
   $('#wdGo').onclick=()=>{WRD.from='tailor';WRD.sel=null;try{SFX.page()}catch(e){}S.screen='ward';render();view.scrollTop=0}}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
 .wd .cro-tabs{position:sticky;top:0}
-.wd-go{display:flex;align-items:center;gap:10px;width:100%;text-align:start;min-height:64px;cursor:pointer;border:2px solid #6b4a8a}.wd-go .wd-gi{width:44px;height:58px;flex:none}.wd-go .tx{flex:1;display:flex;flex-direction:column}.wd-go .tx small{color:var(--dim)}
+.card.wd-go{display:flex;align-items:center;gap:10px;width:100%;text-align:start;min-height:64px;cursor:pointer;border:2px solid #6b4a8a}.wd-go .wd-gi{width:44px;height:58px;flex:none}.wd-go .tx{flex:1;display:flex;flex-direction:column}.wd-go .tx small{color:var(--dim)}
 .wd-top{display:flex;gap:12px;align-items:center}.wd-doll{width:132px;height:176px;flex:none;border-radius:16px;background:radial-gradient(circle at 50% 60%,#3a2f5a,#1a1530);padding:6px;box-sizing:border-box;transition:box-shadow .15s}
 .wd-doll.hov{box-shadow:0 0 0 4px #7fe07a,0 0 20px #7fe07a}.wd-doll svg{width:100%;height:100%}
 .wd-sls{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -52168,7 +52169,7 @@ function wdDrag(){const doll=$('#wdDoll');if(!doll)return;view.querySelectorAll(
 .wd-lm{position:relative;height:190px;border-radius:14px;background:#2a1c18;overflow:hidden;direction:ltr}
 .wd-cl{position:absolute;left:8%;right:8%;bottom:0;height:0;background:var(--fc);box-shadow:inset 0 2px 0 #fff4;transition:height .25s}
 .wd-wp{position:absolute;left:8%;right:8%;top:0;bottom:0;display:flex;justify-content:space-between}.wd-wp i{width:2px;background:#e8dcc0aa}
-.wd-sh{position:absolute;top:44%;width:56px;height:18px;margin-left:-28px;border-radius:9px;background:linear-gradient(#c98f4a,#74412a);border:2px solid #2b1b22}
+.wdr-sh{position:absolute;top:44%;width:56px;height:18px;margin-left:-28px;border-radius:9px;background:linear-gradient(#c98f4a,#74412a);border:2px solid #2b1b22}
 .wd-z{position:absolute;top:30%;bottom:30%;width:12%;background:#7fe07a33;border:2px solid #7fe07a88;border-radius:8px}.wd-z.l{left:-2%}.wd-z.r{right:-2%}`;document.head.appendChild(s)})();
 /* ---------- 6.50 (acc1, Roadmap R16 + C69, Twister 15:20 «استعمل الدوكمنت») the deep mine, new moves, boss phases ----------
    1) The deep mine has risks you answer with your hands (window.__mr in test builds; window.__mrKind / __mrAuto force them):
@@ -53310,7 +53311,7 @@ SCREENS.barter=function(){const h=S.hero;if(!h){S.screen='title';return render()
   else if(D.st==='done'||D.st==='gone'){body=`<div class="card tr-st"><div class="tr-big">${D.st==='done'?'✅':'↩'}</div><b>${D.st==='done'?ae('المقايضة تمت','The swap is done'):ae('المقايضة اتلغت','The swap was called off')}</b><button class="btn" id="trAgain">${ae('تمام','OK')}</button></div>`}
   else{const s=trSide(),o=s==='a'?'b':'a',mine=trMine(h),his=trParse(D['i'+o]),okM=!!D['ok'+s],okO=!!D['ok'+o],who=esc(D[o+'n']||'');
     const shelf=Object.keys(h.res||{}).filter(k=>MAT[k]&&(h.res[k]|0)>0&&!MAT[k].junk).sort((a,b)=>(MAT[b].p|0)-(MAT[a].p|0)).slice(0,32).map(k=>({k,n:h.res[k]|0}));
-    body=`<div class="tr-tb"><div class="tr-half his${okO?' ok':''}"><div class="tr-h"><b>${ae(`${who} بيدي`,`${who} gives`)}</b><span>${okO?'✓ '+ae('موافق','agreed'):ae('لسه','not yet')}</span></div><div class="tr-row">${his.length?his.map(x=>trChip(x,'data-hk')).join(''):`<small class="dim">${ae('لسه ما حطش حاجة','Nothing yet')}</small>`}</div></div>
+    body=`<div class="tr-tb trd-tb"><div class="tr-half his${okO?' ok':''}"><div class="tr-h"><b>${ae(`${who} بيدي`,`${who} gives`)}</b><span>${okO?'✓ '+ae('موافق','agreed'):ae('لسه','not yet')}</span></div><div class="tr-row">${his.length?his.map(x=>trChip(x,'data-hk')).join(''):`<small class="dim">${ae('لسه ما حطش حاجة','Nothing yet')}</small>`}</div></div>
       <div class="tr-mid">⇅</div>
       <div class="tr-half my${okM?' ok':''}" id="trMy"><div class="tr-h"><b>${T(ae('انت {بتدي|بتدي}','You give'))}</b><span>${okM?'✓ '+ae('موافق','agreed'):''}</span></div><div class="tr-row">${mine.length?mine.map(x=>trChip(x,'data-mk')).join(''):`<small class="dim">${T(ae('{اسحب|اسحبي} حاجة من تحت لهنا','Drag something here from below'))}</small>`}</div></div></div>
       <div class="row"><button class="btn${okM?' ghost':''}" id="trOk">${okM?ae('شيل الموافقة','Take back'):ae('موافق','Agree')}</button><button class="btn ghost" id="trX">${ae('الغي','Call off')}</button></div>
@@ -53331,8 +53332,8 @@ async function trFixLoad(h){const E=h&&h.trEsc;if(!E||trMk()||!FB.user)return;fo
   me.insertAdjacentHTML('afterend',`<button class="btn" id="trGo" style="width:100%;min-height:48px">🤝 ${ae('مقايضة وش لوش','Swap face to face')}</button>`);$('#trGo').onclick=()=>{S.trFrom='frs';S.screen='barter';render()}}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
 .tr-st{display:flex;flex-direction:column;gap:10px;align-items:stretch;text-align:center}.tr-st .btn{min-height:48px}.tr-big{font-size:44px}.tr-code{font-size:40px;letter-spacing:8px;color:var(--gold2);direction:ltr}
-.tr-tb{display:flex;flex-direction:column;gap:6px;width:100%;align-self:stretch}.tr-half{width:100%;box-sizing:border-box;border-radius:16px;border:2px dashed #ffffff33;padding:10px;min-height:110px;background:#3a2a1a66;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,background .15s}
-.tr-half.my.hov{border-color:#f3c14d;background:#f3c14d22}.tr-half.ok{border-style:solid;border-color:#7fe07a}.tr-h{display:flex;justify-content:space-between;font-size:14px}.tr-h span{color:var(--dim)}.tr-half.ok .tr-h span{color:#7fe07a;font-weight:800}
+.trd-tb{display:flex;flex-direction:column;gap:6px;width:100%;align-self:stretch}.tr-half{width:100%;box-sizing:border-box;border-radius:16px;border:2px dashed #ffffff33;padding:10px;min-height:110px;background:#3a2a1a66;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,background .15s}
+.tr-half.my.hov{border-color:#f3c14d;background:#f3c14d22}.tr-half.ok{border-style:solid;border-color:#7fe07a}.tr-half .tr-h{display:flex;justify-content:space-between;font-size:14px}.tr-h span{color:var(--dim)}.tr-half.ok .tr-h span{color:#7fe07a;font-weight:800}
 .tr-mid{text-align:center;font-size:22px;color:var(--gold2)}.tr-row{display:flex;flex-wrap:wrap;gap:6px}
 .tr-c{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;min-height:72px;padding:6px 2px;border-radius:10px;border:2px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;cursor:pointer;touch-action:none}
 .tr-c small{font-size:10px;line-height:1.2;text-align:center}.tr-c i{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;color:#ffd36a}.tr-c .mi{font-size:24px;line-height:26px}
@@ -53887,7 +53888,7 @@ function chDraw(){const h=S.hero,me=chMe(),p=CHX.path,pub=CHX.tab==='pub',L0=(CH
       :`<div class="dim ch-empty">${pub?T(ae('محدش اتكلم لسه. {ابدأ انت|ابدأي انتي}.','No one has spoken yet. Start.')):T(ae('لسه مفيش كلام. {قول|قولي} أهلا.','No messages yet. Say hi.'))}</div>`}</div>
       <div class="ch-q">${CH_QUICK.map((q,i)=>`<button class="ch-qb" data-q="${i}">${ae(q[0],q[1])}</button>`).join('')}</div>
       <div class="ch-in"><input id="chIn" maxlength="${pub?CH_PLEN:CH_LEN}" autocomplete="off" placeholder="${T(ae('{اكتب|اكتبي} هنا…','Type here…'))}"><button class="btn" id="chGo">${ae('ابعت','Send')}</button></div>`;
-  const frs=CHX.tab==='fr'&&!CHX.with?`<div class="ch-frs">${gs.length?gs.map((g,i)=>`<button class="tw-row ch-fr" data-cw="${i}"><span class="ch-pic">${frPic(frLook(g.heroes[0]),'chf'+i)}</span><b>${esc(g.heroes[0].n)}</b>${CHX.dots[g.o]?'<i class="ch-dot"></i>':''}</button>`).join('')
+  const frs=CHX.tab==='fr'&&!CHX.with?`<div class="ch-frs">${gs.length?gs.map((g,i)=>`<button class="tw-row ch-fr" data-cw="${i}"><span class="ch-pic">${frPic(frLook(g.heroes[0]),'chf'+i)}</span><b>${esc(g.heroes[0].n)}</b>${CHX.dots[g.o]?'<i class="chd-dot"></i>':''}</button>`).join('')
       :`<div class="card dim">${T(ae('{ضيف|ضيفي} صحاب من «صحابي» الأول.','Add friends in «My friends» first.'))}</div>`}</div>`:'';
   view.innerHTML=`<div class="top twtop"><button class="ib" id="back">${ae('رجوع','Back')}</button><h2>${ae('الشات','Chat')}</h2><span class="tag">💬</span></div>
     <div class="tw ch" style="direction:${EN?'ltr':'rtl'}"><div class="mk-tabs"><button class="mk-t${!pub?' on':''}" data-ct="fr">${ae('صحابي','Friends')}${Object.values(CHX.dots).some(Boolean)?' •':''}</button><button class="mk-t${pub?' on':''}" data-ct="pub">${ae('القهوة الكبيرة','The big café')}</button></div>
@@ -53910,20 +53911,20 @@ function chMsgMenu(id){const h=S.hero,m=(CHX.rows[CHX.path]||[]).find(x=>x._id==
   s.querySelector('#chMu').onclick=()=>{close();chFix(h).chMute.push(m.f);h.chMute=h.chMute.slice(-100);saveHero();toast(T(ae('مش {هتشوف|هتشوفي} رسايله تاني.','You won\'t see their messages again.')));chDraw()}}
 /* the ways in: «صحابي» gets a chat button and a 💬 on every friend row (with a dot when they wrote) */
 {const f0=SCREENS.frs;SCREENS.frs=function(){const r=f0.apply(this,arguments);try{if(S.screen!=='frs')return r;chListen();const gs=frGroups(FRS.rows||[]);
-  if(!$('#chGoB')){const a=$('#dlGo')||$('#trGo');const dot=Object.values(CHX.dots).some(Boolean)?' <i class="ch-dot"></i>':'';if(a)a.insertAdjacentHTML('afterend',`<button class="btn ghost" id="chGoB" style="width:100%;min-height:48px">💬 ${ae('الشات: صحابك والقهوة الكبيرة','Chat: friends and the big café')}${dot}</button>`)}
+  if(!$('#chGoB')){const a=$('#dlGo')||$('#trGo');const dot=Object.values(CHX.dots).some(Boolean)?' <i class="chd-dot"></i>':'';if(a)a.insertAdjacentHTML('afterend',`<button class="btn ghost" id="chGoB" style="width:100%;min-height:48px">💬 ${ae('الشات: صحابك والقهوة الكبيرة','Chat: friends and the big café')}${dot}</button>`)}
   const g=$('#chGoB');if(g)g.onclick=()=>{S.chFrom='frs';CHX.tab='fr';CHX.with=null;S.screen='chat';render()};
   view.querySelectorAll('[data-fg]').forEach(b=>{const i=+b.dataset.fg;const row=b.parentElement;if(!row||row.querySelector(`[data-fch="${i}"]`))return;
-    b.insertAdjacentHTML('afterend',`<button class="btn ghost" data-fch="${i}" aria-label="${ae('شات','Chat')}">💬${gs[i]&&CHX.dots[gs[i].o]?'<i class="ch-dot"></i>':''}</button>`)});
+    b.insertAdjacentHTML('afterend',`<button class="btn ghost" data-fch="${i}" aria-label="${ae('شات','Chat')}">💬${gs[i]&&CHX.dots[gs[i].o]?'<i class="chd-dot"></i>':''}</button>`)});
   view.querySelectorAll('[data-fch]').forEach(b=>b.onclick=()=>{const gg=gs[+b.dataset.fch];if(!gg)return;S.chFrom='frs';CHX.tab='fr';CHX.with={o:gg.o,n:gg.heroes[0].n};CHX.dots[gg.o]=0;S.screen='chat';render()})}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
-.ch{display:flex;flex-direction:column;gap:8px}.ch-list{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow:auto;padding:6px;border-radius:12px;background:#0006}
+.tw.ch{display:flex;flex-direction:column;gap:8px}.ch-list{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow:auto;padding:6px;border-radius:12px;background:#0006}
 .ch-m{position:relative;align-self:flex-start;max-width:82%;padding:7px 12px;border-radius:14px;background:#2a2038;border:1px solid #ffffff22}.ch-m.me{align-self:flex-end;background:#3a5a2a;border-color:#7fe07a55}
 .ch-n{display:block;font-size:12px;color:#ffd36a}.ch-n small{color:var(--dim);font-weight:400}.ch-x{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
 .ch-more{position:absolute;top:-6px;inset-inline-end:-10px;width:32px;height:32px;border-radius:50%;border:0;background:#0008;color:#fff;font-size:16px;line-height:1}
 .ch-q{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.ch-qb{flex:none;min-height:44px;padding:0 12px;border-radius:22px;border:1px solid #f3c14d88;background:#2a2038;color:inherit;font:inherit;font-size:13px}
 .ch-in{display:flex;gap:6px}.ch-in input{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1px solid #ffffff2e;background:#120d08;color:var(--ink);font:inherit;font-size:16px;padding:0 12px}.ch-in .btn{min-height:48px;flex:none;width:auto;padding:0 18px}
 .ch-frs{display:flex;flex-direction:column;gap:6px}.ch-fr{display:flex;align-items:center;gap:10px;min-height:56px;position:relative}.ch-pic{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;background:#0006}.ch-pic svg{width:100%;height:100%}
-.ch-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e2483f;box-shadow:0 0 0 2px #0008;margin-inline-start:6px;vertical-align:middle}
+.chd-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e2483f;box-shadow:0 0 0 2px #0008;margin-inline-start:6px;vertical-align:middle}
 .ch-with{display:flex;align-items:center;gap:10px}.ch-with .btn{width:auto;min-height:44px;padding:0 12px}.ch-empty{text-align:center;padding:20px 6px}.ch-pof{min-height:44px;font-size:13px}
 .ch-o .ag-box{gap:8px}.ch-o .btn{min-height:48px}.fr-bt .btn{min-width:0;padding-inline:6px}.fr-bt [data-fch],.fr-bt [data-fd]{flex:0 0 48px}.fr-bt [data-fo]{flex:0 0 56px}
 .ch-list,.ch-q,.ch-in,.ch-frs,.ch-with,.ch-pof{align-self:stretch;width:100%;box-sizing:border-box}.ch-m{min-width:0;box-sizing:border-box}`;document.head.appendChild(s)})();
@@ -54176,7 +54177,7 @@ function mkWith(k,fn){const m=MAT[k],f=m?mkMul(k):1;if(f===1)return fn();const p
   const html=`<div class="tw-sm mk-day" id="mkDay">📰 ${ae(`النهارده عم رمضان عايز <b class="up">${M.up.n[0]}</b> (+${Math.round((LB_UP-1)*100)}%)، والسوق غرقان <b class="dn">${M.dn.n[0]}</b> (−${Math.round((1-LB_DN)*100)}%).`,`Today Uncle Ramadan wants <b class="up">${M.up.n[1]}</b> (+${Math.round((LB_UP-1)*100)}%), and the market is full of <b class="dn">${M.dn.n[1]}</b> (−${Math.round((1-LB_DN)*100)}%).`)}</div>`;
   if(nt)nt.insertAdjacentHTML('beforebegin',html);else{const f=view.querySelector('[data-s]'),bx=f&&f.closest('.tw-row');if(bx)bx.insertAdjacentHTML('beforebegin',html)}}catch(e){console.warn(e)}return r}}
 (function(){const s=document.createElement('style');s.textContent=`
-.lb{display:flex;flex-direction:column;gap:8px}.lb-pot{display:flex;align-items:center;justify-content:center;gap:4px;min-height:84px;padding:8px;border-radius:50% / 30%;background:radial-gradient(#3b2a1a,#1a120a);border:2px solid #6b4425}
+.card.lb{display:flex;flex-direction:column;gap:8px}.lb-pot{display:flex;align-items:center;justify-content:center;gap:4px;min-height:84px;padding:8px;border-radius:50% / 30%;background:radial-gradient(#3b2a1a,#1a120a);border:2px solid #6b4425}
 .lb-pot i{color:var(--dim);font-style:normal}.lb-in{width:64px;min-height:64px;border-radius:12px;border:1px solid #ffffff33;background:#0006;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px}
 .lb-in.e{border-style:dashed}.lb-in{position:relative}.lb-x{position:absolute;top:-6px;inset-inline-end:-6px;width:20px;height:20px;border-radius:50%;background:#b0453a;color:#fff;font-style:normal;font-size:11px;line-height:20px;text-align:center}.lb-in small{font-size:10px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-msg{text-align:center;min-height:20px;font-size:13px;color:#f3d48f}
@@ -55781,7 +55782,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>.tw>.dock{display:grid;gap:
 .dock-t{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:62px;padding:6px 2px;border-radius:12px;border:1px solid var(--line,#ffffff22);background:#ffffff0a;color:inherit;font:inherit;font-size:12px;line-height:1.2;cursor:pointer}
 .dock-t.on{border-color:#ffd36a;background:#ffd36a14}.dock-t .dk-i{font-size:20px;line-height:1}.dock-t small{font-size:11px;color:#ffd36a;font-weight:800;direction:ltr}
 .dock-t .dk-b{position:absolute;top:3px;inset-inline-end:3px;min-width:18px;height:18px;border-radius:9px;background:#8a5cf0;color:#fff;font-style:normal;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.tw>.dock-c{display:none!important}.tw>.dock-c.dock-show{display:block!important;animation:pp .2s both}.tw>.dock-c.dock-show.ct-card,.tw>.dock-c.dock-show.tw-life{display:flex!important}.tw>.dock-gone{display:none!important}</style>`);
+.tw>.dock-c{display:none!important}.tw>.dock-c.dock-show{display:block!important;animation:pp .2s both}.tw>.dock-c.dock-show.ct-card{display:flex!important}.tw>.dock-c.dock-show.tw-life{display:flex!important;flex-direction:column;align-items:stretch}.tw>.dock-gone{display:none!important}</style>`);
 /* ==========================================================================
    سرداب 6.82: the live duel plays like every other fight (p220.js) — Twister 00:50
    «خليها زي المعارك التانيه، غير كده مش قادر ادوس علي حاجه اصلا فصلحها وجربها»
@@ -57199,6 +57200,25 @@ function pgHot(){try{view.querySelectorAll('.pg-grid .jn-go').forEach(b=>b.class
 document.head.insertAdjacentHTML('beforeend',`<style>.pg-grid .jn-go.pg-hot{border-color:#ffd36a;box-shadow:0 0 0 1px #ffd36a66,0 0 16px #ffd36a55;animation:pgHot 1.8s ease-in-out infinite}
 .pg-grid .jn-go.pg-hot::after{content:'';position:absolute;top:8px;inset-inline-start:8px;width:10px;height:10px;border-radius:50%;background:#ffd36a;box-shadow:0 0 8px #ffd36a}
 @keyframes pgHot{50%{box-shadow:0 0 0 1px #ffd36aaa,0 0 24px #ffd36a88}}@media (prefers-reduced-motion:reduce){.pg-grid .jn-go.pg-hot{animation:none}}</style>`);
+
+/* 6.97 (Twister 12:31): «أي قايمه محتاجه سيرش ضيفلها السيرش». Long lists of cards on these screens get a search box above
+   them: the biggest set of same-class cards (8 or more) is filtered by its text as you type. The text is kept per screen. */
+const LS_SC={spec:1,hakawati:1,news:1,attar:1,herbs:1,wada:1,profile:1,quests:1,lessons:0},LSQ={};
+const lsNorm=s=>String(s||'').toLowerCase().replace(/[ً-ٰٟ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ');
+function lsGroup(){const by={};view.querySelectorAll('.card,.tw-row,.wd-t,.ach,.pf-ti').forEach(e=>{if(e.closest('.ls-skip,.pg-grid,.sheet,.ov'))return;const L=[...e.classList],k=(L[0]==='card'||L[0]==='tw-row')?L.slice(0,2).join(' '):L[0];(by[k]=by[k]||[]).push(e)});
+  let best=null;Object.keys(by).forEach(k=>{if(by[k].length>=8&&(!best||by[k].length>best.length))best=by[k]});return best}
+function lsApply(it,q){const n=lsNorm(q).trim();let shown=0;it.forEach(e=>{const ok=!n||lsNorm(e.textContent).includes(n);e.classList.toggle('ls-hide',!ok);if(ok)shown++});
+  const c=view.querySelector('.ls-q small');const t=n?ae(`${shown} من ${it.length}`,`${shown} of ${it.length}`):'';if(c&&c.textContent!==t)c.textContent=t}
+function lsAuto(){try{const sc=S.screen;if(!LS_SC[sc]||!view)return;const it=lsGroup();const old=view.querySelector('.ls-q');if(!it){if(old)old.remove();return}
+  if(old&&old.isConnected&&old.nextElementSibling===it[0]){lsApply(it,LSQ[sc]||'');return}if(old)old.remove();
+  it[0].insertAdjacentHTML('beforebegin',`<label class="ls-q"><span>🔍</span><input type="search" placeholder="${ae('دوّر هنا…','Search here…')}" value="${esc(LSQ[sc]||'')}" aria-label="${ae('دوّر','Search')}"><small></small></label>`);
+  const inp=view.querySelector('.ls-q input');inp.oninput=()=>{LSQ[sc]=inp.value;lsApply(lsGroup()||[],inp.value)};lsApply(it,LSQ[sc]||'')}catch(e){console.warn(e)}}
+{let q=0;new MutationObserver(()=>{if(q)return;q=1;requestAnimationFrame(()=>{q=0;lsAuto()})}).observe(document.getElementById('view')||document.body,{childList:true,subtree:true})}
+document.head.insertAdjacentHTML('beforeend',`<style>.ls-q{display:flex;align-items:center;gap:8px;min-height:44px;margin:0 0 10px;padding:0 12px;border-radius:12px;border:1px solid #ffffff22;background:#00000033}
+.ls-q input{flex:1;min-width:0;background:none;border:0;color:inherit;font:inherit;font-size:14px;outline:none;min-height:42px}.ls-q small{color:var(--dim);font-size:11px;white-space:nowrap}.ls-hide{display:none!important}
+.pf-tabs{display:grid!important;grid-template-columns:repeat(3,1fr);overflow:visible!important;-webkit-mask-image:none!important;mask-image:none!important;padding:0 16px!important}.pf-tabs .pf-tab{width:auto!important;min-width:0!important}</style>`);
+/* 6.97: the café opponent tiles: face above the name, so «أبو حمدي» stays on one line */
+document.head.insertAdjacentHTML('beforeend',`<style>.cf-opt>b:has(.cf-pp){display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap}.cf-opt .cf-pp{margin:0!important}</style>`);
 
 /* ---------- 5.92.1: no Arabic before English on opening ----------
    The saved language is put on the page (lang, dir, class «en», the tab's title) by a tiny script at the very top of the page, before
