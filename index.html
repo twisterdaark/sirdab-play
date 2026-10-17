@@ -4813,6 +4813,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.08',d:'18 أكتوبر',add:['المبارزة الأونلاين فيها صد بالتوقيت: لما صاحبك يضربك، الدايرة بتقفل على بطلك. {دوس|دوسي} في الوقت المظبوط: مظبوط قوي = ولا حاجة، كويس = نص الضربة، متأخر = الضربة كلها. لازم انتو الاتنين تكونوا على النسخة دي']},
 {v:'7.07',d:'17 أكتوبر',add:['الوقت في البلد بقى واحد لكل اللاعبين: الساعة الحقيقية هي اللي بتمشّي اليوم، فكل الناس في نفس الساعة ونفس اليوم، ومفيش رقم يوم تاني. ولو {كنت غايب|كنتي غايبة}، البلد بتحسبلك لحد 6 أيام','أسعار النهارده بقت واحدة لكل الناس: اللي غالي عندك غالي عند صحابك','المبارزة الأونلاين بقت بحركاتك {انت|انتي}: ضربة سلاحك، وحركات صنفك أو تخصصك اللي بتاخد طاقة، و«حماية». الحركة اللي بتحمي أو بتعالج بتقلل الضربة الجاية عليك بالنص','الليلة في السرداب ما بقتش بتزوّد يوم لوحدها: الوقت اللي {قضيته|قضيتيه} فيها هو اللي بيتحسب']},
 {v:'7.06.2',d:'17 أكتوبر',add:['الوديعة: مفيش حد للمكسب خالص، كل ما {تحط|تحطي} أكتر {تكسب|تكسبي} أكتر (4% في الـ6 أيام و9% في الـ14 يوم على أي مبلغ)، والودايع المفتوحة اتظبطت كمان','استثمارات البنك (الدكان والقطن وقافلة الصعيد): حد المكسب بقى 500,000 بدل 60,000']},
 {v:'7.06.1',d:'17 أكتوبر',add:['الوديعة: حد المكسب بقى أكبر بكتير: لحد 30,000 في وديعة الـ6 أيام ولحد 90,000 في وديعة الـ14 يوم، فالوديعة الكبيرة بتاخد نسبتها كاملة (150,000 بقت تكسب 13,500)، والودايع المفتوحة دلوقتي اتظبطت كمان']},
@@ -57294,6 +57295,7 @@ Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every shar
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 Object.assign(NEWS_EN,{'7.05':{d:'17 October',add:['Fixed: the combat training sent you back to town after you beat the scarecrow, and the lesson was not marked done. Now you go back to training and the lesson is marked done'],fix:[]}});
+Object.assign(NEWS_EN,{'7.08':{d:'18 October',add:['The live duel has a timed block: when your friend hits you, the ring closes on your hero. Tap at the right moment: perfect = nothing, good = half the hit, late = all of it. You both need this version'],fix:[]}});
 Object.assign(NEWS_EN,{'7.07':{d:'17 October',add:['Time in the village is the same for every player now: the real clock moves the day, so everyone is at the same hour on the same day, and there are no day numbers. If you were away, the village counts up to 6 days for you','Today\'s prices are the same for everyone: what is dear for you is dear for your friends','The live duel uses your own moves: your weapon\'s hit, your class or specialisation moves that cost energy, and «Guard». A move that shields or heals halves the next hit on you','A night in the crypt no longer adds a day by itself: the time you spent in it is what counts'],fix:[]}});
 Object.assign(NEWS_EN,{'7.06.2':{d:'17 October',add:['Deposits: no profit cap at all, the more you put in the more you earn (4% for 6 days, 9% for 14 days, on any amount), and open deposits are raised too','Bank investments (the shop, the cotton and the caravan to the south): the profit cap is now 500,000 instead of 60,000'],fix:[]}});
 Object.assign(NEWS_EN,{'7.06.1':{d:'17 October',add:['Deposits: the profit cap is much higher: up to 30,000 on the 6-day deposit and up to 90,000 on the 14-day one, so a big deposit gets its full rate (150,000 now earns 13,500), and deposits already open are raised too'],fix:[]}});
@@ -58276,6 +58278,45 @@ async function duKAct(h,id){const D=DUX.doc;if(!D||D.st!=='on'||DUX.busy)return;
   A.querySelectorAll('.du-k').forEach(b=>b.onclick=e=>{e.preventDefault();duAct(h,b.dataset.mv)});
   const n=A.querySelectorAll('.du-a').length;A.style.gridTemplateColumns=`repeat(${Math.min(3,n)},1fr)`}catch(e){console.warn(e)}return r}}
 document.head.insertAdjacentHTML('beforeend',`<style>.du-acts .du-k b,.du-acts .du-k small{font-size:11px;line-height:1.2;text-align:center}.du-acts .du-k .af-ic svg,.du-acts .du-k>span svg{width:32px;height:32px}</style>`);
+/* ---------- 7.08 (Twister 22:01: «عايزه»): the timed block in the live duel ----------
+   A hit no longer lands at once. The attacker's phone writes it as pending damage (pd = the full damage, the rival's health
+   untouched) and passes the turn as before. The defender's phone sees pd on its own turn, flashes «صد!» and closes the block
+   ring on its own hero: perfect = nothing, good = half, late = all of it. Then it writes its own health down by that much and
+   clears pd (the cloud rules check it is between 0 and pd), and plays its turn as usual. A block that takes the last health ends
+   the duel for the attacker.
+   The cloud rules for this are new (firebase/firestore.rules, deployed from the PC). Until they are, the pending write is
+   refused, and the hit is sent the old way (the health goes down at once), so a duel never breaks; DUX.noPd remembers it.
+   An older game on the other phone never answers pd, so its player isn't hit until the deadline gives the turn back: both
+   friends need 7.08. Tests: window.__duBlock = 'perfect'|'good'|'miss' answers the block ring. */
+const DU_BLK_DUR=720;
+{const u0=DUA.update;DUA.update=async function(id,p){const D=DUX.doc;
+  if(DUX.noPd||!D||!p||!('last' in p)||!('tn' in p)||'pd' in p||D.st!=='on')return u0.apply(this,arguments);
+  const me=duSide(D),op=me==='a'?'b':'a',was=D['hp'+op]|0,nw=('hp'+op) in p?p['hp'+op]|0:was,d=was-nw;
+  if(d<=0||D.tn!==me)return u0.apply(this,arguments);
+  const q=Object.assign({},p,{pd:d});q['hp'+op]=was;delete q.st;delete q.w;
+  try{const r=await u0.call(this,id,q);DUX.sentPd=1;return r}
+  catch(e){if(e&&e.code==='permission-denied'){DUX.noPd=1;return u0.call(this,id,p)}throw e}}}
+/* the attacker's own flash: the number waits for the block */
+{const f0=duFx;duFx=function(L,onMe){if(onMe&&L&&L.mv!=='block'&&L.d>0&&DUX.doc&&(DUX.doc.pd|0)>0){const t=$('#duMeP');if(t)try{floatAt(t,'⚔','#ffd36a','',24)}catch(e){}return}
+  if(!onMe&&DUX.sentPd){DUX.sentPd=0;const t=$('#duHimP');if(t)try{floatAt(t,'⚔','#ffd36a','',24)}catch(e){}return}
+  if(L&&L.mv==='block'){const t=$(onMe?'#duHimP':'#duMeP');if(!t)return;t.classList.remove('du-hit');void t.offsetWidth;t.classList.add('du-hit');
+    try{floatAt(t,L.d>0?`−${L.d}`:ae('صدّ!','Blocked!'),L.d>0?'#ff8a7a':'#7fb6ff','',L.b==='perfect'?28:22)}catch(e){}if(!onMe&&L.d>0)try{shake();vib(60);SFX.hurt()}catch(e){}return}
+  return f0.apply(this,arguments)}}
+async function duBlock(h,D){const me=duSide(D),op=me==='a'?'b':'a',pd=D.pd|0;if(!pd)return;DUX.busy=1;DUX.blk=D.n|0;
+  try{await new Promise(r=>setTimeout(r,120));const tg=()=>$('#duMeP .du-pic')||$('#duMeP');
+    try{const t=tg();if(t)floatAt(t,ae('صد!','Block!'),'#7fb6ff','',26);AFS.growl()}catch(e){}
+    let q=window.__duBlock;if(q==null){q=await afRing(tg,{dur:DU_BLK_DUR,col:'#7fb6ff'});if(q!=='perfect'&&q!=='good')q='miss'}
+    const took=q==='perfect'?0:q==='good'?Math.ceil(pd/2):pd,hp=Math.max(0,(D['hp'+me]|0)-took);
+    if(q==='perfect')try{AFS.block()}catch(e){}
+    const L={w:me,mv:'block',b:q,d:took,k:Date.now()},p={pd:0,n:(D.n|0)+1,last:JSON.stringify(L)};p['hp'+me]=hp;if(hp<=0){p.st='done';p.w=op}
+    await DUA.update(DUX.id,p);duFx(L,false)}
+  catch(e){toast(duErr(e))}finally{DUX.busy=0;DUX.dirty=0;duR()}}
+{const o0=duOn;duOn=function(h,D){const r=o0.apply(this,arguments);try{if(D&&D.st==='on'&&(D.pd|0)>0&&D.tn===duSide(D)&&DUX.blk!==(D.n|0)&&!DUX.busy)duBlock(S.hero||h,D)}catch(e){console.warn(e)}return r}}
+/* the moves wait while a block is pending; the last line says what the block did */
+{const s0=SCREENS.duo;SCREENS.duo=function(){const r=s0.apply(this,arguments);try{if(S.screen!=='duo')return r;const D=DUX.doc,h=S.hero;if(!D||!h)return r;const me=duSide(D),L=duP(D.last);
+  if((D.pd|0)>0&&D.tn===me)view.querySelectorAll('.du-a').forEach(b=>b.disabled=true);
+  const lt=view.querySelector('.du-last');if(lt&&L&&L.mv==='block'){const Q=duP(D[L.w==='a'?'pa':'pb'])||{},who=L.w===me?h.name:Q.n||'',f=(L.w===me?h.g:Q.g)==='f',v=(m,w)=>f?w:m;
+    lt.textContent=L.b==='perfect'?ae(`${who} ${v('صدّ','صدّت')} الضربة كلها!`,`${who} blocked it all!`):L.b==='good'?ae(`${who} ${v('صدّ','صدّت')} نصها: −${L.d}`,`${who} blocked half: −${L.d}`):ae(`${who} ${v('ما لحقش يصدّ','ما لحقتش تصدّ')}: −${L.d}`,`${who} was too late to block: −${L.d}`)}}catch(e){console.warn(e)}return r}}
 
 render();
 })();
