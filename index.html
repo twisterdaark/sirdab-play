@@ -4813,6 +4813,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.12',d:'18 أكتوبر',add:['في الليلة الأونلاين كل واحد بيختار دوره (حامي، مداوي…) من موبايله، وبيحارب بقدراته هو وتخصصه زي الأوفلاين بالظبط','دور صاحبك في القتال بقى زي الأوفلاين: قدراته بصورها (دوسة تشرح، والتانية تستعمل)، وشنطته هو يفتحها ويختار منها جرعة أو أكل أو قزازة صحيان أو ملح','لما الوحش يهجم على صاحبك تطلعله دايرة الصد على كارته هو: الصد المظبوط مفيش ضرب، الكويس نص الضربة، المتأخر الضربة كلها','التصويت بقى مستني الكل: محدش اختياره بيتنفذ لوحده، الأغلبية بتكسب، ولو اتعادلوا تبقى 50% و50%','لو اختيار في الحكاية عوّر حد، الفريق كله بيتعور نفس التعويرة','الوحوش في الليلة الأونلاين بقت أصعب كل ما تكونوا أكتر، ومفيش ضربة واحدة بتخلص على وحش كبير','كل قتال الدور بيبدأ مع اللي بعده: مرة {انت|انتي}، ومرة صحابك','صناديق الليلة الأونلاين: كل واحد بيفتح صندوقه بنفسه من موبايله، واللي جواه ليه هو','الوحش اللي بيتكلم بتطلع صورته في الفقاعة (الغولة، النداهة…)'],fix:['الشاشة عند صحابك بقت تتحدث في مكانها من غير ما ترمش، والبارات مبقتش تبدأ من الصفر كل شوية','الكلمة المميزة في المربع الأصفر رجعت غامقة وبتتقري']},
 {v:'7.11',d:'18 أكتوبر',add:['المبارزة الأونلاين بقت شبه القتال: {انت|انتي} وصاحبك واقفين على خلفية مرسومة، وفوق دماغ كل واحد اسمه وصحته وطاقته، واللي بيضرب بيجري على التاني','قايمة المبارزة بقت زي القتال: ضربة، قدرات، حماية. «قدرات» بتفتح نفس قدراتك اللي في القتال كلها، دوسة بتوريك اسمها وشرحها، والدوسة التانية بتستعملها','الصد في المبارزة اتظبط: الصد المظبوط بياخد منك 40% من الضربة، والكويس 70%، والمتأخر الضربة كلها. كده الضرب لازم يوصل']},
 {v:'7.10',d:'18 أكتوبر',add:['«مستني يقبل» في الصحاب بقى بيكتب اسم صاحبك اللي {بعتله|بعتيله} الطلب، والكود صغير جنبه','في القتال، جنب صينية النرد فيه زرار {تبدّل|تبدّلي} بيه بين النردين والنرد أبو 20 قبل ما {ترمي|ترمي}. اختيارك بيتحفظ لليالي والقتال الجاي']},
 {v:'7.09',d:'18 أكتوبر',add:['لعبة قفل الصندوق بقت أسهل وأبطأ: المكان الدهبي أوسع وفيه سنّارة زيادة، وكل مسمار بيتفتح بشرار ونغمة طالعة، والفتح بقى احتفال','قناوي بقى أتقل: صحته زادت، ومفيش ضربة واحدة تاخد منه أكتر من حتة صغيرة، فمحتاج{|ة} تضربه 7 مرات على الأقل']},
@@ -53727,10 +53728,10 @@ const coDgOk=a=>a&&Array.isArray(a.o)&&a.o.length===1&&a.o[0]&&a.o[0].k==='dodge
   const t=r&&typeof r==='object'&&['full','part','fail'].includes(r.t)?r.t:null;if(!t||!S.combat)return hB.apply(this,arguments);
   if(e.fx)delete e.fx.weak;let d=t==='full'?0:t==='part'?Math.ceil(dm/2):dm;if(d&&wk)d=Math.ceil(d/2);
   if(a===S.comp){if(d){hurtComp(d);await say(`${e.name} ${FF(e,'ضرب','ضربت')} ${a.name}: -${d} ${ae('صحة','health')}.${a.hp<=0?` ${a.name} ${g('وقع','وقعت')}!`:''}`,'bad')}
-    else{floatAt($('#compCard'),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة بزهره','the hit with their own dice')}.`,'good',900)}return {d,me:0}}
+    else{floatAt($('#compCard'),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة','the hit')}.`,'good',900)}return {d,me:0}}
   if(d){a.hp=Math.max(0,a.hp-d);combat();const el=$('#al_'+a.k);shake();SFX.hit();vib(50);floatAt(el,'-'+d,'#ff8a7a');if(a.hp<=0)SFX.down();
     await say(`${e.name} ${FF(e,'ضرب','ضربت')} ${a.name}: -${d} ${ae('صحة','health')}.${a.hp<=0?` ${a.name} ${g('وقع','وقعت')}!`:''}`,'bad')}
-  else{combat();floatAt($('#al_'+a.k),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة بزهره','the hit with their own dice')}.`,'good',900)}
+  else{combat();floatAt($('#al_'+a.k),g('اتفادى!','اتفادت!'),'#a6e3a0');SFX.dodge();await say(`${a.name} ${g('اتفادى','اتفادت')} ${ae('الضربة','the hit')}.`,'good',900)}
   return {d,me:0}}}
 /* the friend's phone: a dodge ask opens their own dice at once */
 CO.dgDone={};
@@ -57302,6 +57303,7 @@ Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every shar
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 Object.assign(NEWS_EN,{'7.05':{d:'17 October',add:['Fixed: the combat training sent you back to town after you beat the scarecrow, and the lesson was not marked done. Now you go back to training and the lesson is marked done'],fix:[]}});
+Object.assign(NEWS_EN,{'7.12':{d:'18 October',add:['On a live night everyone picks their own role on their own phone and fights with their own skills and specialisation, exactly like offline','A friend\'s fight turn is like offline: their skills with pictures (tap to read, tap again to use), and their own bag: a potion, food, a wake-up bottle or salt','When a foe goes for a friend, the block ring closes on the friend\'s own card: perfect blocks it all, good blocks half, late takes the whole hit','Votes wait for everyone: no one\'s pick runs alone, the majority wins, and a tie is a coin toss','A story choice that hurts the owner hurts the whole team the same','Foes on a live night get tougher the more of you there are, and no single blow fells a big one','Fights take turns on who starts: once you, once your friends','Live night chests: everyone opens their own on their own phone, and what is inside is theirs','A monster that speaks shows its own picture in the bubble (the Ghoula, the Nadaha…)'],fix:['Your friends\' screen updates in place without flicker, and the bars no longer start from zero','The highlighted word in the yellow box is dark again and easy to read']}});
 Object.assign(NEWS_EN,{'7.11':{d:'18 October',add:['The live duel now looks like a fight: you and your friend stand on a drawn backdrop with the name, health and energy over each head, and the one who hits runs at the other','The duel\'s moves are laid out like a fight: hit, skills, guard. «Skills» opens all the skills you have in a fight; one tap shows the name and text, a second tap uses it','The duel block is fixed: a perfect block takes 40% of the hit, a good one 70%, a late one all of it, so hits always land'],fix:[]}});
 Object.assign(NEWS_EN,{'7.10':{d:'18 October',add:['A friend request you sent and is waiting now shows your friend\'s name, with the code small beside it','In a fight, a button beside the dice tray switches between two dice and the d20 before you throw. Your pick is kept for the next nights and fights'],fix:[]}});
 Object.assign(NEWS_EN,{'7.09':{d:'18 October',add:['The chest lock game is easier and slower: the gold spot is wider, you get one more pick, every pin pops with sparks and a rising note, and opening the lock is a little party','Qenawy is tougher: more health, and no single hit can take more than a small piece of it, so he needs at least 7 hits'],fix:[]}});
@@ -58496,6 +58498,261 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .du-ski small{font-size:12px;color:#c9bfae;line-height:1.5}.du-ski .du-why{color:#ff9a8a}.du-ski .btn{min-height:44px}
 .du-a.du-skb.on{box-shadow:0 0 0 3px #ffd36a}
 </style>`);
+/* ==========================================================================
+   سرداب 7.12 (p271.js) — the live night, Twister 2026-10-18 14:04 + 14:07
+   «خلي في الاونلاين كل واحد يقدر يختار الرول بتاعته، وخليهم يستعملو سكيلاتهم عادي … وخلي مينفعش تختار اي حاجه لحد ما كلو يفوت،
+    والفوت يكون برأي الاغلبيه ولو تساوت التصويتات يبقا 50% و 50% … وحاول تقلل لاج الاونلاين وتقلل ال flickering، ولو حد اتدمج من
+    اختيار يبقا كلو ياخد نفس الدمج، وصلح صورة الوحش هنا» and «بعمل دمج كتير جدا … بعمل ون شوت لكل حاجه».
+   - Roles: a friend picks their own role on their phone (in the waiting room and on the adventure screen). It goes to the owner's
+     phone through the friend's answer field ({id:'ro', r}), the only field a friend may write, and sticks to their fighter there.
+   - Own skills: a friend joins with their own kit (ks: id, cost and kind of every skill they fight with offline, specialisation
+     moves included). Their fight turn offers exactly those; a move of their base class plays as before, any other one by its kind:
+     one foe (×(1 + 0.45·cost)), every foe, heal the team, or hide.
+   - Votes: nothing is decided until everyone here voted (no early majority, no 30 s clock). Then the most votes win; a tie is a
+     coin toss between the tied choices. A screen with one button still goes on one tap.
+   - Story damage: a choice that takes (or gives back) health on the owner's hero does the same to every friend in the night.
+   - Harder together: with 2+ players every foe has health ×(1 + 0.9 per extra player) and hits ×(1 + 0.2 per extra player), and no
+     single blow takes more than 40% of a foe's health (a boss 22%).
+   - Less flicker: a friend's phone patches the night's screen in place (coMorph) instead of rebuilding it, so pictures and bars
+     don't blink; the bars slide to their new value.
+   - The comic bubbles: a line said right after a monster is named («الغولة») shows that monster, not a stranger's face.
+   ========================================================================== */
+
+/* ---- roles ---- */
+CO.roOv=CO.roOv||{};
+function coRoApply(){const R=CO.room;if(!R)return;Object.keys(CO.roOv).forEach(u=>{const r=CO.roOv[u];if(CO.al&&CO.al[u])CO.al[u].role=r;if(R.g===u&&S.comp&&S.comp.friend)S.comp.role=r})}
+function coRoRead(){if(CO.role!=='host'||!CO.code)return;const R=CO.room;if(!R)return;
+  const raw=[[R.g,R.ans]].concat((CO.xs||[]).map(x=>[x.u,x.ans]));let ch=0;
+  raw.forEach(([u,s])=>{const a=coJ(s);if(u&&a&&a.id==='ro'&&rolOf(a.r)&&CO.roOv[u]!==a.r){CO.roOv[u]=a.r;ch=1}});if(ch)coRoApply()}
+setInterval(()=>{try{coRoRead();coRoApply()}catch(e){}},1000);
+{const a0=coAlOf;coAlOf=function(x){const a=a0.apply(this,arguments);try{if(a&&CO.roOv[x.u])a.role=CO.roOv[x.u]}catch(e){}return a}}
+function coRoSend(r){try{coPutAns(JSON.stringify({id:'ro',r,k:Date.now()}))}catch(e){}}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,V=coJ(R&&R.vw),h=S.hero;if(!h||CO.role!=='guest'||!R)return r;
+  const pre=R.st==='wait'||(R.st==='on'&&V&&V.s==='setup');let p=$('#coRo');if(!pre){if(p)p.remove();return r}
+  if(!p){const at=$('#coM')||view.lastElementChild;const w=document.createElement('div');w.id='coRo';w.className='card co-ro';w.innerHTML=rolPickHTML(h);if(at&&at.id==='coM')at.before(w);else view.appendChild(w);p=w;
+    p.querySelectorAll('[data-rol]').forEach(b=>b.onclick=()=>{h.role=b.dataset.rol;saveHero();coRoSend(h.role);p.querySelectorAll('[data-rol]').forEach(x=>x.classList.toggle('on',x===b));
+      try{SFX.tick&&SFX.tick(700);const R0=rolOf(h.role);toast(T(ae(`دورك: ${R0.n[0]}`,`Your role: ${R0.n[1]}`)))}catch(e){}})}
+  if(!CO.roSent&&R.st==='wait'){CO.roSent=1;coRoSend(rolHero(h))}}catch(e){console.warn(e)}return r}}
+{const s0=coStop;coStop=function(){CO.roSent=0;CO.roOv={};return s0.apply(this,arguments)}}
+
+/* ---- own skills ---- */
+const KS_T=s=>{const d=typeof s.d==='string'?s.d:'',t=`${s.n||''} ${d}`;
+  if(/صحة|علاج|شفا|بترجّ?ع|heal/i.test(t)&&!/ضرر|ضربة|ضربتك|×/.test(d))return 'h';
+  if(/حماي|درع|دخان|تستخب|استخب|تتفادى|shield|smoke|hide/i.test(t)&&!/ضرر|ضربة|ضربتك/.test(d))return 'g';
+  if(/كل الأعداء|كل الوحوش|على الكل|الكل|every foe|all foes/i.test(t))return 'A';return 'a'};
+function ksOf(h){let L=[];try{L=skillsOf(h).filter(s=>s&&!s.pass&&(h.lvl|0)>=(s.lv|0))}catch(e){}
+  return L.map(s=>`${String(s.id).replace(/[:,]/g,'')}:${Math.max(0,s.cost|0)}:${KS_T(s)}`).join(',')}
+const ksParse=s=>String(s||'').split(',').filter(Boolean).map(x=>{const [id,c,t]=x.split(':');return {id,cost:+c||0,t:t||'a'}}).filter(x=>x.id);
+CO.ksSnap=0;
+{const p0=palSnap;palSnap=function(h){const o=p0.apply(this,arguments);try{if(CO.ksSnap){const ks=ksOf(h);if(JSON.stringify(Object.assign({},o,{ks})).length<1990)o.ks=ks}}catch(e){}return o}}
+{const j0=coJoin;coJoin=async function(){CO.ksSnap=1;try{return await j0.apply(this,arguments)}finally{CO.ksSnap=0}}}
+function ksFor(a){if(!a)return null;if(a._ks!==undefined)return a._ks;let s='';
+  try{if(a===S.comp&&a.friend){const p=coGuestSnap();s=p&&p.ks}else if(a.u){const r=(CO.xs||[]).find(y=>y.u===a.u),p=coJ(r&&r.gp)||{};s=p.ks}}catch(e){}
+  a._ks=s?ksParse(s):null;return a._ks}
+const KS_NATIVE=['sp','warcry','smoke','shield','bash','snatch','venom','bolt','freeze','storm','cheer','raise','mass'];
+{const o0=coAlOpts;coAlOpts=function(a,fs,C,h){const K=ksFor(a);if(!K||!K.length)return o0.apply(this,arguments);coFresh(a);const c=S.comp,o=[],e=a.en|0;
+  fs.forEach(x=>o.push({k:'atk',i:x.i}));
+  for(const s of K){if(e<Math.max(1,s.cost))continue;
+    if(s.id==='raise'){const dn=[c&&c!==a&&c.hp<=0?c:null].concat(coAls().filter(x=>x!==a&&x.hp<=0)).filter(Boolean);dn.forEach(x=>o.push({k:'sk',id:s.id,w:x===c?'cp':x.u,n:String(x.name).slice(0,20)}));continue}
+    if(s.id==='cheer'&&!(c&&c!==a&&c.hp>0))continue;
+    if(s.t==='a')fs.forEach(x=>o.push({k:'sk',id:s.id,i:x.i}));else o.push({k:'sk',id:s.id})}
+  if((h.bag.potion|0)>0&&a.hp<a.max)o.push({k:'pot',e:h.bag.potion|0});o.push({k:'hide',e});return o}}
+{const d0=coAlDo;coAlDo=async function(a,o,auto,h,C){const K=ksFor(a);if(!K||!o||o.k!=='sk')return d0.apply(this,arguments);
+  const s=K.find(x=>x.id===o.id);if(!s)return;const base=(CSK[a.cls]||[]).some(x=>x.id===s.id);
+  if(base&&KS_NATIVE.includes(s.id)){const c=Math.max(1,s.cost);const cs=skillsOf({cls:a.cls}).find(x=>x.id===s.id);if(cs&&(a.fl||1)>=cs.lv)return d0.apply(this,arguments)}
+  const c=Math.max(1,s.cost);if((a.en|0)<c)return;a.en-=c;const g=coGx(a),Kc=CLASSES[a.cls]||CLASSES['محارب'],lv=coLvOf(a),b=Math.floor(lv/3),el=()=>coElOf(a),pre=auto?g('من نفسه: ','من نفسها: '):'';
+  const r=o._t?(o._t==='full'?11:o._t==='part'?8:5):rnd(6)+rnd(6)+(lv>=3?1:0)+(lv>=6?1:0);let nm=s.id;try{const x=skillsOf({cls:a.cls}).find(y=>y.id===s.id);if(x&&x.n)nm=x.n}catch(e){}
+  try{nm=T(String(nm)).replace(/_/g,' ')}catch(e){}if(/^[a-z0-9_]+$/i.test(nm))nm=g('قدرته','قدرتها');
+  const fell=f=>f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:'';const alive=()=>C.foes.filter(f=>f.hp>0&&!f.fled);const dm=()=>Kc.atk.dmg()+b;
+  if(s.t==='g'){a.hide=1;if(a===S.comp)C.cpHide=1;try{SFX.shieldUp&&SFX.shieldUp()}catch(e){}combat();return say(`${pre}${a.name}: ${nm}! الضربة الجاية ${g('عليه','عليها')} مش هتيجي.`,'good')}
+  if(s.t==='h'){const v=Math.round((3+b)*(1+.4*c));const heal=(x,m)=>{const d=Math.min(v,m-x.hp);if(d>0)x.hp+=d;return Math.max(0,d)};
+    const v1=heal(h,MXH(h)),v2=S.comp&&S.comp.hp>0?heal(S.comp,S.comp.max):0;coAls().forEach(x=>{if(x.hp>0)heal(x,x.max)});combat();try{SFX.heal()}catch(e){}
+    if(v1)healFx($('#meCard'),v1);if(v2)healFx($('#compCard'),v2);return say(`${pre}${nm} من ${a.name}: الكل ${g('رجعله','رجعله')} صحة.`,'good')}
+  if(r<7){try{SFX.miss()}catch(e){}return say(`${pre}${nm} من ${a.name} ما جتش.`)}
+  if(s.t==='A'){for(const x of alive())hurtFoe(x,Math.max(1,Math.round(dm()*(.6+.25*c)*(r>=10?1.15:1))));try{SFX.boom&&SFX.boom();shake()}catch(e){}await sleep(480);return say(`${pre}${a.name} ${g('نزل','نزلت')} بـ${nm} على الكل!`,'good')}
+  const f=o.i!=null?C.foes[o.i]:alive()[0];if(!f||f.hp<=0)return;const d=Math.max(1,Math.round(dm()*(1+.45*c)*(r>=10?1.2:1)));
+  hurtFoe(f,d);try{burst(el(),$('#foe'+f.id),'#ffd36a',26)}catch(e){}await sleep(480);return say(`${pre}${nm} من ${a.name} في ${f.name}: -${d}${fell(f)}`,'good')}}
+
+/* ---- votes: everyone first, then the most votes; a tie is a coin toss ---- */
+coTally=function(){if(!coVoting()||!CO.vsig||CO.V.sig!==CO.vsig)return;const P=coPlayers(),ids=P.map(p=>p.u),v={};Object.keys(CO.V.v).forEach(u=>{if(ids.includes(u))v[u]=CO.V.v[u]});
+  const nv=Object.keys(v).length;if(!nv)return;const L=coHostEls();let win=-1;
+  if(L.length===1)win=0;else{if(nv<P.length)return;const cnt={};Object.values(v).forEach(i=>cnt[i]=(cnt[i]||0)+1);const mx=Math.max(...Object.values(cnt)),top=Object.keys(cnt).filter(i=>cnt[i]===mx).map(Number);win=top.length>1?pick(top):top[0]}
+  const b=L[win];if(!b)return;try{if(S.screen!=='setup')coDlogAdd(b,v)}catch(e){}CO.V={sig:'',v:{},t0:0};CO.vsig='';
+  setTimeout(()=>{if(!b.isConnected)return;CO.pass=1;try{b.click()}finally{CO.pass=0}setTimeout(coPublish,200)},450)};
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{delete o.vd}catch(e){}return o}}
+{const a0=coAddVote;coAddVote=function(){const r=a0.apply(this,arguments);CO.V.t0=0;return r}}
+{const v0=coVotes;coVotes=function(){const r=v0.apply(this,arguments);if(CO.V)CO.V.t0=0;return r}}
+{const m0=coMarkHost;coMarkHost=function(){const r=m0.apply(this,arguments);try{const hn=$('#coVh');if(hn){const nv=CO.V.sig===CO.vsig?Object.keys(CO.V.v).length:0,n=coPlayers().length;
+  const t=`تصويت · ${nv} من ${n} · لما الكل يختار، الأغلبية بتقرر`;if(hn.textContent!==t)hn.textContent=t}}catch(e){}return r}}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const s=$('#coGs');if(s&&/أغلبيتكم/.test(s.textContent))s.textContent=T(`المغامرة بتبدأ لما كلكم {تدوسوا|تدوسوا} «ابدأ»`)}catch(e){}return r}}
+
+/* ---- a choice that hurts (or heals) the owner does the same to every friend ---- */
+{const a0=applyOutcome;applyOutcome=function(o,tier,c){const r=a0.apply(this,arguments);try{if(o&&coOn()&&coPlayers().length>1){const L=[S.comp&&S.comp.friend?S.comp:null].concat(coAls()).filter(Boolean);
+  L.forEach(x=>{if(o.hp)x.hp=Math.max(1,Math.min(x.max,x.hp+o.hp));if(o.heal)x.hp=Math.min(x.max,x.hp+o.heal)});if(L.length&&(o.hp||o.heal))setTimeout(coPublish,150)}}catch(e){console.warn(e)}return r}}
+
+/* ---- harder together ---- */
+const CO_HPX=.9,CO_DMX=.2,CO_CAP=.4,CO_CAPB=.22;
+{const s0=startCombat;startCombat=function(foes,win,tut){const r=s0.apply(this,arguments);try{const C=S.combat;if(C&&!tut&&!C.tutorial&&coOn()){const n=coPlayers().length;if(n>1){C.coN=n;
+  C.foes.forEach(f=>{const k=1+CO_HPX*(n-1),q=f.max>0?f.hp/f.max:1;f.max=Math.round(f.max*k);f.hp=Math.max(1,Math.round(f.max*q));if(f.dmg)f.dmg=Math.max(1,Math.round(f.dmg*(1+CO_DMX*(n-1))))});combat()}}}catch(e){console.warn(e)}return r}}
+{const h0=hurtFoe;hurtFoe=function(f,d,o){let cap=0,b4=0;try{const C=S.combat;if(C&&C.coN>1&&f&&typeof d==='number'&&d>0&&f.max>0){cap=Math.max(1,Math.ceil(f.max*(f.boss?CO_CAPB:CO_CAP)));b4=f.hp;if(d>cap)d=cap}}catch(e){}
+  const r=h0.call(this,f,d,o);try{if(cap&&b4-f.hp>cap)f.hp=Math.max(0,b4-cap)}catch(e){}return r}}
+
+/* ---- less flicker on a friend's phone: patch the screen in place ---- */
+function coMorph(old,nw){const oc=[...old.childNodes],nc=[...nw.childNodes];
+  for(let i=0;i<nc.length;i++){const n=nc[i],o=old.childNodes[i];
+    if(!o){old.appendChild(n);continue}
+    if(o.nodeType!==n.nodeType||o.nodeName!==n.nodeName||(o.nodeType===1&&(o.id||'')!==(n.id||''))){old.replaceChild(n,o);continue}
+    if(o.nodeType!==1){if(o.nodeValue!==n.nodeValue)o.nodeValue=n.nodeValue;continue}
+    if(o.namespaceURI==='http://www.w3.org/2000/svg'){if(o.outerHTML!==n.outerHTML)old.replaceChild(n,o);continue}
+    const inBar=o.parentNode&&o.parentNode.classList&&o.parentNode.classList.contains('hb');
+    [...o.attributes].forEach(x=>{if(!n.hasAttribute(x.name)&&!(inBar&&x.name==='style'))o.removeAttribute(x.name)});
+    [...n.attributes].forEach(x=>{if(inBar&&x.name==='style')return;if(o.getAttribute(x.name)!==x.value)o.setAttribute(x.name,x.value)});
+    coMorph(o,n)}
+  while(old.childNodes.length>nc.length)old.lastChild.remove()}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){try{const R=CO.room,V=coJ(R&&R.vw),a=coJ(R&&R.ask),me=coMe(),m=$('#coM');
+  if(m&&R&&R.st==='on'&&V&&V.m&&V.h&&CO.mh){const mine=a&&CO.ans[a.id]==null&&me&&(a.to||R.g)===me,key=V.h+'|'+(mine?a.id:''),tail=s=>s.slice(s.lastIndexOf('|'));
+    if(key!==CO.mh&&tail(key)===tail(CO.mh)){const t=document.createElement('template');t.innerHTML=coSafe(V.h);const y=view.scrollTop;coMorph(m,t.content);CO.mh=key;view.scrollTop=y;
+      const r=g0.apply(this,arguments);try{coBars()}catch(e){}return r}}}catch(e){console.warn(e)}return g0.apply(this,arguments)}}
+
+/* ---- a monster that speaks shows itself in the bubble ---- */
+const CM_MON=(()=>{const M={};try{Object.values(ROAM_ENCOUNTERS||{}).forEach(e=>{if(e&&e.n&&e.art)M[e.n]=e.art})}catch(e){}
+  Object.assign(M,{'الغولة':'k_ghoula','الغول':'mb_ghoul','النداهة':'nadaha','القرينة':'k_qarina','القطرب':'mc_qutrub','المارد':'t_redeye','النسناس':'mb_nasnas','الهامة':'mb_hama','الرصد':'d_rasad','الملبوس':'ua_ridden','الغريق':'t_drowned','السلعوة':'sal','سلعوة':'sal','العفريت':'afreet','عفريت':'afreet','صوت ست ناعم':'nadaha','صوت ست بينده':'nadaha','صوت النداهة':'nadaha'});return M})();
+function cmMonIn(txt){let best=null;Object.keys(CM_MON).forEach(n=>{const i=txt.lastIndexOf(n);if(i>=0&&(!best||i>best.i))best={n,i,art:CM_MON[n]}});return best}
+{const s0=cmSpeakers;cmSpeakers=function(segs){const r=s0.apply(this,arguments);try{segs.forEach((s,i)=>{if(s.t!=='say'||s.who==='hero')return;const pre=segs[i-1]&&segs[i-1].t==='cap'?cmTxt(segs[i-1].h):'';if(!pre)return;
+  const mo=cmMonIn(pre);if(!mo)return;const hu=cmFind(pre,true);if(hu&&pre.lastIndexOf(hu.w)>=mo.i+mo.n.length)return;let f='';try{f=foeArt(mo.art)}catch(e){}if(f){s.f=`<span class="cm-mon">${f}</span>`;s.who='mon:'+mo.n}})}catch(e){console.warn(e)}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>.co-ro{margin:8px 0}#coM .rol-p{display:none}.cm-mon{display:block;width:100%;height:100%}.cm-mon svg{width:100%;height:100%;display:block}</style>`);
+
+/* ---- turns rotate: fight by fight, the start passes from the owner to the friends and back (Twister 14:10) ----
+   With 2+ players, every other fight (by the number of players) the friends' side goes first: in each round they play, then the
+   owner, then the foes. C.coTF marks such a fight; C.coSkip makes the friends' usual turn after the owner's pass once. */
+CO.fN=CO.fN||0;
+async function coTeamGo(C){const c=S.comp;if(c&&c.hp>0)await compTurn();else await coHelpers();C.coSkip=1}
+{const s0=startCombat;startCombat=function(foes,win,tut){const r=s0.apply(this,arguments);try{const C=S.combat;if(C&&!tut&&!C.tutorial&&coOn()){const n=coPlayers().length;
+  if(n>1){C.coTF=(CO.fN++%n)!==0;if(C.coTF){C.busy=true;C.phase='them';combat();
+    setTimeout(async()=>{try{if(S.combat!==C)return;C.log.push({t:'صحابك بيبدأوا القتال ده.'});combat();try{coPublish()}catch(e){}await coTeamGo(C);if(S.combat!==C||await checkEnd())return;
+      C.phase='me';C.busy=false;C.fresh=1;C.log.push({t:T('دورك. {اختار|اختاري} حركة.')});combat();try{coPublish()}catch(e){}}catch(e){console.warn(e)}},400)}}}}catch(e){console.warn(e)}return r}}
+{const c0=compTurn;compTurn=async function(){const C=S.combat;if(C&&C.coSkip){C.coSkip=0;return}return c0.apply(this,arguments)}}
+{const h0=coHelpers;coHelpers=async function(){const C=S.combat;if(C&&C.coSkip){C.coSkip=0;return}return h0.apply(this,arguments)}}
+{const r0=roundStart;roundStart=async function(){const r=await r0.apply(this,arguments);if(r)return r;const C=S.combat;
+  if(C&&C.coTF&&coOn()){await coTeamGo(C);if(S.combat!==C||await checkEnd())return true}return false}}
+
+/* ---------- 7.12 (Twister 14:12/14:14/14:15): a friend's turn plays like offline ----------
+   «ظبط شكل المهارات عند الي بيلعبو معاك», «خليه يقدر يفتح الشنطة ويختار منها عادي», «خلي الي بيلعب معاك يلعب كأنه بيلعب الاوفلاين»,
+   «حط دايره للي معاك لما يجي يتضرب عشان يعرف يصد», «صلح اللون الفاقع ده».
+   - The skills sheet on a friend's phone is the fight's own sheet: each skill with its picture (skpIcon), its cost on the corner,
+     a first tap shows its name and text, a second tap (or «استعمل») uses it (cgDress). Skills short of energy are greyed.
+   - «الشنطة» opens the friend's own bag (bagKs: potions, revive, salt, food) with the same icons. The friend picks who gets it
+     (self / whoever is hurt most / whoever fell; salt: tap a foe). The host's option is {k:'pot',b:1} (so older checks still see a
+     fight ask); the answer carries b (item), w (who) and v (how much it heals, from the friend's own hero). The item leaves the
+     friend's bag once the host has the answer. The host's own potions are no longer offered to friends.
+   - A foe coming for a friend: no dice, the block ring closes on their own card like offline (perfect = no hit, good = half,
+     late = the whole hit).
+   - The highlighted word in a caption (a name in <b>) is dark red again; a gold rule from the story text was winning. */
+const coBagKs=h=>{let L=[];try{L=bagKs(h)}catch(e){}return [...new Set(L)].filter(k=>ITEMS[k]&&(h.bag[k]|0)>0&&(ITEMS[k].use==='heal'||k==='revive'||k==='salt'))};
+function coBagTs(k){const it=ITEMS[k]||{},food=it.kind==='food';
+  if(k==='revive')return [{w:'down',t:ae('صحّي اللي وقع','Wake whoever fell'),s:ae('يقوم بنص صحته','Back up at half health')},{w:'me',t:G('اشربها انت','اشربيها انتي'),s:ae('صحتك ترجع كلها','All your health back')}];
+  if(it.use==='heal')return [{w:'me',t:food?G('كُل انت','كُلي انتي'):G('اشربها انت','اشربيها انتي'),s:T(it.info?it.info():'')},{w:'low',t:ae('اديها لأتعب واحد في الفريق','Give it to whoever is hurt most'),s:T(it.info?it.info():'')}];
+  return []}
+async function coBagSend(a,k,w){const bi=a.o.findIndex(o=>o.k==='pot'&&o.b);if(bi<0||CO.ans[a.id]!=null)return;const h=S.hero,it=ITEMS[k];if(!it||!((h.bag[k]|0)>0))return;
+  let v=0;try{v=it.use==='heal'?(it.heal?it.heal():(k==='bigpotion'?12:5)+h.lvl):0}catch(e){v=5}
+  CO.ans[a.id]=bi;CO.gp={id:'',m:'',sk:''};try{SFX.page&&SFX.page()}catch(e){}render();
+  const ok=await coPutAns(JSON.stringify({id:a.id,a:{i:bi,b:k,w:String(w||'me'),v:Math.min(99,v|0)}}));
+  if(ok){h.bag[k]=Math.max(0,(h.bag[k]|0)-1);try{saveHero()}catch(e){}}else delete CO.ans[a.id];if(S.screen==='coopg')render()}
+/* the guest's panel: the skills sheet, the bag, the bag's targets */
+{const p0=coGPanel;coGPanel=function(a){const P=CO.gp,h=S.hero,O=a.o,en=(O.find(o=>o.k==='hide')||{}).e|0;
+  if(P.m==='pick'&&P.bk)return `<div class="turn pick co-gturn">${ae(G('هترمي الملح على مين؟','هترمي الملح على مين؟'),'Throw the salt at whom?')} ${G('دوس','دوسي')} ${ae('على العدو','on the foe')}</div><div style="margin-top:10px"><button class="btn ghost small" data-cg="back">${ae('رجوع','Back')}</button></div>`;
+  if(P.m==='sk'){let L=[];try{L=skillsOf(h).filter(s=>s&&!s.pass&&(h.lvl|0)>=(s.lv|0))}catch(e){}
+    const ic=s=>{try{return skpIcon(s,h.cls)}catch(e){return AF_IC.star}};const rows=[];
+    L.forEach(s=>{const c=Math.max(1,s.cost|0),L2=O.map((o,i)=>o.k==='sk'&&o.id===s.id?i:-1).filter(i=>i>=0);
+      if(s.id==='raise'&&L2.length){L2.forEach(i=>rows.push(`<button class="it sk" id="cgs_raise_${i}" data-cg="o:${i}"><span class="ic">${ic(s)}</span><span class="tx"><b>${esc(s.n)}: ${esc(O[i].n||'')}</b><small>${T(s.d||'')}</small></span><span class="cost en">${BOLT} ${c}</span></button>`));return}
+      const ok=L2.length>0,why=ok?'':en<c?ae('الطاقة مش مكفية','Not enough energy'):ae('مش وقتها دلوقتي','Not now');
+      rows.push(`<button class="it sk" id="cgs_${esc(s.id)}" data-cg="s:${esc(s.id)}" ${ok?'':'disabled'}><span class="ic">${ic(s)}</span><span class="tx"><b>${esc(s.n)}</b><small>${T(s.d||'')}</small>${why?`<small class="why">${why}</small>`:''}</span><span class="cost en">${BOLT} ${c}</span></button>`)});
+    return `<div class="sheet sks co-gsh"><div class="h">${ae('قدرات','Skills')} · ${BOLT} ${en}</div>${rows.join('')||`<small>${ae('مفيش قدرات','No skills')}</small>`}<button class="btn ghost small" data-cg="back">${ae('رجوع','Back')}</button></div>`}
+  if(P.m==='bag'){const ks=coBagKs(h);
+    return `<div class="sheet co-gsh co-gbag"><div class="h">${ae('الشنطة','The bag')} · ${G('اختار','اختاري')} ${ae('حاجة','something')}</div>${ks.map(k=>{const n=h.bag[k]|0,it=ITEMS[k];
+      return `<button class="it" id="cgb_${esc(k)}" data-cgb="${esc(k)}"><span class="ic">${itIco(k,30)}</span><span style="flex:1"><b>${esc(it.name)}</b> <span style="color:var(--dim)">×${n}</span><small>${T(it.info?it.info():'')}</small></span></button>`}).join('')||`<small>${ae('الشنطة فاضية','The bag is empty')}</small>`}
+      <button class="btn ghost small" data-cg="back">${ae('اقفل الشنطة','Close the bag')}</button></div>`}
+  if(P.m==='bagt'&&P.bk){const it=ITEMS[P.bk]||{name:P.bk};
+    return `<div class="sheet co-gsh co-gbag"><div class="h">${esc(it.name)} · ${ae('على مين؟','for whom?')}</div>${coBagTs(P.bk).map(t=>`<button class="it" id="cgw_${t.w}" data-cgw="${t.w}"><span class="ic">${itIco(P.bk,30)}</span><span style="flex:1"><b>${t.t}</b><small>${t.s}</small></span></button>`).join('')}
+      <button class="btn ghost small" data-cg="back">${ae('رجوع','Back')}</button></div>`}
+  let s=p0.apply(this,arguments);const n=coBagKs(h).reduce((x,k)=>x+(h.bag[k]|0),0);
+  s=s.replace(/<button class="act" data-cg="(?:o:\d+|x)"[^>]*><b>الشنطة<\/b><small>[^<]*<\/small><\/button>/,
+    `<button class="act" data-cg="bagopen" ${n?'':'disabled'}>${afOn()?`<span class="af-ic">${AF_IC.bag}</span>`:''}<b>${ae('الشنطة','Bag')}</b><small>${n?nThings(n):ae('الشنطة فاضية','The bag is empty')}</small></button>`);
+  return s}}
+{const g0=coGApply;coGApply=function(){const r=g0.apply(this,arguments);try{const sh=view.querySelector('#coM .co-gp .co-gsh');if(sh&&afOn())cgDress(sh)}catch(e){console.warn(e)}return r}}
+window.addEventListener('click',e=>{if(S.screen!=='coopg')return;const t=e.target;if(!t||!t.closest)return;const a=coJ(CO.room&&CO.room.ask);if(!a||CO.gp.id!==a.id)return;const P=CO.gp;
+  const stop=()=>{e.preventDefault();e.stopImmediatePropagation()};
+  const cell=t.closest('#coM .co-gsh .cg-c');
+  if(cell){const sh=cell.closest('.co-gsh'),d=sh.querySelector('.cg-d');
+    if(cell.classList.contains('cg-dis')){stop();cgShow(sh,cell);return}
+    if(e.isTrusted&&(CGS.sel!==cell.dataset.cgk||!d||d.hidden)){stop();cgShow(sh,cell);return}}
+  const f=t.closest('#coM .foe.pick');if(f&&P.bk&&P.m==='pick'){stop();coBagSend(a,P.bk,'f:'+f.dataset.f);return}
+  const b=t.closest('[data-cg],[data-cgb],[data-cgw]');if(!b)return;const v=b.dataset.cg;
+  if(v==='bagopen'){stop();if(b.disabled)return;P.m='bag';P.bk='';P.sk='';CGS.sel=null;try{SFX.page&&SFX.page()}catch(x){}coGApply();return}
+  if(v==='back'&&P.bk){stop();P.m='bag';P.bk='';CGS.sel=null;coGApply();return}
+  if(b.dataset.cgb){stop();const k=b.dataset.cgb;if(k==='salt'){P.m='pick';P.bk=k;P.sk='';coGApply();return}
+    const ts=coBagTs(k);if(ts.length===1){coBagSend(a,k,ts[0].w);return}P.m='bagt';P.bk=k;CGS.sel=null;coGApply();return}
+  if(b.dataset.cgw){stop();if(P.bk)coBagSend(a,P.bk,b.dataset.cgw)}},true);
+/* the host: friends use their own bag */
+{const o0=coAlOpts;coAlOpts=function(a,fs,C,h){const o=o0.apply(this,arguments).filter(x=>x.k!=='pot');const i=o.findIndex(x=>x.k==='hide');o.splice(i<0?o.length:i,0,{k:'pot',b:1});return o}}
+{const p0=coPickAns;coPickAns=function(opts,r){const o=p0.apply(this,arguments);if(o&&r&&typeof r==='object'&&r.b)Object.assign(o,{_b:String(r.b).slice(0,40),_w:String(r.w||'').slice(0,12),_v:r.v|0});return o}}
+{const d0=coAlDo;coAlDo=async function(a,o,auto,h,C){if(!o||o.k!=='pot'||!o.b)return d0.apply(this,arguments);
+  const g=coGx(a),k=String(o._b||''),it=ITEMS[k],el=x=>x===h?$('#meCard'):coElOf(x),mx=x=>x===h?MXH(h):x.max;
+  if(!it)return say(ae(`${a.name} ${g('فتح','فتحت')} الشنطة.. و${g('قفلها','قفلتها')} تاني.`,`${a.name} opened the bag.. and closed it again.`));
+  const team=[h,S.comp&&S.comp.max?S.comp:null].concat(coAls()).filter((x,i,A)=>x&&A.indexOf(x)===i);
+  if(it.use==='heal'){const v=Math.max(1,Math.min(99,(o._v|0)||5));let x=a;
+    if(o._w==='low'){const L=team.filter(y=>y.hp>0&&y.hp<mx(y)).sort((p,q)=>p.hp/mx(p)-q.hp/mx(q));if(L.length)x=L[0]}
+    const d=Math.min(v,Math.max(0,mx(x)-x.hp));x.hp+=d;combat();try{(it.kind==='food'?SFX.munch:SFX.gulp)();healFx(el(x),d)}catch(e){}
+    return say(x===a?ae(`${a.name} ${it.kind==='food'?g('كل','كلت'):g('شرب','شربت')} ${it.name}: ⁦+${d}⁩ صحة.`,`${a.name} used ${it.name}: +${d} health.`)
+      :ae(`${a.name} ${g('ادّى','ادّت')} ${x.name} ${it.name}: ⁦+${d}⁩ صحة.`,`${a.name} gave ${x.name} ${it.name}: +${d} health.`),'good')}
+  if(k==='revive'){try{SFX.revive()}catch(e){}const dn=o._w==='down'?team.find(y=>y!==h&&y!==a&&y.hp<=0):null;
+    if(dn){dn.hp=Math.ceil(mx(dn)/2);combat();try{healFx(el(dn),dn.hp)}catch(e){}return say(ae(`${a.name} ${g('صحّى','صحّت')} ${dn.name}! قام بنص صحته.`,`${a.name} woke ${dn.name}! Back up at half health.`),'good')}
+    const d=mx(a)-a.hp;a.hp=mx(a);combat();try{healFx(el(a),d)}catch(e){}return say(ae(`${a.name} ${g('شرب','شربت')} قزازة الصحيان: صحت${g('ه','ها')} رجعت كلها.`,`${a.name} drank the wake-up bottle: full health.`),'good')}
+  if(k==='salt'){const fi=parseInt(String(o._w||'').replace('f:',''),10),f=C.foes[fi]&&C.foes[fi].hp>0?C.foes[fi]:C.foes.find(y=>y.hp>0);if(!f)return;
+    const d=f.spirit?rnd(4)+3:1;hurtFoe(f,d,{fx:'salt'});await sleep(700);
+    return say(ae(`${a.name} ${g('رمى','رمت')} ملح على ${f.name}: -${d}${f.hp<=0?` · ${f.name} ${FF(f,'وقع','وقعت')}!`:''}`,`${a.name} threw salt at ${f.name}: -${d}`),'good')}}}
+/* a foe coming for a friend: the block ring on their own card, no dice */
+{const d0=coMyDodge;coMyDodge=async function(a){let on=false;try{on=afOn()&&gfFight()}catch(e){}if(!on)return d0.apply(this,arguments);
+  if(CO.myRoll||CO.dgDone[a.id]||!S.hero)return;CO.dgDone[a.id]=1;CO.myRoll='d'+a.id;const o=a.o[0]||{};
+  const me=coMe(),R=CO.room,card=()=>{if(R&&R.g===me)return view.querySelector('#coM #compCard');const n=S.hero.name;return [...view.querySelectorAll('#coM .mate')].find(m=>n&&m.textContent.includes(n))||view.querySelector('#coM .side')||view.querySelector('#coM')};
+  let q='miss';try{afLayer();const el=card();try{floatAt(el,T(ae(`${o.n||''} {جاي عليك|جاي عليكي}! صد!`,`${o.n||''} is coming! Block!`)),'#9fd0ff','',22);SFX.foeCry&&SFX.foeCry('')}catch(e){}
+    await sleep(window.__afAuto?60:550);q=await afRing(card,{dur:Math.round(820*(typeof afSpd==='function'?afSpd():1)),col:'#7fb6ff'});
+    try{const c=card();if(q==='perfect'){floatAt(c,ae('صد!','Blocked!'),'#9fd0ff','crit',28);vib([30,20,60])}else if(q==='good')floatAt(c,ae('صدّيت حتة منها','Blocked some'),'#cfe3ff','',20)}catch(e){}}
+  catch(e){console.warn(e)}finally{CO.myRoll=''}
+  const t=q==='perfect'?'full':q==='good'?'part':'fail';
+  if(!(await coPutAns(JSON.stringify({id:a.id,a:{i:0,t,n:0}}))))delete CO.dgDone[a.id];if(S.screen==='coopg')render()}}
+document.head.insertAdjacentHTML('beforeend',`<style>#app .cm-cap b,#app .cm-cap b *,#view .cm-cap b{color:#8a2a1c!important}#app .cm-bb b{color:#8a2a1c!important}
+#coM .co-gsh{margin-top:8px}#coM .co-gsh .it .ic svg{width:30px;height:30px}</style>`);
+
+/* ---------- 7.12 (Twister 14:20 «خلي الصناديق فالدهاليز الاونلاين كل واحد بيفتح صندوقه بنفسه») ----------
+   The chests after a fight on a live night were the owner's only (B14). Now every friend gets their own: the owner's view says how
+   many chests that loot screen has and whether a boss gave them (lk is one key per loot screen); each friend's phone rolls its own
+   chests (rollChest, from the friend's own hero) under the owner's loot, and the friend opens them by hand (tap the lock: it shakes
+   and cracks, then the reveal). What a chest gives goes to the friend's own hero (applyChest). A loot screen's chests are rolled once
+   (CO.myLoot.k); the owner's own chests are not shown on a friend's phone. */
+{const v0=coView;coView=function(){const o=v0.apply(this,arguments);try{const L=S.loot;if(S.screen==='loot'&&L&&!L.gift&&L.chests&&L.chests.length){if(!L.coK)L.coK=Date.now().toString(36);o.lk=L.coK;o.lc=Math.min(3,L.chests.length);o.lb=L.boss?1:0}}catch(e){}return o}}
+CO.myLoot=null;
+function coMyChHTML(){const M=CO.myLoot;if(!M)return '';const n=M.chests.length;
+  return `<div class="label" style="text-align:center">${ae(n>1?G('ليك صندوقين!','ليكي صندوقين!'):G('ليك صندوق!','ليكي صندوق!'),n>1?'Two chests for you!':'A chest for you!')}</div>
+  <div class="co-mych-l">${M.chests.map((c,i)=>chestHTML(c,i).replace('class="chest','class="chest co-mc').replace(`data-c="${i}"`,`data-mc="${i}"`)).join('')}</div>
+  <small class="dim" style="display:block;text-align:center;margin-top:4px">${M.chests.every(c=>c.open)?ae('خدت اللي فيهم.','All yours.'):ae(G('دوس على القفل لحد ما يتكسر','دوسي على القفل لحد ما يتكسر'),'Tap the lock until it breaks')}</small>`}
+function coMyChPaint(){let b=$('#coMyCh');const m=$('#coM');if(!CO.myLoot||S.screen!=='coopg'||!m){if(b)b.remove();return}
+  if(!b||!b.isConnected){b=document.createElement('div');b.id='coMyCh';b.className='card co-mych';m.after(b)}if(!b.dataset.busy)b.innerHTML=coMyChHTML()}
+async function coMyChTap(i,el){const M=CO.myLoot,c=M&&M.chests[i];if(!c||c.open||c.busy)return;const box=$('#coMyCh');
+  c.taps=(c.taps|0)+1;try{cls(el,'shk');SFX.chest();vib(25)}catch(e){}if(c.taps<3)return;
+  c.busy=1;if(box)box.dataset.busy=1;try{const rn=el.querySelector('.rn');for(let t=0;t<=c.tier;t++){const R0=RARE[t];el.style.setProperty('--rc',R0.c);if(rn){rn.textContent=R0.n+(t<c.tier?'..':'');rn.style.color=R0.c}
+      try{cls(el,'shk');if(t)SFX.shimmer();else SFX.tick(700);if(t)pop(el,[R0.c,'#fff'],14+t*10)}catch(e){}await sleep(window.__afAuto?20:(t<c.tier?560:340))}
+    applyChest(c);c.open=true}catch(e){console.warn(e)}finally{c.busy=0;if(box)delete box.dataset.busy}
+  coMyChPaint();try{if(c.tier>=2){SFX.shimmer();flash(RARE[c.tier].c)}else SFX.good()}catch(e){}
+  if(!window.__afAuto)await showReveal(c);try{ach('chest');if(c.tier>=2)ach('rare');if(c.tier===3)ach('legend')}catch(e){}}
+{const g0=SCREENS.coopg;SCREENS.coopg=function(){const r=g0.apply(this,arguments);try{const R=CO.room,V=coJ(R&&R.vw);
+    if(CO.role==='guest'&&R&&R.st==='on'&&V&&V.s==='loot'&&V.lk&&S.hero){if(!CO.myLoot||CO.myLoot.k!==V.lk){const n=Math.max(1,Math.min(3,V.lc|0));CO.myLoot={k:V.lk,chests:Array.from({length:n},()=>rollChest(!!V.lb))}}
+      view.querySelectorAll('#coM #chests,#coM .chest').forEach(x=>{const w=x.id==='chests'?x:x.closest('#chests');(w||x).style.display='none';const l=(w||x).previousElementSibling;if(l&&l.classList.contains('label'))l.style.display='none'});
+      const n=$('#coLootN');if(n)n.remove()}
+    if(CO.myLoot&&!(V&&V.s==='loot')){/* the owner moved on: chests left shut open by themselves */CO.myLoot.chests.forEach(c=>{if(!c.open){try{applyChest(c);c.open=true;toast(ae(`${c.title}: اتحطت في حاجتك`,`${c.title}: added to your things`))}catch(e){}}});CO.myLoot=null}
+    coMyChPaint()}catch(e){console.warn(e)}return r}}
+document.addEventListener('click',e=>{const el=e.target&&e.target.closest&&e.target.closest('#coMyCh .chest[data-mc]');if(!el)return;e.preventDefault();e.stopPropagation();coMyChTap(+el.dataset.mc,el)},true);
+document.head.insertAdjacentHTML('beforeend',`<style>.co-mych{margin-top:10px}.co-mych-l{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.co-mych .chest{cursor:pointer;min-width:44px;min-height:44px}</style>`);
 
 render();
 })();
