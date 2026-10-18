@@ -4813,6 +4813,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.09',d:'18 أكتوبر',add:['لعبة قفل الصندوق بقت أسهل وأبطأ: المكان الدهبي أوسع وفيه سنّارة زيادة، وكل مسمار بيتفتح بشرار ونغمة طالعة، والفتح بقى احتفال','قناوي بقى أتقل: صحته زادت، ومفيش ضربة واحدة تاخد منه أكتر من حتة صغيرة، فمحتاج{|ة} تضربه 7 مرات على الأقل']},
 {v:'7.08.1',d:'18 أكتوبر',add:['الجرنال ما بقاش فيه أرقام أعداد: الجرنال بيقول هو بتاع النهارده ولا امبارح ولا من كام يوم']},
 {v:'7.08',d:'18 أكتوبر',add:['المبارزة الأونلاين فيها صد بالتوقيت: لما صاحبك يضربك، الدايرة بتقفل على بطلك. {دوس|دوسي} في الوقت المظبوط: مظبوط قوي = ولا حاجة، كويس = نص الضربة، متأخر = الضربة كلها. لازم انتو الاتنين تكونوا على النسخة دي']},
 {v:'7.07',d:'17 أكتوبر',add:['الوقت في البلد بقى واحد لكل اللاعبين: الساعة الحقيقية هي اللي بتمشّي اليوم، فكل الناس في نفس الساعة ونفس اليوم، ومفيش رقم يوم تاني. ولو {كنت غايب|كنتي غايبة}، البلد بتحسبلك لحد 6 أيام','أسعار النهارده بقت واحدة لكل الناس: اللي غالي عندك غالي عند صحابك','المبارزة الأونلاين بقت بحركاتك {انت|انتي}: ضربة سلاحك، وحركات صنفك أو تخصصك اللي بتاخد طاقة، و«حماية». الحركة اللي بتحمي أو بتعالج بتقلل الضربة الجاية عليك بالنص','الليلة في السرداب ما بقتش بتزوّد يوم لوحدها: الوقت اللي {قضيته|قضيتيه} فيها هو اللي بيتحسب']},
@@ -51612,7 +51613,7 @@ function lkSheet(c,el){const h=S.hero;if(!h||$('#lkS'))return;const keys=h.bag&&
 const LK_PICK=`<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M6 34 L26 14" stroke="#2b1b22" stroke-width="6" stroke-linecap="round"/><path d="M6 34 L26 14" stroke="#b8c2ca" stroke-width="3" stroke-linecap="round"/><path d="M26 14 L30 8 L33 10" fill="none" stroke="#b8c2ca" stroke-width="2.4" stroke-linecap="round"/><rect x="3" y="29" width="9" height="8" rx="2" transform="rotate(-45 7 33)" fill="#8a5a32" stroke="#2b1b22" stroke-width="2"/></svg>`;
 const LK_HAM=`<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M10 34 L24 18" stroke="#2b1b22" stroke-width="7" stroke-linecap="round"/><path d="M10 34 L24 18" stroke="#a8743e" stroke-width="4" stroke-linecap="round"/><rect x="18" y="5" width="18" height="11" rx="2" transform="rotate(42 27 10)" fill="#7a808a" stroke="#2b1b22" stroke-width="2.4"/></svg>`;
 /* the lock game: the pick sweeps left/right along the pin; tap on the gold spot. 3 pins, 3 picks (thief: 4 picks, wider spot) */
-function lkGame(c,el){const h=S.hero,th=LK_THIEF(h),tier=c.tier|0;let pin=0,picks=th?4:3,over=false,iv=0;const W0=Math.max(.07,(.2-.035*tier)*(th?1.6:1));
+function lkGame(c,el){const h=S.hero,th=LK_THIEF(h),tier=c.tier|0;let pin=0,picks=th?5:4,over=false,iv=0;const W0=Math.max(.16,(.3-.03*tier)*(th?1.35:1));   /* 7.09 (Twister: «خلي لعبة القفل اسهل وابطئ»): wider spot, one more pick, slower */
   const g=document.createElement('div');g.id='actG';g.style.direction=EN?'ltr':'rtl';
   const pins=[0,1,2].map(i=>`<g class="lk-pn" data-p="${i}"><rect x="${96+i*40}" y="34" width="16" height="44" fill="#2b1b22"/><rect x="${99+i*40}" y="40" width="10" height="34" class="lk-pb" fill="#c9a46a"/><rect x="${99+i*40}" y="74" width="10" height="8" fill="#8a8f9a"/></g>`).join('');
   g.innerHTML=`<div class="ag-box"><div class="ag-h"><b>${ae('افتح القفل','Pick the lock')}</b><span class="ag-st">${th?ae('حرامي','Thief'):ae('بإيدك','By hand')}</span></div>
@@ -51627,12 +51628,12 @@ function lkGame(c,el){const h=S.hero,th=LK_THIEF(h),tier=c.tier|0;let pin=0,pick
   document.body.appendChild(g);const pk=g.querySelector('#lkPk'),sp=g.querySelector('#lkSpot'),tip=g.querySelector('#lkTip'),Rr=g.querySelector('#agR');let spot=.5,v=0,t0=performance.now();
   const showTip=()=>{tip.textContent=`${ae('مسمار','Pin')} ${pin+1}/3 · ${ae('سنانير','Picks')}: ${picks}`};
   const newSpot=()=>{spot=W0/2+Math.random()*(1-W0);sp.setAttribute('x',(84+132*(spot-W0/2)).toFixed(1));sp.setAttribute('width',(132*W0).toFixed(1));showTip()};newSpot();
-  const P=Math.max(700,1200-tier*120);iv=setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=t<.5?t*2:2-t*2;pk.setAttribute('transform',`translate(${(84+132*v).toFixed(1)} 0)`)},16);
+  const P=Math.max(1700,2500-tier*160);iv=setInterval(()=>{const t=((performance.now()-t0)%P)/P;v=t<.5?t*2:2-t*2;pk.setAttribute('transform',`translate(${(84+132*v).toFixed(1)} 0)`)},16);
   const fin=(won)=>{if(over)return;over=true;clearInterval(iv);if(won){Rr.innerHTML=`<b class="ag-up">${ae('اتفتح!','Click! Open!')}</b>`;g.querySelector('#lkSh').setAttribute('transform','translate(0 -10)');try{SFX.good()}catch(x){}try{pop(Rr,['#ffd36a','#fff'],16)}catch(x){}}
     else{Rr.innerHTML=`<b class="ag-dn">${ae('القفل اتزرجن','The lock jammed')}</b>`;try{SFX.bad()}catch(x){}}
-    setTimeout(()=>{g.classList.add('out');setTimeout(()=>g.remove(),200);if(won)lkOpen(c,el);else{c.jam=1;const rn=el.querySelector('.rn');if(rn)rn.innerHTML=`<span class="t4-ht">${ae('القفل اتزرجن: اكسره','Jammed: smash it')}</span>`}},window.__actFast?40:900)};
+    setTimeout(()=>{g.classList.add('out');setTimeout(()=>g.remove(),200);if(won)lkOpen(c,el);else{c.jam=1;const rn=el.querySelector('.rn');if(rn)rn.innerHTML=`<span class="t4-ht">${ae('القفل اتزرجن: اكسره','Jammed: smash it')}</span>`}},window.__actFast?40:won?1500:1000)};
   g.querySelector('#agBack').onclick=()=>{over=true;clearInterval(iv);g.remove()};
-  g.querySelector('#agT').onclick=()=>{if(over)return;const hit=Math.abs(v-spot)<=W0/2;const pn=g.querySelector(`.lk-pn[data-p="${pin}"] .lk-pb`);
+  g.querySelector('#agT').onclick=()=>{if(over)return;const hit=Math.abs(v-spot)<=W0/2+.035;const pn=g.querySelector(`.lk-pn[data-p="${pin}"] .lk-pb`);
     if(hit){pn.setAttribute('y','28');pn.setAttribute('fill','#7fe07a');pin++;try{SFX.tick(900+pin*120);vib(12)}catch(x){}if(pin>=3)return fin(true);newSpot()}
     else{picks--;g.querySelector('.ag-box').classList.remove('lk-bad');void g.offsetWidth;g.querySelector('.ag-box').classList.add('lk-bad');try{SFX.tick(160);vib(30)}catch(x){}showTip();if(picks<=0)fin(false)}};
   if(typeof window.__lkAuto==='boolean')setTimeout(()=>fin(window.__lkAuto),60)}
@@ -57299,6 +57300,7 @@ Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every shar
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 Object.assign(NEWS_EN,{'7.05':{d:'17 October',add:['Fixed: the combat training sent you back to town after you beat the scarecrow, and the lesson was not marked done. Now you go back to training and the lesson is marked done'],fix:[]}});
+Object.assign(NEWS_EN,{'7.09':{d:'18 October',add:['The chest lock game is easier and slower: the gold spot is wider, you get one more pick, every pin pops with sparks and a rising note, and opening the lock is a little party','Qenawy is tougher: more health, and no single hit can take more than a small piece of it, so he needs at least 7 hits'],fix:[]}});
 Object.assign(NEWS_EN,{'7.08.1':{d:'18 October',add:['The paper has no issue numbers any more: it says if it is today\'s, yesterday\'s, or how many days old'],fix:[]}});
 Object.assign(NEWS_EN,{'7.08':{d:'18 October',add:['The live duel has a timed block: when your friend hits you, the ring closes on your hero. Tap at the right moment: perfect = nothing, good = half the hit, late = all of it. You both need this version'],fix:[]}});
 Object.assign(NEWS_EN,{'7.07':{d:'17 October',add:['Time in the village is the same for every player now: the real clock moves the day, so everyone is at the same hour on the same day, and there are no day numbers. If you were away, the village counts up to 6 days for you','Today\'s prices are the same for everyone: what is dear for you is dear for your friends','The live duel uses your own moves: your weapon\'s hit, your class or specialisation moves that cost energy, and «Guard». A move that shields or heals halves the next hit on you','A night in the crypt no longer adds a day by itself: the time you spent in it is what counts'],fix:[]}});
@@ -58322,6 +58324,58 @@ async function duBlock(h,D){const me=duSide(D),op=me==='a'?'b':'a',pd=D.pd|0;if(
   if((D.pd|0)>0&&D.tn===me)view.querySelectorAll('.du-a').forEach(b=>b.disabled=true);
   const lt=view.querySelector('.du-last');if(lt&&L&&L.mv==='block'){const Q=duP(D[L.w==='a'?'pa':'pb'])||{},who=L.w===me?h.name:Q.n||'',f=(L.w===me?h.g:Q.g)==='f',v=(m,w)=>f?w:m;
     lt.textContent=L.b==='perfect'?ae(`${who} ${v('صدّ','صدّت')} الضربة كلها!`,`${who} blocked it all!`):L.b==='good'?ae(`${who} ${v('صدّ','صدّت')} نصها: −${L.d}`,`${who} blocked half: −${L.d}`):ae(`${who} ${v('ما لحقش يصدّ','ما لحقتش تصدّ')}: −${L.d}`,`${who} was too late to block: −${L.d}`)}}catch(e){console.warn(e)}return r}}
+/* ---------- 7.09 (Twister: «خلي لعبة القفل اسهل وابطئ … وزود دوبامين وخلي شكلها احلي») the lock game feels good ----------
+   p173 got the easy part (a wider spot, one more pick, a slower pick, a little grace on each side). This part is the feel:
+   - the lock sits in a warm lit niche with a soft glow, and the pick leaves a faint trail;
+   - every pin set: a burst of sparks out of that pin, the pin jumps and glows, a rising note (each pin higher), a white flash,
+     a quick buzz, and a word that grows with the streak («حلو!», «جامد!», «ولا غلطة!»);
+   - a miss: the lock shakes and the pick bends, nothing harsher;
+   - the open: the shackle springs up, three bursts of gold and green, a fanfare and a long buzz.
+   It listens to the same tap the game hears (capture on #agT, like p260) and reads the pins' colours to know what happened. */
+const LKJ_W=[['حلو!','Nice!'],['جامد!','Great!'],['ولا غلطة!','Flawless!']];
+function lkjAt(sv,x,y){const r=sv.getBoundingClientRect(),d=document.createElement('span');d.style.cssText=`position:fixed;left:${r.left+x/300*r.width}px;top:${r.top+y/150*r.height}px;width:1px;height:1px;pointer-events:none`;document.body.appendChild(d);setTimeout(()=>d.remove(),900);return d}
+function lkjNote(i){try{[0,1].forEach(k=>setTimeout(()=>tone(523*Math.pow(2,(i*4+k*7)/12),540*Math.pow(2,(i*4+k*7)/12),.12,'square',.05),k*70))}catch(e){}}
+function lkjOn(){const g=$('#actG');if(!g||g.dataset.lkj)return;const sv=g.querySelector('.ag-sv'),btn=g.querySelector('#agT'),box=g.querySelector('.ag-box'),Rr=g.querySelector('#agR');if(!sv||!btn||!box||!Rr||!g.querySelector('#lkPk'))return;
+  g.dataset.lkj=1;box.classList.add('lkj');
+  /* the warm niche and the glow behind the lock */
+  const NS='http://www.w3.org/2000/svg',bg=document.createElementNS(NS,'g');bg.innerHTML=`<defs><radialGradient id="lkjG" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#ffcf6a" stop-opacity=".45"/><stop offset=".55" stop-color="#7a3fb0" stop-opacity=".18"/><stop offset="1" stop-color="#1a1428" stop-opacity="0"/></radialGradient></defs><rect width="300" height="150" fill="url(#lkjG)" class="lkj-glow"/>`;
+  sv.insertBefore(bg,sv.children[1]||null);
+  let streak=0,before=null,done=0;const green=()=>g.querySelectorAll('.lk-pb[fill="#7fe07a"]').length,picksLeft=()=>{const t=g.querySelector('#lkTip');const m=t&&/(\d+)\s*$/.exec(t.textContent);return m?+m[1]:-1};
+  g.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#agT'))before={n:green(),p:picksLeft()}},true);
+  btn.addEventListener('click',()=>{const b=before;before=null;if(!b||done)return;const n=green();
+    if(n>b.n){streak++;const i=n-1,x=104+i*40,pn=g.querySelector(`.lk-pn[data-p="${i}"]`);
+      try{pop(lkjAt(sv,x,40),['#ffd36a','#fff0b0','#7fe07a','#ffffff'],26)}catch(x){}
+      if(pn){pn.classList.remove('lkj-up');void pn.getBoundingClientRect();pn.classList.add('lkj-up')}
+      box.classList.remove('lkj-flash');void box.offsetWidth;box.classList.add('lkj-flash');lkjNote(i);try{vib([18,30,18])}catch(x){}
+      const w=LKJ_W[Math.min(LKJ_W.length-1,streak-1)];try{floatAt(lkjAt(sv,x,30),ae(w[0],w[1]),'#fff0b0','',20+streak*4)}catch(x){}}
+    else{streak=0;sv.classList.remove('lkj-bend');void sv.getBoundingClientRect();sv.classList.add('lkj-bend')}});
+  const mo=new MutationObserver(()=>{const up=Rr.querySelector('.ag-up');if(done||!up)return;done=1;mo.disconnect();box.classList.add('lkj-won');
+    [0,180,360].forEach((t,k)=>setTimeout(()=>{try{pop(lkjAt(sv,150,60+k*10),k%2?['#7fe07a','#c8ffc0','#ffffff']:['#ffd36a','#fff0b0','#ff9a5a'],40)}catch(x){}},t));
+    try{SFX.levelup?SFX.levelup():SFX.shimmer();vib([30,40,30,40,120])}catch(x){}});
+  mo.observe(Rr,{childList:true,subtree:true})}
+{const g0=lkGame;lkGame=function(){const r=g0.apply(this,arguments);try{lkjOn()}catch(e){console.warn(e)}return r}}
+(function(){const s=document.createElement('style');s.textContent=`
+#actG .ag-box.lkj{background:linear-gradient(#241a3e,#16112a);border-top-color:#ffd36a}
+#actG .lkj .ag-sv{border-radius:14px;box-shadow:inset 0 0 0 3px #1f1420,0 0 24px #ffcf6a33}
+#actG .lkj .lkj-glow{animation:lkjBr 2.2s ease-in-out infinite}@keyframes lkjBr{50%{opacity:.6}}
+#actG .lkj #lkPk{filter:drop-shadow(-6px 0 2px #fff0b055)}
+#actG .lkj .lk-pn{transform-box:fill-box;transform-origin:50% 100%}
+#actG .lkj .lk-pn.lkj-up{animation:lkjUp .45s cubic-bezier(.2,1.6,.4,1)}@keyframes lkjUp{0%{transform:translateY(0)}40%{transform:translateY(-10px) scale(1.15)}100%{transform:translateY(0)}}
+#actG .lkj .lk-pb[fill="#7fe07a"]{filter:drop-shadow(0 0 4px #7fe07a)}
+#actG .ag-box.lkj.lkj-flash{animation:lkjFl .3s ease-out}@keyframes lkjFl{0%{box-shadow:0 -10px 30px #000a,inset 0 0 0 999px #ffffff40}100%{box-shadow:0 -10px 30px #000a,inset 0 0 0 999px #ffffff00}}
+#actG .lkj .ag-sv.lkj-bend{animation:lkjBd .35s ease-out}@keyframes lkjBd{20%{transform:translateX(-5px) rotate(-1deg)}50%{transform:translateX(4px) rotate(1deg)}80%{transform:translateX(-2px)}}
+#actG .lkj.lkj-won #lkSh{animation:lkjSh .5s cubic-bezier(.2,1.8,.4,1) both}@keyframes lkjSh{from{transform:translate(0,0)}to{transform:translate(0,-14px)}}
+#actG .lkj.lkj-won .ag-sv{box-shadow:inset 0 0 0 3px #1f1420,0 0 36px #ffd36a}
+#actG .lkj.lkj-won .ag-up{font-size:26px;text-shadow:0 0 12px #ffd36a;animation:lkjBig .5s cubic-bezier(.2,1.6,.4,1)}@keyframes lkjBig{from{transform:scale(.4)}}
+#actG .lkj .lkc-cue[data-s="go"]{animation:lkjGo .7s ease-in-out infinite}@keyframes lkjGo{50%{transform:scale(1.06)}}`;document.head.appendChild(s)})();
+/* ---------- 7.09 (Twister: «صلح قناوي هيلثه بيخلص في ضربتين مني فبقا سهل جدا») ----------
+   7.06 tied قناوي's health to the hero's own health (p248 RV_HPK), but a strong hero's hit is far bigger than his own health,
+   so two hits ended it. Now: his health starts higher (RV_HPK 1.8× rising to 3.2×), and no single blow takes more than RV_CAP of
+   his full health (a crit RV_CAPC), so he always takes at least 6–8 good hits, whatever the hero's level or weapon. Poison and
+   other ticks pass through hurtFoe too and obey the same cap. */
+Object.assign(RV_HPK,{lo:1.8,hi:3.2});
+const RV_CAP=.13,RV_CAPC=.18;
+{const h0=hurtFoe;hurtFoe=function(f,d,o){try{if(f&&f.base&&f.base.rival&&typeof d==='number'&&d>0&&f.max>0){const cap=Math.max(1,Math.ceil(f.max*(o&&o.crit?RV_CAPC:RV_CAP)));if(d>cap)d=cap}}catch(e){}return h0.call(this,f,d,o)}}
 
 render();
 })();
