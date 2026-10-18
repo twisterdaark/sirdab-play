@@ -4813,6 +4813,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.10',d:'18 أكتوبر',add:['«مستني يقبل» في الصحاب بقى بيكتب اسم صاحبك اللي {بعتله|بعتيله} الطلب، والكود صغير جنبه','في القتال، جنب صينية النرد فيه زرار {تبدّل|تبدّلي} بيه بين النردين والنرد أبو 20 قبل ما {ترمي|ترمي}. اختيارك بيتحفظ لليالي والقتال الجاي']},
 {v:'7.09',d:'18 أكتوبر',add:['لعبة قفل الصندوق بقت أسهل وأبطأ: المكان الدهبي أوسع وفيه سنّارة زيادة، وكل مسمار بيتفتح بشرار ونغمة طالعة، والفتح بقى احتفال','قناوي بقى أتقل: صحته زادت، ومفيش ضربة واحدة تاخد منه أكتر من حتة صغيرة، فمحتاج{|ة} تضربه 7 مرات على الأقل']},
 {v:'7.08.1',d:'18 أكتوبر',add:['الجرنال ما بقاش فيه أرقام أعداد: الجرنال بيقول هو بتاع النهارده ولا امبارح ولا من كام يوم']},
 {v:'7.08',d:'18 أكتوبر',add:['المبارزة الأونلاين فيها صد بالتوقيت: لما صاحبك يضربك، الدايرة بتقفل على بطلك. {دوس|دوسي} في الوقت المظبوط: مظبوط قوي = ولا حاجة، كويس = نص الضربة، متأخر = الضربة كلها. لازم انتو الاتنين تكونوا على النسخة دي']},
@@ -57300,6 +57301,7 @@ Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every shar
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 Object.assign(NEWS_EN,{'7.05':{d:'17 October',add:['Fixed: the combat training sent you back to town after you beat the scarecrow, and the lesson was not marked done. Now you go back to training and the lesson is marked done'],fix:[]}});
+Object.assign(NEWS_EN,{'7.10':{d:'18 October',add:['A friend request you sent and is waiting now shows your friend\'s name, with the code small beside it','In a fight, a button beside the dice tray switches between two dice and the d20 before you throw. Your pick is kept for the next nights and fights'],fix:[]}});
 Object.assign(NEWS_EN,{'7.09':{d:'18 October',add:['The chest lock game is easier and slower: the gold spot is wider, you get one more pick, every pin pops with sparks and a rising note, and opening the lock is a little party','Qenawy is tougher: more health, and no single hit can take more than a small piece of it, so he needs at least 7 hits'],fix:[]}});
 Object.assign(NEWS_EN,{'7.08.1':{d:'18 October',add:['The paper has no issue numbers any more: it says if it is today\'s, yesterday\'s, or how many days old'],fix:[]}});
 Object.assign(NEWS_EN,{'7.08':{d:'18 October',add:['The live duel has a timed block: when your friend hits you, the ring closes on your hero. Tap at the right moment: perfect = nothing, good = half the hit, late = all of it. You both need this version'],fix:[]}});
@@ -58376,6 +58378,41 @@ function lkjOn(){const g=$('#actG');if(!g||g.dataset.lkj)return;const sv=g.query
 Object.assign(RV_HPK,{lo:1.8,hi:3.2});
 const RV_CAP=.13,RV_CAPC=.18;
 {const h0=hurtFoe;hurtFoe=function(f,d,o){try{if(f&&f.base&&f.base.rival&&typeof d==='number'&&d>0&&f.max>0){const cap=Math.max(1,Math.ceil(f.max*(o&&o.crit?RV_CAPC:RV_CAP)));if(d>cap)d=cap}}catch(e){}return h0.call(this,f,d,o)}}
+/* ==========================================================================
+   سرداب 7.10 (p269.js) — Twister 2026-10-18
+   - «اكتب اسم الي بعتله بدل الكود»: a friend request you sent and is waiting shows the friend's name, with the code small beside it.
+     The name is kept when you send by @ID (their name from pres/, else @ID), and for any other code it is looked up once from the
+     heroes friends publish (pal/ where fc == code). Names live in localStorage 'sirdab.frqnm'.
+   - «ضيف طريقه تغير ما بين النردين والنرد ابو 20»: a switch next to the fight's dice tray flips 2d6 / d20 while the dice wait
+     (not mid-throw, not in an online duel or live night). It is the same choice as the night's setup screen (S.dice, 'sirdab.dice').
+   ========================================================================== */
+const FQNM=(()=>{try{const v=store('sirdab.frqnm');return v&&typeof v==='object'?v:{}}catch(e){return {}}})(),FQNM_ASK={};
+function frqnSet(c,n){if(!c||!n)return;FQNM[c]=String(n).slice(0,24);try{store('sirdab.frqnm',FQNM)}catch(e){}}
+async function frqnLook(c){if(!c||FQNM[c]||FQNM_ASK[c]||!FB.db)return;FQNM_ASK[c]=1;
+  try{const q=await palCol().where('fc','==',c).limit(1).get();const d=q.docs[0],n=d&&d.data().n;
+    if(n){frqnSet(c,n);if(['frs','profile','pals'].includes(S.screen)){const y=window.scrollY;render();try{window.scrollTo(0,y)}catch(e){}}}}catch(e){}}
+{const a0=hdAdd;hdAdd=async function(v){const id=hdClean(v);let u=null;try{if(HD_RX.test(id)&&id!==hdMe().hd)u=await hdFind(id)}catch(e){}
+  const m=await a0.apply(this,arguments);
+  if(u&&!m){const c=frCode(u);frqnSet(c,'@'+hdUp(id));try{const P=await FRA.pres([u]),dn=P&&P[u]&&P[u].dn;if(dn)frqnSet(c,dn)}catch(e){}
+    if(['frs','profile','pals'].includes(S.screen))render()}
+  return m}}
+{const b0=frqBoxHTML;frqBoxHTML=function(){let s=b0.apply(this,arguments);try{frqPend().forEach(c=>{const k=esc(c),n=FQNM[c];if(!n){frqnLook(c);return}
+  s=s.replace(`<span translate="no">${k}</span><button class="btn ghost" data-fqb="${k}"`,`<span><b>${esc(n)}</b> <small translate="no">${k}</small></span><button class="btn ghost" data-fqb="${k}"`)})}catch(e){}return s}}
+
+/* the dice switch */
+function dzSwOk(){const C=S.combat;if(!C||S.screen!=='combat'||C.du||C.duo)return false;try{if(typeof coOn==='function'&&coOn())return false}catch(e){}return true}
+function dzSwBtn(){const tr=view.querySelector('.af-tray');if(!tr)return;let b=tr.querySelector('.dz-sw');if(!dzSwOk()){if(b)b.remove();return}
+  if(!b){b=document.createElement('button');b.className='dz-sw';b.type='button';tr.appendChild(b);
+    b.onclick=e=>{e.stopPropagation();e.preventDefault();if(!dzSwOk())return;if(AF.st&&AF.st!=='wait'){try{SFX.meh&&SFX.meh()}catch(x){}return}
+      S.dice=S.dice==='2d6'?'d20':'2d6';store('sirdab.dice',S.dice);AF.vals=null;AF.fk='';try{SFX.tick&&SFX.tick(900);vib(10)}catch(x){}
+      try{toast(T(S.dice==='2d6'?ae('{هتلعب|هتلعبي} بنردين','Playing with two dice'):ae('{هتلعب|هتلعبي} بنرد 20','Playing with the d20')))}catch(x){}dzSwBtn();try{afLay()}catch(x){}}}
+  b.disabled=!!(AF.st&&AF.st!=='wait');b.setAttribute('aria-label',ae('غيّر النرد','Switch dice'));
+  b.innerHTML=`<span>${S.dice==='2d6'?ae('نردين','2 dice'):ae('نرد 20','d20')}</span><small>⇄</small>`}
+{const c0=combat;combat=function(){const r=c0.apply(this,arguments);try{dzSwBtn()}catch(e){}return r}}
+{const l0=afLay;afLay=function(){const r=l0.apply(this,arguments);try{const b=view.querySelector('.af-tray .dz-sw');if(b)b.disabled=!!(AF.st&&AF.st!=='wait')}catch(e){}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>.dz-sw{position:absolute;top:50%;left:-58px;transform:translateY(-50%);min-width:48px;min-height:48px;padding:4px 6px;border-radius:10px;
+border:2px solid #3d3266;background:#171a33;color:var(--gold,#e8c35a);font:inherit;font-size:12px;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer}
+.dz-sw small{font-size:13px;color:#9aa0c8}.dz-sw:disabled{opacity:.45}.dz-sw:active{transform:translateY(-50%) scale(.94)}</style>`);
 
 render();
 })();
