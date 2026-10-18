@@ -4813,6 +4813,7 @@ L10N({'بطلي':'My hero','بطلتي':'My hero','صفاتي':'Stats','قدرا
 
 /* ---------- «الجديد»: what each version added and changed. Newest first; add a new entry at the top for every published build. ---------- */
 const NEWS=[
+{v:'7.11',d:'18 أكتوبر',add:['المبارزة الأونلاين بقت شبه القتال: {انت|انتي} وصاحبك واقفين على خلفية مرسومة، وفوق دماغ كل واحد اسمه وصحته وطاقته، واللي بيضرب بيجري على التاني','قايمة المبارزة بقت زي القتال: ضربة، قدرات، حماية. «قدرات» بتفتح نفس قدراتك اللي في القتال كلها، دوسة بتوريك اسمها وشرحها، والدوسة التانية بتستعملها','الصد في المبارزة اتظبط: الصد المظبوط بياخد منك 40% من الضربة، والكويس 70%، والمتأخر الضربة كلها. كده الضرب لازم يوصل']},
 {v:'7.10',d:'18 أكتوبر',add:['«مستني يقبل» في الصحاب بقى بيكتب اسم صاحبك اللي {بعتله|بعتيله} الطلب، والكود صغير جنبه','في القتال، جنب صينية النرد فيه زرار {تبدّل|تبدّلي} بيه بين النردين والنرد أبو 20 قبل ما {ترمي|ترمي}. اختيارك بيتحفظ لليالي والقتال الجاي']},
 {v:'7.09',d:'18 أكتوبر',add:['لعبة قفل الصندوق بقت أسهل وأبطأ: المكان الدهبي أوسع وفيه سنّارة زيادة، وكل مسمار بيتفتح بشرار ونغمة طالعة، والفتح بقى احتفال','قناوي بقى أتقل: صحته زادت، ومفيش ضربة واحدة تاخد منه أكتر من حتة صغيرة، فمحتاج{|ة} تضربه 7 مرات على الأقل']},
 {v:'7.08.1',d:'18 أكتوبر',add:['الجرنال ما بقاش فيه أرقام أعداد: الجرنال بيقول هو بتاع النهارده ولا امبارح ولا من كام يوم']},
@@ -57301,6 +57302,7 @@ Object.assign(NEWS_EN,{'7.02':{d:'15 October',add:['The big exchange: every shar
 Object.assign(NEWS_EN,{'7.03':{d:'15 October',add:['«Today\'s prices» now change with every new town day (not every hour), and show how long is left until tomorrow.','The big price rise now goes round every kind in turn: fish, crops, ores, herbs, hides. No kind rises two days in a row.'],fix:[]}});
 Object.assign(NEWS_EN,{'7.04':{d:'15 October',add:['Moves are worth the energy: the first blow of any move now clearly beats your plain hit, for every class and specialisation (a move that costs more hits harder)','Every workshop now has 8 stages: smith, tailor, cook, mine, fishing, farm and herbalist (the new stages add more of what each workshop does)','The cook, the tailor and the herbalist got the row of tiles on top like the smith, and the tabs are tidy','Farm workers: an «open» contract renews itself each week from your money, and the animal keeper can buy feed when you have none (30% dearer)','Umm Attia: pick which slot a new trait goes into, and put back an old trait you saw in any slot for a fee by its rarity and your level','Foes afraid of fire: a weapon with a ruby hits them half again as hard, and a fire potion knocks them down like a torch','Fixed: the page jumped to the top after making something in a craft','Fixed: the dice stayed stuck on the bag and moved with the scroll','Fixed: «Today\'s order» said 0/2 after you handed it over','Fixed: the enhancement message waits for the animation, and the weapon grip card can be folded','Fixed: female shopkeepers and workers get the right words','The scissors in the cutting game are smaller, and the «What is this?» button hides when there is nothing'],fix:[]}});
 Object.assign(NEWS_EN,{'7.05':{d:'17 October',add:['Fixed: the combat training sent you back to town after you beat the scarecrow, and the lesson was not marked done. Now you go back to training and the lesson is marked done'],fix:[]}});
+Object.assign(NEWS_EN,{'7.11':{d:'18 October',add:['The live duel now looks like a fight: you and your friend stand on a drawn backdrop with the name, health and energy over each head, and the one who hits runs at the other','The duel\'s moves are laid out like a fight: hit, skills, guard. «Skills» opens all the skills you have in a fight; one tap shows the name and text, a second tap uses it','The duel block is fixed: a perfect block takes 40% of the hit, a good one 70%, a late one all of it, so hits always land'],fix:[]}});
 Object.assign(NEWS_EN,{'7.10':{d:'18 October',add:['A friend request you sent and is waiting now shows your friend\'s name, with the code small beside it','In a fight, a button beside the dice tray switches between two dice and the d20 before you throw. Your pick is kept for the next nights and fights'],fix:[]}});
 Object.assign(NEWS_EN,{'7.09':{d:'18 October',add:['The chest lock game is easier and slower: the gold spot is wider, you get one more pick, every pin pops with sparks and a rising note, and opening the lock is a little party','Qenawy is tougher: more health, and no single hit can take more than a small piece of it, so he needs at least 7 hits'],fix:[]}});
 Object.assign(NEWS_EN,{'7.08.1':{d:'18 October',add:['The paper has no issue numbers any more: it says if it is today\'s, yesterday\'s, or how many days old'],fix:[]}});
@@ -58413,6 +58415,87 @@ function dzSwBtn(){const tr=view.querySelector('.af-tray');if(!tr)return;let b=t
 document.head.insertAdjacentHTML('beforeend',`<style>.dz-sw{position:absolute;top:50%;left:-58px;transform:translateY(-50%);min-width:48px;min-height:48px;padding:4px 6px;border-radius:10px;
 border:2px solid #3d3266;background:#171a33;color:var(--gold,#e8c35a);font:inherit;font-size:12px;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer}
 .dz-sw small{font-size:13px;color:#9aa0c8}.dz-sw:disabled{opacity:.45}.dz-sw:active{transform:translateY(-50%) scale(.94)}</style>`);
+/* ==========================================================================
+   سرداب 7.11 (p270.js) — Twister 2026-10-18 13:04
+   «خلي المبارزات زي اي قتال او معركة في اللعبه وبتشوفو شكل شخصياتكم بخلفية، وظبط حوار التفادي لأن احنا الاتنين بنتفادي بعض
+    فمحدش قادر يضرب التاني، وغير كده القايمه مش منظمه زي المعارك، وعندي مهارات ناقصه والعكس صحيح»
+   - The stage: the duel's two heroes stand on a drawn fight backdrop (fbgSVG, the town, the sky by the clock), each with the
+     name, a thick health bar with the numbers inside and the energy bolts over the head, like the fight stage. A hero runs at
+     the other when hitting.
+   - The moves are the fight's row: your plain hit, «قدرات» and «حماية». «قدرات» opens a grid of icons with the same skills
+     the fight's sheet shows (skillsOf, not passive, your level): a tap shows the name, text and cost, a second tap (or «استعمل»)
+     uses it. A move that only works on a companion stays greyed and says why.
+   - The block: a perfect block takes 40% of the hit, a good one 70%, a late one all of it (it used to be 0 / half / all, so two
+     players who block well could never hurt each other). The ring is a bit quicker.
+   ========================================================================== */
+const DU_BLK_K={perfect:.4,good:.7,miss:1};
+duKit=function(h){let L=[];try{L=skillsOf(h)}catch(e){}return L.filter(s=>s&&!s.pass&&(h.lvl|0)>=(s.lv|0))};
+{const k0=duKAct;duKAct=function(h,id){const s=duKit(h).find(x=>x.id===id);if(s&&!duKSolo(s))return toast(ae('دي لرفيقك، مالهاش لازمة في المبارزة.','That one is for a companion; no use in a duel.'));return k0.apply(this,arguments)}}
+duBlock=async function(h,D){const me=duSide(D),op=me==='a'?'b':'a',pd=D.pd|0;if(!pd)return;DUX.busy=1;DUX.blk=D.n|0;
+  try{await new Promise(r=>setTimeout(r,120));const tg=()=>$('#duMeP .du-pic')||$('#duMeP');
+    try{const t=tg();if(t)floatAt(t,ae('صد!','Block!'),'#7fb6ff','',26);AFS.growl()}catch(e){}
+    let q=window.__duBlock;if(q==null){q=await afRing(tg,{dur:600,col:'#7fb6ff'});if(q!=='perfect'&&q!=='good')q='miss'}
+    const took=Math.min(pd,Math.max(1,Math.ceil(pd*DU_BLK_K[q]))),hp=Math.max(0,(D['hp'+me]|0)-took);
+    if(q==='perfect')try{AFS.block()}catch(e){}
+    const L={w:me,mv:'block',b:q,d:took,k:Date.now()},p={pd:0,n:(D.n|0)+1,last:JSON.stringify(L)};p['hp'+me]=hp;if(hp<=0){p.st='done';p.w=op}
+    await DUA.update(DUX.id,p);duFx(L,false)}
+  catch(e){toast(duErr(e))}finally{DUX.busy=0;DUX.dirty=0;duR()}};
+/* a hero runs at the other one when hitting */
+function duLunge(sel,toSel){try{const a=$(sel),b=$(toSel);if(!a||!b)return;const A=a.getBoundingClientRect(),B=b.getBoundingClientRect(),dx=((B.left+B.width/2)-(A.left+A.width/2))*.55;
+  a.animate([{transform:'translateX(0)'},{transform:`translateX(${dx}px) translateY(-8px)`,offset:.45},{transform:`translateX(${dx*.9}px)`,offset:.6},{transform:'translateX(0)'}],{duration:520,easing:'ease-out'})}catch(e){}}
+{const f0=duFx;duFx=function(L,onMe){try{if(L&&L.mv!=='block'&&L.mv!=='guard'){if(onMe)duLunge('#duHimP','#duMeP');else duLunge('#duMeP','#duHimP')}}catch(e){}return f0.apply(this,arguments)}}
+const DUS={open:0,sel:''};
+{const s0=SCREENS.duo;SCREENS.duo=function(){const r=s0.apply(this,arguments);try{if(S.screen!=='duo')return r;const D=DUX.doc,h=S.hero;if(!D||!h)return r;const me=duSide(D),op=me==='a'?'b':'a';
+  /* the stage */
+  const ar=view.querySelector('.du-arena');if(ar&&!ar.classList.contains('du-stg')){ar.classList.add('du-stg');let ph='n';try{ph=klPh(klHr(h))}catch(e){}
+    try{ar.insertAdjacentHTML('afterbegin',fbgSVG('town',ph))}catch(e){}
+    [[me,'#duMeP'],[op,'#duHimP']].forEach(([sd,id])=>{const f=$(id);if(!f)return;const sm=f.querySelector('small');if(sm)sm.innerHTML=bolts(Math.min(3,D['e'+sd]|0),3)+(D.gd===sd?`<i class="du-gd">${AF_IC.shield}</i>`:'');
+      const hd=document.createElement('div');hd.className='du-hd';[f.querySelector(':scope>b'),f.querySelector('.du-hb'),sm].forEach(x=>{if(x)hd.appendChild(x)});f.prepend(hd)})}
+  /* the moves: hit · «قدرات» · «حماية», the skills in a sheet */
+  const A=view.querySelector('.du-acts');if(!A||A.dataset.sk)return r;A.dataset.sk=1;const E=D['e'+me]|0,hold=(D.pd|0)>0&&D.tn===me,ks=[...A.querySelectorAll('.du-k')];
+  if(DUS.id!==DUX.id){DUS.id=DUX.id;DUS.open=0;DUS.sel=''}
+  const kit=duKit(h),sk=document.createElement('div');sk.className='du-sk';sk.id='duSk';sk.hidden=!DUS.open;
+  sk.innerHTML=`<div class="du-skg"></div><div class="du-ski" id="duSkI"></div>`;const g=sk.firstChild;
+  ks.forEach(b=>{const id=b.dataset.mv.slice(2),s=kit.find(x=>x.id===id);if(!s){b.remove();return}const c=s.cost|0,solo=duKSolo(s),off=hold||E<c||!solo;
+    b.disabled=hold;b.classList.toggle('du-off',off);b.classList.remove('act');b.dataset.why=!solo?ae('دي لرفيقك، مالهاش لازمة في المبارزة.','For a companion; no use in a duel.'):E<c?ae(`محتاج ${c} طاقة.`,`Needs ${c} energy.`):'';
+    let ic='';try{ic=skpIcon(s,h.cls)}catch(e){}b.innerHTML=`<span class="af-ic">${ic}</span>${c?`<i class="du-kc">${c}</i>`:''}`;b.setAttribute('aria-label',T(String(s.n||s.id)));g.appendChild(b);
+    b.onclick=e=>{e.preventDefault();if(!e.isTrusted||DUS.sel===id){if(b.classList.contains('du-off')){if(b.dataset.why)toast(b.dataset.why);return}DUS.open=0;DUS.sel='';duAct(h,b.dataset.mv);return}
+      DUS.sel=id;duSkInfo(h,s,b)}});
+  if(ks.length){const sb=document.createElement('button');sb.className='du-a act du-skb';sb.type='button';sb.disabled=hold;sb.innerHTML=`<span class="af-ic">${AF_IC.star}</span><b>${ae('قدرات','Skills')}</b>`;
+    const gd=A.querySelector('[data-mv="guard"]');if(gd)A.insertBefore(sb,gd);else A.appendChild(sb);
+    sb.onclick=e=>{e.preventDefault();DUS.open=!DUS.open;sk.hidden=!DUS.open;sb.classList.toggle('on',!!DUS.open);try{SFX.tick&&SFX.tick(800)}catch(x){}};sb.classList.toggle('on',!!DUS.open)}
+  A.style.gridTemplateColumns=`repeat(${A.querySelectorAll(':scope>.du-a').length},1fr)`;A.after(sk);
+  if(DUS.sel){const s=kit.find(x=>x.id===DUS.sel),b=g.querySelector(`[data-mv="k:${CSS.escape(DUS.sel)}"]`);if(s&&b)duSkInfo(h,s,b)}}catch(e){console.warn(e)}return r}}
+function duSkInfo(h,s,b){const I=$('#duSkI');if(!I)return;view.querySelectorAll('.du-skg .du-a').forEach(x=>x.classList.toggle('du-sel',x===b));const c=s.cost|0;
+  const nm=T(String(s.n||s.id));I.innerHTML=`<b><span>${esc(ae(nm,L10N_W.get(nm)||nm))}</span>${c?` · <bdi dir="ltr">${c}</bdi> ${BOLT}`:''}</b><small>${T(duKD(s))}</small>${b.dataset.why?`<small class="du-why">${esc(b.dataset.why)}</small>`:''}
+    <button class="btn" id="duSkGo" ${b.classList.contains('du-off')?'disabled':''}>${ae('استعمل','Use')}</button>`;
+  const go=$('#duSkGo');if(go)go.onclick=()=>{DUS.open=0;DUS.sel='';duAct(h,b.dataset.mv)};try{SFX.tick&&SFX.tick(1000)}catch(e){}}
+/* the block line */
+{const s0=SCREENS.duo;SCREENS.duo=function(){const r=s0.apply(this,arguments);try{if(S.screen!=='duo')return r;const D=DUX.doc,h=S.hero;if(!D||!h)return r;const me=duSide(D),L=duP(D.last);
+  const lt=view.querySelector('.du-last');if(lt&&L&&L.mv==='block'){const Q=duP(D[L.w==='a'?'pa':'pb'])||{},who=L.w===me?h.name:Q.n||'',f=(L.w===me?h.g:Q.g)==='f',v=(m,w)=>f?w:m;
+    lt.textContent=L.b==='perfect'?ae(`${who} ${v('صدّ','صدّت')} أغلب الضربة: −${L.d}`,`${who} blocked most of it: −${L.d}`):L.b==='good'?ae(`${who} ${v('صدّ','صدّت')} حتة منها: −${L.d}`,`${who} blocked some: −${L.d}`):ae(`${who} ${v('ما لحقش يصدّ','ما لحقتش تصدّ')}: −${L.d}`,`${who} was too late to block: −${L.d}`)}}catch(e){console.warn(e)}return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.du-arena.du-stg{position:relative;display:block;height:clamp(280px,42vh,380px);padding:0;overflow:hidden;background:#0b0d1c;isolation:isolate;text-shadow:0 1px 0 #000,0 0 3px #000}
+.du-stg .fbg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;image-rendering:pixelated}
+.du-stg .du-vs{display:none}
+.du-stg .du-f{position:absolute;bottom:6%;width:44%;display:flex;flex-direction:column;align-items:center;gap:4px}
+.du-stg #duMeP{inset-inline-start:3%}.du-stg #duHimP{inset-inline-end:3%}
+.du-stg .du-hd{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;background:#0b0d1c99;border-radius:10px;padding:4px 6px}
+.du-stg .du-hd b{font-size:12px;color:#f4e6c8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.du-stg .du-hb{width:100%;height:16px}.du-stg .du-hb span{font-size:11px;font-weight:800}
+.du-stg .du-hd small{display:flex;align-items:center;gap:2px;min-height:14px}.du-stg .du-hd small svg{width:13px;height:13px}.du-gd svg{width:15px!important;height:15px!important}
+.du-stg .du-pic,.du-stg .du-pic.du-body{width:110px;height:140px;border:0;border-radius:0;background:none;overflow:visible;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+.du-stg .du-f.me .du-pic{border:0}
+.du-stg .du-f::after{content:'';position:absolute;bottom:-4px;width:70px;height:10px;border-radius:50%;background:#0006;z-index:-1}
+.du-sk{margin:6px 0;padding:8px;border-radius:14px;background:#0b0d1c;border:2px solid #3d3266}
+.du-skg{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px}
+.du-skg .du-a{position:relative;min-height:58px;min-width:44px;border-radius:12px;background:#171a33;border:2px solid #3d3266;display:flex;align-items:center;justify-content:center;padding:4px;color:inherit}
+.du-skg .du-a .af-ic svg{width:36px;height:36px}.du-skg .du-a.du-off{opacity:.45}.du-skg .du-a.du-sel{border-color:#ffd36a;box-shadow:0 0 12px #ffd36a88}
+.du-kc{position:absolute;top:2px;inset-inline-end:4px;font-style:normal;font-size:11px;font-weight:800;color:var(--en,#7fd0ff)}
+.du-ski{display:flex;flex-direction:column;gap:4px;margin-top:8px}.du-ski:empty{display:none}.du-ski b{font-size:14px;display:flex;align-items:center;gap:4px}.du-ski b svg{width:14px;height:14px}
+.du-ski small{font-size:12px;color:#c9bfae;line-height:1.5}.du-ski .du-why{color:#ff9a8a}.du-ski .btn{min-height:44px}
+.du-a.du-skb.on{box-shadow:0 0 0 3px #ffd36a}
+</style>`);
 
 render();
 })();
